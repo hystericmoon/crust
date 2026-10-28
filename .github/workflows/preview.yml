@@ -1,0 +1,175 @@
+# F010: deploy the admin build to Cloudflare Pages (direct upload).
+# Every branch gets a preview URL; main is the production preview.
+# Needs repo secrets CLOUDFLARE_API_TOKEN (Pages: Edit) and CLOUDFLARE_ACCOUNT_ID.
+# Without them the build still runs and the deploy is skipped with a notice.
+name: Preview deploy
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    types: [opened, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: preview-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  PAGES_PROJECT: crust-admin
+  PRODUCTION_BRANCH: main
+  WRANGLER_VERSION: 4.145.0
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.COMMIT }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build admin
+        run: npm run build
+
+      - name: Check Cloudflare secrets
+        id: secrets
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Preview not deployed: CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID is not set."
+            {
+              echo "### Preview not deployed"
+              echo "The build passed, but the Cloudflare secrets aren't set yet (see BLOCKED.md)."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Create Pages project if missing
+        if: steps.secrets.outputs.ready == 'true'
+        id: project
+        run: |
+          api="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects"
+          auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          status=$(curl -sS -o project.json -w '%{http_code}' -H "$auth" "$api/$PAGES_PROJECT")
+          if [ "$status" = "404" ]; then
+            echo "Creating Pages project $PAGES_PROJECT"
+            body=$(jq -n --arg n "$PAGES_PROJECT" --arg b "$PRODUCTION_BRANCH" '{name: $n, production_branch: $b}')
+            status=$(curl -sS -o project.json -w '%{http_code}' -X POST -H "$auth" \
+              -H "Content-Type: application/json" --data "$body" "$api")
+          fi
+          if [ "$status" != "200" ]; then
+            echo "::error::Cloudflare API returned $status. Check that the token has 'Cloudflare Pages: Edit' and the account ID is right."
+            jq -c '.errors' project.json || true
+            exit 1
+          fi
+          echo "subdomain=$(jq -r '.result.subdomain' project.json)" >> "$GITHUB_OUTPUT"
+          rm project.json
+
+      - name: Deploy to Cloudflare Pages
+        if: steps.secrets.outputs.ready == 'true'
+        id: deploy
+        env:
+          WRANGLER_OUTPUT_FILE_PATH: ${{ runner.temp }}/wrangler-output.ndjson
+          SUBDOMAIN: ${{ steps.project.outputs.subdomain }}
+        run: |
+          npx --yes "wrangler@$WRANGLER_VERSION" pages deploy apps/admin/dist \
+            --project-name="$PAGES_PROJECT" \
+            --branch="$BRANCH" \
+            --commit-hash="$COMMIT"
+          details=$(jq -c 'select(.type == "pages-deploy-detailed")' "$WRANGLER_OUTPUT_FILE_PATH" | tail -n 1)
+          url=$(jq -r '.url // empty' <<<"$details")
+          alias=$(jq -r '.alias // empty' <<<"$details")
+          if [ "$BRANCH" = "$PRODUCTION_BRANCH" ]; then
+            alias="https://$SUBDOMAIN"
+          fi
+          if [ -z "$url" ]; then
+            echo "::error::Wrangler finished but reported no deployment URL."
+            exit 1
+          fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "preview=${alias:-$url}" >> "$GITHUB_OUTPUT"
+
+      - name: Check the preview loads
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          URL: ${{ steps.deploy.outputs.url }}
+        run: |
+          # A new project's pages.dev name can take a minute or two to resolve.
+          for attempt in $(seq 1 12); do
+            if curl -fsSL --max-time 10 "$URL" | grep -q "<title>Crust builder</title>"; then
+              echo "Preview is live: $URL"
+              exit 0
+            fi
+            echo "Attempt $attempt: not ready yet, waiting 15s"
+            sleep 15
+          done
+          echo "::error::$URL did not serve the admin within 3 minutes."
+          exit 1
+
+      - name: Write job summary
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          URL: ${{ steps.deploy.outputs.url }}
+          PREVIEW: ${{ steps.deploy.outputs.preview }}
+        run: |
+          {
+            echo "### Admin preview deployed"
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Open | $PREVIEW |"
+            echo "| This exact build | $URL |"
+            echo "| Branch | \`$BRANCH\` |"
+            echo "| Commit | \`${COMMIT:0:7}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment on the pull request
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          URL: ${{ steps.deploy.outputs.url }}
+          PREVIEW: ${{ steps.deploy.outputs.preview }}
+        run: |
+          pr="$PR_NUMBER"
+          if [ -z "$pr" ]; then
+            pr=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --state open \
+              --json number --jq '.[0].number // empty')
+          fi
+          if [ -z "$pr" ]; then
+            echo "No open pull request for $BRANCH; skipping the comment."
+            exit 0
+          fi
+          marker="<!-- crust-preview-deploy -->"
+          body="$marker
+          **Admin preview:** $PREVIEW
+
+          This exact build: $URL
+          Commit \`${COMMIT:0:7}\`, updated on every push to this branch."
+          existing=$(gh api "repos/$GITHUB_REPOSITORY/issues/$pr/comments" --paginate \
+            --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -n 1)
+          if [ -n "$existing" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$existing" -f body="$body" > /dev/null
+          else
+            gh api -X POST "repos/$GITHUB_REPOSITORY/issues/$pr/comments" -f body="$body" > /dev/null
+          fi
+          echo "Preview link posted on #$pr"

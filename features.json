@@ -13,6 +13,16 @@
       "reviewed": false
     },
     {
+      "id": "F010",
+      "title": "Preview deploy via GitHub Actions",
+      "description": "GitHub Actions deploys the admin build (apps/admin/dist) to Cloudflare Pages with wrangler (direct upload) on every push to any branch; main is the production preview. The preview URL is posted as a PR comment and in the job summary. Added by the owner because the Cloudflare GitHub-app connection loops on his phone.",
+      "depends_on": ["F001"],
+      "done_check": "npm run lint:workflows && npm run build, plus a green 'Preview deploy' run on GitHub that deployed and loaded the preview (needs the Cloudflare secrets)",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
       "id": "F002",
       "title": "Output validation in the publish engine",
       "description": "crust-publish fails the publish with a plain-language message when a page has an image without alt text, zero or several h1, skipped heading levels, or a missing title/description.",

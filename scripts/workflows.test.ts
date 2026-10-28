@@ -1,0 +1,65 @@
+import { readFileSync } from "node:fs";
+import { describe, expect, it } from "vitest";
+import { parse } from "yaml";
+
+type Step = { name?: string; uses?: string; run?: string; if?: string; env?: Record<string, string> };
+
+const preview = parse(readFileSync(".github/workflows/preview.yml", "utf8"));
+const deploy = preview.jobs.deploy;
+const steps: Step[] = deploy.steps;
+const step = (name: string) => {
+  const found = steps.find((s) => s.name === name);
+  if (!found) throw new Error(`missing step: ${name}`);
+  return found;
+};
+
+describe("preview deploy workflow (F010)", () => {
+  it("runs on every branch push, new pull requests and by hand", () => {
+    expect(preview.on.push.branches).toEqual(["**"]);
+    expect(preview.on.pull_request.types).toEqual(["opened", "reopened"]);
+    expect(preview.on).toHaveProperty("workflow_dispatch");
+  });
+
+  it("deploys the admin build with main as the production branch", () => {
+    expect(preview.env.PRODUCTION_BRANCH).toBe("main");
+    expect(step("Build admin").run).toBe("npm run build");
+    expect(step("Deploy to Cloudflare Pages").run).toContain("pages deploy apps/admin/dist");
+  });
+
+  it("pins the wrangler version", () => {
+    expect(preview.env.WRANGLER_VERSION).toMatch(/^\d+\.\d+\.\d+$/);
+  });
+
+  it("asks only for the permissions it needs", () => {
+    expect(preview.permissions).toEqual({ contents: "read", "pull-requests": "write" });
+  });
+
+  it("never puts secrets or branch names straight into shell scripts", () => {
+    for (const s of steps) {
+      expect(s.run ?? "").not.toMatch(/\$\{\{/);
+    }
+    expect(deploy.env.CLOUDFLARE_API_TOKEN).toBe("${{ secrets.CLOUDFLARE_API_TOKEN }}");
+  });
+
+  it("skips Cloudflare steps cleanly when the secrets are missing", () => {
+    const gated = steps.slice(steps.indexOf(step("Check Cloudflare secrets")) + 1);
+    expect(gated.length).toBeGreaterThan(0);
+    for (const s of gated) {
+      expect(s.if).toBe("steps.secrets.outputs.ready == 'true'");
+    }
+  });
+
+  it("checks the live preview, writes a summary and comments on the PR", () => {
+    expect(step("Check the preview loads").run).toContain("<title>Crust builder</title>");
+    expect(step("Write job summary").run).toContain("GITHUB_STEP_SUMMARY");
+    expect(step("Comment on the pull request").run).toContain("crust-preview-deploy");
+  });
+});
+
+describe("CI", () => {
+  it("lints the workflow files", () => {
+    const ci = parse(readFileSync(".github/workflows/ci.yml", "utf8"));
+    const runs = ci.jobs["workflow-lint"].steps.map((s: Step) => s.run);
+    expect(runs).toContain("npm run lint:workflows");
+  });
+});

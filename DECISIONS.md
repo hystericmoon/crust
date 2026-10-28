@@ -10,6 +10,28 @@ Features Claude suggests. They are not work until the owner adds them to
 
 - *(none yet)*
 
+## 2026-10-28 — F010 preview deploy (Claude, reversible)
+
+- **Direct upload with wrangler from GitHub Actions**, not the Cloudflare
+  GitHub app (owner's call: the app connection loops on his phone). The
+  workflow creates the Pages project `crust-admin` itself on the first run
+  (production branch `main`), so there is nothing to click in Cloudflare.
+- **Wrangler runs via `npx` at a pinned version** in the workflow rather than
+  as a project dependency, so normal installs stay small. The token never
+  goes to a third-party action.
+- **No secrets = no failure.** Without the Cloudflare secrets the build still
+  runs and the job summary says the deploy was skipped, so CI stays green on
+  forks and before setup.
+- **Pull requests deploy on open/reopen too**, so a new PR gets its comment
+  right away instead of waiting for the next push. One comment per PR,
+  updated in place.
+- **The workflow checks the live URL** serves the admin before reporting
+  success. This is the "real deploy succeeds" part of the done check.
+- **Workflow lint uses actionlint's Docker image** (pinned 1.7.7) in CI.
+- **Preview URLs are public for now.** The admin holds no data or secrets
+  yet (drafts live in the visitor's own browser). Cloudflare Access goes in
+  front before F006 (Save to GitHub) ships.
+
 ## 2026-10-28 — Skeleton choices (Claude, reversible)
 
 - **Renderer walks the block tree itself** instead of using Puck's `<Render>`,

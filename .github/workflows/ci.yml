@@ -57,3 +57,12 @@ jobs:
           name: sample-site
           path: dist/site
           retention-days: 7
+
+  workflow-lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint workflows (actionlint)
+        run: npm run lint:workflows
