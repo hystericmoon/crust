@@ -8,7 +8,140 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
-- *(none yet)*
+- **Theme presets in Site settings** (from design direction C). Start from
+  a ready palette and fonts. A preset would overwrite all tokens at once, so
+  it needs an undo.
+- **Click a block in the Site settings preview to jump to its colour.**
+  Pointer shortcut only; the form stays the keyboard route.
+
+- **Stop publishing images with no URL.** An Image block left without a URL
+  currently publishes its editor placeholder ("Add an image URL") on the
+  live page. F002's checker could catch it the same way as missing alt
+  text. Small; would fit in F004 or as its own item.
+
+## 2026-10-28 — F005 keyboard editing (Claude, reversible)
+
+- **Shortcuts**:
+  - Enter selects the focused block.
+  - Alt+↑/↓ moves it up or down.
+  - Alt+← moves it out of its section or column.
+  - Alt+→ moves it into the section or columns above.
+  - Alt+Shift+←/→ moves it to the previous or next column.
+  - Enter on a block in the list adds it after the selected block.
+  - Escape deselects.
+  - ? opens a help panel, also reachable from a "Keyboard" button in the header.
+- **Alt plus arrows** because it's the common "move item" chord (Google Docs,
+  VS Code), and it doesn't clash with Tab, typing or the browser. Shortcuts
+  are ignored while you're typing in a field.
+- **Every move is also a labelled button on the selected block's action
+  bar**, and buttons are only shown when that move is possible. The help
+  panel lists the keys, so nothing depends on remembering them.
+- **Every move and insert is announced** in a polite live region, e.g.
+  "Text moved out of Section into the page, position 3 of 3."
+- **Canvas blocks get screen-reader names**: "Text: Edit pages in the
+  builder…", role "block", plus a short hint. Puck's own text called them
+  "draggable", which promised a drag that keyboard users couldn't do.
+- **Focus ring**: a dark outline with a white halo on canvas blocks and
+  Puck's controls. On Primary sections, site buttons use the
+  label colour for their focus ring.
+- **Puck's "Publish" was a `<span>`**, which you can't reach with Tab. It's
+  replaced by a real button named **Save draft**, because that's what it does
+  until F008 (Publish) exists.
+- Moves go through Puck's own actions, so Undo and Redo work for them.
+
+## 2026-10-28 — F003 Site settings (owner + Claude)
+
+**Owner's call** (after an Impeccable critique of the three design
+directions): **direction A (form + live preview) with B's contrast-checks
+panel.** Failing contrast warns and offers a fix, but never blocks saving.
+Fully editable on a phone, with a collapsible preview strip. The preview
+shows the real Home page. Handoff spec: `docs/f003-site-settings.md`.
+
+Claude's build choices (reversible):
+- **Contrast is checked as pairs**: every text/background combination the
+  blocks produce (7 pairs), at 4.5:1. The suggested fix keeps the colour's
+  hue and changes only its lightness, and it must pass every pair that
+  colour is part of. The design mockups' fix (#71717A) passed on white but
+  failed on Surface; this approach can't make that mistake.
+- **Only the text colour's row is marked red** when a pair fails, because
+  that's what the fix changes. If no shade can work, the panel says to
+  change the background instead.
+- **The preview is the publish renderer's own HTML** in a sandboxed iframe
+  (no scripts), so preview and published page can't drift apart.
+- **Fonts are curated system font stacks**, not web fonts: no download, no
+  cost, no third-party requests. Any other stack is kept and shown as
+  "Custom".
+- **Saved in this browser** until F006 (Save to GitHub). Unsaved edits also
+  show in the builder, so switching screens loses nothing. The browser asks
+  before you leave with unsaved changes.
+- **The admin's own controls are near-black**, not blue, so they can't be
+  mistaken for the site's primary colour. Admin field borders are 3:1 or
+  more, inputs are 16px (no iPhone zoom), and targets are at least 44px.
+- **Test tools added:** `@testing-library/react` (MIT) and `happy-dom`
+  (MIT, already installed through Puck) for screen tests.
+- **The token format didn't change**, so no migration is needed.
+
+## 2026-10-28 — F004 Columns and Card (Claude, reversible)
+
+- **Columns has four fixed column slots; the count picks how many show.**
+  Lowering the count hides the extra columns' content without deleting it,
+  so it comes back if you raise the count again. Hidden content isn't
+  published.
+- **Breakpoints:** 1 column below 640px, 2 columns from 640px, the chosen
+  count (3 or 4) from 1024px. The editor's tablet view (768px) shows 2.
+  A 3-column row on tablet leaves the third card alone on its own row.
+- **No sections or columns inside a column**, to keep layouts predictable.
+- **Card is a fixed composition** (optional image, title, text, optional
+  link) rather than a free container, so cards in a row stay consistent.
+  Empty parts are left out instead of showing placeholders. The title's
+  heading level is a separate choice from its size (always the same visual
+  size), so the outline stays correct without changing the look. The link
+  shows only when both its text and URL are set; the field asks for text
+  that says where it goes (no "Read more").
+- **Cards stretch to equal height in a row**, with the link pinned to the
+  bottom.
+- **Editor canvas now uses the page's base styles** (`cr-page` wrapper via
+  Puck's root render). Before, body text in the canvas fell back to a serif
+  font, so the preview didn't match the published page.
+- **The sample page shows a 3-card row** so the new blocks are visible in
+  the preview.
+
+## 2026-10-28 — F002 output validation (Claude, reversible)
+
+- **Checks run on the rendered HTML**, so they test exactly what visitors
+  get. A small tag scanner, not a full HTML parser dependency: our renderer
+  is the only producer and React escapes all text and attributes. It skips
+  comments and `<style>`/`<script>` contents.
+- **All problems on all pages are listed at once**, each with the page and
+  the heading or image it's about, so the owner can fix everything in one
+  pass. Nothing is written (no sitemap) when any check fails.
+- **`alt=""` counts as a deliberate "decorative image"** and passes; a
+  missing or blank-spaces alt fails. The Image block never writes `alt=""`
+  today, so only a future "decorative" option will produce it.
+- **The H1 must be the first heading.** A heading before the H1 counts as a
+  skipped level (axe and WCAG guidance: the page title heading comes first).
+
+## 2026-10-28 — F010 preview deploy (Claude, reversible)
+
+- **Direct upload with wrangler from GitHub Actions**, not the Cloudflare
+  GitHub app (owner's call: the app connection loops on his phone). The
+  workflow creates the Pages project `crust-admin` itself on the first run
+  (production branch `main`), so there is nothing to click in Cloudflare.
+- **Wrangler runs via `npx` at a pinned version** in the workflow rather than
+  as a project dependency, so normal installs stay small. The token never
+  goes to a third-party action.
+- **No secrets = no failure.** Without the Cloudflare secrets the build still
+  runs and the job summary says the deploy was skipped, so CI stays green on
+  forks and before setup.
+- **Pull requests deploy on open/reopen too**, so a new PR gets its comment
+  right away instead of waiting for the next push. One comment per PR,
+  updated in place.
+- **The workflow checks the live URL** serves the admin before reporting
+  success. This is the "real deploy succeeds" part of the done check.
+- **Workflow lint uses actionlint's Docker image** (pinned 1.7.7) in CI.
+- **Preview URLs are public for now.** The admin holds no data or secrets
+  yet (drafts live in the visitor's own browser). Cloudflare Access goes in
+  front before F006 (Save to GitHub) ships.
 
 ## 2026-10-28 — Skeleton choices (Claude, reversible)
 

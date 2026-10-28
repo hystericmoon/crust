@@ -1,13 +1,17 @@
 //! Crust publish engine.
 //!
 //! Takes a folder of rendered HTML pages and finishes it into a deployable
-//! static site: `sitemap.xml`, `robots.txt`, and (in later features)
-//! validation, image optimisation and the search index.
+//! static site: validation, `sitemap.xml`, `robots.txt`, and (in later
+//! features) image optimisation and the search index.
+
+pub mod validate;
 
 use anyhow::{Context, Result, bail};
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
+
+pub use validate::{Issue, validate_page};
 
 /// What a publish run produced, for the summary printed to the log.
 #[derive(Debug, PartialEq, Eq)]
@@ -31,10 +35,15 @@ pub fn normalize_base_url(input: &str) -> Result<String> {
 /// `index.html` → `/`, `about/index.html` → `/about/`, `x.html` → `/x.html`.
 /// `404.html` is left out because it isn't a real page.
 pub fn page_paths(site_dir: &Path) -> Result<Vec<String>> {
+    Ok(page_files(site_dir)?.into_iter().map(|(path, _)| path).collect())
+}
+
+/// Like [`page_paths`], paired with each page's file.
+fn page_files(site_dir: &Path) -> Result<Vec<(String, PathBuf)>> {
     if !site_dir.is_dir() {
         bail!("Site folder {} does not exist. Did the render step run?", site_dir.display());
     }
-    let mut paths = Vec::new();
+    let mut pages = Vec::new();
     for entry in WalkDir::new(site_dir).sort_by_file_name() {
         let entry = entry.with_context(|| format!("Couldn't read {}", site_dir.display()))?;
         if !entry.file_type().is_file() || entry.path().extension().is_none_or(|e| e != "html") {
@@ -53,10 +62,34 @@ pub fn page_paths(site_dir: &Path) -> Result<Vec<String>> {
             Some(dir) => format!("/{dir}"),
             None => format!("/{rel}"),
         };
-        paths.push(path);
+        pages.push((path, entry.into_path()));
     }
-    paths.sort();
-    Ok(paths)
+    pages.sort();
+    Ok(pages)
+}
+
+/// Checks every page and returns all problems found, in page order.
+pub fn validate_site(site_dir: &Path) -> Result<Vec<Issue>> {
+    let mut issues = Vec::new();
+    for (path, file) in page_files(site_dir)? {
+        let html = fs::read_to_string(&file).with_context(|| format!("Couldn't read {}", file.display()))?;
+        issues.extend(validate_page(&path, &html));
+    }
+    Ok(issues)
+}
+
+/// Plain-language summary of validation problems, one per line.
+pub fn issues_message(issues: &[Issue]) -> String {
+    let pages = issues.iter().map(|i| &i.page).collect::<std::collections::BTreeSet<_>>().len();
+    let mut msg = format!(
+        "Nothing was published. Fix {} on {} and publish again:",
+        if issues.len() == 1 { "this problem".to_string() } else { format!("these {} problems", issues.len()) },
+        if pages == 1 { "1 page".to_string() } else { format!("{pages} pages") },
+    );
+    for issue in issues {
+        msg.push_str(&format!("\n  - Page {issue}"));
+    }
+    msg
 }
 
 fn escape_xml(s: &str) -> String {
@@ -90,6 +123,10 @@ pub fn publish(site_dir: &Path, base_url: &str) -> Result<Report> {
     let pages = page_paths(site_dir)?;
     if pages.is_empty() {
         bail!("No pages found in {}. Add at least one page before publishing.", site_dir.display());
+    }
+    let issues = validate_site(site_dir)?;
+    if !issues.is_empty() {
+        bail!(issues_message(&issues));
     }
     fs::write(site_dir.join("sitemap.xml"), sitemap_xml(&base_url, &pages))
         .context("Couldn't write sitemap.xml")?;

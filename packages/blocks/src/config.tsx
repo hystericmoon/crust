@@ -28,6 +28,24 @@ export type TextProps = { text: string; align: Align; tone: "default" | "muted" 
 export type ImageProps = { src: string; alt: string; caption: string };
 export type ButtonProps = { label: string; href: string; variant: "primary" | "secondary" };
 export type SpacerProps = { size: SpacingStep };
+export type ColumnsProps = {
+  count: "2" | "3" | "4";
+  gap: SpacingStep;
+  column1: Slot;
+  column2: Slot;
+  column3: Slot;
+  column4: Slot;
+};
+export type CardProps = {
+  imageSrc: string;
+  imageAlt: string;
+  title: string;
+  titleLevel: "h2" | "h3" | "h4";
+  text: string;
+  linkLabel: string;
+  linkHref: string;
+  background: "background" | "surface" | "primary";
+};
 
 export type Components = {
   Section: SectionProps;
@@ -36,7 +54,22 @@ export type Components = {
   Image: ImageProps;
   Button: ButtonProps;
   Spacer: SpacerProps;
+  Columns: ColumnsProps;
+  Card: CardProps;
 };
+
+const backgroundField = {
+  type: "select" as const,
+  label: "Background",
+  options: [
+    { label: "Page", value: "background" },
+    { label: "Surface", value: "surface" },
+    { label: "Primary", value: "primary" },
+  ],
+};
+
+/** Blocks that can't go inside a column (no full-width sections or nested columns). */
+const columnSlot = { type: "slot" as const, disallow: ["Section", "Columns"] };
 
 /** Splits text on blank lines into paragraphs. React escapes the content. */
 function paragraphs(text: string): ReactNode[] {
@@ -48,23 +81,20 @@ function paragraphs(text: string): ReactNode[] {
 }
 
 export const config: Config<Components> = {
+  // Gives the editor canvas the published page's base styles (font, colours),
+  // so the preview matches. The renderer writes its own <body class="cr-page">.
+  root: {
+    render: ({ children }) => <div className="cr-page">{children}</div>,
+  },
   categories: {
-    layout: { title: "Layout", components: ["Section", "Spacer"] },
-    content: { title: "Content", components: ["Heading", "Text", "Image", "Button"] },
+    layout: { title: "Layout", components: ["Section", "Columns", "Spacer"] },
+    content: { title: "Content", components: ["Heading", "Text", "Image", "Button", "Card"] },
   },
   components: {
     Section: {
       label: "Section",
       fields: {
-        background: {
-          type: "select",
-          label: "Background",
-          options: [
-            { label: "Page", value: "background" },
-            { label: "Surface", value: "surface" },
-            { label: "Primary", value: "primary" },
-          ],
-        },
+        background: backgroundField,
         paddingY: spacingField("Vertical padding"),
         content: { type: "slot" },
       },
@@ -172,6 +202,92 @@ export const config: Config<Components> = {
       render: ({ size }) => (
         <div className="cr-spacer" aria-hidden="true" style={{ height: spaceVar(size) }} />
       ),
+    },
+    Columns: {
+      label: "Columns",
+      fields: {
+        count: {
+          type: "radio",
+          label: "Columns (stack on phones)",
+          options: [
+            { label: "2", value: "2" },
+            { label: "3", value: "3" },
+            { label: "4", value: "4" },
+          ],
+        },
+        gap: spacingField("Gap"),
+        column1: columnSlot,
+        column2: columnSlot,
+        column3: columnSlot,
+        column4: columnSlot,
+      },
+      defaultProps: { count: "2", gap: "md", column1: [], column2: [], column3: [], column4: [] },
+      render: ({ count, gap, column1, column2, column3, column4 }) => {
+        // Content in columns beyond `count` is kept (so lowering the count is
+        // undoable) but not shown or published.
+        const columns = [column1, column2, column3, column4].slice(0, Number(count));
+        return (
+          <div className={`cr-columns cr-columns-${count}`} style={vars({ "--cr-columns-gap": spaceVar(gap) })}>
+            {columns.map((Column, i) => (
+              <div className="cr-column" key={i}>
+                <Column />
+              </div>
+            ))}
+          </div>
+        );
+      },
+    },
+    Card: {
+      label: "Card",
+      fields: {
+        title: { type: "text", label: "Title" },
+        titleLevel: {
+          type: "select",
+          label: "Title level",
+          options: [
+            { label: "H2", value: "h2" },
+            { label: "H3", value: "h3" },
+            { label: "H4", value: "h4" },
+          ],
+        },
+        text: { type: "textarea", label: "Text" },
+        imageSrc: { type: "text", label: "Image URL (optional)" },
+        imageAlt: { type: "text", label: "Image alt text (describe the image)" },
+        linkLabel: { type: "text", label: "Link text (say where it goes)" },
+        linkHref: { type: "text", label: "Link" },
+        background: backgroundField,
+      },
+      defaultProps: {
+        title: "Card title",
+        titleLevel: "h3",
+        text: "A short description.",
+        imageSrc: "",
+        imageAlt: "",
+        linkLabel: "",
+        linkHref: "",
+        background: "surface",
+      },
+      render: ({ imageSrc, imageAlt, title, titleLevel, text, linkLabel, linkHref, background }) => {
+        const Title = titleLevel;
+        // Same rule as the Image block: missing alt is left out for the publish check.
+        const altAttr = imageAlt.trim() ? { alt: imageAlt.trim() } : {};
+        return (
+          <article className={`cr-card cr-bg-${background}`}>
+            {imageSrc.trim() ? (
+              <img className="cr-card-media" src={safeUrl(imageSrc)} {...altAttr} loading="lazy" decoding="async" />
+            ) : null}
+            <div className="cr-card-body">
+              {title.trim() ? <Title className="cr-heading cr-card-title">{title}</Title> : null}
+              {text.trim() ? <div className="cr-text">{paragraphs(text)}</div> : null}
+              {linkLabel.trim() && linkHref.trim() ? (
+                <a className="cr-card-link" href={safeUrl(linkHref)}>
+                  {linkLabel}
+                </a>
+              ) : null}
+            </div>
+          </article>
+        );
+      },
     },
   },
 };

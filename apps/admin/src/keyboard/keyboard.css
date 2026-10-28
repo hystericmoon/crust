@@ -1,0 +1,55 @@
+/* Visible focus for keyboard editing (F005). Puck copies these styles into
+   the canvas iframe too. Two-tone ring: dark outline plus a white halo, so it
+   shows on light and dark blocks alike. */
+[data-puck-component]:focus-visible {
+  outline: 3px solid #18181b;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px #ffffff;
+}
+
+.Puck button:focus-visible,
+.Puck a:focus-visible,
+.Puck select:focus-visible,
+.Puck input:focus-visible,
+.Puck textarea:focus-visible,
+.Puck [role="button"]:focus-visible,
+.Puck [tabindex]:focus-visible {
+  outline: 3px solid #18181b;
+  outline-offset: 2px;
+}
+
+.crust-header-link { background: #fff; font: inherit; cursor: pointer; }
+
+.kb-live {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+.kb-help {
+  max-width: min(36rem, calc(100vw - 32px));
+  padding: 24px; border: 1px solid #85858f; border-radius: 12px;
+  color: #18181b; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.kb-help::backdrop { background: rgb(0 0 0 / 0.4); }
+.kb-help h2 { margin: 0 0 4px; font-size: 1.25rem; }
+.kb-help p { margin: 0 0 16px; color: #52525b; }
+.kb-help table { border-collapse: collapse; width: 100%; }
+.kb-help th, .kb-help td { padding: 8px 0; border-top: 1px solid #e4e4e7; text-align: left; vertical-align: top; }
+.kb-help th { padding-right: 16px; white-space: nowrap; font-weight: 500; }
+.kb-help kbd {
+  font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.875rem;
+  padding: 2px 6px; border: 1px solid #85858f; border-radius: 4px; background: #f4f4f5;
+}
+.kb-help-close {
+  margin-top: 16px; min-height: 44px; padding: 0 16px;
+  border: 0; border-radius: 8px; background: #18181b; color: #fff; font: inherit; cursor: pointer;
+}
+.kb-help-close:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
+
+.crust-save {
+  display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px;
+  border: 0; border-radius: 6px; background: #18181b; color: #fff;
+  font: inherit; font-weight: 600; cursor: pointer;
+}
+.crust-save:hover { background: #3f3f46; }
+.crust-save:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
