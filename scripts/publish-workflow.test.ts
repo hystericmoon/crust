@@ -16,7 +16,10 @@ describe("publish workflow (F008)", () => {
   it("renders, checks with crust-publish, then deploys the result", () => {
     const names = steps.map((s) => s.name).filter(Boolean);
     expect(names.indexOf("Render pages")).toBeLessThan(names.indexOf("Check and finish the site (crust-publish)"));
-    expect(names.indexOf("Check and finish the site (crust-publish)")).toBeLessThan(names.indexOf("Deploy to Cloudflare Pages"));
+    expect(names.indexOf("Check and finish the site (crust-publish)")).toBeLessThan(
+      names.indexOf("Accessibility check (stops the publish on serious issues)"),
+    );
+    expect(names.indexOf("Accessibility check (stops the publish on serious issues)")).toBeLessThan(names.indexOf("Deploy to Cloudflare Pages"));
     expect(step("Render pages").run).toBe("npm run render");
     expect(step("Check and finish the site (crust-publish)").run).toContain("crust-publish -- dist/site");
     expect(step("Deploy to Cloudflare Pages").run).toContain("pages deploy dist/site");

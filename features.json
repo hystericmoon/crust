@@ -98,7 +98,7 @@
       "description": "CI runs axe on every published page (no serious issues) and Lighthouse on the sample page (performance >= 95).",
       "depends_on": ["F008"],
       "done_check": "npm run check:a11y && npm run check:perf",
-      "passes": false,
+      "passes": true,
       "needs_review": false,
       "reviewed": false
     },

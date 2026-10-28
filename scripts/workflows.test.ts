@@ -60,6 +60,13 @@ describe("preview deploy workflow (F010)", () => {
 });
 
 describe("CI", () => {
+  it("runs the accessibility and performance checks (F009)", () => {
+    const ci = parse(readFileSync(".github/workflows/ci.yml", "utf8"));
+    const runs = ci.jobs["site-checks"].steps.map((s: Step) => s.run);
+    expect(runs).toContain("npm run check:a11y");
+    expect(runs).toContain("npm run check:perf");
+  });
+
   it("lints the workflow files", () => {
     const ci = parse(readFileSync(".github/workflows/ci.yml", "utf8"));
     const runs = ci.jobs["workflow-lint"].steps.map((s: Step) => s.run);

@@ -13,7 +13,9 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint:workflows": "docker run --rm -v \"$PWD:/repo\" --workdir /repo rhysd/actionlint:1.7.7 -color",
     "render": "tsx packages/render/src/cli.ts content dist/site",
-    "publish:local": "npm run render && cargo run -q -p crust-publish -- dist/site --base-url https://example.pages.dev"
+    "publish:local": "npm run render && cargo run -q -p crust-publish -- dist/site --base-url https://example.pages.dev",
+    "check:a11y": "npm run publish:local && node scripts/check-a11y.mjs",
+    "check:perf": "npm run publish:local && node scripts/check-perf.mjs"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.2",
@@ -21,7 +23,11 @@
     "@types/node": "^22.20.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "axe-core": "^4.14.0",
+    "chrome-launcher": "^1.2.2",
     "happy-dom": "^20.14.6",
+    "lighthouse": "^13.5.0",
+    "playwright-core": "^1.63.0",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^5.0.5",
