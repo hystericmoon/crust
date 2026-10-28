@@ -67,6 +67,13 @@ jobs:
       - name: Lint workflows (actionlint)
         run: npm run lint:workflows
 
+      - name: Probe address
+        id: probe
+        run: echo "url=https://probe-example.pages.dev" >> "$GITHUB_OUTPUT"
+
+      - name: Live at ${{ steps.probe.outputs.url }}
+        run: "true"
+
   site-checks:
     # F009: axe on every published page, Lighthouse on the sample page.
     runs-on: ubuntu-latest
