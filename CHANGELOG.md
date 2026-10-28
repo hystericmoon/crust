@@ -4,6 +4,8 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- In Site settings, click any part of the preview to jump straight to the
+  colour that styles it.
 - Site settings has five ready-made presets (Crust, Ink, Forest, Sunset,
   Mono) for colours and fonts, with one-step undo.
 - Buttons can be aligned left, centre or right, so they line up under

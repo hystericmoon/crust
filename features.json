@@ -138,7 +138,7 @@
       "description": "Clicking an element in the Site settings preview moves focus to the colour field that styles it (pointer shortcut; the form stays the keyboard route). Added by the owner (approved Claude's proposal, 2026-10-28).",
       "depends_on": ["F003"],
       "done_check": "npm test -- settings && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     }

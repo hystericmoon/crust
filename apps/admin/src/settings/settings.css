@@ -213,6 +213,7 @@ body:has(.st) { margin: 0; }
   padding: 8px 12px; border-bottom: 1px solid var(--st-divider);
 }
 .st-preview-title { font-weight: 600; }
+.st-preview-hint { flex-basis: 100%; margin: 0; color: var(--st-muted); font-size: 0.8125rem; }
 .st-segmented { display: inline-flex; border: 1px solid var(--st-border); border-radius: 8px; overflow: hidden; }
 .st-segment {
   min-height: 44px; padding: 0 12px; border: 0; background: var(--st-panel);
@@ -222,7 +223,8 @@ body:has(.st) { margin: 0; }
 .st-segment[aria-pressed="true"] { background: var(--st-action); color: var(--st-on-action); }
 .st-preview-pane { max-height: calc(100dvh - 160px); overflow: auto; background: #e4e4e7; }
 .st-preview-stage { position: relative; margin: 0 auto; overflow: hidden; background: #fff; }
-.st-preview-stage iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; display: block; }
+.st-preview-stage iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; display: block; pointer-events: none; }
+.st-preview-stage.is-pickable { cursor: crosshair; }
 .st-preview-error { margin: 0; padding: 16px; color: var(--st-danger); }
 
 /* Mid widths: section links move above the form. */
@@ -243,6 +245,7 @@ body:has(.st) { margin: 0; }
   .st-header { position: static; }
   .st-preview { box-shadow: 0 4px 12px rgb(0 0 0 / 0.08); }
   .st-preview-bar { flex-wrap: nowrap; padding: 6px 8px; }
+  .st-preview-hint { display: none; }
   .st-preview-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .st-preview-toggle { display: block; flex: none; padding: 0 12px; }
   .st-segment { padding: 0 10px; }

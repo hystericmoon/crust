@@ -26,6 +26,11 @@ Features Claude suggests. They are not work until the owner adds them to
   - A test checks that each one passes all seven contrast pairs. That fixed the mockup's "Mono", which made Primary the same colour as Text.
   - Applying a preset keeps the previous colours and fonts, so one "Undo preset" button brings them back.
   - The current preset is marked by a thicker border plus the word "Current", so the state isn't shown by colour alone.
+- **F014 click-to-colour:**
+  - The preview stays a sandboxed iframe with no scripts. A click on it is mapped back into the page and matched to the colour role that styles that spot, following the same rules as the block styles. For example, text in a Primary section maps to "Text on primary".
+  - The matching field is then focused and selected.
+  - It's a pointer shortcut only; the form stays the keyboard route.
+  - The hint text is hidden on phones, where the preview is a small strip.
 
 ## 2026-10-28 — F005 keyboard editing (Claude, reversible)
 

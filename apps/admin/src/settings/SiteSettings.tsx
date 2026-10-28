@@ -295,7 +295,19 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
         </main>
 
         <aside className={`st-aside${previewOpen ? "" : " is-collapsed"}`} aria-label="Live preview">
-          <Preview site={previewSite} page={page} open={previewOpen} onToggle={() => setPreviewOpen((o) => !o)} />
+          <Preview
+            site={previewSite}
+            page={page}
+            open={previewOpen}
+            onToggle={() => setPreviewOpen((o) => !o)}
+            onPick={(role) => {
+              const field = document.getElementById(`color-${role}`);
+              field?.scrollIntoView({ block: "center" });
+              (field as HTMLInputElement | null)?.focus({ preventScroll: true });
+              (field as HTMLInputElement | null)?.select();
+              setStatus(`That part of the page uses ${colorRoleInfo[role].name}. Its field is selected.`);
+            }}
+          />
         </aside>
       </div>
     </div>
