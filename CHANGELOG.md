@@ -4,6 +4,16 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Rename and delete pages** from the page list. Each asks for confirmation
+  first.
+  - **Renamed pages keep working at their old address:** visitors are sent
+    to the new one once you publish.
+  - **The Home page can't be renamed or deleted.**
+- **See what isn't live yet.**
+  - The page list marks saved pages as "Not published yet" or "Edited since
+    publish".
+  - The Publish panel lists everything the next publish will change: new,
+    edited, moved and removed pages, plus Site settings.
 - The admin opens on your page list: titles, addresses and when each was
   last edited. "New page" creates a page (the address fills in from the
   title) and opens it in the builder. Page title and description are edited

@@ -5,19 +5,19 @@ to "Log".
 
 ## Current
 
-- **Milestone:** 1 (first working slice). All features F001–F014 pass their
+- **Milestone:** 1 (first working slice). All features F001–F016 pass their
   done checks.
-- **Merged to main:** F010, F002, F004, F003, F005 (PR #1).
-- **In PR #2:** F011 image URL check, F012 button alignment, F013 theme
-  presets, F014 click-to-colour, F006 save to GitHub, F007 page list,
-  F008 publish, F009 axe + Lighthouse.
+- **Merged to main:** F001–F014 (PRs #1 and #2).
+- **In this PR:** F015 rename and delete pages, F016 show what isn't
+  published yet (both owner-approved proposals).
 - **Waiting on the owner:**
   - Switch on saving and publishing: follow `docs/setup-saving.md`
     (Cloudflare Access, GitHub token, three Pages settings), then say "done".
   - Review on the preview link and set `reviewed: true`: F010, F004, F003,
-    F005, F012, F013, F014, F007, F008.
-- **Next after setup:** Claude redeploys, checks a real save and a real
-  publish, and fixes anything that shows up. Then Milestone 1 is complete.
+    F005, F012, F013, F014, F007, F008, F015, F016.
+- **Next after setup:** Claude redeploys, checks a real save, a real
+  rename and a real publish, and fixes anything that shows up. Then
+  Milestone 1 is complete.
 - **Reminder:** the Cloudflare API token expires on the date the owner set
   (recommended 2027-01-26), and the GitHub token after 90 days. Both fail
   with a clear error; make a new one and replace the secret.
@@ -27,7 +27,9 @@ to "Log".
 - Saving, the GitHub page list and publishing have only been tested
   against a fake GitHub and Access in tests; the first real run happens
   after the owner's setup.
-- No rename or delete for pages yet (proposed in DECISIONS.md).
+- Rename, delete and the "not published yet" marks have only been tested
+  against a fake GitHub. Before setup, only pages that exist just in this
+  browser can be renamed or deleted, and no marks show.
 - The admin app is now deployed but hasn't been checked by a person in a
   real browser yet; the owner's first look is the F010 review.
 
@@ -91,3 +93,14 @@ to "Log".
   routing. F008 done: publish.yml + Publish panel. F009 done: axe on every
   page and Lighthouse 95+ (sample scores 100), in CI and before publishing.
   Owner setup guide: docs/setup-saving.md.
+- 2026-10-28 — Owner approved both open proposals; added as F015 and F016.
+  F015 done: Rename/Delete buttons on each page row (not Home) with modal
+  confirmations. Renames are one GitHub commit (page file moved,
+  content/redirects.json updated). crust-publish writes `_redirects` so old
+  addresses keep working. Deletes drop redirects to the page. F016 done:
+  /api/changes compares main with the last successful publish. The list
+  shows "Not published yet" / "Edited since publish", and the Publish panel
+  lists what's waiting (moved pages read as "moved to …"). Checked in
+  Chromium at 1280 and 390: keyboard flow, focus on open/close, no
+  overflow, axe clean with the dialog open, no console errors. 20 new JS
+  tests, 6 new Rust tests; both done checks pass.
