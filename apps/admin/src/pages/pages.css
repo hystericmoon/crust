@@ -1,0 +1,42 @@
+/* Page list, new page form and publish panel. Builds on the .st admin
+   variables from settings.css. */
+.pg { display: grid; gap: 16px; max-width: 960px; margin: 0 auto; padding: 24px; }
+.st-link-button { display: inline-flex; align-items: center; text-decoration: none; }
+
+.pg-table { width: 100%; border-collapse: collapse; }
+.pg-table th, .pg-table td { padding: 12px 8px; border-top: 1px solid var(--st-divider); text-align: left; vertical-align: top; }
+.pg-table thead th { border-top: 0; color: var(--st-muted); font-size: 0.875rem; font-weight: 500; }
+.pg-table tbody th { font-weight: 600; }
+.pg-table tbody th a { display: inline-flex; align-items: center; min-height: 24px; color: var(--st-text); text-underline-offset: 0.2em; }
+.pg-path { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.9375rem; overflow-wrap: anywhere; }
+.pg-badge {
+  display: inline-block; margin-left: 8px; padding: 2px 8px;
+  border: 1px solid var(--st-border); border-radius: 999px;
+  font-size: 0.75rem; font-weight: 500; color: var(--st-text); vertical-align: 1px;
+}
+
+.pg-form { display: grid; gap: 16px; }
+.pg-field { display: grid; gap: 4px; }
+.pg-field .st-help, .pg-field .st-error { margin: 0; }
+.pg-field .st-input { width: 100%; max-width: 32rem; }
+.pg-address { display: flex; align-items: center; gap: 4px; max-width: 32rem; }
+.pg-prefix { font-family: ui-monospace, Menlo, Consolas, monospace; color: var(--st-muted); }
+.pg-textarea { min-height: 88px; padding: 10px 12px; resize: vertical; }
+.pg-form-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.pg-run { margin: 0 0 12px; }
+.pg-run.is-ok strong { color: var(--st-ok); }
+.pg-run.is-error strong { color: var(--st-danger); }
+.st-status-inline:empty { display: none; }
+.st-status-inline { margin: 12px 0 0; }
+.st-button[aria-disabled="true"] { opacity: 0.7; cursor: progress; }
+
+.crust-loading { margin: 0; padding: 24px; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+
+@media (max-width: 640px) {
+  .pg { padding: 16px; }
+  .pg-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .pg-table tr { display: grid; padding: 12px 0; border-top: 1px solid var(--st-divider); }
+  .pg-table th, .pg-table td { display: block; padding: 2px 0; border: 0; }
+  .pg-table td::before { content: attr(data-label) ": "; color: var(--st-muted); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+}

@@ -78,7 +78,7 @@
       "description": "Admin page list (title, URL, last edited), create page with title and URL slug validation, open page in the builder.",
       "depends_on": ["F006"],
       "done_check": "npm test -- pages && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

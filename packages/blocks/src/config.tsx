@@ -85,6 +85,12 @@ export const config: Config<Components> = {
   // Gives the editor canvas the published page's base styles (font, colours),
   // so the preview matches. The renderer writes its own <body class="cr-page">.
   root: {
+    // Page title and description are edited here; the admin moves them to the
+    // top of the page file on save (content contract), so the renderer ignores them.
+    fields: {
+      title: { type: "text", label: "Page title" },
+      description: { type: "textarea", label: "Description (shown in search results)" },
+    },
     render: ({ children }) => <div className="cr-page">{children}</div>,
   },
   categories: {
