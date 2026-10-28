@@ -6,19 +6,19 @@ to "Log".
 ## Current
 
 - **Milestone:** 1 (first working slice)
-- **Done:** F001 Project skeleton
-- **In progress:** F010 Preview deploy (owner-added). Workflow built and
-  linted; waiting on the Cloudflare secrets for the first real deploy.
-- **Next:** F002 Output validation, once F010 passes.
-- **Waiting on the owner:** Cloudflare API token + Account ID as GitHub
-  secrets (see BLOCKED.md).
-- **For the owner to test:** the preview link, once the first deploy runs.
+- **Done:** F001 Project skeleton, F010 Preview deploy (awaiting owner review)
+- **In progress:** F002 Output validation
+- **Waiting on the owner:** review the F010 preview link; merge PR #1 so
+  `main` gets the stable production preview.
+- **For the owner to test:** https://claude-f010-github-actions-d.crust-admin.pages.dev
+- **Reminder:** the Cloudflare API token expires on the date the owner set
+  (recommended 2027-01-26). Deploys fail with a clear error when it does;
+  make a new token and replace the `CLOUDFLARE_API_TOKEN` secret.
 
 ## Known gaps
 
-- The admin app builds, but hasn't been opened in a real browser yet (no
-  browser in the cloud session). First browser check happens once Cloudflare
-  gives it a preview link.
+- The admin app is now deployed but hasn't been checked by a person in a
+  real browser yet; the owner's first look is the F010 review.
 - Button block has no alignment option, so it sits left in centred sections.
   Candidate for F004.
 
@@ -36,3 +36,7 @@ to "Log".
   in the job summary, and checks the page actually loads. Skips the deploy
   cleanly while secrets are missing. CI now lints workflows (actionlint).
   8 new tests. Not marked passing until a real deploy is green.
+- 2026-10-28 — F010 passes: owner added the Cloudflare secrets; first real
+  deploy (run 40722349309) created the `crust-admin` Pages project,
+  deployed, loaded the page, and posted the link on PR #1. CI (incl.
+  actionlint) and `npm run build` green.

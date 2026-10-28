@@ -18,7 +18,7 @@
       "description": "GitHub Actions deploys the admin build (apps/admin/dist) to Cloudflare Pages with wrangler (direct upload) on every push to any branch; main is the production preview. The preview URL is posted as a PR comment and in the job summary. Added by the owner because the Cloudflare GitHub-app connection loops on his phone.",
       "depends_on": ["F001"],
       "done_check": "npm run lint:workflows && npm run build, plus a green 'Preview deploy' run on GitHub that deployed and loaded the preview (needs the Cloudflare secrets)",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
