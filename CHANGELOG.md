@@ -4,6 +4,8 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- Site settings has five ready-made presets (Crust, Ink, Forest, Sunset,
+  Mono) for colours and fonts, with one-step undo.
 - Buttons can be aligned left, centre or right, so they line up under
   centred headings.
 - Publishing also stops when an Image block has no image URL, instead of

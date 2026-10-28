@@ -20,6 +20,12 @@ Features Claude suggests. They are not work until the owner adds them to
   left-aligned, exactly as before. The button now sits in a
   `div.cr-button-row`, so alignment works like Heading and Text. The sample
   hero button is centred to match its heading.
+- **F013 presets:**
+  - Five presets: Crust (the current default), Ink, Forest, Sunset and Mono.
+  - They change colours and fonts only; spacing, corners and width stay as you set them.
+  - A test checks that each one passes all seven contrast pairs. That fixed the mockup's "Mono", which made Primary the same colour as Text.
+  - Applying a preset keeps the previous colours and fonts, so one "Undo preset" button brings them back.
+  - The current preset is marked by a thicker border plus the word "Current", so the state isn't shown by colour alone.
 
 ## 2026-10-28 — F005 keyboard editing (Claude, reversible)
 

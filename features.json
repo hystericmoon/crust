@@ -128,7 +128,7 @@
       "description": "Start from a ready-made palette and fonts in Site settings. Applying a preset changes all colours and fonts at once and can be undone in one step; presets are checked for AA contrast. Added by the owner (approved Claude's proposal, 2026-10-28).",
       "depends_on": ["F003"],
       "done_check": "npm test -- presets settings && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
