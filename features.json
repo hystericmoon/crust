@@ -38,7 +38,7 @@
       "description": "Admin screen to edit colours, fonts, spacing scale, radius and max width, with live preview and a contrast warning (WCAG AA) for text/background and primary/onPrimary pairs.",
       "depends_on": ["F001"],
       "done_check": "npm test -- tokens settings && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

@@ -7,11 +7,10 @@ to "Log".
 
 - **Milestone:** 1 (first working slice)
 - **Done:** F001, F010 Preview deploy, F002 Output validation, F004 Columns
-  and Card. F010 and F004 await owner review.
-- **Next:** F005 Keyboard-accessible editing (depends on F004).
-- **Waiting on the owner:** pick a Site settings direction (F003, see
-  BLOCKED.md); review F010 and F004 on the preview link; merge PR #1 so
-  `main` gets the stable production preview.
+  and Card, F003 Site settings. F010, F004 and F003 await owner review.
+- **Next:** F005 Keyboard-accessible editing.
+- **Waiting on the owner:** review F010, F004 and F003 on the preview link;
+  merge PR #1 so `main` gets the stable production preview.
 - **For the owner to test:** https://claude-f010-github-actions-d.crust-admin.pages.dev
 - **Reminder:** the Cloudflare API token expires on the date the owner set
   (recommended 2027-01-26). Deploys fail with a clear error when it does;
@@ -58,3 +57,14 @@ to "Log".
   editor canvas uses page base styles. Checked in a headless browser at
   1280/768/375 and in the builder (no console errors). 15 new tests;
   done_check passes. Owner to review on the preview link.
+- 2026-10-28 — F003 unblocked: owner chose direction A + B's contrast panel
+  after an Impeccable critique (scores A 27, B 25, C 22 out of 40). Handoff
+  spec in docs/f003-site-settings.md.
+- 2026-10-28 — F003 done: Site settings screen (#/settings) with colours,
+  7-pair contrast checks with one-click fixes, curated font stacks,
+  spacing, radius, page width, and a live Home page preview from the
+  publish renderer (desktop/tablet/mobile; collapsible strip on phones).
+  Saved in the browser until F006. Checked in a headless browser at 1440
+  and 390 (no overflow, no console errors, tab order, the fix flow, saved
+  tokens reach the builder). Impeccable detector clean. 27 new tests;
+  done_check passes.

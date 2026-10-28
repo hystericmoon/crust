@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "@puckeditor/core/puck.css";
 import "@crust/blocks/styles.css";
+import "./settings/settings.css";
 import { App } from "./App";
 
 const root = document.getElementById("root");

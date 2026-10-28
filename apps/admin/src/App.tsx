@@ -1,8 +1,10 @@
-import { config, tokensToCss, type Page, type Site } from "@crust/blocks";
+import { config, tokensToCss, type Page, type Site, type SiteTokens } from "@crust/blocks";
 import { Puck, type Data } from "@puckeditor/core";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import siteJson from "../../../content/site.json";
 import samplePage from "../../../content/pages/index.json";
+import { SiteSettings } from "./settings/SiteSettings";
+import { loadSavedTokens, saveTokens } from "./tokens-store";
 
 const site = siteJson as Site;
 const DRAFT_KEY = "crust:draft:index";
@@ -35,9 +37,48 @@ function useTokenStyles(css: string) {
   }, [css]);
 }
 
+type Route = "builder" | "settings";
+const routeFromHash = (): Route => (location.hash.startsWith("#/settings") ? "settings" : "builder");
+
+function useRoute(): Route {
+  const [route, setRoute] = useState(routeFromHash);
+  useEffect(() => {
+    const onChange = () => setRoute(routeFromHash());
+    window.addEventListener("hashchange", onChange);
+    return () => window.removeEventListener("hashchange", onChange);
+  }, []);
+  return route;
+}
+
 export function App() {
-  useTokenStyles(tokensToCss(site.tokens));
+  const route = useRoute();
+  const [saved, setSaved] = useState<SiteTokens>(() => loadSavedTokens(site.tokens));
+  const [draft, setDraft] = useState<SiteTokens>(saved);
   const [status, setStatus] = useState<string>("");
+  // The builder shows unsaved token edits too, so switching screens loses nothing.
+  useTokenStyles(useMemo(() => tokensToCss(draft), [draft]));
+
+  useEffect(() => {
+    document.title = route === "settings" ? "Site settings · Crust" : "Crust builder";
+  }, [route]);
+
+  if (route === "settings") {
+    return (
+      <SiteSettings
+        site={site}
+        page={{ ...(samplePage as Page), puck: loadDraft() }}
+        saved={saved}
+        draft={draft}
+        onChange={setDraft}
+        onSave={(tokens) => {
+          if (!saveTokens(tokens)) return false;
+          setSaved(tokens);
+          return true;
+        }}
+        onDiscard={() => setDraft(saved)}
+      />
+    );
+  }
 
   return (
     <>
@@ -46,6 +87,16 @@ export function App() {
         data={loadDraft()}
         viewports={viewports}
         headerTitle={site.name}
+        overrides={{
+          headerActions: ({ children }) => (
+            <>
+              <a className="crust-header-link" href="#/settings">
+                Site settings
+              </a>
+              {children}
+            </>
+          ),
+        }}
         onPublish={(data) => {
           try {
             localStorage.setItem(DRAFT_KEY, JSON.stringify(data));

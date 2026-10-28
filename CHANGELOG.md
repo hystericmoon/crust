@@ -4,6 +4,10 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- Site settings: set the site's colours, fonts, spacing, corner radius and
+  page width in one place, with a live preview of your Home page. A
+  contrast check flags colour pairs that are hard to read and offers a
+  one-click fix. Open it from "Site settings" in the builder's top bar.
 - New blocks: Columns (2, 3 or 4; they stack on phones and show 2 on
   tablets) and Card (image, title, text and a link).
 - The builder canvas now uses your body font, so the preview matches the
