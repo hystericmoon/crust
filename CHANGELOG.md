@@ -4,6 +4,14 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- The admin opens on your page list: titles, addresses and when each was
+  last edited. "New page" creates a page (the address fills in from the
+  title) and opens it in the builder. Page title and description are edited
+  in the builder's page panel.
+- "Publish site" (on the page list) puts your saved pages live and shows
+  progress. It switches on together with saving to GitHub.
+- Every published page is checked for accessibility (axe) before it goes
+  live, and the sample page for speed (Lighthouse).
 - Save draft and Site settings → Save now save to GitHub once it's switched
   on, with a clear message about where your work went. Until then they keep
   saving in your browser.

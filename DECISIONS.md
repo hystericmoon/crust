@@ -10,6 +10,36 @@ Features Claude suggests. They are not work until the owner adds them to
 
 - *(The four proposals so far were approved by the owner on 2026-10-28 and
   are now F011–F014 in `features.json`.)*
+- **Rename and delete pages.** Change a page's address (with a redirect from
+  the old one) or delete it, from the page list, with a confirmation.
+- **Show what's not published yet.** Mark pages saved since the last
+  publish in the page list, so it's clear what "Publish site" will change.
+
+## 2026-10-28 — F007–F009 (Claude, reversible)
+
+**F007 page list**
+- **The admin now opens on Pages** (`#/`). The builder is `#/edit?path=/about`, and Site settings is `#/settings`.
+- **Where a page loads from:** a draft in this browser, then GitHub (once switched on), then the copy bundled with the app. The list marks pages that have changes only in this browser.
+- **Every edit is kept in the browser** as you go. Save draft sends the page to GitHub.
+- **New page form:**
+  - The address follows the title until you edit it ("About Us & Team" → `about-us-and-team`).
+  - Messages are plain-language and appear under each field. Focus moves to the first problem.
+  - New pages start with a Section holding an H1, so they pass the publish checks.
+- **Title and description** are edited as Puck page fields ("Page title", "Description (shown in search results)"). They're moved back to the top of the page file on save, so the content contract is unchanged.
+- **Not yet:** renaming a page's address and deleting pages. Proposed below.
+
+**F008 publishing**
+- **`publish.yml` only runs when started:** from the admin's "Publish site" button through `/api/publish`, or by hand on GitHub. Nothing goes live on push. Spec: "nothing goes live until I publish."
+- **The site deploys to its own Pages project, `crust-site`.** The workflow creates the project on first run, using the same Cloudflare token as the admin preview.
+- **The site address comes from `site.json`'s `baseUrl`** once it's a real address. While it's still the example placeholder, the Pages address is used. Sitemap and robots.txt use the same address.
+- **Order of checks:** crust-publish checks (F002/F011) and the axe check (F009) run before deploying, so a page with a serious problem never goes live. After deploying, the workflow checks the live sitemap.
+- **The Publish panel** shows the latest run in plain words ("Publishing…", "Live.", "Failed. Nothing changed on the live site."). While a run is going it refreshes every 10 seconds and links to the details on GitHub.
+
+**F009 checks**
+- **axe:** WCAG 2.2 A/AA plus best practices, on every published page at 1280 and 375 px. "Serious" or "critical" issues fail; minor ones are listed but don't block.
+- **Lighthouse:** run on the Home page; performance must be 95 or more. The sample scores 100 / 100 / 100 (performance, accessibility, SEO) and 96 for best practices.
+- **New CI job `site-checks`.** The publish workflow also runs axe before deploying.
+- **Licence note for the owner:** `axe-core` is MPL-2.0, not one of the listed MIT/Apache/BSD/ISC licences. The feature names axe explicitly, and it's a dev-only checking tool that never ships with the site or admin, so I used it. If you'd rather not, the fallback is Lighthouse's own accessibility audit (Apache-2.0, built on the same axe rules). `lighthouse`, `chrome-launcher` and `playwright-core` are Apache-2.0.
 
 ## 2026-10-28 — F006 Save to GitHub (Claude, reversible)
 

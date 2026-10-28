@@ -5,28 +5,31 @@ to "Log".
 
 ## Current
 
-- **Milestone:** 1 (first working slice)
-- **Done:** F001, F010 Preview deploy, F002 Output validation, F004 Columns
-  and Card, F003 Site settings, F005 Keyboard editing. F010, F004, F003 and
-  F005 await owner review.
-- **Next:** F006 Save to GitHub. It needs the owner: a fine-grained GitHub
-  token stored as a Cloudflare secret, and Cloudflare Access in front of the
-  admin.
-- **Waiting on the owner:** review F010, F004, F003 and F005 on the preview
-  link; merge PR #1 so `main` gets the stable production preview.
-- **For the owner to test:** https://claude-f010-github-actions-d.crust-admin.pages.dev
+- **Milestone:** 1 (first working slice). All features F001–F014 pass their
+  done checks.
+- **Merged to main:** F010, F002, F004, F003, F005 (PR #1).
+- **In PR #2:** F011 image URL check, F012 button alignment, F013 theme
+  presets, F014 click-to-colour, F006 save to GitHub, F007 page list,
+  F008 publish, F009 axe + Lighthouse.
+- **Waiting on the owner:**
+  - Switch on saving and publishing: follow `docs/setup-saving.md`
+    (Cloudflare Access, GitHub token, three Pages settings), then say "done".
+  - Review on the preview link and set `reviewed: true`: F010, F004, F003,
+    F005, F012, F013, F014, F007, F008.
+- **Next after setup:** Claude redeploys, checks a real save and a real
+  publish, and fixes anything that shows up. Then Milestone 1 is complete.
 - **Reminder:** the Cloudflare API token expires on the date the owner set
-  (recommended 2027-01-26). Deploys fail with a clear error when it does;
-  make a new token and replace the `CLOUDFLARE_API_TOKEN` secret.
+  (recommended 2027-01-26), and the GitHub token after 90 days. Both fail
+  with a clear error; make a new one and replace the secret.
 
 ## Known gaps
 
-- An Image block with no URL publishes its placeholder text. Proposed fix
-  in DECISIONS.md.
+- Saving, the GitHub page list and publishing have only been tested
+  against a fake GitHub and Access in tests; the first real run happens
+  after the owner's setup.
+- No rename or delete for pages yet (proposed in DECISIONS.md).
 - The admin app is now deployed but hasn't been checked by a person in a
   real browser yet; the owner's first look is the F010 review.
-- Button block has no alignment option, so it sits left in centred sections.
-  Not part of F004's description; needs the owner's go-ahead.
 
 ## Log
 
@@ -76,3 +79,15 @@ to "Log".
   span-based Publish replaced by a real "Save draft" button. Checked in a
   headless browser: every shortcut, focus return, undo, no console errors.
   22 new tests; done_check passes.
+- 2026-10-28 — PR #1 merged (owner approved). Owner approved Claude's
+  proposals as F011–F014 and asked to finish everything overnight.
+- 2026-10-28 — F011 (image URL check), F012 (button alignment), F013
+  (presets with undo, all AA-checked), F014 (click preview to jump to a
+  colour) done.
+- 2026-10-28 — F006 done: /api/save etc. as Cloudflare Pages Functions,
+  refusing until Access + token are configured, verifying the Access JWT,
+  blocking cross-site requests, re-validating content. Deploy now ships
+  functions. F007 done: page list, new page, per-page browser drafts,
+  routing. F008 done: publish.yml + Publish panel. F009 done: axe on every
+  page and Lighthouse 95+ (sample scores 100), in CI and before publishing.
+  Owner setup guide: docs/setup-saving.md.
