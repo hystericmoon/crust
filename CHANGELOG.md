@@ -4,6 +4,9 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **"Open live site" now opens your real site,** at the address the last
+  publish went live at, which is also shown under the button. Before the
+  first publish, the panel says the link will appear there.
 - **Rename and delete pages** from the page list. Each asks for confirmation
   first.
   - **Renamed pages keep working at their old address:** visitors are sent

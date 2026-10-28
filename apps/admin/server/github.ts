@@ -203,6 +203,7 @@ export async function commitFiles(
 }
 
 export interface PublishedRun {
+  id: number;
   /** The commit that went live. */
   sha: string;
   createdAt: string;
@@ -217,9 +218,9 @@ export async function lastSuccessfulRun(cfg: GitHubConfig, workflow: string, fet
   );
   if (res.status === 404) return null;
   if (!res.ok) throw new GitHubError(explain(res.status), res.status);
-  const body = (await res.json()) as { workflow_runs: { head_sha: string; created_at: string; html_url: string }[] };
+  const body = (await res.json()) as { workflow_runs: { id: number; head_sha: string; created_at: string; html_url: string }[] };
   const run = body.workflow_runs[0];
-  return run ? { sha: run.head_sha, createdAt: run.created_at, url: run.html_url } : null;
+  return run ? { id: run.id, sha: run.head_sha, createdAt: run.created_at, url: run.html_url } : null;
 }
 
 export interface ChangedFile {
@@ -245,4 +246,21 @@ export async function changedFiles(cfg: GitHubConfig, since: string, fetchFn: ty
     } else out.push({ path: f.filename, status: "modified" });
   }
   return out;
+}
+
+/** The publish workflow's last step is named "Live at <address>" (F017). */
+const LIVE_STEP = /^Live at (https:\/\/[a-z0-9.-]+(?::\d+)?(?:\/\S*)?)$/i;
+
+/** The address a run published the site at, read from its step names; null if none. */
+export async function liveAddress(cfg: GitHubConfig, runId: number, fetchFn: typeof fetch = fetch): Promise<string | null> {
+  const res = await fetchFn(`${api}/repos/${cfg.repo}/actions/runs/${runId}/jobs?per_page=10`, { headers: headers(cfg.token) });
+  if (!res.ok) return null;
+  const body = (await res.json()) as { jobs?: { steps?: { name: string; conclusion: string | null }[] }[] };
+  for (const job of body.jobs ?? []) {
+    for (const step of job.steps ?? []) {
+      const m = LIVE_STEP.exec(step.name);
+      if (m && step.conclusion === "success") return m[1]!;
+    }
+  }
+  return null;
 }

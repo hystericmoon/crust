@@ -56,7 +56,8 @@ export interface PublishRun {
   url: string;
 }
 export const startPublish = () => call("/api/publish", post({}));
-export const publishRuns = () => call<{ runs: PublishRun[] }>("/api/publish");
+/** liveUrl: where the last successful publish put the site (F017); null before the first. */
+export const publishRuns = () => call<{ runs: PublishRun[]; liveUrl?: string | null }>("/api/publish");
 
 export const renamePage = (from: string, to: string) => call<{ page: Page; commit: string; url: string }>("/api/rename", post({ from, to }));
 export const deletePage = (path: string) => call<{ commit: string; url: string }>("/api/delete", post({ path }));

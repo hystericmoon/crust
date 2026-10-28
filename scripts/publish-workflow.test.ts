@@ -33,6 +33,10 @@ describe("publish workflow (F008)", () => {
 
   it("checks the live site and keeps secrets out of scripts", () => {
     expect(step("Check the live site").run).toContain("sitemap.xml");
+    // F017: the admin finds the live address in this step's name.
+    const names = steps.map((s) => s.name).filter(Boolean);
+    expect(names).toContain("Live at ${{ steps.site.outputs.url }}");
+    expect(names.indexOf("Check the live site")).toBeLessThan(names.indexOf("Live at ${{ steps.site.outputs.url }}"));
     for (const s of steps) expect(s.run ?? "").not.toMatch(/\$\{\{/);
     expect(wf.permissions).toEqual({ contents: "read" });
   });

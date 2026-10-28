@@ -28,6 +28,7 @@ import {
   lastCommitDate,
   lastSuccessfulRun,
   latestRuns,
+  liveAddress,
   listFolder,
   putFile,
   readFile,
@@ -207,7 +208,10 @@ export async function handlePublish(request: Request, env: Env, fetchFn: typeof 
       await dispatchWorkflow(cfg, PUBLISH_WORKFLOW, fetchFn);
       return json(202, { ok: true });
     }
-    return json(200, { ok: true, runs: await latestRuns(cfg, PUBLISH_WORKFLOW, fetchFn) });
+    const [runs, last] = await Promise.all([latestRuns(cfg, PUBLISH_WORKFLOW, fetchFn), lastSuccessfulRun(cfg, PUBLISH_WORKFLOW, fetchFn)]);
+    // Where the site is live (F017): null until the first successful publish.
+    const liveUrl = last ? await liveAddress(cfg, last.id, fetchFn) : null;
+    return json(200, { ok: true, runs, liveUrl });
   } catch (e) {
     return githubFailure(e);
   }

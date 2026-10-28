@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { publishRuns, startPublish, type PendingChanges, type PublishRun } from "../api-client";
 import { describeChanges } from "./changes";
+import { chooseLiveUrl } from "./live-url";
 
 export interface PublishPanelProps {
   /** Publishing runs on GitHub, so it needs the GitHub connection. */
   githubOn: boolean;
-  liveUrl: string;
+  /** site.json's baseUrl; may still be the example placeholder. */
+  siteUrl: string;
   /** What the next publish changes (F016); null while unknown. */
   changes?: PendingChanges | null;
   /** Page titles by address, to name pages in the list of changes. */
@@ -26,10 +28,11 @@ export function describeRun(run: PublishRun | undefined): { label: string; tone:
 const formatDate = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
-export function PublishPanel({ githubOn, liveUrl, changes = null, titles = new Map(), onFinished }: PublishPanelProps) {
+export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new Map(), onFinished }: PublishPanelProps) {
   const [runs, setRuns] = useState<PublishRun[] | null>(null);
   const [message, setMessage] = useState("");
   const [starting, setStarting] = useState(false);
+  const [reportedUrl, setReportedUrl] = useState<string | null>(null);
   // The run seen in progress, so its finish can refresh what's waiting.
   const watching = useRef<number | null>(null);
   const finished = useRef(onFinished);
@@ -39,6 +42,7 @@ export function PublishPanel({ githubOn, liveUrl, changes = null, titles = new M
     const res = await publishRuns();
     if (!res.ok) return;
     setRuns(res.runs);
+    if (res.liveUrl !== undefined) setReportedUrl(res.liveUrl);
     const latest = res.runs[0];
     if (latest && latest.status !== "completed") watching.current = latest.id;
     else if (latest && watching.current === latest.id) {
@@ -80,6 +84,7 @@ export function PublishPanel({ githubOn, liveUrl, changes = null, titles = new M
 
   const state = describeRun(latest);
   const pending = changes ? describeChanges(changes, titles) : null;
+  const liveUrl = chooseLiveUrl(reportedUrl, siteUrl);
 
   return (
     <section className="st-card pg-publish" aria-labelledby="publish-h">
@@ -118,10 +123,19 @@ export function PublishPanel({ githubOn, liveUrl, changes = null, titles = new M
             <button type="button" className="st-button st-button-primary" onClick={publish} aria-disabled={busy || undefined}>
               {busy ? "Publishing…" : "Publish site"}
             </button>
-            <a className="st-button st-link-button" href={liveUrl} target="_blank" rel="noreferrer">
-              Open live site
-            </a>
+            {liveUrl ? (
+              <a className="st-button st-link-button" href={liveUrl} target="_blank" rel="noreferrer">
+                Open live site<span className="pg-sr"> (opens in a new tab)</span>
+              </a>
+            ) : null}
           </div>
+          {liveUrl ? (
+            <p className="st-help pg-live-url">
+              Live at <span className="pg-path">{liveUrl.replace(/^https?:\/\//, "")}</span>
+            </p>
+          ) : runs !== null ? (
+            <p className="st-help pg-live-url">The link to your live site appears here after your first publish.</p>
+          ) : null}
           <p className="st-status-inline" role="status">
             {message}
           </p>

@@ -76,3 +76,4 @@
 .pg-pending p { margin: 0; }
 .pg-pending ul { margin: 4px 0 0; padding-left: 20px; }
 .pg-pending li { margin: 2px 0; overflow-wrap: anywhere; }
+.pg-live-url { margin: 12px 0 0; }

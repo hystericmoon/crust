@@ -225,7 +225,7 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
     >
       <PublishPanel
         githubOn={githubOn === true}
-        liveUrl={site.baseUrl}
+        siteUrl={site.baseUrl}
         changes={changes}
         titles={new Map((rows ?? []).map((r) => [r.path, r.title]))}
         onFinished={reload}

@@ -10,7 +10,21 @@ Features Claude suggests. They are not work until the owner adds them to
 
 - *(All proposals so far were approved by the owner on 2026-10-28: the
   first four are F011–F014, "rename and delete pages" is F015 and "show
-  what's not published yet" is F016 in `features.json`.)*
+  what's not published yet" is F016. Claude's next four recommendations
+  were approved the same day as F017–F020.)*
+
+## 2026-10-28 — F017 live site link (Claude, reversible)
+
+- **The bug:** "Open live site" pointed at `site.json`'s `baseUrl`, which is still the placeholder `https://example.pages.dev`. The publish workflow already ignores the placeholder and uses the Cloudflare Pages address, which can get a random suffix if `crust-site` is taken. So the admin couldn't know the real address.
+- **The fix:** `publish.yml` ends with a step whose *name* is `Live at <address>`. `GET /api/publish` reads the last successful run's job steps and returns `liveUrl`.
+  - Why a step name: it needs only the Actions read permission the GitHub token already has. Deployments or Checks permissions would have meant changing the owner's token steps.
+  - Checked with a temporary CI step on PR #4 that GitHub reports the evaluated name ("Live at https://…") through the jobs API.
+- **Accepted addresses:** only `https://` addresses from a step that succeeded.
+- **The order the admin uses:**
+  1. the address the last publish reported
+  2. `site.json`'s `baseUrl`, if it's a real address
+  3. nothing: the panel says the link appears after the first publish
+- **Not done:** editing the site name and address in Site settings. Custom domains are outside Milestone 1, and the address now comes from the publish itself.
 
 ## 2026-10-28 — F015 rename/delete and F016 unpublished changes (owner-approved proposals; details Claude, reversible)
 

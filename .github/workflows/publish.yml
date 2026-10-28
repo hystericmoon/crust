@@ -118,6 +118,13 @@ jobs:
           echo "::error::$URL did not serve the new site within 3 minutes."
           exit 1
 
+      # F017: the admin reads the live address from this step's name
+      # (Actions read permission only), so keep the "Live at " prefix.
+      - name: Live at ${{ steps.site.outputs.url }}
+        run: echo "Live at $URL"
+        env:
+          URL: ${{ steps.site.outputs.url }}
+
       - name: Write job summary
         env:
           URL: ${{ steps.site.outputs.url }}

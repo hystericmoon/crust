@@ -46,7 +46,9 @@ let gitCommits: Map<string, { message: string; tree: string; parents: string[] }
 let multiCommits: { message: string; paths: string[] }[];
 let raceOnUpdate: boolean;
 // Publish history (F016)
-let successRuns: { head_sha: string; created_at: string; html_url: string }[];
+let successRuns: { id?: number; head_sha: string; created_at: string; html_url: string }[];
+let runJobs: { steps: { name: string; conclusion: string | null }[] }[];
+let jobsAsked: string[];
 let compareBase: string | null;
 let compareFiles: { filename: string; status: string; previous_filename?: string }[];
 
@@ -116,6 +118,10 @@ const fakeFetch: typeof fetch = async (input, init) => {
     dispatched.push(url.pathname);
     return new Response(null, { status: 204 });
   }
+  if (url.pathname.endsWith("/jobs")) {
+    jobsAsked.push(url.pathname);
+    return respond(200, { jobs: runJobs });
+  }
   if (url.pathname.endsWith("/runs") && url.searchParams.get("status") === "success") {
     return respond(200, { workflow_runs: successRuns });
   }
@@ -166,6 +172,8 @@ beforeEach(() => {
   multiCommits = [];
   raceOnUpdate = false;
   successRuns = [];
+  runJobs = [];
+  jobsAsked = [];
   compareBase = null;
   compareFiles = [];
   clearAccessKeyCache();
@@ -503,5 +511,38 @@ describe("save-api: changes since the last publish (F016)", () => {
   it("needs a sign-in", async () => {
     const res = await handleChanges(await get("/api/changes"), env, fakeFetch);
     expect(res.status).toBe(401);
+  });
+});
+
+// --- F017: where the site is live -----------------------------------------------
+
+describe("save-api: live address (F017)", () => {
+  const steps = (...names: [string, string | null][]) => [{ steps: names.map(([name, conclusion]) => ({ name, conclusion })) }];
+
+  it("reads it from the last successful publish's \"Live at\" step", async () => {
+    successRuns = [{ id: 42, head_sha: "s", created_at: "2026-10-28T09:00:00Z", html_url: "https://x/run/42" }];
+    runJobs = steps(["Deploy to Cloudflare Pages", "success"], ["Live at https://crust-site-3x9.pages.dev", "success"]);
+    const res = await handlePublish(await get("/api/publish", await token()), env, fakeFetch);
+    expect((await res.json()).liveUrl).toBe("https://crust-site-3x9.pages.dev");
+    expect(jobsAsked).toEqual(["/repos/hystericmoon/crust/actions/runs/42/jobs"]);
+  });
+
+  it("is null before the first publish, or when the step is missing, skipped or odd", async () => {
+    let res = await handlePublish(await get("/api/publish", await token()), env, fakeFetch);
+    expect((await res.json()).liveUrl).toBeNull();
+    expect(jobsAsked).toEqual([]);
+
+    successRuns = [{ id: 42, head_sha: "s", created_at: "2026-10-28T09:00:00Z", html_url: "https://x/run/42" }];
+    for (const jobs of [
+      steps(["Deploy to Cloudflare Pages", "success"]),
+      steps(["Live at https://crust-site.pages.dev", "skipped"]),
+      steps(["Live at javascript:alert(1)", "success"]),
+      steps(["Live at http://crust-site.pages.dev", "success"]),
+      steps(["Live at https://a.dev <script>", "success"]),
+    ]) {
+      runJobs = jobs;
+      res = await handlePublish(await get("/api/publish", await token()), env, fakeFetch);
+      expect((await res.json()).liveUrl).toBeNull();
+    }
   });
 });
