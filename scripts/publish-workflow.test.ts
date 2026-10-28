@@ -22,6 +22,7 @@ describe("publish workflow (F008)", () => {
     expect(names.indexOf("Accessibility check (stops the publish on serious issues)")).toBeLessThan(names.indexOf("Deploy to Cloudflare Pages"));
     expect(step("Render pages").run).toBe("npm run render");
     expect(step("Check and finish the site (crust-publish)").run).toContain("crust-publish -- dist/site");
+    expect(step("Check and finish the site (crust-publish)").run).toContain("--redirects content/redirects.json");
     expect(step("Deploy to Cloudflare Pages").run).toContain("pages deploy dist/site");
   });
 

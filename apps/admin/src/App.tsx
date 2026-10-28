@@ -2,7 +2,17 @@ import { config, tokensToCss, type Page, type Site, type SiteTokens } from "@cru
 import { Puck, useGetPuck, type Data } from "@puckeditor/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import siteJson from "../../../content/site.json";
-import { getPage, getStatus, listPages, saveContent, type ApiResult } from "./api-client";
+import {
+  deletePage,
+  getChanges,
+  getPage,
+  getStatus,
+  listPages,
+  renamePage,
+  saveContent,
+  type ApiResult,
+  type PendingChanges,
+} from "./api-client";
 import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot, openKeyboardHelp } from "./keyboard/KeyboardEditing";
 import { PageList, editHref } from "./pages/PageList";
 import {
@@ -11,10 +21,13 @@ import {
   getLocalDraft,
   localDrafts,
   mergePageRows,
+  moveLocalDraft,
+  removeLocalDraft,
   saveLocalDraft,
   toPuckData,
   type PageRow,
 } from "./pages/store";
+import { markUnpublished } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
 import { SiteSettings } from "./settings/SiteSettings";
 import { loadSavedTokens, saveTokens } from "./tokens-store";
@@ -147,6 +160,10 @@ function Loading() {
 function Pages({ githubOn }: { githubOn: boolean | null }) {
   const [rows, setRows] = useState<PageRow[] | null>(null);
   const [error, setError] = useState<string>();
+  const [changes, setChanges] = useState<PendingChanges | null>(null);
+  // Bumped after a rename, delete or publish to load the list again.
+  const [version, setVersion] = useState(0);
+  const reload = () => setVersion((v) => v + 1);
 
   useEffect(() => {
     if (githubOn === null) return;
@@ -156,33 +173,64 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
       return;
     }
     void listPages().then((res) => {
-      if (res.ok) setRows(mergePageRows(res.pages, localDrafts()));
-      else {
+      if (res.ok) {
+        setError(undefined);
+        setRows(mergePageRows(res.pages, localDrafts()));
+      } else {
         setError(`Couldn't load pages from GitHub: ${res.error} Showing the pages in this browser instead.`);
         setRows(mergePageRows(bundled, localDrafts()));
       }
     });
-  }, [githubOn]);
+    // If this fails, pages just aren't marked; the list itself still works.
+    void getChanges().then((res) => setChanges(res.ok ? res : null));
+  }, [githubOn, version]);
+
+  // Rename and delete (F015): through GitHub for pages there, in this browser otherwise.
+  const rename = async (row: PageRow, to: string): Promise<string | null> => {
+    if (row.inRepo) {
+      const res = await renamePage(row.path, to);
+      if (!res.ok) return `Not renamed: ${res.error}`;
+    }
+    if (!moveLocalDraft(row.path, to)) return "This browser wouldn't store the change. Try again.";
+    reload();
+    return null;
+  };
+  const remove = async (row: PageRow): Promise<string | null> => {
+    if (row.inRepo) {
+      const res = await deletePage(row.path);
+      if (!res.ok) return `Not deleted: ${res.error}`;
+    }
+    removeLocalDraft(row.path);
+    reload();
+    return null;
+  };
 
   return (
-    <>
-      <PageList
-        siteName={site.name}
-        rows={rows}
-        loadError={error}
-        sourceNote={
-          githubOn
-            ? "Your pages on GitHub. Pages with changes saved only in this browser are marked."
-            : "Saving to GitHub isn't switched on yet, so this lists the pages built into the app plus drafts saved in this browser."
-        }
-        onCreate={(page) => {
-          saveLocalDraft(page, false);
-          location.hash = editHref(page.path);
-        }}
-      >
-        <PublishPanel githubOn={githubOn === true} liveUrl={site.baseUrl} />
-      </PageList>
-    </>
+    <PageList
+      siteName={site.name}
+      rows={rows && markUnpublished(rows, changes)}
+      loadError={error}
+      sourceNote={
+        githubOn
+          ? "Your pages on GitHub. Pages with changes saved only in this browser are marked, and so are saved pages that aren't live yet."
+          : "Saving to GitHub isn't switched on yet, so this lists the pages built into the app plus drafts saved in this browser. Renaming and deleting those pages switches on with it."
+      }
+      githubOn={githubOn === true}
+      onRename={rename}
+      onDelete={remove}
+      onCreate={(page) => {
+        saveLocalDraft(page, false);
+        location.hash = editHref(page.path);
+      }}
+    >
+      <PublishPanel
+        githubOn={githubOn === true}
+        liveUrl={site.baseUrl}
+        changes={changes}
+        titles={new Map((rows ?? []).map((r) => [r.path, r.title]))}
+        onFinished={reload}
+      />
+    </PageList>
   );
 }
 

@@ -4,6 +4,7 @@
 //! static site: validation, `sitemap.xml`, `robots.txt`, and (in later
 //! features) image optimisation and the search index.
 
+pub mod redirects;
 pub mod validate;
 
 use anyhow::{Context, Result, bail};
@@ -11,12 +12,17 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
+pub use redirects::{Redirect, load_redirects, plan_redirects};
 pub use validate::{Issue, validate_page};
 
 /// What a publish run produced, for the summary printed to the log.
 #[derive(Debug, PartialEq, Eq)]
 pub struct Report {
     pub pages: Vec<String>,
+    /// Old addresses that now redirect to a renamed page.
+    pub redirects: Vec<String>,
+    /// Old addresses left alone because a page lives there again.
+    pub skipped_redirects: Vec<String>,
 }
 
 /// Checks the site's public address and removes any trailing slash.
@@ -119,6 +125,11 @@ pub fn robots_txt(base_url: &str) -> String {
 
 /// Runs the full publish step on a rendered site folder.
 pub fn publish(site_dir: &Path, base_url: &str) -> Result<Report> {
+    publish_with_redirects(site_dir, base_url, &[])
+}
+
+/// Like [`publish`], also writing `_redirects` for renamed pages (F015).
+pub fn publish_with_redirects(site_dir: &Path, base_url: &str, redirects: &[Redirect]) -> Result<Report> {
     let base_url = normalize_base_url(base_url)?;
     let pages = page_paths(site_dir)?;
     if pages.is_empty() {
@@ -128,10 +139,14 @@ pub fn publish(site_dir: &Path, base_url: &str) -> Result<Report> {
     if !issues.is_empty() {
         bail!(issues_message(&issues));
     }
+    let plan = plan_redirects(redirects, &pages)?;
     fs::write(site_dir.join("sitemap.xml"), sitemap_xml(&base_url, &pages))
         .context("Couldn't write sitemap.xml")?;
     fs::write(site_dir.join("robots.txt"), robots_txt(&base_url)).context("Couldn't write robots.txt")?;
-    Ok(Report { pages })
+    if !plan.file.is_empty() {
+        fs::write(site_dir.join("_redirects"), &plan.file).context("Couldn't write _redirects")?;
+    }
+    Ok(Report { pages, redirects: plan.active, skipped_redirects: plan.skipped })
 }
 
 #[cfg(test)]

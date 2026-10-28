@@ -141,6 +141,26 @@
       "passes": true,
       "needs_review": true,
       "reviewed": false
+    },
+    {
+      "id": "F015",
+      "title": "Rename and delete pages",
+      "description": "From the page list, change a page's address or delete it, each with a confirmation step. A renamed page keeps working at its old address: visitors are sent to the new one (Cloudflare Pages _redirects, from content/redirects.json). The Home page can't be renamed or deleted. Keyboard and screen-reader friendly. Added by the owner (approved Claude's proposal, 2026-10-28).",
+      "depends_on": ["F006", "F007"],
+      "done_check": "npm test -- page-actions save-api && cargo test -p crust-publish && npm run build",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F016",
+      "title": "Show what is not published yet",
+      "description": "The page list marks pages saved to GitHub since the last successful publish (new or edited), and the Publish panel lists everything waiting to go live, including removed pages and Site settings. Added by the owner (approved Claude's proposal, 2026-10-28).",
+      "depends_on": ["F007", "F008"],
+      "done_check": "npm test -- changes save-api && npm run build",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
     }
   ]
 }

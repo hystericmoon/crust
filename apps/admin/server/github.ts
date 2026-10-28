@@ -151,3 +151,98 @@ export async function latestRuns(cfg: GitHubConfig, workflow: string, fetchFn: t
   };
   return body.workflow_runs.map((r) => ({ id: r.id, status: r.status, conclusion: r.conclusion, createdAt: r.created_at, url: r.html_url }));
 }
+
+/** One file in a multi-file commit: new text, or null to delete it. */
+export interface FileChange {
+  path: string;
+  content: string | null;
+}
+
+/**
+ * Commits several file changes at once (F015: a rename moves the page file
+ * and updates redirects.json in one step, so history never shows half of it).
+ * Uses the Git data API: new tree on top of the branch head, then a commit,
+ * then a fast-forward of the branch.
+ */
+export async function commitFiles(
+  cfg: GitHubConfig,
+  changes: FileChange[],
+  message: string,
+  fetchFn: typeof fetch = fetch,
+): Promise<{ commit: string; url: string }> {
+  const repo = `${api}/repos/${cfg.repo}/git`;
+  const send = async <T>(url: string, method: string, body?: unknown): Promise<T> => {
+    const res = await fetchFn(url, {
+      method,
+      headers: { ...headers(cfg.token), ...(body ? { "Content-Type": "application/json" } : {}) },
+      ...(body ? { body: JSON.stringify(body) } : {}),
+    });
+    // A branch update that isn't a fast-forward means someone saved in between.
+    if (res.status === 422 && method === "PATCH") throw new GitHubError(explain(409), 409);
+    if (!res.ok) throw new GitHubError(explain(res.status), res.status);
+    return (await res.json()) as T;
+  };
+
+  const ref = await send<{ object: { sha: string } }>(`${repo}/ref/heads/${encodePath(cfg.branch)}`, "GET");
+  const head = await send<{ tree: { sha: string } }>(`${repo}/commits/${ref.object.sha}`, "GET");
+  const tree = await send<{ sha: string }>(`${repo}/trees`, "POST", {
+    base_tree: head.tree.sha,
+    tree: changes.map((c) =>
+      c.content === null
+        ? { path: c.path, mode: "100644", type: "blob", sha: null }
+        : { path: c.path, mode: "100644", type: "blob", content: c.content },
+    ),
+  });
+  const commit = await send<{ sha: string; html_url: string }>(`${repo}/commits`, "POST", {
+    message,
+    tree: tree.sha,
+    parents: [ref.object.sha],
+  });
+  await send(`${repo}/refs/heads/${encodePath(cfg.branch)}`, "PATCH", { sha: commit.sha, force: false });
+  return { commit: commit.sha, url: commit.html_url };
+}
+
+export interface PublishedRun {
+  /** The commit that went live. */
+  sha: string;
+  createdAt: string;
+  url: string;
+}
+
+/** The latest successful run of a workflow, or null if it never succeeded (F016). */
+export async function lastSuccessfulRun(cfg: GitHubConfig, workflow: string, fetchFn: typeof fetch = fetch): Promise<PublishedRun | null> {
+  const res = await fetchFn(
+    `${api}/repos/${cfg.repo}/actions/workflows/${encodeURIComponent(workflow)}/runs?branch=${encodeURIComponent(cfg.branch)}&status=success&per_page=1`,
+    { headers: headers(cfg.token) },
+  );
+  if (res.status === 404) return null;
+  if (!res.ok) throw new GitHubError(explain(res.status), res.status);
+  const body = (await res.json()) as { workflow_runs: { head_sha: string; created_at: string; html_url: string }[] };
+  const run = body.workflow_runs[0];
+  return run ? { sha: run.head_sha, createdAt: run.created_at, url: run.html_url } : null;
+}
+
+export interface ChangedFile {
+  path: string;
+  status: "added" | "modified" | "removed";
+}
+
+/** Files that differ between a commit and the branch head (F016). Renames count as removed + added. */
+export async function changedFiles(cfg: GitHubConfig, since: string, fetchFn: typeof fetch = fetch): Promise<ChangedFile[]> {
+  const res = await fetchFn(
+    `${api}/repos/${cfg.repo}/compare/${encodeURIComponent(since)}...${encodeURIComponent(cfg.branch)}`,
+    { headers: headers(cfg.token) },
+  );
+  if (!res.ok) throw new GitHubError(explain(res.status), res.status);
+  const body = (await res.json()) as { files?: { filename: string; status: string; previous_filename?: string }[] };
+  const out: ChangedFile[] = [];
+  for (const f of body.files ?? []) {
+    if (f.status === "removed") out.push({ path: f.filename, status: "removed" });
+    else if (f.status === "added" || f.status === "copied") out.push({ path: f.filename, status: "added" });
+    else if (f.status === "renamed") {
+      if (f.previous_filename) out.push({ path: f.previous_filename, status: "removed" });
+      out.push({ path: f.filename, status: "added" });
+    } else out.push({ path: f.filename, status: "modified" });
+  }
+  return out;
+}

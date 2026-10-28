@@ -1,4 +1,4 @@
-use crust_publish::{Report, page_paths, publish, validate_site};
+use crust_publish::{Redirect, Report, page_paths, publish, publish_with_redirects, validate_site};
 use std::fs;
 use std::path::Path;
 
@@ -26,7 +26,11 @@ fn publish_writes_sitemap_and_robots() {
     let report = publish(dir.path(), "https://demo.pages.dev/").unwrap();
     assert_eq!(
         report,
-        Report { pages: vec!["/".into(), "/about/".into(), "/blog/first-post/".into()] }
+        Report {
+            pages: vec!["/".into(), "/about/".into(), "/blog/first-post/".into()],
+            redirects: vec![],
+            skipped_redirects: vec![],
+        }
     );
 
     let sitemap = fs::read_to_string(dir.path().join("sitemap.xml")).unwrap();
@@ -76,4 +80,27 @@ fn validate_message_is_singular_for_one_problem() {
     let err = publish(dir.path(), "https://demo.pages.dev").unwrap_err().to_string();
     assert!(err.starts_with("Nothing was published. Fix this problem on 1 page and publish again:"), "{err}");
     assert!(err.contains("Page /: The page title is empty"), "{err}");
+}
+
+#[test]
+fn publish_writes_redirects_for_renamed_pages() {
+    let dir = tempfile::tempdir().unwrap();
+    write(dir.path(), "index.html", &page("Home", "<h1>Home</h1>"));
+    write(dir.path(), "about-us/index.html", &page("About", "<h1>About</h1>"));
+    let redirects = vec![Redirect { from: "/about".into(), to: "/about-us".into() }];
+
+    let report = publish_with_redirects(dir.path(), "https://demo.pages.dev", &redirects).unwrap();
+    assert_eq!(report.redirects, vec!["/about"]);
+    let file = fs::read_to_string(dir.path().join("_redirects")).unwrap();
+    assert_eq!(file, "/about /about-us/ 301\n/about/ /about-us/ 301\n");
+    // The sitemap only lists real pages.
+    assert!(!fs::read_to_string(dir.path().join("sitemap.xml")).unwrap().contains("/about/<"));
+}
+
+#[test]
+fn no_redirects_means_no_redirects_file() {
+    let dir = tempfile::tempdir().unwrap();
+    write(dir.path(), "index.html", &page("Home", "<h1>Home</h1>"));
+    publish(dir.path(), "https://demo.pages.dev").unwrap();
+    assert!(!dir.path().join("_redirects").exists());
 }

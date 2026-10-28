@@ -82,6 +82,12 @@ scripts/               init.sh and other helpers
 
 `puck` is Puck's own `Data` shape: a block tree, never raw HTML.
 
+`content/redirects.json` (optional, added with F015)
+```json
+[{ "from": "/old-address", "to": "/new-address" }]
+```
+Written when a page is renamed; published as Cloudflare Pages `_redirects`.
+
 ## Milestone 1 — first working slice
 
 Prove the full loop: build a page in the browser, publish it, see it live.

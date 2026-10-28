@@ -57,3 +57,17 @@ export interface PublishRun {
 }
 export const startPublish = () => call("/api/publish", post({}));
 export const publishRuns = () => call<{ runs: PublishRun[] }>("/api/publish");
+
+export const renamePage = (from: string, to: string) => call<{ page: Page; commit: string; url: string }>("/api/rename", post({ from, to }));
+export const deletePage = (path: string) => call<{ commit: string; url: string }>("/api/delete", post({ path }));
+
+/** What the next publish will change (F016). Same shape as server/api.ts PendingChanges. */
+export interface PendingChanges {
+  lastPublish: { at: string; url: string } | null;
+  pages: { path: string; change: "new" | "edited" }[];
+  removed: string[];
+  moved: { from: string; to: string }[];
+  site: boolean;
+  redirects: boolean;
+}
+export const getChanges = () => call<PendingChanges>("/api/changes");

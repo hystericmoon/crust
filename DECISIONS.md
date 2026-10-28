@@ -8,12 +8,58 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
-- *(The four proposals so far were approved by the owner on 2026-10-28 and
-  are now F011–F014 in `features.json`.)*
-- **Rename and delete pages.** Change a page's address (with a redirect from
-  the old one) or delete it, from the page list, with a confirmation.
-- **Show what's not published yet.** Mark pages saved since the last
-  publish in the page list, so it's clear what "Publish site" will change.
+- *(All proposals so far were approved by the owner on 2026-10-28: the
+  first four are F011–F014, "rename and delete pages" is F015 and "show
+  what's not published yet" is F016 in `features.json`.)*
+
+## 2026-10-28 — F015 rename/delete and F016 unpublished changes (owner-approved proposals; details Claude, reversible)
+
+**Content contract: new optional file `content/redirects.json`** (F015)
+- **Shape:** a list of `{ "from": "/old", "to": "/new" }`. Typed as `Redirect` in `packages/blocks/src/content.ts`, and added to `docs/spec.md`.
+- **No migration needed.** The file is optional: a missing file means no redirects. Page and site JSON are unchanged.
+- **Why a separate file, not a field in `site.json`:** Site settings saves the whole `site.json`, so a field there could be wiped by a settings save.
+
+**Renaming**
+- **One commit.** The server moves the page file, sets its new `path`, and updates `redirects.json` in a single commit through GitHub's Git data API. History never shows half a rename. It fails safely ("someone else changed this…") if the branch moved in between.
+- **The old address always redirects (301) to the new one.** No checkbox: it's always safe, and it costs nothing.
+- **No chains:** earlier redirects to the old address follow it to the new one.
+- **The page wins:** if a page is later created at an old address, that redirect is skipped at publish (the log says so).
+- **Home (`/`) can't be renamed or deleted.** Every site needs one.
+- **Links inside other pages** (Button URLs) aren't rewritten. The redirect covers them.
+- **Browser drafts move with the page,** so unsaved edits aren't lost.
+
+**Deleting**
+- **The page file is removed in one commit,** along with any redirects that pointed to it. Otherwise the publish check would stop on a redirect to nowhere.
+- **No redirect for deleted pages:** links to them stop working, and the confirmation says so.
+- **The page can be brought back** from Git history.
+
+**Publishing redirects**
+- **`crust-publish --redirects content/redirects.json`** writes Cloudflare Pages' `_redirects` file. Each old address is listed with and without a trailing slash.
+- **Checks before writing:** a redirect to an address with no page stops the publish with a plain message.
+- **New Rust dependency:** `serde`/`serde_json` (MIT OR Apache-2.0; pulls in `zmij`, MIT).
+
+**Page list and dialogs**
+- **Rename and Delete are visible text buttons on each row,** not hidden in a "⋯" menu. Two actions don't need a menu, and visible buttons are easier to find and to reach by keyboard.
+- **Screen-reader names include the page:** "Rename About". This meets WCAG 2.5.3 (label in name).
+- **Confirmation is a native modal `<dialog>`:** the browser traps focus inside and Esc closes it.
+  - **Rename** starts with focus in the address field and explains the redirect.
+  - **Delete** starts on "Keep page", the safe choice for destructive confirmations, and states the consequence (removed from GitHub now, from the live site at the next publish).
+- **After a change,** focus goes to the "Pages" heading (the row may be gone) and the result is announced.
+- **Before GitHub is switched on,** only pages that exist just in this browser can be renamed or deleted. The page-list note says the rest switches on with saving.
+
+**F016: what isn't live yet**
+- **"Live" means the commit of the last *successful* publish run.** The server compares it with the branch (one GitHub compare call) and reports:
+  - new and edited pages
+  - removed pages
+  - pages moved by a rename, shown as "moved to /new" rather than "removed"
+  - Site settings
+  - redirects
+- **Before the first publish,** every page counts as new.
+- **Page list badges:** "Not published yet" and "Edited since publish".
+  - Dashed outline, so they read as "pending" next to the solid "Draft in this browser" badge.
+  - The words carry the meaning, not the style.
+- **The Publish panel** lists what's waiting above the button, and refreshes by itself when a publish it watched finishes.
+- **Publish stays enabled** even when nothing is waiting, so you can always re-publish (for example, after a failed run).
 
 ## 2026-10-28 — F007–F009 (Claude, reversible)
 
