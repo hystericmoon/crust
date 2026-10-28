@@ -11,6 +11,28 @@ Features Claude suggests. They are not work until the owner adds them to
 - *(The four proposals so far were approved by the owner on 2026-10-28 and
   are now F011–F014 in `features.json`.)*
 
+## 2026-10-28 — F006 Save to GitHub (Claude, reversible)
+
+**Built so it's safe before the owner's setup steps.** Every API endpoint:
+- refuses with "not switched on yet" until Cloudflare Access and the GitHub token are configured;
+- requires a valid Cloudflare Access sign-in (RS256 JWT checked against the team's keys, audience, issuer and expiry);
+- refuses requests from other sites, by requiring a custom header (which forces a CORS preflight), JSON, and a matching Origin.
+
+So even though the preview link is public today, the endpoint can't be used to write to the repo.
+
+Other choices:
+- **Content is checked again on the server**: page address, title, description, block data present, Site settings tokens via `validateTokens`, a 512 KB limit. The browser isn't trusted.
+- **One commit per save** to `main` through the GitHub contents API, with a readable message ("Save page /about ("About us") from the builder") and the signed-in email. Git history is the undo history (spec). This is the product's designed content path; the "main only through PRs" rule is about code changes.
+- **Page files:** `/` → `content/pages/index.json`, `/blog/first` → `content/pages/blog__first.json` (underscores can't appear in addresses).
+- **Every save is also kept in the browser.** The message says plainly where it went: "Page saved to GitHub. Visitors see it after you publish." / "saved in this browser. Saving to GitHub isn't switched on yet." / a GitHub error in plain words plus "A copy is safe in this browser."
+- **Server code lives in `apps/admin/server`**, with thin route files in `apps/admin/functions/api`. It imports only `@crust/blocks/tokens` and `/content`, so React and Puck stay out of the Worker (35 KB bundle).
+- **The deploy now runs from `apps/admin`** so the functions ship with the site. The preview check also calls `/api/status`.
+- **Settings the owner adds in Cloudflare Pages** (Settings → Variables and secrets):
+  - `GITHUB_TOKEN` (secret)
+  - `ACCESS_TEAM_DOMAIN`
+  - `ACCESS_AUD`
+  - optional: `GITHUB_REPO` (default `hystericmoon/crust`) and `CONTENT_BRANCH` (default `main`)
+
 ## 2026-10-28 — F011–F014 (owner-approved proposals)
 
 - **F011:** the publish check looks for the Image block's placeholder

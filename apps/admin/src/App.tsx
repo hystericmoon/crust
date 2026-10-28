@@ -5,6 +5,7 @@ import siteJson from "../../../content/site.json";
 import samplePage from "../../../content/pages/index.json";
 import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot, openKeyboardHelp } from "./keyboard/KeyboardEditing";
 import { SiteSettings } from "./settings/SiteSettings";
+import { saveContent, type ApiResult } from "./api-client";
 import { loadSavedTokens, saveTokens } from "./tokens-store";
 
 const site = siteJson as Site;
@@ -51,6 +52,14 @@ function SaveDraftButton({ onSave }: { onSave: (data: Data) => void }) {
   );
 }
 
+/** What to tell the owner after a save: GitHub first, the browser copy as the safety net. */
+export function saveMessage(result: ApiResult<unknown>, savedLocally: boolean, what: string): string {
+  if (result.ok) return `${what} saved to GitHub. Visitors see it after you publish.`;
+  const local = savedLocally ? " A copy is safe in this browser." : "";
+  if (result.notConfigured) return `${what} saved in this browser. Saving to GitHub isn't switched on yet.`;
+  return `${what} not saved to GitHub: ${result.error}${local}`;
+}
+
 type Route = "builder" | "settings";
 const routeFromHash = (): Route => (location.hash.startsWith("#/settings") ? "settings" : "builder");
 
@@ -69,6 +78,12 @@ export function App() {
   const [saved, setSaved] = useState<SiteTokens>(() => loadSavedTokens(site.tokens));
   const [draft, setDraft] = useState<SiteTokens>(saved);
   const [status, setStatus] = useState<string>("");
+  // Let the toast go after a while; screen readers have already heard it.
+  useEffect(() => {
+    if (!status || status === "Saving…") return;
+    const t = setTimeout(() => setStatus(""), 10_000);
+    return () => clearTimeout(t);
+  }, [status]);
   // The builder shows unsaved token edits too, so switching screens loses nothing.
   useTokenStyles(useMemo(() => tokensToCss(draft), [draft]));
 
@@ -76,13 +91,16 @@ export function App() {
     document.title = route === "settings" ? "Site settings · Crust" : "Crust builder";
   }, [route]);
 
-  const saveDraft = (data: Data) => {
+  const saveDraft = async (data: Data) => {
+    let local = true;
     try {
       localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
-      setStatus("Draft saved in this browser. Saving to GitHub comes in a later step.");
     } catch {
-      setStatus("Couldn't save the draft in this browser.");
+      local = false;
     }
+    setStatus("Saving…");
+    const result = await saveContent({ kind: "page", page: { ...(samplePage as Page), puck: data } });
+    setStatus(saveMessage(result, local, "Page"));
   };
 
   if (route === "settings") {
@@ -93,10 +111,12 @@ export function App() {
         saved={saved}
         draft={draft}
         onChange={setDraft}
-        onSave={(tokens) => {
-          if (!saveTokens(tokens)) return false;
-          setSaved(tokens);
-          return true;
+        onSave={async (tokens) => {
+          const local = saveTokens(tokens);
+          if (local) setSaved(tokens);
+          const result = await saveContent({ kind: "site", site: { ...site, tokens } });
+          if (result.ok) setSaved(tokens);
+          return saveMessage(result, local, "Site settings");
         }}
         onDiscard={() => setDraft(saved)}
       />

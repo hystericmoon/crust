@@ -4,6 +4,9 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- Save draft and Site settings → Save now save to GitHub once it's switched
+  on, with a clear message about where your work went. Until then they keep
+  saving in your browser.
 - In Site settings, click any part of the preview to jump straight to the
   colour that styles it.
 - Site settings has five ready-made presets (Crust, Ink, Forest, Sunset,

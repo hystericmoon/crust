@@ -23,7 +23,10 @@ describe("preview deploy workflow (F010)", () => {
   it("deploys the admin build with main as the production branch", () => {
     expect(preview.env.PRODUCTION_BRANCH).toBe("main");
     expect(step("Build admin").run).toBe("npm run build");
-    expect(step("Deploy to Cloudflare Pages").run).toContain("pages deploy apps/admin/dist");
+    const deploy = step("Deploy to Cloudflare Pages") as Step & { "working-directory"?: string };
+    // From apps/admin, so the server functions in apps/admin/functions deploy too.
+    expect(deploy["working-directory"]).toBe("apps/admin");
+    expect(deploy.run).toContain("pages deploy dist");
   });
 
   it("pins the wrangler version", () => {

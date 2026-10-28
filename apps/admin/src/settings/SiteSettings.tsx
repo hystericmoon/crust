@@ -33,8 +33,8 @@ export interface SiteSettingsProps {
   saved: SiteTokens;
   draft: SiteTokens;
   onChange: (tokens: SiteTokens) => void;
-  /** Persists the tokens; returns false if that failed. */
-  onSave: (tokens: SiteTokens) => boolean;
+  /** Persists the tokens; resolves to the message to show. */
+  onSave: (tokens: SiteTokens) => Promise<string>;
   onDiscard: () => void;
 }
 
@@ -75,7 +75,9 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
 
   const setColor = (role: ColorRole, value: string) => onChange({ ...draft, colors: { ...draft.colors, [role]: value } });
 
-  const save = () => {
+  const [saving, setSaving] = useState(false);
+  const save = async () => {
+    if (saving) return;
     if (invalid.size > 0) {
       setStatus(`Not saved. Fix the ${invalid.size === 1 ? "field" : `${invalid.size} fields`} marked in red first.`);
       return;
@@ -85,11 +87,13 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
       setStatus(`Not saved. ${problems.map((p) => p.message).join(" ")}`);
       return;
     }
-    setStatus(
-      onSave(draft)
-        ? "Saved in this browser. The builder uses these settings now; saving to GitHub comes in a later step."
-        : "Couldn't save in this browser. Your changes are still here.",
-    );
+    setSaving(true);
+    setStatus("Saving…");
+    try {
+      setStatus(await onSave(draft));
+    } finally {
+      setSaving(false);
+    }
   };
 
   const discard = () => {
@@ -114,8 +118,8 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
           <button type="button" className="st-button" onClick={discard} disabled={!dirty}>
             Discard
           </button>
-          <button type="button" className="st-button st-button-primary" onClick={save}>
-            Save
+          <button type="button" className="st-button st-button-primary" onClick={save} aria-disabled={saving || undefined}>
+            {saving ? "Saving…" : "Save"}
           </button>
         </div>
       </header>

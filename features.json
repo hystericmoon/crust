@@ -68,7 +68,7 @@
       "description": "Cloudflare Pages Function that commits page JSON to content/ using a fine-grained GitHub token stored as a Cloudflare secret. Admin Save button with success/error feedback.",
       "depends_on": ["F001"],
       "done_check": "npm test -- save-api && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

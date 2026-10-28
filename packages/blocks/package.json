@@ -6,6 +6,8 @@
   "main": "src/index.ts",
   "exports": {
     ".": "./src/index.ts",
+    "./tokens": "./src/tokens.ts",
+    "./content": "./src/content.ts",
     "./styles.css": "./src/styles.css"
   },
   "peerDependencies": {
