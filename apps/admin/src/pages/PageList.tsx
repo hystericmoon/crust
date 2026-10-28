@@ -1,6 +1,7 @@
 import type { Page } from "@crust/blocks";
 import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { checkNewPage, createPage, slugify, type NewPageErrors, type NewPageInput } from "./new-page";
+import { focusAfterDialog, PageActions, type PageAction } from "./PageActions";
 import type { PageRow } from "./store";
 
 export interface PageListProps {
@@ -11,6 +12,13 @@ export interface PageListProps {
   sourceNote: string;
   loadError?: string;
   onCreate: (page: Page) => void;
+  /**
+   * Rename and delete (F015). Pages on GitHub need saving to GitHub switched
+   * on (githubOn); pages only in this browser can always be changed.
+   */
+  githubOn?: boolean;
+  onRename?: (row: PageRow, to: string) => PageAction;
+  onDelete?: (row: PageRow) => PageAction;
   /** Shown below the list (the Publish panel). */
   children?: ReactNode;
 }
@@ -20,8 +28,36 @@ const formatDate = (iso: string | null) =>
 
 export const editHref = (path: string) => `#/edit?path=${encodeURIComponent(path)}`;
 
-export function PageList({ siteName, rows, sourceNote, loadError, onCreate, children }: PageListProps) {
+/** The badge for changes that aren't live yet (F016). */
+export const unpublishedLabel = { new: "Not published yet", edited: "Edited since publish" } as const;
+
+export function PageList({ siteName, rows, sourceNote, loadError, onCreate, githubOn = false, onRename, onDelete, children }: PageListProps) {
   const [creating, setCreating] = useState(false);
+  const [done, setDone] = useState("");
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  const canChange = (row: PageRow) => row.path !== "/" && (githubOn || !row.inRepo) && !!onRename && !!onDelete;
+  const anyActions = rows?.some(canChange) ?? false;
+
+  // After a change the row may be gone, so focus goes to the list heading and the result is announced.
+  const after = (action: PageAction, message: string): PageAction =>
+    action.then((failed) => {
+      if (!failed) {
+        setDone(message);
+        focusAfterDialog(() => headingRef.current);
+      }
+      return failed;
+    });
+
+  const rename = (row: PageRow, to: string) =>
+    after(
+      onRename!(row, to),
+      row.inRepo
+        ? `Changed the address of “${row.title}” to ${to}. Once you publish, ${row.path} sends visitors there.`
+        : `Changed the address of “${row.title}” to ${to}.`,
+    );
+  const remove = (row: PageRow) =>
+    after(onDelete!(row), row.inRepo ? `Deleted “${row.title}”. It leaves the live site the next time you publish.` : `Deleted “${row.title}”.`);
   return (
     <div className="st">
       <header className="st-header">
@@ -48,13 +84,18 @@ export function PageList({ siteName, rows, sourceNote, loadError, onCreate, chil
         ) : null}
 
         <section className="st-card" aria-labelledby="pages-h">
-          <h2 id="pages-h">Pages</h2>
+          <h2 id="pages-h" ref={headingRef} tabIndex={-1}>
+            Pages
+          </h2>
           <p className="st-lede">{sourceNote}</p>
           {loadError ? (
             <p className="st-error" role="alert">
               {loadError}
             </p>
           ) : null}
+          <p className="st-status-inline" role="status">
+            {done}
+          </p>
           {rows === null ? (
             <p role="status">Loading pages…</p>
           ) : rows.length === 0 ? (
@@ -66,6 +107,11 @@ export function PageList({ siteName, rows, sourceNote, loadError, onCreate, chil
                   <th scope="col">Title</th>
                   <th scope="col">Address</th>
                   <th scope="col">Last edited</th>
+                  {anyActions ? (
+                    <th scope="col">
+                      <span className="pg-sr">Actions</span>
+                    </th>
+                  ) : null}
                 </tr>
               </thead>
               <tbody>
@@ -74,11 +120,24 @@ export function PageList({ siteName, rows, sourceNote, loadError, onCreate, chil
                     <th scope="row">
                       <a href={editHref(row.path)}>{row.title}</a>
                       {row.localChanges ? <span className="pg-badge">Draft in this browser</span> : null}
+                      {row.unpublished ? <span className="pg-badge is-pending">{unpublishedLabel[row.unpublished]}</span> : null}
                     </th>
                     <td className="pg-path" data-label="Address">
                       {row.path}
                     </td>
                     <td data-label="Last edited">{formatDate(row.lastEdited)}</td>
+                    {anyActions ? (
+                      <td className="pg-actions-cell">
+                        {canChange(row) ? (
+                          <PageActions
+                            row={row}
+                            otherPaths={rows.filter((r) => r.path !== row.path).map((r) => r.path)}
+                            onRename={rename}
+                            onDelete={remove}
+                          />
+                        ) : null}
+                      </td>
+                    ) : null}
                   </tr>
                 ))}
               </tbody>

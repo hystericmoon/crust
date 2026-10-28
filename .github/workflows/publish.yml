@@ -1,8 +1,9 @@
 # F008: publish the site. Runs only when started (the admin's "Publish site"
 # button, or by hand), so nothing goes live by accident.
 # Renders content/ to static HTML, runs crust-publish (checks, sitemap,
-# robots.txt), and deploys dist/site to the Cloudflare Pages project
-# "crust-site". Uses the same Cloudflare secrets as the admin preview.
+# robots.txt, _redirects for renamed pages), and deploys dist/site to the
+# Cloudflare Pages project "crust-site". Uses the same Cloudflare secrets
+# as the admin preview.
 name: Publish site
 
 on:
@@ -87,7 +88,7 @@ jobs:
       - name: Check and finish the site (crust-publish)
         env:
           BASE_URL: ${{ steps.site.outputs.url }}
-        run: cargo run -q -p crust-publish -- dist/site --base-url "$BASE_URL"
+        run: cargo run -q -p crust-publish -- dist/site --base-url "$BASE_URL" --redirects content/redirects.json
 
       - name: Install Chromium for the accessibility check
         run: npx playwright-core install --with-deps chromium

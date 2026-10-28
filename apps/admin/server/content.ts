@@ -1,6 +1,6 @@
 /** Server-side checks on content before it's committed (never trust the browser). */
 // Deep imports keep React and Puck out of the server bundle.
-import type { Page, Site } from "@crust/blocks/content";
+import type { Page, Redirect, Site } from "@crust/blocks/content";
 import { validateTokens } from "@crust/blocks/tokens";
 
 const SEGMENT = /^[a-z0-9][a-z0-9-]*$/;
@@ -19,6 +19,46 @@ export function pageFileFor(path: string): string {
   const clean = path.replace(/^\/+|\/+$/g, "");
   return `content/pages/${clean === "" ? "index" : clean.split("/").join("__")}.json`;
 }
+
+/** The reverse of pageFileFor; null for files that aren't page files. */
+export function pagePathForFile(file: string): string | null {
+  const m = file.match(/^content\/pages\/([^/]+)\.json$/);
+  if (!m) return null;
+  const path = m[1] === "index" ? "/" : `/${m[1]!.split("__").join("/")}`;
+  return isValidPagePath(path) ? path : null;
+}
+
+export const REDIRECTS_FILE = "content/redirects.json";
+
+/** Reads redirects.json text; anything unreadable counts as no redirects. */
+export function parseRedirects(text: string | null): Redirect[] {
+  if (!text) return [];
+  try {
+    const list = JSON.parse(text) as unknown;
+    if (!Array.isArray(list)) return [];
+    return list.filter((r): r is Redirect => isObject(r) && isValidPagePath(r.from) && isValidPagePath(r.to));
+  } catch {
+    return [];
+  }
+}
+
+const byFrom = (a: Redirect, b: Redirect) => a.from.localeCompare(b.from);
+
+/**
+ * Redirects after renaming a page from `from` to `to`:
+ * the old address points to the new one, earlier redirects to the old
+ * address follow it (no chains), and nothing redirects away from `to`.
+ */
+export function redirectsAfterRename(list: Redirect[], from: string, to: string): Redirect[] {
+  const next = list
+    .filter((r) => r.from !== to && r.from !== from)
+    .map((r) => (r.to === from ? { ...r, to } : r))
+    .filter((r) => r.from !== r.to);
+  return [...next, { from, to }].sort(byFrom);
+}
+
+/** Redirects after deleting the page at `path`: none may point to it any more. */
+export const redirectsAfterDelete = (list: Redirect[], path: string): Redirect[] => list.filter((r) => r.to !== path).sort(byFrom);
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
 
@@ -53,4 +93,4 @@ export function checkSite(site: unknown): string[] {
 }
 
 /** The file text we commit: stable formatting, trailing newline. */
-export const serialize = (value: Page | Site) => `${JSON.stringify(value, null, 2)}\n`;
+export const serialize = (value: Page | Site | Redirect[]) => `${JSON.stringify(value, null, 2)}\n`;

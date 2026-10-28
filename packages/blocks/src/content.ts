@@ -16,3 +16,12 @@ export interface Page {
   description: string;
   puck: Data;
 }
+
+/**
+ * content/redirects.json (optional; added with F015). An old page address
+ * that sends visitors to a page's new address. A page at `from` wins.
+ */
+export interface Redirect {
+  from: string;
+  to: string;
+}

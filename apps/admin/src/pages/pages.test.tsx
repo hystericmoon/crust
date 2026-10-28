@@ -77,9 +77,9 @@ describe("pages: where pages come from", () => {
       [{ page: about, updatedAt: "2026-10-28T10:00:00Z", savedToGitHub: false }],
     );
     expect(rows).toEqual([
-      { path: "/", title: "Home", lastEdited: null, localChanges: false },
-      { path: "/about", title: "About (new)", lastEdited: "2026-10-28T10:00:00Z", localChanges: true },
-      { path: "/contact", title: "Contact", lastEdited: "2026-10-26T10:00:00Z", localChanges: false },
+      { path: "/", title: "Home", lastEdited: null, localChanges: false, inRepo: true },
+      { path: "/about", title: "About (new)", lastEdited: "2026-10-28T10:00:00Z", localChanges: true, inRepo: true },
+      { path: "/contact", title: "Contact", lastEdited: "2026-10-26T10:00:00Z", localChanges: false, inRepo: true },
     ]);
   });
 
@@ -106,8 +106,8 @@ describe("pages: routes", () => {
 
 describe("pages: list screen", () => {
   const rows = [
-    { path: "/", title: "Home", lastEdited: "2026-10-28T10:00:00Z", localChanges: false },
-    { path: "/about", title: "About", lastEdited: null, localChanges: true },
+    { path: "/", title: "Home", lastEdited: "2026-10-28T10:00:00Z", localChanges: false, inRepo: true },
+    { path: "/about", title: "About", lastEdited: null, localChanges: true, inRepo: false },
   ];
 
   it("lists title, address and last edited, with links to the builder", () => {
@@ -122,7 +122,7 @@ describe("pages: list screen", () => {
 
   it("shows loading and empty states", () => {
     const { rerender } = render(<PageList siteName="Demo" rows={null} sourceNote="" onCreate={() => {}} />);
-    expect(screen.getByRole("status").textContent).toBe("Loading pages…");
+    expect(screen.getByText("Loading pages…").getAttribute("role")).toBe("status");
     rerender(<PageList siteName="Demo" rows={[]} sourceNote="" onCreate={() => {}} />);
     expect(screen.getByText(/No pages yet/)).toBeTruthy();
   });

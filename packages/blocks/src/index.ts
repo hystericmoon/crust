@@ -16,6 +16,6 @@ export type { ContrastPair, ContrastResult } from "./contrast";
 export { fontStacks, findFontStack } from "./fonts";
 export type { FontStack } from "./fonts";
 export { safeUrl } from "./url";
-export type { Site, Page } from "./content";
+export type { Site, Page, Redirect } from "./content";
 export { themePresets, matchingPreset, applyPreset } from "./presets";
 export type { ThemePreset } from "./presets";

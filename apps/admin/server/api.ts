@@ -6,8 +6,32 @@
  */
 import type { Page, Site } from "@crust/blocks/content";
 import { AccessError, verifyAccessJwt, type AccessUser } from "./access";
-import { checkPage, checkSite, isValidPagePath, MAX_BYTES, pageFileFor, serialize } from "./content";
-import { GitHubError, type GitHubConfig, dispatchWorkflow, lastCommitDate, latestRuns, listFolder, putFile, readFile } from "./github";
+import {
+  checkPage,
+  checkSite,
+  isValidPagePath,
+  MAX_BYTES,
+  pageFileFor,
+  pagePathForFile,
+  parseRedirects,
+  REDIRECTS_FILE,
+  redirectsAfterDelete,
+  redirectsAfterRename,
+  serialize,
+} from "./content";
+import {
+  GitHubError,
+  type GitHubConfig,
+  changedFiles,
+  commitFiles,
+  dispatchWorkflow,
+  lastCommitDate,
+  lastSuccessfulRun,
+  latestRuns,
+  listFolder,
+  putFile,
+  readFile,
+} from "./github";
 
 export interface Env {
   GITHUB_TOKEN?: string;
@@ -184,6 +208,125 @@ export async function handlePublish(request: Request, env: Env, fetchFn: typeof 
       return json(202, { ok: true });
     }
     return json(200, { ok: true, runs: await latestRuns(cfg, PUBLISH_WORKFLOW, fetchFn) });
+  } catch (e) {
+    return githubFailure(e);
+  }
+}
+
+/** POST /api/rename  { from: "/about", to: "/about-us" }  (F015) */
+export async function handleRename(request: Request, env: Env, fetchFn: typeof fetch = fetch): Promise<Response> {
+  const user = await gate(request, env, fetchFn, true);
+  if (user instanceof Response) return user;
+  const body = await readBody(request);
+  if (body instanceof Response) return body;
+  const { from, to } = (body ?? {}) as { from?: unknown; to?: unknown };
+  if (!isValidPagePath(from) || !isValidPagePath(to)) return fail(400, "The page address must look like /about (lowercase letters, numbers and dashes).");
+  if (from === "/" || to === "/") return fail(400, "The Home page always lives at /, so it can't be renamed.");
+  if (from === to) return fail(400, "That's already this page's address.");
+
+  const cfg = githubConfig(env);
+  try {
+    const [text, clash, redirectsText] = await Promise.all([
+      readFile(cfg, pageFileFor(from), fetchFn),
+      readFile(cfg, pageFileFor(to), fetchFn),
+      readFile(cfg, REDIRECTS_FILE, fetchFn),
+    ]);
+    if (text === null) return fail(404, `There's no page at ${from} on GitHub.`);
+    if (clash !== null) return fail(409, `There's already a page at ${to}.`);
+    const page = { ...(JSON.parse(text) as Page), path: to };
+    const redirects = redirectsAfterRename(parseRedirects(redirectsText), from, to);
+    const result = await commitFiles(
+      cfg,
+      [
+        { path: pageFileFor(to), content: serialize(page) },
+        { path: pageFileFor(from), content: null },
+        { path: REDIRECTS_FILE, content: serialize(redirects) },
+      ],
+      `Rename page ${from} to ${to} from the builder\n\nVisitors to ${from} are sent to ${to}.\nRenamed by ${user.email}`,
+      fetchFn,
+    );
+    return json(200, { ok: true, page, commit: result.commit, url: result.url });
+  } catch (e) {
+    return githubFailure(e);
+  }
+}
+
+/** POST /api/delete  { path: "/about" }  (F015) */
+export async function handleDelete(request: Request, env: Env, fetchFn: typeof fetch = fetch): Promise<Response> {
+  const user = await gate(request, env, fetchFn, true);
+  if (user instanceof Response) return user;
+  const body = await readBody(request);
+  if (body instanceof Response) return body;
+  const { path } = (body ?? {}) as { path?: unknown };
+  if (!isValidPagePath(path)) return fail(400, "That isn't a valid page address.");
+  if (path === "/") return fail(400, "The Home page can't be deleted. Every site needs one.");
+
+  const cfg = githubConfig(env);
+  try {
+    const [text, redirectsText] = await Promise.all([readFile(cfg, pageFileFor(path), fetchFn), readFile(cfg, REDIRECTS_FILE, fetchFn)]);
+    if (text === null) return fail(404, `There's no page at ${path} on GitHub.`);
+    const before = parseRedirects(redirectsText);
+    const after = redirectsAfterDelete(before, path);
+    const result = await commitFiles(
+      cfg,
+      [
+        { path: pageFileFor(path), content: null },
+        ...(after.length !== before.length ? [{ path: REDIRECTS_FILE, content: serialize(after) }] : []),
+      ],
+      `Delete page ${path} from the builder\n\nDeleted by ${user.email}`,
+      fetchFn,
+    );
+    return json(200, { ok: true, commit: result.commit, url: result.url });
+  } catch (e) {
+    return githubFailure(e);
+  }
+}
+
+export interface PendingChanges {
+  /** The last successful publish, or null if the site was never published. */
+  lastPublish: { at: string; url: string } | null;
+  /** Pages on GitHub that aren't live in their current form. */
+  pages: { path: string; change: "new" | "edited" }[];
+  /** Live pages that the next publish takes down. */
+  removed: string[];
+  /** Live pages whose address changed: the old one redirects to the new one (F015). */
+  moved: { from: string; to: string }[];
+  site: boolean;
+  redirects: boolean;
+}
+
+/** GET /api/changes: what the next publish will change (F016). */
+export async function handleChanges(request: Request, env: Env, fetchFn: typeof fetch = fetch): Promise<Response> {
+  const user = await gate(request, env, fetchFn, false);
+  if (user instanceof Response) return user;
+  const cfg = githubConfig(env);
+  try {
+    const last = await lastSuccessfulRun(cfg, PUBLISH_WORKFLOW, fetchFn);
+    if (!last) {
+      // Never published: every page is new.
+      const files = await listFolder(cfg, "content/pages", fetchFn);
+      const pages = files.map((f) => pagePathForFile(f.path)).filter((p): p is string => p !== null);
+      const changes: PendingChanges = { lastPublish: null, pages: pages.sort().map((path) => ({ path, change: "new" })), removed: [], moved: [], site: true, redirects: false };
+      return json(200, { ok: true, ...changes });
+    }
+    const changes: PendingChanges = { lastPublish: { at: last.createdAt, url: last.url }, pages: [], removed: [], moved: [], site: false, redirects: false };
+    for (const f of await changedFiles(cfg, last.sha, fetchFn)) {
+      if (f.path === "content/site.json") changes.site = true;
+      else if (f.path === REDIRECTS_FILE) changes.redirects = true;
+      const path = pagePathForFile(f.path);
+      if (!path) continue;
+      if (f.status === "removed") changes.removed.push(path);
+      else changes.pages.push({ path, change: f.status === "added" ? "new" : "edited" });
+    }
+    // A removed page that now redirects was renamed, not taken down.
+    if (changes.redirects && changes.removed.length) {
+      const redirects = parseRedirects(await readFile(cfg, REDIRECTS_FILE, fetchFn));
+      changes.moved = redirects.filter((r) => changes.removed.includes(r.from));
+      changes.removed = changes.removed.filter((path) => !changes.moved.some((m) => m.from === path));
+    }
+    changes.pages.sort((a, b) => a.path.localeCompare(b.path));
+    changes.removed.sort();
+    return json(200, { ok: true, ...changes });
   } catch (e) {
     return githubFailure(e);
   }

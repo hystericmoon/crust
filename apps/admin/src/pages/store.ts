@@ -22,6 +22,10 @@ export interface PageRow {
   lastEdited: string | null;
   /** Has changes in this browser that aren't on GitHub yet. */
   localChanges: boolean;
+  /** Exists on GitHub (or in the app's bundled content), not only in this browser. */
+  inRepo: boolean;
+  /** Saved to GitHub but not live yet (F016). */
+  unpublished?: "new" | "edited";
 }
 
 const PREFIX = "crust:page:";
@@ -95,6 +99,28 @@ export function saveLocalDraft(page: Page, savedToGitHub: boolean, now = new Dat
   }
 }
 
+/** Forgets the browser draft of a page (F015 delete). */
+export function removeLocalDraft(path: string) {
+  try {
+    localStorage.removeItem(PREFIX + path);
+  } catch {
+    // Storage unavailable: nothing to remove.
+  }
+}
+
+/** Moves a browser draft to a page's new address (F015 rename), keeping unsaved edits. */
+export function moveLocalDraft(from: string, to: string): boolean {
+  const draft = getLocalDraft(from);
+  if (!draft) return true;
+  try {
+    localStorage.setItem(PREFIX + to, JSON.stringify({ ...draft, page: { ...draft.page, path: to } }));
+    localStorage.removeItem(PREFIX + from);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * One row per page address. Remote pages (GitHub or bundled) are merged
  * with browser drafts; a draft not yet on GitHub is flagged.
@@ -104,7 +130,7 @@ export function mergePageRows(
   drafts: LocalDraft[],
 ): PageRow[] {
   const rows = new Map<string, PageRow>();
-  for (const r of remote) rows.set(r.path, { ...r, localChanges: false });
+  for (const r of remote) rows.set(r.path, { ...r, localChanges: false, inRepo: true });
   for (const d of drafts) {
     const existing = rows.get(d.page.path);
     const newer = !existing?.lastEdited || d.updatedAt > existing.lastEdited;
@@ -113,6 +139,7 @@ export function mergePageRows(
       title: d.page.title || existing?.title || "Untitled",
       lastEdited: newer ? d.updatedAt : existing!.lastEdited,
       localChanges: !d.savedToGitHub,
+      inRepo: existing?.inRepo ?? false,
     });
   }
   return [...rows.values()].sort((a, b) => (a.path === "/" ? -1 : b.path === "/" ? 1 : a.path.localeCompare(b.path)));

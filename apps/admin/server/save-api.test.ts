@@ -1,8 +1,8 @@
 import { defaultTokens, type Page, type Site } from "@crust/blocks";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { clearAccessKeyCache, verifyAccessJwt } from "./access";
-import { handlePage, handlePages, handlePublish, handleSave, handleStatus, type Env } from "./api";
-import { checkPage, isValidPagePath, pageFileFor } from "./content";
+import { handleChanges, handleDelete, handlePage, handlePages, handlePublish, handleRename, handleSave, handleStatus, type Env } from "./api";
+import { checkPage, isValidPagePath, pageFileFor, pagePathForFile, parseRedirects, redirectsAfterDelete, redirectsAfterRename } from "./content";
 import { fromBase64, toBase64 } from "./github";
 
 // --- A fake Cloudflare Access: real RS256 keys, tokens signed in the test ---
@@ -39,6 +39,16 @@ let commits: { path: string; message: string; branch: string }[];
 let dispatched: string[];
 let githubStatus: number | null;
 let shaCounter: number;
+// Git data API state (F015): multi-file commits land in `files` when the branch moves.
+let head: string;
+let trees: Map<string, { path: string; content?: string; sha?: null }[]>;
+let gitCommits: Map<string, { message: string; tree: string; parents: string[] }>;
+let multiCommits: { message: string; paths: string[] }[];
+let raceOnUpdate: boolean;
+// Publish history (F016)
+let successRuns: { head_sha: string; created_at: string; html_url: string }[];
+let compareBase: string | null;
+let compareFiles: { filename: string; status: string; previous_filename?: string }[];
 
 const respond = (status: number, body: unknown) => new Response(JSON.stringify(body), { status });
 
@@ -67,10 +77,47 @@ const fakeFetch: typeof fetch = async (input, init) => {
     const f = files.get(path);
     return f ? respond(200, { sha: f.sha, content: toBase64(f.content) }) : respond(404, {});
   }
+  const git = url.pathname.match(/^\/repos\/hystericmoon\/crust\/git\/(.+)$/);
+  if (git) {
+    const [what, rest] = [git[1]!.split("/")[0], git[1]!.split("/").slice(1).join("/")];
+    const body = init?.body ? JSON.parse(String(init.body)) : null;
+    if (what === "ref" && rest === "heads/main") return respond(200, { object: { sha: head } });
+    if (what === "commits" && (init?.method ?? "GET") === "GET") return respond(200, { tree: { sha: `tree-of-${rest}` } });
+    if (what === "trees" && init?.method === "POST") {
+      const sha = `tree${++shaCounter}`;
+      trees.set(sha, body.tree);
+      return respond(201, { sha });
+    }
+    if (what === "commits" && init?.method === "POST") {
+      const sha = `commit${++shaCounter}`;
+      gitCommits.set(sha, body);
+      return respond(201, { sha, html_url: `https://github.com/c/${sha}` });
+    }
+    if (what === "refs" && rest === "heads/main" && init?.method === "PATCH") {
+      const commit = gitCommits.get(body.sha)!;
+      if (raceOnUpdate || commit.parents[0] !== head || body.force) return respond(422, {});
+      for (const entry of trees.get(commit.tree)!) {
+        if (entry.sha === null) {
+          if (!files.delete(entry.path)) return respond(422, {});
+        } else files.set(entry.path, { content: entry.content!, sha: `blob${++shaCounter}` });
+      }
+      multiCommits.push({ message: commit.message, paths: trees.get(commit.tree)!.map((e) => e.path) });
+      head = body.sha;
+      return respond(200, { object: { sha: head } });
+    }
+    return respond(404, {});
+  }
+  if (url.pathname.startsWith("/repos/hystericmoon/crust/compare/")) {
+    compareBase = decodeURIComponent(url.pathname.split("/compare/")[1]!);
+    return respond(200, { files: compareFiles });
+  }
   if (url.pathname === "/repos/hystericmoon/crust/commits") return respond(200, [{ commit: { committer: { date: "2026-10-28T10:00:00Z" } } }]);
   if (url.pathname.endsWith("/dispatches")) {
     dispatched.push(url.pathname);
     return new Response(null, { status: 204 });
+  }
+  if (url.pathname.endsWith("/runs") && url.searchParams.get("status") === "success") {
+    return respond(200, { workflow_runs: successRuns });
   }
   if (url.pathname.endsWith("/runs")) {
     return respond(200, { workflow_runs: [{ id: 7, status: "completed", conclusion: "success", created_at: "2026-10-28T10:00:00Z", html_url: "https://x/7" }] });
@@ -113,6 +160,14 @@ beforeEach(() => {
   dispatched = [];
   githubStatus = null;
   shaCounter = 0;
+  head = "commit0";
+  trees = new Map();
+  gitCommits = new Map();
+  multiCommits = [];
+  raceOnUpdate = false;
+  successRuns = [];
+  compareBase = null;
+  compareFiles = [];
   clearAccessKeyCache();
 });
 
@@ -273,5 +328,180 @@ describe("save-api: page addresses", () => {
     expect(pageFileFor("/")).toBe("content/pages/index.json");
     expect(pageFileFor("/blog/first-post/")).toBe("content/pages/blog__first-post.json");
     expect(checkPage(null)).toEqual(["The page is missing."]);
+  });
+});
+
+// --- F015: rename and delete pages --------------------------------------------
+
+const pageFile = (path: string, title = "About us") => ({ content: JSON.stringify(page({ path, title })), sha: "x" });
+const redirectsIn = () => JSON.parse(files.get("content/redirects.json")?.content ?? "[]");
+
+describe("save-api: redirect rules", () => {
+  it("points the old address at the new one, without chains", () => {
+    expect(redirectsAfterRename([], "/about", "/about-us")).toEqual([{ from: "/about", to: "/about-us" }]);
+    // /team was renamed to /about earlier; renaming /about again keeps /team pointing at the live page.
+    expect(redirectsAfterRename([{ from: "/team", to: "/about" }], "/about", "/about-us")).toEqual([
+      { from: "/about", to: "/about-us" },
+      { from: "/team", to: "/about-us" },
+    ]);
+    // Renaming back to an old address: the page wins, and nothing loops.
+    expect(redirectsAfterRename([{ from: "/about", to: "/about-us" }], "/about-us", "/about")).toEqual([{ from: "/about-us", to: "/about" }]);
+  });
+
+  it("drops redirects to a deleted page and ignores damaged files", () => {
+    expect(redirectsAfterDelete([{ from: "/a", to: "/b" }, { from: "/c", to: "/d" }], "/b")).toEqual([{ from: "/c", to: "/d" }]);
+    expect(parseRedirects("{nope")).toEqual([]);
+    expect(parseRedirects(JSON.stringify([{ from: "/a", to: "/b" }, { from: "a", to: "/b" }, 3]))).toEqual([{ from: "/a", to: "/b" }]);
+    expect(parseRedirects(null)).toEqual([]);
+  });
+
+  it("maps page files back to addresses", () => {
+    expect(pagePathForFile("content/pages/index.json")).toBe("/");
+    expect(pagePathForFile("content/pages/blog__first-post.json")).toBe("/blog/first-post");
+    expect(pagePathForFile("content/site.json")).toBeNull();
+    expect(pagePathForFile("content/pages/Bad Name.json")).toBeNull();
+  });
+});
+
+describe("save-api: renaming a page (F015)", () => {
+  it("moves the page file, sets its new address and adds a redirect, in one commit", async () => {
+    files.set("content/pages/about.json", pageFile("/about"));
+    const res = await handleRename(await post("/api/rename", { from: "/about", to: "/about-us" }), env, fakeFetch);
+    expect(res.status).toBe(200);
+    expect((await res.json()).page).toMatchObject({ path: "/about-us", title: "About us" });
+    expect(files.has("content/pages/about.json")).toBe(false);
+    expect(JSON.parse(files.get("content/pages/about-us.json")!.content).path).toBe("/about-us");
+    expect(redirectsIn()).toEqual([{ from: "/about", to: "/about-us" }]);
+    expect(multiCommits).toEqual([
+      {
+        message: "Rename page /about to /about-us from the builder\n\nVisitors to /about are sent to /about-us.\nRenamed by hosni@example.com",
+        paths: ["content/pages/about-us.json", "content/pages/about.json", "content/redirects.json"],
+      },
+    ]);
+  });
+
+  it("refuses the Home page, taken addresses, missing pages and bad input", async () => {
+    files.set("content/pages/about.json", pageFile("/about"));
+    files.set("content/pages/contact.json", pageFile("/contact"));
+    const cases: [unknown, number, string][] = [
+      [{ from: "/", to: "/home" }, 400, "The Home page always lives at /, so it can't be renamed."],
+      [{ from: "/about", to: "/" }, 400, "The Home page always lives at /, so it can't be renamed."],
+      [{ from: "/about", to: "/contact" }, 409, "There's already a page at /contact."],
+      [{ from: "/nope", to: "/new" }, 404, "There's no page at /nope on GitHub."],
+      [{ from: "/about", to: "/about" }, 400, "That's already this page's address."],
+      [{ from: "/about", to: "About Us" }, 400, "The page address must look like /about (lowercase letters, numbers and dashes)."],
+    ];
+    for (const [body, status, error] of cases) {
+      const res = await handleRename(await post("/api/rename", body), env, fakeFetch);
+      expect([res.status, (await res.json()).error]).toEqual([status, error]);
+    }
+    expect(multiCommits).toEqual([]);
+  });
+
+  it("says so when someone else saved at the same moment", async () => {
+    files.set("content/pages/about.json", pageFile("/about"));
+    raceOnUpdate = true;
+    const res = await handleRename(await post("/api/rename", { from: "/about", to: "/team" }), env, fakeFetch);
+    expect(res.status).toBe(409);
+    expect((await res.json()).error).toBe("Someone else changed this file at the same moment. Reload and save again.");
+    expect(files.has("content/pages/about.json")).toBe(true);
+  });
+
+  it("is behind the same sign-in and cross-site checks as saving", async () => {
+    files.set("content/pages/about.json", pageFile("/about"));
+    expect((await handleRename(await post("/api/rename", { from: "/about", to: "/x" }, { jwt: null }), env, fakeFetch)).status).toBe(401);
+    expect((await handleRename(await post("/api/rename", { from: "/about", to: "/x" }, { headers: { Origin: "https://evil.example" } }), env, fakeFetch)).status).toBe(403);
+    expect((await handleDelete(await post("/api/delete", { path: "/about" }, { headers: { "X-Crust": "" } }), env, fakeFetch)).status).toBe(400);
+    expect((await handleRename(await post("/api/rename", { from: "/about", to: "/x" }), {}, fakeFetch)).status).toBe(503);
+    expect(files.has("content/pages/about.json")).toBe(true);
+  });
+});
+
+describe("save-api: deleting a page (F015)", () => {
+  it("removes the page file and any redirects to it", async () => {
+    files.set("content/pages/about.json", pageFile("/about"));
+    files.set("content/redirects.json", { content: JSON.stringify([{ from: "/team", to: "/about" }, { from: "/old", to: "/" }]), sha: "r" });
+    const res = await handleDelete(await post("/api/delete", { path: "/about" }), env, fakeFetch);
+    expect(res.status).toBe(200);
+    expect(files.has("content/pages/about.json")).toBe(false);
+    expect(redirectsIn()).toEqual([{ from: "/old", to: "/" }]);
+    expect(multiCommits[0]!.message).toBe("Delete page /about from the builder\n\nDeleted by hosni@example.com");
+  });
+
+  it("leaves redirects.json alone when nothing pointed to the page", async () => {
+    files.set("content/pages/about.json", pageFile("/about"));
+    await handleDelete(await post("/api/delete", { path: "/about" }), env, fakeFetch);
+    expect(multiCommits[0]!.paths).toEqual(["content/pages/about.json"]);
+    expect(files.has("content/redirects.json")).toBe(false);
+  });
+
+  it("refuses the Home page and missing pages", async () => {
+    const home = await handleDelete(await post("/api/delete", { path: "/" }), env, fakeFetch);
+    expect((await home.json()).error).toBe("The Home page can't be deleted. Every site needs one.");
+    const missing = await handleDelete(await post("/api/delete", { path: "/nope" }), env, fakeFetch);
+    expect(missing.status).toBe(404);
+    expect(files.has("content/pages/index.json")).toBe(true);
+  });
+});
+
+// --- F016: what the next publish changes --------------------------------------
+
+describe("save-api: changes since the last publish (F016)", () => {
+  it("compares the branch with the commit that last went live", async () => {
+    files.set("content/redirects.json", { content: JSON.stringify([{ from: "/people", to: "/team" }, { from: "/x", to: "/" }]), sha: "r" });
+    successRuns = [{ head_sha: "live123", created_at: "2026-10-28T09:00:00Z", html_url: "https://x/run/5" }];
+    compareFiles = [
+      { filename: "content/pages/about.json", status: "modified" },
+      { filename: "content/pages/blog__first-post.json", status: "added" },
+      { filename: "content/pages/old.json", status: "removed" },
+      { filename: "content/pages/team.json", status: "renamed", previous_filename: "content/pages/people.json" },
+      { filename: "content/site.json", status: "modified" },
+      { filename: "content/redirects.json", status: "added" },
+      { filename: "apps/admin/src/App.tsx", status: "modified" },
+    ];
+    const res = await handleChanges(await get("/api/changes", await token()), env, fakeFetch);
+    expect(compareBase).toBe("live123...main");
+    expect(await res.json()).toEqual({
+      ok: true,
+      lastPublish: { at: "2026-10-28T09:00:00Z", url: "https://x/run/5" },
+      pages: [
+        { path: "/about", change: "edited" },
+        { path: "/blog/first-post", change: "new" },
+        { path: "/team", change: "new" },
+      ],
+      removed: ["/old"],
+      moved: [{ from: "/people", to: "/team" }],
+      site: true,
+      redirects: true,
+    });
+  });
+
+  it("reports nothing waiting when the branch matches what's live", async () => {
+    successRuns = [{ head_sha: "live123", created_at: "2026-10-28T09:00:00Z", html_url: "https://x/run/5" }];
+    const res = await handleChanges(await get("/api/changes", await token()), env, fakeFetch);
+    expect(await res.json()).toMatchObject({ pages: [], removed: [], site: false, redirects: false });
+  });
+
+  it("treats every page as new before the first publish", async () => {
+    files.set("content/pages/about.json", pageFile("/about"));
+    const res = await handleChanges(await get("/api/changes", await token()), env, fakeFetch);
+    expect(await res.json()).toEqual({
+      ok: true,
+      lastPublish: null,
+      pages: [
+        { path: "/", change: "new" },
+        { path: "/about", change: "new" },
+      ],
+      removed: [],
+      moved: [],
+      site: true,
+      redirects: false,
+    });
+    expect(compareBase).toBeNull();
+  });
+
+  it("needs a sign-in", async () => {
+    const res = await handleChanges(await get("/api/changes"), env, fakeFetch);
+    expect(res.status).toBe(401);
   });
 });

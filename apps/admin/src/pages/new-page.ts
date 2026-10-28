@@ -24,19 +24,28 @@ export interface NewPageInput {
 
 export type NewPageErrors = Partial<Record<keyof NewPageInput, string>>;
 
+/** What the owner typed after the "/" prefix, as a page path: "about/" → "/about". */
+export const toPath = (address: string) => `/${address.trim().replace(/^\/+|\/+$/g, "")}`;
+
+/** The problem with an address (typed without the leading "/"), or null. Shared by New page and Rename (F015). */
+export function checkAddress(input: string, existingPaths: string[]): string | null {
+  const address = input.trim().replace(/^\/+|\/+$/g, "");
+  const segments = address.split("/");
+  if (!address) return "Add an address, like about or contact.";
+  if (segments.some((s) => !SEGMENT.test(s))) return "Use lowercase letters, numbers and dashes, starting with a letter or number (like about-us).";
+  if (segments.length > 4) return "Use at most 4 levels, like blog/2026/first-post.";
+  if (existingPaths.includes(`/${address}`)) return `There's already a page at /${address}.`;
+  return null;
+}
+
 /** Plain-language problems, keyed by field. Empty when the page can be created. */
 export function checkNewPage(input: NewPageInput, existingPaths: string[]): NewPageErrors {
   const errors: NewPageErrors = {};
   if (!input.title.trim()) errors.title = "Give the page a title.";
   else if (input.title.length > 120) errors.title = "Keep the title under 120 characters.";
 
-  const address = input.address.trim().replace(/^\/+|\/+$/g, "");
-  const segments = address.split("/");
-  if (!address) errors.address = "Add an address, like about or contact.";
-  else if (segments.some((s) => !SEGMENT.test(s)))
-    errors.address = "Use lowercase letters, numbers and dashes, starting with a letter or number (like about-us).";
-  else if (segments.length > 4) errors.address = "Use at most 4 levels, like blog/2026/first-post.";
-  else if (existingPaths.includes(`/${address}`)) errors.address = `There's already a page at /${address}.`;
+  const address = checkAddress(input.address, existingPaths);
+  if (address) errors.address = address;
 
   if (input.description.length > 300) errors.description = "Keep the description under 300 characters.";
   return errors;
@@ -44,7 +53,7 @@ export function checkNewPage(input: NewPageInput, existingPaths: string[]): NewP
 
 /** A new page starts with one section holding its H1, so it passes the publish checks. */
 export function createPage(input: NewPageInput): Page {
-  const path = `/${input.address.trim().replace(/^\/+|\/+$/g, "")}`;
+  const path = toPath(input.address);
   const id = (type: string) => `${type}-${crypto.randomUUID()}`;
   return {
     path,
