@@ -17,6 +17,9 @@ import {
   type Site,
   type SiteTokens,
   type SpacingStep,
+  applyPreset,
+  matchingPreset,
+  themePresets,
 } from "@crust/blocks";
 import { useCallback, useEffect, useId, useMemo, useState, type MouseEvent } from "react";
 import { sameTokens } from "../tokens-store";
@@ -30,12 +33,13 @@ export interface SiteSettingsProps {
   saved: SiteTokens;
   draft: SiteTokens;
   onChange: (tokens: SiteTokens) => void;
-  /** Persists the tokens; returns false if that failed. */
-  onSave: (tokens: SiteTokens) => boolean;
+  /** Persists the tokens; resolves to the message to show. */
+  onSave: (tokens: SiteTokens) => Promise<string>;
   onDiscard: () => void;
 }
 
 const sections = [
+  { id: "presets", label: "Presets" },
   { id: "colours", label: "Colours" },
   { id: "contrast", label: "Contrast checks" },
   { id: "typography", label: "Typography" },
@@ -47,6 +51,8 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
   const [status, setStatus] = useState("");
   const [invalid, setInvalid] = useState<ReadonlySet<string>>(new Set());
   const [previewOpen, setPreviewOpen] = useState(true);
+  /** Colours and fonts from before the last preset, for one-step undo. */
+  const [beforePreset, setBeforePreset] = useState<{ tokens: SiteTokens; name: string } | null>(null);
   const dirty = !sameTokens(saved, draft);
   const results = useMemo(() => checkContrast(draft.colors), [draft.colors]);
 
@@ -69,7 +75,9 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
 
   const setColor = (role: ColorRole, value: string) => onChange({ ...draft, colors: { ...draft.colors, [role]: value } });
 
-  const save = () => {
+  const [saving, setSaving] = useState(false);
+  const save = async () => {
+    if (saving) return;
     if (invalid.size > 0) {
       setStatus(`Not saved. Fix the ${invalid.size === 1 ? "field" : `${invalid.size} fields`} marked in red first.`);
       return;
@@ -79,16 +87,19 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
       setStatus(`Not saved. ${problems.map((p) => p.message).join(" ")}`);
       return;
     }
-    setStatus(
-      onSave(draft)
-        ? "Saved in this browser. The builder uses these settings now; saving to GitHub comes in a later step."
-        : "Couldn't save in this browser. Your changes are still here.",
-    );
+    setSaving(true);
+    setStatus("Saving…");
+    try {
+      setStatus(await onSave(draft));
+    } finally {
+      setSaving(false);
+    }
   };
 
   const discard = () => {
     if (!window.confirm("Discard your unsaved changes to Site settings?")) return;
     onDiscard();
+    setBeforePreset(null);
     setStatus("Changes discarded.");
   };
 
@@ -107,8 +118,8 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
           <button type="button" className="st-button" onClick={discard} disabled={!dirty}>
             Discard
           </button>
-          <button type="button" className="st-button st-button-primary" onClick={save}>
-            Save
+          <button type="button" className="st-button st-button-primary" onClick={save} aria-disabled={saving || undefined}>
+            {saving ? "Saving…" : "Save"}
           </button>
         </div>
       </header>
@@ -133,6 +144,58 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
         </nav>
 
         <main className="st-form">
+          <section className="st-card" id="presets" aria-labelledby="presets-h">
+            <h2 id="presets-h">Presets</h2>
+            <p className="st-lede">
+              A starting point for colours and fonts. Spacing, corners and width stay as they are, and every preset passes the
+              contrast checks.
+            </p>
+            <ul className="st-presets">
+              {themePresets.map((preset) => {
+                const current = matchingPreset(draft)?.id === preset.id;
+                return (
+                  <li key={preset.id}>
+                    <button
+                      type="button"
+                      className="st-preset"
+                      aria-pressed={current}
+                      onClick={() => {
+                        if (current) return;
+                        setBeforePreset({ tokens: draft, name: preset.name });
+                        onChange(applyPreset(draft, preset));
+                        setStatus(`${preset.name} applied to colours and fonts. Use "Undo preset" to go back.`);
+                      }}
+                    >
+                      <span className="st-preset-swatches" aria-hidden="true">
+                        {(["background", "surface", "text", "primary"] as const).map((role) => (
+                          <span key={role} style={{ background: preset.colors[role] }} />
+                        ))}
+                      </span>
+                      <span className="st-preset-name" style={{ fontFamily: preset.fonts.heading }}>
+                        {preset.name}
+                      </span>
+                      <span className="st-help">{preset.description}</span>
+                      {current ? <span className="st-current">Current</span> : null}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+            {beforePreset ? (
+              <button
+                type="button"
+                className="st-button st-undo"
+                onClick={() => {
+                  onChange({ ...draft, colors: beforePreset.tokens.colors, fonts: beforePreset.tokens.fonts });
+                  setStatus(`Undid ${beforePreset.name}. Colours and fonts are back to what they were.`);
+                  setBeforePreset(null);
+                }}
+              >
+                Undo preset ({beforePreset.name})
+              </button>
+            ) : null}
+          </section>
+
           <section className="st-card" id="colours" aria-labelledby="colours-h">
             <h2 id="colours-h">Colours</h2>
             <p className="st-lede">Each colour has a job. Blocks only use these six, so a change here restyles the whole site.</p>
@@ -236,7 +299,19 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
         </main>
 
         <aside className={`st-aside${previewOpen ? "" : " is-collapsed"}`} aria-label="Live preview">
-          <Preview site={previewSite} page={page} open={previewOpen} onToggle={() => setPreviewOpen((o) => !o)} />
+          <Preview
+            site={previewSite}
+            page={page}
+            open={previewOpen}
+            onToggle={() => setPreviewOpen((o) => !o)}
+            onPick={(role) => {
+              const field = document.getElementById(`color-${role}`);
+              field?.scrollIntoView({ block: "center" });
+              (field as HTMLInputElement | null)?.focus({ preventScroll: true });
+              (field as HTMLInputElement | null)?.select();
+              setStatus(`That part of the page uses ${colorRoleInfo[role].name}. Its field is selected.`);
+            }}
+          />
         </aside>
       </div>
     </div>

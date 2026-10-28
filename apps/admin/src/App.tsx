@@ -1,14 +1,25 @@
 import { config, tokensToCss, type Page, type Site, type SiteTokens } from "@crust/blocks";
 import { Puck, useGetPuck, type Data } from "@puckeditor/core";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import siteJson from "../../../content/site.json";
-import samplePage from "../../../content/pages/index.json";
+import { getPage, getStatus, listPages, saveContent, type ApiResult } from "./api-client";
 import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot, openKeyboardHelp } from "./keyboard/KeyboardEditing";
+import { PageList, editHref } from "./pages/PageList";
+import {
+  bundledPages,
+  fromPuckData,
+  getLocalDraft,
+  localDrafts,
+  mergePageRows,
+  saveLocalDraft,
+  toPuckData,
+  type PageRow,
+} from "./pages/store";
+import { PublishPanel } from "./publish/PublishPanel";
 import { SiteSettings } from "./settings/SiteSettings";
 import { loadSavedTokens, saveTokens } from "./tokens-store";
 
 const site = siteJson as Site;
-const DRAFT_KEY = "crust:draft:index";
 
 /** Responsive canvas widths for the viewport switcher. */
 const viewports = [
@@ -16,16 +27,6 @@ const viewports = [
   { width: 768, height: "auto" as const, label: "Tablet", icon: "Tablet" as const },
   { width: 375, height: "auto" as const, label: "Mobile", icon: "Smartphone" as const },
 ];
-
-function loadDraft(): Data {
-  try {
-    const raw = localStorage.getItem(DRAFT_KEY);
-    if (raw) return JSON.parse(raw) as Data;
-  } catch {
-    // Storage unavailable or corrupt draft: fall back to the saved page.
-  }
-  return (samplePage as Page).puck;
-}
 
 /** Puts the site's design tokens on the page so the canvas uses them. */
 function useTokenStyles(css: string) {
@@ -51,55 +52,178 @@ function SaveDraftButton({ onSave }: { onSave: (data: Data) => void }) {
   );
 }
 
-type Route = "builder" | "settings";
-const routeFromHash = (): Route => (location.hash.startsWith("#/settings") ? "settings" : "builder");
+/** What to tell the owner after a save: GitHub first, the browser copy as the safety net. */
+export function saveMessage(result: ApiResult<unknown>, savedLocally: boolean, what: string): string {
+  if (result.ok) return `${what} saved to GitHub. Visitors see it after you publish.`;
+  const local = savedLocally ? " A copy is safe in this browser." : "";
+  if (result.notConfigured) return `${what} saved in this browser. Saving to GitHub isn't switched on yet.`;
+  return `${what} not saved to GitHub: ${result.error}${local}`;
+}
+
+// --- Routing: #/ pages · #/edit?path=/about · #/settings ---------------------
+
+export type Route = { name: "pages" } | { name: "edit"; path: string } | { name: "settings" };
+
+export function parseRoute(hash: string): Route {
+  if (hash.startsWith("#/settings")) return { name: "settings" };
+  if (hash.startsWith("#/edit")) {
+    const path = new URLSearchParams(hash.split("?")[1] ?? "").get("path");
+    if (path) return { name: "edit", path };
+  }
+  return { name: "pages" };
+}
 
 function useRoute(): Route {
-  const [route, setRoute] = useState(routeFromHash);
+  const [route, setRoute] = useState(() => parseRoute(location.hash));
   useEffect(() => {
-    const onChange = () => setRoute(routeFromHash());
+    const onChange = () => setRoute(parseRoute(location.hash));
     window.addEventListener("hashchange", onChange);
     return () => window.removeEventListener("hashchange", onChange);
   }, []);
   return route;
 }
 
+/** Finds a page: a browser draft first, then GitHub, then the copy bundled with the app. */
+async function loadPage(path: string, githubOn: boolean): Promise<Page | null> {
+  const draft = getLocalDraft(path);
+  if (draft) return draft.page;
+  if (githubOn) {
+    const remote = await getPage(path);
+    if (remote.ok) return remote.page;
+  }
+  return bundledPages().find((p) => p.path === path) ?? null;
+}
+
 export function App() {
   const route = useRoute();
   const [saved, setSaved] = useState<SiteTokens>(() => loadSavedTokens(site.tokens));
   const [draft, setDraft] = useState<SiteTokens>(saved);
-  const [status, setStatus] = useState<string>("");
+  const [githubOn, setGithubOn] = useState<boolean | null>(null);
   // The builder shows unsaved token edits too, so switching screens loses nothing.
   useTokenStyles(useMemo(() => tokensToCss(draft), [draft]));
 
   useEffect(() => {
-    document.title = route === "settings" ? "Site settings · Crust" : "Crust builder";
+    void getStatus().then((s) => setGithubOn(s.ok && s.configured));
+  }, []);
+
+  useEffect(() => {
+    document.title =
+      route.name === "settings" ? "Site settings · Crust" : route.name === "edit" ? `Editing ${route.path} · Crust` : "Pages · Crust";
   }, [route]);
 
-  const saveDraft = (data: Data) => {
-    try {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
-      setStatus("Draft saved in this browser. Saving to GitHub comes in a later step.");
-    } catch {
-      setStatus("Couldn't save the draft in this browser.");
-    }
-  };
-
-  if (route === "settings") {
+  if (route.name === "settings") {
     return (
       <SiteSettings
         site={site}
-        page={{ ...(samplePage as Page), puck: loadDraft() }}
+        page={getLocalDraft("/")?.page ?? bundledPages().find((p) => p.path === "/") ?? bundledPages()[0]!}
         saved={saved}
         draft={draft}
         onChange={setDraft}
-        onSave={(tokens) => {
-          if (!saveTokens(tokens)) return false;
-          setSaved(tokens);
-          return true;
+        onSave={async (tokens) => {
+          const local = saveTokens(tokens);
+          if (local) setSaved(tokens);
+          const result = await saveContent({ kind: "site", site: { ...site, tokens } });
+          if (result.ok) setSaved(tokens);
+          return saveMessage(result, local, "Site settings");
         }}
         onDiscard={() => setDraft(saved)}
       />
+    );
+  }
+
+  if (route.name === "edit") return githubOn === null ? <Loading /> : <Builder key={route.path} path={route.path} githubOn={githubOn} />;
+
+  return <Pages githubOn={githubOn} />;
+}
+
+function Loading() {
+  return (
+    <p className="crust-loading" role="status">
+      Loading…
+    </p>
+  );
+}
+
+function Pages({ githubOn }: { githubOn: boolean | null }) {
+  const [rows, setRows] = useState<PageRow[] | null>(null);
+  const [error, setError] = useState<string>();
+
+  useEffect(() => {
+    if (githubOn === null) return;
+    const bundled = bundledPages().map((p) => ({ path: p.path, title: p.title, lastEdited: null }));
+    if (!githubOn) {
+      setRows(mergePageRows(bundled, localDrafts()));
+      return;
+    }
+    void listPages().then((res) => {
+      if (res.ok) setRows(mergePageRows(res.pages, localDrafts()));
+      else {
+        setError(`Couldn't load pages from GitHub: ${res.error} Showing the pages in this browser instead.`);
+        setRows(mergePageRows(bundled, localDrafts()));
+      }
+    });
+  }, [githubOn]);
+
+  return (
+    <>
+      <PageList
+        siteName={site.name}
+        rows={rows}
+        loadError={error}
+        sourceNote={
+          githubOn
+            ? "Your pages on GitHub. Pages with changes saved only in this browser are marked."
+            : "Saving to GitHub isn't switched on yet, so this lists the pages built into the app plus drafts saved in this browser."
+        }
+        onCreate={(page) => {
+          saveLocalDraft(page, false);
+          location.hash = editHref(page.path);
+        }}
+      >
+        <PublishPanel githubOn={githubOn === true} liveUrl={site.baseUrl} />
+      </PageList>
+    </>
+  );
+}
+
+function Builder({ path, githubOn }: { path: string; githubOn: boolean }) {
+  const [page, setPage] = useState<Page | null | undefined>(undefined);
+  const [status, setStatus] = useState<string>("");
+
+  useEffect(() => {
+    void loadPage(path, githubOn).then(setPage);
+  }, [path, githubOn]);
+
+  // Let the toast go after a while; screen readers have already heard it.
+  useEffect(() => {
+    if (!status || status === "Saving…") return;
+    const t = setTimeout(() => setStatus(""), 10_000);
+    return () => clearTimeout(t);
+  }, [status]);
+
+  const saveDraft = useCallback(
+    async (data: Data) => {
+      const next = fromPuckData(path, data);
+      const local = saveLocalDraft(next, false);
+      setStatus("Saving…");
+      const result = await saveContent({ kind: "page", page: next });
+      if (result.ok) saveLocalDraft(next, true);
+      setStatus(saveMessage(result, local, "Page"));
+    },
+    [path],
+  );
+
+  if (page === undefined) return <Loading />;
+  if (page === null) {
+    return (
+      <div className="st">
+        <main className="pg">
+          <h1 className="st-title">There's no page at {path}</h1>
+          <p>
+            <a href="#/">Back to pages</a>
+          </p>
+        </main>
+      </div>
     );
   }
 
@@ -107,12 +231,15 @@ export function App() {
     <>
       <Puck
         config={config}
-        data={loadDraft()}
+        data={toPuckData(page)}
         viewports={viewports}
-        headerTitle={site.name}
+        headerTitle={page.title || path}
         overrides={{
           headerActions: () => (
             <>
+              <a className="crust-header-link" href="#/">
+                Pages
+              </a>
               <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
                 Keyboard
               </button>
@@ -127,6 +254,8 @@ export function App() {
           actionBar: KeyboardActionBar,
         }}
         onPublish={saveDraft}
+        // Keep every edit in this browser, so leaving the page never loses work.
+        onChange={(data) => saveLocalDraft(fromPuckData(path, data), false)}
       />
       <div role="status" aria-live="polite" className="crust-status">
         {status}

@@ -4,6 +4,7 @@ import "@puckeditor/core/puck.css";
 import "@crust/blocks/styles.css";
 import "./settings/settings.css";
 import "./keyboard/keyboard.css";
+import "./pages/pages.css";
 import { App } from "./App";
 
 const root = document.getElementById("root");

@@ -53,3 +53,13 @@
 }
 .crust-save:hover { background: #3f3f46; }
 .crust-save:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
+
+/* Save feedback in the builder: a toast above everything, bottom centre. */
+.crust-status:empty { display: none; }
+.crust-status {
+  position: fixed; left: 50%; bottom: 24px; z-index: 1000; transform: translateX(-50%);
+  max-width: min(36rem, calc(100vw - 32px)); padding: 12px 16px;
+  border-radius: 10px; background: #18181b; color: #fff;
+  font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.2);
+}

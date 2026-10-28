@@ -68,7 +68,7 @@
       "description": "Cloudflare Pages Function that commits page JSON to content/ using a fine-grained GitHub token stored as a Cloudflare secret. Admin Save button with success/error feedback.",
       "depends_on": ["F001"],
       "done_check": "npm test -- save-api && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -78,7 +78,7 @@
       "description": "Admin page list (title, URL, last edited), create page with title and URL slug validation, open page in the builder.",
       "depends_on": ["F006"],
       "done_check": "npm test -- pages && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -88,7 +88,7 @@
       "description": "GitHub Actions workflow that renders content, runs crust-publish, and deploys to Cloudflare Pages. Publish button in the admin triggers it and shows status.",
       "depends_on": ["F002", "F006"],
       "done_check": "npm test -- publish && npm run publish:local",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -98,8 +98,48 @@
       "description": "CI runs axe on every published page (no serious issues) and Lighthouse on the sample page (performance >= 95).",
       "depends_on": ["F008"],
       "done_check": "npm run check:a11y && npm run check:perf",
-      "passes": false,
+      "passes": true,
       "needs_review": false,
+      "reviewed": false
+    },
+    {
+      "id": "F011",
+      "title": "Publish check: Image block without an image URL",
+      "description": "crust-publish stops the publish with a plain-language message when an Image block has no image URL, instead of publishing the editor placeholder. Added by the owner (approved Claude's proposal, 2026-10-28).",
+      "depends_on": ["F002"],
+      "done_check": "cargo test -p crust-publish validate && npm run publish:local",
+      "passes": true,
+      "needs_review": false,
+      "reviewed": false
+    },
+    {
+      "id": "F012",
+      "title": "Button alignment",
+      "description": "Button block gets a Left / Center / Right alignment option so it can sit under centred headings. Existing pages keep left alignment. Added by the owner (approved Claude's proposal, 2026-10-28).",
+      "depends_on": ["F004"],
+      "done_check": "npm test -- blocks && npm run publish:local",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F013",
+      "title": "Theme presets in Site settings",
+      "description": "Start from a ready-made palette and fonts in Site settings. Applying a preset changes all colours and fonts at once and can be undone in one step; presets are checked for AA contrast. Added by the owner (approved Claude's proposal, 2026-10-28).",
+      "depends_on": ["F003"],
+      "done_check": "npm test -- presets settings && npm run build",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F014",
+      "title": "Click the Site settings preview to jump to a colour",
+      "description": "Clicking an element in the Site settings preview moves focus to the colour field that styles it (pointer shortcut; the form stays the keyboard route). Added by the owner (approved Claude's proposal, 2026-10-28).",
+      "depends_on": ["F003"],
+      "done_check": "npm test -- settings && npm run build",
+      "passes": true,
+      "needs_review": true,
       "reviewed": false
     }
   ]

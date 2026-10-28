@@ -72,6 +72,17 @@ pub fn validate_page(page: &str, html: &str) -> Vec<Issue> {
         }
     }
 
+    // An Image block with no URL renders its editor placeholder instead of an <img>.
+    let empty_images = tags
+        .iter()
+        .filter(|t| !t.closing && t.attr("class").is_some_and(|c| c.split_whitespace().any(|c| c == "cr-image-empty")))
+        .count();
+    match empty_images {
+        0 => {}
+        1 => messages.push("An Image block has no image URL. Add the image's address, or remove the block.".to_string()),
+        n => messages.push(format!("{n} Image blocks have no image URL. Add each image's address, or remove those blocks.")),
+    }
+
     let headings: Vec<(u8, String)> = tags
         .iter()
         .filter(|t| !t.closing)
@@ -320,6 +331,17 @@ mod tests {
         assert_eq!(m.len(), 2, "{m:?}");
         assert!(m[0].contains("“https://x.dev/cat.jpg” has no alt text"));
         assert!(m[1].contains("“b.jpg”"));
+    }
+
+    #[test]
+    fn validate_flags_image_blocks_without_url() {
+        let empty = r#"<figure class="cr-image"><div class="cr-image-empty">Add an image URL</div></figure>"#;
+        let m = messages(&page(HEAD, &format!("<h1>Hi</h1>{empty}")));
+        assert_eq!(m, vec!["An Image block has no image URL. Add the image's address, or remove the block."]);
+        let m = messages(&page(HEAD, &format!("<h1>Hi</h1>{empty}{empty}")));
+        assert_eq!(m, vec!["2 Image blocks have no image URL. Add each image's address, or remove those blocks."]);
+        // Only the exact class counts.
+        assert!(messages(&page(HEAD, r#"<h1>Hi</h1><div class="cr-image-empty-ish"></div>"#)).is_empty());
     }
 
     #[test]

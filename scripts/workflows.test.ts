@@ -23,7 +23,10 @@ describe("preview deploy workflow (F010)", () => {
   it("deploys the admin build with main as the production branch", () => {
     expect(preview.env.PRODUCTION_BRANCH).toBe("main");
     expect(step("Build admin").run).toBe("npm run build");
-    expect(step("Deploy to Cloudflare Pages").run).toContain("pages deploy apps/admin/dist");
+    const deploy = step("Deploy to Cloudflare Pages") as Step & { "working-directory"?: string };
+    // From apps/admin, so the server functions in apps/admin/functions deploy too.
+    expect(deploy["working-directory"]).toBe("apps/admin");
+    expect(deploy.run).toContain("pages deploy dist");
   });
 
   it("pins the wrangler version", () => {
@@ -57,6 +60,13 @@ describe("preview deploy workflow (F010)", () => {
 });
 
 describe("CI", () => {
+  it("runs the accessibility and performance checks (F009)", () => {
+    const ci = parse(readFileSync(".github/workflows/ci.yml", "utf8"));
+    const runs = ci.jobs["site-checks"].steps.map((s: Step) => s.run);
+    expect(runs).toContain("npm run check:a11y");
+    expect(runs).toContain("npm run check:perf");
+  });
+
   it("lints the workflow files", () => {
     const ci = parse(readFileSync(".github/workflows/ci.yml", "utf8"));
     const runs = ci.jobs["workflow-lint"].steps.map((s: Step) => s.run);

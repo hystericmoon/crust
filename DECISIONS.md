@@ -8,16 +8,81 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
-- **Theme presets in Site settings** (from design direction C). Start from
-  a ready palette and fonts. A preset would overwrite all tokens at once, so
-  it needs an undo.
-- **Click a block in the Site settings preview to jump to its colour.**
-  Pointer shortcut only; the form stays the keyboard route.
+- *(The four proposals so far were approved by the owner on 2026-10-28 and
+  are now F011–F014 in `features.json`.)*
+- **Rename and delete pages.** Change a page's address (with a redirect from
+  the old one) or delete it, from the page list, with a confirmation.
+- **Show what's not published yet.** Mark pages saved since the last
+  publish in the page list, so it's clear what "Publish site" will change.
 
-- **Stop publishing images with no URL.** An Image block left without a URL
-  currently publishes its editor placeholder ("Add an image URL") on the
-  live page. F002's checker could catch it the same way as missing alt
-  text. Small; would fit in F004 or as its own item.
+## 2026-10-28 — F007–F009 (Claude, reversible)
+
+**F007 page list**
+- **The admin now opens on Pages** (`#/`). The builder is `#/edit?path=/about`, and Site settings is `#/settings`.
+- **Where a page loads from:** a draft in this browser, then GitHub (once switched on), then the copy bundled with the app. The list marks pages that have changes only in this browser.
+- **Every edit is kept in the browser** as you go. Save draft sends the page to GitHub.
+- **New page form:**
+  - The address follows the title until you edit it ("About Us & Team" → `about-us-and-team`).
+  - Messages are plain-language and appear under each field. Focus moves to the first problem.
+  - New pages start with a Section holding an H1, so they pass the publish checks.
+- **Title and description** are edited as Puck page fields ("Page title", "Description (shown in search results)"). They're moved back to the top of the page file on save, so the content contract is unchanged.
+- **Not yet:** renaming a page's address and deleting pages. Proposed below.
+
+**F008 publishing**
+- **`publish.yml` only runs when started:** from the admin's "Publish site" button through `/api/publish`, or by hand on GitHub. Nothing goes live on push. Spec: "nothing goes live until I publish."
+- **The site deploys to its own Pages project, `crust-site`.** The workflow creates the project on first run, using the same Cloudflare token as the admin preview.
+- **The site address comes from `site.json`'s `baseUrl`** once it's a real address. While it's still the example placeholder, the Pages address is used. Sitemap and robots.txt use the same address.
+- **Order of checks:** crust-publish checks (F002/F011) and the axe check (F009) run before deploying, so a page with a serious problem never goes live. After deploying, the workflow checks the live sitemap.
+- **The Publish panel** shows the latest run in plain words ("Publishing…", "Live.", "Failed. Nothing changed on the live site."). While a run is going it refreshes every 10 seconds and links to the details on GitHub.
+
+**F009 checks**
+- **axe:** WCAG 2.2 A/AA plus best practices, on every published page at 1280 and 375 px. "Serious" or "critical" issues fail; minor ones are listed but don't block.
+- **Lighthouse:** run on the Home page; performance must be 95 or more. The sample scores 100 / 100 / 100 (performance, accessibility, SEO) and 96 for best practices.
+- **New CI job `site-checks`.** The publish workflow also runs axe before deploying.
+- **Licence note for the owner:** `axe-core` is MPL-2.0, not one of the listed MIT/Apache/BSD/ISC licences. The feature names axe explicitly, and it's a dev-only checking tool that never ships with the site or admin, so I used it. If you'd rather not, the fallback is Lighthouse's own accessibility audit (Apache-2.0, built on the same axe rules). `lighthouse`, `chrome-launcher` and `playwright-core` are Apache-2.0.
+
+## 2026-10-28 — F006 Save to GitHub (Claude, reversible)
+
+**Built so it's safe before the owner's setup steps.** Every API endpoint:
+- refuses with "not switched on yet" until Cloudflare Access and the GitHub token are configured;
+- requires a valid Cloudflare Access sign-in (RS256 JWT checked against the team's keys, audience, issuer and expiry);
+- refuses requests from other sites, by requiring a custom header (which forces a CORS preflight), JSON, and a matching Origin.
+
+So even though the preview link is public today, the endpoint can't be used to write to the repo.
+
+Other choices:
+- **Content is checked again on the server**: page address, title, description, block data present, Site settings tokens via `validateTokens`, a 512 KB limit. The browser isn't trusted.
+- **One commit per save** to `main` through the GitHub contents API, with a readable message ("Save page /about ("About us") from the builder") and the signed-in email. Git history is the undo history (spec). This is the product's designed content path; the "main only through PRs" rule is about code changes.
+- **Page files:** `/` → `content/pages/index.json`, `/blog/first` → `content/pages/blog__first.json` (underscores can't appear in addresses).
+- **Every save is also kept in the browser.** The message says plainly where it went: "Page saved to GitHub. Visitors see it after you publish." / "saved in this browser. Saving to GitHub isn't switched on yet." / a GitHub error in plain words plus "A copy is safe in this browser."
+- **Server code lives in `apps/admin/server`**, with thin route files in `apps/admin/functions/api`. It imports only `@crust/blocks/tokens` and `/content`, so React and Puck stay out of the Worker (35 KB bundle).
+- **The deploy now runs from `apps/admin`** so the functions ship with the site. The preview check also calls `/api/status`.
+- **Settings the owner adds in Cloudflare Pages** (Settings → Variables and secrets):
+  - `GITHUB_TOKEN` (secret)
+  - `ACCESS_TEAM_DOMAIN`
+  - `ACCESS_AUD`
+  - optional: `GITHUB_REPO` (default `hystericmoon/crust`) and `CONTENT_BRANCH` (default `main`)
+
+## 2026-10-28 — F011–F014 (owner-approved proposals)
+
+- **F011:** the publish check looks for the Image block's placeholder
+  (`cr-image-empty`) in the rendered page, the same way it checks alt text.
+- **F012 Button alignment: page JSON gains an optional `align` prop on
+  Button.** No migration is needed: buttons saved without it render
+  left-aligned, exactly as before. The button now sits in a
+  `div.cr-button-row`, so alignment works like Heading and Text. The sample
+  hero button is centred to match its heading.
+- **F013 presets:**
+  - Five presets: Crust (the current default), Ink, Forest, Sunset and Mono.
+  - They change colours and fonts only; spacing, corners and width stay as you set them.
+  - A test checks that each one passes all seven contrast pairs. That fixed the mockup's "Mono", which made Primary the same colour as Text.
+  - Applying a preset keeps the previous colours and fonts, so one "Undo preset" button brings them back.
+  - The current preset is marked by a thicker border plus the word "Current", so the state isn't shown by colour alone.
+- **F014 click-to-colour:**
+  - The preview stays a sandboxed iframe with no scripts. A click on it is mapped back into the page and matched to the colour role that styles that spot, following the same rules as the block styles. For example, text in a Primary section maps to "Text on primary".
+  - The matching field is then focused and selected.
+  - It's a pointer shortcut only; the form stays the keyboard route.
+  - The hint text is hidden on phones, where the preview is a small strip.
 
 ## 2026-10-28 — F005 keyboard editing (Claude, reversible)
 

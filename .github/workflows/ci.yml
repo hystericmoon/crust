@@ -66,3 +66,31 @@ jobs:
 
       - name: Lint workflows (actionlint)
         run: npm run lint:workflows
+
+  site-checks:
+    # F009: axe on every published page, Lighthouse on the sample page.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Chromium for the checks
+        run: npx playwright-core install --with-deps chromium
+
+      - name: Accessibility (axe, no serious issues)
+        run: npm run check:a11y
+
+      - name: Performance (Lighthouse 95 or more)
+        run: npm run check:perf

@@ -1,7 +1,8 @@
-import type { Page, Site } from "@crust/blocks";
+import type { ColorRole, Page, Site } from "@crust/blocks";
 import baseCss from "@crust/blocks/styles.css?raw";
 import { renderPage } from "@crust/render";
-import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
+import { roleForElement } from "./pick";
 
 const widths = [
   { id: "desktop", label: "Desktop", width: 1280 },
@@ -20,11 +21,13 @@ export interface PreviewProps {
   /** Narrow screens: the preview can be collapsed to a bar. */
   open: boolean;
   onToggle: () => void;
+  /** Click on the preview: which colour styles that spot (pointer shortcut, F014). */
+  onPick?: (role: ColorRole) => void;
 }
 
 const narrow = () => typeof matchMedia === "function" && matchMedia("(max-width: 899px)").matches;
 
-export function Preview({ site, page, open, onToggle }: PreviewProps) {
+export function Preview({ site, page, open, onToggle, onPick }: PreviewProps) {
   const deferredSite = useDeferredValue(site);
   // On a phone, start with the phone layout; a scaled-down desktop page is unreadable there.
   const [widthId, setWidthId] = useState<WidthId>(() => (narrow() ? "mobile" : "desktop"));
@@ -64,6 +67,16 @@ export function Preview({ site, page, open, onToggle }: PreviewProps) {
 
   const scale = paneWidth > 0 ? Math.min(1, paneWidth / width) : 1;
 
+  // The iframe ignores the pointer (no scripts run in it); map the click on
+  // the stage back into the page's own coordinates instead.
+  const pick = (e: MouseEvent<HTMLDivElement>) => {
+    const doc = frameRef.current?.contentDocument;
+    if (!onPick || !doc) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const el = doc.elementFromPoint((e.clientX - rect.left) / scale, (e.clientY - rect.top) / scale);
+    if (el) onPick(roleForElement(el));
+  };
+
   return (
     <div className="st-preview">
       <div className="st-preview-bar">
@@ -91,12 +104,18 @@ export function Preview({ site, page, open, onToggle }: PreviewProps) {
           {open ? "Hide" : "Show"}
           <span className="st-sr"> preview</span>
         </button>
+        {onPick ? <p className="st-preview-hint">Click part of the page to jump to its colour.</p> : null}
       </div>
       <div className="st-preview-pane" id="st-preview-pane" ref={paneRef}>
         {html === null ? (
           <p className="st-preview-error">The preview can't show these settings. Fix the fields marked in red.</p>
         ) : (
-          <div className="st-preview-stage" style={{ width: width * scale, height: contentHeight * scale }}>
+          <div
+            className={onPick ? "st-preview-stage is-pickable" : "st-preview-stage"}
+            style={{ width: width * scale, height: contentHeight * scale }}
+            onClick={pick}
+            title={onPick ? "Click part of the page to find its colour" : undefined}
+          >
             <iframe
               ref={frameRef}
               title="Home page preview"

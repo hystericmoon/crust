@@ -90,8 +90,10 @@ jobs:
         env:
           WRANGLER_OUTPUT_FILE_PATH: ${{ runner.temp }}/wrangler-output.ndjson
           SUBDOMAIN: ${{ steps.project.outputs.subdomain }}
+        # Run from apps/admin so wrangler also picks up apps/admin/functions (the save API).
+        working-directory: apps/admin
         run: |
-          npx --yes "wrangler@$WRANGLER_VERSION" pages deploy apps/admin/dist \
+          npx --yes "wrangler@$WRANGLER_VERSION" pages deploy dist \
             --project-name="$PAGES_PROJECT" \
             --branch="$BRANCH" \
             --commit-hash="$COMMIT"
@@ -117,6 +119,9 @@ jobs:
           for attempt in $(seq 1 12); do
             if curl -fsSL --max-time 10 "$URL" | grep -q "<title>Crust builder</title>"; then
               echo "Preview is live: $URL"
+              # The save API answers with JSON (it stays switched off until Access and the token are set).
+              curl -fsSL --max-time 10 "$URL/api/status" | jq -e '.ok == true' > /dev/null \
+                || { echo "::error::$URL/api/status didn't answer; the server functions may not have deployed."; exit 1; }
               exit 0
             fi
             echo "Attempt $attempt: not ready yet, waiting 15s"

@@ -4,6 +4,25 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- The admin opens on your page list: titles, addresses and when each was
+  last edited. "New page" creates a page (the address fills in from the
+  title) and opens it in the builder. Page title and description are edited
+  in the builder's page panel.
+- "Publish site" (on the page list) puts your saved pages live and shows
+  progress. It switches on together with saving to GitHub.
+- Every published page is checked for accessibility (axe) before it goes
+  live, and the sample page for speed (Lighthouse).
+- Save draft and Site settings → Save now save to GitHub once it's switched
+  on, with a clear message about where your work went. Until then they keep
+  saving in your browser.
+- In Site settings, click any part of the preview to jump straight to the
+  colour that styles it.
+- Site settings has five ready-made presets (Crust, Ink, Forest, Sunset,
+  Mono) for colours and fonts, with one-step undo.
+- Buttons can be aligned left, centre or right, so they line up under
+  centred headings.
+- Publishing also stops when an Image block has no image URL, instead of
+  putting the "Add an image URL" placeholder on your live page.
 - The builder works fully from the keyboard: select blocks with Enter, move
   them with Alt and the arrow keys (also as buttons on the selected block),
   and add blocks from the list with Enter. Screen readers hear what moved

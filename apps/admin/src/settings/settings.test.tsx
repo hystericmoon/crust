@@ -29,7 +29,7 @@ afterEach(() => {
 
 /** Renders the screen with real state, like App does. */
 function setup(initial: SiteTokens = defaultTokens) {
-  const onSave = vi.fn((_tokens: SiteTokens) => true);
+  const onSave = vi.fn(async (_tokens: SiteTokens) => "Saved to GitHub.");
   function Harness() {
     const [saved, setSaved] = useState(initial);
     const [draft, setDraft] = useState(initial);
@@ -62,6 +62,7 @@ describe("Site settings screen", () => {
     setup();
     expect(screen.getAllByRole("heading", { level: 1 }).map((h) => h.textContent)).toEqual(["Site settings"]);
     expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual([
+      "Presets",
       "Colours",
       "Contrast checks",
       "Typography",
@@ -112,12 +113,12 @@ describe("Site settings screen", () => {
     expect(screen.getByRole("status").textContent).toBe("Not saved. Fix the field marked in red first.");
   });
 
-  it("saves valid changes", () => {
+  it("saves valid changes", async () => {
     const { onSave } = setup();
     type("Primary", "#0f766e");
-    act(() => screen.getByRole("button", { name: "Save" }).click());
+    await act(async () => screen.getByRole("button", { name: "Save" }).click());
     expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ colors: expect.objectContaining({ primary: "#0F766E" }) }));
-    expect(screen.getByRole("status").textContent).toMatch(/^Saved in this browser\./);
+    expect(screen.getByRole("status").textContent).toBe("Saved to GitHub.");
     expect(screen.getByText("All changes saved")).toBeTruthy();
   });
 
@@ -165,6 +166,30 @@ describe("Site settings screen", () => {
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
     act(() => toggle.click());
     expect(screen.getByRole("button", { name: "Show preview" }).getAttribute("aria-expanded")).toBe("false");
+  });
+});
+
+describe("theme presets (settings)", () => {
+  it("marks the current preset", () => {
+    setup();
+    const crust = screen.getByRole("button", { name: /^Crust/ });
+    expect(crust.getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("button", { name: /^Forest/ }).getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("applies a preset's colours and fonts, and undoes it in one step", () => {
+    setup({ ...defaultTokens, radius: 3 });
+    act(() => screen.getByRole("button", { name: /^Forest/ }).click());
+    expect((screen.getByLabelText("Primary") as HTMLInputElement).value).toBe("#1F6B45");
+    expect((screen.getByLabelText("Corner radius in px") as HTMLInputElement).value).toBe("3");
+    expect(screen.getByRole("button", { name: /^Forest/ }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("status").textContent).toMatch(/^Forest applied/);
+    expect(screen.getByText("Unsaved changes")).toBeTruthy();
+
+    act(() => screen.getByRole("button", { name: "Undo preset (Forest)" }).click());
+    expect((screen.getByLabelText("Primary") as HTMLInputElement).value.toUpperCase()).toBe("#4338CA");
+    expect(screen.queryByRole("button", { name: /Undo preset/ })).toBeNull();
+    expect(screen.getByRole("status").textContent).toMatch(/^Undid Forest/);
   });
 });
 
