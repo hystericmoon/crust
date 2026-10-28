@@ -8,7 +8,25 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
-- *(none yet)*
+- **Stop publishing images with no URL.** An Image block left without a URL
+  currently publishes its editor placeholder ("Add an image URL") on the
+  live page. F002's checker could catch it the same way as missing alt
+  text. Small; would fit in F004 or as its own item.
+
+## 2026-10-28 — F002 output validation (Claude, reversible)
+
+- **Checks run on the rendered HTML**, so they test exactly what visitors
+  get. A small tag scanner, not a full HTML parser dependency: our renderer
+  is the only producer and React escapes all text and attributes. It skips
+  comments and `<style>`/`<script>` contents.
+- **All problems on all pages are listed at once**, each with the page and
+  the heading or image it's about, so the owner can fix everything in one
+  pass. Nothing is written (no sitemap) when any check fails.
+- **`alt=""` counts as a deliberate "decorative image"** and passes; a
+  missing or blank-spaces alt fails. The Image block never writes `alt=""`
+  today, so only a future "decorative" option will produce it.
+- **The H1 must be the first heading.** A heading before the H1 counts as a
+  skipped level (axe and WCAG guidance: the page title heading comes first).
 
 ## 2026-10-28 — F010 preview deploy (Claude, reversible)
 

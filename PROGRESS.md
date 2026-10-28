@@ -6,8 +6,9 @@ to "Log".
 ## Current
 
 - **Milestone:** 1 (first working slice)
-- **Done:** F001 Project skeleton, F010 Preview deploy (awaiting owner review)
-- **In progress:** F002 Output validation
+- **Done:** F001 Project skeleton, F010 Preview deploy (awaiting owner
+  review), F002 Output validation
+- **Next:** F003 Design tokens and Site settings screen
 - **Waiting on the owner:** review the F010 preview link; merge PR #1 so
   `main` gets the stable production preview.
 - **For the owner to test:** https://claude-f010-github-actions-d.crust-admin.pages.dev
@@ -17,6 +18,8 @@ to "Log".
 
 ## Known gaps
 
+- An Image block with no URL publishes its placeholder text. Proposed fix
+  in DECISIONS.md.
 - The admin app is now deployed but hasn't been checked by a person in a
   real browser yet; the owner's first look is the F010 review.
 - Button block has no alignment option, so it sits left in centred sections.
@@ -40,3 +43,8 @@ to "Log".
   deploy (run 40722349309) created the `crust-admin` Pages project,
   deployed, loaded the page, and posted the link on PR #1. CI (incl.
   actionlint) and `npm run build` green.
+- 2026-10-28 — F002 done: crust-publish checks every rendered page (alt
+  text, exactly one H1 that comes first, no skipped heading levels, title
+  and description) and stops the publish with a plain-language list of every
+  problem. 10 unit + 2 integration tests; done_check passes. Nothing for the
+  owner to test in the browser yet (publishing from the admin is F008).

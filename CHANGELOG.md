@@ -4,6 +4,9 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- Publishing now stops, with a plain list of what to fix, when a page has an
+  image without alt text, no main heading (H1) or more than one, a heading
+  that skips a level (H2 → H4), or a missing title or description.
 - Every branch now gets its own preview link of the builder, posted on its
   pull request and in the GitHub Actions summary. `main` is the stable
   preview. (Live once the Cloudflare secrets are added.)
