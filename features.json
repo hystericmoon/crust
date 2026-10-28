@@ -88,7 +88,7 @@
       "description": "GitHub Actions workflow that renders content, runs crust-publish, and deploys to Cloudflare Pages. Publish button in the admin triggers it and shows status.",
       "depends_on": ["F002", "F006"],
       "done_check": "npm test -- publish && npm run publish:local",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
