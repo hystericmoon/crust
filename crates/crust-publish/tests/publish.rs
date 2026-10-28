@@ -1,4 +1,4 @@
-use crust_publish::{Report, page_paths, publish};
+use crust_publish::{Report, page_paths, publish, validate_site};
 use std::fs;
 use std::path::Path;
 
@@ -8,13 +8,20 @@ fn write(root: &Path, rel: &str, body: &str) {
     fs::write(path, body).unwrap();
 }
 
+/// A complete page the way the renderer writes it.
+fn page(title: &str, body: &str) -> String {
+    format!(
+        "<!doctype html>\n<html lang=\"en\">\n<head>\n<title>{title}</title>\n<meta name=\"description\" content=\"About {title}\">\n<style>h1 > a {{}}</style>\n</head>\n<body class=\"cr-page\">\n<main>{body}</main>\n</body>\n</html>\n"
+    )
+}
+
 #[test]
 fn publish_writes_sitemap_and_robots() {
     let dir = tempfile::tempdir().unwrap();
-    write(dir.path(), "index.html", "<h1>Home</h1>");
-    write(dir.path(), "about/index.html", "<h1>About</h1>");
-    write(dir.path(), "blog/first-post/index.html", "<h1>Post</h1>");
-    write(dir.path(), "404.html", "<h1>Not found</h1>");
+    write(dir.path(), "index.html", &page("Home", "<h1>Home</h1>"));
+    write(dir.path(), "about/index.html", &page("About", "<h1>About</h1>"));
+    write(dir.path(), "blog/first-post/index.html", &page("Post", "<h1>Post</h1>"));
+    write(dir.path(), "404.html", "<h2>Not found</h2>");
 
     let report = publish(dir.path(), "https://demo.pages.dev/").unwrap();
     assert_eq!(
@@ -41,4 +48,32 @@ fn publish_fails_clearly_without_pages() {
 fn publish_fails_clearly_when_folder_is_missing() {
     let err = page_paths(Path::new("/definitely/not/here")).unwrap_err();
     assert!(err.to_string().contains("Did the render step run?"));
+}
+
+#[test]
+fn validate_stops_publish_and_lists_every_problem() {
+    let dir = tempfile::tempdir().unwrap();
+    write(dir.path(), "index.html", &page("Home", "<h1>Home</h1><img src=\"cat.jpg\">"));
+    write(dir.path(), "about/index.html", &page("About", "<h2>About</h2><h4>Team</h4>"));
+    write(dir.path(), "contact/index.html", &page("Contact", "<h1>Contact</h1>"));
+
+    let issues = validate_site(dir.path()).unwrap();
+    assert_eq!(issues.len(), 3, "{issues:?}");
+
+    let err = publish(dir.path(), "https://demo.pages.dev").unwrap_err().to_string();
+    assert!(err.starts_with("Nothing was published. Fix these 3 problems on 2 pages"), "{err}");
+    assert!(err.contains("Page /: The image “cat.jpg” has no alt text"), "{err}");
+    assert!(err.contains("Page /about/: The page has no main heading"), "{err}");
+    assert!(err.contains("Page /about/: The heading “Team” jumps from H2 to H4"), "{err}");
+    assert!(!err.contains("/contact/"), "{err}");
+    assert!(!dir.path().join("sitemap.xml").exists(), "nothing should be written on failure");
+}
+
+#[test]
+fn validate_message_is_singular_for_one_problem() {
+    let dir = tempfile::tempdir().unwrap();
+    write(dir.path(), "index.html", &page("", "<h1>Home</h1>"));
+    let err = publish(dir.path(), "https://demo.pages.dev").unwrap_err().to_string();
+    assert!(err.starts_with("Nothing was published. Fix this problem on 1 page and publish again:"), "{err}");
+    assert!(err.contains("Page /: The page title is empty"), "{err}");
 }
