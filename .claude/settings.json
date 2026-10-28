@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Edit(./.env)",
+      "Edit(**/.env.*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push --force-with-lease:*)",
+      "Bash(git push origin main:*)",
+      "Bash(wrangler pages deploy:*)",
+      "Bash(npx wrangler pages deploy:*)"
+    ]
+  }
+}

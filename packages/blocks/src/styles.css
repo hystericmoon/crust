@@ -1,0 +1,70 @@
+/* Base styles for published pages and the editor canvas.
+   All values come from design-token variables (--cr-…). */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+.cr-page {
+  margin: 0;
+  background: var(--cr-color-background);
+  color: var(--cr-color-text);
+  font-family: var(--cr-font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+
+.cr-container {
+  max-width: var(--cr-max-width);
+  margin-inline: auto;
+  padding-inline: var(--cr-space-sm);
+}
+
+.cr-section { padding-block: var(--cr-section-pad, var(--cr-space-lg)); }
+.cr-bg-background { background: var(--cr-color-background); color: var(--cr-color-text); }
+.cr-bg-surface { background: var(--cr-color-surface); color: var(--cr-color-text); }
+.cr-bg-primary { background: var(--cr-color-primary); color: var(--cr-color-onPrimary); }
+
+.cr-heading {
+  font-family: var(--cr-font-heading);
+  line-height: 1.15;
+  margin: 0 0 var(--cr-space-sm);
+  text-wrap: balance;
+}
+.cr-h1 { font-size: clamp(2.25rem, 5vw, 3.5rem); letter-spacing: -0.02em; }
+.cr-h2 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); letter-spacing: -0.015em; }
+.cr-h3 { font-size: 1.5rem; }
+.cr-h4 { font-size: 1.25rem; }
+
+.cr-text { max-width: 68ch; }
+.cr-text p { margin: 0 0 var(--cr-space-sm); }
+.cr-align-center { text-align: center; margin-inline: auto; }
+.cr-align-right { text-align: right; margin-left: auto; }
+.cr-tone-muted { color: var(--cr-color-muted); }
+.cr-bg-primary .cr-tone-muted { color: inherit; opacity: 0.85; }
+
+.cr-image { margin: 0 0 var(--cr-space-sm); }
+.cr-image img { display: block; width: 100%; height: auto; border-radius: var(--cr-radius); }
+.cr-image figcaption { margin-top: var(--cr-space-xs); font-size: 0.875rem; color: var(--cr-color-muted); }
+.cr-image-empty {
+  display: grid; place-items: center; min-height: 160px;
+  border: 1px dashed var(--cr-color-muted); border-radius: var(--cr-radius);
+  color: var(--cr-color-muted); font-size: 0.875rem;
+}
+
+.cr-button {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; padding: 0 1.25rem;
+  border-radius: var(--cr-radius); border: 2px solid var(--cr-color-primary);
+  font-weight: 600; text-decoration: none;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.cr-button-primary { background: var(--cr-color-primary); color: var(--cr-color-onPrimary); }
+.cr-button-secondary { background: transparent; color: var(--cr-color-primary); }
+.cr-button:hover { filter: brightness(1.08); }
+.cr-button:focus-visible { outline: 3px solid var(--cr-color-text); outline-offset: 3px; }
+.cr-bg-primary .cr-button-primary { background: var(--cr-color-onPrimary); color: var(--cr-color-primary); border-color: var(--cr-color-onPrimary); }
+.cr-bg-primary .cr-button-secondary { color: var(--cr-color-onPrimary); border-color: var(--cr-color-onPrimary); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cr-button { transition: none; }
+}

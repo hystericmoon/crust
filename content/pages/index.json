@@ -1,0 +1,61 @@
+{
+  "path": "/",
+  "title": "Crust demo",
+  "description": "A sample page built with the Crust visual builder.",
+  "puck": {
+    "root": { "props": {} },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "id": "Section-hero",
+          "background": "surface",
+          "paddingY": "xl",
+          "content": [
+            {
+              "type": "Heading",
+              "props": { "id": "Heading-hero", "text": "Build fast sites, visually", "level": "h1", "align": "center" }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "Text-hero",
+                "text": "Design pages with blocks and design tokens. Crust publishes them as plain, fast HTML.",
+                "align": "center",
+                "tone": "muted"
+              }
+            },
+            { "type": "Spacer", "props": { "id": "Spacer-hero", "size": "sm" } },
+            {
+              "type": "Button",
+              "props": { "id": "Button-hero", "label": "See how it works", "href": "#how", "variant": "primary" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "Section-how",
+          "background": "background",
+          "paddingY": "lg",
+          "content": [
+            {
+              "type": "Heading",
+              "props": { "id": "Heading-how", "text": "How it works", "level": "h2", "align": "left" }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "Text-how",
+                "text": "Edit pages in the builder.\n\nClick Publish, and the site goes live as static files.",
+                "align": "left",
+                "tone": "default"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

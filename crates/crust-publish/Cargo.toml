@@ -1,0 +1,15 @@
+[package]
+name = "crust-publish"
+version = "0.1.0"
+description = "Crust publish engine: turns rendered pages into a finished static site."
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+anyhow = "1.0"
+clap = { version = "4.6", features = ["derive"] }
+walkdir = "2.5"
+
+[dev-dependencies]
+tempfile = "3.27"

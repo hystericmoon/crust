@@ -1,0 +1,22 @@
+{
+  "name": "Crust demo",
+  "baseUrl": "https://example.pages.dev",
+  "language": "en",
+  "tokens": {
+    "colors": {
+      "background": "#ffffff",
+      "surface": "#f4f4f5",
+      "text": "#18181b",
+      "muted": "#52525b",
+      "primary": "#4338ca",
+      "onPrimary": "#ffffff"
+    },
+    "fonts": {
+      "heading": "system-ui, -apple-system, 'Segoe UI', sans-serif",
+      "body": "system-ui, -apple-system, 'Segoe UI', sans-serif"
+    },
+    "spacing": { "none": 0, "xs": 0.5, "sm": 1, "md": 2, "lg": 4, "xl": 6 },
+    "radius": 8,
+    "maxWidth": 1120
+  }
+}
