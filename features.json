@@ -48,7 +48,7 @@
       "description": "Add Columns (2-4, stack on mobile) and Card blocks; responsive viewports (desktop/tablet/mobile) in the editor.",
       "depends_on": ["F001"],
       "done_check": "npm test -- blocks && npm run publish:local",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

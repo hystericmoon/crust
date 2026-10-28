@@ -52,6 +52,18 @@
                 "align": "left",
                 "tone": "default"
               }
+            },
+            {
+              "type": "Columns",
+              "props": {
+                "id": "Columns-how",
+                "count": "3",
+                "gap": "md",
+                "column1": [{ "type": "Card", "props": { "id": "Card-design", "title": "Design", "titleLevel": "h3", "text": "Lay out pages with blocks and your design tokens.", "imageSrc": "", "imageAlt": "", "linkLabel": "", "linkHref": "", "background": "surface" } }],
+                "column2": [{ "type": "Card", "props": { "id": "Card-publish", "title": "Publish", "titleLevel": "h3", "text": "One click turns them into plain, fast HTML.", "imageSrc": "", "imageAlt": "", "linkLabel": "", "linkHref": "", "background": "surface" } }],
+                "column3": [{ "type": "Card", "props": { "id": "Card-share", "title": "Share", "titleLevel": "h3", "text": "Open the live link on any device.", "imageSrc": "", "imageAlt": "", "linkLabel": "", "linkHref": "", "background": "surface" } }],
+                "column4": []
+              }
             }
           ]
         }

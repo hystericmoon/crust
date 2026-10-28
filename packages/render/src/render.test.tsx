@@ -40,6 +40,31 @@ describe("renderPage", () => {
     expect(html).toMatch(/<section class="cr-section cr-bg-surface"[^>]*><div class="cr-container"><h2[^>]*>Inside<\/h2><\/div><\/section>/);
   });
 
+  it("renders blocks nested in columns", () => {
+    const card = (id: string, title: string) => ({
+      type: "Card",
+      props: { id, title, titleLevel: "h3", text: "", imageSrc: "", imageAlt: "", linkLabel: "", linkHref: "", background: "surface" },
+    });
+    const html = renderBody(
+      page([
+        {
+          type: "Columns",
+          props: {
+            id: "c",
+            count: "2",
+            gap: "md",
+            column1: [card("a", "Left")],
+            column2: [card("b", "Right")],
+            column3: [card("x", "Hidden")],
+            column4: [],
+          },
+        },
+      ]).puck,
+    );
+    expect(html).toMatch(/<div class="cr-columns cr-columns-2"[^>]*><div class="cr-column"><article[^>]*>.*Left.*<\/article><\/div><div class="cr-column"><article[^>]*>.*Right/);
+    expect(html).not.toContain("Hidden");
+  });
+
   it("escapes user text", () => {
     const html = renderBody(
       page([{ type: "Text", props: { id: "t", text: "<script>alert(1)</script>", align: "left", tone: "default" } }]).puck,

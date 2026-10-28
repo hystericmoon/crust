@@ -6,10 +6,11 @@ to "Log".
 ## Current
 
 - **Milestone:** 1 (first working slice)
-- **Done:** F001 Project skeleton, F010 Preview deploy (awaiting owner
-  review), F002 Output validation
-- **Next:** F003 Design tokens and Site settings screen
-- **Waiting on the owner:** review the F010 preview link; merge PR #1 so
+- **Done:** F001, F010 Preview deploy, F002 Output validation, F004 Columns
+  and Card. F010 and F004 await owner review.
+- **Next:** F005 Keyboard-accessible editing (depends on F004).
+- **Waiting on the owner:** pick a Site settings direction (F003, see
+  BLOCKED.md); review F010 and F004 on the preview link; merge PR #1 so
   `main` gets the stable production preview.
 - **For the owner to test:** https://claude-f010-github-actions-d.crust-admin.pages.dev
 - **Reminder:** the Cloudflare API token expires on the date the owner set
@@ -23,7 +24,9 @@ to "Log".
 - The admin app is now deployed but hasn't been checked by a person in a
   real browser yet; the owner's first look is the F010 review.
 - Button block has no alignment option, so it sits left in centred sections.
-  Candidate for F004.
+  Not part of F004's description; needs the owner's go-ahead.
+- Focus outline on buttons uses the text colour, which is low-contrast on
+  a Primary background. Fits F005 (visible focus).
 
 ## Log
 
@@ -48,3 +51,10 @@ to "Log".
   and description) and stops the publish with a plain-language list of every
   problem. 10 unit + 2 integration tests; done_check passes. Nothing for the
   owner to test in the browser yet (publishing from the admin is F008).
+- 2026-10-28 — F003 blocked: the Site settings design snapshot says not to
+  build until the owner picks a direction. Logged in BLOCKED.md.
+- 2026-10-28 — F004 done: Columns (2-4, stacks below 640px, 2 columns on
+  tablet) and Card blocks, renderer support, sample page row of 3 cards,
+  editor canvas uses page base styles. Checked in a headless browser at
+  1280/768/375 and in the builder (no console errors). 15 new tests;
+  done_check passes. Owner to review on the preview link.

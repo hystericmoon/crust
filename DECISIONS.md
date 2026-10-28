@@ -13,6 +13,31 @@ Features Claude suggests. They are not work until the owner adds them to
   live page. F002's checker could catch it the same way as missing alt
   text. Small; would fit in F004 or as its own item.
 
+## 2026-10-28 — F004 Columns and Card (Claude, reversible)
+
+- **Columns has four fixed column slots; the count picks how many show.**
+  Lowering the count hides the extra columns' content without deleting it,
+  so it comes back if you raise the count again. Hidden content isn't
+  published.
+- **Breakpoints:** 1 column below 640px, 2 columns from 640px, the chosen
+  count (3 or 4) from 1024px. The editor's tablet view (768px) shows 2.
+  A 3-column row on tablet leaves the third card alone on its own row.
+- **No sections or columns inside a column**, to keep layouts predictable.
+- **Card is a fixed composition** (optional image, title, text, optional
+  link) rather than a free container, so cards in a row stay consistent.
+  Empty parts are left out instead of showing placeholders. The title's
+  heading level is a separate choice from its size (always the same visual
+  size), so the outline stays correct without changing the look. The link
+  shows only when both its text and URL are set; the field asks for text
+  that says where it goes (no "Read more").
+- **Cards stretch to equal height in a row**, with the link pinned to the
+  bottom.
+- **Editor canvas now uses the page's base styles** (`cr-page` wrapper via
+  Puck's root render). Before, body text in the canvas fell back to a serif
+  font, so the preview didn't match the published page.
+- **The sample page shows a 3-card row** so the new blocks are visible in
+  the preview.
+
 ## 2026-10-28 — F002 output validation (Claude, reversible)
 
 - **Checks run on the rendered HTML**, so they test exactly what visitors
