@@ -4,6 +4,8 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- Publishing also stops when an Image block has no image URL, instead of
+  putting the "Add an image URL" placeholder on your live page.
 - The builder works fully from the keyboard: select blocks with Enter, move
   them with Alt and the arrow keys (also as buttons on the selected block),
   and add blocks from the list with Enter. Screen readers hear what moved

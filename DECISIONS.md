@@ -8,16 +8,8 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
-- **Theme presets in Site settings** (from design direction C). Start from
-  a ready palette and fonts. A preset would overwrite all tokens at once, so
-  it needs an undo.
-- **Click a block in the Site settings preview to jump to its colour.**
-  Pointer shortcut only; the form stays the keyboard route.
-
-- **Stop publishing images with no URL.** An Image block left without a URL
-  currently publishes its editor placeholder ("Add an image URL") on the
-  live page. F002's checker could catch it the same way as missing alt
-  text. Small; would fit in F004 or as its own item.
+- *(The four proposals so far were approved by the owner on 2026-10-28 and
+  are now F011–F014 in `features.json`.)*
 
 ## 2026-10-28 — F005 keyboard editing (Claude, reversible)
 
