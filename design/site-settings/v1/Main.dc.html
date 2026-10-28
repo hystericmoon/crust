@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Site settings — form and live preview</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2B4ACB}a:hover{color:#1E3596}
+input,select,button{font:inherit}
+</style>
+</helmet>
+<div style="min-height: 1040px; background: #F6F6F7; color: #18181B; font-family: Inter, system-ui, sans-serif; font-size: 14px; line-height: 1.5;">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 12px 24px; background: #FFFFFF; border-bottom: 1px solid #E4E4E7;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<div style="width: 28px; height: 28px; border-radius: 7px; background: #18181B; color: #FFFFFF; display: grid; place-items: center; font-weight: 600; font-size: 13px;">Cr</div>
+<span style="font-weight: 600;">Crust demo</span>
+</div>
+<nav aria-label="Main" style="display: flex; gap: 4px; flex-grow: 1;">
+<a href="#" style="padding: 8px 12px; border-radius: 6px; color: #52525B; text-decoration: none;">Pages</a>
+<a href="#" aria-current="page" style="padding: 8px 12px; border-radius: 6px; background: #F4F4F5; color: #18181B; text-decoration: none; font-weight: 500;">Site settings</a>
+<a href="#" style="padding: 8px 12px; border-radius: 6px; color: #52525B; text-decoration: none;">Media</a>
+</nav>
+<span style="color: #52525B; font-size: 13px;">Unsaved changes</span>
+<button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid #D4D4D8; background: #FFFFFF; color: #18181B; cursor: pointer;">Discard</button>
+<button type="button" style="min-height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid #2B4ACB; background: #2B4ACB; color: #FFFFFF; font-weight: 500; cursor: pointer;">Save</button>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; padding: 24px; align-items: flex-start;">
+
+<nav aria-label="Settings sections" style="flex: 1 1 180px; max-width: 200px; display: flex; flex-direction: column; gap: 2px;">
+<a href="#colors" style="padding: 8px 12px; border-radius: 6px; background: #FFFFFF; border: 1px solid #E4E4E7; color: #18181B; text-decoration: none; font-weight: 500;">Colors</a>
+<a href="#type" style="padding: 8px 12px; border-radius: 6px; color: #52525B; text-decoration: none;">Typography</a>
+<a href="#spacing" style="padding: 8px 12px; border-radius: 6px; color: #52525B; text-decoration: none;">Spacing</a>
+<a href="#shape" style="padding: 8px 12px; border-radius: 6px; color: #52525B; text-decoration: none;">Shape &amp; layout</a>
+</nav>
+
+<main style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+<div>
+<h1 style="margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em;">Site settings</h1>
+<p style="margin: 4px 0 0; color: #52525B;">These tokens style every page. Change one and the whole site updates.</p>
+</div>
+
+<section id="colors" aria-labelledby="colors-h" style="background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 12px; padding: 20px;">
+<h2 id="colors-h" style="margin: 0 0 4px; font-size: 16px; font-weight: 600;">Colors</h2>
+<p style="margin: 0 0 16px; color: #52525B;">Each color has a job. Contrast is checked as you edit.</p>
+<div style="display: flex; flex-direction: column;">
+<sc-for list="{{colors}}" as="c" hint-placeholder-count="6">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #F4F4F5;">
+<button type="button" aria-label="Pick {{c.name}} color" style="width: 40px; height: 40px; border-radius: 8px; border: 1px solid #D4D4D8; background: {{c.hex}}; cursor: pointer; flex: none;"></button>
+<div style="flex: 1 1 180px; min-width: 0;">
+<label for="hex-{{c.id}}" style="display: block; font-weight: 500;">{{c.name}}</label>
+<span style="color: #52525B; font-size: 13px;">{{c.desc}}</span>
+</div>
+<input id="hex-{{c.id}}" value="{{c.hex}}" style="width: 104px; min-height: 40px; padding: 0 10px; border: 1px solid #D4D4D8; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; text-transform: uppercase; box-sizing: border-box;">
+<span style="min-width: 112px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: {{c.pillBg}}; color: {{c.pillFg}}; font-size: 12px; font-weight: 500;">{{c.pill}}</span>
+</div>
+</sc-for>
+</div>
+<div role="alert" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 8px; padding: 12px 14px; border-radius: 8px; background: #FEF3F2; border: 1px solid #FECDCA; color: #912018;">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg>
+<span style="flex: 1 1 280px;"><strong style="font-weight: 600;">Muted text is hard to read.</strong> It has 2.6:1 contrast on the page background; body text needs 4.5:1.</span>
+<button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid #912018; background: #FFFFFF; color: #912018; font-weight: 500; cursor: pointer;">Use #71717A (4.8:1)</button>
+</div>
+</section>
+
+<section id="type" aria-labelledby="type-h" style="background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 12px; padding: 20px;">
+<h2 id="type-h" style="margin: 0 0 16px; font-size: 16px; font-weight: 600;">Typography</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<label for="font-h" style="font-weight: 500;">Heading font</label>
+<select id="font-h" style="min-height: 40px; padding: 0 10px; border: 1px solid #D4D4D8; border-radius: 8px; background: #FFFFFF;"><option>Fraunces</option></select>
+<span style="font-family: Georgia, serif; font-size: 28px; line-height: 1.2;">Build fast sites</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<label for="font-b" style="font-weight: 500;">Body font</label>
+<select id="font-b" style="min-height: 40px; padding: 0 10px; border: 1px solid #D4D4D8; border-radius: 8px; background: #FFFFFF;"><option>Inter</option></select>
+<span style="font-size: 15px; color: #3F3F46;">Design pages with blocks and publish them as plain, fast HTML.</span>
+</div>
+</div>
+</section>
+
+<section id="spacing" aria-labelledby="spacing-h" style="background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 12px; padding: 20px;">
+<h2 id="spacing-h" style="margin: 0 0 4px; font-size: 16px; font-weight: 600;">Spacing scale</h2>
+<p style="margin: 0 0 16px; color: #52525B;">Blocks pick a step, never a raw number.</p>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<sc-for list="{{spacing}}" as="s" hint-placeholder-count="5">
+<div style="display: flex; align-items: center; gap: 12px;">
+<label for="sp-{{s.id}}" style="width: 32px; font-weight: 500;">{{s.id}}</label>
+<div aria-hidden="true" style="height: 12px; width: {{s.bar}}; background: #C7D2FE; border-radius: 3px;"></div>
+<span style="flex-grow: 1;"></span>
+<input id="sp-{{s.id}}" value="{{s.rem}}" style="width: 72px; min-height: 36px; padding: 0 8px; border: 1px solid #D4D4D8; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; box-sizing: border-box;">
+<span style="width: 28px; color: #52525B;">rem</span>
+</div>
+</sc-for>
+</div>
+</section>
+</main>
+
+<aside aria-label="Live preview" style="flex: 1 1 400px; min-width: 0; max-width: 460px; position: sticky; top: 24px; display: flex; flex-direction: column; gap: 10px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<h2 style="margin: 0; font-size: 14px; font-weight: 600; flex-grow: 1;">Live preview</h2>
+<div role="group" aria-label="Preview width" style="display: flex; padding: 3px; background: #E4E4E7; border-radius: 8px;">
+<button type="button" aria-pressed="true" style="min-height: 32px; padding: 0 10px; border: 0; border-radius: 6px; background: #FFFFFF; color: #18181B; font-size: 13px; cursor: pointer;">Desktop</button>
+<button type="button" aria-pressed="false" style="min-height: 32px; padding: 0 10px; border: 0; border-radius: 6px; background: transparent; color: #3F3F46; font-size: 13px; cursor: pointer;">Mobile</button>
+</div>
+</div>
+<div style="border: 1px solid #E4E4E7; border-radius: 12px; overflow: hidden; background: #FFFFFF;">
+<div style="padding: 36px 28px; background: #F4F4F5; text-align: center;">
+<div style="font-family: Georgia, serif; font-size: 30px; line-height: 1.15; color: #18181B;">Build fast sites, visually</div>
+<p style="margin: 10px auto 18px; max-width: 300px; color: #A1A1AA; font-size: 14px; outline: 2px dashed #D92D20; outline-offset: 3px;">Design pages with blocks and design tokens.</p>
+<span style="display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 8px; background: #4338CA; color: #FFFFFF; font-weight: 500; font-size: 14px;">See how it works</span>
+</div>
+<div style="padding: 24px 28px;">
+<div style="font-family: Georgia, serif; font-size: 20px; margin-bottom: 6px;">How it works</div>
+<p style="margin: 0; color: #18181B; font-size: 14px;">Edit pages in the builder. Click Publish, and the site goes live.</p>
+</div>
+</div>
+<p style="margin: 0; color: #52525B; font-size: 12px;">Dashed outline marks text that fails contrast.</p>
+</aside>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1040}}'>
+class Component extends DCLogic {
+renderVals() {
+var pass = function (r) { return { pill: 'Passes AA · ' + r, pillBg: '#ECFDF3', pillFg: '#05603A' }; };
+var colors = [
+{ id: 'bg', name: 'Page background', desc: 'Behind everything', hex: '#FFFFFF', pill: 'Base', pillBg: '#F4F4F5', pillFg: '#3F3F46' },
+{ id: 'surface', name: 'Surface', desc: 'Cards and tinted sections', hex: '#F4F4F5', pill: 'Base', pillBg: '#F4F4F5', pillFg: '#3F3F46' },
+Object.assign({ id: 'text', name: 'Text', desc: 'Headings and body copy', hex: '#18181B' }, pass('17.7:1')),
+{ id: 'muted', name: 'Muted text', desc: 'Captions, secondary copy', hex: '#A1A1AA', pill: 'Fails AA · 2.6:1', pillBg: '#FEF3F2', pillFg: '#912018' },
+{ id: 'primary', name: 'Primary', desc: 'Buttons, links, accents', hex: '#4338CA', pill: 'Base', pillBg: '#F4F4F5', pillFg: '#3F3F46' },
+Object.assign({ id: 'onprimary', name: 'Text on primary', desc: 'Labels on primary', hex: '#FFFFFF' }, pass('7.9:1'))
+];
+var spacing = [
+{ id: 'XS', rem: '0.5', bar: '16px' }, { id: 'SM', rem: '1', bar: '32px' }, { id: 'MD', rem: '2', bar: '64px' },
+{ id: 'LG', rem: '4', bar: '128px' }, { id: 'XL', rem: '6', bar: '192px' }
+];
+return { colors: colors, spacing: spacing };
+}
+}
+</script>
+</body>
+</html>

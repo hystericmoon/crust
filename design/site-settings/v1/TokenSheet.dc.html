@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Site settings — token sheet</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2B4ACB}a:hover{color:#1E3596}
+input,select,button{font:inherit}
+</style>
+</helmet>
+<div style="min-height: 1040px; background: #F6F6F7; color: #18181B; font-family: Inter, system-ui, sans-serif; font-size: 14px; line-height: 1.5;">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 12px 24px; background: #FFFFFF; border-bottom: 1px solid #E4E4E7;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<div style="width: 28px; height: 28px; border-radius: 7px; background: #18181B; color: #FFFFFF; display: grid; place-items: center; font-weight: 600; font-size: 13px;">Cr</div>
+<span style="font-weight: 600;">Crust demo</span>
+</div>
+<nav aria-label="Main" style="display: flex; gap: 4px; flex-grow: 1;">
+<a href="#" style="padding: 8px 12px; border-radius: 6px; color: #52525B; text-decoration: none;">Pages</a>
+<a href="#" aria-current="page" style="padding: 8px 12px; border-radius: 6px; background: #F4F4F5; color: #18181B; text-decoration: none; font-weight: 500;">Site settings</a>
+<a href="#" style="padding: 8px 12px; border-radius: 6px; color: #52525B; text-decoration: none;">Media</a>
+</nav>
+<button type="button" style="min-height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid #2B4ACB; background: #2B4ACB; color: #FFFFFF; font-weight: 500; cursor: pointer;">Save</button>
+</header>
+
+<main style="max-width: 1180px; margin: 0 auto; padding: 28px 24px; display: flex; flex-direction: column; gap: 20px;">
+
+<div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px;">
+<div style="flex: 1 1 320px;">
+<h1 style="margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em;">Site settings</h1>
+<p style="margin: 4px 0 0; color: #52525B;">All design tokens on one sheet. Every color pair your blocks use is checked against WCAG AA.</p>
+</div>
+<nav aria-label="Token groups" style="display: flex; flex-wrap: wrap; padding: 3px; background: #E4E4E7; border-radius: 8px;">
+<a href="#" aria-current="true" style="min-height: 34px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 6px; background: #FFFFFF; color: #18181B; text-decoration: none; font-weight: 500;">Colors</a>
+<a href="#" style="min-height: 34px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 6px; color: #3F3F46; text-decoration: none;">Typography</a>
+<a href="#" style="min-height: 34px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 6px; color: #3F3F46; text-decoration: none;">Spacing</a>
+<a href="#" style="min-height: 34px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 6px; color: #3F3F46; text-decoration: none;">Layout</a>
+</nav>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+
+<section aria-labelledby="tok-h" style="flex: 3 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 12px; overflow: hidden;">
+<div style="padding: 16px 20px; border-bottom: 1px solid #E4E4E7;">
+<h2 id="tok-h" style="margin: 0; font-size: 16px; font-weight: 600;">Color tokens</h2>
+</div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; border-collapse: collapse; min-width: 560px;">
+<thead>
+<tr style="text-align: left; color: #52525B; font-size: 12px;">
+<th scope="col" style="padding: 10px 20px; font-weight: 500;">Token</th>
+<th scope="col" style="padding: 10px 12px; font-weight: 500;">Value</th>
+<th scope="col" style="padding: 10px 12px; font-weight: 500;">Used for</th>
+<th scope="col" style="padding: 10px 20px; font-weight: 500; text-align: right;">Blocks</th>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{tokens}}" as="t" hint-placeholder-count="6">
+<tr style="border-top: 1px solid #F4F4F5;">
+<th scope="row" style="padding: 10px 20px; text-align: left; font-weight: 500;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<span aria-hidden="true" style="width: 20px; height: 20px; border-radius: 5px; border: 1px solid #D4D4D8; background: {{t.hex}}; flex: none;"></span>
+<span>{{t.name}}<br><code style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #52525B; font-weight: 400;">{{t.var}}</code></span>
+</div>
+</th>
+<td style="padding: 10px 12px;">
+<label for="v-{{t.var}}" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">{{t.name}} hex value</label>
+<input id="v-{{t.var}}" value="{{t.hex}}" style="width: 96px; min-height: 36px; padding: 0 8px; border: 1px solid {{t.border}}; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 13px; box-sizing: border-box;">
+</td>
+<td style="padding: 10px 12px; color: #3F3F46;">{{t.use}}</td>
+<td style="padding: 10px 20px; text-align: right; color: #52525B; font-family: 'JetBrains Mono', monospace; font-size: 13px;">{{t.count}}</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</section>
+
+<section aria-labelledby="con-h" style="flex: 2 1 360px; min-width: 0; background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 12px; overflow: hidden;">
+<div style="display: flex; align-items: center; gap: 8px; padding: 16px 20px; border-bottom: 1px solid #E4E4E7;">
+<h2 id="con-h" style="margin: 0; font-size: 16px; font-weight: 600; flex-grow: 1;">Contrast checks</h2>
+<span style="padding: 2px 10px; border-radius: 999px; background: #FEF3F2; color: #912018; font-size: 12px; font-weight: 500;">1 issue</span>
+</div>
+<ul style="list-style: none; margin: 0; padding: 0;">
+<sc-for list="{{pairs}}" as="p" hint-placeholder-count="5">
+<li style="display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-top: 1px solid #F4F4F5;">
+<span aria-hidden="true" style="width: 44px; height: 32px; border-radius: 6px; background: {{p.bg}}; color: {{p.fg}}; border: 1px solid #E4E4E7; display: grid; place-items: center; font-weight: 600; font-size: 13px; flex: none;">Aa</span>
+<span style="flex: 1 1 auto; min-width: 0;">{{p.label}}</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">{{p.ratio}}</span>
+<span style="min-width: 64px; display: inline-flex; justify-content: center; gap: 4px; padding: 2px 8px; border-radius: 999px; background: {{p.badgeBg}}; color: {{p.badgeFg}}; font-size: 12px; font-weight: 500;">{{p.verdict}}</span>
+</li>
+</sc-for>
+</ul>
+<div style="padding: 14px 20px; border-top: 1px solid #E4E4E7; background: #FAFAFA; display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+<span style="flex: 1 1 200px; color: #3F3F46;">Fix: darken Muted text to <code style="font-family: 'JetBrains Mono', monospace;">#71717A</code> (4.8:1).</span>
+<button type="button" style="min-height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid #D4D4D8; background: #FFFFFF; color: #18181B; cursor: pointer;">Apply fix</button>
+</div>
+</section>
+</div>
+
+<section aria-labelledby="prev-h" style="background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 12px; padding: 16px 20px;">
+<h2 id="prev-h" style="margin: 0 0 12px; font-size: 16px; font-weight: 600;">Component preview</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch;">
+<div style="flex: 1 1 240px; padding: 20px; border-radius: 8px; background: #F4F4F5; display: flex; flex-direction: column; gap: 8px;">
+<span style="font-family: Georgia, serif; font-size: 20px;">Surface card</span>
+<span style="color: #A1A1AA; font-size: 13px;">Muted caption on surface</span>
+</div>
+<div style="flex: 1 1 240px; padding: 20px; border-radius: 8px; background: #4338CA; color: #FFFFFF; display: flex; flex-direction: column; gap: 8px;">
+<span style="font-family: Georgia, serif; font-size: 20px;">Primary section</span>
+<span style="font-size: 13px;">Text on primary</span>
+</div>
+<div style="flex: 1 1 240px; padding: 20px; border-radius: 8px; border: 1px solid #E4E4E7; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+<span style="display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 8px; background: #4338CA; color: #FFFFFF; font-weight: 500;">Primary</span>
+<span style="display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 8px; border: 2px solid #4338CA; color: #4338CA; font-weight: 500;">Secondary</span>
+</div>
+</div>
+</section>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1040}}'>
+class Component extends DCLogic {
+renderVals() {
+var ok = { verdict: 'Pass', badgeBg: '#ECFDF3', badgeFg: '#05603A' };
+var bad = { verdict: 'Fail', badgeBg: '#FEF3F2', badgeFg: '#912018' };
+var tokens = [
+{ name: 'Page background', var: '--color-background', hex: '#FFFFFF', use: 'Page, default sections', count: '14', border: '#D4D4D8' },
+{ name: 'Surface', var: '--color-surface', hex: '#F4F4F5', use: 'Cards, tinted sections', count: '6', border: '#D4D4D8' },
+{ name: 'Text', var: '--color-text', hex: '#18181B', use: 'Headings, body', count: '22', border: '#D4D4D8' },
+{ name: 'Muted text', var: '--color-muted', hex: '#A1A1AA', use: 'Captions, secondary copy', count: '9', border: '#D92D20' },
+{ name: 'Primary', var: '--color-primary', hex: '#4338CA', use: 'Buttons, links, accents', count: '11', border: '#D4D4D8' },
+{ name: 'Text on primary', var: '--color-onPrimary', hex: '#FFFFFF', use: 'Labels on primary', count: '4', border: '#D4D4D8' }
+];
+var pairs = [
+Object.assign({ label: 'Text on page', ratio: '17.7:1', bg: '#FFFFFF', fg: '#18181B' }, ok),
+Object.assign({ label: 'Text on surface', ratio: '16.1:1', bg: '#F4F4F5', fg: '#18181B' }, ok),
+Object.assign({ label: 'Muted on page', ratio: '2.6:1', bg: '#FFFFFF', fg: '#A1A1AA' }, bad),
+Object.assign({ label: 'Text on primary', ratio: '7.9:1', bg: '#4338CA', fg: '#FFFFFF' }, ok),
+Object.assign({ label: 'Primary link on page', ratio: '7.9:1', bg: '#FFFFFF', fg: '#4338CA' }, ok)
+];
+return { tokens: tokens, pairs: pairs };
+}
+}
+</script>
+</body>
+</html>

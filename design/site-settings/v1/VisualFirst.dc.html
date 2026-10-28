@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Site settings — visual first</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2B4ACB}a:hover{color:#1E3596}
+input,select,button{font:inherit}
+</style>
+</helmet>
+<div style="min-height: 1040px; background: #F6F6F7; color: #18181B; font-family: Inter, system-ui, sans-serif; font-size: 14px; line-height: 1.5; display: flex; flex-direction: column;">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 12px 24px; background: #FFFFFF; border-bottom: 1px solid #E4E4E7;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<div style="width: 28px; height: 28px; border-radius: 7px; background: #18181B; color: #FFFFFF; display: grid; place-items: center; font-weight: 600; font-size: 13px;">Cr</div>
+<span style="font-weight: 600;">Crust demo</span>
+</div>
+<nav aria-label="Main" style="display: flex; gap: 4px; flex-grow: 1;">
+<a href="#" style="padding: 8px 12px; border-radius: 6px; color: #52525B; text-decoration: none;">Pages</a>
+<a href="#" aria-current="page" style="padding: 8px 12px; border-radius: 6px; background: #F4F4F5; color: #18181B; text-decoration: none; font-weight: 500;">Site style</a>
+<a href="#" style="padding: 8px 12px; border-radius: 6px; color: #52525B; text-decoration: none;">Media</a>
+</nav>
+<button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid #D4D4D8; background: #FFFFFF; color: #18181B; cursor: pointer;">Edit as list</button>
+<button type="button" style="min-height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid #2B4ACB; background: #2B4ACB; color: #FFFFFF; font-weight: 500; cursor: pointer;">Save</button>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; padding: 24px; flex-grow: 1; align-items: flex-start;">
+
+<aside aria-labelledby="presets-h" style="flex: 1 1 240px; max-width: 280px; display: flex; flex-direction: column; gap: 12px;">
+<h2 id="presets-h" style="margin: 0; font-size: 14px; font-weight: 600;">Start from a theme</h2>
+<p style="margin: 0; color: #52525B; font-size: 13px;">Pick one, then click anything on the page to fine-tune it.</p>
+<sc-for list="{{presets}}" as="p" hint-placeholder-count="4">
+<button type="button" aria-pressed="{{p.pressed}}" style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 12px; border: {{p.border}}; background: #FFFFFF; text-align: left; cursor: pointer; color: #18181B;">
+<span style="display: flex; gap: 6px;" aria-hidden="true">
+<span style="width: 22px; height: 22px; border-radius: 999px; background: {{p.c1}}; border: 1px solid #E4E4E7;"></span>
+<span style="width: 22px; height: 22px; border-radius: 999px; background: {{p.c2}}; border: 1px solid #E4E4E7;"></span>
+<span style="width: 22px; height: 22px; border-radius: 999px; background: {{p.c3}}; border: 1px solid #E4E4E7;"></span>
+<span style="width: 22px; height: 22px; border-radius: 999px; background: {{p.c4}}; border: 1px solid #E4E4E7;"></span>
+</span>
+<span style="font-weight: 500;">{{p.name}}</span>
+<span style="color: #52525B; font-size: 12px;">{{p.fonts}}</span>
+</button>
+</sc-for>
+</aside>
+
+<main style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: #52525B; font-size: 13px;">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9l5 12 1.8-5.2L21 14z"></path><path d="M7.2 2.2 8 5.1"></path><path d="M5.1 8 2.2 7.2"></path><path d="M14 4.1 12 6"></path><path d="M6 12l-1.9 2"></path></svg>
+<span style="flex-grow: 1;">Click any text, button or background to change the token behind it.</span>
+<span>Preview: Home</span>
+</div>
+
+<div style="position: relative; border: 1px solid #E4E4E7; border-radius: 12px; background: #FFFFFF; overflow: visible;">
+<div style="padding: 64px 48px; background: #F4F4F5; text-align: center; border-radius: 12px 12px 0 0;">
+<div style="font-family: Georgia, serif; font-size: 44px; line-height: 1.1; color: #18181B; letter-spacing: -0.01em;">Build fast sites, visually</div>
+<p style="margin: 14px auto 24px; max-width: 460px; color: #71717A; font-size: 16px;">Design pages with blocks and design tokens. Crust publishes them as plain, fast HTML.</p>
+<span style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 8px; background: #4338CA; color: #FFFFFF; font-weight: 500; outline: 2px solid #2B4ACB; outline-offset: 4px;">See how it works</span>
+</div>
+<div style="padding: 40px 48px; display: flex; flex-wrap: wrap; gap: 24px;">
+<div style="flex: 1 1 240px;">
+<div style="font-family: Georgia, serif; font-size: 24px; margin-bottom: 8px;">How it works</div>
+<p style="margin: 0; color: #18181B;">Edit pages in the builder. Click Publish, and the site goes live as static files.</p>
+</div>
+<div style="flex: 1 1 240px; padding: 20px; border-radius: 8px; background: #F4F4F5;">
+<div style="font-weight: 600; margin-bottom: 4px;">No server needed</div>
+<p style="margin: 0; color: #71717A; font-size: 14px;">Host it anywhere that serves files.</p>
+</div>
+</div>
+
+<div role="dialog" aria-labelledby="pop-h" style="position: absolute; top: 236px; left: 50%; margin-left: 150px; width: 300px; max-width: calc(100% - 32px); background: #FFFFFF; border: 1px solid #D4D4D8; border-radius: 12px; box-shadow: 0 12px 32px rgba(24, 24, 27, 0.16); padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<h3 id="pop-h" style="margin: 0; font-size: 14px; font-weight: 600; flex-grow: 1;">Primary color</h3>
+<button type="button" aria-label="Close" style="width: 32px; height: 32px; border: 0; border-radius: 6px; background: transparent; color: #52525B; cursor: pointer; display: grid; place-items: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg></button>
+</div>
+<div role="radiogroup" aria-label="Suggested colors" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px;">
+<sc-for list="{{swatches}}" as="s" hint-placeholder-count="6">
+<button type="button" role="radio" aria-checked="{{s.checked}}" aria-label="{{s.hex}}" style="height: 32px; border-radius: 6px; background: {{s.hex}}; border: {{s.border}}; cursor: pointer;"></button>
+</sc-for>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<label for="pop-hex" style="font-size: 12px; color: #52525B;">Hex</label>
+<input id="pop-hex" value="#4338CA" style="min-height: 36px; padding: 0 10px; border: 1px solid #D4D4D8; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+</div>
+<div style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; background: #ECFDF3; color: #05603A; font-size: 13px;">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+<span>White text on it: 7.9:1, passes AA</span>
+</div>
+<p style="margin: 0; color: #52525B; font-size: 12px;">Also used in: 11 buttons, 3 links, 1 section.</p>
+</div>
+</div>
+</main>
+</div>
+
+<footer style="display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 24px; background: #FFFFFF; border-top: 1px solid #E4E4E7; align-items: center;">
+<span style="color: #52525B; font-size: 13px; margin-right: 4px;">Current tokens</span>
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="5">
+<button type="button" style="min-height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 999px; border: 1px solid #E4E4E7; background: #FAFAFA; color: #18181B; font-size: 13px; cursor: pointer;">{{c}}</button>
+</sc-for>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1040}}'>
+class Component extends DCLogic {
+renderVals() {
+var sel = '2px solid #2B4ACB';
+var off = '1px solid #E4E4E7';
+return {
+presets: [
+{ name: 'Ink', fonts: 'Fraunces / Inter', c1: '#FFFFFF', c2: '#F4F4F5', c3: '#18181B', c4: '#4338CA', border: sel, pressed: 'true' },
+{ name: 'Forest', fonts: 'DM Serif / DM Sans', c1: '#FBFAF6', c2: '#E8EDE4', c3: '#1C2B22', c4: '#2F6B4F', border: off, pressed: 'false' },
+{ name: 'Sunset', fonts: 'Space Grotesk / Inter', c1: '#FFFFFF', c2: '#FFF1E8', c3: '#241A14', c4: '#C2410C', border: off, pressed: 'false' },
+{ name: 'Mono', fonts: 'IBM Plex Sans / Plex Mono', c1: '#FFFFFF', c2: '#F2F2F2', c3: '#111111', c4: '#111111', border: off, pressed: 'false' }
+],
+swatches: [
+{ hex: '#4338CA', checked: 'true', border: '2px solid #18181B' },
+{ hex: '#2563EB', checked: 'false', border: '1px solid #E4E4E7' },
+{ hex: '#0F766E', checked: 'false', border: '1px solid #E4E4E7' },
+{ hex: '#15803D', checked: 'false', border: '1px solid #E4E4E7' },
+{ hex: '#C2410C', checked: 'false', border: '1px solid #E4E4E7' },
+{ hex: '#BE123C', checked: 'false', border: '1px solid #E4E4E7' }
+],
+chips: ['6 colors', 'Fraunces / Inter', 'Spacing 0.5–6 rem', 'Radius 8 px', 'Max width 1120 px']
+};
+}
+}
+</script>
+</body>
+</html>
