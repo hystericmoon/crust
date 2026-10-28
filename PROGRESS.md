@@ -7,10 +7,13 @@ to "Log".
 
 - **Milestone:** 1 (first working slice)
 - **Done:** F001, F010 Preview deploy, F002 Output validation, F004 Columns
-  and Card, F003 Site settings. F010, F004 and F003 await owner review.
-- **Next:** F005 Keyboard-accessible editing.
-- **Waiting on the owner:** review F010, F004 and F003 on the preview link;
-  merge PR #1 so `main` gets the stable production preview.
+  and Card, F003 Site settings, F005 Keyboard editing. F010, F004, F003 and
+  F005 await owner review.
+- **Next:** F006 Save to GitHub. It needs the owner: a fine-grained GitHub
+  token stored as a Cloudflare secret, and Cloudflare Access in front of the
+  admin.
+- **Waiting on the owner:** review F010, F004, F003 and F005 on the preview
+  link; merge PR #1 so `main` gets the stable production preview.
 - **For the owner to test:** https://claude-f010-github-actions-d.crust-admin.pages.dev
 - **Reminder:** the Cloudflare API token expires on the date the owner set
   (recommended 2027-01-26). Deploys fail with a clear error when it does;
@@ -24,8 +27,6 @@ to "Log".
   real browser yet; the owner's first look is the F010 review.
 - Button block has no alignment option, so it sits left in centred sections.
   Not part of F004's description; needs the owner's go-ahead.
-- Focus outline on buttons uses the text colour, which is low-contrast on
-  a Primary background. Fits F005 (visible focus).
 
 ## Log
 
@@ -68,3 +69,10 @@ to "Log".
   and 390 (no overflow, no console errors, tab order, the fix flow, saved
   tokens reach the builder). Impeccable detector clean. 27 new tests;
   done_check passes.
+- 2026-10-28 — F005 done: keyboard alternatives for every drag (move
+  up/down, out of a container, into the one above, between columns, add
+  from the list), labelled action-bar buttons, live announcements,
+  screen-reader names on canvas blocks, help panel (?), focus rings. Puck's
+  span-based Publish replaced by a real "Save draft" button. Checked in a
+  headless browser: every shortcut, focus return, undo, no console errors.
+  22 new tests; done_check passes.

@@ -58,7 +58,7 @@
       "description": "Every drag action has a keyboard alternative (move block up/down, move into/out of a section), visible focus, and screen-reader labels in the editor.",
       "depends_on": ["F004"],
       "done_check": "npm test -- keyboard && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

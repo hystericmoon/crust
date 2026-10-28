@@ -4,6 +4,12 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- The builder works fully from the keyboard: select blocks with Enter, move
+  them with Alt and the arrow keys (also as buttons on the selected block),
+  and add blocks from the list with Enter. Screen readers hear what moved
+  where. Press ? or "Keyboard" for the list of shortcuts.
+- The builder's "Publish" button is now "Save draft" (that's what it does
+  until publishing arrives), and it can be reached with Tab.
 - Site settings: set the site's colours, fonts, spacing, corner radius and
   page width in one place, with a live preview of your Home page. A
   contrast check flags colour pairs that are hard to read and offers a

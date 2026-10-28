@@ -64,6 +64,8 @@
 .cr-button:focus-visible { outline: 3px solid var(--cr-color-text); outline-offset: 3px; }
 .cr-bg-primary .cr-button-primary { background: var(--cr-color-onPrimary); color: var(--cr-color-primary); border-color: var(--cr-color-onPrimary); }
 .cr-bg-primary .cr-button-secondary { color: var(--cr-color-onPrimary); border-color: var(--cr-color-onPrimary); }
+/* On a Primary section the text colour can be too dark to see; use the label colour. */
+.cr-bg-primary .cr-button:focus-visible { outline-color: var(--cr-color-onPrimary); }
 
 /* Columns: 1 column on phones, 2 on tablets, the chosen count from 1024px. */
 .cr-columns {

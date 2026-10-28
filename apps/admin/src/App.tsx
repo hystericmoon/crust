@@ -1,8 +1,9 @@
 import { config, tokensToCss, type Page, type Site, type SiteTokens } from "@crust/blocks";
-import { Puck, type Data } from "@puckeditor/core";
+import { Puck, useGetPuck, type Data } from "@puckeditor/core";
 import { useEffect, useMemo, useState } from "react";
 import siteJson from "../../../content/site.json";
 import samplePage from "../../../content/pages/index.json";
+import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot, openKeyboardHelp } from "./keyboard/KeyboardEditing";
 import { SiteSettings } from "./settings/SiteSettings";
 import { loadSavedTokens, saveTokens } from "./tokens-store";
 
@@ -37,6 +38,19 @@ function useTokenStyles(css: string) {
   }, [css]);
 }
 
+/**
+ * Replaces Puck's Publish control, which is a <span> and can't be reached
+ * with the keyboard. It saves a draft, so it says so.
+ */
+function SaveDraftButton({ onSave }: { onSave: (data: Data) => void }) {
+  const getPuck = useGetPuck();
+  return (
+    <button type="button" className="crust-save" onClick={() => onSave(getPuck().appState.data)}>
+      Save draft
+    </button>
+  );
+}
+
 type Route = "builder" | "settings";
 const routeFromHash = (): Route => (location.hash.startsWith("#/settings") ? "settings" : "builder");
 
@@ -61,6 +75,15 @@ export function App() {
   useEffect(() => {
     document.title = route === "settings" ? "Site settings · Crust" : "Crust builder";
   }, [route]);
+
+  const saveDraft = (data: Data) => {
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+      setStatus("Draft saved in this browser. Saving to GitHub comes in a later step.");
+    } catch {
+      setStatus("Couldn't save the draft in this browser.");
+    }
+  };
 
   if (route === "settings") {
     return (
@@ -88,23 +111,22 @@ export function App() {
         viewports={viewports}
         headerTitle={site.name}
         overrides={{
-          headerActions: ({ children }) => (
+          headerActions: () => (
             <>
+              <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
+                Keyboard
+              </button>
               <a className="crust-header-link" href="#/settings">
                 Site settings
               </a>
-              {children}
+              <SaveDraftButton onSave={saveDraft} />
             </>
           ),
+          puck: KeyboardRoot,
+          iframe: KeyboardCanvas,
+          actionBar: KeyboardActionBar,
         }}
-        onPublish={(data) => {
-          try {
-            localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
-            setStatus("Draft saved in this browser. Saving to GitHub comes in a later step.");
-          } catch {
-            setStatus("Couldn't save the draft in this browser.");
-          }
-        }}
+        onPublish={saveDraft}
       />
       <div role="status" aria-live="polite" className="crust-status">
         {status}

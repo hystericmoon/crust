@@ -19,6 +19,36 @@ Features Claude suggests. They are not work until the owner adds them to
   live page. F002's checker could catch it the same way as missing alt
   text. Small; would fit in F004 or as its own item.
 
+## 2026-10-28 — F005 keyboard editing (Claude, reversible)
+
+- **Shortcuts**:
+  - Enter selects the focused block.
+  - Alt+↑/↓ moves it up or down.
+  - Alt+← moves it out of its section or column.
+  - Alt+→ moves it into the section or columns above.
+  - Alt+Shift+←/→ moves it to the previous or next column.
+  - Enter on a block in the list adds it after the selected block.
+  - Escape deselects.
+  - ? opens a help panel, also reachable from a "Keyboard" button in the header.
+- **Alt plus arrows** because it's the common "move item" chord (Google Docs,
+  VS Code), and it doesn't clash with Tab, typing or the browser. Shortcuts
+  are ignored while you're typing in a field.
+- **Every move is also a labelled button on the selected block's action
+  bar**, and buttons are only shown when that move is possible. The help
+  panel lists the keys, so nothing depends on remembering them.
+- **Every move and insert is announced** in a polite live region, e.g.
+  "Text moved out of Section into the page, position 3 of 3."
+- **Canvas blocks get screen-reader names**: "Text: Edit pages in the
+  builder…", role "block", plus a short hint. Puck's own text called them
+  "draggable", which promised a drag that keyboard users couldn't do.
+- **Focus ring**: a dark outline with a white halo on canvas blocks and
+  Puck's controls. On Primary sections, site buttons use the
+  label colour for their focus ring.
+- **Puck's "Publish" was a `<span>`**, which you can't reach with Tab. It's
+  replaced by a real button named **Save draft**, because that's what it does
+  until F008 (Publish) exists.
+- Moves go through Puck's own actions, so Undo and Redo work for them.
+
 ## 2026-10-28 — F003 Site settings (owner + Claude)
 
 **Owner's call** (after an Impeccable critique of the three design
