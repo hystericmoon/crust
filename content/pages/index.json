@@ -28,7 +28,7 @@
             { "type": "Spacer", "props": { "id": "Spacer-hero", "size": "sm" } },
             {
               "type": "Button",
-              "props": { "id": "Button-hero", "label": "See how it works", "href": "#how", "variant": "primary" }
+              "props": { "id": "Button-hero", "label": "See how it works", "href": "#how", "variant": "primary", "align": "center" }
             }
           ]
         }

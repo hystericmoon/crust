@@ -26,7 +26,8 @@ export type SectionProps = {
 export type HeadingProps = { text: string; level: "h1" | "h2" | "h3" | "h4"; align: Align };
 export type TextProps = { text: string; align: Align; tone: "default" | "muted" };
 export type ImageProps = { src: string; alt: string; caption: string };
-export type ButtonProps = { label: string; href: string; variant: "primary" | "secondary" };
+/** `align` was added in F012; pages saved before it have none and stay left-aligned. */
+export type ButtonProps = { label: string; href: string; variant: "primary" | "secondary"; align?: Align };
 export type SpacerProps = { size: SpacingStep };
 export type ColumnsProps = {
   count: "2" | "3" | "4";
@@ -187,12 +188,15 @@ export const config: Config<Components> = {
             { label: "Secondary", value: "secondary" },
           ],
         },
+        align: alignField,
       },
-      defaultProps: { label: "Learn more", href: "/", variant: "primary" },
-      render: ({ label, href, variant }) => (
-        <a className={`cr-button cr-button-${variant}`} href={safeUrl(href)}>
-          {label}
-        </a>
+      defaultProps: { label: "Learn more", href: "/", variant: "primary", align: "left" },
+      render: ({ label, href, variant, align }) => (
+        <div className={`cr-button-row cr-align-${align ?? "left"}`}>
+          <a className={`cr-button cr-button-${variant}`} href={safeUrl(href)}>
+            {label}
+          </a>
+        </div>
       ),
     },
     Spacer: {

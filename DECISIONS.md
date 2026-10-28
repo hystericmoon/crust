@@ -11,6 +11,16 @@ Features Claude suggests. They are not work until the owner adds them to
 - *(The four proposals so far were approved by the owner on 2026-10-28 and
   are now F011–F014 in `features.json`.)*
 
+## 2026-10-28 — F011–F014 (owner-approved proposals)
+
+- **F011:** the publish check looks for the Image block's placeholder
+  (`cr-image-empty`) in the rendered page, the same way it checks alt text.
+- **F012 Button alignment: page JSON gains an optional `align` prop on
+  Button.** No migration is needed: buttons saved without it render
+  left-aligned, exactly as before. The button now sits in a
+  `div.cr-button-row`, so alignment works like Heading and Text. The sample
+  hero button is centred to match its heading.
+
 ## 2026-10-28 — F005 keyboard editing (Claude, reversible)
 
 - **Shortcuts**:

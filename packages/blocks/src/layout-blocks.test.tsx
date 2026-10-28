@@ -127,3 +127,27 @@ describe("editor canvas", () => {
     expect(renderToStaticMarkup(<>{render({ children: <p>x</p> })}</>)).toBe('<div class="cr-page"><p>x</p></div>');
   });
 });
+
+describe("Button block alignment", () => {
+  const renderButton = (props: Record<string, unknown>) => {
+    const block = config.components.Button;
+    const render = block.render as unknown as Render<Record<string, unknown>>;
+    return renderToStaticMarkup(<>{render({ ...block.defaultProps, ...props, puck: { isEditing: false } })}</>);
+  };
+
+  it("offers left, center and right, defaulting to left for new buttons", () => {
+    const field = config.components.Button.fields?.align as { options: { value: string }[] };
+    expect(field.options.map((o) => o.value)).toEqual(["left", "center", "right"]);
+    expect(config.components.Button.defaultProps?.align).toBe("left");
+  });
+
+  it("wraps the link in an aligned row", () => {
+    expect(renderButton({ align: "center", label: "Go", href: "/go" })).toBe(
+      '<div class="cr-button-row cr-align-center"><a class="cr-button cr-button-primary" href="/go">Go</a></div>',
+    );
+  });
+
+  it("keeps buttons saved before alignment existed on the left", () => {
+    expect(renderButton({ align: undefined })).toContain('class="cr-button-row cr-align-left"');
+  });
+});

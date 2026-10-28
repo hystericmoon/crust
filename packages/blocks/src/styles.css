@@ -58,6 +58,7 @@
   font-weight: 600; text-decoration: none;
   transition: background-color 150ms ease, color 150ms ease;
 }
+.cr-button-row { margin: 0 0 var(--cr-space-sm); }
 .cr-button-primary { background: var(--cr-color-primary); color: var(--cr-color-onPrimary); }
 .cr-button-secondary { background: transparent; color: var(--cr-color-primary); }
 .cr-button:hover { filter: brightness(1.08); }

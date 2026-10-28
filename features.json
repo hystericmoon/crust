@@ -118,7 +118,7 @@
       "description": "Button block gets a Left / Center / Right alignment option so it can sit under centred headings. Existing pages keep left alignment. Added by the owner (approved Claude's proposal, 2026-10-28).",
       "depends_on": ["F004"],
       "done_check": "npm test -- blocks && npm run publish:local",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

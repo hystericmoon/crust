@@ -4,6 +4,8 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- Buttons can be aligned left, centre or right, so they line up under
+  centred headings.
 - Publishing also stops when an Image block has no image URL, instead of
   putting the "Add an image URL" placeholder on your live page.
 - The builder works fully from the keyboard: select blocks with Enter, move
