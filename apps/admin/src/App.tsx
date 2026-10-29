@@ -213,6 +213,16 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
     reload();
     return null;
   };
+  // F020: the browser draft goes to GitHub as it is, like "Save draft" in the builder.
+  const saveDraft = async (row: PageRow): Promise<string | null> => {
+    const draft = getLocalDraft(row.path);
+    if (!draft) return "There's no draft of this page in this browser any more.";
+    const res = await saveContent({ kind: "page", page: draft.page });
+    if (!res.ok) return `Not saved to GitHub: ${res.error} The draft is still safe in this browser.`;
+    saveLocalDraft(draft.page, true);
+    reload();
+    return null;
+  };
   const findLinks = async (row: PageRow) => {
     if (!githubOn || !row.inRepo) return null;
     const res = await getLinks(row.path);
@@ -244,6 +254,7 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
       findLinks={findLinks}
       deleted={githubOn ? deleted : null}
       onRestore={restore}
+      onSaveDraft={saveDraft}
       onCreate={(page) => {
         saveLocalDraft(page, false);
         location.hash = editHref(page.path);

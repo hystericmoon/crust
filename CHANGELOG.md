@@ -4,6 +4,8 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **"Save to GitHub" on pages marked "Draft in this browser",** so you can
+  save a draft from the page list without opening it.
 - **"Recently deleted"** under your page list: bring a deleted page back at
   its old address with one button.
 - **Renaming a page also updates the buttons and card links on your other

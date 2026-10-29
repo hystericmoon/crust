@@ -13,6 +13,13 @@ Features Claude suggests. They are not work until the owner adds them to
   what's not published yet" is F016. Claude's next four recommendations
   were approved the same day as F017–F020.)*
 
+## 2026-10-29 — F020 save browser drafts from the list (Claude, reversible)
+
+- **"Save to GitHub" appears in the actions column** of any page marked "Draft in this browser" (Home too), only while saving to GitHub is on. It sends the browser draft exactly as the builder's "Save draft" would, and the server checks it the same way.
+- **After saving,** the badge and button disappear, focus goes to the "Pages" heading, and the result is announced.
+- **If saving fails,** the reason shows in an alert above the list, and the draft stays in the browser.
+- **Rename/Delete now share the row's action group** with Save, wrapping on narrow screens.
+
 ## 2026-10-29 — F019 restore deleted pages (Claude, reversible)
 
 - **Where the list comes from:** recent commits under `content/pages` whose first line is the builder's own `Delete page /x from the builder`.

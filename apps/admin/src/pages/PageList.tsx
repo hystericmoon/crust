@@ -25,6 +25,8 @@ export interface PageListProps {
   /** Pages deleted from GitHub that can come back (F019); null or empty hides the section. */
   deleted?: DeletedPage[] | null;
   onRestore?: (page: DeletedPage) => PageAction;
+  /** Saves a page's browser draft to GitHub without opening it (F020). */
+  onSaveDraft?: (row: PageRow) => PageAction;
   /** Shown below the list (the Publish panel). */
   children?: ReactNode;
 }
@@ -37,13 +39,25 @@ export const editHref = (path: string) => `#/edit?path=${encodeURIComponent(path
 /** The badge for changes that aren't live yet (F016). */
 export const unpublishedLabel = { new: "Not published yet", edited: "Edited since publish" } as const;
 
-export function PageList({ siteName, rows, sourceNote, loadError, onCreate, githubOn = false, onRename, onDelete, findLinks, deleted, onRestore, children }: PageListProps) {
+export function PageList({ siteName, rows, sourceNote, loadError, onCreate, githubOn = false, onRename, onDelete, findLinks, deleted, onRestore, onSaveDraft, children }: PageListProps) {
   const [creating, setCreating] = useState(false);
   const [done, setDone] = useState("");
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   const canChange = (row: PageRow) => row.path !== "/" && (githubOn || !row.inRepo) && !!onRename && !!onDelete;
-  const anyActions = rows?.some(canChange) ?? false;
+  const canSave = (row: PageRow) => githubOn && row.localChanges && !!onSaveDraft;
+  const anyActions = rows?.some((r) => canChange(r) || canSave(r)) ?? false;
+  const [saving, setSaving] = useState<string | null>(null);
+  const [failure, setFailure] = useState("");
+
+  const saveDraft = async (row: PageRow) => {
+    if (saving) return;
+    setSaving(row.path);
+    setFailure("");
+    const failed = await after(onSaveDraft!(row), `Saved “${row.title}” to GitHub. Visitors see it after you publish.`);
+    setSaving(null);
+    if (failed) setFailure(failed);
+  };
 
   // After a change the row may be gone, so focus goes to the list heading and the result is announced.
   const after = (action: PageAction, message: string): PageAction =>
@@ -102,6 +116,11 @@ export function PageList({ siteName, rows, sourceNote, loadError, onCreate, gith
           <p className="st-status-inline" role="status">
             {done}
           </p>
+          {failure ? (
+            <p className="st-error" role="alert">
+              {failure}
+            </p>
+          ) : null}
           {rows === null ? (
             <p role="status">Loading pages…</p>
           ) : rows.length === 0 ? (
@@ -134,15 +153,28 @@ export function PageList({ siteName, rows, sourceNote, loadError, onCreate, gith
                     <td data-label="Last edited">{formatDate(row.lastEdited)}</td>
                     {anyActions ? (
                       <td className="pg-actions-cell">
-                        {canChange(row) ? (
-                          <PageActions
-                            row={row}
-                            otherPaths={rows.filter((r) => r.path !== row.path).map((r) => r.path)}
-                            onRename={rename}
-                            onDelete={remove}
-                            findLinks={findLinks}
-                          />
-                        ) : null}
+                        <div className="pg-row-actions">
+                          {canSave(row) ? (
+                            <button
+                              type="button"
+                              className="st-button pg-small"
+                              onClick={() => saveDraft(row)}
+                              aria-disabled={saving !== null || undefined}
+                            >
+                              {saving === row.path ? "Saving…" : "Save to GitHub"}
+                              <span className="pg-sr"> {row.title}</span>
+                            </button>
+                          ) : null}
+                          {canChange(row) ? (
+                            <PageActions
+                              row={row}
+                              otherPaths={rows.filter((r) => r.path !== row.path).map((r) => r.path)}
+                              onRename={rename}
+                              onDelete={remove}
+                              findLinks={findLinks}
+                            />
+                          ) : null}
+                        </div>
                       </td>
                     ) : null}
                   </tr>

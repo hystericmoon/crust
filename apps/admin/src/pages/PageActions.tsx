@@ -48,7 +48,7 @@ export function PageActions({ row, otherPaths, onRename, onDelete, findLinks }: 
   };
 
   return (
-    <div className="pg-row-actions">
+    <>
       <button ref={renameRef} type="button" className="st-button pg-small" onClick={() => setOpen("rename")}>
         Rename<span className="pg-sr"> {row.title}</span>
       </button>
@@ -66,7 +66,7 @@ export function PageActions({ row, otherPaths, onRename, onDelete, findLinks }: 
         />
       ) : null}
       {open === "delete" ? <DeleteDialog row={row} onDelete={onDelete} onClose={() => close("delete")} onDone={() => setOpen(null)} /> : null}
-    </div>
+    </>
   );
 }
 

@@ -198,7 +198,7 @@
       "description": "Pages marked \"Draft in this browser\" get a \"Save to GitHub\" button in the page list, so a draft can be saved without opening it in the builder. Added by the owner (approved Claude's recommendation, 2026-10-28).",
       "depends_on": ["F007"],
       "done_check": "npm test -- save-draft && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     }

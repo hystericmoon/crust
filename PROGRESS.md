@@ -5,16 +5,18 @@ to "Log".
 
 ## Current
 
-- **Milestone:** 1 (first working slice). F001–F019 pass their done checks.
+- **Milestone:** 1 (first working slice). F001–F020 pass their done checks.
 - **Merged to main:** F001–F016 (PRs #1, #2, #3).
 - **In PR #4:** F017 "Open live site" uses the real address, F018 update
-  links on rename, F019 restore deleted pages.
-- **Next:** F020 save browser drafts from the page list (owner-approved).
+  links on rename, F019 restore deleted pages, F020 save browser drafts
+  from the page list.
+- **Next:** nothing left in features.json. After the owner's setup: real
+  save, rename, restore and publish checks.
 - **Waiting on the owner:**
   - Switch on saving and publishing: follow `docs/setup-saving.md`
     (Cloudflare Access, GitHub token, three Pages settings), then say "done".
   - Review on the preview link and set `reviewed: true`: F010, F004, F003,
-    F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019.
+    F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019, F020.
 - **Next after setup:** Claude redeploys, checks a real save, a real
   rename and a real publish, and fixes anything that shows up. Then
   Milestone 1 is complete.
@@ -120,3 +122,7 @@ to "Log".
   page back as it was before deletion (POST /api/restore), refusing taken
   addresses or anything that isn't a builder deletion. 7 new tests; done
   check passes.
+- 2026-10-29 — F020 done: "Save to GitHub" on rows with a browser draft
+  (GitHub on), saving the draft as the builder would. Checked F017–F020
+  together in Chromium at 1280 and 390: axe clean, no overflow, no console
+  errors, save flow removes the badge. 4 new tests; done check passes.
