@@ -54,6 +54,8 @@ describe("preview deploy workflow (F010)", () => {
 
   it("checks the live preview, writes a summary and comments on the PR", () => {
     expect(step("Check the preview loads").run).toContain("<title>Crust builder</title>");
+    // Once Cloudflare Access protects the admin, a redirect to its sign-in page counts as deployed.
+    expect(step("Check the preview loads").run).toContain(".cloudflareaccess.com");
     expect(step("Write job summary").run).toContain("GITHUB_STEP_SUMMARY");
     expect(step("Comment on the pull request").run).toContain("crust-preview-deploy");
   });

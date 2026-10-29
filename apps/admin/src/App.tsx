@@ -1,7 +1,7 @@
 import { config, tokensToCss, type Page, type Site, type SiteTokens } from "@crust/blocks";
 import { relinkPage } from "@crust/blocks/links";
 import { Puck, useGetPuck, type Data } from "@puckeditor/core";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import siteJson from "../../../content/site.json";
 import {
   deletePage,
@@ -34,6 +34,7 @@ import {
 } from "./pages/store";
 import { markUnpublished } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
+import { PublishShortcut, usePendingCount } from "./publish/shortcut";
 import { SiteSettings } from "./settings/SiteSettings";
 import { loadSavedTokens, saveTokens } from "./tokens-store";
 
@@ -80,7 +81,7 @@ export function saveMessage(result: ApiResult<unknown>, savedLocally: boolean, w
 
 // --- Routing: #/ pages · #/edit?path=/about · #/settings ---------------------
 
-export type Route = { name: "pages" } | { name: "edit"; path: string } | { name: "settings" };
+export type Route = { name: "pages"; focus?: "publish" } | { name: "edit"; path: string } | { name: "settings" };
 
 export function parseRoute(hash: string): Route {
   if (hash.startsWith("#/settings")) return { name: "settings" };
@@ -88,6 +89,8 @@ export function parseRoute(hash: string): Route {
     const path = new URLSearchParams(hash.split("?")[1] ?? "").get("path");
     if (path) return { name: "edit", path };
   }
+  // F024: the Publish shortcut lands on the page list with focus on Publish.
+  if (new URLSearchParams(hash.split("?")[1] ?? "").get("focus") === "publish") return { name: "pages", focus: "publish" };
   return { name: "pages" };
 }
 
@@ -129,9 +132,14 @@ export function App() {
       route.name === "settings" ? "Site settings · Crust" : route.name === "edit" ? `Editing ${route.path} · Crust` : "Pages · Crust";
   }, [route]);
 
+  // F024: shown in the builder and Site settings top bars; counted again on each screen change.
+  const pendingCount = usePendingCount(githubOn, route.name);
+  const shortcut = (className: string) => (githubOn ? <PublishShortcut count={pendingCount} className={className} /> : null);
+
   if (route.name === "settings") {
     return (
       <SiteSettings
+        headerLink={shortcut("st-button st-link-button")}
         site={site}
         page={getLocalDraft("/")?.page ?? bundledPages().find((p) => p.path === "/") ?? bundledPages()[0]!}
         saved={saved}
@@ -149,9 +157,9 @@ export function App() {
     );
   }
 
-  if (route.name === "edit") return githubOn === null ? <Loading /> : <Builder key={route.path} path={route.path} githubOn={githubOn} />;
+  if (route.name === "edit") return githubOn === null ? <Loading /> : <Builder key={route.path} path={route.path} githubOn={githubOn} shortcut={shortcut("crust-header-link")} />;
 
-  return <Pages githubOn={githubOn} />;
+  return <Pages githubOn={githubOn} focusPublish={route.name === "pages" && route.focus === "publish"} />;
 }
 
 function Loading() {
@@ -162,7 +170,7 @@ function Loading() {
   );
 }
 
-function Pages({ githubOn }: { githubOn: boolean | null }) {
+function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; focusPublish?: boolean }) {
   const [rows, setRows] = useState<PageRow[] | null>(null);
   const [error, setError] = useState<string>();
   const [changes, setChanges] = useState<PendingChanges | null>(null);
@@ -191,6 +199,14 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
     void getChanges().then((res) => setChanges(res.ok ? res : null));
     void getDeleted().then((res) => setDeleted(res.ok ? res.pages : null));
   }, [githubOn, version]);
+
+  // F024: arriving from the Publish shortcut, focus goes to the Publish panel once the list is there.
+  useEffect(() => {
+    if (!focusPublish || rows === null) return;
+    const heading = document.getElementById("publish-h");
+    heading?.focus();
+    heading?.scrollIntoView({ block: "start" });
+  }, [focusPublish, rows === null]);
 
   // Rename and delete (F015): through GitHub for pages there, in this browser otherwise.
   const rename = async (row: PageRow, to: string): Promise<string | null> => {
@@ -223,6 +239,15 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
     reload();
     return null;
   };
+  // F022: Publish offers to save these first.
+  const drafts = githubOn ? (rows ?? []).filter((r) => r.localChanges) : [];
+  const saveAllDrafts = async (): Promise<string | null> => {
+    for (const row of drafts) {
+      const failed = await saveDraft(row);
+      if (failed) return `“${row.title}”: ${failed}`;
+    }
+    return null;
+  };
   const findLinks = async (row: PageRow) => {
     if (!githubOn || !row.inRepo) return null;
     const res = await getLinks(row.path);
@@ -248,7 +273,7 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
         error
           ? "Showing the pages in this browser for now."
           : githubOn
-          ? "Your pages on GitHub. Pages with changes saved only in this browser are marked, and so are saved pages that aren't live yet."
+          ? "Each page shows where its latest version is: only in this browser, saved, or live."
           : "Saving to GitHub isn't switched on yet, so this lists the pages built into the app plus drafts saved in this browser. Renaming and deleting those pages switches on with it."
       }
       githubOn={githubOn === true}
@@ -258,6 +283,7 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
       deleted={githubOn ? deleted : null}
       onRestore={restore}
       onSaveDraft={saveDraft}
+      liveKnown={githubOn === true && changes !== null}
       onCreate={(page) => {
         saveLocalDraft(page, false);
         location.hash = editHref(page.path);
@@ -268,13 +294,15 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
         siteUrl={site.baseUrl}
         changes={changes}
         titles={new Map((rows ?? []).map((r) => [r.path, r.title]))}
+        drafts={drafts.map((r) => ({ path: r.path, title: r.title }))}
+        onSaveDrafts={saveAllDrafts}
         onFinished={reload}
       />
     </PageList>
   );
 }
 
-function Builder({ path, githubOn }: { path: string; githubOn: boolean }) {
+function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean; shortcut?: ReactNode }) {
   const [page, setPage] = useState<Page | null | undefined>(undefined);
   const [status, setStatus] = useState<string>("");
 
@@ -334,6 +362,7 @@ function Builder({ path, githubOn }: { path: string; githubOn: boolean }) {
               <a className="crust-header-link" href="#/settings">
                 Site settings
               </a>
+              {shortcut}
               <SaveDraftButton onSave={saveDraft} />
             </>
           ),

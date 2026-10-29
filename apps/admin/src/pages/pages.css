@@ -9,12 +9,6 @@
 .pg-table tbody th { font-weight: 600; }
 .pg-table tbody th a { display: inline-flex; align-items: center; min-height: 24px; color: var(--st-text); text-underline-offset: 0.2em; }
 .pg-path { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.9375rem; overflow-wrap: anywhere; }
-.pg-badge {
-  display: inline-block; margin-left: 8px; padding: 2px 8px;
-  border: 1px solid var(--st-border); border-radius: 999px;
-  font-size: 0.75rem; font-weight: 500; color: var(--st-text); vertical-align: 1px;
-}
-
 .pg-form { display: grid; gap: 16px; }
 .pg-field { display: grid; gap: 4px; }
 .pg-field .st-help, .pg-field .st-error { margin: 0; }
@@ -44,7 +38,7 @@
 /* F015: rename and delete */
 .pg-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .pg-actions-cell { text-align: right; white-space: nowrap; }
-.pg-row-actions { display: inline-flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.pg-row-actions { display: inline-flex; flex-wrap: nowrap; justify-content: flex-end; gap: 8px; }
 .pg-small { min-height: 32px; padding: 4px 12px; font-size: 0.875rem; }
 .pg-danger { border-color: var(--st-danger); background: var(--st-danger); color: #ffffff; }
 .pg-danger:hover { background: var(--st-danger-hover); border-color: var(--st-danger-hover); }
@@ -61,15 +55,13 @@
 .pg-dialog p { margin: 0; }
 .pg-dialog-body { display: grid; gap: 8px; }
 #pages-h:focus { outline: none; }
-#pages-h:focus-visible { outline: 2px solid var(--st-focus); outline-offset: 4px; }
+#pages-h:focus-visible, #publish-h:focus-visible { outline: 2px solid var(--st-focus); outline-offset: 4px; }
 
-/* F016: saved but not live yet */
-.pg-badge.is-pending { border-style: dashed; }
 
 @media (max-width: 640px) {
   .pg-table td.pg-actions-cell { padding-top: 8px; text-align: left; }
   .pg-table td.pg-actions-cell::before { content: none; }
-  .pg-row-actions { justify-content: flex-start; }
+  .pg-row-actions { flex-wrap: wrap; justify-content: flex-start; }
   .pg-small { min-height: 44px; }
 }
 
@@ -106,3 +98,19 @@
   .pg-table tbody th a { min-height: 44px; }
   .pg-table td.pg-date { white-space: normal; }
 }
+
+/* F021: one status per page. The dot is decoration; the words carry the status. */
+.pg-status { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.pg-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; box-sizing: border-box; }
+.pg-status.is-live .pg-dot { background: var(--st-ok); }
+.pg-status.is-new .pg-dot, .pg-status.is-edited .pg-dot { border: 2px solid var(--st-pending); }
+.pg-status.is-unsaved .pg-dot, .pg-status.is-local .pg-dot { border: 2px solid var(--st-muted); }
+.pg-status.is-saved .pg-dot, .pg-status.is-builtin .pg-dot { background: var(--st-border); }
+
+/* F023: find and sort */
+.pg-tools { display: flex; flex-wrap: wrap; align-items: end; gap: 12px 16px; margin: 16px 0 8px; }
+.pg-tools .pg-field:first-child { flex: 1 1 16rem; }
+.pg-tools .st-input { width: 100%; max-width: none; }
+.pg-tools select.st-input { padding: 0 12px; }
+.pg-no-match { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 16px 0; }
+.pg-no-match p { margin: 0; }

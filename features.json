@@ -201,6 +201,46 @@
       "passes": true,
       "needs_review": true,
       "reviewed": false
+    },
+    {
+      "id": "F021",
+      "title": "One status per page in the page list",
+      "description": "A Status column replaces the \"Draft in this browser\" / \"Not published yet\" / \"Edited since publish\" badges with one plain status per page: Only in this browser, Changes not saved, Saved – not live yet, or Live. The long note above the list becomes one short line. Added by the owner (approved Claude's proposal from the Impeccable review, 2026-10-29).",
+      "depends_on": ["F016", "F020"],
+      "done_check": "npm test -- page-status && npm run build",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F022",
+      "title": "Publish saves waiting browser drafts first",
+      "description": "If pages have changes only in this browser, Publish asks once: save them and publish, publish without them, or cancel. The waiting list and the button count include those drafts. Added by the owner (approved Claude's proposal from the Impeccable review, 2026-10-29).",
+      "depends_on": ["F008", "F020"],
+      "done_check": "npm test -- publish-drafts && npm run build",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F023",
+      "title": "Find and sort pages",
+      "description": "A \"Find a page\" box filters the page list by title or address, and a sort choice orders it by newest edit (default) or by address. The number of matching pages is announced; no matches shows a clear way back. Added by the owner (approved Claude's proposal from the Impeccable review, 2026-10-29).",
+      "depends_on": ["F007"],
+      "done_check": "npm test -- find-sort && npm run build",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F024",
+      "title": "Publish shortcut in the top bar",
+      "description": "The builder and Site settings top bars get a \"Publish\" link with the number of waiting changes; it opens the page list with focus on the Publish panel. Added by the owner (approved Claude's proposal from the Impeccable review, 2026-10-29).",
+      "depends_on": ["F008", "F016"],
+      "done_check": "npm test -- publish-shortcut && npm run build",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
     }
   ]
 }

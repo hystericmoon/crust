@@ -8,20 +8,50 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
-- **One status per page instead of two badges.** A "Status" column with
-  one value per row ("Only in this browser", "Saved, not live yet",
-  "Live") replaces the "Draft in this browser" and "Edited since publish"
-  badges and the long note above the list. (From the Impeccable review.)
-- **Publish saves waiting drafts first.** With one confirmation, so "Save
-  to GitHub" stops being a separate idea you have to remember.
-- **Find and sort pages.** A "Find a page" box and newest-edited-first
-  order, once a site has more than about 10 pages.
-- **Publish shortcut in the header.** "Publish 3 changes" next to New page,
-  so it's one tap away on every screen.
 - *(All proposals so far were approved by the owner on 2026-10-28: the
   first four are F011–F014, "rename and delete pages" is F015 and "show
   what's not published yet" is F016. Claude's next four recommendations
-  were approved the same day as F017–F020.)*
+  were approved the same day as F017–F020. The four from the Impeccable
+  review were approved on 2026-10-29 as F021–F024.)*
+
+## 2026-10-29 — F021–F024 (owner-approved proposals; details Claude, reversible)
+
+**F021: one status per page**
+- **The rule:** the most urgent status wins.
+  1. Only in this browser
+  2. Changes not saved
+  3. Saved, not live yet / Edits not live yet
+  4. Live
+- **"Live" is shown only when the last publish is known;** otherwise it says "Saved". Before GitHub is on: "Built into the app" or "Only in this browser".
+- **The status is a column right after the title,** with a small dot. The words carry the meaning:
+  - filled green: live
+  - amber ring: not live yet
+  - grey ring: only in the browser / not saved
+  - filled grey: saved
+- **A new token, `--st-pending` (#b54708),** colours the amber ring. The badges and the long note above the list are gone.
+
+**F022: Publish saves drafts first**
+- **Drafts are listed and counted** in the Publish panel as "changes in this browser, saved when you publish".
+- **Publishing asks once:** "Save N pages first?" with Save and publish (focused) / Publish without them / Cancel.
+  - A modal is earned here: it's a decision before a production action.
+- **Drafts are saved one by one.** The first failure stops everything with its reason, and nothing is published.
+- **The row's "Save to GitHub" (F020) stays** for saving without publishing.
+
+**F023: find and sort**
+- **Appears from 6 pages.** A shorter list doesn't need it.
+- **Find:** every typed word must appear in the title or address, ignoring case and accents. The match count is announced, and no matches offers "Clear search".
+- **Sort:** newest edit (default; undated pages last) or address (Home first). The choice is remembered in this browser only, as a per-viewer convenience.
+
+**F024: Publish shortcut**
+- **"Publish (N)" in the builder and Site settings top bars.** Screen readers hear "Publish, N changes waiting".
+- **It opens the page list with focus on the Publish panel** (`#/?focus=publish`); it doesn't publish from there.
+  - Publishing from the builder would skip the list of what's waiting, which is the point of the panel.
+- **Not on the page list itself,** because the Publish panel is already at its top (Impeccable fix).
+- **The count includes unsaved browser drafts.** It's shown only after a first publish and only while GitHub is on, and it refreshes on every screen change.
+
+**Deploy check (preview.yml)**
+- **Fixed:** a fresh deploy failed once because `/api/status` answered 404 for a few seconds. The check now retries both the page and the API.
+- **Once Access is on,** a redirect to `*.cloudflareaccess.com` counts as "deployed and private". Without this, every deploy would fail.
 
 ## 2026-10-29 — Impeccable review of the Pages screen (owner asked: "let Impeccable check it, fix it and move forward")
 

@@ -115,13 +115,19 @@ jobs:
         env:
           URL: ${{ steps.deploy.outputs.url }}
         run: |
-          # A new project's pages.dev name can take a minute or two to resolve.
+          # A new project's pages.dev name can take a minute or two to resolve,
+          # and the server functions can lag the static files by a few seconds.
           for attempt in $(seq 1 12); do
-            if curl -fsSL --max-time 10 "$URL" | grep -q "<title>Crust builder</title>"; then
+            # Behind Cloudflare Access the page redirects to the sign-in screen:
+            # that means it's deployed and private, which is what we want.
+            target=$(curl -sS -o /dev/null --max-time 10 -w '%{redirect_url}' "$URL" || true)
+            if [[ "$target" == *".cloudflareaccess.com"* ]]; then
+              echo "Preview is live and private (Cloudflare Access sign-in): $URL"
+              exit 0
+            fi
+            if curl -fsSL --max-time 10 "$URL" | grep -q "<title>Crust builder</title>" \
+              && curl -fsSL --max-time 10 "$URL/api/status" | jq -e '.ok == true' > /dev/null; then
               echo "Preview is live: $URL"
-              # The save API answers with JSON (it stays switched off until Access and the token are set).
-              curl -fsSL --max-time 10 "$URL/api/status" | jq -e '.ok == true' > /dev/null \
-                || { echo "::error::$URL/api/status didn't answer; the server functions may not have deployed."; exit 1; }
               exit 0
             fi
             echo "Attempt $attempt: not ready yet, waiting 15s"

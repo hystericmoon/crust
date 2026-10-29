@@ -2,6 +2,7 @@ import type { Page } from "@crust/blocks";
 import type { DeletedPage } from "../api-client";
 import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { checkNewPage, createPage, slugify, type NewPageErrors, type NewPageInput } from "./new-page";
+import { FIND_FROM, loadSort, matchesQuery, pageStatus, saveSort, SORT_LABELS, sortRows, type SortKey } from "./list-view";
 import { focusAfterDialog, PageActions, type LinkingPage, type PageAction } from "./PageActions";
 import type { PageRow } from "./store";
 
@@ -29,7 +30,9 @@ export interface PageListProps {
   onRestore?: (page: DeletedPage) => PageAction;
   /** Saves a page's browser draft to GitHub without opening it (F020). */
   onSaveDraft?: (row: PageRow) => PageAction;
-  /** Shown below the list (the Publish panel). */
+  /** True once we know what the last publish contained, so a page can be called "Live" (F021). */
+  liveKnown?: boolean;
+  /** Shown above the list (the Publish panel). */
   children?: ReactNode;
 }
 
@@ -38,11 +41,12 @@ const formatDate = (iso: string | null) =>
 
 export const editHref = (path: string) => `#/edit?path=${encodeURIComponent(path)}`;
 
-/** The badge for changes that aren't live yet (F016). */
-export const unpublishedLabel = { new: "Not published yet", edited: "Edited since publish" } as const;
-
-export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCreate, githubOn = false, onRename, onDelete, findLinks, deleted, onRestore, onSaveDraft, children }: PageListProps) {
+export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCreate, githubOn = false, onRename, onDelete, findLinks, deleted, onRestore, onSaveDraft, liveKnown = false, children }: PageListProps) {
   const [creating, setCreating] = useState(false);
+  // F023: find and sort.
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState<SortKey>(loadSort);
+  const findId = useId();
   const [done, setDone] = useState("");
   const headingRef = useRef<HTMLHeadingElement>(null);
   const newPageRef = useRef<HTMLButtonElement>(null);
@@ -55,6 +59,9 @@ export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCre
   }, [done]);
 
   const canChange = (row: PageRow) => row.path !== "/" && (githubOn || !row.inRepo) && !!onRename && !!onDelete;
+  const showTools = (rows?.length ?? 0) >= FIND_FROM;
+  const visible = rows ? sortRows(showTools && query.trim() ? rows.filter((r) => matchesQuery(r, query)) : rows, sort) : null;
+
   const canSave = (row: PageRow) => githubOn && row.localChanges && !!onSaveDraft;
   const anyActions = rows?.some((r) => canChange(r) || canSave(r)) ?? false;
   const [saving, setSaving] = useState<string | null>(null);
@@ -149,10 +156,62 @@ export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCre
           ) : rows.length === 0 ? (
             <p>No pages yet. Use "New page" to make the first one.</p>
           ) : (
+            <>
+            {showTools ? (
+              <div className="pg-tools">
+                <div className="pg-field">
+                  <label className="st-field-label" htmlFor={`${findId}-find`}>
+                    Find a page
+                  </label>
+                  <input
+                    id={`${findId}-find`}
+                    className="st-input"
+                    type="search"
+                    value={query}
+                    placeholder="Title or address"
+                    autoComplete="off"
+                    onChange={(e) => setQuery(e.target.value)}
+                  />
+                </div>
+                <div className="pg-field">
+                  <label className="st-field-label" htmlFor={`${findId}-sort`}>
+                    Sort by
+                  </label>
+                  <select
+                    id={`${findId}-sort`}
+                    className="st-input"
+                    value={sort}
+                    onChange={(e) => {
+                      const next = e.target.value as SortKey;
+                      setSort(next);
+                      saveSort(next);
+                    }}
+                  >
+                    {(Object.keys(SORT_LABELS) as SortKey[]).map((k) => (
+                      <option key={k} value={k}>
+                        {SORT_LABELS[k]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <p className="pg-sr" role="status">
+                  {query.trim() ? `${visible!.length} of ${rows.length} pages` : ""}
+                </p>
+              </div>
+            ) : null}
+            {visible!.length === 0 ? (
+              <div className="pg-no-match">
+                <p>No pages match “{query.trim()}”.</p>
+                <button type="button" className="st-button pg-small" onClick={() => setQuery("")}>
+                  Clear search
+                </button>
+              </div>
+            ) : (
             <table className="pg-table">
               <thead>
                 <tr>
                   <th scope="col">Title</th>
+                  <th scope="col">Status</th>
                   <th scope="col">Address</th>
                   <th scope="col">Last edited</th>
                   {anyActions ? (
@@ -163,13 +222,19 @@ export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCre
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row) => (
+                {visible!.map((row) => {
+                  const status = pageStatus(row, githubOn, liveKnown);
+                  return (
                   <tr key={row.path}>
                     <th scope="row">
                       <a href={editHref(row.path)}>{row.title}</a>
-                      {row.localChanges ? <span className="pg-badge">Draft in this browser</span> : null}
-                      {row.unpublished ? <span className="pg-badge is-pending">{unpublishedLabel[row.unpublished]}</span> : null}
                     </th>
+                    <td data-label="Status">
+                      <span className={`pg-status is-${status.key}`}>
+                        <span className="pg-dot" aria-hidden="true" />
+                        {status.label}
+                      </span>
+                    </td>
                     <td className="pg-path" data-label="Address">
                       {row.path}
                     </td>
@@ -204,9 +269,12 @@ export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCre
                       </td>
                     ) : null}
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
+            )}
+            </>
           )}
         </section>
         {deleted?.length && onRestore ? (

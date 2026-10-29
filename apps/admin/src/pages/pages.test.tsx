@@ -115,7 +115,7 @@ describe("pages: list screen", () => {
     const table = screen.getByRole("table");
     const [, home, about] = within(table).getAllByRole("row");
     expect(within(home!).getByRole("link", { name: "Home" }).getAttribute("href")).toBe("#/edit?path=%2F");
-    expect(about!.textContent).toContain("Draft in this browser");
+    expect(about!.textContent).toContain("Only in this browser");
     expect(about!.textContent).toContain("Not recorded yet");
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Demo: pages");
   });
