@@ -15,7 +15,7 @@ the first unchecked step, `git checkout` its branch, carry on.
 - [x] F029 build on `f029-per-device-columns` (PR #13)
 - [x] F030 Content/Style/Advanced tabs on `f030-settings-tabs` (from F029's branch)
 - [x] F031 Header, footer and menu on `f031-header-footer` (from F030's), draft PR (base `f030-settings-tabs`)
-- [ ] F032 More elements on `f032-more-elements` (from F031's)
+- [x] F032 More elements on `f032-more-elements` (from F031's), draft PR (base `f031-header-footer`)
 - [ ] F033 Theme pack on `f033-theme-pack` (from F032's)
 
 ## Current
@@ -55,7 +55,7 @@ the first unchecked step, `git checkout` its branch, carry on.
   - Check the live site on his phone.
   - Review on the preview link and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019, F020,
-    F021, F022, F023, F024, F025, F026, F027, F028, F029, F030, F031.
+    F021, F022, F023, F024, F025, F026, F027, F028, F029, F030, F031, F032.
 - **Reminder:** the Cloudflare API token expires on the date the owner set
   (recommended 2027-01-26), and the GitHub token (crust-admin-save) after
   90 days, around 2027-01-27. Both fail with a clear error; make a new one
@@ -248,3 +248,12 @@ the first unchecked step, `git checkout` its branch, carry on.
   with JavaScript off: menu opens, no overflow, axe clean. 26 new tests
   (417 total); done check passes. Owner to try: Site settings → Header &
   menu, change the menu, then look at the preview on desktop and phone.
+- 2026-10-29 — F032 done: Grid of cards, Gallery, Accordion / FAQ, Icon
+  list, Logo row, Quote, Image overlay. Repeating items edited in a
+  keyboard-friendly list (arrow buttons, announcements) instead of
+  Puck's drag-only list. Renaming a page updates links inside them. A
+  sample page of all seven on every section style is axe-checked with
+  all 9 presets. Checked in Chromium: list editor moves, adds and types
+  into the canvas with the keyboard; axe clean. 23 new tests (440 total);
+  done check passes. Owner to try: add an Accordion and a Gallery from
+  the block list and edit their items.

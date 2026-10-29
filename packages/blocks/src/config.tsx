@@ -1,24 +1,22 @@
 import type { Config, Slot } from "@puckeditor/core";
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
+import { alignField, paragraphs, vars, type Align } from "./block-helpers";
+import {
+  moreBlocks,
+  type AccordionProps,
+  type GalleryProps,
+  type GridProps,
+  type IconListProps,
+  type ImageOverlayProps,
+  type LogoRowProps,
+  type QuoteProps,
+} from "./more-blocks";
 import { spaceVar, spacingField } from "./fields";
 import { sectionStyleIds, sectionStyleNames, tintLevels, tintNames, type SectionStyleId, type TintLevel } from "./section-styles";
 import type { SpacingStep } from "./tokens";
 import { safeUrl } from "./url";
 import { cleanAnchor, columnClasses, hiddenLabel, hideClasses, type ColumnWidths, type HideOn } from "./responsive";
 
-type Align = "left" | "center" | "right";
-const alignField = {
-  type: "radio" as const,
-  label: "Alignment",
-  options: [
-    { label: "Left", value: "left" },
-    { label: "Center", value: "center" },
-    { label: "Right", value: "right" },
-  ],
-};
-
-/** Inline style that only sets CSS custom properties. */
-const vars = (v: Record<string, string>) => v as CSSProperties;
 
 export const sectionHeights = ["auto", "medium", "large", "full"] as const;
 export type SectionHeight = (typeof sectionHeights)[number];
@@ -81,6 +79,13 @@ export type Components = {
   Spacer: SpacerProps & Visibility;
   Columns: ColumnsProps & Visibility;
   Card: CardProps & Visibility;
+  Grid: GridProps & Visibility;
+  Gallery: GalleryProps & Visibility;
+  Accordion: AccordionProps & Visibility;
+  IconList: IconListProps & Visibility;
+  LogoRow: LogoRowProps & Visibility;
+  Quote: QuoteProps & Visibility;
+  ImageOverlay: ImageOverlayProps & Visibility;
 };
 
 const backgroundField = {
@@ -96,15 +101,6 @@ const backgroundField = {
 /** Blocks that can't go inside a column (no full-width sections or nested columns). */
 const columnSlot = { type: "slot" as const, disallow: ["Section", "Columns"] };
 
-/** Splits text on blank lines into paragraphs. React escapes the content. */
-function paragraphs(text: string): ReactNode[] {
-  return text
-    .split(/\n\s*\n/)
-    .map((p) => p.trim())
-    .filter(Boolean)
-    .map((p, i) => <p key={i}>{p}</p>);
-}
-
 const blocks: Config<Components> = {
   // Gives the editor canvas the published page's base styles (font, colours),
   // so the preview matches. The renderer writes its own <body class="cr-page">.
@@ -118,8 +114,9 @@ const blocks: Config<Components> = {
     render: ({ children }) => <div className="cr-page">{children}</div>,
   },
   categories: {
-    layout: { title: "Layout", components: ["Section", "Columns", "Spacer"] },
-    content: { title: "Content", components: ["Heading", "Text", "Image", "Button", "Card"] },
+    layout: { title: "Layout", components: ["Section", "Columns", "Grid", "Spacer"] },
+    content: { title: "Content", components: ["Heading", "Text", "Image", "Button", "Card", "IconList", "Quote", "Accordion"] },
+    media: { title: "Media", components: ["Gallery", "ImageOverlay", "LogoRow"] },
   },
   components: {
     Section: {
@@ -359,6 +356,7 @@ const blocks: Config<Components> = {
         );
       },
     },
+    ...(moreBlocks as unknown as Pick<Config<Components>["components"], keyof typeof moreBlocks>),
   },
 };
 
