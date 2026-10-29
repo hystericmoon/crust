@@ -82,6 +82,10 @@ scripts/               init.sh and other helpers
 
 `puck` is Puck's own `Data` shape: a block tree, never raw HTML.
 
+`tokens.sectionStyles` (optional, added with F025) defines the site-wide
+section styles; a Section's `background` names one (`background`,
+`surface`, `primary`, `dark`).
+
 `content/redirects.json` (optional, added with F015)
 ```json
 [{ "from": "/old-address", "to": "/new-address" }]

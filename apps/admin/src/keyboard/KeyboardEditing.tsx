@@ -15,6 +15,7 @@
  */
 import { ActionBar, createUsePuck, useGetPuck, type ComponentData, type Config, type Data } from "@puckeditor/core";
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
+import { SectionToolbar } from "../sections/editing";
 import { availableMoves, planInsert, planMove, type MoveKind } from "./moves";
 
 type PuckApi = ReturnType<ReturnType<typeof useGetPuck>>;
@@ -349,6 +350,8 @@ export function KeyboardActionBar({
         </ActionBar.Group>
       ) : null}
       <ActionBar.Group>{children}</ActionBar.Group>
+      {/* F025: style, height and image for a selected Section. */}
+      <SectionToolbar />
     </ActionBar>
   );
 }

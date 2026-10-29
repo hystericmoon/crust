@@ -1,5 +1,21 @@
-export { config } from "./config";
-export type { Components } from "./config";
+export { config, sectionHeights, sectionHeightNames } from "./config";
+export type { Components, SectionProps, SectionHeight, SectionAlign } from "./config";
+export {
+  sectionStyleIds,
+  sectionStyleNames,
+  buttonLooks,
+  buttonLookNames,
+  defaultSectionStyles,
+  sectionStylesOf,
+  styleBackground,
+  resolveSectionStyle,
+  tintLevels,
+  tintNames,
+  effectiveTint,
+  weakestReadableTint,
+  sectionStyleWarnings,
+} from "./section-styles";
+export type { SectionStyle, SectionStyleId, ButtonLook, TintLevel, ResolvedSectionStyle } from "./section-styles";
 export {
   defaultTokens,
   tokensToCss,

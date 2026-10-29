@@ -37,7 +37,10 @@ describe("renderPage", () => {
         },
       ]).puck,
     );
-    expect(html).toMatch(/<section class="cr-section cr-bg-surface"[^>]*><div class="cr-container"><h2[^>]*>Inside<\/h2><\/div><\/section>/);
+    // Pages saved before F025 have no height or image: auto height, no media.
+    expect(html).toMatch(
+      /<section class="cr-section cr-style-surface cr-height-auto cr-valign-center"[^>]*><div class="cr-container"><h2[^>]*>Inside<\/h2><\/div><\/section>/,
+    );
   });
 
   it("renders blocks nested in columns", () => {

@@ -1,6 +1,7 @@
 import type { Config, Slot } from "@puckeditor/core";
 import type { CSSProperties, ReactNode } from "react";
 import { spaceVar, spacingField } from "./fields";
+import { sectionStyleIds, sectionStyleNames, tintLevels, tintNames, type SectionStyleId, type TintLevel } from "./section-styles";
 import type { SpacingStep } from "./tokens";
 import { safeUrl } from "./url";
 
@@ -18,9 +19,23 @@ const alignField = {
 /** Inline style that only sets CSS custom properties. */
 const vars = (v: Record<string, string>) => v as CSSProperties;
 
+export const sectionHeights = ["auto", "medium", "large", "full"] as const;
+export type SectionHeight = (typeof sectionHeights)[number];
+export const sectionHeightNames: Record<SectionHeight, string> = { auto: "Auto", medium: "Medium", large: "Large", full: "Full screen" };
+export type SectionAlign = "top" | "center" | "bottom";
+
+/**
+ * `background` names a site-wide section style (F025). `height`, `valign`,
+ * `imageSrc` and `tint` were added in F025; pages saved before have none and
+ * render as before (auto height, no image).
+ */
 export type SectionProps = {
-  background: "background" | "surface" | "primary";
+  background: SectionStyleId;
   paddingY: SpacingStep;
+  height?: SectionHeight;
+  valign?: SectionAlign;
+  imageSrc?: string;
+  tint?: TintLevel;
   content: Slot;
 };
 export type HeadingProps = { text: string; level: "h1" | "h2" | "h3" | "h4"; align: Align };
@@ -101,21 +116,54 @@ export const config: Config<Components> = {
     Section: {
       label: "Section",
       fields: {
-        background: backgroundField,
+        background: {
+          type: "select",
+          label: "Style",
+          options: sectionStyleIds.map((id) => ({ label: sectionStyleNames[id], value: id })),
+        },
+        height: {
+          type: "select",
+          label: "Height",
+          options: sectionHeights.map((h) => ({ label: sectionHeightNames[h], value: h })),
+        },
+        valign: {
+          type: "radio",
+          label: "Content position",
+          options: [
+            { label: "Top", value: "top" },
+            { label: "Middle", value: "center" },
+            { label: "Bottom", value: "bottom" },
+          ],
+        },
+        imageSrc: { type: "text", label: "Background image URL (optional)" },
+        tint: {
+          type: "radio",
+          label: "Image tint",
+          options: tintLevels.map((l) => ({ label: tintNames[l], value: l })),
+        },
         paddingY: spacingField("Vertical padding"),
         content: { type: "slot" },
       },
-      defaultProps: { background: "background", paddingY: "lg", content: [] },
-      render: ({ background, paddingY, content: Content }) => (
-        <section
-          className={`cr-section cr-bg-${background}`}
-          style={vars({ "--cr-section-pad": spaceVar(paddingY) })}
-        >
-          <div className="cr-container">
-            <Content />
-          </div>
-        </section>
-      ),
+      defaultProps: { background: "background", paddingY: "lg", height: "auto", valign: "center", imageSrc: "", tint: "medium", content: [] },
+      render: ({ background, paddingY, height, valign, imageSrc, tint, content: Content }) => {
+        // An unsafe address (e.g. javascript:) means no image at all.
+        const image = imageSrc?.trim() ? safeUrl(imageSrc) : "#";
+        const classes = ["cr-section", `cr-style-${background}`, `cr-height-${height ?? "auto"}`, `cr-valign-${valign ?? "center"}`];
+        return (
+          <section className={classes.join(" ")} style={vars({ "--cr-section-pad": spaceVar(paddingY) })}>
+            {image !== "#" ? (
+              <>
+                {/* Background photos are decoration; the tint keeps text readable on any photo. */}
+                <img className="cr-section-media" src={image} alt="" decoding="async" />
+                <div className={`cr-section-tint cr-tint-${tint ?? "medium"}`} aria-hidden="true" />
+              </>
+            ) : null}
+            <div className="cr-container">
+              <Content />
+            </div>
+          </section>
+        );
+      },
     },
     Heading: {
       label: "Heading",

@@ -3,6 +3,8 @@
  * Blocks never use raw values; they reference these through CSS variables,
  * so changing a token restyles the whole site.
  */
+import { sectionStylesCss, validateSectionStyles, type SectionStyle, type SectionStyleId } from "./section-styles";
+
 export const spacingSteps = ["none", "xs", "sm", "md", "lg", "xl"] as const;
 export type SpacingStep = (typeof spacingSteps)[number];
 
@@ -18,6 +20,8 @@ export interface SiteTokens {
   radius: number;
   /** Content max width in px. */
   maxWidth: number;
+  /** Site-wide section styles (F025). Optional: sites saved before F025 use the defaults. */
+  sectionStyles?: Record<SectionStyleId, SectionStyle>;
 }
 
 export const defaultTokens: SiteTokens = {
@@ -57,7 +61,8 @@ export function tokensToCss(tokens: SiteTokens, selector = ":root"): string {
   for (const step of spacingSteps) lines.push(`--cr-space-${step}: ${Number(tokens.spacing[step])}rem;`);
   lines.push(`--cr-radius: ${Number(tokens.radius)}px;`);
   lines.push(`--cr-max-width: ${Number(tokens.maxWidth)}px;`);
-  return `${selector} {\n  ${lines.join("\n  ")}\n}`;
+  const scope = selector === ":root" ? "" : selector;
+  return `${selector} {\n  ${lines.join("\n  ")}\n}\n${sectionStylesCss(tokens, scope)}`;
 }
 
 /** What each colour role does, in the owner's words. */
@@ -110,6 +115,7 @@ export function validateTokens(tokens: SiteTokens): TokenProblem[] {
   if (!isNumberIn(tokens.maxWidth, tokenLimits.maxWidth.min, tokenLimits.maxWidth.max)) {
     problems.push({ path: "maxWidth", message: `Page width: use ${tokenLimits.maxWidth.min} to ${tokenLimits.maxWidth.max} px.` });
   }
+  problems.push(...validateSectionStyles(tokens));
   return problems;
 }
 

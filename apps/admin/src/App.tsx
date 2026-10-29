@@ -35,10 +35,14 @@ import {
 import { markUnpublished } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
 import { PublishShortcut, usePendingCount } from "./publish/shortcut";
+import { withSectionEditing } from "./sections/editing";
+import { SiteStyleContext, type SiteStyle } from "./sections/site-style";
 import { SiteSettings } from "./settings/SiteSettings";
-import { loadSavedTokens, saveTokens } from "./tokens-store";
+import { loadSavedTokens, sameTokens, saveTokens } from "./tokens-store";
 
 const site = siteJson as Site;
+/** The builder's blocks, with visual Section fields (F025). */
+const editorConfig = withSectionEditing(config);
 
 /** Responsive canvas widths for the viewport switcher. */
 const viewports = [
@@ -132,6 +136,22 @@ export function App() {
       route.name === "settings" ? "Site settings · Crust" : route.name === "edit" ? `Editing ${route.path} · Crust` : "Pages · Crust";
   }, [route]);
 
+  const saveSiteTokens = async (tokens: SiteTokens) => {
+    const local = saveTokens(tokens);
+    if (local) setSaved(tokens);
+    const result = await saveContent({ kind: "site", site: { ...site, tokens } });
+    if (result.ok) setSaved(tokens);
+    return saveMessage(result, local, "Site settings");
+  };
+  // F025: the builder edits the same draft as Site settings ("Whole site" mode).
+  const siteStyle: SiteStyle = {
+    tokens: draft,
+    setTokens: setDraft,
+    dirty: !sameTokens(saved, draft),
+    save: () => saveSiteTokens(draft),
+    discard: () => setDraft(saved),
+  };
+
   // F024: shown in the builder and Site settings top bars; counted again on each screen change.
   const pendingCount = usePendingCount(githubOn, route.name);
   const shortcut = (className: string) => (githubOn ? <PublishShortcut count={pendingCount} className={className} /> : null);
@@ -145,19 +165,20 @@ export function App() {
         saved={saved}
         draft={draft}
         onChange={setDraft}
-        onSave={async (tokens) => {
-          const local = saveTokens(tokens);
-          if (local) setSaved(tokens);
-          const result = await saveContent({ kind: "site", site: { ...site, tokens } });
-          if (result.ok) setSaved(tokens);
-          return saveMessage(result, local, "Site settings");
-        }}
+        onSave={saveSiteTokens}
         onDiscard={() => setDraft(saved)}
       />
     );
   }
 
-  if (route.name === "edit") return githubOn === null ? <Loading /> : <Builder key={route.path} path={route.path} githubOn={githubOn} shortcut={shortcut("crust-header-link")} />;
+  if (route.name === "edit") {
+    if (githubOn === null) return <Loading />;
+    return (
+      <SiteStyleContext.Provider value={siteStyle}>
+        <Builder key={route.path} path={route.path} githubOn={githubOn} shortcut={shortcut("crust-header-link")} />
+      </SiteStyleContext.Provider>
+    );
+  }
 
   return <Pages githubOn={githubOn} focusPublish={route.name === "pages" && route.focus === "publish"} />;
 }
@@ -346,7 +367,7 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
   return (
     <>
       <Puck
-        config={config}
+        config={editorConfig}
         data={toPuckData(page)}
         viewports={viewports}
         headerTitle={page.title || path}

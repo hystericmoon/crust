@@ -1,0 +1,102 @@
+/* Section styles (F025): side panel, canvas toolbar and Site settings.
+   Puck copies these styles into the canvas iframe too.
+   Blue (#4338ca) marks "This section"; orange (#b54708) marks "Whole site". */
+.sx-stack { display: flex; flex-direction: column; gap: 8px; }
+.sx-label { font-weight: 600; font-size: 0.875rem; color: #18181b; }
+.sx-note { margin: 0; font-size: 0.8125rem; color: #52525b; }
+.sx-note:empty { display: none; }
+.sx-note.is-raised { color: #8a3a06; }
+.sx-note.is-failing { color: #b42318; font-weight: 600; }
+
+.sx-button {
+  align-self: flex-start; min-height: 36px; padding: 0 12px;
+  border: 1px solid #85858f; border-radius: 8px; background: #fff; color: #18181b;
+  font: inherit; font-size: 0.875rem; font-weight: 600; cursor: pointer;
+}
+.sx-button:hover { background: #f4f4f5; }
+.sx-button-global { border-color: #b54708; background: #b54708; color: #fff; }
+.sx-button-global:hover { background: #8a3a06; }
+.sx-input { min-height: 36px; padding: 0 10px; border: 1px solid #85858f; border-radius: 8px; font: inherit; width: 100%; background: #fff; color: #18181b; }
+.sx-custom { display: flex; flex-direction: column; gap: 4px; font-size: 0.8125rem; color: #3f3f46; }
+
+/* Tiles */
+.sx-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.sx-tile {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 6px;
+  border: 1.5px solid #d4d4d8; border-radius: 10px; background: #fff; color: #18181b;
+  font: inherit; font-size: 0.8125rem; text-align: left; cursor: pointer;
+}
+.sx-tile[aria-checked="true"] { border: 2px solid #4338ca; padding: 5.5px; box-shadow: 0 0 0 2px #e0e7ff; }
+.sx-tile-name { font-weight: 600; }
+.sx-tile-count { color: #52525b; font-size: 0.75rem; }
+.sx-swatch {
+  display: flex; flex-direction: column; justify-content: center; gap: 5px;
+  width: 100%; height: 40px; padding: 8px; border-radius: 6px; border: 1px solid rgb(0 0 0 / 0.08);
+}
+.sx-swatch i { display: block; height: 5px; width: 70%; border-radius: 2px; }
+.sx-swatch i + i { width: 36%; height: 9px; border: 1.5px solid transparent; }
+
+/* Height */
+.sx-heights { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.sx-height {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px;
+  min-height: 56px; padding: 6px 4px; border: 1.5px solid #d4d4d8; border-radius: 8px; background: #fff; color: #18181b;
+  font: inherit; font-size: 0.75rem; cursor: pointer;
+}
+.sx-height i { display: block; width: 22px; border-radius: 3px; background: #a1a1aa; }
+.sx-height[aria-checked="true"] { border: 2px solid #4338ca; }
+.sx-height[aria-checked="true"] i { background: #4338ca; }
+
+/* Segmented */
+.sx-seg { display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: #f4f4f5; }
+.sx-seg-option {
+  flex: 1; min-height: 32px; border: 0; border-radius: 8px; background: transparent; color: #3f3f46;
+  font: inherit; font-size: 0.8125rem; font-weight: 500; cursor: pointer; white-space: nowrap;
+}
+.sx-seg-option[aria-checked="true"] { background: #fff; color: #18181b; box-shadow: 0 1px 2px rgb(0 0 0 / 0.15); }
+
+/* Global (site-wide) */
+.sx-global { display: flex; flex-direction: column; gap: 8px; padding: 10px; border: 1.5px solid #f3c8a0; border-radius: 10px; background: #fff7ed; }
+.sx-global.is-open { border-color: #b54708; }
+.sx-global-head { margin: 0; font-size: 0.8125rem; color: #3f3f46; }
+.sx-scope-note { margin: 0; padding: 6px 8px; border-radius: 6px; background: #fdead7; color: #8a3a06; font-size: 0.8125rem; }
+.sx-editor { display: flex; flex-direction: column; gap: 10px; }
+.sx-colors { display: flex; flex-wrap: wrap; gap: 6px; }
+.sx-color { width: 34px; height: 34px; padding: 2px; border: 1.5px solid #d4d4d8; border-radius: 8px; background: #fff; cursor: pointer; }
+.sx-color[aria-checked="true"] { border: 2px solid #b54708; box-shadow: 0 0 0 2px #fdead7; }
+.sx-color-chip { display: block; width: 100%; height: 100%; border-radius: 5px; border: 1px solid rgb(0 0 0 / 0.12); }
+.sx-save { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 0.8125rem; color: #8a3a06; }
+
+/* Canvas toolbar (inside Puck's action bar) */
+.sx-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 2px; }
+.sx-scope { display: flex; gap: 2px; padding: 2px; border-radius: 8px; background: rgb(255 255 255 / 0.12); }
+.sx-scope-option {
+  min-height: 28px; padding: 0 8px; border: 0; border-radius: 6px; background: transparent; color: #fff;
+  font: inherit; font-size: 0.75rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+}
+.sx-toolbar.is-local .sx-scope-option[aria-checked="true"] { background: #4338ca; }
+.sx-toolbar.is-global .sx-scope-option[aria-checked="true"] { background: #b54708; }
+.sx-dots { display: flex; gap: 3px; }
+.sx-dot-option { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 1.5px solid transparent; border-radius: 6px; background: transparent; cursor: pointer; }
+.sx-dot-option[aria-checked="true"] { border-color: #fff; }
+.sx-dot { display: block; width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgb(255 255 255 / 0.6); }
+.sx-tbtn {
+  min-height: 28px; padding: 0 8px; border: 0; border-radius: 6px; background: rgb(255 255 255 / 0.12); color: #fff;
+  font: inherit; font-size: 0.75rem; font-weight: 500; cursor: pointer; white-space: nowrap;
+}
+.sx-tbtn[aria-expanded="true"] { background: rgb(255 255 255 / 0.28); }
+.sx-tbtn-global { background: #b54708; }
+.sx-pop {
+  position: absolute; top: calc(100% + 6px); right: 0; z-index: 10;
+  width: min(300px, 90vw); padding: 12px; display: flex; flex-direction: column; gap: 10px;
+  border: 1px solid #d4d4d8; border-radius: 12px; background: #fff; color: #18181b;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.2); font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  text-align: left; cursor: default;
+}
+.sx-pop.is-global { border: 2px solid #b54708; }
+.sx-toolbar button:focus-visible, .sx-pop button:focus-visible, .sx-pop input:focus-visible { outline: 3px solid #fff; outline-offset: 1px; box-shadow: 0 0 0 5px #18181b; }
+
+/* Site settings */
+.sx-settings { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 12px; }
+.sx-settings-style { display: flex; flex-direction: column; gap: 10px; padding: 12px; border: 1px solid #e4e4e7; border-radius: 10px; }
+.sx-settings-name { display: flex; flex-direction: column; gap: 6px; margin: 0; font-size: 1rem; }

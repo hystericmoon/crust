@@ -65,6 +65,7 @@ describe("Site settings screen", () => {
       "Presets",
       "Colours",
       "Contrast checks",
+      "Section styles",
       "Typography",
       "Spacing",
       "Shape & layout",
