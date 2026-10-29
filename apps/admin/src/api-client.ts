@@ -56,9 +56,18 @@ export interface PublishRun {
   url: string;
 }
 export const startPublish = () => call("/api/publish", post({}));
-export const publishRuns = () => call<{ runs: PublishRun[] }>("/api/publish");
+/** liveUrl: where the last successful publish put the site (F017); null before the first. */
+export const publishRuns = () => call<{ runs: PublishRun[]; liveUrl?: string | null }>("/api/publish");
 
-export const renamePage = (from: string, to: string) => call<{ page: Page; commit: string; url: string }>("/api/rename", post({ from, to }));
+export interface LinkingPage {
+  path: string;
+  title: string;
+  count: number;
+}
+export const renamePage = (from: string, to: string) =>
+  call<{ page: Page; relinked: LinkingPage[]; commit: string; url: string }>("/api/rename", post({ from, to }));
+/** Other pages whose buttons or card links point at `path` (F018). */
+export const getLinks = (path: string) => call<{ pages: LinkingPage[] }>(`/api/links?path=${encodeURIComponent(path)}`);
 export const deletePage = (path: string) => call<{ commit: string; url: string }>("/api/delete", post({ path }));
 
 /** What the next publish will change (F016). Same shape as server/api.ts PendingChanges. */
@@ -71,3 +80,13 @@ export interface PendingChanges {
   redirects: boolean;
 }
 export const getChanges = () => call<PendingChanges>("/api/changes");
+
+/** A page deleted from the builder that can be restored (F019). */
+export interface DeletedPage {
+  path: string;
+  title: string;
+  deletedAt: string;
+  commit: string;
+}
+export const getDeleted = () => call<{ pages: DeletedPage[] }>("/api/deleted");
+export const restorePage = (d: DeletedPage) => call<{ page: Page }>("/api/restore", post({ path: d.path, commit: d.commit }));

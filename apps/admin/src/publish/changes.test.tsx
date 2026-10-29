@@ -87,7 +87,7 @@ describe("changes: Publish panel", () => {
 
   it("shows what's waiting above the Publish button", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => json({ ok: true, runs: [] })));
-    render(<PublishPanel githubOn liveUrl="https://site.dev" changes={changes({ pages: [{ path: "/about", change: "edited" }] })} titles={new Map([["/about", "About"]])} />);
+    render(<PublishPanel githubOn siteUrl="https://site.dev" changes={changes({ pages: [{ path: "/about", change: "edited" }] })} titles={new Map([["/about", "About"]])} />);
     await act(async () => {});
     expect(screen.getByText("1 change waiting to go live:")).toBeTruthy();
     expect(screen.getByRole("listitem").textContent).toBe("About (/about): edited");
@@ -98,7 +98,7 @@ describe("changes: Publish panel", () => {
     vi.stubGlobal("fetch", vi.fn(async () => json({ ok: true, runs })));
     vi.useFakeTimers({ shouldAdvanceTime: true });
     const onFinished = vi.fn();
-    render(<PublishPanel githubOn liveUrl="https://site.dev" changes={changes()} onFinished={onFinished} />);
+    render(<PublishPanel githubOn siteUrl="https://site.dev" changes={changes()} onFinished={onFinished} />);
     await act(async () => {
       await vi.advanceTimersByTimeAsync(10);
     });

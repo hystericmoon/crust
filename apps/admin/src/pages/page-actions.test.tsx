@@ -67,7 +67,7 @@ describe("page-actions: page list", () => {
     const input = within(dialog).getByLabelText("New address") as HTMLInputElement;
     expect(document.activeElement).toBe(input);
     expect(input.value).toBe("about");
-    expect(dialog.textContent).toContain("Links to /about keep working");
+    expect(dialog.textContent).toContain("Links to /about from other websites keep working");
 
     // Same address, a taken one, then a good one.
     await act(async () => within(dialog).getByRole("button", { name: "Change address" }).click());

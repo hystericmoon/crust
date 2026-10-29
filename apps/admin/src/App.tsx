@@ -1,16 +1,21 @@
 import { config, tokensToCss, type Page, type Site, type SiteTokens } from "@crust/blocks";
+import { relinkPage } from "@crust/blocks/links";
 import { Puck, useGetPuck, type Data } from "@puckeditor/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import siteJson from "../../../content/site.json";
 import {
   deletePage,
   getChanges,
+  getDeleted,
+  getLinks,
   getPage,
   getStatus,
   listPages,
   renamePage,
+  restorePage,
   saveContent,
   type ApiResult,
+  type DeletedPage,
   type PendingChanges,
 } from "./api-client";
 import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot, openKeyboardHelp } from "./keyboard/KeyboardEditing";
@@ -161,6 +166,7 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
   const [rows, setRows] = useState<PageRow[] | null>(null);
   const [error, setError] = useState<string>();
   const [changes, setChanges] = useState<PendingChanges | null>(null);
+  const [deleted, setDeleted] = useState<DeletedPage[] | null>(null);
   // Bumped after a rename, delete or publish to load the list again.
   const [version, setVersion] = useState(0);
   const reload = () => setVersion((v) => v + 1);
@@ -183,6 +189,7 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
     });
     // If this fails, pages just aren't marked; the list itself still works.
     void getChanges().then((res) => setChanges(res.ok ? res : null));
+    void getDeleted().then((res) => setDeleted(res.ok ? res.pages : null));
   }, [githubOn, version]);
 
   // Rename and delete (F015): through GitHub for pages there, in this browser otherwise.
@@ -192,8 +199,34 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
       if (!res.ok) return `Not renamed: ${res.error}`;
     }
     if (!moveLocalDraft(row.path, to)) return "This browser wouldn't store the change. Try again.";
+    // F018: drafts in this browser follow too, so saving one later doesn't bring the old links back.
+    for (const draft of localDrafts()) {
+      const { puck, count } = relinkPage(draft.page.puck, row.path, to);
+      if (count) saveLocalDraft({ ...draft.page, puck }, draft.savedToGitHub);
+    }
     reload();
     return null;
+  };
+  const restore = async (page: DeletedPage): Promise<string | null> => {
+    const res = await restorePage(page);
+    if (!res.ok) return `Not restored: ${res.error}`;
+    reload();
+    return null;
+  };
+  // F020: the browser draft goes to GitHub as it is, like "Save draft" in the builder.
+  const saveDraft = async (row: PageRow): Promise<string | null> => {
+    const draft = getLocalDraft(row.path);
+    if (!draft) return "There's no draft of this page in this browser any more.";
+    const res = await saveContent({ kind: "page", page: draft.page });
+    if (!res.ok) return `Not saved to GitHub: ${res.error} The draft is still safe in this browser.`;
+    saveLocalDraft(draft.page, true);
+    reload();
+    return null;
+  };
+  const findLinks = async (row: PageRow) => {
+    if (!githubOn || !row.inRepo) return null;
+    const res = await getLinks(row.path);
+    return res.ok ? res.pages : null;
   };
   const remove = async (row: PageRow): Promise<string | null> => {
     if (row.inRepo) {
@@ -218,6 +251,10 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
       githubOn={githubOn === true}
       onRename={rename}
       onDelete={remove}
+      findLinks={findLinks}
+      deleted={githubOn ? deleted : null}
+      onRestore={restore}
+      onSaveDraft={saveDraft}
       onCreate={(page) => {
         saveLocalDraft(page, false);
         location.hash = editHref(page.path);
@@ -225,7 +262,7 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
     >
       <PublishPanel
         githubOn={githubOn === true}
-        liveUrl={site.baseUrl}
+        siteUrl={site.baseUrl}
         changes={changes}
         titles={new Map((rows ?? []).map((r) => [r.path, r.title]))}
         onFinished={reload}

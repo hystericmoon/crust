@@ -161,6 +161,46 @@
       "passes": true,
       "needs_review": true,
       "reviewed": false
+    },
+    {
+      "id": "F017",
+      "title": "\"Open live site\" uses the real site address",
+      "description": "The Publish panel's \"Open live site\" button opens the address the last successful publish went live at (the Cloudflare Pages address, or site.json's baseUrl once it's a real address), instead of the example placeholder. Before the first publish it explains where the link will appear. Added by the owner (approved Claude's recommendation, 2026-10-28).",
+      "depends_on": ["F008"],
+      "done_check": "npm test -- live-link save-api publish-workflow && npm run build",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F018",
+      "title": "Update links to a renamed page",
+      "description": "When a page is renamed, Button links on other pages that point to the old address are updated to the new one in the same commit. The rename dialog says how many links will change. The redirect stays for links from outside the site. Added by the owner (approved Claude's recommendation, 2026-10-28).",
+      "depends_on": ["F015"],
+      "done_check": "npm test -- relink page-actions save-api && npm run build",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F019",
+      "title": "Restore deleted pages",
+      "description": "A \"Recently deleted\" list under the page list shows pages deleted from GitHub, with a Restore button that brings the page back at its old address (from Git history). Added by the owner (approved Claude's recommendation, 2026-10-28).",
+      "depends_on": ["F015"],
+      "done_check": "npm test -- restore save-api && npm run build",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F020",
+      "title": "Save browser drafts from the page list",
+      "description": "Pages marked \"Draft in this browser\" get a \"Save to GitHub\" button in the page list, so a draft can be saved without opening it in the builder. Added by the owner (approved Claude's recommendation, 2026-10-28).",
+      "depends_on": ["F007"],
+      "done_check": "npm test -- save-draft && npm run build",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
     }
   ]
 }

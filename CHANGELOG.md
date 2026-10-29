@@ -4,6 +4,15 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **"Save to GitHub" on pages marked "Draft in this browser",** so you can
+  save a draft from the page list without opening it.
+- **"Recently deleted"** under your page list: bring a deleted page back at
+  its old address with one button.
+- **Renaming a page also updates the buttons and card links on your other
+  pages** that point to it. The rename dialog lists which pages will change.
+- **"Open live site" now opens your real site,** at the address the last
+  publish went live at, which is also shown under the button. Before the
+  first publish, the panel says the link will appear there.
 - **Rename and delete pages** from the page list. Each asks for confirmation
   first.
   - **Renamed pages keep working at their old address:** visitors are sent

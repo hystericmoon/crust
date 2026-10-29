@@ -24,7 +24,7 @@ describe("publish status in plain words", () => {
 
 describe("publish panel", () => {
   it("explains that publishing needs GitHub switched on", () => {
-    render(<PublishPanel githubOn={false} liveUrl="https://site.dev" />);
+    render(<PublishPanel githubOn={false} siteUrl="https://site.dev" />);
     expect(screen.getByText(/switches on together with saving to GitHub/)).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Publish site" })).toBeNull();
   });
@@ -44,12 +44,12 @@ describe("publish panel", () => {
       }),
     );
     vi.useFakeTimers({ shouldAdvanceTime: true });
-    render(<PublishPanel githubOn liveUrl="https://site.dev" />);
+    render(<PublishPanel githubOn siteUrl="https://site.dev" />);
     await act(async () => {
       await vi.advanceTimersByTimeAsync(10);
     });
     expect(screen.getByText("Live.")).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Open live site" }).getAttribute("href")).toBe("https://site.dev");
+    expect(screen.getByRole("link", { name: "Open live site (opens in a new tab)" }).getAttribute("href")).toBe("https://site.dev");
 
     await act(async () => {
       screen.getByRole("button", { name: "Publish site" }).click();
@@ -75,7 +75,7 @@ describe("publish panel", () => {
           : new Response(JSON.stringify({ ok: true, runs: [] }), { headers: { "Content-Type": "application/json" } }),
       ),
     );
-    render(<PublishPanel githubOn liveUrl="https://site.dev" />);
+    render(<PublishPanel githubOn siteUrl="https://site.dev" />);
     await act(async () => {
       screen.getByRole("button", { name: "Publish site" }).click();
     });

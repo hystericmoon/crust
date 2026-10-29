@@ -5,16 +5,18 @@ to "Log".
 
 ## Current
 
-- **Milestone:** 1 (first working slice). All features F001–F016 pass their
-  done checks.
-- **Merged to main:** F001–F014 (PRs #1 and #2).
-- **In this PR:** F015 rename and delete pages, F016 show what isn't
-  published yet (both owner-approved proposals).
+- **Milestone:** 1 (first working slice). F001–F020 pass their done checks.
+- **Merged to main:** F001–F016 (PRs #1, #2, #3).
+- **In PR #4:** F017 "Open live site" uses the real address, F018 update
+  links on rename, F019 restore deleted pages, F020 save browser drafts
+  from the page list.
+- **Next:** nothing left in features.json. After the owner's setup: real
+  save, rename, restore and publish checks.
 - **Waiting on the owner:**
   - Switch on saving and publishing: follow `docs/setup-saving.md`
     (Cloudflare Access, GitHub token, three Pages settings), then say "done".
   - Review on the preview link and set `reviewed: true`: F010, F004, F003,
-    F005, F012, F013, F014, F007, F008, F015, F016.
+    F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019, F020.
 - **Next after setup:** Claude redeploys, checks a real save, a real
   rename and a real publish, and fixes anything that shows up. Then
   Milestone 1 is complete.
@@ -104,3 +106,23 @@ to "Log".
   Chromium at 1280 and 390: keyboard flow, focus on open/close, no
   overflow, axe clean with the dialog open, no console errors. 20 new JS
   tests, 6 new Rust tests; both done checks pass.
+- 2026-10-28 — PR #3 merged (owner: "move forward"). Owner approved
+  Claude's next four recommendations as F017–F020. F017 done: the publish
+  workflow names its last step "Live at <address>"; /api/publish returns
+  it, and the Publish panel links there (placeholder baseUrl ignored).
+  Confirmed with a temporary CI step that GitHub reports the evaluated
+  step name. 6 new tests; done check passes.
+- 2026-10-29 — F018 done: renaming a page rewrites Button/Card links to it
+  on every page in the same commit (shared `relinkPage` in
+  packages/blocks/src/links.ts), and browser drafts follow. The rename
+  dialog names the pages it will update (GET /api/links). 8 new tests; done
+  check passes.
+- 2026-10-29 — F019 done: "Recently deleted" (collapsed) lists builder
+  deletions from the Git history (GET /api/deleted). Restore writes the
+  page back as it was before deletion (POST /api/restore), refusing taken
+  addresses or anything that isn't a builder deletion. 7 new tests; done
+  check passes.
+- 2026-10-29 — F020 done: "Save to GitHub" on rows with a browser draft
+  (GitHub on), saving the draft as the builder would. Checked F017–F020
+  together in Chromium at 1280 and 390: axe clean, no overflow, no console
+  errors, save flow removes the badge. 4 new tests; done check passes.

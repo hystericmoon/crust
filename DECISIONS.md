@@ -10,7 +10,54 @@ Features Claude suggests. They are not work until the owner adds them to
 
 - *(All proposals so far were approved by the owner on 2026-10-28: the
   first four are F011–F014, "rename and delete pages" is F015 and "show
-  what's not published yet" is F016 in `features.json`.)*
+  what's not published yet" is F016. Claude's next four recommendations
+  were approved the same day as F017–F020.)*
+
+## 2026-10-29 — F020 save browser drafts from the list (Claude, reversible)
+
+- **"Save to GitHub" appears in the actions column** of any page marked "Draft in this browser" (Home too), only while saving to GitHub is on. It sends the browser draft exactly as the builder's "Save draft" would, and the server checks it the same way.
+- **After saving,** the badge and button disappear, focus goes to the "Pages" heading, and the result is announced.
+- **If saving fails,** the reason shows in an alert above the list, and the draft stays in the browser.
+- **Rename/Delete now share the row's action group** with Save, wrapping on narrow screens.
+
+## 2026-10-29 — F019 restore deleted pages (Claude, reversible)
+
+- **Where the list comes from:** recent commits under `content/pages` whose first line is the builder's own `Delete page /x from the builder`.
+  - Only the newest deletion of each address is listed, and only if no page lives there now. At most 10 are shown.
+  - Each page is read as it was in the commit before the deletion.
+  - No new storage and no new token permission.
+- **Restoring writes that version back** in one commit ("Restore page /x …").
+  - The server only accepts a builder deletion it finds in the recent history.
+  - It refuses if the address is taken.
+- **Not restored:** redirects that pointed to the page. Deleting removed them, and the next rename can recreate them. Keeping restore simple felt right.
+- **No confirmation step.** Restoring is safe: nothing is overwritten, and you can delete the page again. I dropped "with confirmation" from the F019 description before building; the owner's approved option text didn't include it.
+- **The section is collapsed by default** ("Recently deleted (2)"), because restoring is rare.
+  - It's a disclosure button inside the `h2` (`aria-expanded`), not `<details>`/`<summary>`, so screen readers announce it as a heading.
+  - It's hidden when nothing was deleted, and before GitHub is switched on.
+
+## 2026-10-29 — F018 update links on rename (Claude, reversible)
+
+- **Which links:** Button `href` and Card `linkHref`, anywhere in the block tree (inside Sections and Columns too).
+  - Matched forms: `/about`, `/about/`, `/about#x` and `/about?x`. The trailing slash, anchor and query are kept.
+  - Full addresses (`https://…`) and text that merely mentions the path are left alone. The redirect still covers outside links.
+  - The page's own links to itself follow it too.
+- **Shared code:** `relinkPage` lives in `packages/blocks/src/links.ts` (no React), so the server and the browser use the same rules.
+- **One commit:** the rename, the redirect and every updated page go into a single commit. The commit message says how many links changed.
+- **The rename dialog** asks `GET /api/links` once when it opens and names the pages it will update ("Home (2 links), Contact (1 link)"). The hint now says the redirect is for links *from other websites*.
+- **Browser drafts of other pages are updated too,** so saving one later can't bring back an old link.
+
+## 2026-10-28 — F017 live site link (Claude, reversible)
+
+- **The bug:** "Open live site" pointed at `site.json`'s `baseUrl`, which is still the placeholder `https://example.pages.dev`. The publish workflow already ignores the placeholder and uses the Cloudflare Pages address, which can get a random suffix if `crust-site` is taken. So the admin couldn't know the real address.
+- **The fix:** `publish.yml` ends with a step whose *name* is `Live at <address>`. `GET /api/publish` reads the last successful run's job steps and returns `liveUrl`.
+  - Why a step name: it needs only the Actions read permission the GitHub token already has. Deployments or Checks permissions would have meant changing the owner's token steps.
+  - Checked with a temporary CI step on PR #4 that GitHub reports the evaluated name ("Live at https://…") through the jobs API.
+- **Accepted addresses:** only `https://` addresses from a step that succeeded.
+- **The order the admin uses:**
+  1. the address the last publish reported
+  2. `site.json`'s `baseUrl`, if it's a real address
+  3. nothing: the panel says the link appears after the first publish
+- **Not done:** editing the site name and address in Site settings. Custom domains are outside Milestone 1, and the address now comes from the publish itself.
 
 ## 2026-10-28 — F015 rename/delete and F016 unpublished changes (owner-approved proposals; details Claude, reversible)
 

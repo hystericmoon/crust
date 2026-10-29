@@ -1,7 +1,7 @@
 import { defaultTokens, type Page, type Site } from "@crust/blocks";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { clearAccessKeyCache, verifyAccessJwt } from "./access";
-import { handleChanges, handleDelete, handlePage, handlePages, handlePublish, handleRename, handleSave, handleStatus, type Env } from "./api";
+import { handleChanges, handleDelete, handleDeleted, handleLinks, handleRestore, handlePage, handlePages, handlePublish, handleRename, handleSave, handleStatus, type Env } from "./api";
 import { checkPage, isValidPagePath, pageFileFor, pagePathForFile, parseRedirects, redirectsAfterDelete, redirectsAfterRename } from "./content";
 import { fromBase64, toBase64 } from "./github";
 
@@ -46,7 +46,12 @@ let gitCommits: Map<string, { message: string; tree: string; parents: string[] }
 let multiCommits: { message: string; paths: string[] }[];
 let raceOnUpdate: boolean;
 // Publish history (F016)
-let successRuns: { head_sha: string; created_at: string; html_url: string }[];
+let successRuns: { id?: number; head_sha: string; created_at: string; html_url: string }[];
+// Commit history and old file versions (F019).
+let history: { sha: string; parents: { sha: string }[]; commit: { message: string; committer: { date: string } } }[];
+let filesAt: Map<string, Map<string, string>>;
+let runJobs: { steps: { name: string; conclusion: string | null }[] }[];
+let jobsAsked: string[];
 let compareBase: string | null;
 let compareFiles: { filename: string; status: string; previous_filename?: string }[];
 
@@ -74,6 +79,8 @@ const fakeFetch: typeof fetch = async (input, init) => {
       const list = [...files.keys()].filter((p) => p.startsWith("content/pages/"));
       return respond(200, list.map((p) => ({ type: "file", name: p.split("/").pop(), path: p, sha: files.get(p)!.sha })));
     }
+    const old = filesAt.get(url.searchParams.get("ref") ?? "");
+    if (old) return old.has(path) ? respond(200, { sha: "old", content: toBase64(old.get(path)!) }) : respond(404, {});
     const f = files.get(path);
     return f ? respond(200, { sha: f.sha, content: toBase64(f.content) }) : respond(404, {});
   }
@@ -111,10 +118,15 @@ const fakeFetch: typeof fetch = async (input, init) => {
     compareBase = decodeURIComponent(url.pathname.split("/compare/")[1]!);
     return respond(200, { files: compareFiles });
   }
+  if (url.pathname === "/repos/hystericmoon/crust/commits" && url.searchParams.get("path") === "content/pages") return respond(200, history);
   if (url.pathname === "/repos/hystericmoon/crust/commits") return respond(200, [{ commit: { committer: { date: "2026-10-28T10:00:00Z" } } }]);
   if (url.pathname.endsWith("/dispatches")) {
     dispatched.push(url.pathname);
     return new Response(null, { status: 204 });
+  }
+  if (url.pathname.endsWith("/jobs")) {
+    jobsAsked.push(url.pathname);
+    return respond(200, { jobs: runJobs });
   }
   if (url.pathname.endsWith("/runs") && url.searchParams.get("status") === "success") {
     return respond(200, { workflow_runs: successRuns });
@@ -166,6 +178,10 @@ beforeEach(() => {
   multiCommits = [];
   raceOnUpdate = false;
   successRuns = [];
+  runJobs = [];
+  jobsAsked = [];
+  history = [];
+  filesAt = new Map();
   compareBase = null;
   compareFiles = [];
   clearAccessKeyCache();
@@ -503,5 +519,141 @@ describe("save-api: changes since the last publish (F016)", () => {
   it("needs a sign-in", async () => {
     const res = await handleChanges(await get("/api/changes"), env, fakeFetch);
     expect(res.status).toBe(401);
+  });
+});
+
+// --- F017: where the site is live -----------------------------------------------
+
+describe("save-api: live address (F017)", () => {
+  const steps = (...names: [string, string | null][]) => [{ steps: names.map(([name, conclusion]) => ({ name, conclusion })) }];
+
+  it("reads it from the last successful publish's \"Live at\" step", async () => {
+    successRuns = [{ id: 42, head_sha: "s", created_at: "2026-10-28T09:00:00Z", html_url: "https://x/run/42" }];
+    runJobs = steps(["Deploy to Cloudflare Pages", "success"], ["Live at https://crust-site-3x9.pages.dev", "success"]);
+    const res = await handlePublish(await get("/api/publish", await token()), env, fakeFetch);
+    expect((await res.json()).liveUrl).toBe("https://crust-site-3x9.pages.dev");
+    expect(jobsAsked).toEqual(["/repos/hystericmoon/crust/actions/runs/42/jobs"]);
+  });
+
+  it("is null before the first publish, or when the step is missing, skipped or odd", async () => {
+    let res = await handlePublish(await get("/api/publish", await token()), env, fakeFetch);
+    expect((await res.json()).liveUrl).toBeNull();
+    expect(jobsAsked).toEqual([]);
+
+    successRuns = [{ id: 42, head_sha: "s", created_at: "2026-10-28T09:00:00Z", html_url: "https://x/run/42" }];
+    for (const jobs of [
+      steps(["Deploy to Cloudflare Pages", "success"]),
+      steps(["Live at https://crust-site.pages.dev", "skipped"]),
+      steps(["Live at javascript:alert(1)", "success"]),
+      steps(["Live at http://crust-site.pages.dev", "success"]),
+      steps(["Live at https://a.dev <script>", "success"]),
+    ]) {
+      runJobs = jobs;
+      res = await handlePublish(await get("/api/publish", await token()), env, fakeFetch);
+      expect((await res.json()).liveUrl).toBeNull();
+    }
+  });
+});
+
+// --- F018: links to a renamed page --------------------------------------------
+
+describe("save-api: links to a renamed page (F018)", () => {
+  const linking = (path: string, title: string, hrefs: string[]) => ({
+    content: JSON.stringify(
+      page({
+        path,
+        title,
+        puck: {
+          root: { props: {} },
+          content: hrefs.map((href, i) => ({ type: "Button", props: { id: `b${i}`, label: "Go", href, variant: "primary" } })),
+        },
+      }),
+    ),
+    sha: "x",
+  });
+
+  it("lists the pages that link to a page", async () => {
+    files.set("content/pages/about.json", pageFile("/about"));
+    files.set("content/pages/index.json", linking("/", "Home", ["/about", "/about#team", "/contact"]));
+    files.set("content/pages/contact.json", linking("/contact", "Contact", ["/"]));
+    const res = await handleLinks(await get("/api/links?path=/about", await token()), env, fakeFetch);
+    expect(await res.json()).toEqual({ ok: true, pages: [{ path: "/", title: "Home", count: 2 }] });
+    expect((await handleLinks(await get("/api/links?path=nope", await token()), env, fakeFetch)).status).toBe(400);
+    expect((await handleLinks(await get("/api/links?path=/about"), env, fakeFetch)).status).toBe(401);
+  });
+
+  it("updates them in the same commit as the rename", async () => {
+    files.set("content/pages/about.json", linking("/about", "About us", ["/about#top"]));
+    files.set("content/pages/index.json", linking("/", "Home", ["/about", "/contact"]));
+    files.set("content/pages/contact.json", linking("/contact", "Contact", ["/"]));
+    const res = await handleRename(await post("/api/rename", { from: "/about", to: "/team" }), env, fakeFetch);
+    const body = await res.json();
+    expect(body.relinked).toEqual([
+      { path: "/team", title: "About us", count: 1 },
+      { path: "/", title: "Home", count: 1 },
+    ]);
+    const hrefs = (file: string) => JSON.parse(files.get(file)!.content).puck.content.map((b: { props: { href: string } }) => b.props.href);
+    expect(hrefs("content/pages/index.json")).toEqual(["/team", "/contact"]);
+    expect(hrefs("content/pages/team.json")).toEqual(["/team#top"]);
+    expect(multiCommits).toHaveLength(1);
+    expect(multiCommits[0]!.paths).toEqual(["content/pages/team.json", "content/pages/about.json", "content/redirects.json", "content/pages/index.json"]);
+    expect(multiCommits[0]!.message).toContain("Updated 2 links to the new address.");
+    // Pages without links to it are left alone.
+    expect(multiCommits[0]!.paths).not.toContain("content/pages/contact.json");
+  });
+});
+
+// --- F019: restore deleted pages ------------------------------------------------
+
+describe("save-api: restoring deleted pages (F019)", () => {
+  const commit = (sha: string, message: string, date = "2026-10-29T10:00:00Z") => ({
+    sha,
+    parents: [{ sha: `${sha}-parent` }],
+    commit: { message, committer: { date } },
+  });
+  const before = (sha: string, path: string, title: string) =>
+    filesAt.set(`${sha}-parent`, new Map([[pageFileFor(path), JSON.stringify(page({ path, title }))]]));
+
+  beforeEach(() => {
+    history = [
+      commit("aaa1111", "Delete page /about from the builder\n\nDeleted by h@x.id", "2026-10-29T12:00:00Z"),
+      commit("bbb2222", "Save page /contact (\"Contact\") from the builder"),
+      commit("ccc3333", "Delete page /contact from the builder"),
+      commit("ddd4444", "Delete page /about from the builder", "2026-10-29T08:00:00Z"),
+      commit("eee5555", "Rename page /team to /people from the builder"),
+    ];
+    before("aaa1111", "/about", "About us");
+    before("ccc3333", "/contact", "Contact");
+    before("ddd4444", "/about", "Old about");
+    files.set("content/pages/contact.json", pageFile("/contact", "Contact"));
+  });
+
+  it("lists the latest deletion of each address that has no page now", async () => {
+    const res = await handleDeleted(await get("/api/deleted", await token()), env, fakeFetch);
+    expect(await res.json()).toEqual({ ok: true, pages: [{ path: "/about", title: "About us", deletedAt: "2026-10-29T12:00:00Z", commit: "aaa1111" }] });
+  });
+
+  it("brings the page back as it was before the deletion", async () => {
+    const res = await handleRestore(await post("/api/restore", { path: "/about", commit: "aaa1111" }), env, fakeFetch);
+    expect(res.status).toBe(200);
+    expect(JSON.parse(files.get("content/pages/about.json")!.content).title).toBe("About us");
+    expect(multiCommits[0]!.message).toBe('Restore page /about ("About us") from the builder\n\nRestored by hosni@example.com');
+    const list = await handleDeleted(await get("/api/deleted", await token()), env, fakeFetch);
+    expect((await list.json()).pages).toEqual([]);
+  });
+
+  it("refuses anything that isn't a builder deletion of that page, or a taken address", async () => {
+    const cases: [unknown, number][] = [
+      [{ path: "/about", commit: "bbb2222" }, 404],
+      [{ path: "/team", commit: "aaa1111" }, 404],
+      [{ path: "/about", commit: "fff9999" }, 404],
+      [{ path: "/contact", commit: "ccc3333" }, 409],
+      [{ path: "/about", commit: "not a sha" }, 400],
+    ];
+    for (const [body, status] of cases) {
+      expect((await handleRestore(await post("/api/restore", body), env, fakeFetch)).status, JSON.stringify(body)).toBe(status);
+    }
+    expect(multiCommits).toEqual([]);
+    expect((await handleRestore(await post("/api/restore", { path: "/about", commit: "aaa1111" }, { jwt: null }), env, fakeFetch)).status).toBe(401);
   });
 });
