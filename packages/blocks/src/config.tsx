@@ -4,6 +4,7 @@ import { spaceVar, spacingField } from "./fields";
 import { sectionStyleIds, sectionStyleNames, tintLevels, tintNames, type SectionStyleId, type TintLevel } from "./section-styles";
 import type { SpacingStep } from "./tokens";
 import { safeUrl } from "./url";
+import { columnClasses, hiddenLabel, hideClasses, type ColumnWidths, type HideOn } from "./responsive";
 
 type Align = "left" | "center" | "right";
 const alignField = {
@@ -44,9 +45,11 @@ export type ImageProps = { src: string; alt: string; caption: string };
 /** `align` was added in F012; pages saved before it have none and stay left-aligned. */
 export type ButtonProps = { label: string; href: string; variant: "primary" | "secondary"; align?: Align };
 export type SpacerProps = { size: SpacingStep };
+/** `widths` was added in F029; Columns saved before it keep the old per-device behaviour. */
 export type ColumnsProps = {
   count: "2" | "3" | "4";
   gap: SpacingStep;
+  widths?: ColumnWidths;
   column1: Slot;
   column2: Slot;
   column3: Slot;
@@ -63,15 +66,18 @@ export type CardProps = {
   background: "background" | "surface" | "primary";
 };
 
+/** Any block can be hidden on some devices (F029). Optional: missing means shown everywhere. */
+export type Visibility = { hideOn?: HideOn };
+
 export type Components = {
-  Section: SectionProps;
-  Heading: HeadingProps;
-  Text: TextProps;
-  Image: ImageProps;
-  Button: ButtonProps;
-  Spacer: SpacerProps;
-  Columns: ColumnsProps;
-  Card: CardProps;
+  Section: SectionProps & Visibility;
+  Heading: HeadingProps & Visibility;
+  Text: TextProps & Visibility;
+  Image: ImageProps & Visibility;
+  Button: ButtonProps & Visibility;
+  Spacer: SpacerProps & Visibility;
+  Columns: ColumnsProps & Visibility;
+  Card: CardProps & Visibility;
 };
 
 const backgroundField = {
@@ -96,7 +102,7 @@ function paragraphs(text: string): ReactNode[] {
     .map((p, i) => <p key={i}>{p}</p>);
 }
 
-export const config: Config<Components> = {
+const blocks: Config<Components> = {
   // Gives the editor canvas the published page's base styles (font, colours),
   // so the preview matches. The renderer writes its own <body class="cr-page">.
   root: {
@@ -266,7 +272,7 @@ export const config: Config<Components> = {
       fields: {
         count: {
           type: "radio",
-          label: "Columns (stack on phones)",
+          label: "Columns",
           options: [
             { label: "2", value: "2" },
             { label: "3", value: "3" },
@@ -280,12 +286,15 @@ export const config: Config<Components> = {
         column4: columnSlot,
       },
       defaultProps: { count: "2", gap: "md", column1: [], column2: [], column3: [], column4: [] },
-      render: ({ count, gap, column1, column2, column3, column4 }) => {
+      render: ({ count, gap, widths, column1, column2, column3, column4 }) => {
         // Content in columns beyond `count` is kept (so lowering the count is
         // undoable) but not shown or published.
         const columns = [column1, column2, column3, column4].slice(0, Number(count));
         return (
-          <div className={`cr-columns cr-columns-${count}`} style={vars({ "--cr-columns-gap": spaceVar(gap) })}>
+          <div
+            className={["cr-columns", `cr-columns-${count}`, columnClasses(Number(count), widths)].filter(Boolean).join(" ")}
+            style={vars({ "--cr-columns-gap": spaceVar(gap) })}
+          >
             {columns.map((Column, i) => (
               <div className="cr-column" key={i}>
                 <Column />
@@ -349,3 +358,32 @@ export const config: Config<Components> = {
     },
   },
 };
+
+type AnyRender = (props: Record<string, unknown> & { puck?: { isEditing?: boolean } }) => ReactNode;
+
+/**
+ * Wraps every block so it can be hidden per device (F029). The wrapper only
+ * exists for hidden blocks; it has `display: contents`, so the block's own
+ * layout is unchanged where it shows. In the builder it carries a label.
+ */
+function withVisibility(c: Config<Components>): Config<Components> {
+  const components = Object.fromEntries(
+    Object.entries(c.components).map(([name, comp]) => {
+      const render = comp.render as unknown as AnyRender;
+      const wrapped: AnyRender = (props) => {
+        const out = render(props);
+        const classes = hideClasses(props.hideOn);
+        if (!classes) return out;
+        return (
+          <div className={`cr-show ${classes}`} data-hidden={props.puck?.isEditing ? hiddenLabel(props.hideOn) : undefined}>
+            {out}
+          </div>
+        );
+      };
+      return [name, { ...comp, render: wrapped }];
+    }),
+  );
+  return { ...c, components } as unknown as Config<Components>;
+}
+
+export const config: Config<Components> = withVisibility(blocks);

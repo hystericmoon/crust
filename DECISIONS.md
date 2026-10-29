@@ -24,6 +24,36 @@ Features Claude suggests. They are not work until the owner adds them to
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
 
+## 2026-10-29 — F029 Per-device columns (direction A, owner-approved recommendation)
+
+- **All three devices at once:** the Columns panel shows a row of width
+  tiles for Desktop, Tablet and Phone (no hidden "current device" mode).
+  Each device name is a button that switches the canvas to that width.
+- **Widths are fixed fractions** per column count: 2 columns (1/2+1/2,
+  2/3+1/3, 1/3+2/3, 3/4+1/4, 1/4+3/4, stacked), 3 (equal, one wide
+  column in each position, "2, then 1", stacked), 4 (equal, 2+2, stacked).
+  A choice that no longer fits after changing the count falls back to
+  the default for that device.
+- **Format (additive):** Columns `widths?: { desktop, tablet, phone }`;
+  any block `hideOn?: ("desktop"|"tablet"|"phone")[]`. Columns without
+  `widths` get no new classes and blocks without `hideOn` no wrapper, so
+  old pages produce identical HTML. Once any width is set, all three
+  devices are written (defaults fill the gaps) so the CSS order is
+  always phone → tablet → desktop.
+- **CSS, no JavaScript:** the rules are generated from `responsiveCss()`
+  into styles.css (`npm run gen:responsive-css`); a test fails if they
+  drift. Breakpoints stay 640 and 1024 px.
+- **Hiding:** a hidden block sits in `<div class="cr-show cr-hide-…">`
+  with `display: contents` (no layout change), and `display: none` within
+  that device's exact range, so it's also gone for screen readers there.
+  In the builder the admin CSS shows it faded, striped and labelled
+  ("Hidden on phone") on that device so it can still be selected; the
+  label attribute is only written while editing.
+- **Known edge:** hiding the page's only h1 on a device leaves that device
+  without a main heading. The publish check doesn't look per device yet.
+- **"Show on" lives in each block's panel for now;** F030 moves it into
+  the Advanced tab.
+
 ## 2026-10-29 — F028 Style customizer v2 (owner: "go with all your recommendations")
 
 - **Direction A** from `design/f028-style-customizer-v1.html`: Site

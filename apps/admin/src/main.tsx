@@ -6,6 +6,7 @@ import "./settings/settings.css";
 import "./keyboard/keyboard.css";
 import "./sections/sections.css";
 import "./layouts/layouts.css";
+import "./responsive/responsive.css";
 import "./pages/pages.css";
 import { App } from "./App";
 

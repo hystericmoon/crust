@@ -12,7 +12,7 @@ feature is a draft PR stacked on the one before. A resumed session: find
 the first unchecked step, `git checkout` its branch, carry on.
 
 - [x] F028 build on `f028-style-customizer` (PR #12), then merge it into `f029-per-device-columns`
-- [ ] F029 build on `f029-per-device-columns` (PR #13)
+- [x] F029 build on `f029-per-device-columns` (PR #13)
 - [ ] F030 Content/Style/Advanced tabs on `f030-settings-tabs` (from F029's branch)
 - [ ] F031 Header, footer and menu on `f031-header-footer` (from F030's)
 - [ ] F032 More elements on `f032-more-elements` (from F031's)
@@ -228,3 +228,9 @@ the first unchecked step, `git checkout` its branch, carry on.
   total). Chromium at 1440 and 390: axe clean in every group, canvas
   picks up the styles, no console errors. done_check and check:a11y
   (45 themed pages) pass.
+- 2026-10-29 — F029 Per-device columns done (direction A). Width tiles
+  for all three devices, device names switch the canvas, "Show on" for
+  every block (display: contents wrapper + media queries). Old pages
+  render identically. 18 new tests (382 total). Checked in Chromium:
+  canvas widths and the faded hidden block in the builder, and the
+  published page at 375/800/1280. done_check passes.

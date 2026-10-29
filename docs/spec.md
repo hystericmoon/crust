@@ -91,6 +91,11 @@ section styles; a Section's `background` names one (`background`,
 `linkStyle`, each picked from a short list. Missing options keep the look
 sites had before F028. A section style's `button` can also be `"soft"`.
 
+Any block's props may carry `hideOn` (optional, added with F029): a list of
+`"desktop"`, `"tablet"`, `"phone"`. A Columns block may carry `widths`
+(`{ desktop, tablet, phone }`, each a width id such as `"two-one"` or
+`"stack"`). Blocks without them render as before.
+
 `content/redirects.json` (optional, added with F015)
 ```json
 [{ "from": "/old-address", "to": "/new-address" }]
