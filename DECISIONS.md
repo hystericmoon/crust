@@ -13,6 +13,21 @@ Features Claude suggests. They are not work until the owner adds them to
   what's not published yet" is F016. Claude's next four recommendations
   were approved the same day as F017–F020.)*
 
+## 2026-10-29 — F019 restore deleted pages (Claude, reversible)
+
+- **Where the list comes from:** recent commits under `content/pages` whose first line is the builder's own `Delete page /x from the builder`.
+  - Only the newest deletion of each address is listed, and only if no page lives there now. At most 10 are shown.
+  - Each page is read as it was in the commit before the deletion.
+  - No new storage and no new token permission.
+- **Restoring writes that version back** in one commit ("Restore page /x …").
+  - The server only accepts a builder deletion it finds in the recent history.
+  - It refuses if the address is taken.
+- **Not restored:** redirects that pointed to the page. Deleting removed them, and the next rename can recreate them. Keeping restore simple felt right.
+- **No confirmation step.** Restoring is safe: nothing is overwritten, and you can delete the page again. I dropped "with confirmation" from the F019 description before building; the owner's approved option text didn't include it.
+- **The section is collapsed by default** ("Recently deleted (2)"), because restoring is rare.
+  - It's a disclosure button inside the `h2` (`aria-expanded`), not `<details>`/`<summary>`, so screen readers announce it as a heading.
+  - It's hidden when nothing was deleted, and before GitHub is switched on.
+
 ## 2026-10-29 — F018 update links on rename (Claude, reversible)
 
 - **Which links:** Button `href` and Card `linkHref`, anywhere in the block tree (inside Sections and Columns too).

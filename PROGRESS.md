@@ -5,17 +5,16 @@ to "Log".
 
 ## Current
 
-- **Milestone:** 1 (first working slice). F001–F018 pass their done checks.
+- **Milestone:** 1 (first working slice). F001–F019 pass their done checks.
 - **Merged to main:** F001–F016 (PRs #1, #2, #3).
 - **In PR #4:** F017 "Open live site" uses the real address, F018 update
-  links on rename.
-- **Next:** F019 restore deleted pages, F020 save browser drafts from the
-  page list (owner-approved, in that order).
+  links on rename, F019 restore deleted pages.
+- **Next:** F020 save browser drafts from the page list (owner-approved).
 - **Waiting on the owner:**
   - Switch on saving and publishing: follow `docs/setup-saving.md`
     (Cloudflare Access, GitHub token, three Pages settings), then say "done".
   - Review on the preview link and set `reviewed: true`: F010, F004, F003,
-    F005, F012, F013, F014, F007, F008, F015, F016, F017, F018.
+    F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019.
 - **Next after setup:** Claude redeploys, checks a real save, a real
   rename and a real publish, and fixes anything that shows up. Then
   Milestone 1 is complete.
@@ -115,4 +114,9 @@ to "Log".
   on every page in the same commit (shared `relinkPage` in
   packages/blocks/src/links.ts), and browser drafts follow. The rename
   dialog names the pages it will update (GET /api/links). 8 new tests; done
+  check passes.
+- 2026-10-29 — F019 done: "Recently deleted" (collapsed) lists builder
+  deletions from the Git history (GET /api/deleted). Restore writes the
+  page back as it was before deletion (POST /api/restore), refusing taken
+  addresses or anything that isn't a builder deletion. 7 new tests; done
   check passes.

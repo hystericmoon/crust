@@ -1,4 +1,5 @@
 import type { Page } from "@crust/blocks";
+import type { DeletedPage } from "../api-client";
 import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { checkNewPage, createPage, slugify, type NewPageErrors, type NewPageInput } from "./new-page";
 import { focusAfterDialog, PageActions, type LinkingPage, type PageAction } from "./PageActions";
@@ -21,6 +22,9 @@ export interface PageListProps {
   onDelete?: (row: PageRow) => PageAction;
   /** Other pages linking to a page, shown in the rename dialog (F018). */
   findLinks?: (row: PageRow) => Promise<LinkingPage[] | null>;
+  /** Pages deleted from GitHub that can come back (F019); null or empty hides the section. */
+  deleted?: DeletedPage[] | null;
+  onRestore?: (page: DeletedPage) => PageAction;
   /** Shown below the list (the Publish panel). */
   children?: ReactNode;
 }
@@ -33,7 +37,7 @@ export const editHref = (path: string) => `#/edit?path=${encodeURIComponent(path
 /** The badge for changes that aren't live yet (F016). */
 export const unpublishedLabel = { new: "Not published yet", edited: "Edited since publish" } as const;
 
-export function PageList({ siteName, rows, sourceNote, loadError, onCreate, githubOn = false, onRename, onDelete, findLinks, children }: PageListProps) {
+export function PageList({ siteName, rows, sourceNote, loadError, onCreate, githubOn = false, onRename, onDelete, findLinks, deleted, onRestore, children }: PageListProps) {
   const [creating, setCreating] = useState(false);
   const [done, setDone] = useState("");
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -147,9 +151,68 @@ export function PageList({ siteName, rows, sourceNote, loadError, onCreate, gith
             </table>
           )}
         </section>
+        {deleted?.length && onRestore ? (
+          <RecentlyDeleted
+            pages={deleted}
+            onRestore={(d) =>
+              after(onRestore(d), `Restored “${d.title}” at ${d.path}. It goes live again the next time you publish.`)
+            }
+          />
+        ) : null}
         {children}
       </main>
     </div>
+  );
+}
+
+/**
+ * F019: a quiet, collapsed list. Restoring is rare and safe (the page comes
+ * back exactly as it was, nothing is overwritten), so no confirmation step.
+ */
+function RecentlyDeleted({ pages, onRestore }: { pages: DeletedPage[]; onRestore: (page: DeletedPage) => PageAction }) {
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const restore = async (d: DeletedPage) => {
+    if (busy) return;
+    setBusy(d.path);
+    setError(null);
+    const failed = await onRestore(d);
+    setBusy(null);
+    if (failed) setError(failed);
+  };
+
+  return (
+    <section className="st-card pg-deleted" aria-labelledby="deleted-h">
+      <h2 id="deleted-h">
+        <button type="button" className="pg-disclosure" aria-expanded={open} aria-controls="deleted-list" onClick={() => setOpen((o) => !o)}>
+          Recently deleted ({pages.length})
+        </button>
+      </h2>
+      <div id="deleted-list" hidden={!open}>
+        <p className="st-lede">Pages deleted from the builder. Restoring brings a page back at its old address, as it was.</p>
+        {error ? (
+          <p className="st-error" role="alert">
+            {error}
+          </p>
+        ) : null}
+        <ul className="pg-deleted-list">
+          {pages.map((d) => (
+            <li key={d.path}>
+              <span className="pg-deleted-name">
+                <strong>{d.title}</strong> <span className="pg-path">{d.path}</span>
+                <span className="st-help">Deleted {formatDate(d.deletedAt)}</span>
+              </span>
+              <button type="button" className="st-button pg-small" onClick={() => restore(d)} aria-disabled={busy !== null || undefined}>
+                {busy === d.path ? "Restoring…" : "Restore"}
+                <span className="pg-sr"> {d.title}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
   );
 }
 

@@ -80,3 +80,13 @@ export interface PendingChanges {
   redirects: boolean;
 }
 export const getChanges = () => call<PendingChanges>("/api/changes");
+
+/** A page deleted from the builder that can be restored (F019). */
+export interface DeletedPage {
+  path: string;
+  title: string;
+  deletedAt: string;
+  commit: string;
+}
+export const getDeleted = () => call<{ pages: DeletedPage[] }>("/api/deleted");
+export const restorePage = (d: DeletedPage) => call<{ page: Page }>("/api/restore", post({ path: d.path, commit: d.commit }));

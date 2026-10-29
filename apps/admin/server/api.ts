@@ -34,6 +34,7 @@ import {
   listFolder,
   putFile,
   readFile,
+  recentCommits,
 } from "./github";
 
 export interface Env {
@@ -382,6 +383,85 @@ export async function handleChanges(request: Request, env: Env, fetchFn: typeof 
     changes.pages.sort((a, b) => a.path.localeCompare(b.path));
     changes.removed.sort();
     return json(200, { ok: true, ...changes });
+  } catch (e) {
+    return githubFailure(e);
+  }
+}
+
+/** First line of the commit handleDelete makes. */
+const DELETE_COMMIT = /^Delete page (\S+) from the builder$/;
+
+export interface DeletedPage {
+  path: string;
+  title: string;
+  deletedAt: string;
+  /** The deleting commit; the page is restored from its parent. */
+  commit: string;
+}
+
+/** GET /api/deleted: pages deleted from the builder that could come back (F019). */
+export async function handleDeleted(request: Request, env: Env, fetchFn: typeof fetch = fetch): Promise<Response> {
+  const user = await gate(request, env, fetchFn, false);
+  if (user instanceof Response) return user;
+  const cfg = githubConfig(env);
+  try {
+    const [commits, files] = await Promise.all([recentCommits(cfg, "content/pages", fetchFn), listFolder(cfg, "content/pages", fetchFn)]);
+    const existing = new Set(files.map((f) => pagePathForFile(f.path)));
+    const seen = new Set<string>();
+    const found: { path: string; deletedAt: string; commit: string; parent: string }[] = [];
+    for (const c of commits) {
+      const path = DELETE_COMMIT.exec(c.message.split("\n")[0]!)?.[1];
+      // Newest deletion per address only, and not if a page lives there again.
+      if (!path || !c.parent || !isValidPagePath(path) || seen.has(path) || existing.has(path)) continue;
+      seen.add(path);
+      found.push({ path, deletedAt: c.date, commit: c.sha, parent: c.parent });
+      if (found.length === 10) break;
+    }
+    const pages = await Promise.all(
+      found.map(async (d): Promise<DeletedPage | null> => {
+        const text = await readFile(cfg, pageFileFor(d.path), fetchFn, d.parent);
+        if (!text) return null;
+        try {
+          return { path: d.path, title: (JSON.parse(text) as Page).title || d.path, deletedAt: d.deletedAt, commit: d.commit };
+        } catch {
+          return null;
+        }
+      }),
+    );
+    return json(200, { ok: true, pages: pages.filter((p): p is DeletedPage => p !== null) });
+  } catch (e) {
+    return githubFailure(e);
+  }
+}
+
+/** POST /api/restore  { path, commit }: brings a deleted page back as it was (F019). */
+export async function handleRestore(request: Request, env: Env, fetchFn: typeof fetch = fetch): Promise<Response> {
+  const user = await gate(request, env, fetchFn, true);
+  if (user instanceof Response) return user;
+  const body = await readBody(request);
+  if (body instanceof Response) return body;
+  const { path, commit } = (body ?? {}) as { path?: unknown; commit?: unknown };
+  if (!isValidPagePath(path) || typeof commit !== "string" || !/^[0-9a-f]{7,40}$/i.test(commit)) return fail(400, "That isn't a page that can be restored.");
+  const cfg = githubConfig(env);
+  try {
+    // Only a deletion made by the builder, found in the recent history, can be undone here.
+    const deletion = (await recentCommits(cfg, "content/pages", fetchFn)).find((c) => c.sha === commit);
+    if (!deletion?.parent || DELETE_COMMIT.exec(deletion.message.split("\n")[0]!)?.[1] !== path) {
+      return fail(404, `Couldn't find the deleted page ${path} in the recent history.`);
+    }
+    if ((await readFile(cfg, pageFileFor(path), fetchFn)) !== null) return fail(409, `There's already a page at ${path}.`);
+    const text = await readFile(cfg, pageFileFor(path), fetchFn, deletion.parent);
+    if (text === null) return fail(404, `Couldn't find the deleted page ${path} in the recent history.`);
+    const page = JSON.parse(text) as Page;
+    const problems = checkPage(page);
+    if (problems.length) return fail(422, `Not restored. ${problems.join(" ")}`);
+    const result = await commitFiles(
+      cfg,
+      [{ path: pageFileFor(path), content: serialize(page) }],
+      `Restore page ${path} ("${page.title}") from the builder\n\nRestored by ${user.email}`,
+      fetchFn,
+    );
+    return json(200, { ok: true, page, commit: result.commit, url: result.url });
   } catch (e) {
     return githubFailure(e);
   }

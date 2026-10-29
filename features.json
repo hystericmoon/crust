@@ -185,10 +185,10 @@
     {
       "id": "F019",
       "title": "Restore deleted pages",
-      "description": "A \"Recently deleted\" list under the page list shows pages deleted from GitHub, with a Restore button that brings the page back at its old address (from Git history), with confirmation. Added by the owner (approved Claude's recommendation, 2026-10-28).",
+      "description": "A \"Recently deleted\" list under the page list shows pages deleted from GitHub, with a Restore button that brings the page back at its old address (from Git history). Added by the owner (approved Claude's recommendation, 2026-10-28).",
       "depends_on": ["F015"],
       "done_check": "npm test -- restore save-api && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

@@ -1,7 +1,7 @@
 import { defaultTokens, type Page, type Site } from "@crust/blocks";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { clearAccessKeyCache, verifyAccessJwt } from "./access";
-import { handleChanges, handleDelete, handleLinks, handlePage, handlePages, handlePublish, handleRename, handleSave, handleStatus, type Env } from "./api";
+import { handleChanges, handleDelete, handleDeleted, handleLinks, handleRestore, handlePage, handlePages, handlePublish, handleRename, handleSave, handleStatus, type Env } from "./api";
 import { checkPage, isValidPagePath, pageFileFor, pagePathForFile, parseRedirects, redirectsAfterDelete, redirectsAfterRename } from "./content";
 import { fromBase64, toBase64 } from "./github";
 
@@ -47,6 +47,9 @@ let multiCommits: { message: string; paths: string[] }[];
 let raceOnUpdate: boolean;
 // Publish history (F016)
 let successRuns: { id?: number; head_sha: string; created_at: string; html_url: string }[];
+// Commit history and old file versions (F019).
+let history: { sha: string; parents: { sha: string }[]; commit: { message: string; committer: { date: string } } }[];
+let filesAt: Map<string, Map<string, string>>;
 let runJobs: { steps: { name: string; conclusion: string | null }[] }[];
 let jobsAsked: string[];
 let compareBase: string | null;
@@ -76,6 +79,8 @@ const fakeFetch: typeof fetch = async (input, init) => {
       const list = [...files.keys()].filter((p) => p.startsWith("content/pages/"));
       return respond(200, list.map((p) => ({ type: "file", name: p.split("/").pop(), path: p, sha: files.get(p)!.sha })));
     }
+    const old = filesAt.get(url.searchParams.get("ref") ?? "");
+    if (old) return old.has(path) ? respond(200, { sha: "old", content: toBase64(old.get(path)!) }) : respond(404, {});
     const f = files.get(path);
     return f ? respond(200, { sha: f.sha, content: toBase64(f.content) }) : respond(404, {});
   }
@@ -113,6 +118,7 @@ const fakeFetch: typeof fetch = async (input, init) => {
     compareBase = decodeURIComponent(url.pathname.split("/compare/")[1]!);
     return respond(200, { files: compareFiles });
   }
+  if (url.pathname === "/repos/hystericmoon/crust/commits" && url.searchParams.get("path") === "content/pages") return respond(200, history);
   if (url.pathname === "/repos/hystericmoon/crust/commits") return respond(200, [{ commit: { committer: { date: "2026-10-28T10:00:00Z" } } }]);
   if (url.pathname.endsWith("/dispatches")) {
     dispatched.push(url.pathname);
@@ -174,6 +180,8 @@ beforeEach(() => {
   successRuns = [];
   runJobs = [];
   jobsAsked = [];
+  history = [];
+  filesAt = new Map();
   compareBase = null;
   compareFiles = [];
   clearAccessKeyCache();
@@ -592,5 +600,60 @@ describe("save-api: links to a renamed page (F018)", () => {
     expect(multiCommits[0]!.message).toContain("Updated 2 links to the new address.");
     // Pages without links to it are left alone.
     expect(multiCommits[0]!.paths).not.toContain("content/pages/contact.json");
+  });
+});
+
+// --- F019: restore deleted pages ------------------------------------------------
+
+describe("save-api: restoring deleted pages (F019)", () => {
+  const commit = (sha: string, message: string, date = "2026-10-29T10:00:00Z") => ({
+    sha,
+    parents: [{ sha: `${sha}-parent` }],
+    commit: { message, committer: { date } },
+  });
+  const before = (sha: string, path: string, title: string) =>
+    filesAt.set(`${sha}-parent`, new Map([[pageFileFor(path), JSON.stringify(page({ path, title }))]]));
+
+  beforeEach(() => {
+    history = [
+      commit("aaa1111", "Delete page /about from the builder\n\nDeleted by h@x.id", "2026-10-29T12:00:00Z"),
+      commit("bbb2222", "Save page /contact (\"Contact\") from the builder"),
+      commit("ccc3333", "Delete page /contact from the builder"),
+      commit("ddd4444", "Delete page /about from the builder", "2026-10-29T08:00:00Z"),
+      commit("eee5555", "Rename page /team to /people from the builder"),
+    ];
+    before("aaa1111", "/about", "About us");
+    before("ccc3333", "/contact", "Contact");
+    before("ddd4444", "/about", "Old about");
+    files.set("content/pages/contact.json", pageFile("/contact", "Contact"));
+  });
+
+  it("lists the latest deletion of each address that has no page now", async () => {
+    const res = await handleDeleted(await get("/api/deleted", await token()), env, fakeFetch);
+    expect(await res.json()).toEqual({ ok: true, pages: [{ path: "/about", title: "About us", deletedAt: "2026-10-29T12:00:00Z", commit: "aaa1111" }] });
+  });
+
+  it("brings the page back as it was before the deletion", async () => {
+    const res = await handleRestore(await post("/api/restore", { path: "/about", commit: "aaa1111" }), env, fakeFetch);
+    expect(res.status).toBe(200);
+    expect(JSON.parse(files.get("content/pages/about.json")!.content).title).toBe("About us");
+    expect(multiCommits[0]!.message).toBe('Restore page /about ("About us") from the builder\n\nRestored by hosni@example.com');
+    const list = await handleDeleted(await get("/api/deleted", await token()), env, fakeFetch);
+    expect((await list.json()).pages).toEqual([]);
+  });
+
+  it("refuses anything that isn't a builder deletion of that page, or a taken address", async () => {
+    const cases: [unknown, number][] = [
+      [{ path: "/about", commit: "bbb2222" }, 404],
+      [{ path: "/team", commit: "aaa1111" }, 404],
+      [{ path: "/about", commit: "fff9999" }, 404],
+      [{ path: "/contact", commit: "ccc3333" }, 409],
+      [{ path: "/about", commit: "not a sha" }, 400],
+    ];
+    for (const [body, status] of cases) {
+      expect((await handleRestore(await post("/api/restore", body), env, fakeFetch)).status, JSON.stringify(body)).toBe(status);
+    }
+    expect(multiCommits).toEqual([]);
+    expect((await handleRestore(await post("/api/restore", { path: "/about", commit: "aaa1111" }, { jwt: null }), env, fakeFetch)).status).toBe(401);
   });
 });

@@ -95,9 +95,9 @@ export async function listFolder(cfg: GitHubConfig, path: string, fetchFn: typeo
   return items.filter((i) => i.type === "file").map(({ name, path: p, sha }) => ({ name, path: p, sha }));
 }
 
-/** Reads a text file; null if missing. */
-export async function readFile(cfg: GitHubConfig, path: string, fetchFn: typeof fetch = fetch): Promise<string | null> {
-  const res = await fetchFn(`${api}/repos/${cfg.repo}/contents/${encodePath(path)}?ref=${encodeURIComponent(cfg.branch)}`, {
+/** Reads a text file (on the branch, or at a commit given as `ref`); null if missing. */
+export async function readFile(cfg: GitHubConfig, path: string, fetchFn: typeof fetch = fetch, ref = cfg.branch): Promise<string | null> {
+  const res = await fetchFn(`${api}/repos/${cfg.repo}/contents/${encodePath(path)}?ref=${encodeURIComponent(ref)}`, {
     headers: headers(cfg.token),
   });
   if (res.status === 404) return null;
@@ -263,4 +263,22 @@ export async function liveAddress(cfg: GitHubConfig, runId: number, fetchFn: typ
     }
   }
   return null;
+}
+
+export interface CommitSummary {
+  sha: string;
+  parent: string | null;
+  message: string;
+  date: string;
+}
+
+/** Recent commits on the branch that touched a folder, newest first (F019). */
+export async function recentCommits(cfg: GitHubConfig, path: string, fetchFn: typeof fetch = fetch, perPage = 50): Promise<CommitSummary[]> {
+  const res = await fetchFn(
+    `${api}/repos/${cfg.repo}/commits?path=${encodeURIComponent(path)}&sha=${encodeURIComponent(cfg.branch)}&per_page=${perPage}`,
+    { headers: headers(cfg.token) },
+  );
+  if (!res.ok) throw new GitHubError(explain(res.status), res.status);
+  const commits = (await res.json()) as { sha: string; parents?: { sha: string }[]; commit: { message: string; committer: { date: string } } }[];
+  return commits.map((c) => ({ sha: c.sha, parent: c.parents?.[0]?.sha ?? null, message: c.commit.message, date: c.commit.committer.date }));
 }

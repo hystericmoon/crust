@@ -6,13 +6,16 @@ import siteJson from "../../../content/site.json";
 import {
   deletePage,
   getChanges,
+  getDeleted,
   getLinks,
   getPage,
   getStatus,
   listPages,
   renamePage,
+  restorePage,
   saveContent,
   type ApiResult,
+  type DeletedPage,
   type PendingChanges,
 } from "./api-client";
 import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot, openKeyboardHelp } from "./keyboard/KeyboardEditing";
@@ -163,6 +166,7 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
   const [rows, setRows] = useState<PageRow[] | null>(null);
   const [error, setError] = useState<string>();
   const [changes, setChanges] = useState<PendingChanges | null>(null);
+  const [deleted, setDeleted] = useState<DeletedPage[] | null>(null);
   // Bumped after a rename, delete or publish to load the list again.
   const [version, setVersion] = useState(0);
   const reload = () => setVersion((v) => v + 1);
@@ -185,6 +189,7 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
     });
     // If this fails, pages just aren't marked; the list itself still works.
     void getChanges().then((res) => setChanges(res.ok ? res : null));
+    void getDeleted().then((res) => setDeleted(res.ok ? res.pages : null));
   }, [githubOn, version]);
 
   // Rename and delete (F015): through GitHub for pages there, in this browser otherwise.
@@ -199,6 +204,12 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
       const { puck, count } = relinkPage(draft.page.puck, row.path, to);
       if (count) saveLocalDraft({ ...draft.page, puck }, draft.savedToGitHub);
     }
+    reload();
+    return null;
+  };
+  const restore = async (page: DeletedPage): Promise<string | null> => {
+    const res = await restorePage(page);
+    if (!res.ok) return `Not restored: ${res.error}`;
     reload();
     return null;
   };
@@ -231,6 +242,8 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
       onRename={rename}
       onDelete={remove}
       findLinks={findLinks}
+      deleted={githubOn ? deleted : null}
+      onRestore={restore}
       onCreate={(page) => {
         saveLocalDraft(page, false);
         location.hash = editHref(page.path);

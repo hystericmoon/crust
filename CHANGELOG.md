@@ -4,6 +4,8 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **"Recently deleted"** under your page list: bring a deleted page back at
+  its old address with one button.
 - **Renaming a page also updates the buttons and card links on your other
   pages** that point to it. The rename dialog lists which pages will change.
 - **"Open live site" now opens your real site,** at the address the last
