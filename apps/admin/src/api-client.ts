@@ -2,7 +2,7 @@
  * Browser side of the admin API (apps/admin/server). Every call resolves to
  * a plain result; it never throws, so the UI always has a message to show.
  */
-import type { Page, Site } from "@crust/blocks";
+import type { Page, SavedLayout, Site } from "@crust/blocks";
 
 export type ApiResult<T = Record<string, never>> =
   | ({ ok: true } & T)
@@ -90,3 +90,10 @@ export interface DeletedPage {
 }
 export const getDeleted = () => call<{ pages: DeletedPage[] }>("/api/deleted");
 export const restorePage = (d: DeletedPage) => call<{ page: Page }>("/api/restore", post({ path: d.path, commit: d.commit }));
+
+/** My layouts (F027): sections and pages saved to reuse, in content/layouts/. */
+export const listLayouts = () => call<{ layouts: SavedLayout[] }>("/api/layouts");
+export const saveLayout = (layout: Pick<SavedLayout, "name" | "kind" | "content">) =>
+  call<{ layout: SavedLayout }>("/api/layouts", post({ action: "save", layout }));
+export const renameLayout = (id: string, name: string) => call<{ layout: SavedLayout }>("/api/layouts", post({ action: "rename", id, name }));
+export const deleteLayout = (id: string) => call("/api/layouts", post({ action: "delete", id }));

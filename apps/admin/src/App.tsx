@@ -20,6 +20,7 @@ import {
 } from "./api-client";
 import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot, openKeyboardHelp } from "./keyboard/KeyboardEditing";
 import { LayoutGallery, LayoutInserters, LayoutsButton } from "./layouts/LayoutGallery";
+import { MyLayoutsProvider } from "./layouts/mine";
 import { PageList, editHref } from "./pages/PageList";
 import {
   bundledPages,
@@ -386,7 +387,7 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
   }
 
   return (
-    <>
+    <MyLayoutsProvider githubOn={githubOn}>
       <Puck
         config={editorConfig}
         data={toPuckData(page)}
@@ -420,6 +421,6 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
       <div role="status" aria-live="polite" className="crust-status">
         {status}
       </div>
-    </>
+    </MyLayoutsProvider>
   );
 }

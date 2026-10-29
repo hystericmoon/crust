@@ -10,19 +10,26 @@ import {
   sectionLayouts,
   type LayoutCategory,
   type PageLayout,
+  type SavedLayout,
   type SectionLayout,
 } from "@crust/blocks";
 import type { ComponentData, Config, Data } from "@puckeditor/core";
 
-export type LayoutKind = "section" | "page";
-export type LayoutItem = { kind: "section"; layout: SectionLayout } | { kind: "page"; layout: PageLayout };
+export type LayoutKind = "section" | "page" | "mine";
+export type LayoutItem =
+  | { kind: "section"; layout: SectionLayout }
+  | { kind: "page"; layout: PageLayout }
+  | { kind: "mine"; layout: SavedLayout };
 
 const words = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 
 /** Layouts of one kind, in one category ("All" for every one), matching every word of the search. */
-export function filterLayouts(kind: LayoutKind, category: LayoutCategory | "All", query: string): LayoutItem[] {
+export function filterLayouts(kind: LayoutKind, category: LayoutCategory | "All", query: string, mine: SavedLayout[] = []): LayoutItem[] {
   const terms = words(query).split(/\s+/).filter(Boolean);
   const matches = (text: string) => terms.every((t) => words(text).includes(t));
+  if (kind === "mine") {
+    return mine.filter((l) => matches(`${l.name} ${l.kind === "page" ? "page" : "section"}`)).map((layout) => ({ kind: "mine", layout }));
+  }
   if (kind === "page") {
     return pageLayouts
       .filter((l) => matches(`${l.name} ${l.description} page`))
@@ -33,12 +40,21 @@ export function filterLayouts(kind: LayoutKind, category: LayoutCategory | "All"
     .map((layout) => ({ kind: "section", layout }));
 }
 
-/** Fresh blocks for a layout. */
-export const buildItem = (item: LayoutItem): ComponentData[] =>
-  item.kind === "page" ? buildPageLayout(item.layout) : item.layout.build();
-
 const isTree = (v: unknown): v is ComponentData[] =>
   Array.isArray(v) && v.every((x) => x && typeof x === "object" && "type" in x);
+
+/** A copy of blocks with new ids all the way down, so a layout can be inserted any number of times. */
+export function freshIds(items: ComponentData[]): ComponentData[] {
+  return items.map((item) => {
+    const props: Record<string, unknown> = { ...item.props, id: `${item.type}-${globalThis.crypto.randomUUID()}` };
+    for (const [k, v] of Object.entries(props)) if (isTree(v)) props[k] = freshIds(v);
+    return { ...item, props: props as ComponentData["props"] };
+  });
+}
+
+/** Fresh blocks for a layout. */
+export const buildItem = (item: LayoutItem): ComponentData[] =>
+  item.kind === "page" ? buildPageLayout(item.layout) : item.kind === "mine" ? freshIds(item.layout.content) : item.layout.build();
 
 const contains = (item: ComponentData, id: string): boolean =>
   item.props.id === id || Object.values(item.props).some((v) => isTree(v) && v.some((child) => contains(child, id)));
@@ -56,8 +72,8 @@ export function insertionPoint(content: ComponentData[], selectedId: string | nu
   return i === null ? content.length : i + 1;
 }
 
-/** A short name for a top-level block: its first heading, else its type. */
-export function blockName(config: Config, item: ComponentData): string {
+/** The first heading's text in a tree of blocks, or "". */
+export function firstHeading(items: ComponentData[]): string {
   let heading = "";
   const walk = (list: ComponentData[]) => {
     for (const child of list) {
@@ -66,7 +82,13 @@ export function blockName(config: Config, item: ComponentData): string {
       for (const v of Object.values(child.props)) if (isTree(v)) walk(v);
     }
   };
-  walk([item]);
+  walk(items);
+  return heading;
+}
+
+/** A short name for a top-level block: its first heading, else its type. */
+export function blockName(config: Config, item: ComponentData): string {
+  const heading = firstHeading([item]);
   const label = config.components[item.type]?.label ?? item.type;
   return heading ? `“${heading.length > 40 ? `${heading.slice(0, 39)}…` : heading}”` : label;
 }
@@ -94,10 +116,13 @@ export function planLayoutInsert(data: Data, item: LayoutItem, index: number): I
   const at = Math.max(0, Math.min(index, data.content.length));
   const content = insertLayout(data.content, blocks, at);
   const firstId = String(content[at]!.props.id);
+  const sections = blocks.length === 1 ? "" : `: ${blocks.length} sections`;
   const announcement =
     item.kind === "page"
       ? `Added the ${item.layout.name} page layout: ${blocks.length} sections. It uses your site style.`
-      : `Added ${item.layout.name}. It uses your site style.`;
+      : item.kind === "mine"
+        ? `Added your layout “${item.layout.name}”${sections}.`
+        : `Added ${item.layout.name}. It uses your site style.`;
   return { data: { ...data, content }, firstId, index: at, announcement };
 }
 

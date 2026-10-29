@@ -92,6 +92,14 @@ section styles; a Section's `background` names one (`background`,
 ```
 Written when a page is renamed; published as Cloudflare Pages `_redirects`.
 
+`content/layouts/<id>.json` (optional, added with F027)
+```json
+{ "id": "studio-intro", "name": "Studio intro", "kind": "section", "savedAt": "…", "content": [ … ] }
+```
+A section or whole page the owner saved to reuse. `content` is top-level
+blocks, like a page's `puck.content`. Only the builder reads these; they are
+never published.
+
 ## Milestone 1 — first working slice
 
 Prove the full loop: build a page in the browser, publish it, see it live.
