@@ -1,0 +1,457 @@
+<title>Crust Builder Vision</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a single scrolling "storyboard": each band is one idea, shown as a picture first, 1 line of words second. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6;
+  --accent:#4338ca; --accent-soft:#e7e6fb; --good:#127a4b; --good-soft:#dcf2e6; --bad:#b42318; --bad-soft:#fde4e1; --warn:#b54708;
+  --f-display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-body:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a;
+  --accent:#9b94ff; --accent-soft:#25234a; --good:#5fd39a; --good-soft:#123326; --bad:#ff8a7d; --bad-soft:#3a1714; --warn:#f2a65a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a;
+  --accent:#9b94ff; --accent-soft:#25234a; --good:#5fd39a; --good-soft:#123326; --bad:#ff8a7d; --bad-soft:#3a1714; --warn:#f2a65a; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1120px;margin:0 auto;padding-block:40px 80px;display:flex;flex-direction:column;gap:88px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.05}
+h1{font-size:clamp(2.4rem,6vw,4.6rem);font-weight:800;letter-spacing:-.03em}
+h2{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:700;letter-spacing:-.02em}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0}
+.label{font:500 .72rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.lede{color:var(--soft);font-size:1.1rem;max-width:56ch}
+.band{display:flex;flex-direction:column;gap:24px}
+.band-head{display:flex;flex-direction:column;gap:10px}
+.pill{display:inline-flex;align-items:center;gap:6px;font:500 .72rem/1 var(--f-mono);padding:6px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.pill.good{background:var(--good-soft);color:var(--good)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+
+/* HERO */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.equation{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.chip b{font-family:var(--f-display);font-size:1.1rem}
+.chip span{color:var(--soft);font-size:.85rem}
+.op{font:700 1.6rem var(--f-display);color:var(--soft)}
+.chip.result{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.result span{color:#e1defe}
+:root[data-theme="dark"] .chip.result, :root[data-theme="dark"] .chip.result span{color:#101016}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip.result, :root:not([data-theme="light"]) .chip.result span{color:#101016}}
+
+/* NESTING DIAGRAM */
+.nest{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;display:grid;gap:10px}
+.lvl{border:2px dashed var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.lvl > .tag{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.lvl.section{border-color:color-mix(in srgb,var(--accent) 55%,var(--line))}
+.cols{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+.els{display:flex;flex-wrap:wrap;gap:6px}
+.el{font:500 .78rem var(--f-mono);padding:6px 9px;border-radius:8px;background:var(--accent-soft);color:var(--accent)}
+.el.new{background:transparent;border:1.5px dashed var(--accent);color:var(--accent)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem;color:var(--soft)}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:6px}
+
+/* SCORECARD */
+.score{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow-x:auto}
+.score table{width:100%;border-collapse:collapse;min-width:560px}
+.score th,.score td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--line);font-size:.95rem}
+.score th{font:500 .72rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.score tr:last-child td{border-bottom:0}
+.bar{display:flex;gap:3px}
+.bar i{width:18px;height:10px;border-radius:3px;background:var(--line)}
+.bar.y i.on{background:var(--soft)}
+.bar.c i.on{background:var(--accent)}
+.bar.n i.on{background:var(--good)}
+
+/* BEATS GRID */
+.beats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.beat{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.beat .pic{height:150px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:14px;overflow:hidden}
+.beat p{color:var(--soft);font-size:.92rem}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+.vs .side{display:flex;flex-direction:column;gap:6px;align-items:center;font-size:.75rem;color:var(--soft);text-align:center}
+.stack{display:flex;flex-direction:column;gap:3px;width:100%}
+.stack div{font:500 .68rem var(--f-mono);padding:4px 6px;border-radius:5px;background:var(--line);color:var(--ink);text-align:center}
+.stack.crust div{background:var(--good-soft);color:var(--good)}
+.weight{display:flex;flex-direction:column;gap:10px;width:100%}
+.weight .row{display:grid;grid-template-columns:70px 1fr;align-items:center;gap:8px;font:.75rem var(--f-mono);color:var(--soft)}
+.weight .fill{height:14px;border-radius:4px}
+.check{display:flex;flex-direction:column;gap:6px;width:100%;font-size:.8rem}
+.check div{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:6px;background:var(--panel)}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.timeline{display:flex;align-items:center;width:100%;gap:0}
+.timeline .node{width:16px;height:16px;border-radius:50%;background:var(--accent);flex:none;position:relative}
+.timeline .node.now{box-shadow:0 0 0 4px var(--accent-soft)}
+.timeline .seg{height:3px;background:var(--accent);flex:1}
+.mini-sections{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%}
+.ms{border-radius:6px;padding:8px 6px;display:flex;flex-direction:column;gap:4px;height:100px}
+.ms .h{height:8px;border-radius:2px;width:70%}
+.ms .t{height:4px;border-radius:2px;width:90%;opacity:.5}
+.ms .b{height:12px;border-radius:3px;width:45%;margin-top:auto}
+.phone{width:70px;height:120px;border-radius:14px;border:3px solid var(--ink);padding:8px 6px;display:flex;flex-direction:column;gap:5px;background:var(--panel)}
+.phone .ln{height:6px;border-radius:2px;background:var(--line)}
+.phone .ln.a{background:var(--accent);width:60%}
+.pack{display:flex;align-items:center;gap:10px}
+.file{width:62px;height:78px;border-radius:6px 16px 6px 6px;background:var(--accent);color:#fff;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font:500 .62rem var(--f-mono)}
+.arrow{font:700 1.4rem var(--f-display);color:var(--soft)}
+.site{width:56px;height:56px;border-radius:8px;border:2px solid var(--line);display:grid;grid-template-rows:12px 1fr;overflow:hidden}
+.site .top{background:var(--accent)}
+
+/* MOCK BUILDER */
+.mock{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.mbar{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.seg-ctrl{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg-ctrl button{border:0;background:transparent;color:var(--soft);font:500 .82rem var(--f-body);padding:7px 11px;border-radius:8px;cursor:pointer;min-height:36px}
+.seg-ctrl button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+button:focus-visible,.lib-item:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mbody{display:grid;grid-template-columns:210px minmax(0,1fr) 230px;min-height:520px}
+.lib{border-right:1px solid var(--line);padding:14px;display:flex;flex-direction:column;gap:10px;overflow:auto}
+.lib-item{border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--bg);cursor:pointer;display:flex;flex-direction:column;gap:6px;text-align:left;color:var(--ink);font:500 .8rem var(--f-body)}
+.lib-item:hover{border-color:var(--accent)}
+.thumb{height:46px;border-radius:6px;background:var(--panel);display:flex;flex-direction:column;gap:4px;padding:6px;justify-content:center}
+.thumb i{display:block;height:4px;border-radius:2px;background:var(--line)}
+.thumb i.a{background:var(--accent);width:40%}
+.stage{background:var(--bg);padding:18px;display:flex;justify-content:center;overflow:auto}
+.canvas{width:100%;transition:max-width .35s ease;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.12);
+  --c-bg:#ffffff;--c-surface:#f1f1f6;--c-text:#15151d;--c-muted:#5d5d70;--c-primary:#4338ca;--c-on:#ffffff;--c-head:var(--f-display);--c-radius:10px;
+  background:var(--c-bg);color:var(--c-text);align-self:flex-start}
+.canvas[data-bp="tablet"]{max-width:560px}
+.canvas[data-bp="phone"]{max-width:300px}
+.cs{padding:28px 22px;display:flex;flex-direction:column;gap:10px;position:relative;outline:2px solid transparent;transition:outline-color .2s}
+.cs.sel{outline-color:var(--c-primary);outline-offset:-2px}
+.cs.surface{background:var(--c-surface)}
+.cs.primary{background:var(--c-primary);color:var(--c-on)}
+.cs.primary .cbtn{background:var(--c-on);color:var(--c-primary)}
+.cs h4{font-family:var(--c-head);font-size:1.6rem;margin:0;line-height:1.1;letter-spacing:-.01em}
+.cs p{color:inherit;opacity:.78;font-size:.9rem;max-width:44ch}
+.cbtn{align-self:flex-start;background:var(--c-primary);color:var(--c-on);border-radius:var(--c-radius);padding:8px 14px;font-size:.85rem;font-weight:600}
+.cgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.canvas[data-bp="phone"] .cgrid{grid-template-columns:1fr}
+.canvas[data-bp="tablet"] .cgrid{grid-template-columns:1fr 1fr}
+.ccard{background:var(--c-bg);border-radius:var(--c-radius);padding:12px;display:flex;flex-direction:column;gap:6px;font-size:.82rem}
+.cs.surface .ccard{background:var(--c-bg)}
+.cs:not(.surface) .ccard{background:var(--c-surface)}
+.ccard b{font-family:var(--c-head)}
+.ph{height:60px;border-radius:calc(var(--c-radius) - 4px);background:linear-gradient(135deg,color-mix(in srgb,var(--c-primary) 35%,transparent),color-mix(in srgb,var(--c-primary) 10%,transparent))}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center}
+.canvas[data-bp="phone"] .split{grid-template-columns:1fr}
+.split .ph{height:120px}
+.faq{display:flex;flex-direction:column;gap:6px}
+.faq div{background:var(--c-bg);border-radius:calc(var(--c-radius) - 2px);padding:10px 12px;font-size:.85rem;display:flex;justify-content:space-between}
+.cs:not(.surface) .faq div{background:var(--c-surface)}
+.panel{border-left:1px solid var(--line);padding:14px;display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px;font-size:.82rem}
+.field .opts{display:flex;gap:6px;flex-wrap:wrap}
+.opt{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:7px 9px;font:500 .78rem var(--f-body);cursor:pointer;min-height:36px}
+.opt[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.a11y{display:flex;gap:8px;align-items:flex-start;font-size:.8rem;padding:10px;border-radius:10px;background:var(--good-soft);color:var(--good)}
+.a11y.bad{background:var(--bad-soft);color:var(--bad)}
+.styles{display:flex;gap:8px;flex-wrap:wrap}
+.swatch{display:flex;gap:2px;border-radius:6px;overflow:hidden}
+.swatch i{width:10px;height:18px}
+.hint{font-size:.85rem;color:var(--soft);display:flex;gap:16px;flex-wrap:wrap}
+.hint b{color:var(--ink)}
+
+/* ROADMAP */
+.road{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;position:relative}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.step .n{font:800 2.4rem var(--f-display);color:var(--accent);line-height:1}
+.step ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.step li{display:flex;gap:8px;align-items:center;font-size:.92rem}
+.step li::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--accent);flex:none}
+.ask{background:var(--accent);color:#fff;border-radius:18px;padding:26px;display:flex;flex-direction:column;gap:10px}
+.ask p{opacity:.9}
+.ask code{font:500 .9rem var(--f-mono);background:rgba(255,255,255,.18);padding:2px 7px;border-radius:6px}
+:root[data-theme="dark"] .ask{color:#101016}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ask{color:#101016}}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .beats{grid-template-columns:1fr 1fr}
+  .mbody{grid-template-columns:1fr}
+  .lib{border-right:0;border-bottom:1px solid var(--line);flex-direction:row;overflow-x:auto}
+  .lib-item{min-width:130px}
+  .panel{border-left:0;border-top:1px solid var(--line)}
+  .road{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .beats{grid-template-columns:1fr}
+  .cols{grid-template-columns:1fr}
+  .wrap{gap:64px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="band-head" style="gap:18px">
+      <span class="label">Crust · Milestone 2 idea</span>
+      <h1>Build like YOOtheme.<br><em>Ship better.</em></h1>
+      <p class="lede">The parts that make YOOtheme great, plus what it can't do. Mostly pictures; try the builder further down.</p>
+    </div>
+    <div class="equation" aria-label="YOOtheme's way of building plus Crust's strengths equals the new Crust">
+      <div class="chip"><b>YOOtheme's way</b><span>Sections, layouts, styles</span></div>
+      <span class="op" aria-hidden="true">+</span>
+      <div class="chip"><b>Crust's engine</b><span>Static, accessible, free</span></div>
+      <span class="op" aria-hidden="true">=</span>
+      <div class="chip result"><b>New Crust</b><span>Beautiful by default, safe by design</span></div>
+    </div>
+  </section>
+
+  <!-- NESTING -->
+  <section class="band">
+    <div class="band-head">
+      <span class="label">1 · How a page is built</span>
+      <h2>Same building model as YOOtheme</h2>
+    </div>
+    <div class="nest" aria-label="Diagram: a section contains rows, rows contain columns, columns contain elements">
+      <div class="lvl section">
+        <div class="tag"><span class="label">Section</span><span class="pill">background · height · style · light/dark text</span></div>
+        <div class="lvl">
+          <div class="tag"><span class="label">Row</span><span class="pill">column widths per device</span></div>
+          <div class="cols">
+            <div class="lvl"><span class="label">Column</span>
+              <div class="els"><span class="el">Heading</span><span class="el">Text</span><span class="el">Button</span><span class="el new">Icon list</span></div>
+            </div>
+            <div class="lvl"><span class="label">Column</span>
+              <div class="els"><span class="el">Image</span><span class="el new">Gallery</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="legend"><span><i style="background:var(--accent-soft)"></i>Crust has it</span><span><i style="border:1.5px dashed var(--accent)"></i>New</span></div>
+  </section>
+
+  <!-- SCORECARD -->
+  <section class="band">
+    <div class="band-head">
+      <span class="label">2 · Where we stand</span>
+      <h2>YOOtheme vs Crust, today and next</h2>
+    </div>
+    <div class="score" role="region" aria-label="Comparison table" tabindex="0">
+      <table>
+        <thead><tr><th>Part</th><th>YOOtheme</th><th>Crust today</th><th>Crust next</th></tr></thead>
+        <tbody id="score"></tbody>
+      </table>
+    </div>
+    <div class="legend"><span>Each bar = how far along, out of 5</span></div>
+  </section>
+
+  <!-- BEATS -->
+  <section class="band">
+    <div class="band-head">
+      <span class="label">3 · Where Crust wins</span>
+      <h2>Six things YOOtheme can't do</h2>
+    </div>
+    <div class="beats">
+      <article class="beat">
+        <div class="pic"><div class="vs">
+          <div class="side"><div class="stack"><div>WordPress</div><div>PHP server</div><div>Database</div><div>Plugins</div><div>Updates</div></div>YOOtheme needs</div>
+          <div class="side"><div class="stack crust"><div>HTML files</div></div>Crust needs</div>
+        </div></div>
+        <h3>Nothing to maintain</h3>
+        <p>No server, no updates, nothing to hack. $0 hosting.</p>
+      </article>
+      <article class="beat">
+        <div class="pic"><div class="weight">
+          <div class="row"><span>Your page</span><div class="fill" style="background:var(--good);width:6%"></div></div>
+          <div class="row"><span>JavaScript</span><span style="color:var(--good)">0 KB</span></div>
+          <div class="row"><span>Download</span><span style="color:var(--good)">2 KB</span></div>
+        </div></div>
+        <h3>Instant pages</h3>
+        <p>Your live Home page today: 2 KB to download, zero JavaScript.</p>
+      </article>
+      <article class="beat">
+        <div class="pic"><div class="check">
+          <div><span class="dot" style="background:var(--bad)"></span>Low contrast button<span class="pill good" style="margin-left:auto">Fix</span></div>
+          <div><span class="dot" style="background:var(--bad)"></span>Image has no alt text</div>
+          <div><span class="dot" style="background:var(--good)"></span>Headings in order</div>
+        </div></div>
+        <h3>Accessible, guaranteed</h3>
+        <p>Problems are caught before publishing, with one-click fixes.</p>
+      </article>
+      <article class="beat">
+        <div class="pic"><div class="mini-sections" aria-label="The same section in three styles">
+          <div class="ms" style="background:#fff;border:1px solid #ddd"><span class="h" style="background:#15151d"></span><span class="t" style="background:#15151d"></span><span class="b" style="background:#4338ca"></span></div>
+          <div class="ms" style="background:#FAF9F6;border:1px solid #ddd"><span class="h" style="background:#1A1A1A"></span><span class="t" style="background:#1A1A1A"></span><span class="b" style="background:#1A1A1A"></span></div>
+          <div class="ms" style="background:#EEF4EF;border:1px solid #ddd"><span class="h" style="background:#14231A"></span><span class="t" style="background:#14231A"></span><span class="b" style="background:#1F6B45"></span></div>
+        </div></div>
+        <h3>Layouts that adapt</h3>
+        <p>Every layout picks up your style automatically. No restyling after import.</p>
+      </article>
+      <article class="beat">
+        <div class="pic"><div class="timeline" aria-label="Every save is a version you can go back to">
+          <span class="node"></span><span class="seg"></span><span class="node"></span><span class="seg"></span><span class="node"></span><span class="seg"></span><span class="node now"></span>
+        </div></div>
+        <h3>Every save is a version</h3>
+        <p>Full history on GitHub. Go back to any earlier page.</p>
+      </article>
+      <article class="beat">
+        <div class="pic"><div class="pack">
+          <div class="file">.crust</div><span class="arrow" aria-hidden="true">→</span>
+          <div class="site"><span class="top"></span><span></span></div><div class="site"><span class="top" style="background:var(--good)"></span><span></span></div>
+        </div></div>
+        <h3>Bring your template</h3>
+        <p>Style + layouts in one file. Share it, sell it, reuse it on any Crust site.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- MOCK -->
+  <section class="band">
+    <div class="band-head">
+      <span class="label">4 · Try it</span>
+      <h2>The builder, imagined</h2>
+      <div class="hint"><span><b>Click a layout</b> on the left to add it</span><span><b>Switch the style</b> on the right</span><span><b>Change device</b> at the top</span></div>
+    </div>
+    <div class="mock">
+      <div class="mbar">
+        <span class="label">Page · Home</span>
+        <div class="seg-ctrl" role="group" aria-label="Device width">
+          <button type="button" data-bp="desktop" aria-pressed="true">Desktop</button>
+          <button type="button" data-bp="tablet" aria-pressed="false">Tablet</button>
+          <button type="button" data-bp="phone" aria-pressed="false">Phone</button>
+        </div>
+      </div>
+      <div class="mbody">
+        <aside class="lib" aria-label="Layout library">
+          <span class="label">Layout library</span>
+          <button type="button" class="lib-item" data-add="hero"><span class="thumb"><i style="width:70%"></i><i style="width:50%"></i><i class="a"></i></span>Hero</button>
+          <button type="button" class="lib-item" data-add="features"><span class="thumb" style="flex-direction:row;gap:4px;align-items:center"><i style="flex:1;height:26px"></i><i style="flex:1;height:26px"></i><i style="flex:1;height:26px"></i></span>3 features</button>
+          <button type="button" class="lib-item" data-add="split"><span class="thumb" style="flex-direction:row;gap:6px;align-items:center"><i style="flex:1;height:30px"></i><span style="flex:1;display:flex;flex-direction:column;gap:4px"><i></i><i class="a" style="width:60%"></i></span></span>Image + text</button>
+          <button type="button" class="lib-item" data-add="faq"><span class="thumb"><i></i><i></i><i></i></span>FAQ</button>
+          <button type="button" class="lib-item" data-add="cta"><span class="thumb" style="background:var(--accent)"><i style="background:#fff;width:60%"></i><i style="background:#fff;width:30%"></i></span>Call to action</button>
+        </aside>
+        <div class="stage">
+          <div class="canvas" id="canvas" data-bp="desktop" aria-live="polite"></div>
+        </div>
+        <aside class="panel" aria-label="Settings">
+          <span class="label">Site style</span>
+          <div class="styles" role="group" aria-label="Site style" id="styles"></div>
+          <span class="label">Selected section</span>
+          <div class="field">Background
+            <div class="opts" role="group" aria-label="Section background" id="bgopts">
+              <button type="button" class="opt" data-bg="plain" aria-pressed="false">Page</button>
+              <button type="button" class="opt" data-bg="surface" aria-pressed="false">Muted</button>
+              <button type="button" class="opt" data-bg="primary" aria-pressed="false">Primary</button>
+            </div>
+          </div>
+          <div class="a11y" id="a11y"><span class="dot" style="background:currentColor;margin-top:4px"></span><span id="a11ytext">Contrast passes WCAG AA</span></div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section class="band">
+    <div class="band-head">
+      <span class="label">5 · How we'd get there</span>
+      <h2>Three steps</h2>
+    </div>
+    <div class="road">
+      <div class="step"><span class="n">1</span><h3>Look great fast</h3>
+        <ul><li>Section styles</li><li>Layout library</li><li>Save to My layouts</li></ul></div>
+      <div class="step"><span class="n">2</span><h3>Design deeper</h3>
+        <ul><li>Style customizer v2</li><li>Per-device columns</li><li>Content / Style / Advanced tabs</li></ul></div>
+      <div class="step"><span class="n">3</span><h3>Full sites</h3>
+        <ul><li>Header + footer + menu</li><li>More elements</li><li>Theme pack import/export</li></ul></div>
+    </div>
+    <div class="ask">
+      <h3 style="font-size:1.4rem">Your call</h3>
+      <p>Reply in the chat with <code>approve 1</code>, <code>approve 1 2 3</code>, or what to change.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+const score=[
+ ["Building blocks (Section → Element)",5,3,5],
+ ["Ready-made layouts",5,0,4],
+ ["Style presets & customizer",5,2,4],
+ ["Number of elements",5,2,4],
+ ["Phone / tablet controls",4,2,4],
+ ["Header, footer, menu",5,0,4],
+ ["Accessibility checks",2,5,5],
+ ["Speed of live site",3,5,5],
+ ["Running cost & upkeep",2,5,5]
+];
+const bar=(n,c)=>`<span class="bar ${c}" aria-label="${n} of 5">${[1,2,3,4,5].map(i=>`<i class="${i<=n?'on':''}"></i>`).join("")}</span>`;
+document.getElementById("score").innerHTML=score.map(r=>`<tr><td>${r[0]}</td><td>${bar(r[1],"y")}</td><td>${bar(r[2],"c")}</td><td>${bar(r[3],"n")}</td></tr>`).join("");
+
+const presets={
+ Crust:{bg:"#ffffff",surface:"#f1f1f6",text:"#15151d",muted:"#5d5d70",primary:"#4338ca",on:"#ffffff",head:'"Bricolage Grotesque", system-ui, sans-serif',radius:"10px"},
+ Ink:{bg:"#FAF9F6",surface:"#EFEDE8",text:"#1A1A1A",muted:"#55524C",primary:"#1A1A1A",on:"#FAF9F6",head:'Georgia, "Times New Roman", serif',radius:"2px"},
+ Forest:{bg:"#FFFFFF",surface:"#EEF4EF",text:"#14231A",muted:"#4A5A50",primary:"#1F6B45",on:"#FFFFFF",head:'"Instrument Sans", system-ui, sans-serif',radius:"16px"},
+ Night:{bg:"#111318",surface:"#1C2029",text:"#EEF0F5",muted:"#A6ADBD",primary:"#F2B33D",on:"#111318",head:'"Bricolage Grotesque", system-ui, sans-serif',radius:"6px"}
+};
+const canvas=document.getElementById("canvas");
+const stylesEl=document.getElementById("styles");
+let current="Crust";
+function applyStyle(name){
+  current=name;const p=presets[name];
+  const map={"--c-bg":p.bg,"--c-surface":p.surface,"--c-text":p.text,"--c-muted":p.muted,"--c-primary":p.primary,"--c-on":p.on,"--c-head":p.head,"--c-radius":p.radius};
+  for(const k in map)canvas.style.setProperty(k,map[k]);
+  stylesEl.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.style===name)));
+  checkContrast();
+}
+Object.entries(presets).forEach(([name,p])=>{
+  const b=document.createElement("button");b.type="button";b.className="opt";b.dataset.style=name;
+  b.innerHTML=`<span style="display:flex;gap:6px;align-items:center"><span class="swatch" aria-hidden="true"><i style="background:${p.bg};outline:1px solid #8884"></i><i style="background:${p.surface}"></i><i style="background:${p.primary}"></i></span>${name}</span>`;
+  b.addEventListener("click",()=>applyStyle(name));stylesEl.appendChild(b);
+});
+
+const blocks={
+ hero:()=>`<h4>Studio Haho</h4><p>Brand and web design for small teams that care about craft.</p><span class="cbtn">See our work</span>`,
+ features:()=>`<h4>What we do</h4><div class="cgrid">${["Identity","Websites","Campaigns"].map(t=>`<div class="ccard"><div class="ph"></div><b>${t}</b><span style="opacity:.75">Short line about ${t.toLowerCase()}.</span></div>`).join("")}</div>`,
+ split:()=>`<div class="split"><div class="ph" role="img" aria-label="Photo placeholder"></div><div style="display:flex;flex-direction:column;gap:8px"><h4>Made with care</h4><p>A small team, working with clients everywhere.</p><span class="cbtn">About us</span></div></div>`,
+ faq:()=>`<h4>Questions</h4><div class="faq"><div>How long does a site take?<span>+</span></div><div>Do you do hosting?<span>+</span></div><div>Can I edit it myself?<span>+</span></div></div>`,
+ cta:()=>`<h4>Let's make something.</h4><p>Tell us about your project.</p><span class="cbtn">Get in touch</span>`
+};
+let selected=null;
+function select(sec){
+  canvas.querySelectorAll(".cs").forEach(s=>s.classList.remove("sel"));
+  selected=sec;sec.classList.add("sel");
+  const bg=sec.classList.contains("primary")?"primary":sec.classList.contains("surface")?"surface":"plain";
+  document.querySelectorAll("#bgopts .opt").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.bg===bg)));
+  checkContrast();
+}
+function add(kind,bg){
+  const s=document.createElement("div");s.className="cs"+(bg&&bg!=="plain"?" "+bg:"");s.tabIndex=0;s.setAttribute("role","button");s.setAttribute("aria-label",kind+" section, select to edit");
+  s.innerHTML=blocks[kind]();
+  s.addEventListener("click",()=>select(s));
+  s.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(s)}});
+  canvas.appendChild(s);select(s);
+  if(window.matchMedia("(min-width:901px)").matches)s.scrollIntoView({block:"nearest",behavior:"smooth"});
+}
+document.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>add(b.dataset.add,b.dataset.add==="cta"?"primary":"plain")));
+document.querySelectorAll("#bgopts .opt").forEach(b=>b.addEventListener("click",()=>{
+  if(!selected)return;selected.classList.remove("surface","primary");
+  if(b.dataset.bg!=="plain")selected.classList.add(b.dataset.bg);select(selected);
+}));
+document.querySelectorAll("[data-bp]").forEach(b=>{if(b.tagName!=="BUTTON")return;b.addEventListener("click",()=>{
+  canvas.dataset.bp=b.dataset.bp;document.querySelectorAll(".mbar [data-bp]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+})});
+
+function lum(hex){const c=hex.replace("#","");const v=[0,2,4].map(i=>parseInt(c.substr(i,2),16)/255).map(x=>x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4));return .2126*v[0]+.7152*v[1]+.0722*v[2]}
+function ratio(a,b){const [x,y]=[lum(a),lum(b)].sort((m,n)=>n-m);return (x+.05)/(y+.05)}
+function checkContrast(){
+  const p=presets[current];const box=document.getElementById("a11y"),t=document.getElementById("a11ytext");
+  let fg=p.text,bg=p.bg;
+  if(selected&&selected.classList.contains("primary")){fg=p.on;bg=p.primary}else if(selected&&selected.classList.contains("surface")){bg=p.surface}
+  const r=ratio(fg,bg);const ok=r>=4.5;
+  box.classList.toggle("bad",!ok);t.textContent=(ok?"Contrast passes WCAG AA":"Contrast too low")+" · "+r.toFixed(1)+":1";
+}
+applyStyle("Crust");
+add("hero","plain");add("features","surface");add("cta","primary");select(canvas.querySelector(".cs"));
+</script>

@@ -1,5 +1,5 @@
 {
-  "milestone": 1,
+  "milestone": 2,
   "rules": "One feature per session. passes=true only when done_check exits 0. needs_review items also need the owner to set reviewed=true after testing the preview. Only the owner adds or removes features.",
   "features": [
     {
@@ -239,6 +239,96 @@
       "depends_on": ["F008", "F016"],
       "done_check": "npm test -- publish-shortcut && npm run build",
       "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F025",
+      "title": "Section styles",
+      "description": "Sections get YOOtheme-style options: style (Page, Muted, Primary, Dark), background image with a tint for readable text, height (auto, medium, large, full screen), and text that switches light/dark to match. Contrast is checked against the actual background. Older pages keep working through a migration. Added by the owner (approved Milestone 2 step 1, 2026-10-29).",
+      "depends_on": ["F003", "F004"],
+      "done_check": "npm test -- section-styles && npm run build && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F026",
+      "title": "Layout library",
+      "description": "A library panel in the builder with about 20 designed sections (hero, features, image + text, FAQ, call to action, team, pricing, contact...) and 5 page layouts. Click or press Enter to insert; everything uses the site style, so it matches automatically. Each layout passes the accessibility check. Added by the owner (approved Milestone 2 step 1, 2026-10-29).",
+      "depends_on": ["F025"],
+      "done_check": "npm test -- layout-library && npm run build && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F027",
+      "title": "My layouts",
+      "description": "Save any section (or a whole page) as your own layout. Saved to GitHub under content/layouts/, shown in the library under My layouts, with rename and delete. Added by the owner (approved Milestone 2 step 1, 2026-10-29).",
+      "depends_on": ["F026", "F006"],
+      "done_check": "npm test -- my-layouts && npm run build",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F028",
+      "title": "Style customizer v2",
+      "description": "Site settings grow into a full style customizer: type scale, heading weight and letter spacing, button shape and fill, card style (flat, outline, shadow), link style. 8 to 10 complete style presets. Every combination keeps passing the contrast checks. Added by the owner (approved Milestone 2 step 2, 2026-10-29).",
+      "depends_on": ["F003", "F013"],
+      "done_check": "npm test -- tokens presets customizer && npm run build",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F029",
+      "title": "Per-device columns",
+      "description": "Columns get widths per device (for example 2/3 + 1/3 on desktop, stacked on phone) and any block can be hidden on phone, tablet or desktop. Works in the canvas preview and on the published site with no JavaScript. Added by the owner (approved Milestone 2 step 2, 2026-10-29).",
+      "depends_on": ["F004"],
+      "done_check": "npm test -- responsive && npm run build && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F030",
+      "title": "Content, Style and Advanced tabs",
+      "description": "The settings panel splits every block's options into Content, Style and Advanced tabs, so simple edits stay simple. Advanced holds spacing, visibility and an anchor name for links. Full keyboard support. Added by the owner (approved Milestone 2 step 2, 2026-10-29).",
+      "depends_on": ["F001"],
+      "done_check": "npm test -- settings-tabs && npm run build",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F031",
+      "title": "Header, footer and menu",
+      "description": "A site-wide header (logo, menu built from your pages, call-to-action button, sticky option, phone menu that works without JavaScript) and footer (columns of links, text, copyright). Edited once in Site settings, shown on every page. Stored in site.json with a migration. Added by the owner (approved Milestone 2 step 3, 2026-10-29).",
+      "depends_on": ["F003", "F006"],
+      "done_check": "npm test -- header footer && npm run build && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F032",
+      "title": "More elements",
+      "description": "New blocks: Grid of cards, Gallery, Accordion/FAQ, Icon list, Logo row, Quote/testimonial, and Image overlay (text on an image). All work without JavaScript and pass the accessibility check. Added by the owner (approved Milestone 2 step 3, 2026-10-29).",
+      "depends_on": ["F025"],
+      "done_check": "npm test -- blocks && npm run build && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F033",
+      "title": "Theme pack export and import",
+      "description": "Export your style, header/footer style and My layouts as one .crust file; import one into another Crust site with a preview first. Only Crust data, never code or raw HTML, and it's checked (format and contrast) before anything changes. Added by the owner (approved Milestone 2 step 3, 2026-10-29).",
+      "depends_on": ["F027", "F028", "F031"],
+      "done_check": "npm test -- theme-pack && npm run build",
+      "passes": false,
       "needs_review": true,
       "reviewed": false
     }

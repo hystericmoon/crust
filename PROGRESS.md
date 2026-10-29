@@ -8,13 +8,15 @@ to "Log".
 - **Milestone:** 1 complete. F001–F024 pass; setup done; first real
   publish live at https://crust-site.pages.dev (2026-10-29).
 - **Merged to main:** F001–F024 (PRs #1–#6).
-- **In a PR:** "Page not found" page (404.html) for the published site.
+- **Merged:** "Page not found" page (PR #7), live since the second publish.
 - **Setup (done 2026-10-29):** Access app `crust-admin.pages.dev` ("Only
   me", one-time PIN); Pages "Restrict previews" app for
   `*.crust-admin.pages.dev`; GITHUB_TOKEN, ACCESS_TEAM_DOMAIN, ACCESS_AUD
   on crust-admin (Production). /api/status reports configured.
-- **Next:** nothing left in features.json. Proposals waiting in
-  DECISIONS.md (sign-out button, restore brings back the redirect).
+- **Next:** Milestone 2 (F025–F033, `docs/milestone-2.md`), starting
+  with F025 Section styles: design snapshot first, then build.
+  Other proposals waiting in DECISIONS.md (sign-out button, restore
+  brings back the redirect).
 - **Waiting on the owner:**
   - Check the live site on his phone.
   - Review on the preview link and set `reviewed: true`: F010, F004, F003,
@@ -145,3 +147,6 @@ to "Log".
   https://crust-site.pages.dev with title, description, sitemap and
   robots.txt. Found that unknown addresses served the home page with
   status 200 (no 404.html); fixed in the renderer, axe check now covers it.
+- 2026-10-29 — Owner approved Milestone 2 ("approve 1 2 3") after a
+  visual explainer comparing Crust and YOOtheme. Added F025–F033 to
+  features.json, spec in docs/milestone-2.md, snapshot in design/.

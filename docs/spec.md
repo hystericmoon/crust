@@ -1,6 +1,6 @@
 # Crust — product spec
 
-Working name. Owner: Hosni. Status: Milestone 1 in progress.
+Working name. Owner: Hosni. Status: Milestone 1 complete (2026-10-29); Milestone 2 planned in `docs/milestone-2.md`.
 
 ## What it is
 
