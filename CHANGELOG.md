@@ -4,6 +4,14 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Each page shows one status:** only in this browser, changes not
+  saved, saved but not live yet, or live.
+- **Publishing offers to save browser drafts first,** so nothing you meant
+  to publish gets left behind.
+- **"Find a page" and "Sort by"** (newest edit or address) once you have
+  6 or more pages.
+- **"Publish (3)" in the builder and Site settings top bars** takes you
+  straight to the Publish panel.
 - **Pages screen polish** after an Impeccable design review:
   - Publish now sits at the top, and its button says what it will do
     ("Publish 3 changes", or "Publish again" when everything is live).

@@ -5,18 +5,22 @@ to "Log".
 
 ## Current
 
-- **Milestone:** 1 (first working slice). F001–F020 pass their done checks.
-- **Merged to main:** F001–F020 (PRs #1–#4).
+- **Milestone:** 1 (first working slice). F001–F024 pass their done checks.
+- **Merged to main:** F001–F020 and the Impeccable fixes (PRs #1–#5).
 - **Merged:** F017–F020 (PR #4).
-- **In PR #5:** fixes from the Impeccable review of the Pages screen (owner
-  asked for it). Four new proposals in DECISIONS.md wait for the owner.
+- **In PR #6:** F021–F024 (owner approved "all"), plus a deploy-check fix.
+- **Setup:** the owner said "done" on 2026-10-29, but after a redeploy
+  /api/status still reports Cloudflare Access and the GitHub token missing,
+  and the admin opens without sign-in. Asked the owner to check the three
+  Pages variables are under Production with exact names, and that the
+  Access application covers crust-admin.pages.dev.
 - **Next:** nothing left in features.json. After the owner's setup: real
   save, rename, restore and publish checks.
 - **Waiting on the owner:**
   - Switch on saving and publishing: follow `docs/setup-saving.md`
     (Cloudflare Access, GitHub token, three Pages settings), then say "done".
   - Review on the preview link and set `reviewed: true`: F010, F004, F003,
-    F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019, F020.
+    F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019, F020, F021, F022, F023, F024.
 - **Next after setup:** Claude redeploys, checks a real save, a real
   rename and a real publish, and fixes anything that shows up. Then
   Milestone 1 is complete.
@@ -132,3 +136,10 @@ to "Log".
   and labels, error alerts and retry, link colour, dates, phone targets,
   chevron icon, Home note, New page keeps input. 8 new tests (219 total).
   Bigger ideas logged as proposals.
+- 2026-10-29 — PR #5 merged. Owner: setup "done" and approved all four
+  proposals. Redeployed main: settings still not visible to the admin
+  (asked the owner to check). Fixed the deploy check (retry, Access
+  sign-in counts as deployed). F021 status column, F022 save drafts before
+  publishing, F023 find and sort, F024 Publish shortcut: 16 new tests (235
+  total). Checked at 1280 and 390 px: axe clean, no console errors, the
+  save-and-publish flow, and the shortcut lands focus on Publish.

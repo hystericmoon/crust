@@ -126,7 +126,9 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
 
   return (
     <section className="st-card pg-publish" aria-labelledby="publish-h">
-      <h2 id="publish-h">Publish</h2>
+      <h2 id="publish-h" tabIndex={-1}>
+        Publish
+      </h2>
       {githubOn ? (
         <>
           <p className="st-lede">

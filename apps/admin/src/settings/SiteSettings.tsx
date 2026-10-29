@@ -21,7 +21,7 @@ import {
   matchingPreset,
   themePresets,
 } from "@crust/blocks";
-import { useCallback, useEffect, useId, useMemo, useState, type MouseEvent } from "react";
+import { useCallback, useEffect, useId, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import { sameTokens } from "../tokens-store";
 import { Icon } from "./icons";
 import { Preview } from "./Preview";
@@ -36,6 +36,8 @@ export interface SiteSettingsProps {
   /** Persists the tokens; resolves to the message to show. */
   onSave: (tokens: SiteTokens) => Promise<string>;
   onDiscard: () => void;
+  /** Extra top-bar link, e.g. the Publish shortcut (F024). */
+  headerLink?: ReactNode;
 }
 
 const sections = [
@@ -47,7 +49,7 @@ const sections = [
   { id: "shape", label: "Shape & layout" },
 ];
 
-export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDiscard }: SiteSettingsProps) {
+export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDiscard, headerLink }: SiteSettingsProps) {
   const [status, setStatus] = useState("");
   const [invalid, setInvalid] = useState<ReadonlySet<string>>(new Set());
   const [previewOpen, setPreviewOpen] = useState(true);
@@ -115,6 +117,7 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
         <h1 className="st-title">Site settings</h1>
         <span className="st-dirty">{dirty ? "Unsaved changes" : "All changes saved"}</span>
         <div className="st-actions">
+          {headerLink}
           <button type="button" className="st-button" onClick={discard} disabled={!dirty}>
             Discard
           </button>

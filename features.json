@@ -238,7 +238,7 @@
       "description": "The builder and Site settings top bars get a \"Publish\" link with the number of waiting changes; it opens the page list with focus on the Publish panel. Added by the owner (approved Claude's proposal from the Impeccable review, 2026-10-29).",
       "depends_on": ["F008", "F016"],
       "done_check": "npm test -- publish-shortcut && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     }
