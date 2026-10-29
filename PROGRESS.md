@@ -17,8 +17,14 @@ to "Log".
 - **Done, in draft PR #10: F026 Layout library** on branch
   `f026-layout-library` (owner chose direction **B**). Waiting for the
   owner to try it on the preview link.
-- **Next:** F027 My layouts (save a section or page as your own layout,
-  stored in `content/layouts/`).
+- **F027 My layouts:** design snapshot v1 on branch `f027-my-layouts`
+  (stacked on F026), `design/f027-my-layouts-v1.html`, also at
+  https://claude.ai/artifact/5TEVUbTCrxz4pvBbSpGhZn. Waiting for the
+  owner to pick A, B or C (Claude recommends A: "Save as layout" on the
+  section toolbar, a "My layouts" tab in the gallery). Logged in
+  BLOCKED.md. After the pick: layouts as `content/layouts/<slug>.json`
+  through new /api/layouts endpoints (browser copy when GitHub is off),
+  tests named `my-layouts`.
   Other proposals waiting in DECISIONS.md (sign-out button, restore
   brings back the redirect).
 - **Waiting on the owner:**
@@ -173,3 +179,7 @@ to "Log".
   total). Checked in Chromium at 1440 and 390: insert, whole-page insert
   keeps one h1, undo, empty page, Escape returns focus, axe clean with
   the gallery open, no console errors. done_check passes.
+- 2026-10-29 — F027 design snapshot v1: three ways to save and find your
+  own layouts (A save on the section + own tab, B all in the gallery,
+  C mixed into categories). Same in all: copies not links, name from the
+  heading, GitHub storage, delete confirms. Waiting for the owner's pick.
