@@ -28,6 +28,8 @@ import { sameTokens } from "../tokens-store";
 import { Icon } from "./icons";
 import { Preview } from "./Preview";
 import { ButtonOptions, CardOptions, LinkOptions, TypeOptions } from "./StyleGroups";
+import { chromeProblems, FooterOptions, HeaderOptions, type PageOption } from "./ChromeGroups";
+import { migrateChrome, validateChrome, type SiteChrome } from "@crust/blocks";
 
 export interface SiteSettingsProps {
   site: Site;
@@ -41,6 +43,13 @@ export interface SiteSettingsProps {
   onDiscard: () => void;
   /** Extra top-bar link, e.g. the Publish shortcut (F024). */
   headerLink?: ReactNode;
+  /** Header and footer (F031), edited and saved together with the tokens. */
+  chrome?: SiteChrome;
+  onChromeChange?: (chrome: SiteChrome) => void;
+  /** True when the header or footer differs from what's saved. */
+  chromeDirty?: boolean;
+  /** The site's pages, for building menus. */
+  pages?: PageOption[];
 }
 
 /** Direction A (F028): one group at a time, beside the live preview. */
@@ -52,6 +61,8 @@ export const groups = [
   { id: "cards", label: "Cards" },
   { id: "links", label: "Links" },
   { id: "section-styles", label: "Section styles" },
+  { id: "header", label: "Header & menu" },
+  { id: "footer", label: "Footer" },
   { id: "spacing", label: "Spacing" },
   { id: "shape", label: "Shape & layout" },
 ] as const;
@@ -67,6 +78,8 @@ export function groupOfField(field: string): GroupId | null {
 
 /** The group for a clicked part of the preview; null keeps the colour jump (F014). */
 export function groupForElement(el: Element): GroupId | null {
+  if (el.closest(".cr-site-header")) return "header";
+  if (el.closest(".cr-site-footer")) return "footer";
   if (el.closest(".cr-button")) return "buttons";
   if (el.closest(".cr-card-link")) return "links";
   if (el.closest(".cr-card")) return "cards";
@@ -74,7 +87,20 @@ export function groupForElement(el: Element): GroupId | null {
   return null;
 }
 
-export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDiscard, headerLink }: SiteSettingsProps) {
+export function SiteSettings({
+  site,
+  page,
+  saved,
+  draft,
+  onChange,
+  onSave,
+  onDiscard,
+  headerLink,
+  chrome = migrateChrome(site, []),
+  onChromeChange = () => undefined,
+  chromeDirty = false,
+  pages = [],
+}: SiteSettingsProps) {
   const [status, setStatus] = useState("");
   const [invalid, setInvalid] = useState<ReadonlySet<string>>(new Set());
   const [previewOpen, setPreviewOpen] = useState(true);
@@ -95,7 +121,7 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
   };
   /** Colours and fonts from before the last preset, for one-step undo. */
   const [beforePreset, setBeforePreset] = useState<{ tokens: SiteTokens; name: string } | null>(null);
-  const dirty = !sameTokens(saved, draft);
+  const dirty = !sameTokens(saved, draft) || chromeDirty;
   const results = useMemo(() => checkContrast(draft.colors), [draft.colors]);
 
   const setValidity = useCallback((field: string, valid: boolean) => {
@@ -127,7 +153,9 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
       setStatus(`Not saved. Fix the ${invalid.size === 1 ? "field" : `${invalid.size} fields`} marked in red first.`);
       return;
     }
-    const problems = validateTokens(draft);
+    const problems = [...validateTokens(draft), ...validateChrome(chrome)];
+    const chromeGroup = (["header", "footer"] as const).find((g) => chromeProblems(chrome, g).length);
+    if (chromeGroup && problems.length === validateChrome(chrome).length) open(chromeGroup);
     if (problems.length > 0) {
       setStatus(`Not saved. ${problems.map((p) => p.message).join(" ")}`);
       return;
@@ -148,7 +176,7 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
     setStatus("Changes discarded.");
   };
 
-  const previewSite = useMemo(() => ({ ...site, tokens: draft }), [site, draft]);
+  const previewSite = useMemo(() => ({ ...site, tokens: draft, header: chrome.header, footer: chrome.footer }), [site, draft, chrome]);
   const failing = results.filter((r) => !r.passes);
 
   return (
@@ -177,7 +205,7 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
         <nav className="st-nav" aria-label="Style groups">
           <ul>
             {groups.map((g) => {
-              const fix = [...invalid].some((f) => groupOfField(f) === g.id);
+              const fix = [...invalid].some((f) => groupOfField(f) === g.id) || ((g.id === "header" || g.id === "footer") && chromeProblems(chrome, g.id).length > 0);
               return (
                 <li key={g.id}>
                   <button type="button" className="st-nav-item" aria-current={group === g.id ? "true" : undefined} onClick={() => open(g.id)}>
@@ -305,6 +333,18 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
                 </div>
               ))}
             </div>
+          </section>
+
+          <section className="st-card" id="header" aria-labelledby="header-h" hidden={group !== "header"}>
+            <h2 id="header-h" tabIndex={-1}>Header & menu</h2>
+            <p className="st-lede">Shown at the top of every page. The menu marks the page a visitor is on.</p>
+            <HeaderOptions chrome={chrome} onChange={onChromeChange} tokens={draft} pages={pages} />
+          </section>
+
+          <section className="st-card" id="footer" aria-labelledby="footer-h" hidden={group !== "footer"}>
+            <h2 id="footer-h" tabIndex={-1}>Footer</h2>
+            <p className="st-lede">Shown at the bottom of every page.</p>
+            <FooterOptions chrome={chrome} onChange={onChromeChange} tokens={draft} pages={pages} />
           </section>
 
           <section className="st-card" id="typography" aria-labelledby="typography-h" hidden={group !== "typography"}>

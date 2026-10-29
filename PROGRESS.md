@@ -15,6 +15,26 @@ the first unchecked step, `git checkout` its branch, carry on.
 - [x] F029 build on `f029-per-device-columns` (PR #13)
 - [x] F030 Content/Style/Advanced tabs on `f030-settings-tabs` (from F029's branch)
 - [ ] F031 Header, footer and menu on `f031-header-footer` (from F030's)
+  - **Handoff (moved to a new session at the owner's request, 2026-10-29 ~21:30 UTC).** Branch
+    `f031-header-footer` has WIP commits, no PR yet. Done: `packages/blocks/src/chrome.tsx`
+    (types, defaults, `migrateChrome`, `validateChrome`, `SiteHeaderView`/`SiteFooterView`;
+    phone menu = `<details>`, two navs, only one shown per breakpoint), CSS in styles.css,
+    renderPage adds skip link + header + `<main id="content">` + footer (cli passes all pages
+    for the default menu); `apps/admin/src/chrome-store.ts`; `settings/ChromeGroups.tsx`
+    (Header & menu, Footer groups, LinkListEditor with up/down buttons); SiteSettings has the
+    groups (chrome props optional); App holds `chromeDraft`/`savedChrome`, saves them in
+    site.json with the tokens, page list for menus; `chrome-canvas.tsx` shows header/footer
+    inert on the builder canvas. `npm run typecheck` passes; check:a11y passed earlier.
+  - **Still to do:** (1) fix 7 failing Site settings tests (new "Header & menu"/"Footer" h2s
+    in the heading list; "Primary" etc. now also appear in header/footer style tiles, so
+    scope queries with `within(...)`); (2) server `checkSite` in `apps/admin/server/content.ts`
+    should add `validateChrome` messages; (3) tests named `header` and `footer` (done_check
+    `npm test -- header footer && npm run build && npm run check:a11y`): migration defaults,
+    validation, render (skip link, aria-current, sticky → html class, details menu, footer
+    columns, {year}/{name}), LinkListEditor move/add/remove, Site settings save includes
+    header/footer; (4) real-browser check at 1440 and 390 (phone menu opens without JS, axe);
+    (5) features.json F031 passes, DECISIONS/CHANGELOG/spec (site.json `header`/`footer`),
+    PROGRESS; open draft PR based on `f030-settings-tabs`, subscribe to it.
 - [ ] F032 More elements on `f032-more-elements` (from F031's)
 - [ ] F033 Theme pack on `f033-theme-pack` (from F032's)
 
