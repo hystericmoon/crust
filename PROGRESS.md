@@ -3,6 +3,21 @@
 Read this first in every session. Keep it short: replace "Current", append
 to "Log".
 
+## Overnight plan (owner, 2026-10-29: "go with all your recommendations, finish everything, don't wait for me")
+
+Owner approved: F027 A (built), F028 A + OK to the "Main button" proposal,
+F029 A, and building F030–F033 with Claude's recommendations (no snapshot
+picks needed; decisions go in DECISIONS.md). Never merge or publish; each
+feature is a draft PR stacked on the one before. A resumed session: find
+the first unchecked step, `git checkout` its branch, carry on.
+
+- [ ] F028 build on `f028-style-customizer` (PR #12), then merge it into `f029-per-device-columns`
+- [ ] F029 build on `f029-per-device-columns` (PR #13)
+- [ ] F030 Content/Style/Advanced tabs on `f030-settings-tabs` (from F029's branch)
+- [ ] F031 Header, footer and menu on `f031-header-footer` (from F030's)
+- [ ] F032 More elements on `f032-more-elements` (from F031's)
+- [ ] F033 Theme pack on `f033-theme-pack` (from F032's)
+
 ## Current
 
 - **Milestone:** 1 complete. F001–F024 pass; setup done; first real
