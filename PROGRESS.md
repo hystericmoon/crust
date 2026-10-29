@@ -199,3 +199,9 @@ to "Log".
   working controls and 9 presets (new: Ocean, Studio, Paper, Night; all
   AA). Found an overlap with F025's per-style button looks; asked the
   owner before building.
+- 2026-10-29 — F028 Style customizer v2 done (direction A, button
+  proposal accepted). tokens.style options, Soft button look, 9 presets,
+  grouped Site settings with preview-click jumps. 48 new tests (364
+  total). Chromium at 1440 and 390: axe clean in every group, canvas
+  picks up the styles, no console errors. done_check and check:a11y
+  (45 themed pages) pass.

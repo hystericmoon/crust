@@ -22,7 +22,7 @@ export interface PreviewProps {
   open: boolean;
   onToggle: () => void;
   /** Click on the preview: which colour styles that spot (pointer shortcut, F014). */
-  onPick?: (role: ColorRole) => void;
+  onPick?: (role: ColorRole, el?: Element) => void;
 }
 
 const narrow = () => typeof matchMedia === "function" && matchMedia("(max-width: 899px)").matches;
@@ -74,7 +74,7 @@ export function Preview({ site, page, open, onToggle, onPick }: PreviewProps) {
     if (!onPick || !doc) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const el = doc.elementFromPoint((e.clientX - rect.left) / scale, (e.clientY - rect.top) / scale);
-    if (el) onPick(roleForElement(el));
+    if (el) onPick(roleForElement(el), el);
   };
 
   return (
@@ -104,7 +104,7 @@ export function Preview({ site, page, open, onToggle, onPick }: PreviewProps) {
           {open ? "Hide" : "Show"}
           <span className="st-sr"> preview</span>
         </button>
-        {onPick ? <p className="st-preview-hint">Click part of the page to jump to its colour.</p> : null}
+        {onPick ? <p className="st-preview-hint">Click part of the page to jump to its settings.</p> : null}
       </div>
       <div className="st-preview-pane" id="st-preview-pane" ref={paneRef}>
         {html === null ? (
@@ -114,7 +114,7 @@ export function Preview({ site, page, open, onToggle, onPick }: PreviewProps) {
             className={onPick ? "st-preview-stage is-pickable" : "st-preview-stage"}
             style={{ width: width * scale, height: contentHeight * scale }}
             onClick={pick}
-            title={onPick ? "Click part of the page to find its colour" : undefined}
+            title={onPick ? "Click part of the page to find its settings" : undefined}
           >
             <iframe
               ref={frameRef}

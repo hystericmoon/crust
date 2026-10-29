@@ -24,6 +24,41 @@ Features Claude suggests. They are not work until the owner adds them to
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
 
+## 2026-10-29 — F028 Style customizer v2 (owner: "go with all your recommendations")
+
+- **Direction A** from `design/f028-style-customizer-v1.html`: Site
+  settings show one group at a time (Presets, Colours, Typography,
+  Buttons, Cards, Links, Section styles, Spacing, Shape & layout) beside
+  the live preview. Hidden groups stay in the page (`hidden`), so a
+  half-typed value isn't lost and Save still sees fields marked in red;
+  Save opens the group with the first one, and the list marks it "(fix)".
+- **Preview clicks:** a button opens Buttons, a card Cards, a card link
+  Links, a heading Typography. While Colours is open, a click still finds
+  the colour (F014).
+- **"Main button" (owner said OK to the proposal):** it edits the Page and
+  Muted section styles' button look together; Primary and Dark keep their
+  own (Inverse by default). "Soft" is a new section-style look: a 14% tint
+  of the brand colour, with its label falling back to the text colour if
+  the brand colour wouldn't read on it. If Page and Muted differ, no
+  choice is selected and a note says so; the first option keeps the Tab
+  stop (fixed in the shared RadioGroup).
+- **Format (additive, no migration):** `tokens.style` with `typeScale`
+  (subtle/balanced/bold/dramatic), `headingWeight` (500–800),
+  `headingTracking` (tight/snug/normal/wide), `buttonShape`
+  (square/rounded/pill), `cardStyle` (flat/outline/shadow), `linkStyle`
+  (underline/thick/highlight). Defaults reproduce the old look exactly
+  ("Balanced" = the old h1–h4 sizes, "Snug" = the old letter spacing), and
+  a site without `style` gets no extra CSS at all.
+- **Links stay underlined** in every style (WCAG 1.4.1).
+- **Presets** now set colours, fonts, style options and the main button
+  (spacing, corners and width stay). 9 presets: Crust, Ink, Forest,
+  Sunset, Mono + Ocean, Studio, Paper, Night. Every one passes all colour
+  pairs, every section style stays readable, and every button look reads
+  in every section style (tested). Undo preset restores all of it.
+- **Night** is a dark site; its "Dark" section style is therefore light
+  (it uses the text colour). Readable, but the name is odd there; worth a
+  look when the owner reviews.
+
 ## 2026-10-29 — F027 My layouts (direction A, chosen by Claude; owner can switch)
 
 - **Who chose:** the owner went to bed and asked Claude to continue

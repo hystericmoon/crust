@@ -58,18 +58,23 @@ const type = (label: string | RegExp, value: string) =>
   });
 
 describe("Site settings screen", () => {
-  it("has one h1, every section and a labelled field for each token", () => {
+  it("has one h1, every group and a labelled field for each token", () => {
     setup();
     expect(screen.getAllByRole("heading", { level: 1 }).map((h) => h.textContent)).toEqual(["Site settings"]);
-    expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual([
+    // F028 direction A: one group shown at a time; the others stay in the page, hidden.
+    expect(screen.getAllByRole("heading", { level: 2, hidden: true }).map((h) => h.textContent)).toEqual([
       "Presets",
       "Colours",
       "Contrast checks",
+      "Buttons",
+      "Cards",
+      "Links",
       "Section styles",
       "Typography",
       "Spacing",
       "Shape & layout",
     ]);
+    expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Presets"]);
     for (const name of ["Page", "Surface", "Text", "Muted text", "Primary", "Text on primary"]) {
       expect(screen.getByLabelText(name, { selector: "input:not([type=color])" })).toBeTruthy();
       expect(screen.getByLabelText(`Pick ${name} colour`)).toBeTruthy();
@@ -82,6 +87,7 @@ describe("Site settings screen", () => {
 
   it("reports failing contrast pairs and fixes them in one click", () => {
     setup();
+    act(() => screen.getByRole("button", { name: "Colours" }).click());
     type("Muted text", "#A1A1AA");
     const panel = screen.getByRole("region", { name: "Contrast checks" });
     expect(within(panel).getByText(/2 of 7 pairs fail AA/)).toBeTruthy();
