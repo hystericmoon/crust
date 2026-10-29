@@ -172,6 +172,13 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
     <p><b>Nothing else changes:</b> sites saved before F028 look exactly the same (Balanced scale, Bold headings, Rounded solid buttons, Flat cards, Underline links).</p>
   </div>
 
+  <div class="why">
+    <span class="label">One question before building</span>
+    <p><b>"Main button" overlaps with section styles.</b> Since F025 each section style already chooses its button look (Solid, Outline or Inverse). A second, site-wide fill would make two places that set the same thing.</p>
+    <p><b>Proposal:</b> the Buttons group sets <b>shape</b> for every button. Its "Main button" switch edits the look of the <b>Page</b> and <b>Muted</b> styles together, where buttons are Solid today. Primary and Dark keep Inverse, which stays readable on a coloured background. "Soft" becomes a fourth look that section styles can use too. One setting, shown in two places, never two settings that disagree.</p>
+    <p>Reply <code style="font:500 .85rem var(--f-mono)">OK</code> to that, or tell me how you'd like buttons to work.</p>
+  </div>
+
   <div class="ask">
     <h3 style="font-size:1.2rem">Pick one</h3>
     <p>Reply <code>A</code>, <code>B</code>, <code>C</code>, or a mix like <code>A + C's preset strip</code>.</p>
