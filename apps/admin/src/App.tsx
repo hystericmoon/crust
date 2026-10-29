@@ -248,7 +248,7 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
         error
           ? "Showing the pages in this browser for now."
           : githubOn
-          ? "Your pages on GitHub. Pages with changes saved only in this browser are marked, and so are saved pages that aren't live yet."
+          ? "Each page shows where its latest version is: only in this browser, saved, or live."
           : "Saving to GitHub isn't switched on yet, so this lists the pages built into the app plus drafts saved in this browser. Renaming and deleting those pages switches on with it."
       }
       githubOn={githubOn === true}
@@ -258,6 +258,7 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
       deleted={githubOn ? deleted : null}
       onRestore={restore}
       onSaveDraft={saveDraft}
+      liveKnown={githubOn === true && changes !== null}
       onCreate={(page) => {
         saveLocalDraft(page, false);
         location.hash = editHref(page.path);

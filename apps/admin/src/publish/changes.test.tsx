@@ -46,12 +46,14 @@ describe("changes: marking pages", () => {
         siteName="Demo"
         rows={[row({ unpublished: "edited" }), row({ path: "/contact", title: "Contact", unpublished: "new" })]}
         sourceNote=""
+        githubOn
+        liveKnown
         onCreate={() => {}}
       />,
     );
     const [, about, contact] = within(screen.getByRole("table")).getAllByRole("row");
-    expect(about!.textContent).toContain("Edited since publish");
-    expect(contact!.textContent).toContain("Not published yet");
+    expect(about!.textContent).toContain("Edits not live yet");
+    expect(contact!.textContent).toContain("Saved, not live yet");
   });
 });
 

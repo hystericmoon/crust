@@ -55,7 +55,8 @@ describe("page-actions: page list", () => {
 
   it("shows no actions column when nothing can change", () => {
     render(<PageList siteName="Demo" rows={rows.slice(0, 2)} sourceNote="" onCreate={() => {}} onRename={vi.fn()} onDelete={vi.fn()} />);
-    expect(screen.getAllByRole("columnheader")).toHaveLength(3);
+    // Title, Status, Address, Last edited: no Actions column.
+    expect(screen.getAllByRole("columnheader")).toHaveLength(4);
   });
 
   it("renames: checks the address, explains the redirect, then announces the result", async () => {
