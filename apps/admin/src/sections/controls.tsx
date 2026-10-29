@@ -103,16 +103,19 @@ export function StyleTiles({
   value,
   onChange,
   counts,
+  label = "Section style",
 }: {
   tokens: SiteTokens;
   value: SectionStyleId;
   onChange: (id: SectionStyleId) => void;
   /** How many sections on this page use each style. */
   counts?: Partial<Record<SectionStyleId, number>>;
+  /** The group's name for screen readers. */
+  label?: string;
 }) {
   return (
     <RadioGroup
-      label="Section style"
+      label={label}
       className="sx-tiles"
       optionClass="sx-tile"
       value={value}

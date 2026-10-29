@@ -308,7 +308,7 @@
       "description": "A site-wide header (logo, menu built from your pages, call-to-action button, sticky option, phone menu that works without JavaScript) and footer (columns of links, text, copyright). Edited once in Site settings, shown on every page. Stored in site.json with a migration. Added by the owner (approved Milestone 2 step 3, 2026-10-29).",
       "depends_on": ["F003", "F006"],
       "done_check": "npm test -- header footer && npm run build && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

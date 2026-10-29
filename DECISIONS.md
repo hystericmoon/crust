@@ -29,6 +29,35 @@ Features Claude suggests. They are not work until the owner adds them to
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
 
+## 2026-10-29 — F031 Header, footer and menu (Claude's recommendation, owner-approved overnight)
+
+- **Where it's edited:** two new groups in Site settings, "Header & menu"
+  and "Footer", next to Section styles, using the same preview. Saved in
+  `site.json` as `header` and `footer` with the tokens (one Save).
+- **Older sites:** no `header`/`footer` → defaults: the site name as the
+  logo, a menu of up to 6 pages (Home first), no button, not sticky, and
+  a "© {year} {name}" footer. Missing fields are filled in, so nothing
+  breaks. Turn either off with one checkbox.
+- **Phone menu without JavaScript:** a `<details>` "Menu" button below
+  768px; the desktop menu is hidden there (and vice versa), so screen
+  readers only meet one "Main" navigation at a time. 44px tap target.
+- **Accessibility:** "Skip to content" link first on every page; `<main>`
+  is its target; the menu marks the current page (`aria-current`); a
+  sticky header adds scroll room so focused things aren't hidden under it
+  (WCAG 2.4.11); footer columns are labelled navigations with an `h2`
+  title (fits the heading order, after the page content).
+- **Menus are edited with buttons:** Move up / Move down / Remove per link,
+  plus "Add page" from your pages, so no dragging is needed. Limits: 8
+  menu links, 4 footer columns of 8 links.
+- **Checks:** a logo image needs alt text; every link needs a label and an
+  address Crust can link to (no `javascript:`). Checked in the browser
+  and again when saving to GitHub.
+- **Look:** header and footer pick one of the four section styles (default
+  Page and Muted), so they follow your colours and contrast checks.
+- **In the builder** the header and footer show on the canvas, labelled
+  "edit in Site settings" and not clickable or focusable (`inert`), so the
+  page reads as it will look without getting in the way of editing.
+
 ## 2026-10-29 — F030 Content, Style and Advanced tabs (Claude's recommendation, owner-approved overnight)
 
 - **No snapshot:** the owner asked Claude to go with its recommendations

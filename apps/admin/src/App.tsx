@@ -43,7 +43,7 @@ import { withSettingsTabs } from "./tabs/tabs";
 import { SiteStyleContext, type SiteStyle } from "./sections/site-style";
 import { SiteSettings } from "./settings/SiteSettings";
 import { loadSavedTokens, sameTokens, saveTokens } from "./tokens-store";
-import { loadSavedChrome, sameChrome, saveChrome } from "./chrome-store";
+import { loadSavedChrome, sameChrome, saveChrome, siteToSave } from "./chrome-store";
 import { SiteChromeContext, withSiteChrome } from "./chrome-canvas";
 
 const site = siteJson as Site;
@@ -164,7 +164,7 @@ export function App() {
       setSaved(tokens);
       setSavedChrome(chrome);
     }
-    const result = await saveContent({ kind: "site", site: { ...site, tokens, header: chrome.header, footer: chrome.footer } });
+    const result = await saveContent({ kind: "site", site: siteToSave(site, tokens, chrome) });
     if (result.ok) {
       setSaved(tokens);
       setSavedChrome(chrome);

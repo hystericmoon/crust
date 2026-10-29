@@ -1,4 +1,4 @@
-import { validateChrome, type SiteChrome } from "@crust/blocks";
+import { validateChrome, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
 
 /** Saved header and footer (F031), kept in this browser like the tokens until GitHub has them. */
 export const CHROME_KEY = "crust:draft:chrome";
@@ -29,3 +29,6 @@ export function saveChrome(chrome: SiteChrome): boolean {
 }
 
 export const sameChrome = (a: SiteChrome, b: SiteChrome) => JSON.stringify(a) === JSON.stringify(b);
+
+/** site.json as Site settings saves it: the tokens plus the header and footer. */
+export const siteToSave = (site: Site, tokens: SiteTokens, chrome: SiteChrome): Site => ({ ...site, tokens, header: chrome.header, footer: chrome.footer });

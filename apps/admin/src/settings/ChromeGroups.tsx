@@ -212,8 +212,10 @@ export function HeaderOptions({ chrome, onChange, tokens, pages }: Props) {
         </fieldset>
         <Check label="Keep the header at the top while scrolling" checked={h.sticky} onChange={(sticky) => set({ sticky })} />
         <div className="st-chrome-field">
-          <span className="st-field-label">Header style</span>
-          <StyleTiles tokens={tokens} value={h.style} onChange={(style) => set({ style })} />
+          <span className="st-field-label" aria-hidden="true">
+            Header style
+          </span>
+          <StyleTiles tokens={tokens} label="Header style" value={h.style} onChange={(style) => set({ style })} />
         </div>
         <p className="st-help">On phones the menu folds into a Menu button that opens without JavaScript.</p>
       </div>
@@ -246,8 +248,10 @@ export function FooterOptions({ chrome, onChange, tokens, pages }: Props) {
         </button>
         <TextField label="Copyright line" value={f.copyright} onChange={(copyright) => set({ copyright })} hint="{year} and {name} are filled in when you publish." />
         <div className="st-chrome-field">
-          <span className="st-field-label">Footer style</span>
-          <StyleTiles tokens={tokens} value={f.style} onChange={(style) => set({ style })} />
+          <span className="st-field-label" aria-hidden="true">
+            Footer style
+          </span>
+          <StyleTiles tokens={tokens} label="Footer style" value={f.style} onChange={(style) => set({ style })} />
         </div>
       </div>
       <Problems list={chromeProblems(chrome, "footer")} />

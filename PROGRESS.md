@@ -14,27 +14,7 @@ the first unchecked step, `git checkout` its branch, carry on.
 - [x] F028 build on `f028-style-customizer` (PR #12), then merge it into `f029-per-device-columns`
 - [x] F029 build on `f029-per-device-columns` (PR #13)
 - [x] F030 Content/Style/Advanced tabs on `f030-settings-tabs` (from F029's branch)
-- [ ] F031 Header, footer and menu on `f031-header-footer` (from F030's)
-  - **Handoff (moved to a new session at the owner's request, 2026-10-29 ~21:30 UTC).** Branch
-    `f031-header-footer` has WIP commits, no PR yet. Done: `packages/blocks/src/chrome.tsx`
-    (types, defaults, `migrateChrome`, `validateChrome`, `SiteHeaderView`/`SiteFooterView`;
-    phone menu = `<details>`, two navs, only one shown per breakpoint), CSS in styles.css,
-    renderPage adds skip link + header + `<main id="content">` + footer (cli passes all pages
-    for the default menu); `apps/admin/src/chrome-store.ts`; `settings/ChromeGroups.tsx`
-    (Header & menu, Footer groups, LinkListEditor with up/down buttons); SiteSettings has the
-    groups (chrome props optional); App holds `chromeDraft`/`savedChrome`, saves them in
-    site.json with the tokens, page list for menus; `chrome-canvas.tsx` shows header/footer
-    inert on the builder canvas. `npm run typecheck` passes; check:a11y passed earlier.
-  - **Still to do:** (1) fix 7 failing Site settings tests (new "Header & menu"/"Footer" h2s
-    in the heading list; "Primary" etc. now also appear in header/footer style tiles, so
-    scope queries with `within(...)`); (2) server `checkSite` in `apps/admin/server/content.ts`
-    should add `validateChrome` messages; (3) tests named `header` and `footer` (done_check
-    `npm test -- header footer && npm run build && npm run check:a11y`): migration defaults,
-    validation, render (skip link, aria-current, sticky → html class, details menu, footer
-    columns, {year}/{name}), LinkListEditor move/add/remove, Site settings save includes
-    header/footer; (4) real-browser check at 1440 and 390 (phone menu opens without JS, axe);
-    (5) features.json F031 passes, DECISIONS/CHANGELOG/spec (site.json `header`/`footer`),
-    PROGRESS; open draft PR based on `f030-settings-tabs`, subscribe to it.
+- [x] F031 Header, footer and menu on `f031-header-footer` (from F030's), draft PR (base `f030-settings-tabs`)
 - [ ] F032 More elements on `f032-more-elements` (from F031's)
 - [ ] F033 Theme pack on `f033-theme-pack` (from F032's)
 
@@ -75,7 +55,7 @@ the first unchecked step, `git checkout` its branch, carry on.
   - Check the live site on his phone.
   - Review on the preview link and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019, F020,
-    F021, F022, F023, F024, F025, F026, F027.
+    F021, F022, F023, F024, F025, F026, F027, F028, F029, F030, F031.
 - **Reminder:** the Cloudflare API token expires on the date the owner set
   (recommended 2027-01-26), and the GitHub token (crust-admin-save) after
   90 days, around 2027-01-27. Both fail with a clear error; make a new one
@@ -259,3 +239,12 @@ the first unchecked step, `git checkout` its branch, carry on.
   warning. 9 new tests (391 total). Chromium: tabs, focus, undo, anchor
   id on the canvas. Found 4 axe issues in Puck's own chrome (proposal in
   DECISIONS). done_check and check:a11y pass.
+- 2026-10-29 — F031 done (new session after the handoff): header with
+  logo, menu from your pages, optional button, sticky option and a phone
+  Menu that opens without JavaScript; footer with text, link columns and
+  a {year}/{name} copyright line. Edited in Site settings ("Header &
+  menu", "Footer"), saved in site.json, checked again on the server.
+  "Skip to content" on every page. Checked in Chromium at 1440 and 390
+  with JavaScript off: menu opens, no overflow, axe clean. 26 new tests
+  (417 total); done check passes. Owner to try: Site settings → Header &
+  menu, change the menu, then look at the preview on desktop and phone.

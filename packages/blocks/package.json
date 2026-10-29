@@ -9,7 +9,8 @@
     "./tokens": "./src/tokens.ts",
     "./content": "./src/content.ts",
     "./styles.css": "./src/styles.css",
-    "./links": "./src/links.ts"
+    "./links": "./src/links.ts",
+    "./chrome-model": "./src/chrome-model.ts"
   },
   "peerDependencies": {
     "@puckeditor/core": "^0.23.0",
