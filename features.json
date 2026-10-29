@@ -268,7 +268,7 @@
       "description": "Save any section (or a whole page) as your own layout. Saved to GitHub under content/layouts/, shown in the library under My layouts, with rename and delete. Added by the owner (approved Milestone 2 step 1, 2026-10-29).",
       "depends_on": ["F026", "F006"],
       "done_check": "npm test -- my-layouts && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
