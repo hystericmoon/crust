@@ -21,6 +21,38 @@ Features Claude suggests. They are not work until the owner adds them to
   add the redirect back. Harmless today; matters once the site has
   visitors and bookmarks.
 
+## 2026-10-29 — F025 Section styles (owner chose "A + C's toolbar", plus site-wide editing)
+
+- **Direction:** the visual side panel (A) plus the on-canvas toolbar (C),
+  from snapshots `design/f025-section-styles-v1.html` and `-v2.html`.
+- **Two scopes, one toolbar:** "This section" (blue) changes the selected
+  section; "Whole site" (orange) edits the style itself, like YOOtheme's
+  global style settings. Affected count is shown before any change. The
+  side panel's "Edit everywhere" and Site settings → Section styles edit
+  the same thing. Whole-site edits change the same draft as Site
+  settings and are saved with "Save site style" (or Save in Site settings).
+- **Format (additive, no migration needed):**
+  - `site.json` tokens get optional `sectionStyles`
+    (`{ background|surface|primary|dark: { bg, button } }`); `bg` is a
+    colour role or a hex colour, `button` is solid, outline or inverse.
+    Sites without it use defaults that match the old look.
+  - Section `background` keeps its name and values and gains `"dark"`;
+    new optional props `height`, `valign`, `imageSrc`, `tint`. Pages
+    saved before F025 render exactly as before (auto height, no image).
+  - Published HTML: sections use `cr-style-<id>` instead of `cr-bg-<id>`
+    (cards keep `cr-bg-…`).
+- **Text colour picks itself:** the token colour with the best contrast on
+  the style's background. Links and muted text fall back to the text
+  colour when they'd fail AA. A solid button that wouldn't stand out (under
+  3:1) shows inverse.
+- **Background images are decoration** (`alt=""`), with a tint in the
+  style's background. Contrast is checked against the worst case (a pure
+  black or white pixel anywhere in the photo); a tint that's too faint is
+  raised in the CSS and the editor says so, with a one-click fix. Never
+  blocks publishing.
+- **Labels:** the styles are shown as Page, Muted, Primary, Dark. "Muted"
+  is the old "Surface" section.
+
 ## 2026-10-29 — Milestone 2: YOOtheme-style building (owner-approved)
 
 - **The owner approved all three steps** after the visual explainer

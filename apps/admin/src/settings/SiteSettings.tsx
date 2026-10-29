@@ -22,6 +22,8 @@ import {
   themePresets,
 } from "@crust/blocks";
 import { useCallback, useEffect, useId, useMemo, useState, type MouseEvent, type ReactNode } from "react";
+import { sectionStyleIds, sectionStyleNames } from "@crust/blocks";
+import { SectionStyleEditor, StyleSwatch } from "../sections/controls";
 import { sameTokens } from "../tokens-store";
 import { Icon } from "./icons";
 import { Preview } from "./Preview";
@@ -44,6 +46,7 @@ const sections = [
   { id: "presets", label: "Presets" },
   { id: "colours", label: "Colours" },
   { id: "contrast", label: "Contrast checks" },
+  { id: "section-styles", label: "Section styles" },
   { id: "typography", label: "Typography" },
   { id: "spacing", label: "Spacing" },
   { id: "shape", label: "Shape & layout" },
@@ -225,6 +228,24 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
               setStatus(`${colorRoleInfo[role].name} set to ${value}.`);
             }}
           />
+
+          <section className="st-card" id="section-styles" aria-labelledby="section-styles-h">
+            <h2 id="section-styles-h">Section styles</h2>
+            <p className="st-lede">
+              Four looks for whole sections. Each section picks one in the builder; a change here restyles every section that uses it.
+            </p>
+            <div className="sx-settings">
+              {sectionStyleIds.map((id) => (
+                <div className="sx-settings-style" key={id} role="group" aria-labelledby={`sx-${id}-h`}>
+                  <h3 id={`sx-${id}-h`} className="sx-settings-name">
+                    <StyleSwatch tokens={draft} id={id} />
+                    {sectionStyleNames[id]} sections
+                  </h3>
+                  <SectionStyleEditor tokens={draft} id={id} onChange={onChange} />
+                </div>
+              ))}
+            </div>
+          </section>
 
           <section className="st-card" id="typography" aria-labelledby="typography-h">
             <h2 id="typography-h">Typography</h2>

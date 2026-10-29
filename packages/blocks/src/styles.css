@@ -19,7 +19,24 @@
   padding-inline: var(--cr-space-sm);
 }
 
-.cr-section { padding-block: var(--cr-section-pad, var(--cr-space-lg)); }
+/* Sections (F025): colours come from the site-wide style classes (.cr-style-…)
+   that tokensToCss writes; inside a Card the section's colours are reset. */
+.cr-section {
+  position: relative;
+  display: flex; flex-direction: column; justify-content: center;
+  padding-block: var(--cr-section-pad, var(--cr-space-lg));
+  background: var(--cr-sec-bg, var(--cr-color-background));
+  color: var(--cr-sec-ink, var(--cr-color-text));
+  overflow: hidden;
+}
+.cr-section > .cr-container { position: relative; width: 100%; }
+.cr-height-medium { min-height: 50vh; min-height: 50svh; }
+.cr-height-large { min-height: 75vh; min-height: 75svh; }
+.cr-height-full { min-height: 100vh; min-height: 100svh; }
+.cr-valign-top { justify-content: flex-start; }
+.cr-valign-bottom { justify-content: flex-end; }
+.cr-section-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cr-section-tint { position: absolute; inset: 0; background: var(--cr-sec-bg); opacity: 0.65; }
 .cr-bg-background { background: var(--cr-color-background); color: var(--cr-color-text); }
 .cr-bg-surface { background: var(--cr-color-surface); color: var(--cr-color-text); }
 .cr-bg-primary { background: var(--cr-color-primary); color: var(--cr-color-onPrimary); }
@@ -39,12 +56,12 @@
 .cr-text p { margin: 0 0 var(--cr-space-sm); }
 .cr-align-center { text-align: center; margin-inline: auto; }
 .cr-align-right { text-align: right; margin-left: auto; }
-.cr-tone-muted { color: var(--cr-color-muted); }
+.cr-tone-muted { color: var(--cr-sec-muted, var(--cr-color-muted)); }
 .cr-bg-primary .cr-tone-muted { color: inherit; opacity: 0.85; }
 
 .cr-image { margin: 0 0 var(--cr-space-sm); }
 .cr-image img { display: block; width: 100%; height: auto; border-radius: var(--cr-radius); }
-.cr-image figcaption { margin-top: var(--cr-space-xs); font-size: 0.875rem; color: var(--cr-color-muted); }
+.cr-image figcaption { margin-top: var(--cr-space-xs); font-size: 0.875rem; color: var(--cr-sec-muted, var(--cr-color-muted)); }
 .cr-image-empty {
   display: grid; place-items: center; min-height: 160px;
   border: 1px dashed var(--cr-color-muted); border-radius: var(--cr-radius);
@@ -59,10 +76,18 @@
   transition: background-color 150ms ease, color 150ms ease;
 }
 .cr-button-row { margin: 0 0 var(--cr-space-sm); }
-.cr-button-primary { background: var(--cr-color-primary); color: var(--cr-color-onPrimary); }
-.cr-button-secondary { background: transparent; color: var(--cr-color-primary); }
+.cr-button-primary {
+  background: var(--cr-btn-bg, var(--cr-color-primary));
+  color: var(--cr-btn-fg, var(--cr-color-onPrimary));
+  border-color: var(--cr-btn-border, var(--cr-color-primary));
+}
+.cr-button-secondary {
+  background: transparent;
+  color: var(--cr-sec-accent, var(--cr-color-primary));
+  border-color: var(--cr-sec-accent, var(--cr-color-primary));
+}
 .cr-button:hover { filter: brightness(1.08); }
-.cr-button:focus-visible { outline: 3px solid var(--cr-color-text); outline-offset: 3px; }
+.cr-button:focus-visible { outline: 3px solid var(--cr-sec-ink, var(--cr-color-text)); outline-offset: 3px; }
 .cr-bg-primary .cr-button-primary { background: var(--cr-color-onPrimary); color: var(--cr-color-primary); border-color: var(--cr-color-onPrimary); }
 .cr-bg-primary .cr-button-secondary { color: var(--cr-color-onPrimary); border-color: var(--cr-color-onPrimary); }
 /* On a Primary section the text colour can be too dark to see; use the label colour. */
@@ -87,6 +112,8 @@
 }
 
 .cr-card {
+  --cr-sec-ink: initial; --cr-sec-muted: initial; --cr-sec-accent: initial;
+  --cr-btn-bg: initial; --cr-btn-fg: initial; --cr-btn-border: initial;
   display: flex; flex-direction: column;
   margin: 0 0 var(--cr-space-sm);
   border-radius: var(--cr-radius);

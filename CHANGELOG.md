@@ -4,6 +4,20 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Tooltips on icon buttons in the builder** (Duplicate, Delete, Select
+  parent, the move arrows, the style dots): they show on hover and on
+  keyboard focus, and Escape closes them.
+
+- **Section styles (F025):** sections can be Page, Muted, Primary or Dark,
+  with a height (Auto to Full screen), content position, and a background
+  image with a tint that keeps text readable.
+  - Pick them from picture tiles in the side panel, or from a quick
+    toolbar on the selected section.
+  - Flip the toolbar to **Whole site** (or click **Edit everywhere**) to
+    change what a style looks like on every page at once. Also in Site
+    settings → Section styles.
+  - Text colour picks itself, so every style passes contrast checks.
+
 - **Unknown addresses show "Page not found"** with a link to the home
   page, instead of the home page itself. Deleted pages now really
   disappear from the live site.

@@ -1,0 +1,308 @@
+<title>Section Styles Snapshot</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one shared canvas (the real site tokens) + three panel directions you switch between. Same state, three ways to edit it. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6;
+  --accent:#4338ca; --accent-soft:#e7e6fb; --good:#127a4b; --good-soft:#dcf2e6; --bad:#b42318; --bad-soft:#fde4e1;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a;
+  --accent:#9b94ff; --accent-soft:#25234a; --good:#5fd39a; --good-soft:#123326; --bad:#ff8a7d; --bad-soft:#3a1714; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a;
+  --accent:#9b94ff; --accent-soft:#25234a; --good:#5fd39a; --good-soft:#123326; --bad:#ff8a7d; --bad-soft:#3a1714; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1240px;margin:0 auto;padding-block:28px 64px;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.05;text-wrap:balance}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-.02em}
+.label{font:500 .7rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.top p{color:var(--soft);max-width:60ch}
+.dirs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.dir{border:1.5px solid var(--line);background:var(--panel);border-radius:14px;padding:12px 14px;text-align:left;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:4px}
+.dir b{font-family:var(--f-display);font-size:1.05rem}
+.dir span{color:var(--soft);font-size:.85rem}
+.dir[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.dir .rec{align-self:flex-start;font:500 .66rem var(--f-mono);background:var(--accent);color:var(--panel);padding:3px 7px;border-radius:999px;letter-spacing:.04em}
+button:focus-visible,[role="radio"]:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.studio{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:0;background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.stage{background:var(--bg);padding:18px;min-width:0;position:relative}
+.panel{border-left:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:16px}
+.panel[hidden]{display:none!important}
+
+/* SITE CANVAS (uses the real Crust demo tokens) */
+.site{--s-bg:#ffffff;--s-surface:#f4f4f5;--s-text:#18181b;--s-muted:#52525b;--s-primary:#4338ca;--s-on:#ffffff;
+  border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.14);background:var(--s-bg);color:var(--s-text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.sec{position:relative;padding:44px 28px;display:flex;flex-direction:column;justify-content:var(--valign,center);gap:10px;overflow:hidden}
+.sec .inner{position:relative;z-index:2;display:flex;flex-direction:column;gap:10px;max-width:520px}
+.sec h2{font-family:inherit;font-size:clamp(1.5rem,3.2vw,2.3rem);font-weight:750;letter-spacing:-.015em;line-height:1.1}
+.sec p{opacity:.85;max-width:46ch}
+.sbtn{align-self:flex-start;border-radius:8px;padding:9px 15px;font-weight:600;font-size:.9rem}
+.sec.sel{outline:3px solid var(--accent);outline-offset:-3px}
+.sec .badge{position:absolute;top:8px;left:8px;z-index:3;font:500 .66rem var(--f-mono);background:var(--accent);color:#fff;padding:3px 7px;border-radius:5px}
+.photo{position:absolute;inset:0;z-index:0;
+  background:
+   radial-gradient(circle at 78% 26%,#ffe7a8 0 7%,transparent 7.5%),
+   radial-gradient(120% 70% at 30% 110%,#2f4a3a 0 45%,transparent 46%),
+   radial-gradient(90% 60% at 85% 105%,#1f3529 0 50%,transparent 51%),
+   radial-gradient(70% 50% at 55% 95%,#5b7a5f 0 50%,transparent 51%),
+   linear-gradient(180deg,#f3a86b 0%,#e9707a 45%,#7a5aa8 100%)}
+.tint{position:absolute;inset:0;z-index:1}
+.feat{padding:32px 28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;background:var(--s-surface)}
+.feat div{background:var(--s-bg);border-radius:8px;padding:12px;font-size:.85rem;display:flex;flex-direction:column;gap:4px}
+.feat b{font-size:.95rem}
+
+/* CONTROLS (shared) */
+.group{display:flex;flex-direction:column;gap:8px}
+.group > .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.tile{border:1.5px solid var(--line);border-radius:10px;padding:6px;background:var(--bg);cursor:pointer;display:flex;flex-direction:column;gap:6px;color:var(--ink);font:500 .8rem var(--f-body);text-align:left}
+.tile[aria-checked="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.tile .sw{height:46px;border-radius:6px;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:8px}
+.tile .sw i{display:block;height:5px;border-radius:2px;width:70%}
+.tile .sw i+i{width:45%;opacity:.7}
+.seg{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{flex:1;border:0;background:transparent;color:var(--soft);font:500 .8rem var(--f-body);padding:8px 6px;border-radius:8px;cursor:pointer;min-height:36px;white-space:nowrap}
+.seg button[aria-checked="true"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.field{display:flex;flex-direction:column;gap:5px;font-size:.85rem}
+.field select,.field input[type=text]{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);min-height:38px}
+.switch{display:flex;align-items:center;gap:10px;font-size:.85rem;cursor:pointer}
+.switch input{width:18px;height:18px;accent-color:var(--accent)}
+.contrast{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:10px;font-size:.84rem;background:var(--good-soft);color:var(--good)}
+.contrast.bad{background:var(--bad-soft);color:var(--bad)}
+.contrast b{font-family:var(--f-mono);font-weight:500}
+.contrast button{margin-top:6px;border:1px solid currentColor;background:transparent;color:inherit;border-radius:7px;padding:5px 9px;font:600 .78rem var(--f-body);cursor:pointer}
+.heights{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.hbox{border:1.5px solid var(--line);border-radius:8px;background:var(--bg);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 4px;font:500 .72rem var(--f-body);color:var(--ink)}
+.hbox i{display:block;width:26px;border-radius:3px;background:var(--soft);opacity:.5}
+.hbox[aria-checked="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.hbox[aria-checked="true"] i{background:var(--accent);opacity:1}
+.note{font-size:.8rem;color:var(--soft)}
+.dirnote{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:10px 12px;font-size:.84rem}
+
+/* Direction C: floating toolbar on the canvas */
+.toolbar{position:absolute;z-index:5;left:50%;transform:translateX(-50%);top:26px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.18);display:flex;gap:4px;padding:5px;align-items:center;flex-wrap:wrap;max-width:calc(100% - 24px)}
+.toolbar[hidden]{display:none!important}
+.dotbtn{width:34px;height:34px;border-radius:8px;border:1.5px solid var(--line);cursor:pointer;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:0}
+.dotbtn i{width:18px;height:18px;border-radius:50%;border:1px solid #8885}
+.dotbtn[aria-checked="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.tbtn{border:0;background:var(--bg);color:var(--ink);border-radius:8px;padding:0 10px;height:34px;font:500 .8rem var(--f-body);cursor:pointer}
+.tbtn[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+.sep{width:1px;height:22px;background:var(--line);margin:0 3px}
+.tb-pop{position:absolute;z-index:6;top:76px;left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.18);padding:12px;width:min(300px,calc(100% - 24px));display:flex;flex-direction:column;gap:10px}
+.tb-pop[hidden]{display:none!important}
+
+.compare{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.cmp{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:.88rem}
+.cmp h3{font-size:1rem}
+.cmp ul{margin:0;padding-left:18px;color:var(--soft);display:flex;flex-direction:column;gap:3px}
+.cmp .pro{color:var(--good)} .cmp .con{color:var(--bad)}
+.ask{background:var(--accent);color:var(--panel);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.ask code{font:500 .9rem var(--f-mono);background:rgba(255,255,255,.2);padding:1px 7px;border-radius:6px}
+
+@media (max-width:900px){
+  .studio{grid-template-columns:1fr}
+  .panel{border-left:0;border-top:1px solid var(--line)}
+  .dirs,.compare{grid-template-columns:1fr}
+  .feat{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <span class="label">F025 · Design snapshot v1</span>
+      <h1>Section styles</h1>
+      <p>One canvas, three ways to edit it. Pick a direction below, then play with the hero section.</p>
+    </div>
+  </div>
+
+  <div class="dirs" role="group" aria-label="Design direction">
+    <button type="button" class="dir" data-dir="A" aria-pressed="true"><span class="rec">Recommended</span><b>A · Visual panel</b><span>Style tiles, height pictures, all in the side panel</span></button>
+    <button type="button" class="dir" data-dir="B" aria-pressed="false"><b>B · Compact form</b><span>Dropdowns and switches, like today's panel</span></button>
+    <button type="button" class="dir" data-dir="C" aria-pressed="false"><b>C · On-canvas toolbar</b><span>Quick style bar on the section itself</span></button>
+  </div>
+
+  <div class="studio">
+    <div class="stage">
+      <div class="toolbar" id="toolbar" hidden role="toolbar" aria-label="Section style quick bar"></div>
+      <div class="tb-pop" id="tbpop" hidden></div>
+      <div class="site" id="site">
+        <section class="sec sel" id="hero" aria-label="Hero section (selected)">
+          <span class="badge">Section · selected</span>
+          <div class="photo" id="photo" hidden></div>
+          <div class="tint" id="tint" hidden></div>
+          <div class="inner">
+            <h2>Build fast sites, visually</h2>
+            <p>Design pages with blocks and design tokens. Crust publishes them as plain, fast HTML.</p>
+            <span class="sbtn" id="herobtn">See how it works</span>
+          </div>
+        </section>
+        <div class="feat"><div><b>Design</b>Blocks + your tokens.</div><div><b>Publish</b>One click to live.</div><div><b>Share</b>Open it anywhere.</div></div>
+      </div>
+    </div>
+
+    <!-- A: visual panel -->
+    <aside class="panel" data-panel="A" aria-label="Section settings, visual panel">
+      <span class="label">Section</span>
+      <div class="group"><span>Style</span><div class="tiles" role="radiogroup" aria-label="Style" data-ctl="style"></div></div>
+      <div class="group"><span>Height</span><div class="heights" role="radiogroup" aria-label="Height" data-ctl="height"></div></div>
+      <div class="group"><span>Content position</span><div class="seg" role="radiogroup" aria-label="Content position" data-ctl="valign"></div></div>
+      <div class="group">
+        <label class="switch"><input type="checkbox" data-ctl="image"> Background image</label>
+        <div class="group" data-img-only hidden><span>Tint</span><div class="seg" role="radiogroup" aria-label="Tint strength" data-ctl="tint"></div></div>
+      </div>
+      <div class="contrast" data-contrast></div>
+    </aside>
+
+    <!-- B: compact form -->
+    <aside class="panel" data-panel="B" aria-label="Section settings, compact form" hidden>
+      <span class="label">Section</span>
+      <div class="field"><label for="b-style">Style</label><select id="b-style" data-ctl="style"></select></div>
+      <div class="field"><label for="b-height">Height</label><select id="b-height" data-ctl="height"></select></div>
+      <div class="field"><label for="b-valign">Content position</label><select id="b-valign" data-ctl="valign"></select></div>
+      <label class="switch"><input type="checkbox" data-ctl="image"> Background image</label>
+      <div class="field" data-img-only hidden><label for="b-url">Image address</label><input type="text" id="b-url" value="https://example.com/sunset.jpg"></div>
+      <div class="field" data-img-only hidden><label for="b-tint">Tint</label><select id="b-tint" data-ctl="tint"></select></div>
+      <div class="field"><label for="b-pad">Padding</label><select id="b-pad"><option>Large</option><option>Medium</option><option>Small</option></select></div>
+      <div class="contrast" data-contrast></div>
+    </aside>
+
+    <!-- C: toolbar + slim panel -->
+    <aside class="panel" data-panel="C" aria-label="Section settings, toolbar direction" hidden>
+      <span class="label">Section</span>
+      <p class="dirnote">Quick choices live on the canvas (style, height, image). The panel keeps the rest.</p>
+      <div class="field"><label for="c-valign">Content position</label><select id="c-valign" data-ctl="valign"></select></div>
+      <div class="field"><label for="c-pad">Padding</label><select id="c-pad"><option>Large</option><option>Medium</option><option>Small</option></select></div>
+      <div class="contrast" data-contrast></div>
+    </aside>
+  </div>
+
+  <div class="compare">
+    <div class="cmp"><h3>A · Visual panel</h3><ul><li class="pro">You see each option before you pick it</li><li class="pro">Same place as all other settings</li><li class="con">Taller panel</li></ul></div>
+    <div class="cmp"><h3>B · Compact form</h3><ul><li class="pro">Smallest change, fastest to build</li><li class="con">Words only, you have to imagine the result</li><li class="con">Feels like a form, not a design tool</li></ul></div>
+    <div class="cmp"><h3>C · On-canvas toolbar</h3><ul><li class="pro">Fastest for quick switching</li><li class="con">Covers the content you're judging</li><li class="con">Settings split in two places</li></ul></div>
+  </div>
+
+  <div class="ask">
+    <h3 style="font-size:1.25rem">Pick one</h3>
+    <p>Reply with <code>A</code>, <code>B</code>, <code>C</code>, or a mix like <code>A + C's toolbar</code>.</p>
+  </div>
+</div>
+
+<script>
+const T={bg:"#ffffff",surface:"#f4f4f5",text:"#18181b",muted:"#52525b",primary:"#4338ca",on:"#ffffff"};
+const STYLES=[
+ {v:"page",label:"Page",bg:T.bg,fg:T.text,btn:[T.primary,T.on]},
+ {v:"muted",label:"Muted",bg:T.surface,fg:T.text,btn:[T.primary,T.on]},
+ {v:"primary",label:"Primary",bg:T.primary,fg:T.on,btn:[T.on,T.primary]},
+ {v:"dark",label:"Dark",bg:T.text,fg:T.bg,btn:[T.bg,T.text]}
+];
+const HEIGHTS=[{v:"auto",label:"Auto",px:null,bar:14},{v:"medium",label:"Medium",px:300,bar:22},{v:"large",label:"Large",px:420,bar:30},{v:"full",label:"Full",px:540,bar:38}];
+const VALIGN=[{v:"flex-start",label:"Top"},{v:"center",label:"Middle"},{v:"flex-end",label:"Bottom"}];
+const TINTS=[{v:.45,label:"Light"},{v:.65,label:"Medium"},{v:.82,label:"Strong"}];
+const S={style:"page",height:"auto",valign:"center",image:false,tint:.65,dir:"A"};
+
+function lum(h){const c=h.replace("#","");return [0,2,4].map(i=>parseInt(c.substr(i,2),16)/255).map(x=>x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4)).reduce((a,v,i)=>a+v*[.2126,.7152,.0722][i],0)}
+function ratio(a,b){const[x,y]=[lum(a),lum(b)].sort((m,n)=>n-m);return(x+.05)/(y+.05)}
+function mix(a,b,t){const p=h=>[0,2,4].map(i=>parseInt(h.substr(1+i,2),16));const A=p(a),B=p(b);return"#"+A.map((v,i)=>Math.round(v*t+B[i]*(1-t)).toString(16).padStart(2,"0")).join("")}
+const st=()=>STYLES.find(s=>s.v===S.style);
+
+function contrast(){
+  const s=st();
+  if(!S.image)return{r:ratio(s.fg,s.bg),worst:null};
+  // Worst case: the photo could be pure black or pure white anywhere behind the text.
+  const r=Math.min(ratio(s.fg,mix(s.bg,"#000000",S.tint)),ratio(s.fg,mix(s.bg,"#ffffff",S.tint)));
+  return{r,worst:true};
+}
+
+function render(){
+  const s=st(),hero=document.getElementById("hero"),h=HEIGHTS.find(x=>x.v===S.height);
+  hero.style.background=s.bg;hero.style.color=s.fg;
+  hero.style.minHeight=h.px?h.px+"px":"";hero.style.setProperty("--valign",S.valign);
+  const b=document.getElementById("herobtn");b.style.background=s.btn[0];b.style.color=s.btn[1];
+  document.getElementById("photo").hidden=!S.image;
+  const tint=document.getElementById("tint");tint.hidden=!S.image;tint.style.background=s.bg;tint.style.opacity=S.tint;
+  document.querySelectorAll("[data-img-only]").forEach(e=>e.hidden=!S.image);
+  // sync controls
+  document.querySelectorAll('[role="radiogroup"][data-ctl]').forEach(g=>g.querySelectorAll("[data-v]").forEach(o=>{
+    const on=String(S[g.dataset.ctl])===o.dataset.v;o.setAttribute("aria-checked",String(on));o.tabIndex=on?0:-1}));
+  document.querySelectorAll("select[data-ctl]").forEach(sel=>sel.value=String(S[sel.dataset.ctl]));
+  document.querySelectorAll('input[type=checkbox][data-ctl="image"]').forEach(c=>c.checked=S.image);
+  const c=contrast(),ok=c.r>=4.5;
+  document.querySelectorAll("[data-contrast]").forEach(box=>{
+    box.classList.toggle("bad",!ok);
+    const next=S.image&&!ok?TINTS.find(t=>t.v>S.tint&&Math.min(ratio(s.fg,mix(s.bg,"#000000",t.v)),ratio(s.fg,mix(s.bg,"#ffffff",t.v)))>=4.5):null;
+    box.innerHTML=`<span aria-hidden="true">${ok?"✓":"!"}</span><div><div><strong>${ok?"Text is readable":"Text may be hard to read"}</strong> · <b>${c.r.toFixed(1)}:1</b></div>`+
+      (c.worst?`<div class="note" style="color:inherit;opacity:.85">Checked against the darkest and lightest parts of any photo.</div>`:"")+
+      (next?`<button type="button" data-fix="${next.v}">Use ${next.label.toLowerCase()} tint</button>`:"")+`</div>`;
+    box.setAttribute("role","status");
+  });
+  renderToolbar();
+}
+
+function radios(container,items,ctl,make){
+  container.innerHTML="";
+  items.forEach(it=>{const el=make(it);el.dataset.v=String(it.v);el.setAttribute("role","radio");el.type="button";
+    el.addEventListener("click",()=>{S[ctl]=typeof S[ctl]==="number"?Number(it.v):it.v;render()});container.appendChild(el)});
+  container.addEventListener("keydown",e=>{
+    if(!["ArrowRight","ArrowDown","ArrowLeft","ArrowUp"].includes(e.key))return;e.preventDefault();
+    const opts=[...container.querySelectorAll("[data-v]")],i=opts.findIndex(o=>o.getAttribute("aria-checked")==="true");
+    const n=opts[(i+(e.key==="ArrowRight"||e.key==="ArrowDown"?1:opts.length-1))%opts.length];n.click();n.focus();
+  });
+}
+document.querySelectorAll('[data-ctl="style"].tiles').forEach(c=>radios(c,STYLES,"style",s=>{const b=document.createElement("button");b.className="tile";
+  b.innerHTML=`<span class="sw" style="background:${s.bg}"><i style="background:${s.fg}"></i><i style="background:${s.fg}"></i></span>${s.label}`;return b}));
+document.querySelectorAll('[data-ctl="height"].heights').forEach(c=>radios(c,HEIGHTS,"height",h=>{const b=document.createElement("button");b.className="hbox";
+  b.innerHTML=`<i style="height:${h.bar}px"></i>${h.label}`;return b}));
+document.querySelectorAll('.seg[data-ctl="valign"]').forEach(c=>radios(c,VALIGN,"valign",v=>{const b=document.createElement("button");b.textContent=v.label;return b}));
+document.querySelectorAll('.seg[data-ctl="tint"]').forEach(c=>radios(c,TINTS,"tint",v=>{const b=document.createElement("button");b.textContent=v.label;return b}));
+const fill=(sel,items)=>{sel.innerHTML=items.map(i=>`<option value="${i.v}">${i.label}</option>`).join("")};
+document.querySelectorAll('select[data-ctl="style"]').forEach(s=>fill(s,STYLES));
+document.querySelectorAll('select[data-ctl="height"]').forEach(s=>fill(s,HEIGHTS));
+document.querySelectorAll('select[data-ctl="valign"]').forEach(s=>fill(s,VALIGN));
+document.querySelectorAll('select[data-ctl="tint"]').forEach(s=>fill(s,TINTS));
+document.querySelectorAll("select[data-ctl]").forEach(s=>s.addEventListener("change",()=>{const k=s.dataset.ctl;S[k]=typeof S[k]==="number"?Number(s.value):s.value;render()}));
+document.querySelectorAll('input[type=checkbox][data-ctl="image"]').forEach(c=>c.addEventListener("change",()=>{S.image=c.checked;render()}));
+document.addEventListener("click",e=>{const f=e.target.closest("[data-fix]");if(f){S.tint=Number(f.dataset.fix);render()}});
+
+// Direction C toolbar
+let pop=null;
+function renderToolbar(){
+  const tb=document.getElementById("toolbar"),pp=document.getElementById("tbpop");
+  tb.hidden=S.dir!=="C";if(S.dir!=="C"){pp.hidden=true;return}
+  tb.innerHTML=STYLES.map(s=>`<button type="button" class="dotbtn" role="radio" aria-label="${s.label} style" aria-checked="${S.style===s.v}" data-tstyle="${s.v}"><i style="background:${s.bg}"></i></button>`).join("")+
+   `<span class="sep"></span><button type="button" class="tbtn" data-pop="height" aria-pressed="${pop==="height"}">Height: ${HEIGHTS.find(h=>h.v===S.height).label}</button>`+
+   `<button type="button" class="tbtn" data-pop="image" aria-pressed="${pop==="image"}">Image${S.image?" ✓":""}</button>`;
+  pp.hidden=!pop;
+  if(pop==="height")pp.innerHTML=`<span class="label">Height</span><div class="heights">${HEIGHTS.map(h=>`<button type="button" class="hbox" aria-checked="${S.height===h.v}" data-theight="${h.v}"><i style="height:${h.bar}px"></i>${h.label}</button>`).join("")}</div>`;
+  if(pop==="image")pp.innerHTML=`<label class="switch"><input type="checkbox" id="tbimg" ${S.image?"checked":""}> Background image</label>`+(S.image?`<div class="seg">${TINTS.map(t=>`<button type="button" aria-checked="${S.tint===t.v}" data-ttint="${t.v}">${t.label}</button>`).join("")}</div>`:"");
+}
+document.getElementById("toolbar").addEventListener("click",e=>{
+  const s=e.target.closest("[data-tstyle]");if(s){S.style=s.dataset.tstyle;render();return}
+  const p=e.target.closest("[data-pop]");if(p){pop=pop===p.dataset.pop?null:p.dataset.pop;render()}
+});
+document.getElementById("tbpop").addEventListener("click",e=>{
+  const h=e.target.closest("[data-theight]");if(h){S.height=h.dataset.theight;render()}
+  const t=e.target.closest("[data-ttint]");if(t){S.tint=Number(t.dataset.ttint);render()}
+});
+document.getElementById("tbpop").addEventListener("change",e=>{if(e.target.id==="tbimg"){S.image=e.target.checked;render()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&pop){pop=null;render()}});
+
+document.querySelectorAll(".dir").forEach(b=>b.addEventListener("click",()=>{
+  S.dir=b.dataset.dir;pop=null;
+  document.querySelectorAll(".dir").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+  document.querySelectorAll("[data-panel]").forEach(p=>p.hidden=p.dataset.panel!==S.dir);
+  render();
+}));
+render();
+</script>

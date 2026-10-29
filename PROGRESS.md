@@ -13,15 +13,15 @@ to "Log".
   me", one-time PIN); Pages "Restrict previews" app for
   `*.crust-admin.pages.dev`; GITHUB_TOKEN, ACCESS_TEAM_DOMAIN, ACCESS_AUD
   on crust-admin (Production). /api/status reports configured.
-- **Next:** Milestone 2 (F025–F033, `docs/milestone-2.md`), starting
-  with F025 Section styles: design snapshot first, then build.
+- **Next:** F026 Layout library (design snapshot first). F025 Section
+  styles is done and waiting for the owner's review.
   Other proposals waiting in DECISIONS.md (sign-out button, restore
   brings back the redirect).
 - **Waiting on the owner:**
   - Check the live site on his phone.
   - Review on the preview link and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019, F020,
-    F021, F022, F023, F024.
+    F021, F022, F023, F024, F025.
 - **Reminder:** the Cloudflare API token expires on the date the owner set
   (recommended 2027-01-26), and the GitHub token (crust-admin-save) after
   90 days, around 2027-01-27. Both fail with a clear error; make a new one
@@ -150,3 +150,10 @@ to "Log".
 - 2026-10-29 — Owner approved Milestone 2 ("approve 1 2 3") after a
   visual explainer comparing Crust and YOOtheme. Added F025–F033 to
   features.json, spec in docs/milestone-2.md, snapshot in design/.
+
+- 2026-10-29 — F025 Section styles done (owner picked "A + C's toolbar"
+  with a This section / Whole site switch). Site-wide styles in
+  site.json, auto text colour, worst-case photo tint, picture tiles,
+  height and tint pickers in the panel, a quick bar on the selected
+  section, Section styles in Site settings. 33 new tests; checked in a
+  real browser (toolbar, whole-site edit, image tint). done_check passes.

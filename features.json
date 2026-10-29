@@ -248,7 +248,7 @@
       "description": "Sections get YOOtheme-style options: style (Page, Muted, Primary, Dark), background image with a tint for readable text, height (auto, medium, large, full screen), and text that switches light/dark to match. Contrast is checked against the actual background. Older pages keep working through a migration. Added by the owner (approved Milestone 2 step 1, 2026-10-29).",
       "depends_on": ["F003", "F004"],
       "done_check": "npm test -- section-styles && npm run build && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
