@@ -17,6 +17,7 @@ import { ActionBar, createUsePuck, useGetPuck, type ComponentData, type Config, 
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { SectionToolbar } from "../sections/editing";
 import { availableMoves, planInsert, planMove, type MoveKind } from "./moves";
+import { installTooltips } from "./tooltips";
 
 type PuckApi = ReturnType<ReturnType<typeof useGetPuck>>;
 const usePuckSelector = createUsePuck();
@@ -257,9 +258,14 @@ export function KeyboardRoot({ children }: { children: ReactNode }) {
   const getPuck = useGetPuck();
   const live = useSyncExternalStore(subscribe, () => message);
   useEffect(() => {
+    // Tooltips first, so Escape closes an open tooltip before it deselects.
+    const removeTooltips = installTooltips(document);
     const onKey = (e: KeyboardEvent) => handleKey(e, getPuck);
     document.addEventListener("keydown", onKey, true);
-    return () => document.removeEventListener("keydown", onKey, true);
+    return () => {
+      document.removeEventListener("keydown", onKey, true);
+      removeTooltips();
+    };
   }, [getPuck]);
   return (
     <>
@@ -278,6 +284,7 @@ export function KeyboardCanvas({ children, document: doc }: { children: ReactNod
   useEffect(() => {
     if (!doc) return;
     canvasDoc = doc;
+    const removeTooltips = installTooltips(doc);
     const onKey = (e: KeyboardEvent) => handleKey(e, getPuck);
     doc.addEventListener("keydown", onKey, true);
     let frame = 0;
@@ -290,6 +297,7 @@ export function KeyboardCanvas({ children, document: doc }: { children: ReactNod
     relabel();
     return () => {
       doc.removeEventListener("keydown", onKey, true);
+      removeTooltips();
       observer.disconnect();
       cancelAnimationFrame(frame);
       if (canvasDoc === doc) canvasDoc = null;

@@ -63,3 +63,12 @@
   font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
   box-shadow: 0 8px 24px rgb(0 0 0 / 0.2);
 }
+
+/* Tooltips for icon-only buttons (main page and canvas). */
+.crust-tooltip {
+  position: fixed; z-index: 2147483647; max-width: 16rem; padding: 5px 9px;
+  border-radius: 6px; background: #18181b; color: #fff;
+  font: 500 13px/1.35 system-ui, -apple-system, "Segoe UI", sans-serif;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.25); pointer-events: auto;
+}
+.crust-tooltip[hidden] { display: none; }

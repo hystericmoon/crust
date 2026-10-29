@@ -4,6 +4,10 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Tooltips on icon buttons in the builder** (Duplicate, Delete, Select
+  parent, the move arrows, the style dots): they show on hover and on
+  keyboard focus, and Escape closes them.
+
 - **Section styles (F025):** sections can be Page, Muted, Primary or Dark,
   with a height (Auto to Full screen), content position, and a background
   image with a tint that keeps text readable.
