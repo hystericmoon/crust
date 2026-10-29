@@ -27,6 +27,7 @@ import { SectionStyleEditor, StyleSwatch } from "../sections/controls";
 import { sameTokens } from "../tokens-store";
 import { Icon } from "./icons";
 import { Preview } from "./Preview";
+import { ThemePackGroup, type PackPreview } from "./ThemePack";
 import { ButtonOptions, CardOptions, LinkOptions, TypeOptions } from "./StyleGroups";
 import { chromeProblems, FooterOptions, HeaderOptions, type PageOption } from "./ChromeGroups";
 import { migrateChrome, validateChrome, type SiteChrome } from "@crust/blocks";
@@ -65,6 +66,7 @@ export const groups = [
   { id: "footer", label: "Footer" },
   { id: "spacing", label: "Spacing" },
   { id: "shape", label: "Shape & layout" },
+  { id: "theme-pack", label: "Theme pack" },
 ] as const;
 export type GroupId = (typeof groups)[number]["id"];
 
@@ -176,7 +178,17 @@ export function SiteSettings({
     setStatus("Changes discarded.");
   };
 
-  const previewSite = useMemo(() => ({ ...site, tokens: draft, header: chrome.header, footer: chrome.footer }), [site, draft, chrome]);
+  /** A theme pack being looked at (F033); only shown while its group is open. */
+  const [packPreview, setPackPreview] = useState<PackPreview | null>(null);
+  const withPack = (p: PackPreview | null) => ({
+    tokens: p?.tokens ?? draft,
+    chrome: p?.chrome ? { header: { ...chrome.header, ...p.chrome.header }, footer: { ...chrome.footer, ...p.chrome.footer } } : chrome,
+  });
+  const previewSite = useMemo(() => {
+    const shown = withPack(group === "theme-pack" ? packPreview : null);
+    return { ...site, tokens: shown.tokens, header: shown.chrome.header, footer: shown.chrome.footer };
+    // withPack only reads draft and chrome.
+  }, [site, draft, chrome, group, packPreview]);
   const failing = results.filter((r) => !r.passes);
 
   return (
@@ -419,6 +431,26 @@ export function SiteSettings({
               hint="The widest your content gets on large screens. Around 1100–1280 px reads well."
               onChange={(v) => onChange({ ...draft, maxWidth: v })}
               onValidity={setValidity}
+            />
+          </section>
+
+          <section className="st-card" id="theme-pack" aria-labelledby="theme-pack-h" hidden={group !== "theme-pack"}>
+            <h2 id="theme-pack-h" tabIndex={-1}>Theme pack</h2>
+            <p className="st-lede">Take this site's look to another Crust site, or bring one in, as a single .crust file.</p>
+            <ThemePackGroup
+              siteName={site.name}
+              tokens={draft}
+              chrome={chrome}
+              canExport={invalid.size === 0 && validateTokens(draft).length === 0}
+              onPreview={setPackPreview}
+              onApply={(p) => {
+                const next = withPack(p);
+                if (p.tokens) {
+                  setBeforePreset(null);
+                  onChange(next.tokens);
+                }
+                if (p.chrome) onChromeChange(next.chrome);
+              }}
             />
           </section>
         </main>

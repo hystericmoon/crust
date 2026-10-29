@@ -328,7 +328,7 @@
       "description": "Export your style, header/footer style and My layouts as one .crust file; import one into another Crust site with a preview first. Only Crust data, never code or raw HTML, and it's checked (format and contrast) before anything changes. Added by the owner (approved Milestone 2 step 3, 2026-10-29).",
       "depends_on": ["F027", "F028", "F031"],
       "done_check": "npm test -- theme-pack && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     }

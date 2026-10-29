@@ -112,6 +112,16 @@ defaults (see `migrateChrome`).
 ```
 Written when a page is renamed; published as Cloudflare Pages `_redirects`.
 
+Theme pack files (`<name>.crust`, added with F033) are downloaded and
+uploaded in Site settings, never stored in `content/`:
+```json
+{ "format": "crust-theme-pack", "version": 1, "name": "…", "exportedAt": "…",
+  "tokens": { … }, "chrome": { "header": { "style": "…", "sticky": false }, "footer": { "style": "…" } },
+  "layouts": [{ "name": "…", "kind": "section", "content": [ … ] }] }
+```
+`tokens`, `chrome` and `layouts` are each optional. Importing checks
+everything (see `readThemePack`) and drops unknown fields.
+
 `content/layouts/<id>.json` (optional, added with F027)
 ```json
 { "id": "studio-intro", "name": "Studio intro", "kind": "section", "savedAt": "…", "content": [ … ] }

@@ -16,7 +16,8 @@ the first unchecked step, `git checkout` its branch, carry on.
 - [x] F030 Content/Style/Advanced tabs on `f030-settings-tabs` (from F029's branch)
 - [x] F031 Header, footer and menu on `f031-header-footer` (from F030's), draft PR (base `f030-settings-tabs`)
 - [x] F032 More elements on `f032-more-elements` (from F031's), draft PR (base `f031-header-footer`)
-- [ ] F033 Theme pack on `f033-theme-pack` (from F032's)
+- [x] F033 Theme pack on `f033-theme-pack` (from F032's), draft PR (base `f032-more-elements`)
+- [ ] Morning summary to the owner
 
 ## Current
 
@@ -55,7 +56,7 @@ the first unchecked step, `git checkout` its branch, carry on.
   - Check the live site on his phone.
   - Review on the preview link and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019, F020,
-    F021, F022, F023, F024, F025, F026, F027, F028, F029, F030, F031, F032.
+    F021, F022, F023, F024, F025, F026, F027, F028, F029, F030, F031, F032, F033.
 - **Reminder:** the Cloudflare API token expires on the date the owner set
   (recommended 2027-01-26), and the GitHub token (crust-admin-save) after
   90 days, around 2027-01-27. Both fail with a clear error; make a new one
@@ -257,3 +258,13 @@ the first unchecked step, `git checkout` its branch, carry on.
   into the canvas with the keyboard; axe clean. 23 new tests (440 total);
   done check passes. Owner to try: add an Accordion and a Gallery from
   the block list and edit their items.
+- 2026-10-29 — Found and fixed: the F031 Header & menu and Footer
+  settings had no styles (pushed to F031's branch, merged into F032 and
+  F033). Checked at 1440 and 390: no overflow, axe clean.
+- 2026-10-29 — F033 done: Site settings → Theme pack. Download the look
+  as a .crust file (style, header/footer look, My layouts); bring one in
+  with checks (format, safe values, contrast, known blocks), a preview,
+  and "Use this theme" into the unsaved draft. Checked in Chromium at
+  1440 and 390: download, import, preview, use; no overflow; axe clean.
+  17 new tests (457 total); done check passes. Owner to try: download
+  the pack, change a colour, then bring the pack back in.

@@ -34,6 +34,35 @@ Features Claude suggests. They are not work until the owner adds them to
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
 
+## 2026-10-29 — F033 Theme pack export and import (Claude's recommendation, owner-approved overnight)
+
+- **Where:** a "Theme pack" group at the end of Site settings, with two
+  parts: "Download this site's look" and "Bring in a theme pack".
+- **What a pack holds** (each part can be left out): the style (all
+  design tokens: colours, fonts, spacing, section styles, buttons, cards,
+  links), the header and footer *look* (their section styles and the
+  sticky option, never the menu, links or text, which belong to one
+  site), and My layouts. File: `<name>.crust`, plain JSON
+  (`docs/spec.md`).
+- **Exports what the preview shows**, including unsaved changes, so what
+  you see is what you share. Refused while a field is invalid.
+- **Import is checked before anything changes.** The whole file is
+  refused, with every reason listed, if it isn't a pack, is from a newer
+  Crust, is over 2 MB, has damaged or unsafe values (the same checks as
+  saving), any colour pair below 4.5:1, a section style nobody can read,
+  or a layout with blocks this Crust doesn't know. Unknown fields are
+  dropped, not copied. Stricter than Site settings (which lets you save a
+  failing pair with a warning) because the file comes from elsewhere.
+- **Preview first:** a good pack shows in the live preview (only while
+  the Theme pack group is open), with its colours listed. Tick which
+  parts to use. "Use this theme" puts the style and header/footer look
+  into the unsaved draft (Save keeps it, Discard undoes it); layouts are
+  added to My layouts right away, renamed "FAQ (2)" when a name is taken,
+  so nothing of yours is replaced. Cancel changes nothing.
+- **Also fixed:** the F031 Header & menu and Footer groups had no styles
+  (their CSS was never written); fixed on the F031 branch and merged
+  forward.
+
 ## 2026-10-29 — F032 More elements (Claude's recommendation, owner-approved overnight)
 
 - **Seven new blocks**, in the block list under Layout (Grid of cards),
