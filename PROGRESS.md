@@ -14,34 +14,18 @@ to "Log".
   `*.crust-admin.pages.dev`; GITHUB_TOKEN, ACCESS_TEAM_DOMAIN, ACCESS_AUD
   on crust-admin (Production). /api/status reports configured.
 - **Merged:** F025 Section styles + builder tooltips (PR #9).
-- **In progress: F026 Layout library** on branch `f026-layout-library`
-  (draft PR #10). Owner chose direction **B**: a big gallery dialog opened
-  from a "+" between top-level sections on the canvas, with a
-  Sections / Whole pages tab, categories and search (snapshot
-  `design/f026-layout-library-v1.html`).
-  - Done: `packages/blocks/src/layouts.ts` (20 section layouts, 5 page
-    layouts, `fitHeadings`/`insertLayout` keep one h1),
-    `packages/render/src/layouts-cli.ts` + `npm run check:layouts`
-    (axe on every layout, page layouts in every preset; passes), and
-    `check:a11y` now runs it too.
-  - To do: (1) admin gallery: native `<dialog>` in the main page, cards
-    with scaled previews (Puck `<Render>`), insert via
-    `getPuck().dispatch({ type: "setData", data: { content: insertLayout(...) } })`;
-    (2) "+" inserters in the canvas iframe, portal into the iframe body,
-    placed between children of `[data-puck-dropzone="root:default-zone"]`,
-    counter-scaled like `keyboard/tooltips.ts` (canvas is zoomed ~57%);
-    (3) a "Layouts" header button for keyboard users (inserts after the
-    selected top-level section, or at the end); (4) tests whose file
-    names match `layout-library` (done_check:
-    `npm test -- layout-library && npm run build && npm run check:a11y`);
-    (5) real-browser check, CHANGELOG, DECISIONS entry, features.json.
+- **Done, in draft PR #10: F026 Layout library** on branch
+  `f026-layout-library` (owner chose direction **B**). Waiting for the
+  owner to try it on the preview link.
+- **Next:** F027 My layouts (save a section or page as your own layout,
+  stored in `content/layouts/`).
   Other proposals waiting in DECISIONS.md (sign-out button, restore
   brings back the redirect).
 - **Waiting on the owner:**
   - Check the live site on his phone.
   - Review on the preview link and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019, F020,
-    F021, F022, F023, F024, F025.
+    F021, F022, F023, F024, F025, F026.
 - **Reminder:** the Cloudflare API token expires on the date the owner set
   (recommended 2027-01-26), and the GitHub token (crust-admin-save) after
   90 days, around 2027-01-27. Both fail with a clear error; make a new one
@@ -181,3 +165,11 @@ to "Log".
 - 2026-10-29 — F026 started (owner: "go with your recommendations" = B).
   Layout data, heading fitting and the layout accessibility check are in;
   the builder UI is next (see Current). Session handed over here.
+- 2026-10-29 — F026 Layout library done (direction B). Gallery dialog
+  with Sections / Whole pages, categories, search and live-style
+  previews; "+" between sections on the canvas; Layouts button in the top
+  bar for the keyboard; "Add a layout" on empty pages. Insert is one undo
+  step, selects the new section and announces it. 18 new tests (291
+  total). Checked in Chromium at 1440 and 390: insert, whole-page insert
+  keeps one h1, undo, empty page, Escape returns focus, axe clean with
+  the gallery open, no console errors. done_check passes.
