@@ -13,8 +13,28 @@ to "Log".
   me", one-time PIN); Pages "Restrict previews" app for
   `*.crust-admin.pages.dev`; GITHUB_TOKEN, ACCESS_TEAM_DOMAIN, ACCESS_AUD
   on crust-admin (Production). /api/status reports configured.
-- **Next:** F026 Layout library (design snapshot first). F025 Section
-  styles is done and waiting for the owner's review.
+- **Merged:** F025 Section styles + builder tooltips (PR #9).
+- **In progress: F026 Layout library** on branch `f026-layout-library`
+  (draft PR #10). Owner chose direction **B**: a big gallery dialog opened
+  from a "+" between top-level sections on the canvas, with a
+  Sections / Whole pages tab, categories and search (snapshot
+  `design/f026-layout-library-v1.html`).
+  - Done: `packages/blocks/src/layouts.ts` (20 section layouts, 5 page
+    layouts, `fitHeadings`/`insertLayout` keep one h1),
+    `packages/render/src/layouts-cli.ts` + `npm run check:layouts`
+    (axe on every layout, page layouts in every preset; passes), and
+    `check:a11y` now runs it too.
+  - To do: (1) admin gallery: native `<dialog>` in the main page, cards
+    with scaled previews (Puck `<Render>`), insert via
+    `getPuck().dispatch({ type: "setData", data: { content: insertLayout(...) } })`;
+    (2) "+" inserters in the canvas iframe, portal into the iframe body,
+    placed between children of `[data-puck-dropzone="root:default-zone"]`,
+    counter-scaled like `keyboard/tooltips.ts` (canvas is zoomed ~57%);
+    (3) a "Layouts" header button for keyboard users (inserts after the
+    selected top-level section, or at the end); (4) tests whose file
+    names match `layout-library` (done_check:
+    `npm test -- layout-library && npm run build && npm run check:a11y`);
+    (5) real-browser check, CHANGELOG, DECISIONS entry, features.json.
   Other proposals waiting in DECISIONS.md (sign-out button, restore
   brings back the redirect).
 - **Waiting on the owner:**
@@ -157,3 +177,7 @@ to "Log".
   height and tint pickers in the panel, a quick bar on the selected
   section, Section styles in Site settings. 33 new tests; checked in a
   real browser (toolbar, whole-site edit, image tint). done_check passes.
+
+- 2026-10-29 — F026 started (owner: "go with your recommendations" = B).
+  Layout data, heading fitting and the layout accessibility check are in;
+  the builder UI is next (see Current). Session handed over here.
