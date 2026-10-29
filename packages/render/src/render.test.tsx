@@ -1,7 +1,7 @@
 import { defaultTokens, type Page, type Site } from "@crust/blocks";
 import { describe, expect, it } from "vitest";
 import sample from "../../../content/pages/index.json";
-import { outputFileFor, renderBody, renderPage } from "./render";
+import { outputFileFor, renderBody, renderNotFound, renderPage } from "./render";
 
 const site: Site = { name: "Test", baseUrl: "https://example.test", language: "en", tokens: defaultTokens };
 const page = (content: Page["puck"]["content"]): Page => ({
@@ -87,6 +87,17 @@ describe("renderPage", () => {
 
   it("rejects unknown block types", () => {
     expect(() => renderBody(page([{ type: "Nope", props: { id: "n" } }]).puck)).toThrow(/Unknown block type/);
+  });
+});
+
+describe("renderNotFound", () => {
+  it("renders an accessible not-found page with a link home", () => {
+    const html = renderNotFound(site, "");
+    expect(html).toContain("<title>Page not found | Test</title>");
+    expect(html.match(/<h1/g)).toHaveLength(1);
+    expect(html).toContain("Page not found</h1>");
+    expect(html).toMatch(/<a [^>]*href="\/"[^>]*>Go to the home page<\/a>/);
+    expect(html).not.toContain("<script");
   });
 });
 

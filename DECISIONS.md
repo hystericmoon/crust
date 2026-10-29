@@ -13,6 +13,27 @@ Features Claude suggests. They are not work until the owner adds them to
   what's not published yet" is F016. Claude's next four recommendations
   were approved the same day as F017–F020. The four from the Impeccable
   review were approved on 2026-10-29 as F021–F024.)*
+- **Sign out button in the builder.** Today the only way to sign out is
+  to open `crust-admin.pages.dev/cdn-cgi/access/logout`. A "Sign out"
+  item in the top bar would link there. Small.
+- **Bring the redirect back when a renamed page is restored.** Deleting a
+  renamed page removes its old-address redirect, and restoring it doesn't
+  add the redirect back. Harmless today; matters once the site has
+  visitors and bookmarks.
+
+## 2026-10-29 — First real setup and publish (Claude, reversible)
+
+- **Two Access applications, not one.** Pages' "Restrict previews" creates
+  an Access app locked to `*.crust-admin.pages.dev`; it can't take a second
+  hostname. The owner made a separate app, `crust-admin.pages.dev`, policy
+  "Only me" (his email, one-time PIN). `ACCESS_AUD` is that app's tag, so
+  saving works only from the main address; preview links are private but
+  read-only, which is the safer default.
+- **A "Page not found" page (404.html) on every publish.** Without it,
+  Cloudflare Pages answers every unknown address (including deleted pages)
+  with the home page and status 200: misleading for visitors and search
+  engines. The renderer now writes 404.html (one h1, link home, site
+  tokens); it stays out of the sitemap and is now in the axe check.
 
 ## 2026-10-29 — F021–F024 (owner-approved proposals; details Claude, reversible)
 

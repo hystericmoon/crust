@@ -4,6 +4,13 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Unknown addresses show "Page not found"** with a link to the home
+  page, instead of the home page itself. Deleted pages now really
+  disappear from the live site.
+- **Saving and publishing are switched on for real.** The builder asks
+  you to sign in, saves to GitHub, and the site is live at
+  https://crust-site.pages.dev.
+
 - **Each page shows one status:** only in this browser, changes not
   saved, saved but not live yet, or live.
 - **Publishing offers to save browser drafts first,** so nothing you meant

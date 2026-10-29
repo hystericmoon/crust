@@ -13,7 +13,7 @@ const siteDir = process.argv[2] ?? "dist/site";
 async function pages(dir) {
   const out = [];
   for (const entry of await readdir(dir, { withFileTypes: true, recursive: true })) {
-    if (entry.isFile() && entry.name.endsWith(".html") && entry.name !== "404.html") {
+    if (entry.isFile() && entry.name.endsWith(".html")) {
       const rel = relative(siteDir, join(entry.parentPath ?? entry.path, entry.name)).split("\\").join("/");
       out.push("/" + rel.replace(/index\.html$/, ""));
     }

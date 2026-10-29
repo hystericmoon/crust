@@ -5,39 +5,32 @@ to "Log".
 
 ## Current
 
-- **Milestone:** 1 (first working slice). F001–F024 pass their done checks.
-- **Merged to main:** F001–F020 and the Impeccable fixes (PRs #1–#5).
-- **Merged:** F017–F020 (PR #4).
-- **In PR #6:** F021–F024 (owner approved "all"), plus a deploy-check fix.
-- **Setup:** the owner said "done" on 2026-10-29, but after a redeploy
-  /api/status still reports Cloudflare Access and the GitHub token missing,
-  and the admin opens without sign-in. Asked the owner to check the three
-  Pages variables are under Production with exact names, and that the
-  Access application covers crust-admin.pages.dev.
-- **Next:** nothing left in features.json. After the owner's setup: real
-  save, rename, restore and publish checks.
+- **Milestone:** 1 complete. F001–F024 pass; setup done; first real
+  publish live at https://crust-site.pages.dev (2026-10-29).
+- **Merged to main:** F001–F024 (PRs #1–#6).
+- **In a PR:** "Page not found" page (404.html) for the published site.
+- **Setup (done 2026-10-29):** Access app `crust-admin.pages.dev` ("Only
+  me", one-time PIN); Pages "Restrict previews" app for
+  `*.crust-admin.pages.dev`; GITHUB_TOKEN, ACCESS_TEAM_DOMAIN, ACCESS_AUD
+  on crust-admin (Production). /api/status reports configured.
+- **Next:** nothing left in features.json. Proposals waiting in
+  DECISIONS.md (sign-out button, restore brings back the redirect).
 - **Waiting on the owner:**
-  - Switch on saving and publishing: follow `docs/setup-saving.md`
-    (Cloudflare Access, GitHub token, three Pages settings), then say "done".
+  - Check the live site on his phone.
   - Review on the preview link and set `reviewed: true`: F010, F004, F003,
-    F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019, F020, F021, F022, F023, F024.
-- **Next after setup:** Claude redeploys, checks a real save, a real
-  rename and a real publish, and fixes anything that shows up. Then
-  Milestone 1 is complete.
+    F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019, F020,
+    F021, F022, F023, F024.
 - **Reminder:** the Cloudflare API token expires on the date the owner set
-  (recommended 2027-01-26), and the GitHub token after 90 days. Both fail
-  with a clear error; make a new one and replace the secret.
+  (recommended 2027-01-26), and the GitHub token (crust-admin-save) after
+  90 days, around 2027-01-27. Both fail with a clear error; make a new one
+  and replace the secret.
 
 ## Known gaps
 
-- Saving, the GitHub page list and publishing have only been tested
-  against a fake GitHub and Access in tests; the first real run happens
-  after the owner's setup.
-- Rename, delete and the "not published yet" marks have only been tested
-  against a fake GitHub. Before setup, only pages that exist just in this
-  browser can be renamed or deleted, and no marks show.
-- The admin app is now deployed but hasn't been checked by a person in a
-  real browser yet; the owner's first look is the F010 review.
+- Saving only works from crust-admin.pages.dev; preview links sign in
+  but can't save (different Access app). Intended.
+- Signing out needs the address
+  crust-admin.pages.dev/cdn-cgi/access/logout (no button yet).
 
 ## Log
 
@@ -143,3 +136,12 @@ to "Log".
   publishing, F023 find and sort, F024 Publish shortcut: 16 new tests (235
   total). Checked at 1280 and 390 px: axe clean, no console errors, the
   save-and-publish flow, and the shortcut lands focus on Publish.
+- 2026-10-29 — Setup finished with the owner over screenshots: the Pages
+  variables had never been saved and no Access app existed for
+  crust-admin. Created both; redeployed (run 40825322380). /api/status:
+  configured, signed in as the owner. Real save, rename, delete and
+  restore of a test page all landed as commits on main. Test page
+  deleted. First real Publish (run 40829434524) green; live at
+  https://crust-site.pages.dev with title, description, sitemap and
+  robots.txt. Found that unknown addresses served the home page with
+  status 200 (no 404.html); fixed in the renderer, axe check now covers it.

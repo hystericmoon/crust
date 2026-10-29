@@ -6,7 +6,7 @@ import type { Page, Site } from "@crust/blocks";
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { outputFileFor, renderPage } from "./render";
+import { outputFileFor, renderNotFound, renderPage } from "./render";
 
 const [contentDir = "content", outDir = "dist/site"] = process.argv.slice(2);
 const stylesPath = join(dirname(fileURLToPath(import.meta.url)), "../../blocks/src/styles.css");
@@ -30,4 +30,6 @@ for (const file of pageFiles) {
   await writeFile(join(outDir, target), html);
   console.log(`rendered ${page.path} -> ${target}`);
 }
+await mkdir(outDir, { recursive: true });
+await writeFile(join(outDir, "404.html"), renderNotFound(site, baseCss));
 console.log(`render: ${pageFiles.length} page(s) written to ${outDir}`);
