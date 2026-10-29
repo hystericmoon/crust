@@ -21,6 +21,22 @@ Features Claude suggests. They are not work until the owner adds them to
   add the redirect back. Harmless today; matters once the site has
   visitors and bookmarks.
 
+## 2026-10-29 — Milestone 2: YOOtheme-style building (owner-approved)
+
+- **The owner approved all three steps** after the visual explainer
+  (`design/m2-yootheme-vision.html`): F025–F033, spec in
+  `docs/milestone-2.md`. Claude wrote them into features.json on his
+  "approve 1 2 3".
+- **Direction:** YOOtheme's way of building (Section → Row → Column →
+  Element, layout library, deep style customizer) on Crust's engine
+  (static, accessible, free). Layouts and theme packs are Crust JSON only,
+  so "bring your own template" means a Crust theme pack, not an HTML
+  import.
+- **Left out for now:** slider/carousel (hard to make accessible; later
+  proposal), blog/collection templates, HTML template import.
+- **Order:** step 1 first (biggest visual gain), visual features start
+  with a design snapshot for the owner to choose from.
+
 ## 2026-10-29 — First real setup and publish (Claude, reversible)
 
 - **Two Access applications, not one.** Pages' "Restrict previews" creates
