@@ -278,7 +278,7 @@
       "description": "Site settings grow into a full style customizer: type scale, heading weight and letter spacing, button shape and fill, card style (flat, outline, shadow), link style. 8 to 10 complete style presets. Every combination keeps passing the contrast checks. Added by the owner (approved Milestone 2 step 2, 2026-10-29).",
       "depends_on": ["F003", "F013"],
       "done_check": "npm test -- tokens presets customizer && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

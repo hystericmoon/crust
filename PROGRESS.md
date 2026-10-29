@@ -11,7 +11,7 @@ picks needed; decisions go in DECISIONS.md). Never merge or publish; each
 feature is a draft PR stacked on the one before. A resumed session: find
 the first unchecked step, `git checkout` its branch, carry on.
 
-- [ ] F028 build on `f028-style-customizer` (PR #12), then merge it into `f029-per-device-columns`
+- [x] F028 build on `f028-style-customizer` (PR #12), then merge it into `f029-per-device-columns`
 - [ ] F029 build on `f029-per-device-columns` (PR #13)
 - [ ] F030 Content/Style/Advanced tabs on `f030-settings-tabs` (from F029's branch)
 - [ ] F031 Header, footer and menu on `f031-header-footer` (from F030's)
@@ -222,3 +222,9 @@ the first unchecked step, `git checkout` its branch, carry on.
 - 2026-10-29 — F029 design snapshot v1: width tiles per device (A all
   devices at once, B follows the canvas device, C drag on the canvas with
   arrow keys), plus "Show on" toggles per block.
+- 2026-10-29 — F028 Style customizer v2 done (direction A, button
+  proposal accepted). tokens.style options, Soft button look, 9 presets,
+  grouped Site settings with preview-click jumps. 48 new tests (364
+  total). Chromium at 1440 and 390: axe clean in every group, canvas
+  picks up the styles, no console errors. done_check and check:a11y
+  (45 themed pages) pass.

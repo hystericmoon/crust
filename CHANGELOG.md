@@ -4,6 +4,20 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Style customizer (F028):** Site settings show one group at a time
+  next to the preview, with new groups:
+  - **Typography:** heading sizes (Subtle to Dramatic), weight and letter
+    spacing.
+  - **Buttons:** shape (Square, Rounded, Pill) and the main button
+    (Solid, Outline or the new Soft).
+  - **Cards:** Flat, Outline or Shadow. **Links:** Underline, Thick or
+    Highlight (always underlined).
+  - **9 presets** that set the whole look, including 4 new ones (Ocean,
+    Studio, Paper, Night). One Undo takes a preset back.
+  - Click a button, card or heading in the preview to jump to its
+    settings. Your current site looks exactly the same until you change
+    something.
+
 - **My layouts (F027):** keep any section, or a whole page, to reuse.
   - Select a section and choose **Save as layout** on its toolbar. It's
     named after its heading; change the name if you like.

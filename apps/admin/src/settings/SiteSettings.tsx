@@ -27,6 +27,7 @@ import { SectionStyleEditor, StyleSwatch } from "../sections/controls";
 import { sameTokens } from "../tokens-store";
 import { Icon } from "./icons";
 import { Preview } from "./Preview";
+import { ButtonOptions, CardOptions, LinkOptions, TypeOptions } from "./StyleGroups";
 
 export interface SiteSettingsProps {
   site: Site;
@@ -42,20 +43,56 @@ export interface SiteSettingsProps {
   headerLink?: ReactNode;
 }
 
-const sections = [
+/** Direction A (F028): one group at a time, beside the live preview. */
+export const groups = [
   { id: "presets", label: "Presets" },
   { id: "colours", label: "Colours" },
-  { id: "contrast", label: "Contrast checks" },
-  { id: "section-styles", label: "Section styles" },
   { id: "typography", label: "Typography" },
+  { id: "buttons", label: "Buttons" },
+  { id: "cards", label: "Cards" },
+  { id: "links", label: "Links" },
+  { id: "section-styles", label: "Section styles" },
   { id: "spacing", label: "Spacing" },
   { id: "shape", label: "Shape & layout" },
-];
+] as const;
+export type GroupId = (typeof groups)[number]["id"];
+
+/** Which group holds a field, from its id (for "fix the fields marked in red"). */
+export function groupOfField(field: string): GroupId | null {
+  if (field.startsWith("color-")) return "colours";
+  if (field.startsWith("spacing-")) return "spacing";
+  if (field === "radius" || field === "maxWidth") return "shape";
+  return null;
+}
+
+/** The group for a clicked part of the preview; null keeps the colour jump (F014). */
+export function groupForElement(el: Element): GroupId | null {
+  if (el.closest(".cr-button")) return "buttons";
+  if (el.closest(".cr-card-link")) return "links";
+  if (el.closest(".cr-card")) return "cards";
+  if (el.closest(".cr-heading")) return "typography";
+  return null;
+}
 
 export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDiscard, headerLink }: SiteSettingsProps) {
   const [status, setStatus] = useState("");
   const [invalid, setInvalid] = useState<ReadonlySet<string>>(new Set());
   const [previewOpen, setPreviewOpen] = useState(true);
+  const [group, setGroup] = useState<GroupId>("presets");
+  /** After switching groups: what to focus once the group is shown. */
+  const [pendingFocus, setPendingFocus] = useState<string | null>(null);
+  useEffect(() => {
+    if (!pendingFocus) return;
+    const el = document.getElementById(pendingFocus);
+    el?.scrollIntoView({ block: "center" });
+    el?.focus({ preventScroll: true });
+    if (el instanceof HTMLInputElement) el.select();
+    setPendingFocus(null);
+  }, [pendingFocus]);
+  const open = (id: GroupId, focus = `${id}-h`) => {
+    setGroup(id);
+    setPendingFocus(focus);
+  };
   /** Colours and fonts from before the last preset, for one-step undo. */
   const [beforePreset, setBeforePreset] = useState<{ tokens: SiteTokens; name: string } | null>(null);
   const dirty = !sameTokens(saved, draft);
@@ -84,6 +121,9 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
   const save = async () => {
     if (saving) return;
     if (invalid.size > 0) {
+      const first = [...invalid][0]!;
+      const where = groupOfField(first);
+      if (where) open(where, first);
       setStatus(`Not saved. Fix the ${invalid.size === 1 ? "field" : `${invalid.size} fields`} marked in red first.`);
       return;
     }
@@ -134,27 +174,29 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
       </p>
 
       <div className="st-layout">
-        <nav className="st-nav" aria-label="Settings sections">
+        <nav className="st-nav" aria-label="Style groups">
           <ul>
-            {sections.map((s) => (
-              <li key={s.id}>
-                <a href={`#/settings/${s.id}`} onClick={(e) => jumpTo(e, s.id)}>
-                  {s.label}
-                  {s.id === "contrast" && failing.length > 0 ? (
-                    <span className="st-count"> ({failing.length} failing)</span>
-                  ) : null}
-                </a>
-              </li>
-            ))}
+            {groups.map((g) => {
+              const fix = [...invalid].some((f) => groupOfField(f) === g.id);
+              return (
+                <li key={g.id}>
+                  <button type="button" className="st-nav-item" aria-current={group === g.id ? "true" : undefined} onClick={() => open(g.id)}>
+                    {g.label}
+                    {g.id === "colours" && failing.length > 0 ? <span className="st-count"> ({failing.length} failing)</span> : null}
+                    {fix ? <span className="st-count"> (fix)</span> : null}
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 
         <main className="st-form">
-          <section className="st-card" id="presets" aria-labelledby="presets-h">
-            <h2 id="presets-h">Presets</h2>
+          <section className="st-card" id="presets" aria-labelledby="presets-h" hidden={group !== "presets"}>
+            <h2 id="presets-h" tabIndex={-1}>Presets</h2>
             <p className="st-lede">
-              A starting point for colours and fonts. Spacing, corners and width stay as they are, and every preset passes the
-              contrast checks.
+              A complete look: colours, fonts, headings, buttons, cards and links. Spacing, corners and page width stay as they
+              are, and every preset passes the contrast checks.
             </p>
             <ul className="st-presets">
               {themePresets.map((preset) => {
@@ -169,7 +211,7 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
                         if (current) return;
                         setBeforePreset({ tokens: draft, name: preset.name });
                         onChange(applyPreset(draft, preset));
-                        setStatus(`${preset.name} applied to colours and fonts. Use "Undo preset" to go back.`);
+                        setStatus(`${preset.name} applied. Use "Undo preset" to go back.`);
                       }}
                     >
                       <span className="st-preset-swatches" aria-hidden="true">
@@ -192,8 +234,9 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
                 type="button"
                 className="st-button st-undo"
                 onClick={() => {
-                  onChange({ ...draft, colors: beforePreset.tokens.colors, fonts: beforePreset.tokens.fonts });
-                  setStatus(`Undid ${beforePreset.name}. Colours and fonts are back to what they were.`);
+                  const before = beforePreset.tokens;
+                  onChange({ ...draft, colors: before.colors, fonts: before.fonts, style: before.style, sectionStyles: before.sectionStyles });
+                  setStatus(`Undid ${beforePreset.name}. The look is back to what it was.`);
                   setBeforePreset(null);
                 }}
               >
@@ -202,8 +245,9 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
             ) : null}
           </section>
 
+          <div hidden={group !== "colours"}>
           <section className="st-card" id="colours" aria-labelledby="colours-h">
-            <h2 id="colours-h">Colours</h2>
+            <h2 id="colours-h" tabIndex={-1}>Colours</h2>
             <p className="st-lede">Each colour has a job. Blocks only use these six, so a change here restyles the whole site.</p>
             <div className="st-rows">
               {colorRoles.map((role) => (
@@ -228,9 +272,25 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
               setStatus(`${colorRoleInfo[role].name} set to ${value}.`);
             }}
           />
+          </div>
 
-          <section className="st-card" id="section-styles" aria-labelledby="section-styles-h">
-            <h2 id="section-styles-h">Section styles</h2>
+          <section className="st-card" id="buttons" aria-labelledby="buttons-h" hidden={group !== "buttons"}>
+            <h2 id="buttons-h" tabIndex={-1}>Buttons</h2>
+            <ButtonOptions tokens={draft} onChange={onChange} />
+          </section>
+
+          <section className="st-card" id="cards" aria-labelledby="cards-h" hidden={group !== "cards"}>
+            <h2 id="cards-h" tabIndex={-1}>Cards</h2>
+            <CardOptions tokens={draft} onChange={onChange} />
+          </section>
+
+          <section className="st-card" id="links" aria-labelledby="links-h" hidden={group !== "links"}>
+            <h2 id="links-h" tabIndex={-1}>Links</h2>
+            <LinkOptions tokens={draft} onChange={onChange} />
+          </section>
+
+          <section className="st-card" id="section-styles" aria-labelledby="section-styles-h" hidden={group !== "section-styles"}>
+            <h2 id="section-styles-h" tabIndex={-1}>Section styles</h2>
             <p className="st-lede">
               Four looks for whole sections. Each section picks one in the builder; a change here restyles every section that uses it.
             </p>
@@ -247,8 +307,8 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
             </div>
           </section>
 
-          <section className="st-card" id="typography" aria-labelledby="typography-h">
-            <h2 id="typography-h">Typography</h2>
+          <section className="st-card" id="typography" aria-labelledby="typography-h" hidden={group !== "typography"}>
+            <h2 id="typography-h" tabIndex={-1}>Typography</h2>
             <p className="st-lede">
               These use fonts already on your visitors' devices: nothing to download, so pages stay fast. They look slightly
               different on Mac, Windows and phones.
@@ -257,10 +317,11 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
               onChange={(v) => onChange({ ...draft, fonts: { ...draft.fonts, heading: v } })} heading />
             <FontField label="Body font" value={draft.fonts.body} sample="Design pages with blocks and design tokens."
               onChange={(v) => onChange({ ...draft, fonts: { ...draft.fonts, body: v } })} />
+            <TypeOptions tokens={draft} onChange={onChange} />
           </section>
 
-          <section className="st-card" id="spacing" aria-labelledby="spacing-h">
-            <h2 id="spacing-h">Spacing</h2>
+          <section className="st-card" id="spacing" aria-labelledby="spacing-h" hidden={group !== "spacing"}>
+            <h2 id="spacing-h" tabIndex={-1}>Spacing</h2>
             <p className="st-lede">The steps you pick from for section padding, gaps and spacers. 1 rem is 16 px.</p>
             <div className="st-spacing">
               <div className="st-spacing-row">
@@ -292,8 +353,8 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
             )}
           </section>
 
-          <section className="st-card" id="shape" aria-labelledby="shape-h">
-            <h2 id="shape-h">Shape & layout</h2>
+          <section className="st-card" id="shape" aria-labelledby="shape-h" hidden={group !== "shape"}>
+            <h2 id="shape-h" tabIndex={-1}>Shape & layout</h2>
             <div className="st-shape">
               <NumberField
                 id="radius"
@@ -328,11 +389,15 @@ export function SiteSettings({ site, page, saved, draft, onChange, onSave, onDis
             page={page}
             open={previewOpen}
             onToggle={() => setPreviewOpen((o) => !o)}
-            onPick={(role) => {
-              const field = document.getElementById(`color-${role}`);
-              field?.scrollIntoView({ block: "center" });
-              (field as HTMLInputElement | null)?.focus({ preventScroll: true });
-              (field as HTMLInputElement | null)?.select();
+            onPick={(role, el) => {
+              // While editing colours, a click finds the colour (F014); otherwise it opens that part's group (F028).
+              const part = group === "colours" || !el ? null : groupForElement(el);
+              if (part) {
+                open(part);
+                setStatus(`Showing ${groups.find((g) => g.id === part)!.label}: the settings for that part of the page.`);
+                return;
+              }
+              open("colours", `color-${role}`);
               setStatus(`That part of the page uses ${colorRoleInfo[role].name}. Its field is selected.`);
             }}
           />

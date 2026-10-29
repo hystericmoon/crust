@@ -17,7 +17,7 @@ const roles: readonly string[] = ["background", "surface", "text", "muted", "pri
 export const sectionStyleIds = ["background", "surface", "primary", "dark"] as const;
 export type SectionStyleId = (typeof sectionStyleIds)[number];
 
-export const buttonLooks = ["solid", "outline", "inverse"] as const;
+export const buttonLooks = ["solid", "outline", "inverse", "soft"] as const;
 export type ButtonLook = (typeof buttonLooks)[number];
 
 export interface SectionStyle {
@@ -34,7 +34,7 @@ export const sectionStyleNames: Record<SectionStyleId, string> = {
   dark: "Dark",
 };
 
-export const buttonLookNames: Record<ButtonLook, string> = { solid: "Solid", outline: "Outline", inverse: "Inverse" };
+export const buttonLookNames: Record<ButtonLook, string> = { solid: "Solid", outline: "Outline", inverse: "Inverse", soft: "Soft" };
 
 /** Matches how Page, Surface and Primary sections looked before F025. */
 export const defaultSectionStyles: Record<SectionStyleId, SectionStyle> = {
@@ -102,12 +102,16 @@ export function resolveSectionStyle(tokens: SiteTokens, id: SectionStyleId): Res
   // A solid button must stand out from the section (3:1, WCAG 1.4.11); otherwise it goes inverse.
   let look = style.button;
   if (look === "solid" && contrastRatio(c.primary, bg) < 3) look = "inverse";
+  // Soft (F028): a light tint of the brand colour; its label falls back to the text colour if the brand colour won't read on it.
+  const softBg = mixHex(c.primary, bg, 0.14);
   const button =
     look === "solid"
       ? { bg: c.primary, fg: c.onPrimary, border: c.primary, look }
       : look === "inverse"
         ? { bg: ink, fg: bg, border: ink, look }
-        : { bg: "transparent", fg: ink, border: ink, look };
+        : look === "soft"
+          ? { bg: softBg, fg: contrastRatio(c.primary, softBg) >= AA ? c.primary : ink, border: softBg, look }
+          : { bg: "transparent", fg: ink, border: ink, look };
 
   return { id, bg, ink, muted, accent, button, inkRatio };
 }
@@ -184,7 +188,7 @@ export function validateSectionStyles(tokens: SiteTokens): SectionStyleProblem[]
       problems.push({ path: `sectionStyles.${id}.bg`, message: `${sectionStyleNames[id]} style: use a site colour or a hex colour like #F3EAD8.` });
     }
     if (!(buttonLooks as readonly string[]).includes(s.button)) {
-      problems.push({ path: `sectionStyles.${id}.button`, message: `${sectionStyleNames[id]} style: the button look must be Solid, Outline or Inverse.` });
+      problems.push({ path: `sectionStyles.${id}.button`, message: `${sectionStyleNames[id]} style: the button look must be Solid, Outline, Inverse or Soft.` });
     }
   }
   return problems;
