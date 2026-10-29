@@ -178,7 +178,7 @@
       "description": "When a page is renamed, Button links on other pages that point to the old address are updated to the new one in the same commit. The rename dialog says how many links will change. The redirect stays for links from outside the site. Added by the owner (approved Claude's recommendation, 2026-10-28).",
       "depends_on": ["F015"],
       "done_check": "npm test -- relink page-actions save-api && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

@@ -10,12 +10,21 @@ import type { PageRow } from "./store";
 /** Resolves to null when it worked, or a plain-language problem to show. */
 export type PageAction = Promise<string | null>;
 
+/** Another page whose buttons or card links point at a page (F018). */
+export interface LinkingPage {
+  path: string;
+  title: string;
+  count: number;
+}
+
 export interface PageActionsProps {
   row: PageRow;
   /** Every other page's address, so a rename can't take one. */
   otherPaths: string[];
   onRename: (row: PageRow, to: string) => PageAction;
   onDelete: (row: PageRow) => PageAction;
+  /** Pages that link to this one; null when unknown (F018). */
+  findLinks?: (row: PageRow) => Promise<LinkingPage[] | null>;
 }
 
 /**
@@ -26,7 +35,7 @@ export function focusAfterDialog(target: () => HTMLElement | null) {
   setTimeout(() => target()?.focus(), 0);
 }
 
-export function PageActions({ row, otherPaths, onRename, onDelete }: PageActionsProps) {
+export function PageActions({ row, otherPaths, onRename, onDelete, findLinks }: PageActionsProps) {
   const [open, setOpen] = useState<"rename" | "delete" | null>(null);
   const renameRef = useRef<HTMLButtonElement>(null);
   const deleteRef = useRef<HTMLButtonElement>(null);
@@ -47,7 +56,14 @@ export function PageActions({ row, otherPaths, onRename, onDelete }: PageActions
         Delete<span className="pg-sr"> {row.title}</span>
       </button>
       {open === "rename" ? (
-        <RenameDialog row={row} otherPaths={otherPaths} onRename={onRename} onClose={() => close("rename")} onDone={() => setOpen(null)} />
+        <RenameDialog
+          row={row}
+          otherPaths={otherPaths}
+          onRename={onRename}
+          findLinks={findLinks}
+          onClose={() => close("rename")}
+          onDone={() => setOpen(null)}
+        />
       ) : null}
       {open === "delete" ? <DeleteDialog row={row} onDelete={onDelete} onClose={() => close("delete")} onDone={() => setOpen(null)} /> : null}
     </div>
@@ -92,12 +108,14 @@ function RenameDialog({
   row,
   otherPaths,
   onRename,
+  findLinks,
   onClose,
   onDone,
 }: {
   row: PageRow;
   otherPaths: string[];
   onRename: (row: PageRow, to: string) => PageAction;
+  findLinks?: (row: PageRow) => Promise<LinkingPage[] | null>;
   onClose: () => void;
   onDone: () => void;
 }) {
@@ -106,10 +124,21 @@ function RenameDialog({
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [links, setLinks] = useState<LinkingPage[] | null>(null);
 
   useEffect(() => {
     inputRef.current?.focus();
     inputRef.current?.select();
+  }, []);
+
+  // Asked once, when the dialog opens.
+  const ask = useRef(() => findLinks?.(row));
+  useEffect(() => {
+    let live = true;
+    void ask.current()?.then((found) => live && setLinks(found));
+    return () => {
+      live = false;
+    };
   }, []);
 
   const submit = async (e: FormEvent) => {
@@ -152,7 +181,7 @@ function RenameDialog({
               autoCorrect="off"
               spellCheck={false}
               aria-invalid={error ? true : undefined}
-              aria-describedby={[`${id}-hint`, error ? `${id}-error` : null].filter(Boolean).join(" ")}
+              aria-describedby={[`${id}-hint`, links?.length ? `${id}-links` : null, error ? `${id}-error` : null].filter(Boolean).join(" ")}
               onChange={(e) => {
                 setAddress(e.target.value);
                 if (error) setError(null);
@@ -161,9 +190,15 @@ function RenameDialog({
           </span>
           <p className="st-help" id={`${id}-hint`}>
             {row.inRepo
-              ? `Links to ${row.path} keep working: after you publish, visitors who go there are sent to the new address.`
+              ? `Links to ${row.path} from other websites keep working: after you publish, visitors who go there are sent to the new address.`
               : "This page is only in this browser so far, so nothing else changes."}
           </p>
+          {links?.length ? (
+            <p className="st-help" id={`${id}-links`}>
+              Links on other pages are updated to the new address too:{" "}
+              {links.map((l) => `${l.title} (${l.count === 1 ? "1 link" : `${l.count} links`})`).join(", ")}.
+            </p>
+          ) : null}
           {error ? (
             <p className="st-error" id={`${id}-error`} role="alert">
               {error}

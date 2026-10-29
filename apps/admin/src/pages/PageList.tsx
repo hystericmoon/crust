@@ -1,7 +1,7 @@
 import type { Page } from "@crust/blocks";
 import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { checkNewPage, createPage, slugify, type NewPageErrors, type NewPageInput } from "./new-page";
-import { focusAfterDialog, PageActions, type PageAction } from "./PageActions";
+import { focusAfterDialog, PageActions, type LinkingPage, type PageAction } from "./PageActions";
 import type { PageRow } from "./store";
 
 export interface PageListProps {
@@ -19,6 +19,8 @@ export interface PageListProps {
   githubOn?: boolean;
   onRename?: (row: PageRow, to: string) => PageAction;
   onDelete?: (row: PageRow) => PageAction;
+  /** Other pages linking to a page, shown in the rename dialog (F018). */
+  findLinks?: (row: PageRow) => Promise<LinkingPage[] | null>;
   /** Shown below the list (the Publish panel). */
   children?: ReactNode;
 }
@@ -31,7 +33,7 @@ export const editHref = (path: string) => `#/edit?path=${encodeURIComponent(path
 /** The badge for changes that aren't live yet (F016). */
 export const unpublishedLabel = { new: "Not published yet", edited: "Edited since publish" } as const;
 
-export function PageList({ siteName, rows, sourceNote, loadError, onCreate, githubOn = false, onRename, onDelete, children }: PageListProps) {
+export function PageList({ siteName, rows, sourceNote, loadError, onCreate, githubOn = false, onRename, onDelete, findLinks, children }: PageListProps) {
   const [creating, setCreating] = useState(false);
   const [done, setDone] = useState("");
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -134,6 +136,7 @@ export function PageList({ siteName, rows, sourceNote, loadError, onCreate, gith
                             otherPaths={rows.filter((r) => r.path !== row.path).map((r) => r.path)}
                             onRename={rename}
                             onDelete={remove}
+                            findLinks={findLinks}
                           />
                         ) : null}
                       </td>

@@ -13,6 +13,17 @@ Features Claude suggests. They are not work until the owner adds them to
   what's not published yet" is F016. Claude's next four recommendations
   were approved the same day as F017–F020.)*
 
+## 2026-10-29 — F018 update links on rename (Claude, reversible)
+
+- **Which links:** Button `href` and Card `linkHref`, anywhere in the block tree (inside Sections and Columns too).
+  - Matched forms: `/about`, `/about/`, `/about#x` and `/about?x`. The trailing slash, anchor and query are kept.
+  - Full addresses (`https://…`) and text that merely mentions the path are left alone. The redirect still covers outside links.
+  - The page's own links to itself follow it too.
+- **Shared code:** `relinkPage` lives in `packages/blocks/src/links.ts` (no React), so the server and the browser use the same rules.
+- **One commit:** the rename, the redirect and every updated page go into a single commit. The commit message says how many links changed.
+- **The rename dialog** asks `GET /api/links` once when it opens and names the pages it will update ("Home (2 links), Contact (1 link)"). The hint now says the redirect is for links *from other websites*.
+- **Browser drafts of other pages are updated too,** so saving one later can't bring back an old link.
+
 ## 2026-10-28 — F017 live site link (Claude, reversible)
 
 - **The bug:** "Open live site" pointed at `site.json`'s `baseUrl`, which is still the placeholder `https://example.pages.dev`. The publish workflow already ignores the placeholder and uses the Cloudflare Pages address, which can get a random suffix if `crust-site` is taken. So the admin couldn't know the real address.

@@ -5,6 +5,7 @@
  *  3. refuses unless the request carries a valid Access sign-in.
  */
 import type { Page, Site } from "@crust/blocks/content";
+import { countLinks, relinkPage } from "@crust/blocks/links";
 import { AccessError, verifyAccessJwt, type AccessUser } from "./access";
 import {
   checkPage,
@@ -24,6 +25,7 @@ import {
   type GitHubConfig,
   changedFiles,
   commitFiles,
+  type FileChange,
   dispatchWorkflow,
   lastCommitDate,
   lastSuccessfulRun,
@@ -182,6 +184,40 @@ export async function handlePages(request: Request, env: Env, fetchFn: typeof fe
   }
 }
 
+/** Every page file with its content; unreadable files are skipped. */
+async function readPages(cfg: GitHubConfig, fetchFn: typeof fetch): Promise<{ file: string; page: Page }[]> {
+  const files = (await listFolder(cfg, "content/pages", fetchFn)).filter((f) => f.name.endsWith(".json"));
+  const pages = await Promise.all(
+    files.map(async (f) => {
+      const text = await readFile(cfg, f.path, fetchFn);
+      try {
+        return text ? { file: f.path, page: JSON.parse(text) as Page } : null;
+      } catch {
+        return null;
+      }
+    }),
+  );
+  return pages.filter((p): p is { file: string; page: Page } => p !== null && Array.isArray(p.page.puck?.content));
+}
+
+/** GET /api/links?path=/about: which other pages link to a page, for the rename dialog (F018). */
+export async function handleLinks(request: Request, env: Env, fetchFn: typeof fetch = fetch): Promise<Response> {
+  const user = await gate(request, env, fetchFn, false);
+  if (user instanceof Response) return user;
+  const path = new URL(request.url).searchParams.get("path");
+  if (!isValidPagePath(path)) return fail(400, "That isn't a valid page address.");
+  try {
+    const pages = (await readPages(githubConfig(env), fetchFn))
+      .filter((p) => p.page.path !== path)
+      .map((p) => ({ path: p.page.path, title: p.page.title, count: countLinks(p.page.puck, path) }))
+      .filter((p) => p.count > 0)
+      .sort((a, b) => a.path.localeCompare(b.path));
+    return json(200, { ok: true, pages });
+  } catch (e) {
+    return githubFailure(e);
+  }
+}
+
 /** GET /api/page?path=/about: one page's full content (F007). */
 export async function handlePage(request: Request, env: Env, fetchFn: typeof fetch = fetch): Promise<Response> {
   const user = await gate(request, env, fetchFn, false);
@@ -237,19 +273,34 @@ export async function handleRename(request: Request, env: Env, fetchFn: typeof f
     ]);
     if (text === null) return fail(404, `There's no page at ${from} on GitHub.`);
     if (clash !== null) return fail(409, `There's already a page at ${to}.`);
-    const page = { ...(JSON.parse(text) as Page), path: to };
+    // Links on the page itself (e.g. a "back to top" button) follow it too.
+    const own = JSON.parse(text) as Page;
+    const self = relinkPage(own.puck, from, to);
+    const page = { ...own, path: to, puck: self.puck };
     const redirects = redirectsAfterRename(parseRedirects(redirectsText), from, to);
+    // F018: links on other pages point at the new address, in the same commit.
+    const others = (await readPages(cfg, fetchFn)).filter((p) => p.page.path !== from);
+    const relinkChanges: FileChange[] = [];
+    const relinked: { path: string; title: string; count: number }[] = self.count ? [{ path: to, title: page.title, count: self.count }] : [];
+    for (const other of others) {
+      const { puck, count } = relinkPage(other.page.puck, from, to);
+      if (!count) continue;
+      relinkChanges.push({ path: other.file, content: serialize({ ...other.page, puck }) });
+      relinked.push({ path: other.page.path, title: other.page.title, count });
+    }
+    const links = relinked.reduce((n, r) => n + r.count, 0);
     const result = await commitFiles(
       cfg,
       [
         { path: pageFileFor(to), content: serialize(page) },
         { path: pageFileFor(from), content: null },
         { path: REDIRECTS_FILE, content: serialize(redirects) },
+        ...relinkChanges,
       ],
-      `Rename page ${from} to ${to} from the builder\n\nVisitors to ${from} are sent to ${to}.\nRenamed by ${user.email}`,
+      `Rename page ${from} to ${to} from the builder\n\nVisitors to ${from} are sent to ${to}.${links ? `\nUpdated ${links} link${links === 1 ? "" : "s"} to the new address.` : ""}\nRenamed by ${user.email}`,
       fetchFn,
     );
-    return json(200, { ok: true, page, commit: result.commit, url: result.url });
+    return json(200, { ok: true, page, relinked, commit: result.commit, url: result.url });
   } catch (e) {
     return githubFailure(e);
   }

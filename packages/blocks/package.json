@@ -8,7 +8,8 @@
     ".": "./src/index.ts",
     "./tokens": "./src/tokens.ts",
     "./content": "./src/content.ts",
-    "./styles.css": "./src/styles.css"
+    "./styles.css": "./src/styles.css",
+    "./links": "./src/links.ts"
   },
   "peerDependencies": {
     "@puckeditor/core": "^0.23.0",

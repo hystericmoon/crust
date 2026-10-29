@@ -4,6 +4,8 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Renaming a page also updates the buttons and card links on your other
+  pages** that point to it. The rename dialog lists which pages will change.
 - **"Open live site" now opens your real site,** at the address the last
   publish went live at, which is also shown under the button. Before the
   first publish, the panel says the link will appear there.

@@ -5,16 +5,17 @@ to "Log".
 
 ## Current
 
-- **Milestone:** 1 (first working slice). F001–F017 pass their done checks.
+- **Milestone:** 1 (first working slice). F001–F018 pass their done checks.
 - **Merged to main:** F001–F016 (PRs #1, #2, #3).
-- **In PR #4:** F017 "Open live site" uses the real address.
-- **Next:** F018 update links on rename, F019 restore deleted pages, F020
-  save browser drafts from the page list (owner-approved, in that order).
+- **In PR #4:** F017 "Open live site" uses the real address, F018 update
+  links on rename.
+- **Next:** F019 restore deleted pages, F020 save browser drafts from the
+  page list (owner-approved, in that order).
 - **Waiting on the owner:**
   - Switch on saving and publishing: follow `docs/setup-saving.md`
     (Cloudflare Access, GitHub token, three Pages settings), then say "done".
   - Review on the preview link and set `reviewed: true`: F010, F004, F003,
-    F005, F012, F013, F014, F007, F008, F015, F016, F017.
+    F005, F012, F013, F014, F007, F008, F015, F016, F017, F018.
 - **Next after setup:** Claude redeploys, checks a real save, a real
   rename and a real publish, and fixes anything that shows up. Then
   Milestone 1 is complete.
@@ -110,3 +111,8 @@ to "Log".
   it, and the Publish panel links there (placeholder baseUrl ignored).
   Confirmed with a temporary CI step that GitHub reports the evaluated
   step name. 6 new tests; done check passes.
+- 2026-10-29 — F018 done: renaming a page rewrites Button/Card links to it
+  on every page in the same commit (shared `relinkPage` in
+  packages/blocks/src/links.ts), and browser drafts follow. The rename
+  dialog names the pages it will update (GET /api/links). 8 new tests; done
+  check passes.

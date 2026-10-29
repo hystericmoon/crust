@@ -1,10 +1,12 @@
 import { config, tokensToCss, type Page, type Site, type SiteTokens } from "@crust/blocks";
+import { relinkPage } from "@crust/blocks/links";
 import { Puck, useGetPuck, type Data } from "@puckeditor/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import siteJson from "../../../content/site.json";
 import {
   deletePage,
   getChanges,
+  getLinks,
   getPage,
   getStatus,
   listPages,
@@ -192,8 +194,18 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
       if (!res.ok) return `Not renamed: ${res.error}`;
     }
     if (!moveLocalDraft(row.path, to)) return "This browser wouldn't store the change. Try again.";
+    // F018: drafts in this browser follow too, so saving one later doesn't bring the old links back.
+    for (const draft of localDrafts()) {
+      const { puck, count } = relinkPage(draft.page.puck, row.path, to);
+      if (count) saveLocalDraft({ ...draft.page, puck }, draft.savedToGitHub);
+    }
     reload();
     return null;
+  };
+  const findLinks = async (row: PageRow) => {
+    if (!githubOn || !row.inRepo) return null;
+    const res = await getLinks(row.path);
+    return res.ok ? res.pages : null;
   };
   const remove = async (row: PageRow): Promise<string | null> => {
     if (row.inRepo) {
@@ -218,6 +230,7 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
       githubOn={githubOn === true}
       onRename={rename}
       onDelete={remove}
+      findLinks={findLinks}
       onCreate={(page) => {
         saveLocalDraft(page, false);
         location.hash = editHref(page.path);

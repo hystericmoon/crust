@@ -1,7 +1,7 @@
 import { defaultTokens, type Page, type Site } from "@crust/blocks";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { clearAccessKeyCache, verifyAccessJwt } from "./access";
-import { handleChanges, handleDelete, handlePage, handlePages, handlePublish, handleRename, handleSave, handleStatus, type Env } from "./api";
+import { handleChanges, handleDelete, handleLinks, handlePage, handlePages, handlePublish, handleRename, handleSave, handleStatus, type Env } from "./api";
 import { checkPage, isValidPagePath, pageFileFor, pagePathForFile, parseRedirects, redirectsAfterDelete, redirectsAfterRename } from "./content";
 import { fromBase64, toBase64 } from "./github";
 
@@ -544,5 +544,53 @@ describe("save-api: live address (F017)", () => {
       res = await handlePublish(await get("/api/publish", await token()), env, fakeFetch);
       expect((await res.json()).liveUrl).toBeNull();
     }
+  });
+});
+
+// --- F018: links to a renamed page --------------------------------------------
+
+describe("save-api: links to a renamed page (F018)", () => {
+  const linking = (path: string, title: string, hrefs: string[]) => ({
+    content: JSON.stringify(
+      page({
+        path,
+        title,
+        puck: {
+          root: { props: {} },
+          content: hrefs.map((href, i) => ({ type: "Button", props: { id: `b${i}`, label: "Go", href, variant: "primary" } })),
+        },
+      }),
+    ),
+    sha: "x",
+  });
+
+  it("lists the pages that link to a page", async () => {
+    files.set("content/pages/about.json", pageFile("/about"));
+    files.set("content/pages/index.json", linking("/", "Home", ["/about", "/about#team", "/contact"]));
+    files.set("content/pages/contact.json", linking("/contact", "Contact", ["/"]));
+    const res = await handleLinks(await get("/api/links?path=/about", await token()), env, fakeFetch);
+    expect(await res.json()).toEqual({ ok: true, pages: [{ path: "/", title: "Home", count: 2 }] });
+    expect((await handleLinks(await get("/api/links?path=nope", await token()), env, fakeFetch)).status).toBe(400);
+    expect((await handleLinks(await get("/api/links?path=/about"), env, fakeFetch)).status).toBe(401);
+  });
+
+  it("updates them in the same commit as the rename", async () => {
+    files.set("content/pages/about.json", linking("/about", "About us", ["/about#top"]));
+    files.set("content/pages/index.json", linking("/", "Home", ["/about", "/contact"]));
+    files.set("content/pages/contact.json", linking("/contact", "Contact", ["/"]));
+    const res = await handleRename(await post("/api/rename", { from: "/about", to: "/team" }), env, fakeFetch);
+    const body = await res.json();
+    expect(body.relinked).toEqual([
+      { path: "/team", title: "About us", count: 1 },
+      { path: "/", title: "Home", count: 1 },
+    ]);
+    const hrefs = (file: string) => JSON.parse(files.get(file)!.content).puck.content.map((b: { props: { href: string } }) => b.props.href);
+    expect(hrefs("content/pages/index.json")).toEqual(["/team", "/contact"]);
+    expect(hrefs("content/pages/team.json")).toEqual(["/team#top"]);
+    expect(multiCommits).toHaveLength(1);
+    expect(multiCommits[0]!.paths).toEqual(["content/pages/team.json", "content/pages/about.json", "content/redirects.json", "content/pages/index.json"]);
+    expect(multiCommits[0]!.message).toContain("Updated 2 links to the new address.");
+    // Pages without links to it are left alone.
+    expect(multiCommits[0]!.paths).not.toContain("content/pages/contact.json");
   });
 });
