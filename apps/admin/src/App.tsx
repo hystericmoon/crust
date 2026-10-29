@@ -19,6 +19,8 @@ import {
   type PendingChanges,
 } from "./api-client";
 import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot, openKeyboardHelp } from "./keyboard/KeyboardEditing";
+import { LayoutGallery, LayoutInserters, LayoutsButton } from "./layouts/LayoutGallery";
+import { MyLayoutsProvider } from "./layouts/mine";
 import { PageList, editHref } from "./pages/PageList";
 import {
   bundledPages,
@@ -323,6 +325,26 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
   );
 }
 
+/** overrides.puck: keyboard editing plus the layout gallery (F026). */
+function BuilderRoot({ children }: { children: ReactNode }) {
+  return (
+    <KeyboardRoot>
+      {children}
+      <LayoutGallery />
+    </KeyboardRoot>
+  );
+}
+
+/** overrides.iframe: the canvas, with the "+" buttons between sections (F026). */
+function BuilderCanvas({ children, document }: { children: ReactNode; document?: Document }) {
+  return (
+    <KeyboardCanvas document={document}>
+      {children}
+      <LayoutInserters document={document} />
+    </KeyboardCanvas>
+  );
+}
+
 function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean; shortcut?: ReactNode }) {
   const [page, setPage] = useState<Page | null | undefined>(undefined);
   const [status, setStatus] = useState<string>("");
@@ -365,7 +387,7 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
   }
 
   return (
-    <>
+    <MyLayoutsProvider githubOn={githubOn}>
       <Puck
         config={editorConfig}
         data={toPuckData(page)}
@@ -377,6 +399,7 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
               <a className="crust-header-link" href="#/">
                 Pages
               </a>
+              <LayoutsButton />
               <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
                 Keyboard
               </button>
@@ -387,8 +410,8 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
               <SaveDraftButton onSave={saveDraft} />
             </>
           ),
-          puck: KeyboardRoot,
-          iframe: KeyboardCanvas,
+          puck: BuilderRoot,
+          iframe: BuilderCanvas,
           actionBar: KeyboardActionBar,
         }}
         onPublish={saveDraft}
@@ -398,6 +421,6 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
       <div role="status" aria-live="polite" className="crust-status">
         {status}
       </div>
-    </>
+    </MyLayoutsProvider>
   );
 }

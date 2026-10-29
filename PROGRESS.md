@@ -13,15 +13,22 @@ to "Log".
   me", one-time PIN); Pages "Restrict previews" app for
   `*.crust-admin.pages.dev`; GITHUB_TOKEN, ACCESS_TEAM_DOMAIN, ACCESS_AUD
   on crust-admin (Production). /api/status reports configured.
-- **Next:** F026 Layout library (design snapshot first). F025 Section
-  styles is done and waiting for the owner's review.
+- **Merged:** F025 Section styles + builder tooltips (PR #9).
+- **Done, in draft PR #10: F026 Layout library** on branch
+  `f026-layout-library` (owner chose direction **B**). Waiting for the
+  owner to try it on the preview link.
+- **Done, in draft PR #11 (stacked on #10): F027 My layouts** on branch
+  `f027-my-layouts`. Owner asked Claude to continue overnight; Claude
+  built direction A (its recommendation). The owner can still ask for B
+  or C from the snapshot before merging.
+- **Next:** F028 Style customizer v2 (design snapshot first).
   Other proposals waiting in DECISIONS.md (sign-out button, restore
   brings back the redirect).
 - **Waiting on the owner:**
   - Check the live site on his phone.
   - Review on the preview link and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019, F020,
-    F021, F022, F023, F024, F025.
+    F021, F022, F023, F024, F025, F026, F027.
 - **Reminder:** the Cloudflare API token expires on the date the owner set
   (recommended 2027-01-26), and the GitHub token (crust-admin-save) after
   90 days, around 2027-01-27. Both fail with a clear error; make a new one
@@ -157,3 +164,26 @@ to "Log".
   height and tint pickers in the panel, a quick bar on the selected
   section, Section styles in Site settings. 33 new tests; checked in a
   real browser (toolbar, whole-site edit, image tint). done_check passes.
+
+- 2026-10-29 — F026 started (owner: "go with your recommendations" = B).
+  Layout data, heading fitting and the layout accessibility check are in;
+  the builder UI is next (see Current). Session handed over here.
+- 2026-10-29 — F026 Layout library done (direction B). Gallery dialog
+  with Sections / Whole pages, categories, search and live-style
+  previews; "+" between sections on the canvas; Layouts button in the top
+  bar for the keyboard; "Add a layout" on empty pages. Insert is one undo
+  step, selects the new section and announces it. 18 new tests (291
+  total). Checked in Chromium at 1440 and 390: insert, whole-page insert
+  keeps one h1, undo, empty page, Escape returns focus, axe clean with
+  the gallery open, no console errors. done_check passes.
+- 2026-10-29 — F027 design snapshot v1: three ways to save and find your
+  own layouts (A save on the section + own tab, B all in the gallery,
+  C mixed into categories). Same in all: copies not links, name from the
+  heading, GitHub storage, delete confirms. Waiting for the owner's pick.
+- 2026-10-29 — F027 My layouts done (direction A, chosen by Claude while
+  the owner slept). "Save as layout" on the section toolbar, "Save this
+  page" and a My layouts tab in the gallery with rename/delete, files in
+  content/layouts/ through /api/layouts, browser copy when GitHub is off.
+  25 new tests (316 total). Checked in Chromium at 1440 and 390: save,
+  page save, rename, Escape, delete, insert with fresh ids, reload keeps
+  them, axe clean. done_check passes; F026's still passes.

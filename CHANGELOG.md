@@ -4,6 +4,25 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **My layouts (F027):** keep any section, or a whole page, to reuse.
+  - Select a section and choose **Save as layout** on its toolbar. It's
+    named after its heading; change the name if you like.
+  - Open **Layouts → My layouts** to add one, or to save the whole page.
+  - Rename or delete with the **⋯** button on each card. Saved layouts
+    are copies: renaming or deleting one never changes your pages.
+  - Saved to GitHub (content/layouts/); kept in this browser until saving
+    to GitHub is switched on.
+
+- **Layout library (F026):** 20 designed sections and 5 whole pages,
+  ready to drop in.
+  - Hover the page in the builder and click a **+** between sections, or
+    use **Layouts** in the top bar (adds after the selected section).
+  - A large gallery opens with **Sections / Whole pages**, categories and
+    search. Previews show your own site style.
+  - Everything uses your site style, so it matches straight away; a page
+    keeps one main heading. One Undo takes it back out.
+  - A new, empty page shows an **Add a layout** button in the middle.
+
 - **Tooltips on icon buttons in the builder** (Duplicate, Delete, Select
   parent, the move arrows, the style dots): they show on hover and on
   keyboard focus, and Escape closes them.

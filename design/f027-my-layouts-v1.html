@@ -1,0 +1,324 @@
+<title>My Layouts Snapshot</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: same language as the F025/F026 snapshots. A builder mock (canvas + the F026 gallery) and three ways to save and find your own layouts. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6;
+  --accent:#4338ca; --accent-ink:#ffffff; --accent-soft:#e7e6fb; --mine:#0f766e; --mine-soft:#dcf3ef; --danger:#b42318;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  /* The demo site's own tokens (Crust preset) */
+  --t-bg:#ffffff; --t-surface:#f4f4f5; --t-text:#18181b; --t-primary:#4338ca; --t-on:#ffffff; --t-r:8px;
+  --t-head:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --mine:#5eead4; --mine-soft:#11332f; --danger:#ff8a7d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --mine:#5eead4; --mine-soft:#11332f; --danger:#ff8a7d; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1280px;margin:0 auto;padding-block:28px 64px;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.05;text-wrap:balance}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-.02em}
+.label{font:500 .7rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.lede{color:var(--soft);max-width:68ch;margin:0}
+button,input{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.dirs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.dir{border:1.5px solid var(--line);background:var(--panel);border-radius:14px;padding:12px 14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.dir b{font-family:var(--f-display);font-size:1.05rem}
+.dir span{color:var(--soft);font-size:.85rem}
+.dir[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.dir .rec{align-self:flex-start;color:var(--accent-ink);font:500 .66rem var(--f-mono);background:var(--accent);padding:3px 7px;border-radius:999px}
+.rules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0;padding:0;list-style:none}
+.rules li{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:.86rem;color:var(--soft)}
+.rules b{display:block;color:var(--ink);font-weight:600;margin-bottom:2px}
+
+/* builder mock */
+.builder{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;position:relative;min-height:640px;display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.bar .title{font-weight:600;margin-right:auto}
+.hbtn{min-height:34px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);cursor:pointer}
+.hbtn.dark{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.stage{background:var(--bg);padding:24px 20px 40px;flex:1;overflow:auto}
+.page{max-width:760px;margin:0 auto;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.14);background:var(--t-bg);position:relative}
+.secwrap{position:relative;cursor:pointer}
+.secwrap.sel{outline:2px solid var(--accent);outline-offset:-2px;z-index:2}
+.tools{position:absolute;right:8px;top:-38px;display:flex;align-items:center;gap:2px;background:#18181b;color:#fff;border-radius:10px;padding:3px;box-shadow:0 4px 12px rgba(0,0,0,.3);z-index:4}
+.tools span{font-size:.8rem;padding:0 8px;opacity:.85}
+.tools button{min-height:32px;min-width:32px;border:0;border-radius:7px;background:transparent;color:#fff;cursor:pointer;padding:0 8px;font-size:.82rem}
+.tools button:hover{background:#3f3f46}
+.tools .save{background:#0f766e;font-weight:600}
+.tools .save:hover{background:#115e59}
+.tools i{width:1px;height:20px;background:#52525b;margin:0 3px}
+.namepop{position:absolute;right:8px;top:2px;z-index:5;width:min(320px,92%);background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:12px;display:flex;flex-direction:column;gap:8px;cursor:default}
+.field{display:flex;flex-direction:column;gap:4px;font-size:.82rem;font-weight:600}
+.field input{min-height:38px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-weight:400}
+.hint{font-size:.78rem;color:var(--soft);margin:0}
+.btn{min-height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-weight:600;font-size:.86rem}
+.btn.go{background:var(--mine);border-color:var(--mine);color:var(--panel)}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:var(--panel)}
+.toast{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:8px 14px;border-radius:10px;font-size:.85rem;z-index:30;max-width:90%}
+.toast:empty{display:none}
+
+/* gallery (as built in F026) */
+.modal{position:absolute;inset:0;background:rgba(10,10,20,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.mbox{background:var(--panel);border-radius:14px;width:min(1040px,100%);max-height:100%;display:flex;flex-direction:column;overflow:hidden}
+.mhead{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
+.mhead h2{font-size:1.2rem}
+.mhead .grow{flex:1 1 200px;min-width:0}
+.seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;color:var(--soft);font-weight:600;font-size:.84rem;padding:0 12px;min-height:34px;border-radius:8px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--panel);color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.seg button.mine[aria-pressed="true"]{color:var(--mine);box-shadow:inset 0 0 0 1.5px var(--mine)}
+.seg .n{font:500 .7rem var(--f-mono);margin-left:4px;opacity:.8}
+.mbody{display:grid;grid-template-columns:180px minmax(0,1fr);min-height:0;flex:1}
+.mside{border-right:1px solid var(--line);padding:12px 10px;display:flex;flex-direction:column;gap:2px;background:var(--bg)}
+.cat{border:0;background:transparent;text-align:left;border-radius:8px;min-height:34px;padding:0 10px;cursor:pointer;font-size:.86rem;display:flex;justify-content:space-between;align-items:center;color:var(--soft)}
+.cat[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.cat.mine[aria-pressed="true"]{background:var(--mine-soft);color:var(--mine)}
+.mmain{padding:14px 16px 20px;overflow:auto;max-height:560px;display:flex;flex-direction:column;gap:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;align-items:start}
+.card{position:relative;border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:visible;display:flex;flex-direction:column}
+.card:hover{border-color:var(--accent)}
+.thumb{height:110px;overflow:hidden;position:relative;background:var(--t-bg);border-radius:10px 10px 0 0;border-bottom:1px solid var(--line)}
+.thumb .scale{position:absolute;top:0;left:0;width:760px;transform-origin:top left}
+.meta{padding:8px 10px;display:flex;gap:6px;align-items:center;font-size:.86rem}
+.meta .name{font-weight:600;flex:1;min-width:0;text-align:left;border:0;background:none;padding:0;cursor:pointer}
+.meta small{color:var(--soft);font-size:.74rem}
+.badge{font:500 .64rem var(--f-mono);letter-spacing:.04em;text-transform:uppercase;background:var(--mine-soft);color:var(--mine);padding:2px 6px;border-radius:999px}
+.more{min-width:30px;min-height:30px;border:1px solid transparent;border-radius:7px;background:transparent;cursor:pointer;font-weight:700;line-height:1}
+.more:hover,.more[aria-expanded="true"]{border-color:var(--line);background:var(--bg)}
+.menu{position:absolute;right:8px;bottom:46px;z-index:3;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.18);padding:4px;display:flex;flex-direction:column;min-width:130px}
+.menu button{border:0;background:none;text-align:left;padding:0 10px;min-height:32px;border-radius:6px;cursor:pointer;font-size:.86rem}
+.menu button:hover{background:var(--bg)}
+.menu .del{color:var(--danger)}
+.inline{padding:8px 10px 10px;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line)}
+.inline p{margin:0;font-size:.82rem;color:var(--soft)}
+.tile{border:1.5px dashed var(--mine);border-radius:10px;background:var(--mine-soft);color:var(--mine);min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;padding:12px;text-align:center;font-weight:600}
+.tile small{font-weight:400;color:var(--soft)}
+.tile[aria-disabled="true"]{opacity:.55;cursor:not-allowed}
+.empty{border:1px dashed var(--line);border-radius:12px;padding:22px;color:var(--soft);display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.empty b{color:var(--ink)}
+.where{font-size:.82rem;color:var(--soft);margin:2px 0 0}
+
+/* demo site sections: every colour from --t-* */
+.s{padding:40px 40px;font-family:var(--t-head);color:var(--t-text);background:var(--t-bg)}
+.s.muted{background:var(--t-surface)} .s.primary{background:var(--t-primary);color:var(--t-on)} .s.dark{background:var(--t-text);color:var(--t-bg)}
+.s h2{font-size:32px;margin:0 0 10px;line-height:1.1} .s h3{font-size:18px;margin:0 0 6px}
+.s p{margin:0 0 12px;opacity:.85;font-size:15px}
+.b{display:inline-block;background:var(--t-primary);color:var(--t-on);padding:9px 16px;border-radius:var(--t-r);font-weight:600;font-size:14px}
+.s.primary .b{background:var(--t-on);color:var(--t-primary)}
+.center{text-align:center}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center}
+.box{background:var(--t-surface);border-radius:var(--t-r);padding:14px}
+.s.muted .box{background:var(--t-bg)}
+.img{background:linear-gradient(135deg,#c7c3f3,var(--t-surface));border-radius:var(--t-r);min-height:150px}
+
+.compare{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.cmp{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:.88rem}
+.cmp h3{font-size:1rem}
+.cmp ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+.pro{color:#127a4b}.con{color:#b42318}
+:root[data-theme="dark"] .pro{color:#5fd39a} :root[data-theme="dark"] .con{color:#ff8a7d}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pro{color:#5fd39a} :root:not([data-theme="light"]) .con{color:#ff8a7d}}
+.why{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:.9rem;display:flex;flex-direction:column;gap:6px}
+.why p{margin:0;max-width:80ch}
+.ask{background:var(--accent);color:var(--accent-ink);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.ask p{margin:0}
+.ask code{font:500 .9rem var(--f-mono);background:rgba(255,255,255,.2);padding:1px 7px;border-radius:6px}
+@media (max-width:900px){
+  .dirs,.compare{grid-template-columns:1fr}
+  .rules{grid-template-columns:1fr 1fr}
+  .mbody{grid-template-columns:1fr}
+  .mside{flex-direction:row;flex-wrap:wrap;border-right:0;border-bottom:1px solid var(--line)}
+  .s{padding:28px 20px} .g3{grid-template-columns:1fr} .g2{grid-template-columns:1fr}
+}
+@media (max-width:520px){.rules{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <span class="label">F027 · Design snapshot v1</span>
+    <h1>My layouts</h1>
+    <p class="lede">Save a section you designed, or a whole page, and reuse it from the layout library. Pick where saving happens and where your layouts show up. Click a section on the page below to try it.</p>
+  </div>
+
+  <div class="dirs" role="group" aria-label="Design direction">
+    <button type="button" class="dir" data-dir="a" aria-pressed="true"><span class="rec">Recommended</span><b>A · Save on the section, own tab</b><span>"Save as layout" on the selected section's toolbar. Yours live in a "My layouts" tab in the gallery.</span></button>
+    <button type="button" class="dir" data-dir="b" aria-pressed="false"><b>B · Everything in the gallery</b><span>No new canvas buttons. The "My layouts" tab starts with "Save selected section" and "Save this page".</span></button>
+    <button type="button" class="dir" data-dir="c" aria-pressed="false"><b>C · Save on the section, mixed in</b><span>Saved layouts sit inside the normal categories with a "Mine" badge, plus a "Mine" filter.</span></button>
+  </div>
+
+  <ul class="rules" aria-label="The same in every direction">
+    <li><b>Copies, not links</b>Editing or deleting a saved layout never changes pages that already use it.</li>
+    <li><b>Named for you</b>The name starts as the section's heading. Change it before saving or later.</li>
+    <li><b>Saved to GitHub</b>One file per layout in content/layouts/. Without GitHub, kept in this browser.</li>
+    <li><b>Delete asks first</b>Rename and Delete on each card; delete says what it does and doesn't touch.</li>
+  </ul>
+
+  <div class="builder" id="builder">
+    <div class="bar">
+      <span class="title">Home</span>
+      <button type="button" class="hbtn" data-open>Layouts</button>
+      <button type="button" class="hbtn">Site settings</button>
+      <button type="button" class="hbtn dark">Save draft</button>
+    </div>
+    <div class="stage"><div class="page" id="page"></div></div>
+    <div class="toast" id="toast" role="status"></div>
+  </div>
+
+  <div class="compare">
+    <div class="cmp"><h3>A · On the section, own tab</h3><ul><li class="pro">Save right where you designed it</li><li class="pro">Your layouts are one click away, never buried among 20 built-ins</li><li class="con">One more button on the section toolbar</li></ul></div>
+    <div class="cmp"><h3>B · All in the gallery</h3><ul><li class="pro">Nothing new on the canvas</li><li class="pro">Saving and reusing in one place</li><li class="con">You have to know to open the gallery to save</li><li class="con">Must select the section first, then go elsewhere</li></ul></div>
+    <div class="cmp"><h3>C · On the section, mixed in</h3><ul><li class="pro">A saved hero shows up under Hero, next to similar ones</li><li class="con">Category to pick when saving (or a guess)</li><li class="con">Harder to see everything you saved at once</li></ul></div>
+  </div>
+
+  <div class="why">
+    <span class="label">Why A</span>
+    <p><b>Act where your attention is.</b> You decide a section is worth keeping while you're looking at it, so the save belongs on that section (proximity, fewer steps). B splits one intent across two places.</p>
+    <p><b>Your own work is a different kind of thing.</b> People look for "the one I made" by memory, not by category. A separate tab gives them a short list to recognise. YOOtheme, Webflow and Framer all keep saved items apart from the built-ins for this reason.</p>
+    <p><b>Keyboard:</b> the save button is on the toolbar the keyboard already reaches (Enter on a section). The name field gets focus, and Enter saves.</p>
+  </div>
+
+  <div class="ask">
+    <h3 style="font-size:1.2rem">Pick one</h3>
+    <p>Reply <code>A</code>, <code>B</code>, <code>C</code>, or a mix like <code>A + B's save tiles</code>.</p>
+  </div>
+</div>
+
+<script>
+const L={
+  "hero":{name:"Centered hero",cat:"Hero",style:"",html:`<div class="center"><h2>Build fast sites, visually</h2><p>Design pages with blocks and publish plain, fast HTML.</p><span class="b">See how it works</span></div>`},
+  "feat":{name:"Three features",cat:"Features",style:"muted",html:`<h2 class="center">How it works</h2><div class="g3">${["Design","Publish","Share"].map(x=>`<div class="box"><h3>${x}</h3><p>One line about ${x.toLowerCase()}.</p></div>`).join("")}</div>`},
+  "studio":{name:"Studio intro",cat:"Content",style:"",html:`<div class="g2"><div><h2>Made by haho studio</h2><p>Small team, careful work, sites that load in a blink.</p><span class="b">About us</span></div><div class="img"></div></div>`},
+  "cta":{name:"Call to action",cat:"Call to action",style:"primary",html:`<div class="center"><h2>Let's make something.</h2><p>Tell us about your project.</p><span class="b">Get in touch</span></div>`},
+  "faq":{name:"Questions",cat:"FAQ",style:"",html:`<h2>Questions</h2><p>How long does a site take? · Can I edit it myself?</p>`},
+  "pricing":{name:"Three plans",cat:"Pricing",style:"",html:`<h2 class="center">Simple pricing</h2><div class="g3">${[["Starter","$0"],["Studio","$19"],["Agency","$49"]].map(([n,p])=>`<div class="box"><h3>${n}</h3><p>${p} / month</p></div>`).join("")}</div>`}
+};
+const BUILT=["hero","feat","cta","faq","pricing"];
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let uid=0;
+const S={dir:"a",page:["hero","studio","feat"],sel:null,naming:false,open:false,tab:"section",cat:"All",menu:null,renaming:null,deleting:null,
+  mine:[{id:"m"+(++uid),name:"Studio footer strip (example)",kind:"section",parts:["cta"],cat:"Call to action"}]};
+const $=s=>document.querySelector(s);
+const sec=id=>`<section class="s ${L[id].style}">${L[id].html}</section>`;
+const firstHeading=id=>(L[id].html.match(/<h2[^>]*>(.*?)<\/h2>/)||[])[1]||L[id].name;
+let tt;function toast(m){$("#toast").textContent=m;clearTimeout(tt);tt=setTimeout(()=>$("#toast").textContent="",3200)}
+
+function renderPage(){
+  $("#page").innerHTML=S.page.map((id,i)=>{
+    const sel=S.sel===i, canSave=S.dir!=="b";
+    const tools=sel?`<div class="tools" role="toolbar" aria-label="Section actions"><span>Section</span><button type="button" aria-label="Move up">↑</button><button type="button" aria-label="Move down">↓</button><button type="button" aria-label="Duplicate">⧉</button><button type="button" aria-label="Delete">🗑</button>${canSave?`<i></i><button type="button" class="save" data-save-section aria-expanded="${S.naming}">Save as layout</button>`:""}</div>`:"";
+    const pop=sel&&S.naming?`<div class="namepop" role="group" aria-label="Save as layout">
+      <label class="field">Layout name<input id="lname" value="${esc(firstHeading(id))}" maxlength="60"></label>
+      <p class="hint">${S.dir==="c"?`Shows under <b>${L[id].cat}</b> with a “Mine” badge.`:"Shows in the gallery under My layouts."} Pages already using it won't change later.</p>
+      <div class="row"><button type="button" class="btn go" data-confirm-save>Save layout</button><button type="button" class="btn" data-cancel>Cancel</button></div></div>`:"";
+    return `<div class="secwrap${sel?" sel":""}" data-sec="${i}" tabindex="0" aria-label="Section: ${esc(firstHeading(id))}">${tools}${pop}${sec(id)}</div>`;
+  }).join("");
+  if(S.naming){const n=$("#lname");n&&n.focus();n&&n.select()}
+}
+
+function galleryItems(){
+  if(S.tab==="mine")return {mine:S.mine};
+  if(S.dir==="c"){
+    if(S.cat==="Mine")return {list:S.mine.map(m=>({...m,isMine:true}))};
+    const built=BUILT.filter(id=>S.cat==="All"||L[id].cat===S.cat).map(id=>({id,name:L[id].name,parts:[id],cat:L[id].cat}));
+    const mine=S.mine.filter(m=>m.kind===(S.tab==="page"?"page":"section")&&(S.cat==="All"||m.cat===S.cat)).map(m=>({...m,isMine:true}));
+    if(S.tab==="page")return {list:[...mine,{id:"p1",name:"Landing page",parts:["hero","feat","cta"]}]};
+    return {list:[...mine,...built]};
+  }
+  if(S.tab==="page")return {list:[{id:"p1",name:"Landing page",parts:["hero","feat","cta"]},{id:"p2",name:"About",parts:["studio","feat","faq"]}]};
+  return {list:BUILT.filter(id=>S.cat==="All"||L[id].cat===S.cat).map(id=>({id,name:L[id].name,parts:[id],cat:L[id].cat}))};
+}
+const thumb=parts=>`<div class="thumb" aria-hidden="true"><div class="scale">${parts.map(sec).join("")}</div></div>`;
+function mineCard(m){
+  const ren=S.renaming===m.id, del=S.deleting===m.id;
+  return `<div class="card">${thumb(m.parts)}
+    <div class="meta">${ren?`<input id="rname" value="${esc(m.name)}" aria-label="New name" style="flex:1;min-width:0;min-height:30px;border:1px solid var(--line);border-radius:6px;padding:0 6px;background:var(--bg)">`
+      :`<button type="button" class="name" data-insert-mine="${m.id}">${esc(m.name)}</button>`}
+      ${S.dir==="c"||m.isMine?`<span class="badge">Mine</span>`:`<small>${m.kind==="page"?m.parts.length+" sections":"Section"}</small>`}
+      <button type="button" class="more" aria-label="More for ${esc(m.name)}" aria-haspopup="true" aria-expanded="${S.menu===m.id}" data-menu="${m.id}">⋯</button></div>
+    ${S.menu===m.id?`<div class="menu" role="menu"><button type="button" role="menuitem" data-rename="${m.id}">Rename</button><button type="button" role="menuitem" class="del" data-delete="${m.id}">Delete</button></div>`:""}
+    ${ren?`<div class="inline"><div class="row"><button type="button" class="btn go" data-do-rename="${m.id}">Save name</button><button type="button" class="btn" data-cancel>Cancel</button></div></div>`:""}
+    ${del?`<div class="inline"><p>Delete “${esc(m.name)}”? Pages that already use it keep their copy.</p><div class="row"><button type="button" class="btn danger" data-do-delete="${m.id}">Delete layout</button><button type="button" class="btn" data-cancel>Keep</button></div></div>`:""}
+  </div>`;
+}
+function renderGallery(){
+  const old=$("#modal");if(old)old.remove();
+  if(!S.open)return;
+  const tabs=[["section","Sections"],["page","Whole pages"]];if(S.dir!=="c")tabs.push(["mine",`My layouts<span class="n">${S.mine.length}</span>`]);
+  const cats=["All",...new Set(BUILT.map(id=>L[id].cat))];
+  const side=S.tab==="mine"?`<p class="where" style="padding:4px">Your saved sections and pages. Rename or delete with ⋯.</p>`
+    :(S.dir==="c"?`<button type="button" class="cat mine" data-cat="Mine" aria-pressed="${S.cat==="Mine"}"><span>Mine</span><span>${S.mine.length}</span></button>`:"")+cats.map(c=>`<button type="button" class="cat" data-cat="${c}" aria-pressed="${S.cat===c}"><span>${c}</span></button>`).join("");
+  const g=galleryItems();let main="";
+  if(g.mine){
+    const tiles=S.dir==="b"?`<button type="button" class="tile" data-tile-section aria-disabled="${S.sel===null}">＋ Save selected section<small>${S.sel===null?"Select a section on the page first":`“${esc(firstHeading(S.page[S.sel]))}”`}</small></button><button type="button" class="tile" data-tile-page>＋ Save this page<small>All ${S.page.length} sections, as a whole page</small></button>`:"";
+    const pageBtn=S.dir==="a"?`<div class="row"><button type="button" class="btn" data-tile-page>Save this page as a layout</button><span class="where">Whole pages: all ${S.page.length} sections at once.</span></div>`:"";
+    main=pageBtn+(S.mine.length||tiles?`<div class="grid">${tiles}${S.mine.map(mineCard).join("")}</div>`
+      :`<div class="empty"><b>Nothing saved yet</b>Select a section on the page and click <b>Save as layout</b> on its toolbar.</div>`);
+  } else {
+    main=`<div class="grid">${g.list.map(it=>it.isMine?mineCard(it):`<div class="card">${thumb(it.parts)}<div class="meta"><button type="button" class="name" data-insert='${JSON.stringify(it.parts)}'>${it.name}</button><small>${it.cat||it.parts.length+" sections"}</small></div></div>`).join("")}</div>`
+      +(S.dir==="c"&&S.tab==="page"?`<button type="button" class="btn" data-tile-page style="align-self:flex-start">Save this page as a layout</button>`:"");
+  }
+  const m=document.createElement("div");m.className="modal";m.id="modal";
+  m.innerHTML=`<div class="mbox" role="dialog" aria-modal="true" aria-labelledby="gtitle">
+    <div class="mhead"><div class="grow"><h2 id="gtitle">Add a layout</h2><p class="where">Adds after “${esc(firstHeading(S.page[S.sel??S.page.length-1]))}”.</p></div>
+      <div class="seg" role="group" aria-label="Kind">${tabs.map(([k,l])=>`<button type="button" class="${k==="mine"?"mine":""}" data-tab="${k}" aria-pressed="${S.tab===k}">${l}</button>`).join("")}</div>
+      <button type="button" class="btn" data-close>Close</button></div>
+    <div class="mbody"><nav class="mside" aria-label="Categories">${side}</nav><div class="mmain">${main}</div></div></div>`;
+  $("#builder").appendChild(m);
+  /* Scale each preview to its card's width. */
+  m.querySelectorAll(".thumb").forEach(t=>{t.firstElementChild.style.transform=`scale(${t.clientWidth/760})`});
+  const r=$("#rname");if(r){r.focus();r.select()}
+}
+function render(){renderPage();renderGallery()}
+
+function saveSection(name){
+  const id=S.page[S.sel];const nm=(name||"").trim()||firstHeading(id);
+  S.mine.unshift({id:"m"+(++uid),name:nm,kind:"section",parts:[id],cat:L[id].cat});
+  S.naming=false;toast(S.dir==="c"?`Saved “${nm}”. Find it under ${L[id].cat}, marked Mine.`:`Saved “${nm}” to My layouts.`);render();
+}
+function savePage(){
+  const nm="Home page layout";S.mine.unshift({id:"m"+(++uid),name:nm,kind:"page",parts:[...S.page],cat:"Pages"});
+  toast(`Saved “${nm}” (${S.page.length} sections).`);render();
+}
+function insert(parts){const at=(S.sel??S.page.length-1)+1;S.page.splice(at,0,...parts);S.open=false;S.sel=at;S.menu=S.renaming=S.deleting=null;toast("Added. It uses your site style.");render()}
+
+document.addEventListener("click",e=>{
+  const t=e.target;
+  const d=t.closest(".dir");if(d){S.dir=d.dataset.dir;document.querySelectorAll(".dir").forEach(x=>x.setAttribute("aria-pressed",String(x===d)));S.tab="section";S.cat="All";S.naming=false;S.menu=S.renaming=S.deleting=null;render();return}
+  if(t.closest("[data-save-section]")){S.naming=!S.naming;renderPage();return}
+  if(t.closest("[data-confirm-save]")){saveSection($("#lname").value);return}
+  if(t.closest("[data-tile-section]")){if(S.sel===null){toast("Select a section on the page first.");return}saveSection(firstHeading(S.page[S.sel]));return}
+  if(t.closest("[data-tile-page]")){savePage();return}
+  if(t.closest("[data-cancel]")){S.naming=false;S.renaming=S.deleting=S.menu=null;render();return}
+  if(t.closest("[data-open]")){S.open=true;S.tab=S.dir==="c"?"section":"mine";S.cat="All";render();return}
+  if(t.closest("[data-close]")||t.id==="modal"){S.open=false;S.menu=S.renaming=S.deleting=null;render();return}
+  const tab=t.closest("[data-tab]");if(tab){S.tab=tab.dataset.tab;S.cat="All";S.menu=S.renaming=S.deleting=null;renderGallery();return}
+  const c=t.closest("[data-cat]");if(c){S.cat=c.dataset.cat;renderGallery();return}
+  const mn=t.closest("[data-menu]");if(mn){S.menu=S.menu===mn.dataset.menu?null:mn.dataset.menu;S.renaming=S.deleting=null;renderGallery();return}
+  const rn=t.closest("[data-rename]");if(rn){S.renaming=rn.dataset.rename;S.menu=null;renderGallery();return}
+  const dl=t.closest("[data-delete]");if(dl){S.deleting=dl.dataset.delete;S.menu=null;renderGallery();return}
+  const dr=t.closest("[data-do-rename]");if(dr){const m=S.mine.find(x=>x.id===dr.dataset.doRename);const v=$("#rname").value.trim();if(v)m.name=v;S.renaming=null;toast(`Renamed to “${m.name}”.`);renderGallery();return}
+  const dd=t.closest("[data-do-delete]");if(dd){const m=S.mine.find(x=>x.id===dd.dataset.doDelete);S.mine=S.mine.filter(x=>x!==m);S.deleting=null;toast(`Deleted “${m.name}”. Pages using it are unchanged.`);renderGallery();return}
+  const im=t.closest("[data-insert-mine]");if(im){insert(S.mine.find(x=>x.id===im.dataset.insertMine).parts);return}
+  const ins=t.closest("[data-insert]");if(ins){insert(JSON.parse(ins.dataset.insert));return}
+  const s=t.closest("[data-sec]");if(s&&!t.closest(".namepop,.tools")){const i=Number(s.dataset.sec);if(S.sel!==i){S.sel=i;S.naming=false;renderPage()}return}
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){if(S.naming||S.renaming||S.deleting||S.menu){S.naming=false;S.renaming=S.deleting=S.menu=null;render()}else if(S.open){S.open=false;render()}else if(S.sel!==null){S.sel=null;renderPage()}return}
+  if(e.key==="Enter"){
+    if(e.target.id==="lname"){e.preventDefault();saveSection(e.target.value);return}
+    if(e.target.id==="rname"){e.preventDefault();document.querySelector("[data-do-rename]").click();return}
+    const s=e.target.closest&&e.target.closest("[data-sec]");if(s&&e.target===s){S.sel=Number(s.dataset.sec);S.naming=false;renderPage();document.querySelector(`[data-sec="${S.sel}"]`).focus()}
+  }
+});
+S.sel=1;render();
+</script>

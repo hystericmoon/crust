@@ -1,0 +1,188 @@
+/* Layout library (F026): the gallery dialog (main page) and the "+" buttons
+   between sections (canvas; Puck copies these styles into the iframe).
+   Blue (#4338ca) is the builder's "selected / add" colour. */
+
+/* --- Gallery ------------------------------------------------------------------ */
+.lg-dialog {
+  width: min(1180px, calc(100vw - 32px)); height: min(860px, calc(100vh - 32px)); height: min(860px, calc(100dvh - 32px));
+  max-width: none; max-height: none; padding: 0; border: 1px solid #85858f; border-radius: 14px;
+  background: #fff; color: #18181b; overflow: hidden;
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.lg-dialog::backdrop { background: rgb(9 9 11 / 0.55); }
+.lg-box { display: flex; flex-direction: column; height: 100%; }
+
+.lg-head {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  padding: 16px 20px; border-bottom: 1px solid #e4e4e7;
+}
+.lg-head-text { flex: 1 1 240px; min-width: 0; }
+.lg-head h2 { margin: 0; font-size: 1.25rem; line-height: 1.2; }
+.lg-where { margin: 2px 0 0; color: #52525b; font-size: 0.875rem; }
+
+.lg-kind { display: flex; padding: 3px; gap: 2px; border: 1px solid #d4d4d8; border-radius: 10px; background: #f4f4f5; }
+.lg-kind-option {
+  min-height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: transparent;
+  color: #3f3f46; font: inherit; font-size: 0.875rem; font-weight: 600; cursor: pointer;
+}
+.lg-kind-option[aria-checked="true"] { background: #fff; color: #3730a3; box-shadow: 0 1px 2px rgb(0 0 0 / 0.12), inset 0 0 0 1.5px #4338ca; }
+
+.lg-close {
+  min-height: 36px; padding: 0 14px; border: 1px solid #85858f; border-radius: 8px;
+  background: #fff; color: #18181b; font: inherit; font-size: 0.875rem; font-weight: 600; cursor: pointer;
+}
+.lg-close:hover { background: #f4f4f5; }
+
+.lg-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 200px minmax(0, 1fr); }
+.lg-side { padding: 16px 12px; border-right: 1px solid #e4e4e7; overflow: auto; background: #fafafa; }
+.lg-cats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.lg-cat {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%;
+  min-height: 36px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent;
+  color: #3f3f46; font: inherit; font-size: 0.875rem; text-align: left; cursor: pointer;
+}
+.lg-cat:hover { background: #f4f4f5; color: #18181b; }
+.lg-cat[aria-pressed="true"] { background: #eef2ff; color: #3730a3; font-weight: 600; }
+.lg-cat-count { color: #71717a; font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+.lg-cat[aria-pressed="true"] .lg-cat-count { color: #3730a3; }
+.lg-side-note { margin: 4px; color: #52525b; font-size: 0.875rem; }
+
+.lg-main { overflow: auto; padding: 16px 20px 24px; display: flex; flex-direction: column; gap: 8px; }
+.lg-search { display: flex; flex-direction: column; gap: 4px; }
+.lg-search-label { font-size: 0.8125rem; font-weight: 600; color: #3f3f46; }
+.lg-search input {
+  min-height: 40px; padding: 0 12px; border: 1px solid #85858f; border-radius: 8px;
+  background: #fff; color: #18181b; font: inherit; max-width: 420px;
+}
+.lg-count { margin: 0; color: #52525b; font-size: 0.8125rem; }
+.lg-count:empty { display: none; }
+
+.lg-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; align-items: start;
+}
+.lg-grid.is-pages { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+
+/* A card is one big target: the button's ::after stretches over the preview. */
+.lg-card {
+  position: relative; display: flex; flex-direction: column;
+  border: 1px solid #d4d4d8; border-radius: 10px; background: #fff; overflow: hidden;
+  transition: border-color 120ms, box-shadow 120ms;
+}
+.lg-card:hover { border-color: #4338ca; box-shadow: 0 4px 14px rgb(67 56 202 / 0.14); }
+.lg-card:has(.lg-card-button:focus-visible) { border-color: #4338ca; box-shadow: 0 0 0 3px #18181b; }
+.lg-thumb { position: relative; overflow: hidden; border-bottom: 1px solid #e4e4e7; background: var(--cr-color-background, #fff); }
+.lg-thumb-page { position: absolute; top: 0; left: 0; transform-origin: top left; pointer-events: none; }
+.lg-card-text { padding: 8px 12px 10px; display: flex; flex-direction: column; gap: 2px; }
+.lg-card-button {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 0;
+  border: 0; background: none; color: #18181b; font: inherit; text-align: left; cursor: pointer;
+}
+.lg-card-button::after { content: ""; position: absolute; inset: 0; border-radius: 10px; }
+.lg-card-button:focus-visible { outline: none; }
+.lg-card-name { font-weight: 600; font-size: 0.9375rem; }
+.lg-card-meta { flex: none; color: #52525b; font-size: 0.75rem; }
+.lg-card-desc { margin: 0; color: #52525b; font-size: 0.8125rem; }
+
+.lg-empty { padding: 32px 0; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; color: #3f3f46; }
+.lg-empty p { margin: 0; }
+
+.lg-dialog :is(button, input):focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
+
+@media (max-width: 760px) {
+  .lg-dialog { width: 100vw; height: 100dvh; border-radius: 0; border: 0; }
+  .lg-body { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
+  .lg-side { border-right: 0; border-bottom: 1px solid #e4e4e7; padding: 8px 12px; overflow-x: auto; }
+  .lg-cats { flex-direction: row; }
+  .lg-cat { white-space: nowrap; }
+  .lg-main { padding: 12px 16px 20px; }
+}
+
+/* --- "+" between sections (canvas) ---------------------------------------------- */
+.lg-inserters { position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: 2147483000; }
+.lg-insert, .lg-insert-empty { position: absolute; transform-origin: center; cursor: pointer; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+.lg-insert {
+  width: 32px; height: 32px; padding: 0; border: 2px solid #fff; border-radius: 50%;
+  background: #4338ca; color: #fff; font-size: 20px; font-weight: 700; line-height: 1;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.3);
+  opacity: 0; transition: opacity 150ms;
+}
+/* Shown while the pointer is over the page; each one is fully opaque under the pointer. */
+body:hover .lg-insert { opacity: 0.85; }
+.lg-insert:hover { opacity: 1; background: #3730a3; }
+.lg-insert-empty {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 20px;
+  border: 2px dashed #4338ca; border-radius: 12px; background: #fff; color: #3730a3;
+  font-size: 16px; font-weight: 600; white-space: nowrap;
+}
+.lg-insert-empty span { font-size: 22px; line-height: 1; }
+.lg-insert-empty:hover { background: #eef2ff; }
+.lg-insert-empty:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lg-card, .lg-insert { transition: none; }
+}
+@media (hover: none) {
+  /* No hover on touch screens: keep the buttons visible. */
+  .lg-insert { opacity: 0.85; }
+}
+
+/* --- My layouts (F027) ---------------------------------------------------------- */
+.lg-card-row { display: flex; align-items: center; gap: 6px; }
+.lg-card-row .lg-card-button { flex: 1; min-width: 0; }
+/* Above the card's stretched click area. */
+.lg-more, .lg-menu, .lg-name-form, .lg-confirm { position: relative; z-index: 1; }
+.lg-more {
+  display: grid; place-items: center; flex: none; width: 32px; height: 32px; padding: 0;
+  border: 1px solid transparent; border-radius: 8px; background: transparent; color: #3f3f46; cursor: pointer;
+}
+.lg-more:hover, .lg-more[aria-expanded="true"] { border-color: #d4d4d8; background: #f4f4f5; }
+.lg-menu { display: flex; gap: 6px; padding-top: 6px; }
+.lg-menu button {
+  min-height: 32px; padding: 0 12px; border: 1px solid #85858f; border-radius: 8px; background: #fff;
+  color: #18181b; font: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer;
+}
+.lg-menu button:hover { background: #f4f4f5; }
+.lg-menu .is-danger { color: #b42318; border-color: #b42318; }
+.lg-card.is-mine { border-color: #99d5cc; }
+.lg-card.is-mine:hover { border-color: #0f766e; box-shadow: 0 4px 14px rgb(15 118 110 / 0.16); }
+
+.lg-name-form { display: flex; flex-direction: column; gap: 6px; padding-top: 6px; }
+.lg-name-label { font-size: 0.8125rem; font-weight: 600; color: #3f3f46; }
+.lg-name-input {
+  min-height: 38px; padding: 0 10px; border: 1px solid #85858f; border-radius: 8px;
+  background: #fff; color: #18181b; font: inherit; width: 100%;
+}
+.lg-name-input[aria-invalid="true"] { border-color: #b42318; }
+.lg-name-error { margin: 0; color: #b42318; font-size: 0.8125rem; font-weight: 600; }
+.lg-name-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.lg-name-save, .lg-danger {
+  min-height: 36px; padding: 0 14px; border: 0; border-radius: 8px; color: #fff;
+  font: inherit; font-size: 0.875rem; font-weight: 600; cursor: pointer;
+}
+.lg-name-save { background: #0f766e; }
+.lg-name-save:hover { background: #115e59; }
+.lg-danger { background: #b42318; }
+.lg-danger:hover { background: #912018; }
+.lg-name-save:disabled, .lg-danger:disabled { opacity: 0.7; cursor: progress; }
+.lg-confirm { display: flex; flex-direction: column; gap: 8px; padding-top: 6px; }
+.lg-confirm p { margin: 0; font-size: 0.8125rem; color: #3f3f46; }
+.lg-save-page { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.lg-save-page .lg-close:disabled { opacity: 0.55; cursor: not-allowed; }
+.lg-main > .lg-name-form { max-width: 420px; padding: 12px; border: 1px solid #99d5cc; border-radius: 10px; background: #f0fdfa; }
+
+/* The toolbar button and its pop-over (canvas). */
+.lg-save-tbtn { background: #0f766e; font-weight: 600; }
+.lg-save-tbtn:hover, .lg-save-tbtn[aria-expanded="true"] { background: #115e59; }
+.lg-save-pop .lg-name-form { padding-top: 0; }
+.lg-save-pop .lg-name-form button:focus-visible, .lg-save-pop input:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; box-shadow: none; }
+.lg-save-note { margin: 0; font-size: 0.75rem; color: #52525b; }
+
+/* Confirmation after saving, renaming or deleting (main page). */
+.lg-toast:empty { display: none; }
+.lg-toast {
+  position: fixed; left: 50%; bottom: 24px; z-index: 1000; transform: translateX(-50%);
+  max-width: min(36rem, calc(100vw - 32px)); padding: 12px 16px; border-radius: 10px;
+  background: #18181b; color: #fff; font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.2);
+}

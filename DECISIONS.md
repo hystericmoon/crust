@@ -20,6 +20,69 @@ Features Claude suggests. They are not work until the owner adds them to
   renamed page removes its old-address redirect, and restoring it doesn't
   add the redirect back. Harmless today; matters once the site has
   visitors and bookmarks.
+- **Linked sections ("global sections").** A saved layout is a copy. A
+  linked section (for example a contact strip on every page) would update
+  everywhere when edited once. Useful later; needs a page-format change.
+
+## 2026-10-29 — F027 My layouts (direction A, chosen by Claude; owner can switch)
+
+- **Who chose:** the owner went to bed and asked Claude to continue
+  without him. Claude built its recommended direction **A** from
+  `design/f027-my-layouts-v1.html` on the draft PR, so the owner can
+  still ask for B or C before it merges. Nothing was merged or published.
+- **Saving:** "Save as layout" on the selected section's toolbar (name
+  starts as the section's heading); "Save this page as a layout" at the
+  top of the gallery's My layouts tab (name starts as the page title).
+- **Finding:** a third switch in the gallery, "My layouts (n)", with
+  search; Rename and Delete behind each card's "More" button (a simple
+  show/hide, not a menu widget, so Tab works as usual). Delete asks first
+  and says pages keep their copy. Escape closes the menu or form only.
+- **Copies, not links:** inserting gives every block new ids; renaming or
+  deleting a layout never touches pages. (Linked "global sections" would
+  be a separate feature; see Proposals.)
+- **Format (additive, no migration):** `content/layouts/<id>.json`
+  `{ id, name, kind: "section"|"page", savedAt, content }`. The id comes
+  from the name ("Studio intro" → `studio-intro`, then `-2`…) and never
+  changes, so a rename is one small commit. Only the builder reads these;
+  the publish step only reads `content/pages/`.
+- **API:** `GET /api/layouts` lists; `POST /api/layouts` with
+  `action: save | rename | delete`. Same gate as every other endpoint
+  (Access sign-in, admin-only header, same origin). The server checks the
+  name, the kind and that content is real blocks.
+- **Without GitHub:** layouts are kept in this browser (localStorage), and
+  the gallery says where they're kept. With GitHub on, a failed save keeps
+  the form open with the reason; nothing is silently kept only locally.
+- **Colour:** teal (#0f766e) marks "yours" (save button, saved cards),
+  separate from blue (add/selected) and orange (whole site).
+
+## 2026-10-29 — F026 Layout library (owner chose direction B)
+
+- **Direction B** from `design/f026-layout-library-v1.html`: a big gallery
+  dialog opened from a "+" between top-level sections, with a
+  Sections / Whole pages switch, categories on the left, and search.
+- **The "+" buttons are pointer shortcuts** (out of the tab order, hidden
+  from screen readers, with a tooltip). Keyboard and screen-reader users
+  get the **Layouts** button in the top bar, which adds after the selected
+  section (or at the end), and the gallery says where before you pick
+  ("Adds between “Welcome” and “About us”"). Reason: the "+" buttons live
+  at the end of the canvas document, so in the tab order they'd come
+  after every block, far from the spot they add to.
+- **An empty page shows a real "Add a layout" button** in the canvas: on a
+  blank page the library is the obvious first step.
+- **Thumbnails are the publish renderer's HTML** scaled down, styled by
+  the site's current (even unsaved) tokens, so they match what gets
+  published. They're `inert` and `aria-hidden`: pictures, not content.
+- **One undo step:** inserting dispatches Puck `setData` with
+  `recordHistory: true` (Puck leaves `setData` out of history otherwise).
+  The first inserted section is selected and focused, and the result is
+  announced.
+- **Headings:** a layout's h1 becomes h2 when the page already has one
+  (`fitHeadings`). Known edge: inserting a hero *above* the page's h1
+  leaves the new heading an h2 above the h1; the publish check names it.
+  Not rewriting the owner's existing heading was the safer default.
+- **The gallery remembers its tab and category** between openings, and
+  clears the search each time.
+- No change to the page JSON format: layouts are ordinary blocks.
 
 ## 2026-10-29 — F025 Section styles (owner chose "A + C's toolbar", plus site-wide editing)
 

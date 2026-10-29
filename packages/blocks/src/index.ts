@@ -32,6 +32,17 @@ export type { ContrastPair, ContrastResult } from "./contrast";
 export { fontStacks, findFontStack } from "./fonts";
 export type { FontStack } from "./fonts";
 export { safeUrl } from "./url";
-export type { Site, Page, Redirect } from "./content";
+export type { Site, Page, Redirect, SavedLayout } from "./content";
 export { themePresets, matchingPreset, applyPreset } from "./presets";
 export type { ThemePreset } from "./presets";
+export {
+  layoutCategories,
+  sectionLayouts,
+  pageLayouts,
+  findSectionLayout,
+  buildPageLayout,
+  fitHeadings,
+  insertLayout,
+  hasH1,
+} from "./layouts";
+export type { LayoutCategory, SectionLayout, PageLayout } from "./layouts";

@@ -4,12 +4,20 @@
  *  2. refuses requests that could come from another site (CSRF),
  *  3. refuses unless the request carries a valid Access sign-in.
  */
-import type { Page, Site } from "@crust/blocks/content";
+import type { Page, SavedLayout, Site } from "@crust/blocks/content";
 import { countLinks, relinkPage } from "@crust/blocks/links";
 import { AccessError, verifyAccessJwt, type AccessUser } from "./access";
 import {
+  checkLayout,
+  checkLayoutName,
   checkPage,
   checkSite,
+  isValidLayoutId,
+  layoutFileFor,
+  layoutIdFor,
+  layoutIdForFile,
+  LAYOUTS_FOLDER,
+  parseLayout,
   isValidPagePath,
   MAX_BYTES,
   pageFileFor,
@@ -462,6 +470,92 @@ export async function handleRestore(request: Request, env: Env, fetchFn: typeof 
       fetchFn,
     );
     return json(200, { ok: true, page, commit: result.commit, url: result.url });
+  } catch (e) {
+    return githubFailure(e);
+  }
+}
+
+// --- My layouts (F027) ---------------------------------------------------------------
+
+/** Every saved layout, newest first; unreadable files are skipped. */
+async function readLayouts(cfg: GitHubConfig, fetchFn: typeof fetch): Promise<SavedLayout[]> {
+  const files = await listFolder(cfg, LAYOUTS_FOLDER, fetchFn);
+  const layouts = await Promise.all(
+    files.map(async (f) => {
+      const id = layoutIdForFile(f.path);
+      return id ? parseLayout(await readFile(cfg, f.path, fetchFn), id) : null;
+    }),
+  );
+  return layouts.filter((l): l is SavedLayout => l !== null).sort((a, b) => b.savedAt.localeCompare(a.savedAt) || a.name.localeCompare(b.name));
+}
+
+/**
+ * GET /api/layouts: the owner's saved layouts.
+ * POST /api/layouts
+ *   { action: "save", layout: { name, kind, content } }
+ *   { action: "rename", id, name }
+ *   { action: "delete", id }
+ */
+export async function handleLayouts(request: Request, env: Env, fetchFn: typeof fetch = fetch): Promise<Response> {
+  const write = request.method === "POST";
+  const user = await gate(request, env, fetchFn, write);
+  if (user instanceof Response) return user;
+  const cfg = githubConfig(env);
+  if (!write) {
+    try {
+      return json(200, { ok: true, layouts: await readLayouts(cfg, fetchFn) });
+    } catch (e) {
+      return githubFailure(e);
+    }
+  }
+
+  const body = await readBody(request);
+  if (body instanceof Response) return body;
+  const { action, layout, id, name } = (body ?? {}) as { action?: string; layout?: unknown; id?: unknown; name?: unknown };
+  try {
+    if (action === "save") {
+      const problems = checkLayout(layout);
+      if (problems.length) return fail(422, `Not saved. ${problems.join(" ")}`);
+      const l = layout as Pick<SavedLayout, "name" | "kind" | "content">;
+      const taken = (await listFolder(cfg, LAYOUTS_FOLDER, fetchFn)).map((f) => layoutIdForFile(f.path)).filter((x): x is string => x !== null);
+      const saved: SavedLayout = { id: layoutIdFor(l.name, taken), name: l.name.trim(), kind: l.kind, savedAt: new Date().toISOString(), content: l.content };
+      const result = await commitFiles(
+        cfg,
+        [{ path: layoutFileFor(saved.id), content: serialize(saved) }],
+        `Save layout "${saved.name}" from the builder\n\nSaved by ${user.email}`,
+        fetchFn,
+      );
+      return json(200, { ok: true, layout: saved, commit: result.commit });
+    }
+
+    if (!isValidLayoutId(id)) return fail(400, "That isn't one of your layouts.");
+    const current = parseLayout(await readFile(cfg, layoutFileFor(id), fetchFn), id);
+    if (!current) return fail(404, "That layout isn't on GitHub any more. It may have been deleted.");
+
+    if (action === "rename") {
+      const problems = checkLayoutName(name);
+      if (problems.length) return fail(422, `Not renamed. ${problems.join(" ")}`);
+      // The id (file name) stays, so nothing else needs to change.
+      const renamed: SavedLayout = { ...current, name: (name as string).trim() };
+      const result = await commitFiles(
+        cfg,
+        [{ path: layoutFileFor(id), content: serialize(renamed) }],
+        `Rename layout "${current.name}" to "${renamed.name}" from the builder\n\nRenamed by ${user.email}`,
+        fetchFn,
+      );
+      return json(200, { ok: true, layout: renamed, commit: result.commit });
+    }
+
+    if (action === "delete") {
+      const result = await commitFiles(
+        cfg,
+        [{ path: layoutFileFor(id), content: null }],
+        `Delete layout "${current.name}" from the builder\n\nPages that used it keep their copy.\nDeleted by ${user.email}`,
+        fetchFn,
+      );
+      return json(200, { ok: true, commit: result.commit });
+    }
+    return fail(400, "Nothing to do.");
   } catch (e) {
     return githubFailure(e);
   }

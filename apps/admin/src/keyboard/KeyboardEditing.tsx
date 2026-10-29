@@ -15,6 +15,7 @@
  */
 import { ActionBar, createUsePuck, useGetPuck, type ComponentData, type Config, type Data } from "@puckeditor/core";
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
+import { SaveLayoutAction } from "../layouts/SaveLayoutAction";
 import { SectionToolbar } from "../sections/editing";
 import { availableMoves, planInsert, planMove, type MoveKind } from "./moves";
 import { installTooltips } from "./tooltips";
@@ -54,6 +55,7 @@ const shortcuts: [string, string][] = [
   ["Alt + →", "Move the block into the section or columns above it"],
   ["Alt + Shift + ← / →", "Move the block to the previous or next column"],
   ["Enter", "In the block list: add that block after the selected one (or at the end of the page)"],
+  ["Layouts", "Top-bar button: add a designed section or a whole page after the selected section (or at the end)"],
   ["Escape", "Deselect"],
   ["?", "Show these shortcuts"],
 ];
@@ -97,7 +99,7 @@ let canvasDoc: Document | null = null;
 
 const labelOf = (config: Config, item: ComponentData) => config.components[item.type]?.label ?? item.type;
 
-function focusBlock(id: string) {
+export function focusBlock(id: string) {
   // Wait for Puck to re-render the canvas before moving focus back.
   requestAnimationFrame(() =>
     requestAnimationFrame(() => {
@@ -109,7 +111,7 @@ function focusBlock(id: string) {
 }
 
 /** Takes the getter, not a snapshot: right after a move the snapshot's positions are stale. */
-function select(getPuck: () => PuckApi, id: string | null) {
+export function select(getPuck: () => PuckApi, id: string | null) {
   const puck = getPuck();
   puck.dispatch({ type: "setUi", ui: { itemSelector: id ? (puck.getSelectorForId(id) ?? null) : null } });
 }
@@ -360,6 +362,8 @@ export function KeyboardActionBar({
       <ActionBar.Group>{children}</ActionBar.Group>
       {/* F025: style, height and image for a selected Section. */}
       <SectionToolbar />
+      {/* F027: keep this section to reuse from the layout library. */}
+      <SaveLayoutAction />
     </ActionBar>
   );
 }
