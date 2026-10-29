@@ -80,8 +80,9 @@ describe("publish panel", () => {
       screen.getByRole("button", { name: "Publish site" }).click();
     });
     await act(async () => {});
-    expect(screen.getByRole("status").textContent).toBe(
-      "Couldn't start publishing: The GitHub token isn't allowed to change this repository's contents.",
+    // A failure to start is an alert, not a quiet status line.
+    expect(screen.getByRole("alert").textContent).toBe(
+      "Couldn't start publishing: The GitHub token isn't allowed to change this repository's contents. Nothing changed on the live site; try again in a minute.",
     );
   });
 });

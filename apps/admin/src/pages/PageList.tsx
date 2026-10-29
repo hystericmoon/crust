@@ -12,6 +12,8 @@ export interface PageListProps {
   /** Where the list came from, said plainly under the heading. */
   sourceNote: string;
   loadError?: string;
+  /** Loads the list again after a load error. */
+  onRetry?: () => void;
   onCreate: (page: Page) => void;
   /**
    * Rename and delete (F015). Pages on GitHub need saving to GitHub switched
@@ -39,10 +41,18 @@ export const editHref = (path: string) => `#/edit?path=${encodeURIComponent(path
 /** The badge for changes that aren't live yet (F016). */
 export const unpublishedLabel = { new: "Not published yet", edited: "Edited since publish" } as const;
 
-export function PageList({ siteName, rows, sourceNote, loadError, onCreate, githubOn = false, onRename, onDelete, findLinks, deleted, onRestore, onSaveDraft, children }: PageListProps) {
+export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCreate, githubOn = false, onRename, onDelete, findLinks, deleted, onRestore, onSaveDraft, children }: PageListProps) {
   const [creating, setCreating] = useState(false);
   const [done, setDone] = useState("");
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const newPageRef = useRef<HTMLButtonElement>(null);
+
+  // Let the confirmation go after a while; screen readers have already heard it.
+  useEffect(() => {
+    if (!done) return;
+    const t = setTimeout(() => setDone(""), 10_000);
+    return () => clearTimeout(t);
+  }, [done]);
 
   const canChange = (row: PageRow) => row.path !== "/" && (githubOn || !row.inRepo) && !!onRename && !!onDelete;
   const canSave = (row: PageRow) => githubOn && row.localChanges && !!onSaveDraft;
@@ -87,6 +97,7 @@ export function PageList({ siteName, rows, sourceNote, loadError, onCreate, gith
             Site settings
           </a>
           <button
+            ref={newPageRef}
             type="button"
             className="st-button st-button-primary"
             aria-expanded={creating}
@@ -99,9 +110,14 @@ export function PageList({ siteName, rows, sourceNote, loadError, onCreate, gith
       </header>
 
       <main className="pg">
-        {creating ? (
-          <NewPageForm existing={rows?.map((r) => r.path) ?? []} onCancel={() => setCreating(false)} onCreate={onCreate} />
-        ) : null}
+        <NewPageForm open={creating} existing={rows?.map((r) => r.path) ?? []} onCancel={() => {
+            setCreating(false);
+            newPageRef.current?.focus();
+          }}
+          onCreate={onCreate}
+        />
+        {/* What's live and the Publish button come first: it's the screen's main question and action, also on a phone. */}
+        {children}
 
         <section className="st-card" aria-labelledby="pages-h">
           <h2 id="pages-h" ref={headingRef} tabIndex={-1}>
@@ -109,9 +125,16 @@ export function PageList({ siteName, rows, sourceNote, loadError, onCreate, gith
           </h2>
           <p className="st-lede">{sourceNote}</p>
           {loadError ? (
-            <p className="st-error" role="alert">
-              {loadError}
-            </p>
+            <div className="pg-load-error">
+              <p className="st-error" role="alert">
+                {loadError}
+              </p>
+              {onRetry ? (
+                <button type="button" className="st-button pg-small" onClick={onRetry}>
+                  Try again
+                </button>
+              ) : null}
+            </div>
           ) : null}
           <p className="st-status-inline" role="status">
             {done}
@@ -150,7 +173,9 @@ export function PageList({ siteName, rows, sourceNote, loadError, onCreate, gith
                     <td className="pg-path" data-label="Address">
                       {row.path}
                     </td>
-                    <td data-label="Last edited">{formatDate(row.lastEdited)}</td>
+                    <td className="pg-date" data-label="Last edited">
+                      {formatDate(row.lastEdited)}
+                    </td>
                     {anyActions ? (
                       <td className="pg-actions-cell">
                         <div className="pg-row-actions">
@@ -165,6 +190,7 @@ export function PageList({ siteName, rows, sourceNote, loadError, onCreate, gith
                               <span className="pg-sr"> {row.title}</span>
                             </button>
                           ) : null}
+                          {row.path === "/" && !canSave(row) ? <span className="pg-home-note">Always at /</span> : null}
                           {canChange(row) ? (
                             <PageActions
                               row={row}
@@ -191,7 +217,6 @@ export function PageList({ siteName, rows, sourceNote, loadError, onCreate, gith
             }
           />
         ) : null}
-        {children}
       </main>
     </div>
   );
@@ -219,6 +244,9 @@ function RecentlyDeleted({ pages, onRestore }: { pages: DeletedPage[]; onRestore
     <section className="st-card pg-deleted" aria-labelledby="deleted-h">
       <h2 id="deleted-h">
         <button type="button" className="pg-disclosure" aria-expanded={open} aria-controls="deleted-list" onClick={() => setOpen((o) => !o)}>
+          <svg className="pg-chevron" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+            <path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
           Recently deleted ({pages.length})
         </button>
       </h2>
@@ -249,10 +277,12 @@ function RecentlyDeleted({ pages, onRestore }: { pages: DeletedPage[]; onRestore
 }
 
 function NewPageForm({
+  open,
   existing,
   onCancel,
   onCreate,
 }: {
+  open: boolean;
   existing: string[];
   onCancel: () => void;
   onCreate: (page: Page) => void;
@@ -266,7 +296,9 @@ function NewPageForm({
   const titleRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  useEffect(() => titleRef.current?.focus(), []);
+  useEffect(() => {
+    if (open) titleRef.current?.focus();
+  }, [open]);
 
   const update = (next: NewPageInput) => {
     setInput(next);
@@ -294,7 +326,7 @@ function NewPageForm({
   });
 
   return (
-    <section className="st-card" id="new-page" aria-labelledby={`${id}-h`}>
+    <section className="st-card" id="new-page" aria-labelledby={`${id}-h`} hidden={!open}>
       <h2 id={`${id}-h`}>New page</h2>
       <form ref={formRef} className="pg-form" onSubmit={submit} noValidate>
         <div className="pg-field">

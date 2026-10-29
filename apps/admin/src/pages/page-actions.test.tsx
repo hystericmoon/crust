@@ -63,7 +63,7 @@ describe("page-actions: page list", () => {
     render(<PageList siteName="Demo" rows={rows} sourceNote="" githubOn onCreate={() => {}} onRename={onRename} onDelete={vi.fn()} />);
     act(() => screen.getByRole("button", { name: "Rename About" }).click());
 
-    const dialog = screen.getByRole("dialog", { name: "Change the address of “About”" });
+    const dialog = screen.getByRole("dialog", { name: "New address for “About”" });
     const input = within(dialog).getByLabelText("New address") as HTMLInputElement;
     expect(document.activeElement).toBe(input);
     expect(input.value).toBe("about");

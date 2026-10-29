@@ -163,7 +163,7 @@ function RenameDialog({
   return (
     <Dialog labelledBy={`${id}-h`} onClose={onClose}>
       <form className="pg-form" onSubmit={submit} noValidate>
-        <h2 id={`${id}-h`}>Change the address of “{row.title}”</h2>
+        <h2 id={`${id}-h`}>New address for “{row.title}”</h2>
         <div className="pg-field">
           <label className="st-field-label" htmlFor={`${id}-address`}>
             New address
@@ -254,7 +254,7 @@ function DeleteDialog({
           {row.inRepo ? (
             <p>
               The page is removed from GitHub now, and from the live site the next time you publish. Links to {row.path} will
-              stop working. Earlier versions stay in the GitHub history, so it can be brought back.
+              stop working. You can bring it back from “Recently deleted” on this screen.
             </p>
           ) : (
             <p>This page is only in this browser, so deleting it removes it for good.</p>
