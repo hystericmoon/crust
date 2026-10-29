@@ -1,0 +1,41 @@
+{
+  "path": "/about-haho-studio",
+  "title": "About haho studio",
+  "description": "",
+  "puck": {
+    "root": {
+      "props": {}
+    },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "Heading-c7fbd6be-c4e5-4b42-b57c-899eadeb0977",
+                "text": "About haho studio",
+                "level": "h1",
+                "align": "left"
+              }
+            }
+          ],
+          "id": "Section-6590de18-a708-449c-bf5f-f1afb4550a4a",
+          "background": "background",
+          "paddingY": "lg"
+        }
+      },
+      {
+        "type": "Heading",
+        "props": {
+          "text": "Hello from Crust",
+          "level": "h2",
+          "align": "left",
+          "id": "Heading-d4372db0-e587-4a92-92bc-104a986ed8e6"
+        }
+      }
+    ],
+    "zones": {}
+  }
+}
