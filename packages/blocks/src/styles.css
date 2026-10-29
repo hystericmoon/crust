@@ -103,8 +103,13 @@
   margin: 0 0 var(--cr-space-sm);
 }
 .cr-column { display: flex; flex-direction: column; min-width: 0; }
+/* Anchor target (F030): no size; leaves room for a sticky header when jumped to. */
+.cr-anchor { display: block; height: 0; scroll-margin-top: var(--cr-anchor-offset, 16px); }
 .cr-column > :last-child { margin-bottom: 0; }
 .cr-column > .cr-card:last-child { flex-grow: 1; }
+/* The same for a block inside a hidden-on or anchor wrapper (F029, F030). */
+.cr-column > .cr-show:last-child > :last-child { margin-bottom: 0; }
+.cr-column > .cr-show:last-child > .cr-card:last-child { flex-grow: 1; }
 @media (min-width: 640px) {
   .cr-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

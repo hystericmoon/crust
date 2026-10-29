@@ -11,6 +11,7 @@ export {
   hideClasses,
   hiddenLabel,
   responsiveCss,
+  cleanAnchor,
 } from "./responsive";
 export type { Device, WidthOption, ColumnWidths, HideOn } from "./responsive";
 export {

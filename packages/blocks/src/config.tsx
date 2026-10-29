@@ -4,7 +4,7 @@ import { spaceVar, spacingField } from "./fields";
 import { sectionStyleIds, sectionStyleNames, tintLevels, tintNames, type SectionStyleId, type TintLevel } from "./section-styles";
 import type { SpacingStep } from "./tokens";
 import { safeUrl } from "./url";
-import { columnClasses, hiddenLabel, hideClasses, type ColumnWidths, type HideOn } from "./responsive";
+import { cleanAnchor, columnClasses, hiddenLabel, hideClasses, type ColumnWidths, type HideOn } from "./responsive";
 
 type Align = "left" | "center" | "right";
 const alignField = {
@@ -66,8 +66,11 @@ export type CardProps = {
   background: "background" | "surface" | "primary";
 };
 
-/** Any block can be hidden on some devices (F029). Optional: missing means shown everywhere. */
-export type Visibility = { hideOn?: HideOn };
+/**
+ * Advanced settings any block can have, both optional: hidden on some
+ * devices (F029), and an anchor name so links like "#team" can jump to it (F030).
+ */
+export type Visibility = { hideOn?: HideOn; anchor?: string };
 
 export type Components = {
   Section: SectionProps & Visibility;
@@ -362,9 +365,11 @@ const blocks: Config<Components> = {
 type AnyRender = (props: Record<string, unknown> & { puck?: { isEditing?: boolean } }) => ReactNode;
 
 /**
- * Wraps every block so it can be hidden per device (F029). The wrapper only
- * exists for hidden blocks; it has `display: contents`, so the block's own
- * layout is unchanged where it shows. In the builder it carries a label.
+ * Wraps every block so it can be hidden per device (F029) or jumped to (F030).
+ * The wrapper only exists when needed; it has `display: contents`, so the
+ * block's own layout is unchanged where it shows. In the builder it carries
+ * a label. An anchor is an empty marker element right before the block,
+ * because an element with `display: contents` can't be scrolled to.
  */
 function withVisibility(c: Config<Components>): Config<Components> {
   const components = Object.fromEntries(
@@ -373,9 +378,11 @@ function withVisibility(c: Config<Components>): Config<Components> {
       const wrapped: AnyRender = (props) => {
         const out = render(props);
         const classes = hideClasses(props.hideOn);
-        if (!classes) return out;
+        const anchor = cleanAnchor(props.anchor);
+        if (!classes && !anchor) return out;
         return (
-          <div className={`cr-show ${classes}`} data-hidden={props.puck?.isEditing ? hiddenLabel(props.hideOn) : undefined}>
+          <div className={classes ? `cr-show ${classes}` : "cr-show"} data-hidden={classes && props.puck?.isEditing ? hiddenLabel(props.hideOn) : undefined}>
+            {anchor ? <span className="cr-anchor" id={anchor} /> : null}
             {out}
           </div>
         );

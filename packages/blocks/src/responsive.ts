@@ -123,3 +123,18 @@ export function responsiveCss(): string {
   const hide = devices.map((d) => `@media ${range[d]} {\n  .cr-hide-${d} { display: none; }\n}`);
   return [...out, `.cr-show { display: contents; }`, ...hide].join("\n");
 }
+
+// --- Anchors (F030) --------------------------------------------------------------------
+
+/** An anchor name as typed ("Our Team!") made safe for an id and a #link ("our-team"); "" if nothing usable. */
+export function cleanAnchor(value: unknown): string {
+  if (typeof value !== "string") return "";
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40)
+    .replace(/-+$/, "");
+}
