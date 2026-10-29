@@ -17,46 +17,30 @@ the first unchecked step, `git checkout` its branch, carry on.
 - [x] F031 Header, footer and menu on `f031-header-footer` (from F030's), draft PR (base `f030-settings-tabs`)
 - [x] F032 More elements on `f032-more-elements` (from F031's), draft PR (base `f031-header-footer`)
 - [x] F033 Theme pack on `f033-theme-pack` (from F032's), draft PR (base `f032-more-elements`)
-- [ ] Morning summary to the owner
+- [x] Morning summary to the owner
 
 ## Current
 
-- **Milestone:** 1 complete. F001–F024 pass; setup done; first real
-  publish live at https://crust-site.pages.dev (2026-10-29).
-- **Merged to main:** F001–F024 (PRs #1–#6).
-- **Merged:** "Page not found" page (PR #7), live since the second publish.
-- **Setup (done 2026-10-29):** Access app `crust-admin.pages.dev` ("Only
-  me", one-time PIN); Pages "Restrict previews" app for
-  `*.crust-admin.pages.dev`; GITHUB_TOKEN, ACCESS_TEAM_DOMAIN, ACCESS_AUD
-  on crust-admin (Production). /api/status reports configured.
-- **Merged:** F025 Section styles + builder tooltips (PR #9).
-- **Done, in draft PR #10: F026 Layout library** on branch
-  `f026-layout-library` (owner chose direction **B**). Waiting for the
-  owner to try it on the preview link.
-- **Done, in draft PR #11 (stacked on #10): F027 My layouts** on branch
-  `f027-my-layouts`. Owner asked Claude to continue overnight; Claude
-  built direction A (its recommendation). The owner can still ask for B
-  or C from the snapshot before merging.
-- **F028 Style customizer v2:** design snapshot v1 on branch
-  `f028-style-customizer` (draft PR #12, stacked on #11),
-  `design/f028-style-customizer-v1.html`, also at
-  https://claude.ai/artifact/VapdC2TJCBJddNoi6VGKmY. Waiting for the
-  owner to pick A/B/C (Claude recommends A: grouped panel + preview) and
-  to answer one question: how "Main button" relates to the per-style
-  button looks from F025 (proposal in the snapshot). Not built yet on
-  purpose: the answer changes the token format. Logged in BLOCKED.md.
-- **F029 Per-device columns:** design snapshot v1 on branch
-  `f029-per-device-columns` (draft PR, stacked on #12),
-  `design/f029-per-device-columns-v1.html`, also at
-  https://claude.ai/artifact/WFkZUGwYwQbX79bc6Jicye. Waiting for the
-  owner to pick A/B/C (Claude recommends A: all three devices at once).
-  Other proposals waiting in DECISIONS.md (sign-out button, restore
-  brings back the redirect).
+- **Milestone:** 1 complete. F001–F025 merged; first real publish live at
+  https://crust-site.pages.dev (2026-10-29).
+- **Milestone 2 built overnight (2026-10-29), all in stacked draft PRs,
+  none merged or published:** F026 Layout library (#10) → F027 My layouts
+  (#11) → F028 Style customizer (#12) → F029 Per-device columns (#13) →
+  F030 Content/Style/Advanced tabs (#14) → F031 Header, footer and menu
+  (#15) → F032 More elements (#16) → F033 Theme pack (#17). Each PR's
+  base is the one before; merge them in order.
+- **Try everything at once:** https://f033-theme-pack.crust-admin.pages.dev
+  (the top of the stack holds every feature).
 - **Waiting on the owner:**
-  - Check the live site on his phone.
-  - Review on the preview link and set `reviewed: true`: F010, F004, F003,
-    F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019, F020,
-    F021, F022, F023, F024, F025, F026, F027, F028, F029, F030, F031, F032, F033.
+  - Try the preview link and set `reviewed: true`: F010, F004, F003,
+    F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019,
+    F020, F021, F022, F023, F024, F025, F026, F027, F028, F029, F030,
+    F031, F032, F033.
+  - F027 and F028–F033 were built with Claude's recommendations (owner's
+    instruction); the choices are in DECISIONS.md and can be changed.
+  - Proposals waiting in DECISIONS.md (sign-out button, redirect on
+    restore, Puck axe fixes, layouts using the new blocks, gallery
+    lightbox, linked sections).
 - **Reminder:** the Cloudflare API token expires on the date the owner set
   (recommended 2027-01-26), and the GitHub token (crust-admin-save) after
   90 days, around 2027-01-27. Both fail with a clear error; make a new one
