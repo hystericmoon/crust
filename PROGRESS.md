@@ -29,6 +29,11 @@ to "Log".
   to answer one question: how "Main button" relates to the per-style
   button looks from F025 (proposal in the snapshot). Not built yet on
   purpose: the answer changes the token format. Logged in BLOCKED.md.
+- **F029 Per-device columns:** design snapshot v1 on branch
+  `f029-per-device-columns` (draft PR, stacked on #12),
+  `design/f029-per-device-columns-v1.html`, also at
+  https://claude.ai/artifact/WFkZUGwYwQbX79bc6Jicye. Waiting for the
+  owner to pick A/B/C (Claude recommends A: all three devices at once).
   Other proposals waiting in DECISIONS.md (sign-out button, restore
   brings back the redirect).
 - **Waiting on the owner:**
@@ -199,3 +204,6 @@ to "Log".
   working controls and 9 presets (new: Ocean, Studio, Paper, Night; all
   AA). Found an overlap with F025's per-style button looks; asked the
   owner before building.
+- 2026-10-29 — F029 design snapshot v1: width tiles per device (A all
+  devices at once, B follows the canvas device, C drag on the canvas with
+  arrow keys), plus "Show on" toggles per block.
