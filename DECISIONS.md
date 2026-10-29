@@ -8,10 +8,49 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
+- **One status per page instead of two badges.** A "Status" column with
+  one value per row ("Only in this browser", "Saved, not live yet",
+  "Live") replaces the "Draft in this browser" and "Edited since publish"
+  badges and the long note above the list. (From the Impeccable review.)
+- **Publish saves waiting drafts first.** With one confirmation, so "Save
+  to GitHub" stops being a separate idea you have to remember.
+- **Find and sort pages.** A "Find a page" box and newest-edited-first
+  order, once a site has more than about 10 pages.
+- **Publish shortcut in the header.** "Publish 3 changes" next to New page,
+  so it's one tap away on every screen.
 - *(All proposals so far were approved by the owner on 2026-10-28: the
   first four are F011–F014, "rename and delete pages" is F015 and "show
   what's not published yet" is F016. Claude's next four recommendations
   were approved the same day as F017–F020.)*
+
+## 2026-10-29 — Impeccable review of the Pages screen (owner asked: "let Impeccable check it, fix it and move forward")
+
+- **How it was checked:** two separate reviewers. One did a design review (Nielsen score 24/40). The other ran the Impeccable detector and checked the screen in a browser with axe.
+  - The detector found nothing in the code and one advisory in the page.
+  - axe found 0 violations in 7 states.
+  - One real WCAG failure.
+  - Snapshot: `.impeccable/critique/`.
+- **Fixed:**
+  - **Focus hidden under the sticky header** on desktop (WCAG 2.4.11): `scroll-padding-top: 80px` from 900 px up, so the Site settings screen gets the fix too.
+  - **The Publish panel comes first.** "What's live" and the Publish button are this screen's main question and action, especially on a phone.
+  - **The Publish button says what it will do:**
+    - "Publish 3 changes" when changes are waiting
+    - "Publish site" before the first publish
+    - "Publish again" (secondary style) when everything is live; still allowed, so you can re-run after a failure
+  - **Long lists of waiting changes** show the first 6, then "Show all N".
+  - **A failure to start publishing is now an alert,** styled as a warning, and says nothing changed on the live site. Only the run's status word is a live region.
+  - **When the list can't load:** a "Try again" button, and the note no longer claims it's showing pages from GitHub.
+  - **Links** use the admin's text colour instead of browser blue. The danger hover colour is now a token.
+  - **Dates** stay on one line on desktop. Page-title links are 44 px tall on phones.
+  - **The disclosure arrow** is a drawn SVG chevron instead of a "▸" character.
+  - **Home's missing actions are explained:** "Always at /".
+  - **New page keeps what you typed** when you close and reopen it, and focus returns to the button after Cancel.
+  - **Confirmations disappear after 10 seconds.**
+  - **Copy:** the rename dialog is titled "New address for “…”" (shorter on phones). The delete dialog points to "Recently deleted" instead of GitHub history.
+  - **The "off" note** names the setup guide.
+- **Not changed, proposed above instead:** a status column instead of badges, Publish saving drafts itself, find/sort, a Publish shortcut in the header. These change how the product works, so they're your call.
+  - **No Publish confirmation dialog.** The button now states its scope, and the list of changes sits right above it. A confirmation on every publish adds friction for a single owner.
+- **Advisory left as is:** the detector's "flat type hierarchy". The 18 px h1 is the app-bar title shared with Site settings (owner-reviewed), not a page heading competing with section headings.
 
 ## 2026-10-29 — F020 save browser drafts from the list (Claude, reversible)
 

@@ -4,6 +4,13 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Pages screen polish** after an Impeccable design review:
+  - Publish now sits at the top, and its button says what it will do
+    ("Publish 3 changes", or "Publish again" when everything is live).
+  - Keyboard focus no longer hides under the top bar.
+  - Clearer errors, with a "Try again" button.
+  - New page keeps what you typed if you close it.
+  - A few wording and spacing fixes.
 - **"Save to GitHub" on pages marked "Draft in this browser",** so you can
   save a draft from the page list without opening it.
 - **"Recently deleted"** under your page list: bring a deleted page back at

@@ -31,6 +31,8 @@ const formatDate = (iso: string) =>
 export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new Map(), onFinished }: PublishPanelProps) {
   const [runs, setRuns] = useState<PublishRun[] | null>(null);
   const [message, setMessage] = useState("");
+  const [failure, setFailure] = useState("");
+  const [showAll, setShowAll] = useState(false);
   const [starting, setStarting] = useState(false);
   const [reportedUrl, setReportedUrl] = useState<string | null>(null);
   // The run seen in progress, so its finish can refresh what's waiting.
@@ -68,6 +70,7 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
   const publish = async () => {
     if (busy) return;
     setStarting(true);
+    setFailure("");
     setMessage("Starting…");
     const res = await startPublish();
     if (res.ok) {
@@ -77,7 +80,8 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
         void refresh().finally(() => setStarting(false));
       }, 4000);
     } else {
-      setMessage(`Couldn't start publishing: ${res.error}`);
+      setMessage("");
+      setFailure(`Couldn't start publishing: ${res.error} Nothing changed on the live site; try again in a minute.`);
       setStarting(false);
     }
   };
@@ -85,6 +89,18 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
   const state = describeRun(latest);
   const pending = changes ? describeChanges(changes, titles) : null;
   const liveUrl = chooseLiveUrl(reportedUrl, siteUrl);
+  // The button says how much it will change; with nothing waiting it steps back to a secondary "Publish again".
+  const waiting = pending?.items.length ?? 0;
+  const nothingNew = changes?.lastPublish != null && waiting === 0;
+  const publishLabel = busy
+    ? "Publishing…"
+    : nothingNew
+      ? "Publish again"
+      : waiting > 0
+        ? `Publish ${waiting === 1 ? "1 change" : `${waiting} changes`}`
+        : "Publish site";
+  const LIMIT = 6;
+  const shownItems = pending && !showAll ? pending.items.slice(0, LIMIT) : (pending?.items ?? []);
 
   return (
     <section className="st-card pg-publish" aria-labelledby="publish-h">
@@ -95,8 +111,8 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
             Publishing turns your saved pages into the live site. Only what's saved to GitHub goes live; drafts kept in this
             browser don't.
           </p>
-          <p className={`pg-run is-${state.tone}`} aria-live="polite">
-            <strong>{state.label}</strong>
+          <p className={`pg-run is-${state.tone}`}>
+            <strong aria-live="polite">{state.label}</strong>
             {latest ? (
               <>
                 {" "}
@@ -111,17 +127,27 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
             <div className="pg-pending">
               <p>{pending.summary}</p>
               {pending.items.length ? (
-                <ul>
-                  {pending.items.map((item) => (
-                    <li key={item}>{item}</li>
+                <ul id="pending-list">
+                  {shownItems.map((item, i) => (
+                    <li key={i}>{item}</li>
                   ))}
                 </ul>
+              ) : null}
+              {pending.items.length > LIMIT ? (
+                <button type="button" className="pg-pending-more" aria-expanded={showAll} aria-controls="pending-list" onClick={() => setShowAll((v) => !v)}>
+                  {showAll ? "Show fewer" : `Show all ${pending.items.length}`}
+                </button>
               ) : null}
             </div>
           ) : null}
           <div className="pg-form-actions">
-            <button type="button" className="st-button st-button-primary" onClick={publish} aria-disabled={busy || undefined}>
-              {busy ? "Publishing…" : "Publish site"}
+            <button
+              type="button"
+              className={`st-button${nothingNew && !busy ? "" : " st-button-primary"}`}
+              onClick={publish}
+              aria-disabled={busy || undefined}
+            >
+              {publishLabel}
             </button>
             {liveUrl ? (
               <a className="st-button st-link-button" href={liveUrl} target="_blank" rel="noreferrer">
@@ -139,10 +165,16 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
           <p className="st-status-inline" role="status">
             {message}
           </p>
+          {failure ? (
+            <p className="st-warning" role="alert">
+              {failure}
+            </p>
+          ) : null}
         </>
       ) : (
         <p className="st-lede">
-          Publishing from here switches on together with saving to GitHub. Until then the live site doesn't change.
+          Publishing from here switches on together with saving to GitHub, after the one-time setup in docs/setup-saving.md.
+          Until then the live site doesn't change.
         </p>
       )}
     </section>

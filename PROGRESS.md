@@ -6,10 +6,10 @@ to "Log".
 ## Current
 
 - **Milestone:** 1 (first working slice). F001–F020 pass their done checks.
-- **Merged to main:** F001–F016 (PRs #1, #2, #3).
-- **In PR #4:** F017 "Open live site" uses the real address, F018 update
-  links on rename, F019 restore deleted pages, F020 save browser drafts
-  from the page list.
+- **Merged to main:** F001–F020 (PRs #1–#4).
+- **Merged:** F017–F020 (PR #4).
+- **In PR #5:** fixes from the Impeccable review of the Pages screen (owner
+  asked for it). Four new proposals in DECISIONS.md wait for the owner.
 - **Next:** nothing left in features.json. After the owner's setup: real
   save, rename, restore and publish checks.
 - **Waiting on the owner:**
@@ -126,3 +126,9 @@ to "Log".
   (GitHub on), saving the draft as the builder would. Checked F017–F020
   together in Chromium at 1280 and 390: axe clean, no overflow, no console
   errors, save flow removes the badge. 4 new tests; done check passes.
+- 2026-10-29 — PR #4 merged. Impeccable review of the Pages screen (owner
+  request): design review 24/40, detector clean, axe clean, one WCAG 2.4.11
+  failure (focus under the sticky header). Fixed that plus Publish placement
+  and labels, error alerts and retry, link colour, dates, phone targets,
+  chevron icon, Home note, New page keeps input. 8 new tests (219 total).
+  Bigger ideas logged as proposals.

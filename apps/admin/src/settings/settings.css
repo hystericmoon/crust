@@ -14,6 +14,7 @@
   --st-on-action: #ffffff;
   --st-danger: #b42318;
   --st-danger-bg: #fef3f2;
+  --st-danger-hover: #912018;
   --st-ok: #067647;
   --st-focus: #18181b;
   min-height: 100vh;
@@ -265,6 +266,11 @@ body:has(.st) { margin: 0; }
 
 @media (prefers-reduced-motion: no-preference) {
   html:has(.st) { scroll-behavior: smooth; }
+}
+
+/* The header is sticky from 900px up: keep focused and scrolled-to items out from under it (WCAG 2.4.11). */
+@media (min-width: 900px) {
+  html:has(.st-header) { scroll-padding-top: 80px; }
 }
 
 /* Link from the builder header to Site settings. */
