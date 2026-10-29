@@ -60,6 +60,50 @@ export function renderPage(site: Site, page: Page, baseCss: string): string {
 `;
 }
 
+/**
+ * The "page not found" document. Cloudflare Pages serves 404.html with a 404
+ * status for unknown addresses; without it, every unknown address returns
+ * the home page with status 200.
+ */
+export function renderNotFound(site: Site, baseCss: string): string {
+  const page: Page = {
+    path: "/404",
+    title: "Page not found",
+    description: "This page doesn't exist.",
+    puck: {
+      root: { props: {} },
+      content: [
+        {
+          type: "Section",
+          props: {
+            id: "Section-not-found",
+            background: "background",
+            paddingY: "xl",
+            content: [
+              { type: "Heading", props: { id: "Heading-not-found", text: "Page not found", level: "h1", align: "center" } },
+              {
+                type: "Text",
+                props: {
+                  id: "Text-not-found",
+                  text: "There's no page at this address. It may have moved or been deleted.",
+                  align: "center",
+                  tone: "muted",
+                },
+              },
+              { type: "Spacer", props: { id: "Spacer-not-found", size: "sm" } },
+              {
+                type: "Button",
+                props: { id: "Button-not-found", label: "Go to the home page", href: "/", variant: "primary", align: "center" },
+              },
+            ],
+          },
+        },
+      ],
+    },
+  };
+  return renderPage(site, page, baseCss);
+}
+
 /** Maps a page path ("/", "/about") to its output file ("index.html", "about/index.html"). */
 export function outputFileFor(path: string): string {
   const clean = path.replace(/^\/+|\/+$/g, "");
