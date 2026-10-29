@@ -70,7 +70,8 @@ export function PageActions({ row, otherPaths, onRename, onDelete, findLinks }: 
   );
 }
 
-function Dialog({
+/** A native modal dialog: the browser traps focus inside and Esc closes it. Shared with the Publish panel (F022). */
+export function Dialog({
   labelledBy,
   describedBy,
   onClose,

@@ -223,6 +223,15 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
     reload();
     return null;
   };
+  // F022: Publish offers to save these first.
+  const drafts = githubOn ? (rows ?? []).filter((r) => r.localChanges) : [];
+  const saveAllDrafts = async (): Promise<string | null> => {
+    for (const row of drafts) {
+      const failed = await saveDraft(row);
+      if (failed) return `“${row.title}”: ${failed}`;
+    }
+    return null;
+  };
   const findLinks = async (row: PageRow) => {
     if (!githubOn || !row.inRepo) return null;
     const res = await getLinks(row.path);
@@ -269,6 +278,8 @@ function Pages({ githubOn }: { githubOn: boolean | null }) {
         siteUrl={site.baseUrl}
         changes={changes}
         titles={new Map((rows ?? []).map((r) => [r.path, r.title]))}
+        drafts={drafts.map((r) => ({ path: r.path, title: r.title }))}
+        onSaveDrafts={saveAllDrafts}
         onFinished={reload}
       />
     </PageList>

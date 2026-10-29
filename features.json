@@ -218,7 +218,7 @@
       "description": "If pages have changes only in this browser, Publish asks once: save them and publish, publish without them, or cancel. The waiting list and the button count include those drafts. Added by the owner (approved Claude's proposal from the Impeccable review, 2026-10-29).",
       "depends_on": ["F008", "F020"],
       "done_check": "npm test -- publish-drafts && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

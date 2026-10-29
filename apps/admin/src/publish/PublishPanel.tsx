@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { publishRuns, startPublish, type PendingChanges, type PublishRun } from "../api-client";
+import { Dialog } from "../pages/PageActions";
 import { describeChanges } from "./changes";
 import { chooseLiveUrl } from "./live-url";
 
@@ -12,6 +13,10 @@ export interface PublishPanelProps {
   changes?: PendingChanges | null;
   /** Page titles by address, to name pages in the list of changes. */
   titles?: Map<string, string>;
+  /** Pages with changes only in this browser (F022): offered for saving before publishing. */
+  drafts?: { path: string; title: string }[];
+  /** Saves those drafts to GitHub; resolves to null or a plain-language problem. */
+  onSaveDrafts?: () => Promise<string | null>;
   /** Called when a publish this panel watched finishes. */
   onFinished?: () => void;
 }
@@ -28,11 +33,12 @@ export function describeRun(run: PublishRun | undefined): { label: string; tone:
 const formatDate = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
-export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new Map(), onFinished }: PublishPanelProps) {
+export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new Map(), drafts = [], onSaveDrafts, onFinished }: PublishPanelProps) {
   const [runs, setRuns] = useState<PublishRun[] | null>(null);
   const [message, setMessage] = useState("");
   const [failure, setFailure] = useState("");
   const [showAll, setShowAll] = useState(false);
+  const [asking, setAsking] = useState(false);
   const [starting, setStarting] = useState(false);
   const [reportedUrl, setReportedUrl] = useState<string | null>(null);
   // The run seen in progress, so its finish can refresh what's waiting.
@@ -67,6 +73,13 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
     return () => clearInterval(t);
   }, [githubOn, busy, refresh]);
 
+  // F022: drafts only in this browser would be left out, so ask first.
+  const requestPublish = () => {
+    if (busy) return;
+    if (drafts.length && onSaveDrafts) setAsking(true);
+    else void publish();
+  };
+
   const publish = async () => {
     if (busy) return;
     setStarting(true);
@@ -90,8 +103,17 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
   const pending = changes ? describeChanges(changes, titles) : null;
   const liveUrl = chooseLiveUrl(reportedUrl, siteUrl);
   // The button says how much it will change; with nothing waiting it steps back to a secondary "Publish again".
-  const waiting = pending?.items.length ?? 0;
+  const draftItems = drafts.map((d) => `${d.title} (${d.path}): changes in this browser, saved when you publish`);
+  const allItems = [...draftItems, ...(pending?.items ?? [])];
+  const waiting = allItems.length;
   const nothingNew = changes?.lastPublish != null && waiting === 0;
+  // Before the first publish the summary already says everything goes live.
+  const summary =
+    pending && draftItems.length && changes?.lastPublish
+      ? waiting === 1
+        ? "1 change waiting to go live:"
+        : `${waiting} changes waiting to go live:`
+      : pending?.summary;
   const publishLabel = busy
     ? "Publishing…"
     : nothingNew
@@ -100,7 +122,7 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
         ? `Publish ${waiting === 1 ? "1 change" : `${waiting} changes`}`
         : "Publish site";
   const LIMIT = 6;
-  const shownItems = pending && !showAll ? pending.items.slice(0, LIMIT) : (pending?.items ?? []);
+  const shownItems = showAll ? allItems : allItems.slice(0, LIMIT);
 
   return (
     <section className="st-card pg-publish" aria-labelledby="publish-h">
@@ -123,19 +145,19 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
               </>
             ) : null}
           </p>
-          {pending ? (
+          {pending || draftItems.length ? (
             <div className="pg-pending">
-              <p>{pending.summary}</p>
-              {pending.items.length ? (
+              {summary ? <p>{summary}</p> : null}
+              {allItems.length ? (
                 <ul id="pending-list">
                   {shownItems.map((item, i) => (
                     <li key={i}>{item}</li>
                   ))}
                 </ul>
               ) : null}
-              {pending.items.length > LIMIT ? (
+              {allItems.length > LIMIT ? (
                 <button type="button" className="pg-pending-more" aria-expanded={showAll} aria-controls="pending-list" onClick={() => setShowAll((v) => !v)}>
-                  {showAll ? "Show fewer" : `Show all ${pending.items.length}`}
+                  {showAll ? "Show fewer" : `Show all ${allItems.length}`}
                 </button>
               ) : null}
             </div>
@@ -144,7 +166,7 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
             <button
               type="button"
               className={`st-button${nothingNew && !busy ? "" : " st-button-primary"}`}
-              onClick={publish}
+              onClick={requestPublish}
               aria-disabled={busy || undefined}
             >
               {publishLabel}
@@ -170,6 +192,17 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
               {failure}
             </p>
           ) : null}
+          {asking && onSaveDrafts ? (
+            <SaveDraftsDialog
+              drafts={drafts}
+              onSave={onSaveDrafts}
+              onPublish={() => {
+                setAsking(false);
+                void publish();
+              }}
+              onClose={() => setAsking(false)}
+            />
+          ) : null}
         </>
       ) : (
         <p className="st-lede">
@@ -178,5 +211,64 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
         </p>
       )}
     </section>
+  );
+}
+
+/** F022: drafts only in this browser don't go live, so offer to save them first. */
+function SaveDraftsDialog({
+  drafts,
+  onSave,
+  onPublish,
+  onClose,
+}: {
+  drafts: { path: string; title: string }[];
+  onSave: () => Promise<string | null>;
+  onPublish: () => void;
+  onClose: () => void;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const saveRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => saveRef.current?.focus(), []);
+  const n = drafts.length;
+
+  const saveAndPublish = async () => {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    const failed = await onSave();
+    setBusy(false);
+    if (failed) setError(failed);
+    else onPublish();
+  };
+
+  return (
+    <Dialog labelledBy="save-drafts-h" describedBy="save-drafts-body" onClose={onClose}>
+      <div className="pg-form">
+        <h2 id="save-drafts-h">{n === 1 ? "Save 1 page first?" : `Save ${n} pages first?`}</h2>
+        <div className="pg-dialog-body" id="save-drafts-body">
+          <p>
+            {n === 1 ? "This page has" : "These pages have"} changes only in this browser:{" "}
+            {drafts.map((d) => d.title).join(", ")}. Publishing puts only what's saved on GitHub live.
+          </p>
+        </div>
+        {error ? (
+          <p className="st-error" role="alert">
+            {error}
+          </p>
+        ) : null}
+        <div className="pg-form-actions">
+          <button ref={saveRef} type="button" className="st-button st-button-primary" onClick={saveAndPublish} aria-disabled={busy || undefined}>
+            {busy ? "Saving…" : "Save and publish"}
+          </button>
+          <button type="button" className="st-button" onClick={onPublish}>
+            Publish without {n === 1 ? "it" : "them"}
+          </button>
+          <button type="button" className="st-button" onClick={onClose}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </Dialog>
   );
 }
