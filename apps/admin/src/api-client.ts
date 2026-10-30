@@ -2,7 +2,7 @@
  * Browser side of the admin API (apps/admin/server). Every call resolves to
  * a plain result; it never throws, so the UI always has a message to show.
  */
-import type { BlogSettings, MediaItem, Page, Post, SavedLayout, Site } from "@crust/blocks";
+import type { BlogSettings, LinkedSectionFile, MediaItem, Page, Post, SavedLayout, Site } from "@crust/blocks";
 
 export type ApiResult<T = Record<string, never>> =
   | ({ ok: true } & T)
@@ -78,6 +78,8 @@ export interface PendingChanges {
   moved: { from: string; to: string }[];
   site: boolean;
   redirects: boolean;
+  /** Linked sections saved since the last publish (F043). */
+  sections?: { id: string; name: string; change: "new" | "edited" | "removed" }[];
 }
 export const getChanges = () => call<PendingChanges>("/api/changes");
 
@@ -115,3 +117,15 @@ export const getPost = (slug: string) => call<{ post: Post }>(`/api/posts?slug=$
 export const savePost = (p: Post) => call<{ post: Post }>("/api/posts", post({ action: "save", post: p }));
 export const deletePost = (slug: string) => call("/api/posts", post({ action: "delete", slug }));
 export const saveBlog = (blog: BlogSettings) => call<{ blog: BlogSettings }>("/api/posts", post({ action: "blog", blog }));
+
+// --- Linked sections (F043): content/sections/ ---------------------------------
+export interface SectionUse {
+  path: string;
+  title: string;
+}
+export const listSections = () => call<{ sections: LinkedSectionFile[]; usage: Record<string, SectionUse[]> }>("/api/sections");
+export const createSection = (name: string, content: LinkedSectionFile["content"]) => call<{ section: LinkedSectionFile }>("/api/sections", post({ action: "create", name, content }));
+export const updateSection = (id: string, content: LinkedSectionFile["content"]) =>
+  call<{ section: LinkedSectionFile; usedOn: SectionUse[] }>("/api/sections", post({ action: "update", id, content }));
+export const renameSection = (id: string, name: string) => call<{ section: LinkedSectionFile }>("/api/sections", post({ action: "rename", id, name }));
+export const deleteSection = (id: string) => call<{ usedOn?: SectionUse[] }>("/api/sections", post({ action: "delete", id }));

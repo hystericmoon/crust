@@ -16,6 +16,7 @@
 import { ActionBar, createUsePuck, useGetPuck, type ComponentData, type Config, type Data } from "@puckeditor/core";
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { SaveLayoutAction } from "../layouts/SaveLayoutAction";
+import { MakeLinkedAction } from "../linked/fields";
 import { SectionToolbar } from "../sections/editing";
 import { availableMoves, planInsert, planMove, type MoveKind } from "./moves";
 import { installPuckChromeFixes } from "./puck-chrome";
@@ -367,6 +368,8 @@ export function KeyboardActionBar({
       <SectionToolbar />
       {/* F027: keep this section to reuse from the layout library. */}
       <SaveLayoutAction />
+      {/* F043: show it on many pages, edited in one place. */}
+      <MakeLinkedAction />
     </ActionBar>
   );
 }

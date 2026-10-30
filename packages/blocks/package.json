@@ -14,7 +14,8 @@
     "./media": "./src/media.ts",
     "./posts": "./src/posts.ts",
     "./seo": "./src/seo.ts",
-    "./rich-text": "./src/rich-text.ts"
+    "./rich-text": "./src/rich-text.ts",
+    "./linked-sections": "./src/linked-sections.ts"
   },
   "peerDependencies": {
     "@puckeditor/core": "^0.23.0",

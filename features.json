@@ -428,7 +428,7 @@
       "description": "A section saved once and shown on many pages; editing it once updates every page that uses it. Unlinking turns it back into a normal copy. Page-format change with a migration and a DECISIONS.md entry. Design snapshot first. Added by the owner (approved Milestone 4, 2026-10-30).",
       "depends_on": ["F027"],
       "done_check": "npm test -- linked-sections && npm run typecheck && npm run build && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

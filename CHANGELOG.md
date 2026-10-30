@@ -4,6 +4,13 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Linked sections (F043):** make a section once and show it on many
+  pages. Select a section and press **Make linked** on its toolbar; add
+  it to other pages from **Layouts → Linked**. Selecting it shows which
+  pages use it, with **Edit linked section** (its own screen: one save
+  updates every page) and **Unlink here** (a normal copy on that page
+  only). A linked section can't be deleted while a page still uses it.
+
 - **Rich text in Text blocks (F042):** make words **bold** or *italic*,
   add links, and write bulleted or numbered lists. The Text field has a
   small toolbar, in the builder and in Quick edit on your phone, plus

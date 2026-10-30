@@ -158,3 +158,25 @@ export {
 } from "./rich-text";
 export type { RichBlock, RichList, RichParagraph, RichSpan, RichText } from "./rich-text";
 export { RichTextView } from "./rich-text-view";
+export {
+  LINKED_TYPE,
+  MAX_SECTION_NAME,
+  MissingLinkedSection,
+  SECTIONS_FOLDER,
+  checkSectionContent,
+  checkSectionName,
+  isValidSectionId,
+  linkedBlock,
+  linkedSectionIds,
+  parseLinkedSection,
+  resolveLinkedBlocks,
+  resolveLinkedSections,
+  sectionContentFor,
+  sectionFileFor,
+  sectionIdFor,
+  sectionIdForFile,
+  unlinkedCopy,
+} from "./linked-sections";
+export type { LinkedSectionFile } from "./linked-sections";
+export { LinkedSection, LinkedSectionsContext } from "./linked-section-block";
+export type { LinkedSectionProps, LinkedSectionsSetup } from "./linked-section-block";
