@@ -21,12 +21,12 @@ to "Log".
   docs/milestone-4.md. **F040 Builder tidy-up built** (draft PR, not
   merged). Next: F041 layouts, F042 rich text, F043 linked sections,
   F044 custom domain.
-- **F044 Custom domain built** (branch `f044-custom-domain`, draft PR,
+- **F044 Custom domain built** (branch `f044-custom-domain`, draft PR #30,
   not merged). Site settings → Site address, the publish workflow only
   uses the domain once Cloudflare says it's connected, and
   docs/setup-custom-domain.md. Buying the domain is in BLOCKED.md.
-  **Milestone 4 is fully built:** PRs merge in order #27 → #28 → #29 →
-  F044 once the owner says so (expect conflicts only in PROGRESS.md,
+  **Milestone 4 is fully built:** PRs merge in order #27 → #28 → #29 → #30
+  once the owner says so (expect conflicts only in PROGRESS.md,
   CHANGELOG.md, DECISIONS.md and the two settings test files' group lists).
 - **Waiting on the owner:**
   - **F044:** on the PR's preview link, open Site settings → Site
