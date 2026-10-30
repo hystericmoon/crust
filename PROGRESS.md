@@ -11,7 +11,10 @@ to "Log".
   (PRs #10–#17). Not published yet: the live site changes when the owner
   presses Publish.
 - **Milestone 3 approved (2026-10-30):** F034–F039, docs/milestone-3.md.
-  Now: F034 Media library, design snapshot on branch `f034-media-library`.
+  Now: F034 Media library. Design snapshot v1 on branch
+  `f034-media-library`, `design/f034-media-library-v1.html`, also at
+  https://claude.ai/artifact/9QoSJrHftHwJ6bWRJUuVNA. Waiting for the owner
+  to pick A/B/C and where photos live (Claude recommends A + GitHub).
 - **Waiting on the owner:**
   - Try https://crust-admin.pages.dev (main, now with Milestone 2) and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019,
@@ -246,3 +249,6 @@ to "Log".
 - 2026-10-30 — Owner said "Both": merged PRs #10–#17 into main in order
   (merge commits, CI green on each), and approved Milestone 3. Added
   F034–F039 to features.json and docs/milestone-3.md.
+- 2026-10-30 — F034 design snapshot v1: three layouts for the media
+  library (picker dialog, sidebar tab, Media page) and the storage
+  question (GitHub vs Cloudflare R2). Logged in BLOCKED.md.
