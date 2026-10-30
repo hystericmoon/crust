@@ -6,6 +6,7 @@
  */
 import type { Page, SavedLayout, Site } from "@crust/blocks/content";
 import { countLinks, relinkPage } from "@crust/blocks/links";
+import { isBlogPath } from "@crust/blocks/posts";
 import { AccessError, verifyAccessJwt, type AccessUser } from "./access";
 import {
   checkLayout,
@@ -272,6 +273,7 @@ export async function handleRename(request: Request, env: Env, fetchFn: typeof f
   if (!isValidPagePath(from) || !isValidPagePath(to)) return fail(400, "The page address must look like /about (lowercase letters, numbers and dashes).");
   if (from === "/" || to === "/") return fail(400, "The Home page always lives at /, so it can't be renamed.");
   if (from === to) return fail(400, "That's already this page's address.");
+  if (isBlogPath(to)) return fail(400, "Addresses starting with /blog are where your posts are published. Choose another address.");
 
   const cfg = githubConfig(env);
   try {

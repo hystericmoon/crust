@@ -348,7 +348,7 @@
       "description": "A Posts collection: list of posts with date, summary and cover image, a post template built from blocks, an index page and an RSS feed. Posts are content/posts/*.json, published like pages. Added by the owner (approved Milestone 3, 2026-10-30).",
       "depends_on": ["F007", "F031"],
       "done_check": "npm test -- posts && npm run build && cargo test && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

@@ -53,6 +53,42 @@ Features Claude suggests. They are not work until the owner adds them to
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
 
+## 2026-10-30 — F035 Blog and collections (Claude's recommendations; owner: "go with all your recommendations")
+
+- **Where:** a **Posts** screen next to Pages (link in the Pages and Posts
+  headers). It lists posts newest first, with "New post" (title, address
+  made from the title, date defaulting to today) and the blog page's
+  title and intro. Delete asks first, in place. No design snapshot was
+  made: it reuses the Pages screen's look and the builder as it is.
+- **Writing a post is the builder you know.** The same blocks and
+  layouts; the post's details (title, summary, date, cover photo with
+  alt text) are in the page settings panel, and the canvas shows the top
+  of the post (blog name, date, title, summary, cover) exactly as
+  published. Drafts are kept in the browser while you type, like pages.
+- **Addresses:** posts are at `/blog/<address>/`, the list at `/blog/`,
+  the feed at `/blog/feed.xml` (RSS 2.0, newest 20). Pages can no
+  longer use `/blog` or anything under it (the New page and Rename
+  checks, saving, and the renderer all refuse it). A post's address
+  can't be changed yet; delete and recreate instead.
+- **Only one collection, "Blog".** Its list page title is editable (e.g.
+  "News", "Work"), so it can serve as a portfolio. Several collections
+  can come later without changing post files.
+- **The blog only appears once there's a post**, and isn't added to the
+  menu automatically: add a "/blog" link in Site settings → Header &
+  menu. Why: the menu is yours once edited (F031), and an empty blog
+  page would look unfinished.
+- **The list page:** a grid of cards (cover, title as a link, date,
+  summary). The cover there has empty alt text, because the linked
+  title right next to it already names the post. On the post itself the
+  cover's alt text is required.
+- **Dates** are shown in the site's language (`en` → "October 30, 2026",
+  `id` → "30 Oktober 2026"). There are no scheduled or hidden posts:
+  like pages, a saved post goes live with the next Publish.
+- **Format:** `content/posts/<slug>.json` and `content/blog.json` are new
+  files (see `docs/spec.md`). Pages are unchanged, so no migration.
+- **Known gap:** "What changes when you publish" (F016) lists pages only;
+  posts still go live with Publish.
+
 ## 2026-10-30 — F034 Media library (owner: "go with all your recommendations")
 
 - **Direction A:** every image field gets "Choose image", which opens a

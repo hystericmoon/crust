@@ -11,7 +11,8 @@
     "./styles.css": "./src/styles.css",
     "./links": "./src/links.ts",
     "./chrome-model": "./src/chrome-model.ts",
-    "./media": "./src/media.ts"
+    "./media": "./src/media.ts",
+    "./posts": "./src/posts.ts"
   },
   "peerDependencies": {
     "@puckeditor/core": "^0.23.0",

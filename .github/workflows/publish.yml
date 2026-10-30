@@ -83,6 +83,8 @@ jobs:
           echo "url=${base%/}" >> "$GITHUB_OUTPUT"
 
       - name: Render pages
+        env:
+          BASE_URL: ${{ steps.site.outputs.url }}
         run: npm run render
 
       - name: Check and finish the site (crust-publish)

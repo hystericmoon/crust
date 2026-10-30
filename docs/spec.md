@@ -134,6 +134,20 @@ into a block's alt field when picked. Publishing copies the photos into
 the site with resized copies (`<name>-480w.jpg`, `-960w`, `-1440w`) for
 `srcset`; those are never stored in `content/`.
 
+`content/posts/<slug>.json` and `content/blog.json` (optional, added with F035)
+```json
+{ "slug": "opening-day", "title": "…", "description": "…", "date": "2026-10-30",
+  "cover": "/media/door.jpg", "coverAlt": "…", "puck": { "root": {…}, "content": [ … ] } }
+```
+```json
+{ "title": "News", "intro": "…" }
+```
+A post is published at `/blog/<slug>/`; the list of posts at `/blog/` and
+an RSS feed at `/blog/feed.xml` appear once there is a post. Pages can't
+use `/blog` or addresses below it. `cover` is optional (`""`), and needs
+`coverAlt` when set. The post body is blocks, like a page (no H1: the
+title is the H1).
+
 `content/layouts/<id>.json` (optional, added with F027)
 ```json
 { "id": "studio-intro", "name": "Studio intro", "kind": "section", "savedAt": "…", "content": [ … ] }

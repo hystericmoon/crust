@@ -1,4 +1,4 @@
-import { config, migrateChrome, tokensToCss, type Page, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
+import { checkPost, config, defaultBlog, migrateChrome, tokensToCss, type BlogSettings, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
 import { relinkPage } from "@crust/blocks/links";
 import { Puck, useGetPuck, type Data } from "@puckeditor/core";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
@@ -11,9 +11,11 @@ import {
   getPage,
   getStatus,
   listPages,
+  listPosts,
   renamePage,
   restorePage,
   saveContent,
+  savePost,
   type ApiResult,
   type DeletedPage,
   type PendingChanges,
@@ -48,10 +50,15 @@ import { loadSavedChrome, sameChrome, saveChrome, siteToSave } from "./chrome-st
 import { SiteChromeContext, withSiteChrome } from "./chrome-canvas";
 import { withMediaFields } from "./media/fields";
 import { MediaPicker } from "./media/MediaPicker";
+import { BlogContext, withPostEditing } from "./posts/editing";
+import { PostList } from "./posts/PostList";
+import { fromPuckData as postFromPuckData, loadPost, saveLocalPost, toPuckData as postToPuckData } from "./posts/store";
 
 const site = siteJson as Site;
 /** The builder's blocks: image fields with the media library (F034), visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
 const editorConfig = withSiteChrome(withSettingsTabs(withResponsiveEditing(withSectionEditing(withItemEditing(withMediaFields(config))))));
+/** Posts (F035): the same blocks, with the post's details and top. */
+const postEditorConfig = withPostEditing(editorConfig);
 
 /** Responsive canvas widths for the viewport switcher. */
 const viewports = [
@@ -92,12 +99,23 @@ export function saveMessage(result: ApiResult<unknown>, savedLocally: boolean, w
   return `${what} not saved to GitHub: ${result.error}${local}`;
 }
 
-// --- Routing: #/ pages · #/edit?path=/about · #/settings ---------------------
+// --- Routing: #/ pages · #/edit?path=/about · #/settings · #/posts · #/post?slug=x ---
 
-export type Route = { name: "pages"; focus?: "publish" } | { name: "edit"; path: string } | { name: "settings" };
+export type Route =
+  | { name: "pages"; focus?: "publish" }
+  | { name: "edit"; path: string }
+  | { name: "settings" }
+  // F035: the Posts screen and one post in the builder.
+  | { name: "posts" }
+  | { name: "post"; slug: string };
 
 export function parseRoute(hash: string): Route {
   if (hash.startsWith("#/settings")) return { name: "settings" };
+  if (hash.startsWith("#/posts")) return { name: "posts" };
+  if (hash.startsWith("#/post?")) {
+    const slug = new URLSearchParams(hash.split("?")[1] ?? "").get("slug");
+    if (slug) return { name: "post", slug };
+  }
   if (hash.startsWith("#/edit")) {
     const path = new URLSearchParams(hash.split("?")[1] ?? "").get("path");
     if (path) return { name: "edit", path };
@@ -158,7 +176,15 @@ export function App() {
 
   useEffect(() => {
     document.title =
-      route.name === "settings" ? "Site settings · Crust" : route.name === "edit" ? `Editing ${route.path} · Crust` : "Pages · Crust";
+      route.name === "settings"
+        ? "Site settings · Crust"
+        : route.name === "edit"
+          ? `Editing ${route.path} · Crust`
+          : route.name === "posts"
+            ? "Posts · Crust"
+            : route.name === "post"
+              ? `Editing post /blog/${route.slug} · Crust`
+              : "Pages · Crust";
   }, [route]);
 
   const saveSiteTokens = async (tokens: SiteTokens) => {
@@ -212,6 +238,23 @@ export function App() {
         />
         <MediaPicker />
       </MyLayoutsProvider>
+    );
+  }
+
+  if (route.name === "posts") {
+    if (githubOn === null) return <Loading />;
+    return <PostList siteName={site.name} githubOn={githubOn} language={site.language} />;
+  }
+
+  if (route.name === "post") {
+    if (githubOn === null) return <Loading />;
+    return (
+      <SiteStyleContext.Provider value={siteStyle}>
+        <SiteChromeContext.Provider value={{ chrome: chromeDraft, siteName: site.name, path: `/blog/${route.slug}` }}>
+          <PostBuilder key={route.slug} slug={route.slug} githubOn={githubOn} shortcut={shortcut("crust-header-link")} />
+          <MediaPicker />
+        </SiteChromeContext.Provider>
+      </SiteStyleContext.Provider>
     );
   }
 
@@ -467,5 +510,90 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
         {status}
       </div>
     </MyLayoutsProvider>
+  );
+}
+
+/** One post in the builder (F035). Like Builder, with the post's details in the page settings. */
+function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boolean; shortcut?: ReactNode }) {
+  const [post, setPost] = useState<Post | null | undefined>(undefined);
+  const [blog, setBlog] = useState<BlogSettings>(defaultBlog);
+  const [status, setStatus] = useState<string>("");
+
+  useEffect(() => {
+    void loadPost(slug, githubOn).then(setPost);
+    if (githubOn) void listPosts().then((res) => res.ok && setBlog(res.blog));
+  }, [slug, githubOn]);
+
+  useEffect(() => {
+    if (!status || status === "Saving…") return;
+    const t = setTimeout(() => setStatus(""), 10_000);
+    return () => clearTimeout(t);
+  }, [status]);
+
+  const saveDraft = useCallback(
+    async (data: Data) => {
+      const next = postFromPuckData(slug, data);
+      const problems = checkPost(next);
+      const local = saveLocalPost(next, false);
+      if (problems.length) {
+        setStatus(`Kept in this browser, not saved to GitHub yet: ${problems.join(" ")}`);
+        return;
+      }
+      setStatus("Saving…");
+      const result = await savePost(next);
+      if (result.ok) saveLocalPost(next, true);
+      setStatus(saveMessage(result, local, "Post"));
+    },
+    [slug],
+  );
+
+  if (post === undefined) return <Loading />;
+  if (post === null) {
+    return (
+      <div className="st">
+        <main className="pg">
+          <h1 className="st-title">There's no post at /blog/{slug}</h1>
+          <p>
+            <a href="#/posts">Back to posts</a>
+          </p>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <BlogContext.Provider value={{ blog, language: site.language }}>
+      <MyLayoutsProvider githubOn={githubOn}>
+        <Puck
+          config={postEditorConfig}
+          data={postToPuckData(post)}
+          viewports={viewports}
+          headerTitle={post.title || "Untitled post"}
+          overrides={{
+            headerActions: () => (
+              <>
+                <a className="crust-header-link" href="#/posts">
+                  Posts
+                </a>
+                <LayoutsButton />
+                <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
+                  Keyboard
+                </button>
+                {shortcut}
+                <SaveDraftButton onSave={saveDraft} />
+              </>
+            ),
+            puck: BuilderRoot,
+            iframe: BuilderCanvas,
+            actionBar: KeyboardActionBar,
+          }}
+          onPublish={saveDraft}
+          onChange={(data) => saveLocalPost(postFromPuckData(slug, data), false)}
+        />
+        <div role="status" aria-live="polite" className="crust-status">
+          {status}
+        </div>
+      </MyLayoutsProvider>
+    </BlogContext.Provider>
   );
 }

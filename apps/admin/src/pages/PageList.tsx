@@ -100,6 +100,9 @@ export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCre
       <header className="st-header">
         <h1 className="st-title">{siteName}: pages</h1>
         <div className="st-actions">
+          <a className="st-button st-link-button" href="#/posts">
+            Posts
+          </a>
           <a className="st-button st-link-button" href="#/settings">
             Site settings
           </a>
