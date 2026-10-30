@@ -16,9 +16,7 @@
       "id": "F010",
       "title": "Preview deploy via GitHub Actions",
       "description": "GitHub Actions deploys the admin build (apps/admin/dist) to Cloudflare Pages with wrangler (direct upload) on every push to any branch; main is the production preview. The preview URL is posted as a PR comment and in the job summary. Added by the owner because the Cloudflare GitHub-app connection loops on his phone.",
-      "depends_on": [
-        "F001"
-      ],
+      "depends_on": ["F001"],
       "done_check": "npm run lint:workflows && npm run build, plus a green 'Preview deploy' run on GitHub that deployed and loaded the preview (needs the Cloudflare secrets)",
       "passes": true,
       "needs_review": true,
@@ -28,9 +26,7 @@
       "id": "F002",
       "title": "Output validation in the publish engine",
       "description": "crust-publish fails the publish with a plain-language message when a page has an image without alt text, zero or several h1, skipped heading levels, or a missing title/description.",
-      "depends_on": [
-        "F001"
-      ],
+      "depends_on": ["F001"],
       "done_check": "cargo test -p crust-publish validate && npm run publish:local",
       "passes": true,
       "needs_review": false,
@@ -40,9 +36,7 @@
       "id": "F003",
       "title": "Design tokens and Site settings screen",
       "description": "Admin screen to edit colours, fonts, spacing scale, radius and max width, with live preview and a contrast warning (WCAG AA) for text/background and primary/onPrimary pairs.",
-      "depends_on": [
-        "F001"
-      ],
+      "depends_on": ["F001"],
       "done_check": "npm test -- tokens settings && npm run build",
       "passes": true,
       "needs_review": true,
@@ -52,9 +46,7 @@
       "id": "F004",
       "title": "Complete block library v1",
       "description": "Add Columns (2-4, stack on mobile) and Card blocks; responsive viewports (desktop/tablet/mobile) in the editor.",
-      "depends_on": [
-        "F001"
-      ],
+      "depends_on": ["F001"],
       "done_check": "npm test -- blocks && npm run publish:local",
       "passes": true,
       "needs_review": true,
@@ -64,9 +56,7 @@
       "id": "F005",
       "title": "Keyboard-accessible editing",
       "description": "Every drag action has a keyboard alternative (move block up/down, move into/out of a section), visible focus, and screen-reader labels in the editor.",
-      "depends_on": [
-        "F004"
-      ],
+      "depends_on": ["F004"],
       "done_check": "npm test -- keyboard && npm run build",
       "passes": true,
       "needs_review": true,
@@ -76,9 +66,7 @@
       "id": "F006",
       "title": "Save to GitHub",
       "description": "Cloudflare Pages Function that commits page JSON to content/ using a fine-grained GitHub token stored as a Cloudflare secret. Admin Save button with success/error feedback.",
-      "depends_on": [
-        "F001"
-      ],
+      "depends_on": ["F001"],
       "done_check": "npm test -- save-api && npm run build",
       "passes": true,
       "needs_review": true,
@@ -88,9 +76,7 @@
       "id": "F007",
       "title": "Page list and create page",
       "description": "Admin page list (title, URL, last edited), create page with title and URL slug validation, open page in the builder.",
-      "depends_on": [
-        "F006"
-      ],
+      "depends_on": ["F006"],
       "done_check": "npm test -- pages && npm run build",
       "passes": true,
       "needs_review": true,
@@ -100,10 +86,7 @@
       "id": "F008",
       "title": "Publish workflow",
       "description": "GitHub Actions workflow that renders content, runs crust-publish, and deploys to Cloudflare Pages. Publish button in the admin triggers it and shows status.",
-      "depends_on": [
-        "F002",
-        "F006"
-      ],
+      "depends_on": ["F002", "F006"],
       "done_check": "npm test -- publish && npm run publish:local",
       "passes": true,
       "needs_review": true,
@@ -113,9 +96,7 @@
       "id": "F009",
       "title": "Accessibility and performance checks in CI",
       "description": "CI runs axe on every published page (no serious issues) and Lighthouse on the sample page (performance >= 95).",
-      "depends_on": [
-        "F008"
-      ],
+      "depends_on": ["F008"],
       "done_check": "npm run check:a11y && npm run check:perf",
       "passes": true,
       "needs_review": false,
@@ -125,9 +106,7 @@
       "id": "F011",
       "title": "Publish check: Image block without an image URL",
       "description": "crust-publish stops the publish with a plain-language message when an Image block has no image URL, instead of publishing the editor placeholder. Added by the owner (approved Claude's proposal, 2026-10-28).",
-      "depends_on": [
-        "F002"
-      ],
+      "depends_on": ["F002"],
       "done_check": "cargo test -p crust-publish validate && npm run publish:local",
       "passes": true,
       "needs_review": false,
@@ -137,9 +116,7 @@
       "id": "F012",
       "title": "Button alignment",
       "description": "Button block gets a Left / Center / Right alignment option so it can sit under centred headings. Existing pages keep left alignment. Added by the owner (approved Claude's proposal, 2026-10-28).",
-      "depends_on": [
-        "F004"
-      ],
+      "depends_on": ["F004"],
       "done_check": "npm test -- blocks && npm run publish:local",
       "passes": true,
       "needs_review": true,
@@ -149,9 +126,7 @@
       "id": "F013",
       "title": "Theme presets in Site settings",
       "description": "Start from a ready-made palette and fonts in Site settings. Applying a preset changes all colours and fonts at once and can be undone in one step; presets are checked for AA contrast. Added by the owner (approved Claude's proposal, 2026-10-28).",
-      "depends_on": [
-        "F003"
-      ],
+      "depends_on": ["F003"],
       "done_check": "npm test -- presets settings && npm run build",
       "passes": true,
       "needs_review": true,
@@ -161,9 +136,7 @@
       "id": "F014",
       "title": "Click the Site settings preview to jump to a colour",
       "description": "Clicking an element in the Site settings preview moves focus to the colour field that styles it (pointer shortcut; the form stays the keyboard route). Added by the owner (approved Claude's proposal, 2026-10-28).",
-      "depends_on": [
-        "F003"
-      ],
+      "depends_on": ["F003"],
       "done_check": "npm test -- settings && npm run build",
       "passes": true,
       "needs_review": true,
@@ -173,10 +146,7 @@
       "id": "F015",
       "title": "Rename and delete pages",
       "description": "From the page list, change a page's address or delete it, each with a confirmation step. A renamed page keeps working at its old address: visitors are sent to the new one (Cloudflare Pages _redirects, from content/redirects.json). The Home page can't be renamed or deleted. Keyboard and screen-reader friendly. Added by the owner (approved Claude's proposal, 2026-10-28).",
-      "depends_on": [
-        "F006",
-        "F007"
-      ],
+      "depends_on": ["F006", "F007"],
       "done_check": "npm test -- page-actions save-api && cargo test -p crust-publish && npm run build",
       "passes": true,
       "needs_review": true,
@@ -186,10 +156,7 @@
       "id": "F016",
       "title": "Show what is not published yet",
       "description": "The page list marks pages saved to GitHub since the last successful publish (new or edited), and the Publish panel lists everything waiting to go live, including removed pages and Site settings. Added by the owner (approved Claude's proposal, 2026-10-28).",
-      "depends_on": [
-        "F007",
-        "F008"
-      ],
+      "depends_on": ["F007", "F008"],
       "done_check": "npm test -- changes save-api && npm run build",
       "passes": true,
       "needs_review": true,
@@ -199,9 +166,7 @@
       "id": "F017",
       "title": "\"Open live site\" uses the real site address",
       "description": "The Publish panel's \"Open live site\" button opens the address the last successful publish went live at (the Cloudflare Pages address, or site.json's baseUrl once it's a real address), instead of the example placeholder. Before the first publish it explains where the link will appear. Added by the owner (approved Claude's recommendation, 2026-10-28).",
-      "depends_on": [
-        "F008"
-      ],
+      "depends_on": ["F008"],
       "done_check": "npm test -- live-link save-api publish-workflow && npm run build",
       "passes": true,
       "needs_review": true,
@@ -211,9 +176,7 @@
       "id": "F018",
       "title": "Update links to a renamed page",
       "description": "When a page is renamed, Button links on other pages that point to the old address are updated to the new one in the same commit. The rename dialog says how many links will change. The redirect stays for links from outside the site. Added by the owner (approved Claude's recommendation, 2026-10-28).",
-      "depends_on": [
-        "F015"
-      ],
+      "depends_on": ["F015"],
       "done_check": "npm test -- relink page-actions save-api && npm run build",
       "passes": true,
       "needs_review": true,
@@ -223,9 +186,7 @@
       "id": "F019",
       "title": "Restore deleted pages",
       "description": "A \"Recently deleted\" list under the page list shows pages deleted from GitHub, with a Restore button that brings the page back at its old address (from Git history). Added by the owner (approved Claude's recommendation, 2026-10-28).",
-      "depends_on": [
-        "F015"
-      ],
+      "depends_on": ["F015"],
       "done_check": "npm test -- restore save-api && npm run build",
       "passes": true,
       "needs_review": true,
@@ -235,9 +196,7 @@
       "id": "F020",
       "title": "Save browser drafts from the page list",
       "description": "Pages marked \"Draft in this browser\" get a \"Save to GitHub\" button in the page list, so a draft can be saved without opening it in the builder. Added by the owner (approved Claude's recommendation, 2026-10-28).",
-      "depends_on": [
-        "F007"
-      ],
+      "depends_on": ["F007"],
       "done_check": "npm test -- save-draft && npm run build",
       "passes": true,
       "needs_review": true,
@@ -247,10 +206,7 @@
       "id": "F021",
       "title": "One status per page in the page list",
       "description": "A Status column replaces the \"Draft in this browser\" / \"Not published yet\" / \"Edited since publish\" badges with one plain status per page: Only in this browser, Changes not saved, Saved – not live yet, or Live. The long note above the list becomes one short line. Added by the owner (approved Claude's proposal from the Impeccable review, 2026-10-29).",
-      "depends_on": [
-        "F016",
-        "F020"
-      ],
+      "depends_on": ["F016", "F020"],
       "done_check": "npm test -- page-status && npm run build",
       "passes": true,
       "needs_review": true,
@@ -260,10 +216,7 @@
       "id": "F022",
       "title": "Publish saves waiting browser drafts first",
       "description": "If pages have changes only in this browser, Publish asks once: save them and publish, publish without them, or cancel. The waiting list and the button count include those drafts. Added by the owner (approved Claude's proposal from the Impeccable review, 2026-10-29).",
-      "depends_on": [
-        "F008",
-        "F020"
-      ],
+      "depends_on": ["F008", "F020"],
       "done_check": "npm test -- publish-drafts && npm run build",
       "passes": true,
       "needs_review": true,
@@ -273,9 +226,7 @@
       "id": "F023",
       "title": "Find and sort pages",
       "description": "A \"Find a page\" box filters the page list by title or address, and a sort choice orders it by newest edit (default) or by address. The number of matching pages is announced; no matches shows a clear way back. Added by the owner (approved Claude's proposal from the Impeccable review, 2026-10-29).",
-      "depends_on": [
-        "F007"
-      ],
+      "depends_on": ["F007"],
       "done_check": "npm test -- find-sort && npm run build",
       "passes": true,
       "needs_review": true,
@@ -285,10 +236,7 @@
       "id": "F024",
       "title": "Publish shortcut in the top bar",
       "description": "The builder and Site settings top bars get a \"Publish\" link with the number of waiting changes; it opens the page list with focus on the Publish panel. Added by the owner (approved Claude's proposal from the Impeccable review, 2026-10-29).",
-      "depends_on": [
-        "F008",
-        "F016"
-      ],
+      "depends_on": ["F008", "F016"],
       "done_check": "npm test -- publish-shortcut && npm run build",
       "passes": true,
       "needs_review": true,
@@ -298,10 +246,7 @@
       "id": "F025",
       "title": "Section styles",
       "description": "Sections get YOOtheme-style options: style (Page, Muted, Primary, Dark), background image with a tint for readable text, height (auto, medium, large, full screen), and text that switches light/dark to match. Contrast is checked against the actual background. Older pages keep working through a migration. Added by the owner (approved Milestone 2 step 1, 2026-10-29).",
-      "depends_on": [
-        "F003",
-        "F004"
-      ],
+      "depends_on": ["F003", "F004"],
       "done_check": "npm test -- section-styles && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
@@ -311,9 +256,7 @@
       "id": "F026",
       "title": "Layout library",
       "description": "A library panel in the builder with about 20 designed sections (hero, features, image + text, FAQ, call to action, team, pricing, contact...) and 5 page layouts. Click or press Enter to insert; everything uses the site style, so it matches automatically. Each layout passes the accessibility check. Added by the owner (approved Milestone 2 step 1, 2026-10-29).",
-      "depends_on": [
-        "F025"
-      ],
+      "depends_on": ["F025"],
       "done_check": "npm test -- layout-library && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
@@ -323,10 +266,7 @@
       "id": "F027",
       "title": "My layouts",
       "description": "Save any section (or a whole page) as your own layout. Saved to GitHub under content/layouts/, shown in the library under My layouts, with rename and delete. Added by the owner (approved Milestone 2 step 1, 2026-10-29).",
-      "depends_on": [
-        "F026",
-        "F006"
-      ],
+      "depends_on": ["F026", "F006"],
       "done_check": "npm test -- my-layouts && npm run build",
       "passes": true,
       "needs_review": true,
@@ -336,10 +276,7 @@
       "id": "F028",
       "title": "Style customizer v2",
       "description": "Site settings grow into a full style customizer: type scale, heading weight and letter spacing, button shape and fill, card style (flat, outline, shadow), link style. 8 to 10 complete style presets. Every combination keeps passing the contrast checks. Added by the owner (approved Milestone 2 step 2, 2026-10-29).",
-      "depends_on": [
-        "F003",
-        "F013"
-      ],
+      "depends_on": ["F003", "F013"],
       "done_check": "npm test -- tokens presets customizer && npm run build",
       "passes": true,
       "needs_review": true,
@@ -349,9 +286,7 @@
       "id": "F029",
       "title": "Per-device columns",
       "description": "Columns get widths per device (for example 2/3 + 1/3 on desktop, stacked on phone) and any block can be hidden on phone, tablet or desktop. Works in the canvas preview and on the published site with no JavaScript. Added by the owner (approved Milestone 2 step 2, 2026-10-29).",
-      "depends_on": [
-        "F004"
-      ],
+      "depends_on": ["F004"],
       "done_check": "npm test -- responsive && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
@@ -361,9 +296,7 @@
       "id": "F030",
       "title": "Content, Style and Advanced tabs",
       "description": "The settings panel splits every block's options into Content, Style and Advanced tabs, so simple edits stay simple. Advanced holds spacing, visibility and an anchor name for links. Full keyboard support. Added by the owner (approved Milestone 2 step 2, 2026-10-29).",
-      "depends_on": [
-        "F001"
-      ],
+      "depends_on": ["F001"],
       "done_check": "npm test -- settings-tabs && npm run build",
       "passes": true,
       "needs_review": true,
@@ -373,10 +306,7 @@
       "id": "F031",
       "title": "Header, footer and menu",
       "description": "A site-wide header (logo, menu built from your pages, call-to-action button, sticky option, phone menu that works without JavaScript) and footer (columns of links, text, copyright). Edited once in Site settings, shown on every page. Stored in site.json with a migration. Added by the owner (approved Milestone 2 step 3, 2026-10-29).",
-      "depends_on": [
-        "F003",
-        "F006"
-      ],
+      "depends_on": ["F003", "F006"],
       "done_check": "npm test -- header footer && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
@@ -386,9 +316,7 @@
       "id": "F032",
       "title": "More elements",
       "description": "New blocks: Grid of cards, Gallery, Accordion/FAQ, Icon list, Logo row, Quote/testimonial, and Image overlay (text on an image). All work without JavaScript and pass the accessibility check. Added by the owner (approved Milestone 2 step 3, 2026-10-29).",
-      "depends_on": [
-        "F025"
-      ],
+      "depends_on": ["F025"],
       "done_check": "npm test -- blocks && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
@@ -398,11 +326,7 @@
       "id": "F033",
       "title": "Theme pack export and import",
       "description": "Export your style, header/footer style and My layouts as one .crust file; import one into another Crust site with a preview first. Only Crust data, never code or raw HTML, and it's checked (format and contrast) before anything changes. Added by the owner (approved Milestone 2 step 3, 2026-10-29).",
-      "depends_on": [
-        "F027",
-        "F028",
-        "F031"
-      ],
+      "depends_on": ["F027", "F028", "F031"],
       "done_check": "npm test -- theme-pack && npm run build",
       "passes": true,
       "needs_review": true,
@@ -412,10 +336,7 @@
       "id": "F034",
       "title": "Media library and image uploads",
       "description": "Upload images from the Mac or phone into a media library (Cloudflare R2, free tier), pick them from a grid in every image field, with alt text asked for at upload. The publish step makes resized copies (srcset) so pages stay fast on phones. Image URLs keep working. Added by the owner (approved Milestone 3, 2026-10-30).",
-      "depends_on": [
-        "F006",
-        "F011"
-      ],
+      "depends_on": ["F006", "F011"],
       "done_check": "npm test -- media && npm run build && cargo test && npm run check:a11y",
       "passes": true,
       "needs_review": true,
@@ -425,10 +346,7 @@
       "id": "F035",
       "title": "Blog and collections",
       "description": "A Posts collection: list of posts with date, summary and cover image, a post template built from blocks, an index page and an RSS feed. Posts are content/posts/*.json, published like pages. Added by the owner (approved Milestone 3, 2026-10-30).",
-      "depends_on": [
-        "F007",
-        "F031"
-      ],
+      "depends_on": ["F007", "F031"],
       "done_check": "npm test -- posts && npm run build && cargo test && npm run check:a11y",
       "passes": true,
       "needs_review": true,
@@ -438,9 +356,7 @@
       "id": "F036",
       "title": "Search and sharing settings per page",
       "description": "Per page: search title, social image, a preview of how the link looks when shared, and a 'hide from search engines' switch. Published as meta tags (Open Graph), and noindex pages leave the sitemap. Added by the owner (approved Milestone 3, 2026-10-30).",
-      "depends_on": [
-        "F007"
-      ],
+      "depends_on": ["F007"],
       "done_check": "npm test -- seo && npm run build && cargo test",
       "passes": true,
       "needs_review": true,
@@ -450,9 +366,7 @@
       "id": "F037",
       "title": "Contact form block",
       "description": "A Contact form block (name, email, message, optional fields) posting to a Cloudflare Worker with Turnstile spam protection; messages are emailed to the owner. Clear, accessible errors and a thank-you message; works without JavaScript except Turnstile. Added by the owner (approved Milestone 3, 2026-10-30).",
-      "depends_on": [
-        "F032"
-      ],
+      "depends_on": ["F032"],
       "done_check": "npm test -- contact-form && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
@@ -462,10 +376,7 @@
       "id": "F038",
       "title": "Phone quick-edit mode",
       "description": "On a phone, the builder opens a simplified editor: change text, swap images and button labels on a page, then save and publish. No layout editing. Added by the owner (approved Milestone 3, 2026-10-30).",
-      "depends_on": [
-        "F007",
-        "F008"
-      ],
+      "depends_on": ["F007", "F008"],
       "done_check": "npm test -- quick-edit && npm run build",
       "passes": true,
       "needs_review": true,
@@ -475,9 +386,7 @@
       "id": "F039",
       "title": "Site search",
       "description": "Search for the published site with Pagefind, built at publish time, no server. A search page and an optional search link in the header; keyboard and screen-reader friendly. Added by the owner (approved Milestone 3, 2026-10-30).",
-      "depends_on": [
-        "F031"
-      ],
+      "depends_on": ["F031"],
       "done_check": "npm test -- search && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
@@ -487,11 +396,7 @@
       "id": "F040",
       "title": "Builder tidy-up",
       "description": "A Sign out item in the builder's top bar; fix the 4 axe issues in Puck's own builder chrome (canvas iframe title, zoom menu label, low-contrast block-list headings, spinner label); bring a renamed page's old-address redirect back when the page is restored. Added by the owner (approved Milestone 4, 2026-10-30).",
-      "depends_on": [
-        "F015",
-        "F019",
-        "F030"
-      ],
+      "depends_on": ["F015", "F019", "F030"],
       "done_check": "npm test -- tidy-up && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
@@ -501,11 +406,7 @@
       "id": "F041",
       "title": "Layouts for the new blocks",
       "description": "FAQ, gallery, logo strip, features grid, testimonial and contact layouts in the Layout library, built from the Milestone 2-3 blocks; each passes the layout accessibility check. Added by the owner (approved Milestone 4, 2026-10-30).",
-      "depends_on": [
-        "F026",
-        "F032",
-        "F037"
-      ],
+      "depends_on": ["F026", "F032", "F037"],
       "done_check": "npm test -- layouts && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
@@ -515,10 +416,7 @@
       "id": "F042",
       "title": "Rich text in Text blocks",
       "description": "Bold, italic, links, bulleted and numbered lists inside a Text block, with a small toolbar and keyboard shortcuts. Saved as structured text, never raw HTML; links checked with safeUrl. Migration turns existing plain text into the new format. Free editor only (Lexical or Puck's free rich text field). Design snapshot first. Added by the owner (approved Milestone 4, 2026-10-30).",
-      "depends_on": [
-        "F004",
-        "F005"
-      ],
+      "depends_on": ["F004", "F005"],
       "done_check": "npm test -- rich-text && npm run typecheck && npm run build && cargo test && npm run check:a11y",
       "passes": true,
       "needs_review": true,
@@ -528,9 +426,7 @@
       "id": "F043",
       "title": "Linked sections",
       "description": "A section saved once and shown on many pages; editing it once updates every page that uses it. Unlinking turns it back into a normal copy. Page-format change with a migration and a DECISIONS.md entry. Design snapshot first. Added by the owner (approved Milestone 4, 2026-10-30).",
-      "depends_on": [
-        "F027"
-      ],
+      "depends_on": ["F027"],
       "done_check": "npm test -- linked-sections && npm run typecheck && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
@@ -540,11 +436,7 @@
       "id": "F044",
       "title": "Custom domain",
       "description": "A Site settings field for the site's own address, used by the sitemap, canonical and sharing links, RSS and the 'Open live site' link, plus a step-by-step guide (docs/setup-custom-domain.md) for connecting a domain in Cloudflare. Buying the domain is the owner's step (BLOCKED.md). Added by the owner (approved Milestone 4, 2026-10-30).",
-      "depends_on": [
-        "F008",
-        "F017",
-        "F036"
-      ],
+      "depends_on": ["F008", "F017", "F036"],
       "done_check": "npm test -- custom-domain && npm run build && cargo test",
       "passes": true,
       "needs_review": true,
@@ -554,12 +446,7 @@
       "id": "F045",
       "title": "Save a site as a template",
       "description": "Site settings → 'Save as template' downloads one .crust file with the whole site: design tokens, header and footer, pages, linked sections, saved layouts, a sample post and the photos. Builds on the theme pack file (F033) with kind 'template'; reading it checks everything and drops unknown fields. New file format: spec entry and DECISIONS.md entry. Added by the owner (approved Milestone 5, 2026-10-30).",
-      "depends_on": [
-        "F033",
-        "F034",
-        "F035",
-        "F043"
-      ],
+      "depends_on": ["F033",  "F034",  "F035",  "F043"],
       "done_check": "npm test -- template-file && npm run typecheck && npm run build",
       "passes": true,
       "needs_review": true,
@@ -569,10 +456,7 @@
       "id": "F046",
       "title": "Placeholder content",
       "description": "Text and photos in a template can be marked 'replace me'. The builder outlines them and shows a checklist of what's left; publishing stops with a plain-language list while any remain. Added by the owner (approved Milestone 5, 2026-10-30).",
-      "depends_on": [
-        "F045",
-        "F002"
-      ],
+      "depends_on": ["F045",  "F002"],
       "done_check": "npm test -- placeholders && npm run build && cargo test",
       "passes": true,
       "needs_review": true,
@@ -582,10 +466,7 @@
       "id": "F047",
       "title": "Template quality check",
       "description": "One command (npm run check:template) and a CI job that a template must pass: axe at three widths on every page, contrast in every section style, one h1 and heading order, alt text, Lighthouse >= 95 on the home page, every layout renders, no leftover placeholders. Writes a readable report page. Added by the owner (approved Milestone 5, 2026-10-30).",
-      "depends_on": [
-        "F045",
-        "F046"
-      ],
+      "depends_on": ["F045",  "F046"],
       "done_check": "npm test -- template-check && npm run check:template",
       "passes": false,
       "needs_review": true,
@@ -595,10 +476,7 @@
       "id": "F048",
       "title": "Start from a template",
       "description": "Pages screen → 'Start from a template' opens a gallery: thumbnail, page list and a live preview at desktop, tablet and phone widths. Applying asks first and says exactly what it replaces; the previous site stays in Git history and can be restored. Design snapshot first. Added by the owner (approved Milestone 5, 2026-10-30).",
-      "depends_on": [
-        "F045",
-        "F046"
-      ],
+      "depends_on": ["F045",  "F046"],
       "done_check": "npm test -- start-from-template && npm run build && npm run check:a11y",
       "passes": false,
       "needs_review": true,
@@ -608,10 +486,7 @@
       "id": "F049",
       "title": "First starter template",
       "description": "One complete template designed with the owner: Home, About, Services, Work, Contact, a blog with one post, a linked contact strip. Passes the template quality check. Design snapshot with 2-3 directions first; the owner picks. Added by the owner (approved Milestone 5, 2026-10-30).",
-      "depends_on": [
-        "F047",
-        "F048"
-      ],
+      "depends_on": ["F047",  "F048"],
       "done_check": "npm test -- starter-template && npm run check:template",
       "passes": false,
       "needs_review": true,
