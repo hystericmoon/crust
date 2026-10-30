@@ -1,5 +1,5 @@
 {
-  "milestone": 3,
+  "milestone": 4,
   "rules": "One feature per session. passes=true only when done_check exits 0. needs_review items also need the owner to set reviewed=true after testing the preview. Only the owner adds or removes features.",
   "features": [
     {
@@ -389,6 +389,56 @@
       "depends_on": ["F031"],
       "done_check": "npm test -- search && npm run build && npm run check:a11y",
       "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F040",
+      "title": "Builder tidy-up",
+      "description": "A Sign out item in the builder's top bar; fix the 4 axe issues in Puck's own builder chrome (canvas iframe title, zoom menu label, low-contrast block-list headings, spinner label); bring a renamed page's old-address redirect back when the page is restored. Added by the owner (approved Milestone 4, 2026-10-30).",
+      "depends_on": ["F015", "F019", "F030"],
+      "done_check": "npm test -- tidy-up && npm run build && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F041",
+      "title": "Layouts for the new blocks",
+      "description": "FAQ, gallery, logo strip, features grid, testimonial and contact layouts in the Layout library, built from the Milestone 2-3 blocks; each passes the layout accessibility check. Added by the owner (approved Milestone 4, 2026-10-30).",
+      "depends_on": ["F026", "F032", "F037"],
+      "done_check": "npm test -- layouts && npm run build && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F042",
+      "title": "Rich text in Text blocks",
+      "description": "Bold, italic, links, bulleted and numbered lists inside a Text block, with a small toolbar and keyboard shortcuts. Saved as structured text, never raw HTML; links checked with safeUrl. Migration turns existing plain text into the new format. Free editor only (Lexical or Puck's free rich text field). Design snapshot first. Added by the owner (approved Milestone 4, 2026-10-30).",
+      "depends_on": ["F004", "F005"],
+      "done_check": "npm test -- rich-text && npm run typecheck && npm run build && cargo test && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F043",
+      "title": "Linked sections",
+      "description": "A section saved once and shown on many pages; editing it once updates every page that uses it. Unlinking turns it back into a normal copy. Page-format change with a migration and a DECISIONS.md entry. Design snapshot first. Added by the owner (approved Milestone 4, 2026-10-30).",
+      "depends_on": ["F027"],
+      "done_check": "npm test -- linked-sections && npm run typecheck && npm run build && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F044",
+      "title": "Custom domain",
+      "description": "A Site settings field for the site's own address, used by the sitemap, canonical and sharing links, RSS and the 'Open live site' link, plus a step-by-step guide (docs/setup-custom-domain.md) for connecting a domain in Cloudflare. Buying the domain is the owner's step (BLOCKED.md). Added by the owner (approved Milestone 4, 2026-10-30).",
+      "depends_on": ["F008", "F017", "F036"],
+      "done_check": "npm test -- custom-domain && npm run build && cargo test",
+      "passes": false,
       "needs_review": true,
       "reviewed": false
     }

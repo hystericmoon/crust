@@ -52,6 +52,51 @@ Features Claude suggests. They are not work until the owner adds them to
 - **Linked sections ("global sections").** A saved layout is a copy. A
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
+- **Direction: a YOOtheme-style builder and a template business**
+  (discussed with the owner on 2026-10-30; roadmap page:
+  https://claude.ai/artifact/4eHUDzJ3tDeeaNPBf4T4ii). The aim is for
+  people to buy complete Crust templates from us, as they buy themes on
+  Envato. Proposed order: M4 Daily use → M5 Templates → M6 Crust for others
+  → M7 Store → later a marketplace for other designers. Not approved as
+  scope; three calls are the owner's: how buyers run Crust (Claude
+  recommends a desktop app built with Tauri), what people pay for (Claude
+  recommends a Crust licence with starter templates plus paid templates),
+  and whether to sell plain-HTML exports early.
+- **Milestone 4 proposal: "Daily use"** — *approved by the owner on
+  2026-10-30 ("Approve") and added as F040–F044; see docs/milestone-4.md.* Milestones 1–3 made the builder work. Before designing
+  templates in Crust (M5), the owner needs to build real sites in it
+  comfortably every day, and templates will lean on these pieces.
+  1. **Rich text in Text blocks.** Bold, italic, links, bulleted and
+     numbered lists, inside a Text block, with keyboard shortcuts and a
+     small toolbar. It's the biggest gap for writing real content today.
+     Saved as structured text, never raw HTML; links go through `safeUrl`.
+     Existing Text blocks keep working (a migration turns plain text into
+     the new format). Free editor only: Lexical (MIT), as the spec planned,
+     or the free part of Puck's own rich text field, whichever fits better
+     with the canvas; logged here when chosen. Design snapshot first.
+  2. **Custom domain for the live site.** A step-by-step guide plus a Site
+     settings field, so the site, sitemap, sharing links and RSS use the
+     owner's address. Buying a domain costs money and is the owner's step
+     (BLOCKED.md); connecting it in Cloudflare is free.
+  3. **Linked sections.** A section (for example a contact strip or a
+     call-to-action) saved once and shown on many pages; edit it once and
+     every page updates. Needs a page-format change (migration and an entry
+     here). Templates need this: a template's shared sections must stay in
+     step across its pages. Design snapshot first.
+  4. **Layouts for the new blocks.** FAQ, gallery, logo strip, features
+     grid, testimonial and contact layouts in the Layout library, so the
+     Milestone 2–3 blocks are one click away. Small; also a first taste of
+     template content.
+  5. **Builder tidy-up.** A Sign out item in the top bar; fix the 4 axe
+     issues in Puck's builder chrome; bring a renamed page's redirect back
+     when it's restored. Three small proposals above, grouped.
+  6. **Fixes from the owner's review of Milestones 2–3.** A placeholder:
+     whatever the review of F026–F039 turns up, added as rework items only
+     when the owner asks (CLAUDE.md).
+  Order: 5 and 4 first (small, quick wins), then 1, 3 and 2. Everything
+  stays free with $0 running cost, except the domain itself. Rough size:
+  similar to Milestone 3. Left out on purpose: gallery lightbox (still a
+  proposal above), and anything for other users (that's M6).
 
 ## 2026-10-30 — F039 Site search (Claude's recommendations; owner: "go with all your recommendations")
 

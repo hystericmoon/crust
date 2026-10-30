@@ -17,6 +17,9 @@ to "Log".
 - **F037 email** still needs the owner's setup (BLOCKED.md,
   docs/setup-contact-form.md); until then the form shows but doesn't send.
 - **F034–F039 still need `reviewed: true`** from the owner (steps below).
+- **Milestone 4 "Daily use" approved (2026-10-30):** F040–F044,
+  docs/milestone-4.md. Next: F040 Builder tidy-up, then F041 layouts,
+  F042 rich text, F043 linked sections, F044 custom domain.
 - **Waiting on the owner:**
   - **F034:** on crust-admin.pages.dev, select a Card or Image block and press "Choose image".
     Upload a photo from the Mac and one from the phone, describe them,
@@ -330,3 +333,7 @@ to "Log".
   retargeted to main and brought up to date with "Update branch" (merge
   commit, no rebase) so CI ran against main; all four checks green on
   every PR before merging. Not published.
+- 2026-10-30 — Wrote the Milestone 4 proposal and the long-term direction
+  (template business) in DECISIONS.md. Waiting for the owner.
+- 2026-10-30 — Owner approved Milestone 4 ("Approve"): F040–F044 added to
+  features.json, docs/milestone-4.md written.
