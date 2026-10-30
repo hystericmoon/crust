@@ -399,3 +399,26 @@ main[tabindex="-1"]:focus { outline: none; }
 .cr-post-item p { margin: 0; }
 .cr-post-thumb { order: -1; display: block; width: 100%; aspect-ratio: 16 / 10; height: auto; object-fit: cover; border-radius: var(--cr-radius); }
 .cr-post-date { order: 0; font-size: 0.875rem; color: var(--cr-sec-muted, var(--cr-color-muted)); }
+
+/* Contact form (F037). Works without JavaScript; messages show with :target. */
+.cr-form-wrap { max-width: 40rem; }
+.cr-form-fields { display: grid; gap: var(--cr-space-sm); margin: 0; padding: 0; border: 0; min-width: 0; }
+.cr-form-legend { padding: 0; margin-bottom: var(--cr-space-xs); font-size: 0.9375rem; color: var(--cr-sec-muted, var(--cr-color-muted)); }
+.cr-form-field { display: grid; gap: 6px; }
+.cr-form-field label { font-weight: 600; }
+.cr-form-optional { font-weight: 400; color: var(--cr-sec-muted, var(--cr-color-muted)); }
+.cr-form-field input, .cr-form-field textarea {
+  width: 100%; min-height: 44px; padding: 10px 12px; font: inherit; color: var(--cr-color-text);
+  background: var(--cr-color-background); border: 1px solid var(--cr-color-muted); border-radius: var(--cr-radius);
+}
+.cr-form-field textarea { resize: vertical; }
+.cr-form-field :is(input, textarea):focus-visible { outline: 3px solid var(--cr-color-primary); outline-offset: 2px; }
+.cr-form-field :is(input, textarea):user-invalid { border-color: #b42318; box-shadow: 0 0 0 1px #b42318; }
+.cr-form button[type="submit"] { justify-self: start; border: 0; cursor: pointer; font: inherit; }
+.cr-form-fields:disabled { opacity: 0.6; }
+.cr-form-trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.cr-form-off { margin: 0 0 var(--cr-space-sm); padding: 10px 14px; border-radius: var(--cr-radius); background: var(--cr-color-surface); color: var(--cr-color-text); }
+.cr-form-done, .cr-form-failed { display: none; margin-bottom: var(--cr-space-sm); padding: 14px 16px; border-radius: var(--cr-radius); border: 2px solid currentColor; }
+.cr-form-done p, .cr-form-failed p { margin: 0; }
+.cr-form-done:target, .cr-form-failed:target { display: block; }
+.cr-form-done:target ~ .cr-form { display: none; }

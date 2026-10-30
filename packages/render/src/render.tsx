@@ -1,4 +1,4 @@
-import { config, MediaContext, mediaFileOf, migrateChrome, variantFile, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
+import { config, FormsContext, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -35,9 +35,21 @@ function ComponentShell({ render, props }: { render: AnyComponentConfig["render"
 export const withMedia = (node: ReactNode, media: MediaItem[] | undefined) =>
   media ? <MediaContext.Provider value={new Map(media.map((m) => [m.file, m]))}>{node}</MediaContext.Provider> : node;
 
-export function renderBody(data: Data, media?: MediaItem[]): string {
-  return renderToStaticMarkup(withMedia(<>{data.content.map((item) => renderItem(item))}</>, media));
+export function renderBody(data: Data, media?: MediaItem[], forms?: FormsSetup): string {
+  const blocks = withMedia(<>{data.content.map((item) => renderItem(item))}</>, media);
+  // F037: contact forms post to the Worker and come back to this page.
+  return renderToStaticMarkup(forms ? <FormsContext.Provider value={forms}>{blocks}</FormsContext.Provider> : blocks);
 }
+
+/** The contact form setup for one page, when the publish step has one (F037). */
+export const formsFor = (options: RenderOptions, path: string): FormsSetup | undefined =>
+  options.forms?.endpoint ? { ...options.forms, path: path === "/" ? "/" : `${path.replace(/\/+$/, "")}/` } : undefined;
+
+/** Turnstile's script, only on pages with a contact form. */
+export const turnstileTag = (options: RenderOptions, puck: unknown) =>
+  options.forms?.endpoint && options.forms.siteKey && hasContactForm(puck)
+    ? `<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>\n`
+    : "";
 
 export const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -51,6 +63,8 @@ export interface RenderOptions {
   media?: MediaItem[];
   /** The site's public address, for links in sharing tags (F036); site.baseUrl by default. */
   baseUrl?: string;
+  /** Where contact forms send messages, and the Turnstile site key (F037). */
+  forms?: { endpoint: string; siteKey: string };
 }
 
 /** Full HTML document for one page. `baseCss` is packages/blocks/src/styles.css. */
@@ -58,7 +72,14 @@ export function renderPage(site: Site, page: Page, baseCss: string, options: Ren
   const seo = page.seo ?? {};
   return renderDocument(
     site,
-    { path: page.path, title: page.title, description: page.description, body: renderBody(page.puck, options.media), share: { searchTitle: seo.title, image: seo.image, imageAlt: seo.imageAlt, noindex: seo.noindex } },
+    {
+      path: page.path,
+      title: page.title,
+      description: page.description,
+      body: renderBody(page.puck, options.media, formsFor(options, page.path)),
+      head: turnstileTag(options, page.puck),
+      share: { searchTitle: seo.title, image: seo.image, imageAlt: seo.imageAlt, noindex: seo.noindex },
+    },
     baseCss,
     options,
   );

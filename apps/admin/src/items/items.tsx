@@ -29,7 +29,7 @@ type Item = Record<string, unknown>;
 /** "Cards" → "card", for "Add a card", "Card 2". */
 export function itemNoun(listLabel: string): string {
   const word = listLabel.toLowerCase().replace(/s$/, "");
-  return word === "photo" || word === "logo" || word === "card" || word === "question" || word === "line" ? word : "item";
+  return word === "photo" || word === "logo" || word === "card" || word === "question" || word === "line" || word === "extra field" ? word : "item";
 }
 
 const article = (noun: string) => (/^[aeiou]/.test(noun) ? "an" : "a");

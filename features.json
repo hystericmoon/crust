@@ -368,7 +368,7 @@
       "description": "A Contact form block (name, email, message, optional fields) posting to a Cloudflare Worker with Turnstile spam protection; messages are emailed to the owner. Clear, accessible errors and a thank-you message; works without JavaScript except Turnstile. Added by the owner (approved Milestone 3, 2026-10-30).",
       "depends_on": ["F032"],
       "done_check": "npm test -- contact-form && npm run build && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

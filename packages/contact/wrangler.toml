@@ -1,0 +1,10 @@
+# Contact form Worker (F037). Deployed by .github/workflows/contact-worker.yml
+# once the owner has set it up (see BLOCKED.md and docs/setup-contact-form.md).
+name = "crust-contact"
+main = "src/worker.ts"
+compatibility_date = "2026-10-01"
+
+[vars]
+# The published site's address; messages are only accepted from it and
+# visitors are only sent back to it. Set by the deploy workflow.
+SITE_ORIGIN = ""

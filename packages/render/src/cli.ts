@@ -25,7 +25,9 @@ const pages = await Promise.all(pageFiles.map((file) => readJson<Page>(join(cont
 const media = parseMediaIndex(await readFile(join(contentDir, "media.json"), "utf8").catch(() => null));
 // The publish workflow passes the live address; locally the one in site.json is used.
 const baseUrl = process.env.BASE_URL || site.baseUrl;
-const options = { pages: pages.map((p) => ({ path: p.path, title: p.title })), media, baseUrl };
+// F037: set by the publish workflow once the contact form service is set up (BLOCKED.md).
+const forms = process.env.CONTACT_FORM_URL ? { endpoint: process.env.CONTACT_FORM_URL, siteKey: process.env.TURNSTILE_SITE_KEY ?? "" } : undefined;
+const options = { pages: pages.map((p) => ({ path: p.path, title: p.title })), media, baseUrl, forms };
 const seen = new Map<string, string>();
 for (const [i, file] of pageFiles.entries()) {
   const page = pages[i]!;

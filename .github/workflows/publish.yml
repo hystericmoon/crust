@@ -85,6 +85,9 @@ jobs:
       - name: Render pages
         env:
           BASE_URL: ${{ steps.site.outputs.url }}
+          # Contact form (F037): repository variables, empty until it's set up.
+          CONTACT_FORM_URL: ${{ vars.CONTACT_FORM_URL }}
+          TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
         run: npm run render
 
       - name: Check and finish the site (crust-publish)

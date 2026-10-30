@@ -4,6 +4,13 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Contact form (F037):** a new Contact form block (block list → Forms).
+  Visitors send you a message with their name, email and anything else
+  you ask for; it arrives in your inbox, and spam is kept out. Works on
+  any phone, even without JavaScript. It needs a one-time setup with
+  free accounts before it can send (docs/setup-contact-form.md); until
+  then the form says it isn't connected yet.
+
 - **Search and sharing (F036):** in each page's settings, set the title
   people see in search results, a picture for when the link is shared,
   or hide the page from search engines. Live previews show how it will

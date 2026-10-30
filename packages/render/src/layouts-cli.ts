@@ -44,4 +44,17 @@ for (const preset of themePresets) {
   await writeFile(join(outDir, `blog-${preset.id}`, "index.html"), renderBlogIndex(themed, posts, blog, baseCss));
   await writeFile(join(outDir, `blog-${preset.id}`, "post", "index.html"), renderPost(themed, posts[0]!, blog, baseCss));
 }
+// F037: a contact form, connected and not yet, in every preset.
+const contact: Page["puck"]["content"] = [
+  { type: "Heading", props: { id: "h-contact", text: "Contact us", level: "h1", align: "left" } },
+  { type: "ContactForm", props: { id: "ContactForm-check", nameLabel: "Name", emailLabel: "Email", messageLabel: "Message", fields: [{ label: "Phone", kind: "tel", required: "no" }], submitLabel: "Send message", successMessage: "Thanks!" } },
+];
+for (const preset of themePresets) {
+  const themed: Site = { ...site, tokens: applyPreset(site.tokens, preset) };
+  for (const [slug, forms] of [[`contact-${preset.id}`, { endpoint: "https://contact.example/", siteKey: "" }], [`contact-off-${preset.id}`, undefined]] as const) {
+    const page: Page = { path: `/${slug}`, title: "Contact", description: "Layout check: contact form", puck: { root: { props: {} }, content: [{ type: "Section", props: { id: `s-${slug}`, background: "background", paddingY: "lg", content: contact } }] } };
+    await mkdir(join(outDir, slug), { recursive: true });
+    await writeFile(join(outDir, slug, "index.html"), renderPage(themed, page, baseCss, { forms }));
+  }
+}
 console.log(`layouts: ${sectionLayouts.length} sections and ${pageLayouts.length * themePresets.length} themed pages written to ${outDir}`);
