@@ -1,5 +1,5 @@
 {
-  "milestone": 2,
+  "milestone": 3,
   "rules": "One feature per session. passes=true only when done_check exits 0. needs_review items also need the owner to set reviewed=true after testing the preview. Only the owner adds or removes features.",
   "features": [
     {
@@ -329,6 +329,66 @@
       "depends_on": ["F027", "F028", "F031"],
       "done_check": "npm test -- theme-pack && npm run build",
       "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F034",
+      "title": "Media library and image uploads",
+      "description": "Upload images from the Mac or phone into a media library (Cloudflare R2, free tier), pick them from a grid in every image field, with alt text asked for at upload. The publish step makes resized copies (srcset) so pages stay fast on phones. Image URLs keep working. Added by the owner (approved Milestone 3, 2026-10-30).",
+      "depends_on": ["F006", "F011"],
+      "done_check": "npm test -- media && npm run build && cargo test && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F035",
+      "title": "Blog and collections",
+      "description": "A Posts collection: list of posts with date, summary and cover image, a post template built from blocks, an index page and an RSS feed. Posts are content/posts/*.json, published like pages. Added by the owner (approved Milestone 3, 2026-10-30).",
+      "depends_on": ["F007", "F031"],
+      "done_check": "npm test -- posts && npm run build && cargo test && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F036",
+      "title": "Search and sharing settings per page",
+      "description": "Per page: search title, social image, a preview of how the link looks when shared, and a 'hide from search engines' switch. Published as meta tags (Open Graph), and noindex pages leave the sitemap. Added by the owner (approved Milestone 3, 2026-10-30).",
+      "depends_on": ["F007"],
+      "done_check": "npm test -- seo && npm run build && cargo test",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F037",
+      "title": "Contact form block",
+      "description": "A Contact form block (name, email, message, optional fields) posting to a Cloudflare Worker with Turnstile spam protection; messages are emailed to the owner. Clear, accessible errors and a thank-you message; works without JavaScript except Turnstile. Added by the owner (approved Milestone 3, 2026-10-30).",
+      "depends_on": ["F032"],
+      "done_check": "npm test -- contact-form && npm run build && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F038",
+      "title": "Phone quick-edit mode",
+      "description": "On a phone, the builder opens a simplified editor: change text, swap images and button labels on a page, then save and publish. No layout editing. Added by the owner (approved Milestone 3, 2026-10-30).",
+      "depends_on": ["F007", "F008"],
+      "done_check": "npm test -- quick-edit && npm run build",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F039",
+      "title": "Site search",
+      "description": "Search for the published site with Pagefind, built at publish time, no server. A search page and an optional search link in the header; keyboard and screen-reader friendly. Added by the owner (approved Milestone 3, 2026-10-30).",
+      "depends_on": ["F031"],
+      "done_check": "npm test -- search && npm run build && npm run check:a11y",
+      "passes": false,
       "needs_review": true,
       "reviewed": false
     }

@@ -3,36 +3,17 @@
 Read this first in every session. Keep it short: replace "Current", append
 to "Log".
 
-## Overnight plan (owner, 2026-10-29: "go with all your recommendations, finish everything, don't wait for me")
-
-Owner approved: F027 A (built), F028 A + OK to the "Main button" proposal,
-F029 A, and building F030–F033 with Claude's recommendations (no snapshot
-picks needed; decisions go in DECISIONS.md). Never merge or publish; each
-feature is a draft PR stacked on the one before. A resumed session: find
-the first unchecked step, `git checkout` its branch, carry on.
-
-- [x] F028 build on `f028-style-customizer` (PR #12), then merge it into `f029-per-device-columns`
-- [x] F029 build on `f029-per-device-columns` (PR #13)
-- [x] F030 Content/Style/Advanced tabs on `f030-settings-tabs` (from F029's branch)
-- [x] F031 Header, footer and menu on `f031-header-footer` (from F030's), draft PR (base `f030-settings-tabs`)
-- [x] F032 More elements on `f032-more-elements` (from F031's), draft PR (base `f031-header-footer`)
-- [x] F033 Theme pack on `f033-theme-pack` (from F032's), draft PR (base `f032-more-elements`)
-- [x] Morning summary to the owner
-
 ## Current
 
 - **Milestone:** 1 complete. F001–F025 merged; first real publish live at
   https://crust-site.pages.dev (2026-10-29).
-- **Milestone 2 built overnight (2026-10-29), all in stacked draft PRs,
-  none merged or published:** F026 Layout library (#10) → F027 My layouts
-  (#11) → F028 Style customizer (#12) → F029 Per-device columns (#13) →
-  F030 Content/Style/Advanced tabs (#14) → F031 Header, footer and menu
-  (#15) → F032 More elements (#16) → F033 Theme pack (#17). Each PR's
-  base is the one before; merge them in order.
-- **Try everything at once:** https://f033-theme-pack.crust-admin.pages.dev
-  (the top of the stack holds every feature).
+- **Merged to main (2026-10-30, owner: "Both"):** Milestone 2, F026–F033
+  (PRs #10–#17). Not published yet: the live site changes when the owner
+  presses Publish.
+- **Milestone 3 approved (2026-10-30):** F034–F039, docs/milestone-3.md.
+  Now: F034 Media library, design snapshot on branch `f034-media-library`.
 - **Waiting on the owner:**
-  - Try the preview link and set `reviewed: true`: F010, F004, F003,
+  - Try https://crust-admin.pages.dev (main, now with Milestone 2) and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019,
     F020, F021, F022, F023, F024, F025, F026, F027, F028, F029, F030,
     F031, F032, F033.
@@ -262,3 +243,6 @@ the first unchecked step, `git checkout` its branch, carry on.
   addresses, "$" in site names, a hard-to-read style blocking a whole
   pack). 463 tests; check:a11y passes. Milestone 3 proposal in
   DECISIONS.md, waiting for the owner.
+- 2026-10-30 — Owner said "Both": merged PRs #10–#17 into main in order
+  (merge commits, CI green on each), and approved Milestone 3. Added
+  F034–F039 to features.json and docs/milestone-3.md.

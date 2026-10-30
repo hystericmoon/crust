@@ -30,8 +30,8 @@ Features Claude suggests. They are not work until the owner adds them to
   are one click away. Small.
 - **Gallery lightbox (opt-in).** Click a photo to see it large. Needs a
   little JavaScript on pages that use it; off by default.
-- **Milestone 3 proposal: "Real content" (needs the owner's yes; Claude's
-  recommended order).** Milestone 2 made pages look good; the gaps that
+- **Milestone 3 proposal: "Real content"** — *approved by the owner on
+  2026-10-30 and added as F034–F039; see docs/milestone-3.md.* Milestone 2 made pages look good; the gaps that
   matter next are getting real content in and helping people find it.
   1. **Media library with uploads.** Drop images in, pick them from a grid,
      alt text asked at upload. Stored in Cloudflare R2 (free tier: 10 GB),
