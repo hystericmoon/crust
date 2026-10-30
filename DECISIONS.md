@@ -30,6 +30,25 @@ Features Claude suggests. They are not work until the owner adds them to
   are one click away. Small.
 - **Gallery lightbox (opt-in).** Click a photo to see it large. Needs a
   little JavaScript on pages that use it; off by default.
+- **Milestone 3 proposal: "Real content" (needs the owner's yes; Claude's
+  recommended order).** Milestone 2 made pages look good; the gaps that
+  matter next are getting real content in and helping people find it.
+  1. **Media library with uploads.** Drop images in, pick them from a grid,
+     alt text asked at upload. Stored in Cloudflare R2 (free tier: 10 GB),
+     and crust-publish makes resized WebP copies with `srcset`, so pages
+     stay fast on phones. Biggest daily friction today: pasting image URLs.
+  2. **Blog / collections.** A "Posts" list with a post template, an index
+     page and an RSS feed. Most small sites need news or a portfolio.
+  3. **SEO and sharing panel per page.** Social image, search title,
+     preview of how the link looks when shared, `noindex` switch.
+  4. **Contact form block.** Cloudflare Worker + Turnstile (free), messages
+     emailed to the owner; keyboard- and screen-reader-friendly errors.
+  5. **Phone quick-edit mode.** Edit text and swap images on the phone,
+     then publish (the spec's "later" phone story).
+  6. **Site search** with Pagefind, built at publish time, no server.
+  Every item keeps $0 running cost; 1 and 4 need new Cloudflare setup the
+  owner does (logged in BLOCKED.md when the time comes). Each visual one
+  starts with a design snapshot, as before.
 - **Linked sections ("global sections").** A saved layout is a copy. A
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
