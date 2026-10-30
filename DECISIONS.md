@@ -62,8 +62,8 @@ Features Claude suggests. They are not work until the owner adds them to
   recommends a desktop app built with Tauri), what people pay for (Claude
   recommends a Crust licence with starter templates plus paid templates),
   and whether to sell plain-HTML exports early.
-- **Milestone 4 proposal: "Daily use"** — *waiting for the owner's
-  approval.* Milestones 1–3 made the builder work. Before designing
+- **Milestone 4 proposal: "Daily use"** — *approved by the owner on
+  2026-10-30 ("Approve") and added as F040–F044; see docs/milestone-4.md.* Milestones 1–3 made the builder work. Before designing
   templates in Crust (M5), the owner needs to build real sites in it
   comfortably every day, and templates will lean on these pieces.
   1. **Rich text in Text blocks.** Bold, italic, links, bulleted and
