@@ -1,5 +1,6 @@
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { SiteFooter, SiteHeader } from "./chrome";
+import type { PageSeo } from "./seo";
 import type { SiteTokens } from "./tokens";
 
 /** content/site.json */
@@ -19,6 +20,8 @@ export interface Page {
   path: string;
   title: string;
   description: string;
+  /** Search and sharing settings (F036). Optional: pages without it publish as before. */
+  seo?: PageSeo;
   puck: Data;
 }
 

@@ -17,6 +17,8 @@ to "Log".
     PR #18. Needs the owner's review on the preview link.
   - **F035 Blog: done** (passes) on `f035-blog` (stacked on F034).
     Needs the owner's review.
+  - **F036 Search and sharing: done** (passes) on `f036-seo` (stacked
+    on F035). Needs the owner's review.
 - **Waiting on the owner:**
   - **F034:** on PR #18's preview link (or crust-admin.pages.dev after
     merging), select a Card or Image block and press "Choose image".
@@ -27,6 +29,10 @@ to "Log".
   - **F035:** on the Pages screen, open **Posts** → New post. Write a
     post with a cover photo, Save draft, then publish and open
     /blog/ on the live site. Add "/blog" to the menu in Site settings.
+  - **F036:** open a page in the builder, click an empty spot on the
+    canvas (or "Fields" on the phone) and scroll to Search title, Social
+    image and "Hide from search engines"; watch the previews change.
+    After publishing, paste a page link into a chat app to see the card.
   - Try https://crust-admin.pages.dev (main, now with Milestone 2) and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019,
     F020, F021, F022, F023, F024, F025, F026, F027, F028, F029, F030,
@@ -284,3 +290,11 @@ to "Log".
   the publish workflow). Pages can't use /blog. Sample blog pages added to
   check:layouts (axe, every preset). Checked in Chromium at 1440 and 390
   px (keyboard focus, axe: no issues). 26 new tests; done_check exits 0.
+- 2026-10-30 — F036 done: search and sharing. Page settings get Search
+  title (with length counter), Social image (media picker + alt), Hide
+  from search engines, and live previews (search result, shared card).
+  Optional `seo` in page files; renderer adds canonical, Open Graph and
+  Twitter tags on every page (posts: cover, article); crust-publish
+  leaves noindex pages out of sitemap.xml. Checked in Chromium at 1440
+  and 390 px (keyboard, axe: no serious issues). 13 new tests;
+  done_check exits 0.

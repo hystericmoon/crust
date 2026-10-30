@@ -6,6 +6,7 @@
  */
 import type { Page } from "@crust/blocks";
 import type { Data } from "@puckeditor/core";
+import { seoFromRoot, seoToRoot } from "../seo/fields";
 
 export interface LocalDraft {
   page: Page;
@@ -147,13 +148,15 @@ export function mergePageRows(
 
 /** Puck keeps the page title and description as root fields while editing. */
 export function toPuckData(page: Page): Data {
-  const props = { ...(page.puck.root?.props ?? {}), title: page.title, description: page.description };
+  // F036: search and sharing settings are edited in the page settings too.
+  const props = { ...(page.puck.root?.props ?? {}), title: page.title, description: page.description, ...(page.seo ? seoToRoot(page.seo) : {}) };
   return { ...page.puck, root: { ...page.puck.root, props } as Data["root"] };
 }
 
 /** And back: the page file stores them at the top level (content contract). */
 export function fromPuckData(path: string, data: Data): Page {
   const props = (data.root?.props ?? {}) as { title?: string; description?: string };
-  const { title = "", description = "", ...rest } = props;
-  return { path, title, description, puck: { ...data, root: { ...data.root, props: rest } } };
+  const { title = "", description = "", ...others } = props;
+  const { seo, rest } = seoFromRoot(others);
+  return { path, title, description, ...(seo ? { seo } : {}), puck: { ...data, root: { ...data.root, props: rest } } };
 }

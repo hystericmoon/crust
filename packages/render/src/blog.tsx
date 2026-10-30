@@ -15,7 +15,9 @@ const feedLink = (site: Site, blog: BlogSettings) =>
 export function renderPost(site: Site, post: Post, blog: BlogSettings, baseCss: string, options: RenderOptions = {}): string {
   const top = renderToStaticMarkup(withMedia(<PostHeaderView post={post} blog={blog} language={site.language} />, options.media));
   const body = `<article class="cr-post">${top}${renderBody(post.puck, options.media)}</article>`;
-  return renderDocument(site, { path: postPath(post.slug), title: post.title, description: post.description || post.title, body, head: feedLink(site, blog) }, baseCss, options);
+  // F036: a shared post shows its cover.
+  const share = { image: post.cover || undefined, imageAlt: post.coverAlt, type: "article" as const };
+  return renderDocument(site, { path: postPath(post.slug), title: post.title, description: post.description || post.title, body, head: feedLink(site, blog), share }, baseCss, options);
 }
 
 export function renderBlogIndex(site: Site, posts: Post[], blog: BlogSettings, baseCss: string, options: RenderOptions = {}): string {

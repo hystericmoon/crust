@@ -53,6 +53,34 @@ Features Claude suggests. They are not work until the owner adds them to
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
 
+## 2026-10-30 — F036 Search and sharing settings (Claude's recommendations; owner: "go with all your recommendations")
+
+- **Where:** in the page settings panel (shown when no block is
+  selected; "Fields" on a phone), under Page title and Description:
+  Search title, Social image (with the media library picker and its alt
+  text), "Hide from search engines", and two live previews: a search
+  result and a shared-link card. No design snapshot: these are form
+  fields in the existing panel, with previews modelled on what Google
+  and chat apps show.
+- **Search title replaces the whole `<title>`** ("Page | Site" by
+  default) and the shared title. A counter shows the length and warns
+  past about 60 characters, but nothing is blocked below 120: the owner
+  decides.
+- **Every published page now gets** a canonical address, Open Graph tags
+  (type, site name, title, description, address, image and its alt
+  text) and a Twitter card (large image when there's a social image).
+  Addresses use the live site address from the publish workflow.
+- **Social image:** any image field value; library photos use their
+  1440 px copy (good for link previews, still small). The image needs
+  alt text, checked on save. Posts use their cover automatically and are
+  marked as articles; posts don't have the extra fields yet.
+- **"Hide from search engines"** adds `<meta name="robots"
+  content="noindex">` and leaves the page out of sitemap.xml. The page
+  is still published and links to it keep working.
+- **Format:** optional `seo` in a page file (`docs/spec.md`). It's only
+  written when something is set, so existing pages are unchanged: no
+  migration.
+
 ## 2026-10-30 — F035 Blog and collections (Claude's recommendations; owner: "go with all your recommendations")
 
 - **Where:** a **Posts** screen next to Pages (link in the Pages and Posts

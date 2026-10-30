@@ -4,6 +4,7 @@ import type { Page, Redirect, SavedLayout, Site } from "@crust/blocks/content";
 import { validateTokens } from "@crust/blocks/tokens";
 import { validateChrome } from "@crust/blocks/chrome-model";
 import { isBlogPath } from "@crust/blocks/posts";
+import { checkSeo } from "@crust/blocks/seo";
 
 const SEGMENT = /^[a-z0-9][a-z0-9-]*$/;
 export const MAX_BYTES = 512 * 1024;
@@ -138,6 +139,7 @@ export function checkPage(page: unknown): string[] {
   else if (page.description.length > 300) problems.push("The page description is longer than 300 characters.");
   const puck = page.puck;
   if (!isObject(puck) || !Array.isArray(puck.content) || !isObject(puck.root)) problems.push("The page's blocks are missing or damaged.");
+  problems.push(...checkSeo(page.seo));
   return problems;
 }
 

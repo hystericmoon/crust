@@ -136,3 +136,5 @@ export {
 } from "./posts";
 export type { Post, BlogSettings } from "./posts";
 export { PostHeaderView, BlogListView } from "./posts-view";
+export { seoLimits, seoAdvice, checkSeo, cleanSeo, displayUrl, shorten } from "./seo";
+export type { PageSeo } from "./seo";
