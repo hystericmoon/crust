@@ -142,7 +142,8 @@ export function App() {
   const [saved, setSaved] = useState<SiteTokens>(() => loadSavedTokens(site.tokens));
   const [draft, setDraft] = useState<SiteTokens>(saved);
   // F031: header and footer, saved with the tokens in site.json.
-  const [savedChrome, setSavedChrome] = useState<SiteChrome>(() => loadSavedChrome(migrateChrome(site, bundledPages())));
+  const defaultChrome = useMemo(() => migrateChrome(site, bundledPages()), [site]);
+  const [savedChrome, setSavedChrome] = useState<SiteChrome>(() => loadSavedChrome(defaultChrome));
   const [chromeDraft, setChromeDraft] = useState<SiteChrome>(savedChrome);
   const [githubOn, setGithubOn] = useState<boolean | null>(null);
   // The builder shows unsaved token edits too, so switching screens loses nothing.
@@ -164,7 +165,7 @@ export function App() {
       setSaved(tokens);
       setSavedChrome(chrome);
     }
-    const result = await saveContent({ kind: "site", site: siteToSave(site, tokens, chrome) });
+    const result = await saveContent({ kind: "site", site: siteToSave(site, tokens, chrome, defaultChrome) });
     if (result.ok) {
       setSaved(tokens);
       setSavedChrome(chrome);
