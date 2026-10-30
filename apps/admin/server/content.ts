@@ -1,6 +1,6 @@
 /** Server-side checks on content before it's committed (never trust the browser). */
 // Deep imports keep React and Puck out of the server bundle.
-import type { Page, Redirect, Site } from "@crust/blocks/content";
+import type { Page, Redirect, SavedLayout, Site } from "@crust/blocks/content";
 import { validateTokens } from "@crust/blocks/tokens";
 
 const SEGMENT = /^[a-z0-9][a-z0-9-]*$/;
@@ -62,6 +62,69 @@ export const redirectsAfterDelete = (list: Redirect[], path: string): Redirect[]
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
 
+// --- Saved layouts (F027): content/layouts/<id>.json ------------------------------
+
+export const LAYOUTS_FOLDER = "content/layouts";
+const LAYOUT_ID = /^[a-z0-9][a-z0-9-]{0,59}$/;
+export const isValidLayoutId = (id: unknown): id is string => typeof id === "string" && LAYOUT_ID.test(id);
+export const layoutFileFor = (id: string) => `${LAYOUTS_FOLDER}/${id}.json`;
+export const layoutIdForFile = (file: string): string | null => {
+  const m = file.match(/^content\/layouts\/([^/]+)\.json$/);
+  return m && isValidLayoutId(m[1]) ? m[1]! : null;
+};
+
+/** "Studio intro!" → "studio-intro"; a free id is picked from `taken` ("studio-intro-2"). */
+export function layoutIdFor(name: string, taken: Iterable<string>): string {
+  const base =
+    name
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 50)
+      .replace(/-+$/, "") || "layout";
+  const used = new Set(taken);
+  if (!used.has(base)) return base;
+  let n = 2;
+  while (used.has(`${base}-${n}`)) n++;
+  return `${base}-${n}`;
+}
+
+export const MAX_LAYOUT_NAME = 60;
+
+export function checkLayoutName(name: unknown): string[] {
+  if (typeof name !== "string" || !name.trim()) return ["The layout needs a name."];
+  if (name.trim().length > MAX_LAYOUT_NAME) return [`The layout name is longer than ${MAX_LAYOUT_NAME} characters.`];
+  return [];
+}
+
+const isBlock = (v: unknown): boolean =>
+  isObject(v) && typeof v.type === "string" && /^[A-Z][A-Za-z0-9]*$/.test(v.type) && isObject(v.props);
+
+/** What the browser may send to save a layout: a name, a kind and blocks. */
+export function checkLayout(layout: unknown): string[] {
+  if (!isObject(layout)) return ["The layout is missing."];
+  const problems = checkLayoutName(layout.name);
+  if (layout.kind !== "section" && layout.kind !== "page") problems.push("A layout is either a section or a whole page.");
+  if (!Array.isArray(layout.content) || layout.content.length === 0 || !layout.content.every(isBlock)) {
+    problems.push("The layout's blocks are missing or damaged.");
+  }
+  return problems;
+}
+
+/** A saved layout file as read back; null when it isn't one. */
+export function parseLayout(text: string | null, id: string): SavedLayout | null {
+  if (!text) return null;
+  try {
+    const v = JSON.parse(text) as unknown;
+    if (checkLayout(v).length || !isObject(v)) return null;
+    return { id, name: String(v.name).trim(), kind: v.kind as SavedLayout["kind"], savedAt: typeof v.savedAt === "string" ? v.savedAt : "", content: v.content as SavedLayout["content"] };
+  } catch {
+    return null;
+  }
+}
+
 export function checkPage(page: unknown): string[] {
   if (!isObject(page)) return ["The page is missing."];
   const problems: string[] = [];
@@ -93,4 +156,4 @@ export function checkSite(site: unknown): string[] {
 }
 
 /** The file text we commit: stable formatting, trailing newline. */
-export const serialize = (value: Page | Site | Redirect[]) => `${JSON.stringify(value, null, 2)}\n`;
+export const serialize = (value: Page | Site | Redirect[] | SavedLayout) => `${JSON.stringify(value, null, 2)}\n`;

@@ -1,4 +1,4 @@
-import type { Data } from "@puckeditor/core";
+import type { ComponentData, Data } from "@puckeditor/core";
 import type { SiteTokens } from "./tokens";
 
 /** content/site.json */
@@ -24,4 +24,20 @@ export interface Page {
 export interface Redirect {
   from: string;
   to: string;
+}
+
+/**
+ * content/layouts/<id>.json (optional; added with F027). A section or a whole
+ * page the owner saved to reuse from the layout library. It's a copy: pages
+ * that used it don't change when it's renamed or deleted.
+ */
+export interface SavedLayout {
+  /** Also the file name; never changes, even on rename. */
+  id: string;
+  name: string;
+  kind: "section" | "page";
+  /** ISO date. */
+  savedAt: string;
+  /** Top-level blocks, as in a page's puck.content. */
+  content: ComponentData[];
 }

@@ -17,6 +17,7 @@ import {
   buildItem,
   describeInsertion,
   filterLayouts,
+  firstHeading,
   insertionPoint,
   openLayoutGallery,
   planLayoutInsert,
@@ -24,6 +25,7 @@ import {
   type LayoutItem,
   type LayoutKind,
 } from "./library";
+import { MAX_NAME, useMyLayouts } from "./mine";
 
 const usePuckSelector = createUsePuck();
 
@@ -33,7 +35,8 @@ const PREVIEW_WIDTH = 1280;
 const previews = new Map<string, string>();
 /** The layout as published, rendered once. */
 function previewHtml(item: LayoutItem): string {
-  const key = `${item.kind}:${item.layout.id}`;
+  // A saved layout deleted and saved again under the same name gets the same id.
+  const key = item.kind === "mine" ? `mine:${item.layout.id}:${item.layout.savedAt}` : `${item.kind}:${item.layout.id}`;
   let html = previews.get(key);
   if (html === undefined) {
     try {
@@ -76,7 +79,9 @@ function Thumb({ item, maxHeight }: { item: LayoutItem; maxHeight: number }) {
   );
 }
 
-function Card({ item, onPick }: { item: LayoutItem; onPick: (item: LayoutItem) => void }) {
+type BuiltIn = Exclude<LayoutItem, { kind: "mine" }>;
+
+function Card({ item, onPick }: { item: BuiltIn; onPick: (item: LayoutItem) => void }) {
   const { layout } = item;
   const descId = `lg-desc-${item.kind}-${layout.id}`;
   const meta = item.kind === "page" ? `${item.layout.sections.length} sections` : item.layout.category;
@@ -93,6 +98,226 @@ function Card({ item, onPick }: { item: LayoutItem; onPick: (item: LayoutItem) =
         </p>
       </div>
     </li>
+  );
+}
+
+/** A name field with Save and Cancel; used to save, and to rename. */
+export function NameForm({
+  label,
+  initial,
+  submitLabel,
+  onSubmit,
+  onCancel,
+  idPrefix,
+}: {
+  label: string;
+  initial: string;
+  submitLabel: string;
+  /** Resolves to an error message, or null when it worked. */
+  onSubmit: (name: string) => Promise<string | null>;
+  onCancel: () => void;
+  idPrefix: string;
+}) {
+  const [name, setName] = useState(initial);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const input = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    input.current?.focus();
+    input.current?.select();
+  }, []);
+  return (
+    <form
+      className="lg-name-form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (busy) return;
+        setBusy(true);
+        void onSubmit(name).then((problem) => {
+          setBusy(false);
+          setError(problem);
+          if (problem) input.current?.focus();
+        });
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          // Close just this form, not the gallery or the selection.
+          e.preventDefault();
+          e.stopPropagation();
+          onCancel();
+        }
+      }}
+    >
+      <label className="lg-name-label" htmlFor={`${idPrefix}-name`}>
+        {label}
+      </label>
+      <input
+        ref={input}
+        id={`${idPrefix}-name`}
+        className="lg-name-input"
+        value={name}
+        maxLength={MAX_NAME + 20}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${idPrefix}-error` : undefined}
+        onChange={(e) => setName(e.target.value)}
+      />
+      {error ? (
+        <p id={`${idPrefix}-error`} className="lg-name-error" role="alert">
+          {error}
+        </p>
+      ) : null}
+      <div className="lg-name-actions">
+        <button type="submit" className="lg-name-save" disabled={busy}>
+          {busy ? "Saving…" : submitLabel}
+        </button>
+        <button type="button" className="lg-close" onClick={onCancel}>
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function MineCard({ item, onPick }: { item: Extract<LayoutItem, { kind: "mine" }>; onPick: (item: LayoutItem) => void }) {
+  const mine = useMyLayouts();
+  const { layout } = item;
+  const [mode, setMode] = useState<"idle" | "menu" | "rename" | "delete">("idle");
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const more = useRef<HTMLButtonElement>(null);
+  const base = `lg-mine-${layout.id}`;
+  const close = () => {
+    setMode("idle");
+    setError(null);
+    requestAnimationFrame(() => more.current?.focus());
+  };
+  return (
+    <li
+      className="lg-card is-mine"
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && mode !== "idle") {
+          e.preventDefault();
+          e.stopPropagation();
+          close();
+        }
+      }}
+    >
+      <Thumb item={item} maxHeight={layout.kind === "page" ? 300 : 190} />
+      <div className="lg-card-text">
+        <div className="lg-card-row">
+          <button type="button" className="lg-card-button" onClick={() => onPick(item)}>
+            <span className="lg-card-name">{layout.name}</span>
+            <span className="lg-card-meta">{layout.kind === "page" ? `Page · ${layout.content.length} sections` : "Section"}</span>
+          </button>
+          <button
+            ref={more}
+            type="button"
+            className="lg-more"
+            aria-label={`More for ${layout.name}`}
+            aria-expanded={mode === "menu"}
+            aria-controls={`${base}-menu`}
+            onClick={() => setMode(mode === "menu" ? "idle" : "menu")}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+              <circle cx="5" cy="12" r="2" />
+              <circle cx="12" cy="12" r="2" />
+              <circle cx="19" cy="12" r="2" />
+            </svg>
+          </button>
+        </div>
+        {mode === "menu" ? (
+          <div id={`${base}-menu`} className="lg-menu">
+            <button type="button" onClick={() => setMode("rename")} autoFocus>
+              Rename
+            </button>
+            <button type="button" className="is-danger" onClick={() => setMode("delete")}>
+              Delete
+            </button>
+          </div>
+        ) : null}
+        {mode === "rename" ? (
+          <NameForm
+            idPrefix={`${base}-rename`}
+            label="New name"
+            initial={layout.name}
+            submitLabel="Save name"
+            onSubmit={async (name) => {
+              const problem = await mine.rename(layout.id, name);
+              if (!problem) close();
+              return problem;
+            }}
+            onCancel={close}
+          />
+        ) : null}
+        {mode === "delete" ? (
+          <div className="lg-confirm" role="group" aria-labelledby={`${base}-confirm`}>
+            <p id={`${base}-confirm`}>Delete “{layout.name}”? Pages that already use it keep their copy.</p>
+            {error ? (
+              <p className="lg-name-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+            <div className="lg-name-actions">
+              <button
+                type="button"
+                className="lg-danger"
+                disabled={busy}
+                autoFocus
+                onClick={() => {
+                  setBusy(true);
+                  void mine.remove(layout.id).then((problem) => {
+                    setBusy(false);
+                    setError(problem);
+                  });
+                }}
+              >
+                {busy ? "Deleting…" : "Delete layout"}
+              </button>
+              <button type="button" className="lg-close" onClick={close}>
+                Keep it
+              </button>
+            </div>
+          </div>
+        ) : null}
+      </div>
+    </li>
+  );
+}
+
+/** "Save this page as a layout", at the top of My layouts. */
+function SavePage({ onSaved }: { onSaved: () => void }) {
+  const getPuck = useGetPuck();
+  const mine = useMyLayouts();
+  const [open, setOpen] = useState(false);
+  const data = getPuck().appState.data as Data;
+  const empty = data.content.length === 0;
+  if (!open) {
+    return (
+      <div className="lg-save-page">
+        <button type="button" className="lg-close" disabled={empty} onClick={() => setOpen(true)}>
+          Save this page as a layout
+        </button>
+        <span className="lg-where">{empty ? "Add a section first." : `All ${data.content.length} sections, to reuse as a whole page.`}</span>
+      </div>
+    );
+  }
+  const title = typeof data.root.props?.title === "string" ? data.root.props.title : "";
+  return (
+    <NameForm
+      idPrefix="lg-save-page"
+      label="Name for this page layout"
+      initial={title.trim() || firstHeading(data.content) || "My page"}
+      submitLabel="Save layout"
+      onSubmit={async (name) => {
+        const problem = await mine.save(name, "page", (getPuck().appState.data as Data).content);
+        if (!problem) {
+          setOpen(false);
+          onSaved();
+        }
+        return problem;
+      }}
+      onCancel={() => setOpen(false)}
+    />
   );
 }
 
@@ -126,8 +351,10 @@ export function LayoutGallery() {
     [getPuck],
   );
 
+  const mine = useMyLayouts();
   const close = () => dialog.current?.close();
-  const items = useMemo(() => filterLayouts(kind, category, query), [kind, category, query]);
+  const items = useMemo(() => filterLayouts(kind, category, query, mine.layouts ?? []), [kind, category, query, mine.layouts]);
+  const mineCount = mine.layouts?.length ?? 0;
   const where = open ? describeInsertion(getPuck().config as Config, (getPuck().appState.data as Data).content, index) : "";
 
   const pick = (item: LayoutItem) => {
@@ -172,6 +399,7 @@ export function LayoutGallery() {
               options={[
                 { value: "section", label: "Sections" },
                 { value: "page", label: "Whole pages" },
+                { value: "mine", label: mineCount ? `My layouts (${mineCount})` : "My layouts" },
               ]}
             />
             <button type="button" className="lg-close" onClick={close}>
@@ -191,8 +419,12 @@ export function LayoutGallery() {
                     </li>
                   ))}
                 </ul>
-              ) : (
+              ) : kind === "page" ? (
                 <p className="lg-side-note">A whole page adds all its sections at once. Change or remove any of them after.</p>
+              ) : (
+                <p className="lg-side-note">
+                  Sections and pages you saved, kept in {mine.where}. They're copies: renaming or deleting one never changes your pages.
+                </p>
               )}
             </nav>
             <div className="lg-main">
@@ -206,18 +438,41 @@ export function LayoutGallery() {
                   onChange={(e) => setQuery(e.target.value)}
                 />
               </label>
+              {kind === "mine" ? <SavePage onSaved={() => setQuery("")} /> : null}
               <p className="lg-count" role="status">
                 {items.length === 0
                   ? ""
-                  : `${items.length} ${kind === "page" ? "page layout" : "section"}${items.length === 1 ? "" : "s"}${
-                      kind === "section" && category !== "All" ? ` in ${category}` : ""
-                    }`}
+                  : kind === "mine"
+                    ? `${items.length} of your layout${items.length === 1 ? "" : "s"}`
+                    : `${items.length} ${kind === "page" ? "page layout" : "section"}${items.length === 1 ? "" : "s"}${
+                        kind === "section" && category !== "All" ? ` in ${category}` : ""
+                      }`}
               </p>
-              {items.length ? (
-                <ul className={kind === "page" ? "lg-grid is-pages" : "lg-grid"}>
-                  {items.map((item) => (
-                    <Card key={`${item.kind}:${item.layout.id}`} item={item} onPick={pick} />
-                  ))}
+              {kind === "mine" && mine.loadError ? (
+                <div className="lg-empty" role="alert">
+                  <p>{mine.loadError}</p>
+                  <button type="button" className="lg-close" onClick={mine.reload}>
+                    Try again
+                  </button>
+                </div>
+              ) : kind === "mine" && mine.layouts === null ? (
+                <p className="lg-empty">Loading your layouts…</p>
+              ) : kind === "mine" && mineCount === 0 ? (
+                <div className="lg-empty">
+                  <p>
+                    <strong>Nothing saved yet.</strong> Select a section on the page and choose <strong>Save as layout</strong> on its
+                    toolbar, or save this whole page above.
+                  </p>
+                </div>
+              ) : items.length ? (
+                <ul className={kind === "section" ? "lg-grid" : "lg-grid is-pages"}>
+                  {items.map((item) =>
+                    item.kind === "mine" ? (
+                      <MineCard key={`mine:${item.layout.id}`} item={item} onPick={pick} />
+                    ) : (
+                      <Card key={`${item.kind}:${item.layout.id}`} item={item} onPick={pick} />
+                    ),
+                  )}
                 </ul>
               ) : (
                 <div className="lg-empty">

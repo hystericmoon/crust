@@ -17,15 +17,18 @@ to "Log".
 - **Done, in draft PR #10: F026 Layout library** on branch
   `f026-layout-library` (owner chose direction **B**). Waiting for the
   owner to try it on the preview link.
-- **Next:** F027 My layouts (save a section or page as your own layout,
-  stored in `content/layouts/`).
+- **Done, in draft PR #11 (stacked on #10): F027 My layouts** on branch
+  `f027-my-layouts`. Owner asked Claude to continue overnight; Claude
+  built direction A (its recommendation). The owner can still ask for B
+  or C from the snapshot before merging.
+- **Next:** F028 Style customizer v2 (design snapshot first).
   Other proposals waiting in DECISIONS.md (sign-out button, restore
   brings back the redirect).
 - **Waiting on the owner:**
   - Check the live site on his phone.
   - Review on the preview link and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019, F020,
-    F021, F022, F023, F024, F025, F026.
+    F021, F022, F023, F024, F025, F026, F027.
 - **Reminder:** the Cloudflare API token expires on the date the owner set
   (recommended 2027-01-26), and the GitHub token (crust-admin-save) after
   90 days, around 2027-01-27. Both fail with a clear error; make a new one
@@ -173,3 +176,14 @@ to "Log".
   total). Checked in Chromium at 1440 and 390: insert, whole-page insert
   keeps one h1, undo, empty page, Escape returns focus, axe clean with
   the gallery open, no console errors. done_check passes.
+- 2026-10-29 — F027 design snapshot v1: three ways to save and find your
+  own layouts (A save on the section + own tab, B all in the gallery,
+  C mixed into categories). Same in all: copies not links, name from the
+  heading, GitHub storage, delete confirms. Waiting for the owner's pick.
+- 2026-10-29 — F027 My layouts done (direction A, chosen by Claude while
+  the owner slept). "Save as layout" on the section toolbar, "Save this
+  page" and a My layouts tab in the gallery with rename/delete, files in
+  content/layouts/ through /api/layouts, browser copy when GitHub is off.
+  25 new tests (316 total). Checked in Chromium at 1440 and 390: save,
+  page save, rename, Escape, delete, insert with fresh ids, reload keeps
+  them, axe clean. done_check passes; F026's still passes.

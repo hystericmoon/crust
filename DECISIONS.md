@@ -20,6 +20,40 @@ Features Claude suggests. They are not work until the owner adds them to
   renamed page removes its old-address redirect, and restoring it doesn't
   add the redirect back. Harmless today; matters once the site has
   visitors and bookmarks.
+- **Linked sections ("global sections").** A saved layout is a copy. A
+  linked section (for example a contact strip on every page) would update
+  everywhere when edited once. Useful later; needs a page-format change.
+
+## 2026-10-29 — F027 My layouts (direction A, chosen by Claude; owner can switch)
+
+- **Who chose:** the owner went to bed and asked Claude to continue
+  without him. Claude built its recommended direction **A** from
+  `design/f027-my-layouts-v1.html` on the draft PR, so the owner can
+  still ask for B or C before it merges. Nothing was merged or published.
+- **Saving:** "Save as layout" on the selected section's toolbar (name
+  starts as the section's heading); "Save this page as a layout" at the
+  top of the gallery's My layouts tab (name starts as the page title).
+- **Finding:** a third switch in the gallery, "My layouts (n)", with
+  search; Rename and Delete behind each card's "More" button (a simple
+  show/hide, not a menu widget, so Tab works as usual). Delete asks first
+  and says pages keep their copy. Escape closes the menu or form only.
+- **Copies, not links:** inserting gives every block new ids; renaming or
+  deleting a layout never touches pages. (Linked "global sections" would
+  be a separate feature; see Proposals.)
+- **Format (additive, no migration):** `content/layouts/<id>.json`
+  `{ id, name, kind: "section"|"page", savedAt, content }`. The id comes
+  from the name ("Studio intro" → `studio-intro`, then `-2`…) and never
+  changes, so a rename is one small commit. Only the builder reads these;
+  the publish step only reads `content/pages/`.
+- **API:** `GET /api/layouts` lists; `POST /api/layouts` with
+  `action: save | rename | delete`. Same gate as every other endpoint
+  (Access sign-in, admin-only header, same origin). The server checks the
+  name, the kind and that content is real blocks.
+- **Without GitHub:** layouts are kept in this browser (localStorage), and
+  the gallery says where they're kept. With GitHub on, a failed save keeps
+  the form open with the reason; nothing is silently kept only locally.
+- **Colour:** teal (#0f766e) marks "yours" (save button, saved cards),
+  separate from blue (add/selected) and orange (whole site).
 
 ## 2026-10-29 — F026 Layout library (owner chose direction B)
 
