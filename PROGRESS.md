@@ -24,8 +24,8 @@ to "Log".
   F043 are direction A of their design snapshots; the owner can still
   pick B (a rework item, only if he asks). Buying the domain is in
   BLOCKED.md.
-- **No unblocked feature left** in features.json. Next work comes from the
-  owner (Proposals in DECISIONS.md).
+- **Milestone 5 "Templates" approved (2026-10-30, owner: "Approve"):**
+  F045–F049, docs/milestone-5.md. Next: F045 Save a site as a template.
 - **Waiting on the owner** (all on crust-admin.pages.dev unless noted):
   - **F044:** open Site settings → Site
     address (last in the list). Type a domain with a mistake (like
@@ -414,3 +414,6 @@ to "Log".
   (packages/blocks index and package.json, server/content.ts imports,
   App.tsx providers), kept both sides. CI green on every head before
   merging. Not published.
+- 2026-10-30 — Owner: "Go ahead merge and move to new milestone". M4 was
+  already merged (#27–#31). Proposed Milestone 5 "Templates" (PR #32);
+  owner approved; added F045–F049 and docs/milestone-5.md.

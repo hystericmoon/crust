@@ -65,8 +65,9 @@ Features Claude suggests. They are not work until the owner adds them to
   recommends a desktop app built with Tauri), what people pay for (Claude
   recommends a Crust licence with starter templates plus paid templates),
   and whether to sell plain-HTML exports early.
-- **Milestone 5 proposal: "Templates"** (proposed 2026-10-30, after the
-  owner's "move to new milestone"; waiting for approval). Milestone 4 made
+- **Milestone 5 proposal: "Templates"** — *approved by the owner on
+  2026-10-30 ("Approve") and added as F045–F049; see docs/milestone-5.md.
+  Item 6 (review fixes) is added only when the owner asks.* Milestone 4 made
   daily building comfortable. The roadmap's next step is templates:
   complete sites the owner designs in Crust and, later, sells (M7). M5
   makes a template a real, checkable thing; it doesn't sell anything yet.
