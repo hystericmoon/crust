@@ -12,19 +12,21 @@ to "Log".
 - **Milestone 3 merged to main (2026-10-30, owner: "Merge them all in
   order"):** F034–F039 (PRs #18–#23), all passing, now on
   https://crust-admin.pages.dev. Uploads and "Save and publish" work there.
-- **Not published yet:** Milestones 2 and 3 are on main, but the live site
+- **Not published yet:** Milestones 2–4 are on main, but the live site
   changes only when the owner presses Publish.
 - **F037 email** still needs the owner's setup (BLOCKED.md,
   docs/setup-contact-form.md); until then the form shows but doesn't send.
 - **F034–F039 still need `reviewed: true`** from the owner (steps below).
-- **Milestone 4 "Daily use" approved (2026-10-30):** F040–F044,
-  docs/milestone-4.md. **F040 merged** (PR #26, owner: "merge F040").
-  **F041 layouts** (PR #27) and **F042 rich text** (PR #28) merged, owner:
-  "Yes, merge all four in order". **F043 linked sections** (PR #29) and
-  **F044 custom domain** (PR #30) built, merging next in that order.
-  F042 and F043 are direction A of their design snapshots; the owner can
-  still pick B. Buying the domain is in BLOCKED.md.
-- **Waiting on the owner:**
+- **Milestone 4 "Daily use" merged to main (2026-10-30/31):** F040–F044,
+  docs/milestone-4.md. F040 (PR #26, owner: "merge F040"); F041–F044
+  (PRs #27–#30, owner: "Yes, merge all four in order", merged at 3am
+  Jakarta as he asked). All on https://crust-admin.pages.dev. F042 and
+  F043 are direction A of their design snapshots; the owner can still
+  pick B (a rework item, only if he asks). Buying the domain is in
+  BLOCKED.md.
+- **No unblocked feature left** in features.json. Next work comes from the
+  owner (Proposals in DECISIONS.md).
+- **Waiting on the owner** (all on crust-admin.pages.dev unless noted):
   - **F044:** open Site settings → Site
     address (last in the list). Type a domain with a mistake (like
     studio.com/about), then a correct one; the example address below
@@ -32,7 +34,7 @@ to "Log".
     the Publish panel is unchanged until a domain is set.
   - **F043:** look at the design snapshot
     (https://claude.ai/artifact/DSXzme9pbKie3guoRpSizj; A was built). On
-    the PR's preview link: select a section, press **Make linked**, name
+    crust-admin.pages.dev: select a section, press **Make linked**, name
     it. Add it to a second page from Layouts → Linked. Select it, press
     **Edit linked section**, change a word, save, go Back: both pages
     show it. Then try **Unlink here**.
@@ -42,17 +44,16 @@ to "Log".
     fill in your own photos and words.
   - **F042:** look at the design snapshot
     (https://claude.ai/artifact/1d1Ujx7ENSrGCef6CWfg9Z; A was built). On
-    the PR's preview link, select a Text block: make words bold, add a
+    crust-admin.pages.dev, select a Text block: make words bold, add a
     link with ⌘K, type "- " to start a list. Try a bad link like
     "javascript:x". Then try the same in Quick edit on your phone.
-  - **F040:** on the PR's preview link, open a page in the builder.
+  - **F040:** open a page in the builder.
     The Pages screen and the builder's top bar have **Sign out** (after
     Site settings); on your phone the Pages buttons now wrap as whole
     buttons, with New page full width. In the builder the buttons now
     sit on one line, with the page name on the left. Press Sign out: you
     land on Cloudflare's "signed out" page, and signing back in brings
-    your edits back. To see the redirect fix (on crust-admin.pages.dev
-    once merged): rename a page, delete it, restore it from "Recently
+    your edits back. To see the redirect fix: rename a page, delete it, restore it from "Recently
     deleted", and the old address leads to it again.
   - **F034:** on crust-admin.pages.dev, select a Card or Image block and press "Choose image".
     Upload a photo from the Mac and one from the phone, describe them,
@@ -406,3 +407,10 @@ to "Log".
   panel; guide docs/setup-custom-domain.md; BLOCKED.md entry for buying
   the domain. 26 new tests (custom-domain) + 1 Rust test. done_check
   passes.
+- 2026-10-31 (3am Jakarta, 20:00–20:30 UTC Oct 30) — Merged F041–F044
+  (PRs #27–#30) in order, owner's say-so ("Yes, merge all four in
+  order"). Each branch brought up to date with merge commits; conflicts
+  only in PROGRESS/CHANGELOG/DECISIONS and the shared export lists
+  (packages/blocks index and package.json, server/content.ts imports,
+  App.tsx providers), kept both sides. CI green on every head before
+  merging. Not published.
