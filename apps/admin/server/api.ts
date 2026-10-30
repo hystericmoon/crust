@@ -259,8 +259,9 @@ export async function handlePublish(request: Request, env: Env, fetchFn: typeof 
     }
     const [runs, last] = await Promise.all([latestRuns(cfg, PUBLISH_WORKFLOW, fetchFn), lastSuccessfulRun(cfg, PUBLISH_WORKFLOW, fetchFn)]);
     // Where the site is live (F017): null until the first successful publish.
-    const liveUrl = last ? await liveAddress(cfg, last.id, fetchFn) : null;
-    return json(200, { ok: true, runs, liveUrl });
+    const live = last ? await liveAddress(cfg, last.id, fetchFn) : null;
+    // F044: notConnected names the owner's domain while publishing still uses the free address.
+    return json(200, { ok: true, runs, liveUrl: live?.url ?? null, notConnected: live?.notConnected ?? null });
   } catch (e) {
     return githubFailure(e);
   }

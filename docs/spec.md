@@ -82,6 +82,11 @@ scripts/               init.sh and other helpers
 
 `puck` is Puck's own `Data` shape: a block tree, never raw HTML.
 
+`baseUrl` is the site's own address (F044: edited in Site settings → Site
+address): `https://` plus the domain, no path. `https://example.pages.dev`
+means "not set"; publishing then uses the Cloudflare Pages address, and it
+uses the own domain only once Cloudflare reports it connected.
+
 `tokens.sectionStyles` (optional, added with F025) defines the site-wide
 section styles; a Section's `background` names one (`background`,
 `surface`, `primary`, `dark`).

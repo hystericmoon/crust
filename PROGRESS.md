@@ -19,12 +19,17 @@ to "Log".
 - **F034–F039 still need `reviewed: true`** from the owner (steps below).
 - **Milestone 4 "Daily use" approved (2026-10-30):** F040–F044,
   docs/milestone-4.md. **F040 merged** (PR #26, owner: "merge F040").
-  **F041 layouts merged** (PR #27, owner: "Yes, merge all four in
-  order"). **F042 rich text** built (PR #28; direction A of its design
-  snapshot, owner can still pick B). **F043 linked sections built** (PR
-  #29, stacked on F042; direction A, owner can pick B). Next: F044 custom
-  domain.
+  **F041 layouts** (PR #27) and **F042 rich text** (PR #28) merged, owner:
+  "Yes, merge all four in order". **F043 linked sections** (PR #29) and
+  **F044 custom domain** (PR #30) built, merging next in that order.
+  F042 and F043 are direction A of their design snapshots; the owner can
+  still pick B. Buying the domain is in BLOCKED.md.
 - **Waiting on the owner:**
+  - **F044:** open Site settings → Site
+    address (last in the list). Type a domain with a mistake (like
+    studio.com/about), then a correct one; the example address below
+    updates. Don't save a domain you don't own yet. On the Pages screen
+    the Publish panel is unchanged until a domain is set.
   - **F043:** look at the design snapshot
     (https://claude.ai/artifact/DSXzme9pbKie3guoRpSizj; A was built). On
     the PR's preview link: select a section, press **Make linked**, name
@@ -394,3 +399,10 @@ to "Log".
   only when unused); Make linked, Layouts → Linked, panel with Edit and
   Unlink, its own editor screen; links follow renamed pages; Publish
   panel lists changed sections. 17 new tests; done_check exits 0.
+- 2026-10-30 — F044 Custom domain: Site settings → Site address (domain
+  field, tidied and checked, saved as site.json's baseUrl); the publish
+  workflow asks Cloudflare whether the domain is active and otherwise
+  keeps the free address, reporting "Not connected yet" to the Publish
+  panel; guide docs/setup-custom-domain.md; BLOCKED.md entry for buying
+  the domain. 26 new tests (custom-domain) + 1 Rust test. done_check
+  passes.

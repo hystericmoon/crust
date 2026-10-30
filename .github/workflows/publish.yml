@@ -75,12 +75,23 @@ jobs:
         env:
           SUBDOMAIN: ${{ steps.project.outputs.subdomain }}
         run: |
-          # site.json's baseUrl wins once it's a real address; until then use the Pages address.
+          # F044: site.json's baseUrl (Site settings → Site address) wins once
+          # Cloudflare reports that domain as active on the Pages project;
+          # until then the free Pages address is used (scripts/site-address.mjs).
           base=$(jq -r '.baseUrl' content/site.json)
-          case "$base" in
-            ""|*example.*) base="https://$SUBDOMAIN" ;;
-          esac
-          echo "url=${base%/}" >> "$GITHUB_OUTPUT"
+          api="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$SITE_PROJECT/domains"
+          curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "$api" -o domains.json || echo '{}' > domains.json
+          node scripts/site-address.mjs "$base" "$SUBDOMAIN" domains.json | tee -a "$GITHUB_OUTPUT"
+          rm domains.json
+
+      - name: Your address isn't connected yet
+        if: steps.site.outputs.wanted != ''
+        env:
+          WANTED: ${{ steps.site.outputs.wanted }}
+          WANTED_STATUS: ${{ steps.site.outputs.wanted_status }}
+          URL: ${{ steps.site.outputs.url }}
+        run: |
+          echo "::warning::$WANTED isn't connected to the Pages project yet (Cloudflare says: $WANTED_STATUS). Publishing to $URL for now. See docs/setup-custom-domain.md."
 
       - name: Render pages
         env:
@@ -132,6 +143,13 @@ jobs:
         run: echo "Live at $URL"
         env:
           URL: ${{ steps.site.outputs.url }}
+
+      # F044: the admin reads this too, to say the owner's domain isn't connected yet.
+      - name: Not connected yet ${{ steps.site.outputs.wanted }}
+        if: steps.site.outputs.wanted != ''
+        run: echo "Not connected yet $WANTED"
+        env:
+          WANTED: ${{ steps.site.outputs.wanted }}
 
       - name: Write job summary
         env:

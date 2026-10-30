@@ -79,6 +79,7 @@ describe("Site settings screen", () => {
       "Spacing",
       "Shape & layout",
       "Theme pack",
+      "Site address",
     ]);
     expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Presets"]);
     for (const name of ["Page", "Surface", "Text", "Muted text", "Primary", "Text on primary"]) {

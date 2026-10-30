@@ -1,0 +1,19 @@
+/* Site settings → Site address (F044) */
+.sa-field { display: grid; gap: 6px; max-width: 32rem; }
+.sa-field .st-help, .sa-field .st-error { margin: 0; }
+.sa-input {
+  display: flex; align-items: stretch;
+  border: 1px solid var(--st-border); border-radius: 8px; background: var(--st-panel);
+}
+.sa-input:focus-within { outline: 2px solid var(--st-action); outline-offset: 2px; }
+.sa-prefix {
+  display: flex; align-items: center; padding: 0 4px 0 12px;
+  color: var(--st-muted); font-size: 16px;
+}
+.sa-input .st-input { flex: 1; min-width: 0; border: 0; padding-left: 0; background: transparent; }
+.sa-input .st-input:focus { outline: none; }
+.sa-input:has(.st-input[aria-invalid="true"]) { border: 2px solid var(--st-danger); }
+.sa-example { font-family: ui-monospace, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
+.sa-steps, .sa-uses { margin-top: 24px; }
+.sa-steps h3, .sa-uses h3 { margin: 0 0 8px; font-size: 1rem; }
+.sa-steps ol, .sa-uses ul { margin: 0 0 12px; padding-left: 1.25rem; display: grid; gap: 4px; }

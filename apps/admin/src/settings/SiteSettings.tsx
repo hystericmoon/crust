@@ -31,6 +31,7 @@ import { ThemePackGroup, type PackPreview } from "./ThemePack";
 import { ButtonOptions, CardOptions, LinkOptions, TypeOptions } from "./StyleGroups";
 import { chromeProblems, FooterOptions, HeaderOptions, type PageOption } from "./ChromeGroups";
 import { migrateChrome, validateChrome, type SiteChrome } from "@crust/blocks";
+import { SiteAddressGroup } from "./SiteAddress";
 
 export interface SiteSettingsProps {
   site: Site;
@@ -51,6 +52,11 @@ export interface SiteSettingsProps {
   chromeDirty?: boolean;
   /** The site's pages, for building menus. */
   pages?: PageOption[];
+  /** The site's own address (F044), saved with the tokens as site.json's baseUrl. */
+  address?: string;
+  onAddressChange?: (baseUrl: string) => void;
+  /** True when the address differs from what's saved. */
+  addressDirty?: boolean;
 }
 
 /** Direction A (F028): one group at a time, beside the live preview. */
@@ -67,6 +73,7 @@ export const groups = [
   { id: "spacing", label: "Spacing" },
   { id: "shape", label: "Shape & layout" },
   { id: "theme-pack", label: "Theme pack" },
+  { id: "address", label: "Site address" },
 ] as const;
 export type GroupId = (typeof groups)[number]["id"];
 
@@ -75,6 +82,7 @@ export function groupOfField(field: string): GroupId | null {
   if (field.startsWith("color-")) return "colours";
   if (field.startsWith("spacing-")) return "spacing";
   if (field === "radius" || field === "maxWidth") return "shape";
+  if (field === "site-address") return "address";
   return null;
 }
 
@@ -102,6 +110,9 @@ export function SiteSettings({
   onChromeChange = () => undefined,
   chromeDirty = false,
   pages = [],
+  address = site.baseUrl,
+  onAddressChange = () => undefined,
+  addressDirty = false,
 }: SiteSettingsProps) {
   const [status, setStatus] = useState("");
   const [invalid, setInvalid] = useState<ReadonlySet<string>>(new Set());
@@ -123,7 +134,7 @@ export function SiteSettings({
   };
   /** Colours and fonts from before the last preset, for one-step undo. */
   const [beforePreset, setBeforePreset] = useState<{ tokens: SiteTokens; name: string } | null>(null);
-  const dirty = !sameTokens(saved, draft) || chromeDirty;
+  const dirty = !sameTokens(saved, draft) || chromeDirty || addressDirty;
   const results = useMemo(() => checkContrast(draft.colors), [draft.colors]);
 
   const setValidity = useCallback((field: string, valid: boolean) => {
@@ -452,6 +463,11 @@ export function SiteSettings({
                 if (p.chrome) onChromeChange(next.chrome);
               }}
             />
+          </section>
+
+          <section className="st-card" id="address" aria-labelledby="address-h" hidden={group !== "address"}>
+            <h2 id="address-h" tabIndex={-1}>Site address</h2>
+            <SiteAddressGroup value={address} onChange={onAddressChange} onValidity={setValidity} />
           </section>
         </main>
 

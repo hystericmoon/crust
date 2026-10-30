@@ -5,6 +5,7 @@ import { validateTokens } from "@crust/blocks/tokens";
 import { validateChrome } from "@crust/blocks/chrome-model";
 import { isBlogPath, isSearchPath } from "@crust/blocks/posts";
 import { checkSeo } from "@crust/blocks/seo";
+import { isValidSiteAddress } from "@crust/blocks/site-address";
 import { richTextProblems } from "@crust/blocks/rich-text";
 import { isValidSectionId, linkedSectionIds } from "@crust/blocks/linked-sections";
 
@@ -170,7 +171,8 @@ export function checkSite(site: unknown): string[] {
   if (!isObject(site)) return ["The site settings are missing."];
   const problems: string[] = [];
   if (typeof site.name !== "string" || !site.name.trim()) problems.push("The site needs a name.");
-  if (typeof site.baseUrl !== "string" || !/^https?:\/\/[^\s/]+/.test(site.baseUrl)) problems.push("The site address must look like https://example.com.");
+  // F044: the domain alone, https, no page address after it.
+  if (!isValidSiteAddress(site.baseUrl)) problems.push("The site address must look like https://studio.com (https, the domain only).");
   if (typeof site.language !== "string" || !/^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$/.test(site.language)) problems.push("The site language must be a code like en or id.");
   if (!isObject(site.tokens)) problems.push("The design tokens are missing.");
   else {

@@ -269,17 +269,30 @@ export async function changedFiles(cfg: GitHubConfig, since: string, fetchFn: ty
 const LIVE_STEP = /^Live at (https:\/\/[a-z0-9.-]+(?::\d+)?(?:\/\S*)?)$/i;
 
 /** The address a run published the site at, read from its step names; null if none. */
-export async function liveAddress(cfg: GitHubConfig, runId: number, fetchFn: typeof fetch = fetch): Promise<string | null> {
+export interface LiveAddress {
+  /** Where the site went live; null when the run didn't report it. */
+  url: string | null;
+  /** F044: the owner's own domain, when that publish found it not connected yet. */
+  notConnected: string | null;
+}
+
+const NOT_CONNECTED_STEP = /^Not connected yet ([a-z0-9.-]+\.[a-z]{2,63})$/i;
+
+export async function liveAddress(cfg: GitHubConfig, runId: number, fetchFn: typeof fetch = fetch): Promise<LiveAddress> {
+  const found: LiveAddress = { url: null, notConnected: null };
   const res = await fetchFn(`${api}/repos/${cfg.repo}/actions/runs/${runId}/jobs?per_page=10`, { headers: headers(cfg.token) });
-  if (!res.ok) return null;
+  if (!res.ok) return found;
   const body = (await res.json()) as { jobs?: { steps?: { name: string; conclusion: string | null }[] }[] };
   for (const job of body.jobs ?? []) {
     for (const step of job.steps ?? []) {
-      const m = LIVE_STEP.exec(step.name);
-      if (m && step.conclusion === "success") return m[1]!;
+      if (step.conclusion !== "success") continue;
+      const live = LIVE_STEP.exec(step.name);
+      if (live && !found.url) found.url = live[1]!;
+      const wanted = NOT_CONNECTED_STEP.exec(step.name);
+      if (wanted && !found.notConnected) found.notConnected = wanted[1]!.toLowerCase();
     }
   }
-  return null;
+  return found;
 }
 
 export interface CommitSummary {

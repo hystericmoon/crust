@@ -4,6 +4,12 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Your own domain (F044):** Site settings has a new **Site address**
+  group. Type your domain (like studio.com), save and publish: search
+  results, the sitemap, link previews, the blog's RSS feed and the "Open
+  live site" button all use it. Until the domain is connected in
+  Cloudflare, publishing keeps using the free address and the Publish
+  panel tells you so. Step-by-step guide: docs/setup-custom-domain.md.
 - **Linked sections (F043):** make a section once and show it on many
   pages. Select a section and press **Make linked** on its toolbar; add
   it to other pages from **Layouts → Linked**. Selecting it shows which
