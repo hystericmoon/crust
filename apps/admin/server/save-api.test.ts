@@ -317,6 +317,16 @@ describe("save-api: reading pages and publishing (F007, F008)", () => {
     });
   });
 
+  it("counts a template's sample content still to replace (F046)", async () => {
+    const marked = page({ path: "/", title: "Home" });
+    marked.puck.content = [{ type: "Heading", props: { id: "h", text: "Your studio", level: "h1", align: "left", placeholder: ["text"] } }];
+    files.set("content/pages/index.json", { content: JSON.stringify(marked), sha: "a" });
+    files.set("content/pages/about.json", { content: JSON.stringify(page()), sha: "b" });
+    const res = await handlePages(await get("/api/pages", await token()), env, fakeFetch);
+    const pages = (await res.json()).pages as { path: string; placeholders?: number }[];
+    expect(pages.map((p) => [p.path, p.placeholders])).toEqual([["/", 1], ["/about", undefined]]);
+  });
+
   it("reads one page", async () => {
     files.set("content/pages/about.json", { content: JSON.stringify(page()), sha: "b" });
     const res = await handlePage(await get("/api/page?path=/about", await token()), env, fakeFetch);

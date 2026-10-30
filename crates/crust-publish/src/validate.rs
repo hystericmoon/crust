@@ -110,6 +110,19 @@ pub fn validate_page(page: &str, html: &str) -> Vec<Issue> {
         n => messages.push(format!("{n} Image blocks have no image URL. Add each image's address, or remove those blocks.")),
     }
 
+    // F046: template sample content still marked "replace me".
+    let samples: Vec<&str> = tags.iter().filter(|t| !t.closing).filter_map(|t| t.attr("data-crust-placeholder")).collect();
+    if !samples.is_empty() {
+        let shown: Vec<String> = samples.iter().take(10).map(|s| s.trim().to_string()).collect();
+        let more = samples.len().saturating_sub(shown.len());
+        let what = if samples.len() == 1 { "1 block still holds".to_string() } else { format!("{} blocks still hold", samples.len()) };
+        messages.push(format!(
+            "{what} the template's sample content: {}{}. Replace it, or choose \"Keep as is\" in the builder's \"To replace\" list.",
+            shown.join("; "),
+            if more > 0 { format!("; and {more} more") } else { String::new() }
+        ));
+    }
+
     let headings: Vec<(u8, String)> = tags
         .iter()
         .filter(|t| !t.closing)
@@ -340,6 +353,28 @@ mod tests {
 
     fn messages(html: &str) -> Vec<String> {
         validate_page("/", html).into_iter().map(|i| i.message).collect()
+    }
+
+    #[test]
+    fn validate_flags_leftover_placeholders() {
+        let html = page(
+            "<title>Home</title><meta name=\"description\" content=\"d\">",
+            "<h1>Hi</h1><div class=\"cr-show\" data-crust-placeholder=\"Heading &#x201C;Your studio name&#x201D; (text)\"><h2>Your studio name</h2></div>\
+             <div class=\"cr-show\" data-crust-placeholder=\"Image sample.jpg (photo)\"><img src=\"/media/sample.jpg\" alt=\"x\"></div>",
+        );
+        let found = messages(&html);
+        assert_eq!(found.len(), 1, "{found:?}");
+        assert!(found[0].starts_with("2 blocks still hold the template's sample content: Heading \u{201C}Your studio name\u{201D} (text); Image sample.jpg (photo)."), "{}", found[0]);
+    }
+
+    #[test]
+    fn validate_placeholders_counts_one_and_caps_the_list() {
+        let one = page("<title>t</title><meta name=\"description\" content=\"d\">", "<h1>Hi</h1><div data-crust-placeholder=\"Button (button text)\"></div>");
+        assert!(messages(&one)[0].starts_with("1 block still holds the template's sample content: Button (button text)."));
+        let many: String = (0..12).map(|i| format!("<div data-crust-placeholder=\"Text {i} (text)\"></div>")).collect();
+        let html = page("<title>t</title><meta name=\"description\" content=\"d\">", &format!("<h1>Hi</h1>{many}"));
+        let m = &messages(&html)[0];
+        assert!(m.starts_with("12 blocks") && m.contains("Text 9 (text); and 2 more.") && !m.contains("Text 10"), "{m}");
     }
 
     #[test]

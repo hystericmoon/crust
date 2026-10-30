@@ -34,7 +34,7 @@ const styleFields = new Set([
   "grayscale",
   "position",
 ]);
-const advancedFields = new Set(["hideOn", "anchor", "paddingY", "gap"]);
+const advancedFields = new Set(["hideOn", "anchor", "paddingY", "gap", "placeholder"]);
 
 export function tabOf(component: string, field: string): Tab {
   if (advancedFields.has(field)) return "advanced";

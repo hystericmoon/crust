@@ -8,6 +8,7 @@ import { Puck, useGetPuck, type Config, type Data, type Overrides } from "@pucke
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MyLayoutsProvider } from "../layouts/mine";
 import { SectionEditorContext, useLinkedSections } from "./store";
+import { PlaceholderChecklist } from "../placeholders/Checklist";
 
 interface Props {
   id: string;
@@ -103,6 +104,7 @@ export function SectionEditor({ id, back, githubOn, config, overrides }: Props) 
                 >
                   Back
                 </a>
+                <PlaceholderChecklist />
                 <SaveButton label={used.length > 1 ? `Save for all ${used.length} pages` : "Save linked section"} onSave={save} />
               </>
             ),

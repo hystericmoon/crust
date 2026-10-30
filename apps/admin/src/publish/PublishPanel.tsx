@@ -1,6 +1,8 @@
+import { placeholderSummary } from "@crust/blocks";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { publishRuns, startPublish, type PendingChanges, type PublishRun } from "../api-client";
 import { Dialog } from "../pages/PageActions";
+import { editHref } from "../pages/PageList";
 import { describeChanges } from "./changes";
 import { addressNote, chooseLiveUrl } from "./live-url";
 
@@ -17,8 +19,30 @@ export interface PublishPanelProps {
   drafts?: { path: string; title: string }[];
   /** Saves those drafts to GitHub; resolves to null or a plain-language problem. */
   onSaveDrafts?: () => Promise<string | null>;
+  /** F046: pages still holding a template's sample content; publishing waits for them. */
+  placeholders?: { path: string; title: string; count: number }[];
   /** Called when a publish this panel watched finishes. */
   onFinished?: () => void;
+}
+
+/** F046: what's left of a template's sample content, with a way to each page. */
+function SampleContent({ pages }: { pages: { path: string; title: string; count: number }[] }) {
+  const total = pages.reduce((n, p) => n + p.count, 0);
+  return (
+    <div className="pg-placeholders">
+      <p id="placeholders-h" tabIndex={-1}>
+        <strong>Not ready to publish yet:</strong> {placeholderSummary(total)} from the template, so visitors don't see sample words or photos.
+      </p>
+      <ul>
+        {pages.map((p) => (
+          <li key={p.path}>
+            <a href={editHref(p.path)}>{p.title || p.path}</a>: {placeholderSummary(p.count)}
+          </li>
+        ))}
+      </ul>
+      <p className="st-help">Open a page and use its “To replace” list. Anything you want to keep can be kept as is from there.</p>
+    </div>
+  );
 }
 
 /** The latest publish, in the owner's words. */
@@ -33,7 +57,7 @@ export function describeRun(run: PublishRun | undefined): { label: string; tone:
 const formatDate = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
-export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new Map(), drafts = [], onSaveDrafts, onFinished }: PublishPanelProps) {
+export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new Map(), drafts = [], placeholders = [], onSaveDrafts, onFinished }: PublishPanelProps) {
   const [runs, setRuns] = useState<PublishRun[] | null>(null);
   const [message, setMessage] = useState("");
   const [failure, setFailure] = useState("");
@@ -78,6 +102,11 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
   // F022: drafts only in this browser would be left out, so ask first.
   const requestPublish = () => {
     if (busy) return;
+    // F046: the publish would stop on sample content anyway; say so here instead of after 3 minutes.
+    if (placeholders.length) {
+      document.getElementById("placeholders-h")?.focus();
+      return;
+    }
     if (drafts.length && onSaveDrafts) setAsking(true);
     else void publish();
   };
@@ -167,12 +196,14 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
               ) : null}
             </div>
           ) : null}
+          {placeholders.length ? <SampleContent pages={placeholders} /> : null}
           <div className="pg-form-actions">
             <button
               type="button"
               className={`st-button${nothingNew && !busy ? "" : " st-button-primary"}`}
               onClick={requestPublish}
-              aria-disabled={busy || undefined}
+              aria-disabled={busy || placeholders.length > 0 || undefined}
+              aria-describedby={placeholders.length ? "placeholders-h" : undefined}
             >
               {publishLabel}
             </button>

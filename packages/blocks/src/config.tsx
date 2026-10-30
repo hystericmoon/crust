@@ -18,6 +18,7 @@ import { sectionStyleIds, sectionStyleNames, tintLevels, tintNames, type Section
 import type { SpacingStep } from "./tokens";
 import { ContactForm, type ContactFormProps } from "./contact-form";
 import { LinkedSection, type LinkedSectionProps } from "./linked-section-block";
+import { placeholderBadge, placeholderLabel } from "./placeholders";
 import { Img } from "./media-img";
 import { safeUrl } from "./url";
 import { cleanAnchor, columnClasses, hiddenLabel, hideClasses, type ColumnWidths, type HideOn } from "./responsive";
@@ -74,7 +75,7 @@ export type CardProps = {
  * Advanced settings any block can have, both optional: hidden on some
  * devices (F029), and an anchor name so links like "#team" can jump to it (F030).
  */
-export type Visibility = { hideOn?: HideOn; anchor?: string };
+export type Visibility = { hideOn?: HideOn; anchor?: string; placeholder?: string[] };
 
 export type Components = {
   Section: SectionProps & Visibility;
@@ -382,7 +383,8 @@ type AnyRender = (props: Record<string, unknown> & { puck?: { isEditing?: boolea
  * Wraps every block so it can be hidden per device (F029) or jumped to (F030).
  * The wrapper only exists when needed; it has `display: contents`, so the
  * block's own layout is unchanged where it shows. In the builder it carries
- * a label. An anchor is an empty marker element right before the block,
+ * a label. Sample content (F046) carries a mark the publish check finds.
+ * An anchor is an empty marker element right before the block,
  * because an element with `display: contents` can't be scrolled to.
  */
 function withVisibility(c: Config<Components>): Config<Components> {
@@ -393,9 +395,16 @@ function withVisibility(c: Config<Components>): Config<Components> {
         const out = render(props);
         const classes = hideClasses(props.hideOn);
         const anchor = cleanAnchor(props.anchor);
-        if (!classes && !anchor) return out;
+        // F046: sample content still to replace. Publishing stops on this attribute; the builder outlines it.
+        const sample = placeholderLabel(name, props);
+        if (!classes && !anchor && !sample) return out;
         return (
-          <div className={classes ? `cr-show ${classes}` : "cr-show"} data-hidden={classes && props.puck?.isEditing ? hiddenLabel(props.hideOn) : undefined}>
+          <div
+            className={classes ? `cr-show ${classes}` : "cr-show"}
+            data-hidden={classes && props.puck?.isEditing ? hiddenLabel(props.hideOn) : undefined}
+            data-crust-placeholder={sample || undefined}
+            data-replace={sample && props.puck?.isEditing ? placeholderBadge(name, props.placeholder) : undefined}
+          >
             {anchor ? <span className="cr-anchor" id={anchor} /> : null}
             {out}
           </div>

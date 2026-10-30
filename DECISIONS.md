@@ -142,6 +142,48 @@ Features Claude suggests. They are not work until the owner adds them to
   similar to Milestone 3. Left out on purpose: gallery lightbox (still a
   proposal above), and anything for other users (that's M6).
 
+## 2026-10-30 — F046 Placeholder content (Claude, reversible)
+
+- **The mark is per field, on the block: `placeholder: ["title", "imageSrc"]`.**
+  Optional, so no migration (pages without it read and publish exactly as
+  before). Per field rather than per block because a Card can have your
+  own title but still the template's photo; a block-level flag would clear
+  both at once and let the sample photo through.
+- **Which fields can be marked** is a short list per block
+  (`markableFields`): words (headings, text, button text, quote, name,
+  role) and photos. Lists (a Grid's cards, a Gallery's photos, questions,
+  logos) are marked as a whole.
+- **Replacing clears the mark by itself; lists need "Keep as is".** Editing
+  a marked heading or swapping a marked photo removes that field's mark
+  (recognition over recall: no extra step to remember). Changing one card
+  in a list doesn't replace the others, so a list stays marked until you
+  press "Keep as is". A false stop costs one click; a leaked sample photo
+  on a live site is what this feature exists to prevent. Undo brings a
+  mark back with its old content.
+- **Marking lives in the Advanced tab ("Replace me" checkboxes).** Only
+  template makers mark things, rarely; everyone else meets marks as a
+  dashed amber outline with a "Replace me: …" label on the canvas, and a
+  **To replace** button in the builder's top bar (only shown when there's
+  something left). Its list has **Show** (selects the block) and **Keep
+  as is** for each item. Error prevention (Nielsen #5) and visibility of
+  system status (#1).
+- **Two gates when publishing.** The Pages screen counts what's left on
+  each page ("3 things to replace") and the Publish panel holds the
+  button with a list of pages and links, instead of letting a publish run
+  for three minutes and fail. The real gate is in the publish step: the
+  renderer writes `data-crust-placeholder="Heading “Your studio” (text)"`
+  on marked blocks and crust-publish refuses any page that has one, with
+  that plain-language list. That also covers posts and linked sections,
+  which the Pages count doesn't include yet.
+- **Colours:** amber #b45309 for the outline and labels (white text on it
+  5.0:1; the outline is 5.0:1 on white, 3.5:1 on near-black). On the
+  green primary style amber alone is too faint, so a 2px white halo sits
+  inside the dashes (the double-ring trick used for focus rings). The
+  label carries the meaning too, not colour alone.
+- **Not included:** header/footer text (logo, menu) can't be marked yet;
+  the template's own sample site name is the obvious candidate if F049
+  needs it.
+
 ## 2026-10-30 — F045 Save a site as a template (Claude, reversible)
 
 - **Its own format, `crust-template`, not theme pack v2.** A theme pack is
