@@ -4,8 +4,8 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
-- **Builder tidy-up (F040):** a **Sign out** link in the builder's top
-  bar (pages and posts). Nothing is lost when you sign out: your edits
+- **Builder tidy-up (F040):** a **Sign out** link on the Pages screen
+  and in the builder's top bar (pages and posts). Nothing is lost when you sign out: your edits
   are already kept in the browser. Restoring a deleted page that had
   been renamed now brings back its old address too, so old links and
   bookmarks lead to it again. And the builder itself now passes the

@@ -39,6 +39,8 @@ import {
 import { markUnpublished } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
 import { PublishShortcut, usePendingCount } from "./publish/shortcut";
+import { SignOutLink } from "./sign-out";
+export { SIGN_OUT_URL, SignOutLink } from "./sign-out";
 import { withItemEditing } from "./items/items";
 import { withResponsiveEditing } from "./responsive/fields";
 import { withSectionEditing } from "./sections/editing";
@@ -93,21 +95,6 @@ function SaveDraftButton({ onSave }: { onSave: (data: Data) => void }) {
     <button type="button" className="crust-save" onClick={() => onSave(getPuck().appState.data)}>
       Save draft
     </button>
-  );
-}
-
-/** Cloudflare Access's own sign-out address (F040). */
-export const SIGN_OUT_URL = "/cdn-cgi/access/logout";
-
-/**
- * Signs out of Cloudflare Access. Nothing is lost: every edit is already
- * kept in this browser as you type.
- */
-export function SignOutLink() {
-  return (
-    <a className="crust-header-link" href={SIGN_OUT_URL}>
-      Sign out
-    </a>
   );
 }
 

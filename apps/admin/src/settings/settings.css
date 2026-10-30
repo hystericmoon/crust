@@ -274,7 +274,9 @@ body:has(.st) { margin: 0; }
 @media (max-width: 899px) {
   .st-header { padding: 8px 16px; }
   .st-actions { margin-left: 0; width: 100%; }
-  .st-actions .st-button { flex: 1; }
+  /* F040: whole buttons wrap to a second row; labels stay on one line. */
+  .st-actions { flex-wrap: wrap; }
+  .st-actions .st-button { flex: 1 1 auto; white-space: nowrap; }
   .st-status { padding: 10px 16px; }
   .st-layout { display: flex; flex-direction: column; padding: 16px; gap: 16px; }
   .st-aside { order: -1; position: sticky; top: 0; z-index: 2; width: 100%; }

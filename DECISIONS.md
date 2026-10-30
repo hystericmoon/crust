@@ -28,8 +28,6 @@ Features Claude suggests. They are not work until the owner adds them to
 - **Layouts that use the new blocks.** Add FAQ, gallery, logo strip and
   features-grid layouts to the Layout library (F026), so the new blocks
   are one click away. Small.
-- **Sign out on the Pages screen too** (F040 put it in the builder's
-  top bar only). One link next to Site settings. Small.
 - **Gallery lightbox (opt-in).** Click a photo to see it large. Needs a
   little JavaScript on pages that use it; off by default.
 - **Milestone 3 proposal: "Real content"** — *approved by the owner on
@@ -107,7 +105,12 @@ Features Claude suggests. They are not work until the owner adds them to
   Publish / Save draft, so the save action stays last. No "are you
   sure?": every edit is already kept in the browser as you type, so
   signing out loses nothing. On a preview link it signs you out of that
-  link's Access app.
+  link's Access app. **On the Pages screen too** (owner's request on the
+  PR, 2026-10-30): after Site settings, before New page.
+- **Pages screen on phones:** with four buttons each label wrapped onto
+  two lines. Now whole buttons wrap instead (Posts, Site settings, Sign
+  out on one row; New page full width below), labels on one line. Same
+  rule for the Posts and Site settings headers, which still fit one row.
 - **Top bar layout:** a seventh button made every label wrap onto two
   lines at 1440 px. Puck splits the bar into three equal-ish parts (panel
   toggles | title | buttons), so the buttons only got the right half.
@@ -115,8 +118,7 @@ Features Claude suggests. They are not work until the owner adds them to
   the way Figma and Webflow lay it out, and labels stay on one line from
   1100 px. Below 1100 px they wrap as before, and at around 1024 px the
   page title is hidden for lack of room (it's still the browser tab's
-  title). Phones get Quick edit, not this bar. Not added to the Pages screen (the feature names the
-  builder top bar); see Proposals if wanted there.
+  title). Phones get Quick edit, not this bar.
 - **Puck's chrome:** we label Puck's own elements as they appear, rather
   than replacing Puck's components, so a Puck update can't silently
   undo the fix and names Puck adds itself are kept.

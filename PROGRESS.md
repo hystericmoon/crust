@@ -23,7 +23,9 @@ to "Log".
   F044 custom domain.
 - **Waiting on the owner:**
   - **F040:** on the PR's preview link, open a page in the builder.
-    The top bar has **Sign out** (after Site settings); the buttons now
+    The Pages screen and the builder's top bar have **Sign out** (after
+    Site settings); on your phone the Pages buttons now wrap as whole
+    buttons, with New page full width. In the builder the buttons now
     sit on one line, with the page name on the left. Press Sign out: you
     land on Cloudflare's "signed out" page, and signing back in brings
     your edits back. To see the redirect fix (on crust-admin.pages.dev
@@ -54,8 +56,7 @@ to "Log".
     F031, F032, F033.
   - F027 and F028–F033 were built with Claude's recommendations (owner's
     instruction); the choices are in DECISIONS.md and can be changed.
-  - Proposals waiting in DECISIONS.md (gallery lightbox, Sign out on
-    the Pages screen).
+  - Proposal waiting in DECISIONS.md: gallery lightbox.
 - **Reminder:** the Cloudflare API token expires on the date the owner set
   (recommended 2027-01-26), and the GitHub token (crust-admin-save) after
   90 days, around 2027-01-27. Both fail with a clear error; make a new one
@@ -351,3 +352,6 @@ to "Log".
   Restoring a deleted page brings back the redirects the deletion
   removed. Top bar re-laid out so the labels fit on one line from
   1100 px. 14 new tests; done_check exits 0.
+- 2026-10-30 — F040, owner's request on the PR: Sign out on the Pages
+  screen too (shared `SignOutLink`, apps/admin/src/sign-out.tsx). Phone
+  header buttons wrap as whole buttons. 1 new test.

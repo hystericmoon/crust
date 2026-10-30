@@ -10,6 +10,8 @@ vi.mock("./api-client", async (orig) => ({
   ...(await orig<typeof import("./api-client")>()),
   getStatus: async () => ({ ok: false, notConfigured: true, error: "Not switched on yet." }),
 }));
+// Nothing else reaches a server either.
+vi.stubGlobal("fetch", async () => new Response("{}", { status: 404 }));
 
 afterEach(() => {
   cleanup();
@@ -30,6 +32,15 @@ describe("tidy-up: Sign out (F040)", () => {
     render(<App />);
     const link = await screen.findByRole("link", { name: "Sign out" }, { timeout: 5000 });
     expect(link.getAttribute("href")).toBe(SIGN_OUT_URL);
+  });
+
+  it("is on the Pages screen, before New page", async () => {
+    location.hash = "#/";
+    render(<App />);
+    const link = await screen.findByRole("link", { name: "Sign out" }, { timeout: 5000 });
+    expect(link.getAttribute("href")).toBe(SIGN_OUT_URL);
+    const newPage = screen.getByRole("button", { name: "New page" });
+    expect(link.compareDocumentPosition(newPage) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("is in the post builder's top bar too", () => {
