@@ -18,6 +18,9 @@ to "Log".
   docs/setup-contact-form.md); until then the form shows but doesn't send.
 - **F034–F039 still need `reviewed: true`** from the owner (steps below).
 - **Waiting on the owner:**
+  - **Milestone 4 proposal "Daily use"** in DECISIONS.md (rich text,
+    custom domain, linked sections, layouts, tidy-up). Approve or change
+    it; Claude then adds F040+ to features.json and writes docs/milestone-4.md.
   - **F034:** on crust-admin.pages.dev, select a Card or Image block and press "Choose image".
     Upload a photo from the Mac and one from the phone, describe them,
     use them, then Save draft. Uploading only works on
@@ -330,3 +333,5 @@ to "Log".
   retargeted to main and brought up to date with "Update branch" (merge
   commit, no rebase) so CI ran against main; all four checks green on
   every PR before merging. Not published.
+- 2026-10-30 — Wrote the Milestone 4 proposal and the long-term direction
+  (template business) in DECISIONS.md. Waiting for the owner.
