@@ -1,5 +1,6 @@
 import type { Page } from "@crust/blocks";
 import type { DeletedPage } from "../api-client";
+import { SignOutLink } from "../sign-out";
 import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { checkNewPage, createPage, slugify, type NewPageErrors, type NewPageInput } from "./new-page";
 import { FIND_FROM, loadSort, matchesQuery, pageStatus, saveSort, SORT_LABELS, sortRows, type SortKey } from "./list-view";
@@ -106,6 +107,7 @@ export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCre
           <a className="st-button st-link-button" href="#/settings">
             Site settings
           </a>
+          <SignOutLink className="st-button st-link-button" />
           <button
             ref={newPageRef}
             type="button"

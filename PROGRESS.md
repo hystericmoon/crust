@@ -18,9 +18,19 @@ to "Log".
   docs/setup-contact-form.md); until then the form shows but doesn't send.
 - **F034–F039 still need `reviewed: true`** from the owner (steps below).
 - **Milestone 4 "Daily use" approved (2026-10-30):** F040–F044,
-  docs/milestone-4.md. Next: F040 Builder tidy-up, then F041 layouts,
-  F042 rich text, F043 linked sections, F044 custom domain.
+  docs/milestone-4.md. **F040 Builder tidy-up built** (draft PR, not
+  merged). Next: F041 layouts, F042 rich text, F043 linked sections,
+  F044 custom domain.
 - **Waiting on the owner:**
+  - **F040:** on the PR's preview link, open a page in the builder.
+    The Pages screen and the builder's top bar have **Sign out** (after
+    Site settings); on your phone the Pages buttons now wrap as whole
+    buttons, with New page full width. In the builder the buttons now
+    sit on one line, with the page name on the left. Press Sign out: you
+    land on Cloudflare's "signed out" page, and signing back in brings
+    your edits back. To see the redirect fix (on crust-admin.pages.dev
+    once merged): rename a page, delete it, restore it from "Recently
+    deleted", and the old address leads to it again.
   - **F034:** on crust-admin.pages.dev, select a Card or Image block and press "Choose image".
     Upload a photo from the Mac and one from the phone, describe them,
     use them, then Save draft. Uploading only works on
@@ -46,9 +56,7 @@ to "Log".
     F031, F032, F033.
   - F027 and F028–F033 were built with Claude's recommendations (owner's
     instruction); the choices are in DECISIONS.md and can be changed.
-  - Proposals waiting in DECISIONS.md (sign-out button, redirect on
-    restore, Puck axe fixes, layouts using the new blocks, gallery
-    lightbox, linked sections).
+  - Proposal waiting in DECISIONS.md: gallery lightbox.
 - **Reminder:** the Cloudflare API token expires on the date the owner set
   (recommended 2027-01-26), and the GitHub token (crust-admin-save) after
   90 days, around 2027-01-27. Both fail with a clear error; make a new one
@@ -61,8 +69,6 @@ to "Log".
   page's link shows "Page not found"). Untouched menus follow the pages.
 - Saving only works from crust-admin.pages.dev; preview links sign in
   but can't save (different Access app). Intended.
-- Signing out needs the address
-  crust-admin.pages.dev/cdn-cgi/access/logout (no button yet).
 
 ## Log
 
@@ -337,3 +343,15 @@ to "Log".
   (template business) in DECISIONS.md. Waiting for the owner.
 - 2026-10-30 — Owner approved Milestone 4 ("Approve"): F040–F044 added to
   features.json, docs/milestone-4.md written.
+- 2026-10-30 — F040 Builder tidy-up on branch f040-builder-tidy-up:
+  Sign out link in both builders' top bars; Puck chrome labelled as it
+  renders (canvas "Page preview", "Zoom" menu, spinner as a named
+  progress bar) and darker block-list headings; new `check:builder` axe
+  check on the page and post builders, part of check:a11y (CI builds the
+  admin first). It found the 4 issues before the fix and none after.
+  Restoring a deleted page brings back the redirects the deletion
+  removed. Top bar re-laid out so the labels fit on one line from
+  1100 px. 14 new tests; done_check exits 0.
+- 2026-10-30 — F040, owner's request on the PR: Sign out on the Pages
+  screen too (shared `SignOutLink`, apps/admin/src/sign-out.tsx). Phone
+  header buttons wrap as whole buttons. 1 new test.

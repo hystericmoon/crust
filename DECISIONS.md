@@ -98,6 +98,48 @@ Features Claude suggests. They are not work until the owner adds them to
   similar to Milestone 3. Left out on purpose: gallery lightbox (still a
   proposal above), and anything for other users (that's M6).
 
+## 2026-10-30 — F040 Builder tidy-up (Claude, reversible)
+
+- **Sign out** is a plain link to `/cdn-cgi/access/logout` in the top bar
+  of both builders (pages and posts), after Site settings and before
+  Publish / Save draft, so the save action stays last. No "are you
+  sure?": every edit is already kept in the browser as you type, so
+  signing out loses nothing. On a preview link it signs you out of that
+  link's Access app. **On the Pages screen too** (owner's request on the
+  PR, 2026-10-30): after Site settings, before New page.
+- **Pages screen on phones:** with four buttons each label wrapped onto
+  two lines. Now whole buttons wrap instead (Posts, Site settings, Sign
+  out on one row; New page full width below), labels on one line. Same
+  rule for the Posts and Site settings headers, which still fit one row.
+- **Top bar layout:** a seventh button made every label wrap onto two
+  lines at 1440 px. Puck splits the bar into three equal-ish parts (panel
+  toggles | title | buttons), so the buttons only got the right half.
+  Now it's toggles | title (left-aligned, after the toggles) | buttons,
+  the way Figma and Webflow lay it out, and labels stay on one line from
+  1100 px. Below 1100 px they wrap as before, and at around 1024 px the
+  page title is hidden for lack of room (it's still the browser tab's
+  title). Phones get Quick edit, not this bar.
+- **Puck's chrome:** we label Puck's own elements as they appear, rather
+  than replacing Puck's components, so a Puck update can't silently
+  undo the fix and names Puck adds itself are kept.
+  - The canvas is named "Page preview", the zoom menu "Zoom".
+  - The spinner becomes an indeterminate progress bar named "Loading the
+    preview" (a `span` can't carry a label without a role).
+  - The "Layout"/"Content" headings use the admin's muted grey #52525b
+    (7.7:1 on white) instead of Puck's #767676.
+- **New check:** `npm run check:builder` runs axe on the page and post
+  builders (1440 px, after the canvas loads) and is part of
+  `check:a11y`, so CI now builds the admin before that step. 3 minor
+  best-practice notes remain (no `main` landmark or `h1` in Puck's
+  layout); they don't block, as on published pages.
+- **Redirects on restore:** restoring reads `redirects.json` as it was
+  just before the deletion and brings back the redirects that pointed to
+  the page, in the same commit. Skipped: an old address that is a page
+  again, or that now redirects somewhere else (the newer choice wins). A
+  redirect *from* the restored address is removed, so the page itself
+  shows. The commit message names the addresses that came back. This
+  replaces F019's "not restored" note.
+
 ## 2026-10-30 — F039 Site search (Claude's recommendations; owner: "go with all your recommendations")
 
 - **Pagefind** (MIT, free) builds the search index when you publish,
@@ -705,7 +747,7 @@ Features Claude suggests. They are not work until the owner adds them to
 - **Restoring writes that version back** in one commit ("Restore page /x …").
   - The server only accepts a builder deletion it finds in the recent history.
   - It refuses if the address is taken.
-- **Not restored:** redirects that pointed to the page. Deleting removed them, and the next rename can recreate them. Keeping restore simple felt right.
+- **Not restored:** redirects that pointed to the page. Deleting removed them, and the next rename can recreate them. Keeping restore simple felt right. *(Changed in F040: they now come back with the page.)*
 - **No confirmation step.** Restoring is safe: nothing is overwritten, and you can delete the page again. I dropped "with confirmation" from the F019 description before building; the owner's approved option text didn't include it.
 - **The section is collapsed by default** ("Recently deleted (2)"), because restoring is rare.
   - It's a disclosure button inside the `h2` (`aria-expanded`), not `<details>`/`<summary>`, so screen readers announce it as a heading.

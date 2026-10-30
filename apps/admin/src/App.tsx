@@ -39,6 +39,8 @@ import {
 import { markUnpublished } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
 import { PublishShortcut, usePendingCount } from "./publish/shortcut";
+import { SignOutLink } from "./sign-out";
+export { SIGN_OUT_URL, SignOutLink } from "./sign-out";
 import { withItemEditing } from "./items/items";
 import { withResponsiveEditing } from "./responsive/fields";
 import { withSectionEditing } from "./sections/editing";
@@ -512,6 +514,7 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
                 <a className="crust-header-link" href="#/settings">
                   Site settings
                 </a>
+                <SignOutLink />
                 {shortcut}
                 <SaveDraftButton onSave={saveDraft} />
               </>
@@ -598,6 +601,7 @@ function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boo
                 <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
                   Keyboard
                 </button>
+                <SignOutLink />
                 {shortcut}
                 <SaveDraftButton onSave={saveDraft} />
               </>

@@ -18,6 +18,7 @@ import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { SaveLayoutAction } from "../layouts/SaveLayoutAction";
 import { SectionToolbar } from "../sections/editing";
 import { availableMoves, planInsert, planMove, type MoveKind } from "./moves";
+import { installPuckChromeFixes } from "./puck-chrome";
 import { installTooltips } from "./tooltips";
 
 type PuckApi = ReturnType<ReturnType<typeof useGetPuck>>;
@@ -262,10 +263,12 @@ export function KeyboardRoot({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Tooltips first, so Escape closes an open tooltip before it deselects.
     const removeTooltips = installTooltips(document);
+    const removeChromeFixes = installPuckChromeFixes(document);
     const onKey = (e: KeyboardEvent) => handleKey(e, getPuck);
     document.addEventListener("keydown", onKey, true);
     return () => {
       document.removeEventListener("keydown", onKey, true);
+      removeChromeFixes();
       removeTooltips();
     };
   }, [getPuck]);

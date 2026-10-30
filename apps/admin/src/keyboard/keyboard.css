@@ -19,6 +19,23 @@
 }
 
 .crust-header-link { background: #fff; font: inherit; cursor: pointer; }
+/* F040: Puck splits the top bar 1fr | title | 1fr, so the buttons only get
+   the right half. Give them all the room the panel toggles don't need,
+   with the page title after the toggles. From 1100 px (where all the
+   buttons fit) labels stay on one line; below that they wrap as before. */
+@media (min-width: 638px) {
+  .Puck [class*="_PuckHeader-inner_"] { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .Puck [class*="_PuckHeader-title_"] { justify-self: start; min-width: 0; max-width: 100%; }
+  .Puck [class*="_PuckHeader-title_"] * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
+@media (min-width: 1100px) {
+  .crust-header-link, .crust-save { white-space: nowrap; }
+}
+
+/* F040: the "Layout"/"Content" headings in Puck's block list are #767676 on
+   a light grey (under 4.5:1). Same muted grey as the rest of the admin
+   (--st-muted, 7.7:1 on white). */
+.Puck [class*="_ComponentList-title_"] { color: #52525b; }
 
 .kb-live {
   position: absolute; width: 1px; height: 1px; overflow: hidden;

@@ -63,6 +63,21 @@ export function redirectsAfterRename(list: Redirect[], from: string, to: string)
 /** Redirects after deleting the page at `path`: none may point to it any more. */
 export const redirectsAfterDelete = (list: Redirect[], path: string): Redirect[] => list.filter((r) => r.to !== path).sort(byFrom);
 
+/**
+ * Redirects after restoring the page at `path` (F040): the ones that pointed
+ * to it just before it was deleted (`before`) come back, unless their old
+ * address is a page again (`pages`) or already redirects somewhere else.
+ * Nothing redirects away from the restored page.
+ */
+export function redirectsAfterRestore(current: Redirect[], before: Redirect[], path: string, pages: ReadonlySet<string>): Redirect[] {
+  const next = current.filter((r) => r.from !== path);
+  for (const r of before) {
+    if (r.to !== path || r.from === path || pages.has(r.from) || next.some((n) => n.from === r.from)) continue;
+    next.push({ from: r.from, to: path });
+  }
+  return next.sort(byFrom);
+}
+
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
 
 // --- Saved layouts (F027): content/layouts/<id>.json ------------------------------
