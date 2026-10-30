@@ -4,19 +4,52 @@
   "language": "en",
   "tokens": {
     "colors": {
-      "background": "#ffffff",
-      "surface": "#f4f4f5",
-      "text": "#18181b",
-      "muted": "#52525b",
-      "primary": "#4338ca",
-      "onPrimary": "#ffffff"
+      "background": "#FFFFFF",
+      "surface": "#EEF4EF",
+      "text": "#14231A",
+      "muted": "#4A5A50",
+      "primary": "#1F6B45",
+      "onPrimary": "#FFFFFF"
     },
     "fonts": {
-      "heading": "system-ui, -apple-system, 'Segoe UI', sans-serif",
-      "body": "system-ui, -apple-system, 'Segoe UI', sans-serif"
+      "heading": "Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', sans-serif",
+      "body": "Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', sans-serif"
     },
-    "spacing": { "none": 0, "xs": 0.5, "sm": 1, "md": 2, "lg": 4, "xl": 6 },
+    "spacing": {
+      "none": 0,
+      "xs": 0.5,
+      "sm": 1,
+      "md": 2,
+      "lg": 4,
+      "xl": 6
+    },
     "radius": 8,
-    "maxWidth": 1120
+    "maxWidth": 1120,
+    "style": {
+      "typeScale": "balanced",
+      "headingWeight": 700,
+      "headingTracking": "normal",
+      "buttonShape": "pill",
+      "cardStyle": "flat",
+      "linkStyle": "underline"
+    },
+    "sectionStyles": {
+      "background": {
+        "bg": "background",
+        "button": "solid"
+      },
+      "surface": {
+        "bg": "surface",
+        "button": "solid"
+      },
+      "primary": {
+        "bg": "primary",
+        "button": "inverse"
+      },
+      "dark": {
+        "bg": "text",
+        "button": "inverse"
+      }
+    }
   }
 }
