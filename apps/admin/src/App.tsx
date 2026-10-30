@@ -1,4 +1,4 @@
-import { config, tokensToCss, type Page, type Site, type SiteTokens } from "@crust/blocks";
+import { config, migrateChrome, tokensToCss, type Page, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
 import { relinkPage } from "@crust/blocks/links";
 import { Puck, useGetPuck, type Data } from "@puckeditor/core";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
@@ -43,10 +43,12 @@ import { withSettingsTabs } from "./tabs/tabs";
 import { SiteStyleContext, type SiteStyle } from "./sections/site-style";
 import { SiteSettings } from "./settings/SiteSettings";
 import { loadSavedTokens, sameTokens, saveTokens } from "./tokens-store";
+import { loadSavedChrome, sameChrome, saveChrome, siteToSave } from "./chrome-store";
+import { SiteChromeContext, withSiteChrome } from "./chrome-canvas";
 
 const site = siteJson as Site;
 /** The builder's blocks: visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
-const editorConfig = withSettingsTabs(withResponsiveEditing(withSectionEditing(config)));
+const editorConfig = withSiteChrome(withSettingsTabs(withResponsiveEditing(withSectionEditing(config))));
 
 /** Responsive canvas widths for the viewport switcher. */
 const viewports = [
@@ -123,10 +125,26 @@ async function loadPage(path: string, githubOn: boolean): Promise<Page | null> {
   return bundledPages().find((p) => p.path === path) ?? null;
 }
 
+/** Pages for menus (F031): GitHub's when saving is on, plus drafts in this browser. */
+function usePageOptions(githubOn: boolean | null, active: boolean) {
+  const [pages, setPages] = useState(() => mergePageRows(bundledPages().map((p) => ({ path: p.path, title: p.title, lastEdited: null })), localDrafts()));
+  useEffect(() => {
+    if (!active || !githubOn) return;
+    void listPages().then((res) => {
+      if (res.ok) setPages(mergePageRows(res.pages, localDrafts()));
+    });
+  }, [githubOn, active]);
+  return pages.map((p) => ({ path: p.path, title: p.title }));
+}
+
 export function App() {
   const route = useRoute();
   const [saved, setSaved] = useState<SiteTokens>(() => loadSavedTokens(site.tokens));
   const [draft, setDraft] = useState<SiteTokens>(saved);
+  // F031: header and footer, saved with the tokens in site.json.
+  const defaultChrome = useMemo(() => migrateChrome(site, bundledPages()), [site]);
+  const [savedChrome, setSavedChrome] = useState<SiteChrome>(() => loadSavedChrome(defaultChrome));
+  const [chromeDraft, setChromeDraft] = useState<SiteChrome>(savedChrome);
   const [githubOn, setGithubOn] = useState<boolean | null>(null);
   // The builder shows unsaved token edits too, so switching screens loses nothing.
   useTokenStyles(useMemo(() => tokensToCss(draft), [draft]));
@@ -141,12 +159,20 @@ export function App() {
   }, [route]);
 
   const saveSiteTokens = async (tokens: SiteTokens) => {
-    const local = saveTokens(tokens);
-    if (local) setSaved(tokens);
-    const result = await saveContent({ kind: "site", site: { ...site, tokens } });
-    if (result.ok) setSaved(tokens);
+    const chrome = chromeDraft;
+    const local = saveTokens(tokens) && saveChrome(chrome);
+    if (local) {
+      setSaved(tokens);
+      setSavedChrome(chrome);
+    }
+    const result = await saveContent({ kind: "site", site: siteToSave(site, tokens, chrome, defaultChrome) });
+    if (result.ok) {
+      setSaved(tokens);
+      setSavedChrome(chrome);
+    }
     return saveMessage(result, local, "Site settings");
   };
+  const pageOptions = usePageOptions(githubOn, route.name === "settings");
   // F025: the builder edits the same draft as Site settings ("Whole site" mode).
   const siteStyle: SiteStyle = {
     tokens: draft,
@@ -170,7 +196,14 @@ export function App() {
         draft={draft}
         onChange={setDraft}
         onSave={saveSiteTokens}
-        onDiscard={() => setDraft(saved)}
+        onDiscard={() => {
+          setDraft(saved);
+          setChromeDraft(savedChrome);
+        }}
+        chrome={chromeDraft}
+        onChromeChange={setChromeDraft}
+        chromeDirty={!sameChrome(savedChrome, chromeDraft)}
+        pages={pageOptions}
       />
     );
   }
@@ -179,7 +212,9 @@ export function App() {
     if (githubOn === null) return <Loading />;
     return (
       <SiteStyleContext.Provider value={siteStyle}>
-        <Builder key={route.path} path={route.path} githubOn={githubOn} shortcut={shortcut("crust-header-link")} />
+        <SiteChromeContext.Provider value={{ chrome: chromeDraft, siteName: site.name, path: route.path }}>
+          <Builder key={route.path} path={route.path} githubOn={githubOn} shortcut={shortcut("crust-header-link")} />
+        </SiteChromeContext.Provider>
       </SiteStyleContext.Provider>
     );
   }

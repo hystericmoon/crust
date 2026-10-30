@@ -2,6 +2,7 @@
 // Deep imports keep React and Puck out of the server bundle.
 import type { Page, Redirect, SavedLayout, Site } from "@crust/blocks/content";
 import { validateTokens } from "@crust/blocks/tokens";
+import { validateChrome } from "@crust/blocks/chrome-model";
 
 const SEGMENT = /^[a-z0-9][a-z0-9-]*$/;
 export const MAX_BYTES = 512 * 1024;
@@ -152,6 +153,7 @@ export function checkSite(site: unknown): string[] {
       problems.push("The design tokens are damaged.");
     }
   }
+  problems.push(...validateChrome(site).map((p) => p.message));
   return problems;
 }
 

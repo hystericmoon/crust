@@ -100,6 +100,12 @@ Any block may also carry `anchor` (optional, added with F030): a name made
 of lowercase letters, numbers and dashes. It's published as an empty
 target right before the block, so `#name` links jump there.
 
+`header` and `footer` in `site.json` (optional, added with F031): the
+site-wide header (`show`, `logo { text, imageSrc, imageAlt }`, `menu`
+[{ label, href }], `cta`, `sticky`, `style`) and footer (`show`, `text`,
+`columns` [{ title, links }], `copyright`, `style`). Missing fields get
+defaults (see `migrateChrome`).
+
 `content/redirects.json` (optional, added with F015)
 ```json
 [{ "from": "/old-address", "to": "/new-address" }]

@@ -61,6 +61,17 @@ export {
 export type { StyleOptions, TypeScale, HeadingWeight, HeadingTracking, ButtonShape, CardStyle, LinkStyle } from "./style-options";
 export type { FontStack } from "./fonts";
 export { safeUrl } from "./url";
+export {
+  chromeLimits,
+  defaultFooter,
+  defaultHeader,
+  menuFromPages,
+  migrateChrome,
+  validateChrome,
+  SiteHeaderView,
+  SiteFooterView,
+} from "./chrome";
+export type { MenuLink, SiteHeader, SiteFooter, FooterColumn, SiteChrome, ChromeProblem } from "./chrome";
 export type { Site, Page, Redirect, SavedLayout } from "./content";
 export { themePresets, matchingPreset, applyPreset } from "./presets";
 export type { ThemePreset } from "./presets";

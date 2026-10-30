@@ -4,6 +4,16 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Header, footer and menu (F031):** Site settings has two new groups.
+  **Header & menu:** your logo (name or image), a menu built from your
+  pages (reorder with the arrow buttons), an optional button at the end,
+  and "keep at the top while scrolling". On phones the menu folds into a
+  Menu button that works without JavaScript. **Footer:** a short line
+  about you, up to 4 columns of links, and a copyright line where {year}
+  and {name} fill themselves in. Both show on every page, with a "Skip to
+  content" link for keyboard users. Existing sites get a sensible header
+  and footer automatically.
+
 - **Content, Style and Advanced (F030):** each block's settings are split
   into three tabs at the top of the panel, so simple edits stay simple.
   Advanced holds Show on, spacing, and a new **anchor name**: name a

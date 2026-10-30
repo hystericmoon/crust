@@ -52,9 +52,12 @@ function setup(initial: SiteTokens = defaultTokens) {
   return { onSave };
 }
 
+/** Fields only: the Header and Footer style tiles reuse colour names like "Primary". */
+const notTile = "input:not([type=radio]), textarea, select";
+const field = (label: string | RegExp) => screen.getByLabelText(label, { selector: notTile });
 const type = (label: string | RegExp, value: string) =>
   act(() => {
-    fireEvent.change(screen.getByLabelText(label), { target: { value } });
+    fireEvent.change(field(label), { target: { value } });
   });
 
 describe("Site settings screen", () => {
@@ -70,6 +73,8 @@ describe("Site settings screen", () => {
       "Cards",
       "Links",
       "Section styles",
+      "Header & menu",
+      "Footer",
       "Typography",
       "Spacing",
       "Shape & layout",
@@ -93,12 +98,12 @@ describe("Site settings screen", () => {
     expect(within(panel).getByText(/2 of 7 pairs fail AA/)).toBeTruthy();
     expect(within(panel).getByText("Muted text on Surface").parentElement?.textContent).toContain("2.33:1");
     // The muted field explains the problem.
-    expect(screen.getByLabelText("Muted text").getAttribute("aria-describedby")).toContain("color-muted-contrast");
+    expect(field("Muted text").getAttribute("aria-describedby")).toContain("color-muted-contrast");
     expect(screen.getByText(/Unsaved changes/)).toBeTruthy();
 
     act(() => within(panel).getAllByRole("button", { name: /^Use #[0-9A-F]{6} for Muted text$/ })[0]!.click());
     expect(within(panel).getByText(/All 7 pairs pass AA/)).toBeTruthy();
-    expect((screen.getByLabelText("Muted text") as HTMLInputElement).value).toBe("#6F6F7B");
+    expect((field("Muted text") as HTMLInputElement).value).toBe("#6F6F7B");
     expect(screen.getByRole("status").textContent).toBe("Muted text set to #6F6F7B.");
   });
 
@@ -110,8 +115,8 @@ describe("Site settings screen", () => {
   it("rejects an invalid hex without changing the site, and won't save", () => {
     const { onSave } = setup();
     type("Primary", "blue");
-    const field = screen.getByLabelText("Primary");
-    expect(field.getAttribute("aria-invalid")).toBe("true");
+    const input = field("Primary");
+    expect(input.getAttribute("aria-invalid")).toBe("true");
     expect(screen.getByText("Use a hex colour like #4338CA.")).toBeTruthy();
     // The draft keeps the last valid value, so nothing is "unsaved".
     expect(screen.getByText("All changes saved")).toBeTruthy();
@@ -134,9 +139,9 @@ describe("Site settings screen", () => {
     type("Primary", "#0F766E");
     window.confirm = vi.fn().mockReturnValueOnce(false).mockReturnValueOnce(true);
     act(() => screen.getByRole("button", { name: "Discard" }).click());
-    expect((screen.getByLabelText("Primary") as HTMLInputElement).value).toBe("#0F766E");
+    expect((field("Primary") as HTMLInputElement).value).toBe("#0F766E");
     act(() => screen.getByRole("button", { name: "Discard" }).click());
-    expect((screen.getByLabelText("Primary") as HTMLInputElement).value.toUpperCase()).toBe("#4338CA");
+    expect((field("Primary") as HTMLInputElement).value.toUpperCase()).toBe("#4338CA");
     expect(screen.getByRole("status").textContent).toBe("Changes discarded.");
   });
 
@@ -187,14 +192,14 @@ describe("theme presets (settings)", () => {
   it("applies a preset's colours and fonts, and undoes it in one step", () => {
     setup({ ...defaultTokens, radius: 3 });
     act(() => screen.getByRole("button", { name: /^Forest/ }).click());
-    expect((screen.getByLabelText("Primary") as HTMLInputElement).value).toBe("#1F6B45");
+    expect((field("Primary") as HTMLInputElement).value).toBe("#1F6B45");
     expect((screen.getByLabelText("Corner radius in px") as HTMLInputElement).value).toBe("3");
     expect(screen.getByRole("button", { name: /^Forest/ }).getAttribute("aria-pressed")).toBe("true");
     expect(screen.getByRole("status").textContent).toMatch(/^Forest applied/);
     expect(screen.getByText("Unsaved changes")).toBeTruthy();
 
     act(() => screen.getByRole("button", { name: "Undo preset (Forest)" }).click());
-    expect((screen.getByLabelText("Primary") as HTMLInputElement).value.toUpperCase()).toBe("#4338CA");
+    expect((field("Primary") as HTMLInputElement).value.toUpperCase()).toBe("#4338CA");
     expect(screen.queryByRole("button", { name: /Undo preset/ })).toBeNull();
     expect(screen.getByRole("status").textContent).toMatch(/^Undid Forest/);
   });

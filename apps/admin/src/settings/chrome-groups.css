@@ -1,0 +1,45 @@
+/* Header & menu and Footer groups in Site settings (F031). Same tokens as
+   settings.css: 3:1 borders, 16px inputs, 44px targets. */
+.st-check {
+  display: flex; align-items: center; gap: 10px; min-height: 44px;
+  font-weight: 600; cursor: pointer;
+}
+.st-check input { width: 20px; height: 20px; margin: 0; accent-color: var(--st-action); flex: none; }
+.st-chrome-body { display: grid; gap: 20px; margin-top: 12px; }
+.st-chrome-body[hidden] { display: none; }
+.st-chrome-field { display: flex; flex-direction: column; gap: 6px; }
+.st-chrome-field + .st-chrome-field { margin-top: 12px; }
+.st-chrome-field .st-help { margin: 0; }
+.st-textarea { min-height: 88px; padding: 10px 12px; resize: vertical; line-height: 1.5; }
+.st-fieldset {
+  display: grid; gap: 0; margin: 0; padding: 16px;
+  border: 1px solid var(--st-divider); border-radius: 10px;
+}
+.st-fieldset > legend { padding: 0 6px; margin-left: -6px; }
+.st-fieldset > .st-button { justify-self: start; margin-top: 12px; }
+
+/* A list of links: label, address, then move/remove. */
+.st-links { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.st-link-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.st-link-row {
+  display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr) auto; gap: 8px; align-items: center;
+  padding: 8px; border: 1px solid var(--st-divider); border-radius: 10px; background: var(--st-panel);
+}
+.st-link-row .st-input { width: 100%; min-width: 0; }
+.st-link-actions { display: flex; gap: 2px; }
+.st-icon-button {
+  display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0;
+  border: 0; border-radius: 8px; background: transparent; color: var(--st-text);
+  font: inherit; font-size: 1.125rem; line-height: 1; cursor: pointer;
+}
+.st-icon-button:hover:not(:disabled) { background: #f4f4f5; }
+.st-icon-button:disabled { color: #a1a1aa; cursor: default; }
+.st-link-add { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.st-link-add select.st-input { flex: 1 1 12rem; min-width: 0; }
+.st-link-reset { justify-self: start; }
+.st-chrome-problems { list-style: none; display: grid; gap: 4px; }
+
+@media (max-width: 640px) {
+  .st-link-row { grid-template-columns: minmax(0, 1fr); }
+  .st-link-actions { justify-content: flex-end; }
+}

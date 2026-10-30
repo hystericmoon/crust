@@ -1,4 +1,4 @@
-import { config, tokensToCss, type Page, type Site } from "@crust/blocks";
+import { config, migrateChrome, SiteFooterView, SiteHeaderView, tokensToCss, type Page, type Site } from "@crust/blocks";
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -38,13 +38,26 @@ export function renderBody(data: Data): string {
 const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
+export interface RenderOptions {
+  /** Every page, for the default menu of sites saved before F031. */
+  pages?: { path: string; title: string }[];
+  /** For "{year}" in the footer; this year by default. */
+  year?: number;
+}
+
 /** Full HTML document for one page. `baseCss` is packages/blocks/src/styles.css. */
-export function renderPage(site: Site, page: Page, baseCss: string): string {
+export function renderPage(site: Site, page: Page, baseCss: string, options: RenderOptions = {}): string {
   const body = renderBody(page.puck);
+  const { header, footer } = migrateChrome(site, options.pages ?? [{ path: page.path, title: page.title }]);
+  const year = options.year ?? new Date().getFullYear();
+  const top = renderToStaticMarkup(<SiteHeaderView header={header} path={page.path} />);
+  const bottom = renderToStaticMarkup(<SiteFooterView footer={footer} siteName={site.name} path={page.path} year={year} />);
+  // A sticky header would cover whatever is scrolled or tabbed to; the page keeps room for it (WCAG 2.4.11).
+  const htmlClass = header.show && header.sticky ? ' class="cr-has-sticky"' : "";
   const css = `${tokensToCss(site.tokens)}\n${baseCss}`;
   const title = page.path === "/" ? page.title : `${page.title} | ${site.name}`;
   return `<!doctype html>
-<html lang="${escapeHtml(site.language)}">
+<html lang="${escapeHtml(site.language)}"${htmlClass}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -54,7 +67,9 @@ export function renderPage(site: Site, page: Page, baseCss: string): string {
 <style>${css.replace(/<\/style/gi, "<\\/style")}</style>
 </head>
 <body class="cr-page">
-<main>${body}</main>
+<a class="cr-skip" href="#content">Skip to content</a>
+${top}<main id="content" tabindex="-1">${body}</main>
+${bottom}
 </body>
 </html>
 `;
@@ -65,7 +80,7 @@ export function renderPage(site: Site, page: Page, baseCss: string): string {
  * status for unknown addresses; without it, every unknown address returns
  * the home page with status 200.
  */
-export function renderNotFound(site: Site, baseCss: string): string {
+export function renderNotFound(site: Site, baseCss: string, options: RenderOptions = {}): string {
   const page: Page = {
     path: "/404",
     title: "Page not found",
@@ -101,7 +116,7 @@ export function renderNotFound(site: Site, baseCss: string): string {
       ],
     },
   };
-  return renderPage(site, page, baseCss);
+  return renderPage(site, page, baseCss, options);
 }
 
 /** Maps a page path ("/", "/about") to its output file ("index.html", "about/index.html"). */

@@ -18,18 +18,21 @@ const baseCss = await readFile(stylesPath, "utf8");
 const pageFiles = (await readdir(join(contentDir, "pages"))).filter((f) => f.endsWith(".json")).sort();
 
 await rm(outDir, { recursive: true, force: true });
+const pages = await Promise.all(pageFiles.map((file) => readJson<Page>(join(contentDir, "pages", file))));
+// Sites saved before F031 have no menu yet: it's made from these pages.
+const options = { pages: pages.map((p) => ({ path: p.path, title: p.title })) };
 const seen = new Map<string, string>();
-for (const file of pageFiles) {
-  const page = await readJson<Page>(join(contentDir, "pages", file));
+for (const [i, file] of pageFiles.entries()) {
+  const page = pages[i]!;
   const target = outputFileFor(page.path);
   const previous = seen.get(target);
   if (previous) throw new Error(`Pages ${previous} and ${file} both use the URL "${page.path}".`);
   seen.set(target, file);
-  const html = renderPage(site, page, baseCss);
+  const html = renderPage(site, page, baseCss, options);
   await mkdir(dirname(join(outDir, target)), { recursive: true });
   await writeFile(join(outDir, target), html);
   console.log(`rendered ${page.path} -> ${target}`);
 }
 await mkdir(outDir, { recursive: true });
-await writeFile(join(outDir, "404.html"), renderNotFound(site, baseCss));
+await writeFile(join(outDir, "404.html"), renderNotFound(site, baseCss, options));
 console.log(`render: ${pageFiles.length} page(s) written to ${outDir}`);

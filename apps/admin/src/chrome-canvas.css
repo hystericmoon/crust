@@ -1,0 +1,9 @@
+/* Site header and footer on the canvas (F031): a dashed outline and a label
+   say they're edited elsewhere. Puck copies this into the canvas iframe. */
+.cc-chrome { position: relative; outline: 1px dashed rgb(67 56 202 / 0.45); outline-offset: -1px; }
+.cc-chrome > [inert] { opacity: 0.92; }
+.cc-chrome::after {
+  content: attr(data-part); position: absolute; right: 8px; top: 8px; z-index: 60;
+  padding: 2px 8px; border-radius: 4px; background: #4338ca; color: #fff;
+  font: 600 12px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; pointer-events: none;
+}
