@@ -378,7 +378,7 @@
       "description": "On a phone, the builder opens a simplified editor: change text, swap images and button labels on a page, then save and publish. No layout editing. Added by the owner (approved Milestone 3, 2026-10-30).",
       "depends_on": ["F007", "F008"],
       "done_check": "npm test -- quick-edit && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

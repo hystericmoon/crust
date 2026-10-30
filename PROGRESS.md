@@ -22,6 +22,8 @@ to "Log".
   - **F037 Contact form: done** (passes) on `f037-contact-form`
     (stacked on F036). Sending email needs the owner's setup
     (BLOCKED.md, docs/setup-contact-form.md).
+  - **F038 Phone quick edit: done** (passes) on `f038-quick-edit`
+    (stacked on F037). Needs the owner's review on a phone.
 - **Waiting on the owner:**
   - **F034:** on PR #18's preview link (or crust-admin.pages.dev after
     merging), select a Card or Image block and press "Choose image".
@@ -39,6 +41,8 @@ to "Log".
   - **F037:** add a Contact form block to a Contact page and try it on
     the preview link. To make it send email, follow
     docs/setup-contact-form.md (about 20 minutes, all free).
+  - **F038:** on your phone, open the preview link, tap a page, change a
+    heading and swap a photo, then Save.
   - Try https://crust-admin.pages.dev (main, now with Milestone 2) and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019,
     F020, F021, F022, F023, F024, F025, F026, F027, F028, F029, F030,
@@ -312,3 +316,10 @@ to "Log".
   pages in check:layouts (axe, every preset, connected and not).
   Checked in Chromium with JS off at 1440 and 390 px. Owner setup in
   BLOCKED.md. 24 new tests; done_check exits 0.
+- 2026-10-30 — F038 done: phone quick edit. Pages open in Quick edit on
+  screens ≤ 760 px (mode=full/quick in the address to switch; "Quick
+  edit" link in the builder): page title/description and every text,
+  label and photo in reading order, numbered parts, Save / Save and
+  publish in a bottom bar. Found and fixed two fields with the same
+  spoken name. Checked in Chromium at 390 (touch) and 1440 px: keyboard,
+  axe none, no sideways scroll. 9 new tests; done_check exits 0.

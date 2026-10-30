@@ -53,6 +53,8 @@ import { MediaPicker } from "./media/MediaPicker";
 import { BlogContext, withPostEditing } from "./posts/editing";
 import { SeoSiteProvider, withSeoEditing } from "./seo/fields";
 import { PostList } from "./posts/PostList";
+import { QuickEdit } from "./quick/QuickEdit";
+import { prefersQuickEdit } from "./quick/quick";
 import { fromPuckData as postFromPuckData, loadPost, saveLocalPost, toPuckData as postToPuckData } from "./posts/store";
 
 const site = siteJson as Site;
@@ -263,6 +265,15 @@ export function App() {
 
   if (route.name === "edit") {
     if (githubOn === null) return <Loading />;
+    // F038: on a phone, pages open in quick edit (words and photos only).
+    if (prefersQuickEdit(window.innerWidth, location.hash)) {
+      return (
+        <>
+          <QuickEditScreen key={route.path} path={route.path} githubOn={githubOn} />
+          <MediaPicker />
+        </>
+      );
+    }
     return (
       <SiteStyleContext.Provider value={siteStyle}>
         <SiteChromeContext.Provider value={{ chrome: chromeDraft, siteName: site.name, path: route.path }}>
@@ -491,6 +502,9 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
                 <a className="crust-header-link" href="#/">
                   Pages
                 </a>
+                <a className="crust-header-link" href={`#/edit?path=${encodeURIComponent(path)}&mode=quick`}>
+                  Quick edit
+                </a>
                 <LayoutsButton />
                 <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
                   Keyboard
@@ -601,4 +615,26 @@ function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boo
       </MyLayoutsProvider>
     </BlogContext.Provider>
   );
+}
+
+/** Quick edit for one page (F038). */
+function QuickEditScreen({ path, githubOn }: { path: string; githubOn: boolean }) {
+  const [page, setPage] = useState<Page | null | undefined>(undefined);
+  useEffect(() => {
+    void loadPage(path, githubOn).then(setPage);
+  }, [path, githubOn]);
+  if (page === undefined) return <Loading />;
+  if (page === null) {
+    return (
+      <div className="st">
+        <main className="pg">
+          <h1 className="st-title">There's no page at {path}</h1>
+          <p>
+            <a href="#/">Back to pages</a>
+          </p>
+        </main>
+      </div>
+    );
+  }
+  return <QuickEdit page={page} githubOn={githubOn} saveMessage={saveMessage} />;
 }

@@ -53,6 +53,30 @@ Features Claude suggests. They are not work until the owner adds them to
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
 
+## 2026-10-30 — F038 Phone quick edit (Claude's recommendations; owner: "go with all your recommendations")
+
+- **Opens by itself on a phone** (screens up to 760 px wide): tapping a
+  page opens Quick edit instead of the full builder. "Full builder" (top
+  right) switches over; on a computer, the builder's new "Quick edit"
+  link opens it too. No design snapshot was made: it's a plain form in
+  the admin's existing style, built phone-first.
+- **What can be changed:** page title and description, then every
+  heading, text, button label, card, quote, image overlay, FAQ question
+  and answer, icon-list line, and photo (Image, Card, Gallery, Logo row,
+  Grid cards, section backgrounds), in the order they appear on the
+  page. Photos use the media library picker (F034), so a new photo
+  brings its alt text. Nothing can be moved, added or removed: that's
+  the full builder's job.
+- **Numbered parts:** each block is a card with a number ("3 · Heading").
+  Screen readers hear the number with each field ("Heading, part 3"), so
+  two headings never sound the same.
+- **Save** keeps the page in the browser as you type (like the builder)
+  and saves to GitHub; **Save and publish** saves, then starts the
+  publish. Publish only starts if the save worked. Both are in a bar at
+  the bottom, within thumb reach; fields use 16 px text so iPhones don't
+  zoom in; every control is at least 44 px tall.
+- **Posts** still open in the full builder on a phone for now.
+
 ## 2026-10-30 — F037 Contact form (Claude's recommendations; owner: "go with all your recommendations")
 
 - **A "Contact form" block** in a new **Forms** group: Name, Email and
