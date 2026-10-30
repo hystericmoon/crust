@@ -6,6 +6,7 @@
 import {
   buildPageLayout,
   insertLayout,
+  migrateRichTextBlocks,
   pageLayouts,
   sectionLayouts,
   type LayoutCategory,
@@ -54,7 +55,7 @@ export function freshIds(items: ComponentData[]): ComponentData[] {
 
 /** Fresh blocks for a layout. */
 export const buildItem = (item: LayoutItem): ComponentData[] =>
-  item.kind === "page" ? buildPageLayout(item.layout) : item.kind === "mine" ? freshIds(item.layout.content) : item.layout.build();
+  item.kind === "page" ? buildPageLayout(item.layout) : item.kind === "mine" ? freshIds(migrateRichTextBlocks(item.layout.content)) : item.layout.build();
 
 const contains = (item: ComponentData, id: string): boolean =>
   item.props.id === id || Object.values(item.props).some((v) => isTree(v) && v.some((child) => contains(child, id)));

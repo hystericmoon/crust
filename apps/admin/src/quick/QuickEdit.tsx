@@ -3,12 +3,13 @@
  * simple form, then Save, or Save and publish. No layout editing; a link
  * opens the full builder.
  */
-import type { Page } from "@crust/blocks";
+import type { Page, RichText } from "@crust/blocks";
 import type { Data } from "@puckeditor/core";
 import { useEffect, useId, useMemo, useState } from "react";
 import { saveContent, startPublish, type ApiResult } from "../api-client";
 import { ImageField } from "../media/ImageField";
 import { fromPuckData, saveLocalDraft, toPuckData } from "../pages/store";
+import { RichTextEditor } from "../rich-text/RichTextEditor";
 import { applyQuickEdit, quickGroups, type QuickField } from "./quick";
 
 export const fullBuilderHref = (path: string) => `#/edit?path=${encodeURIComponent(path)}&mode=full`;
@@ -53,7 +54,7 @@ export function QuickEdit({ page: initial, githubOn, saveMessage }: Props) {
     if (dirty) saveLocalDraft(page, false);
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const change = (field: QuickField, value: string, extra?: Record<string, string>) => {
+  const change = (field: QuickField, value: string | RichText, extra?: Record<string, string>) => {
     setData((d) => applyQuickEdit(d, field, value, extra));
     setDirty(true);
   };
@@ -146,6 +147,10 @@ export function QuickEdit({ page: initial, githubOn, saveMessage }: Props) {
                   onChange={(v) => change(f, v)}
                   onPick={(src, alt) => change(f, src, f.altKey ? { [f.altKey]: alt } : undefined)}
                 />
+              ) : f.kind === "rich" ? (
+                <div key={f.id} className="qe-field">
+                  <RichTextEditor label={f.label} labelSuffix={`, part ${gi + 1}`} value={f.rich} onChange={(v) => change(f, v)} />
+                </div>
               ) : (
                 <TextInput key={f.id} field={f} part={gi + 1} onChange={(v) => change(f, v)} />
               ),

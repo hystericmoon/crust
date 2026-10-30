@@ -418,7 +418,7 @@
       "description": "Bold, italic, links, bulleted and numbered lists inside a Text block, with a small toolbar and keyboard shortcuts. Saved as structured text, never raw HTML; links checked with safeUrl. Migration turns existing plain text into the new format. Free editor only (Lexical or Puck's free rich text field). Design snapshot first. Added by the owner (approved Milestone 4, 2026-10-30).",
       "depends_on": ["F004", "F005"],
       "done_check": "npm test -- rich-text && npm run typecheck && npm run build && cargo test && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

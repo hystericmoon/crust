@@ -8,6 +8,7 @@
 import type { ComponentData } from "@puckeditor/core";
 import type { SectionStyleId } from "./section-styles";
 import type { SpacingStep } from "./tokens";
+import { richParagraphs } from "./rich-text";
 
 type Align = "left" | "center" | "right";
 type Level = "h1" | "h2" | "h3" | "h4";
@@ -65,7 +66,7 @@ const section = (
     content,
   });
 const heading = (text: string, level: Level = "h2", align: Align = "left") => block("Heading", { text, level, align });
-const text = (t: string, align: Align = "left", tone: "default" | "muted" = "default") => block("Text", { text: t, align, tone });
+const text = (t: string, align: Align = "left", tone: "default" | "muted" = "default") => block("Text", { text: richParagraphs(t), align, tone });
 const button = (label: string, href: string, variant: "primary" | "secondary" = "primary", align: Align = "left") =>
   block("Button", { label, href, variant, align });
 const spacer = (size: SpacingStep = "sm") => block("Spacer", { size });

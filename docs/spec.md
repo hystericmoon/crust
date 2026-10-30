@@ -160,6 +160,21 @@ use `/blog` or addresses below it. `cover` is optional (`""`), and needs
 `coverAlt` when set. The post body is blocks, like a page (no H1: the
 title is the H1).
 
+A Text block's `text` (changed with F042) is rich text, never HTML:
+```json
+{ "rich": 1, "blocks": [
+  { "type": "p", "children": [{ "text": "Fresh bread " }, { "text": "daily", "bold": true },
+                              { "text": "menu", "href": "/menu", "italic": true }] },
+  { "type": "ul", "items": [[{ "text": "Sourdough" }], [{ "text": "Rye" }]] },
+  { "type": "ol", "items": [[{ "text": "Order" }]] }
+] }
+```
+Spans may be `bold`, `italic` and carry an `href` (checked with `safeUrl`;
+page paths, `https://`, `mailto:`, `tel:`, `#anchor`). `"\n"` inside a span
+is a line break. Pages saved before F042 hold a plain string (paragraphs
+split by blank lines); it reads the same and becomes rich text the next
+time the page is opened and saved (`migrateRichText`).
+
 `content/layouts/<id>.json` (optional, added with F027)
 ```json
 { "id": "studio-intro", "name": "Studio intro", "kind": "section", "savedAt": "…", "content": [ … ] }

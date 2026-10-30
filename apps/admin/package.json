@@ -11,7 +11,16 @@
   "dependencies": {
     "@crust/blocks": "*",
     "@crust/render": "*",
+    "@lexical/history": "^0.53.0",
+    "@lexical/link": "^0.53.0",
+    "@lexical/list": "^0.53.0",
+    "@lexical/markdown": "^0.53.0",
+    "@lexical/react": "^0.53.0",
+    "@lexical/rich-text": "^0.53.0",
+    "@lexical/selection": "^0.53.0",
+    "@lexical/utils": "^0.53.0",
     "@puckeditor/core": "^0.23.0",
+    "lexical": "^0.53.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },

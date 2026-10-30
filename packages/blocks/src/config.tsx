@@ -1,6 +1,8 @@
 import type { Config, Slot } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { alignField, headingTag, paragraphs, vars, type Align } from "./block-helpers";
+import { richParagraphs, type RichText } from "./rich-text";
+import { RichTextView } from "./rich-text-view";
 import {
   moreBlocks,
   type AccordionProps,
@@ -40,7 +42,8 @@ export type SectionProps = {
   content: Slot;
 };
 export type HeadingProps = { text: string; level: "h1" | "h2" | "h3" | "h4"; align: Align };
-export type TextProps = { text: string; align: Align; tone: "default" | "muted" };
+/** `text` is rich text (F042); pages saved before F042 hold a plain string. */
+export type TextProps = { text: RichText | string; align: Align; tone: "default" | "muted" };
 export type ImageProps = { src: string; alt: string; caption: string };
 /** `align` was added in F012; pages saved before it have none and stay left-aligned. */
 export type ButtonProps = { label: string; href: string; variant: "primary" | "secondary"; align?: Align };
@@ -211,9 +214,12 @@ const blocks: Config<Components> = {
           ],
         },
       },
-      defaultProps: { text: "Write something here.", align: "left", tone: "default" },
+      defaultProps: { text: richParagraphs("Write something here."), align: "left", tone: "default" },
+      // F042: rich text (older pages' plain text reads the same).
       render: ({ text, align, tone }) => (
-        <div className={`cr-text cr-align-${align} cr-tone-${tone}`}>{paragraphs(text)}</div>
+        <div className={`cr-text cr-rich cr-align-${align} cr-tone-${tone}`}>
+          <RichTextView value={text} />
+        </div>
       ),
     },
     Image: {

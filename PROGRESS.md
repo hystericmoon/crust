@@ -19,13 +19,20 @@ to "Log".
 - **F034–F039 still need `reviewed: true`** from the owner (steps below).
 - **Milestone 4 "Daily use" approved (2026-10-30):** F040–F044,
   docs/milestone-4.md. **F040 merged** (PR #26, owner: "merge F040").
-  **F041 Layouts for the new blocks built** (PR, not merged). Next: F042
-  rich text, F043 linked sections, F044 custom domain.
+  **F041 layouts merged** (PR #27, owner: "Yes, merge all four in
+  order"). **F042 rich text** built (PR #28; direction A of its design
+  snapshot, owner can still pick B). Next: F043 linked sections, F044
+  custom domain.
 - **Waiting on the owner:**
   - **F041:** in the builder press **Layouts**: Features grid, Photo
     gallery, Logo strip, Testimonial, Questions to open and Contact
     form, plus the new Gallery and Logos categories. Insert one and
     fill in your own photos and words.
+  - **F042:** look at the design snapshot
+    (https://claude.ai/artifact/1d1Ujx7ENSrGCef6CWfg9Z; A was built). On
+    the PR's preview link, select a Text block: make words bold, add a
+    link with ⌘K, type "- " to start a list. Try a bad link like
+    "javascript:x". Then try the same in Quick edit on your phone.
   - **F040:** on the PR's preview link, open a page in the builder.
     The Pages screen and the builder's top bar have **Sign out** (after
     Site settings); on your phone the Pages buttons now wrap as whole
@@ -366,3 +373,10 @@ to "Log".
   F032/F037 blocks, Gallery and Logos categories, gallery cards preview
   empty photo slots (`renderPreview`). All pass the layout axe check.
   22 new tests; done_check exits 0.
+- 2026-10-30 — F042 on branch f042-rich-text: design snapshot
+  (design/f042-rich-text-v1.html, direction A built). Lexical editor on
+  the Text field (builder and Quick edit); new rich text format in page
+  JSON with migration (spec + DECISIONS); links checked on save, in theme
+  packs and when rendering, and updated on rename. Builder axe check now
+  covers the editor; block samples cover links on every section style.
+  29 new tests; done_check exits 0.

@@ -9,6 +9,23 @@ type Content = Page["puck"]["content"];
 
 const sampleBlocks = (n: string): Content => [
   { type: "Heading", props: { id: `h-${n}`, text: `Sample ${n}`, level: "h2", align: "left" } },
+  // F042: rich text, so axe checks links and lists on every section style.
+  {
+    type: "Text",
+    props: {
+      id: `rich-${n}`,
+      align: "left",
+      tone: "default",
+      text: {
+        rich: 1,
+        blocks: [
+          { type: "p", children: [{ text: "Fresh bread " }, { text: "every morning", bold: true }, { text: ", see the " }, { text: "menu", href: "/menu" }, { text: "." }] },
+          { type: "ul", items: [[{ text: "Sourdough" }], [{ text: "Rye, ", italic: true }, { text: "on Fridays", href: "/fridays" }]] },
+          { type: "ol", items: [[{ text: "Order" }], [{ text: "Collect" }]] },
+        ],
+      },
+    },
+  },
   {
     type: "Grid",
     props: {

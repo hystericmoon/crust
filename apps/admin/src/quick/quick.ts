@@ -3,9 +3,11 @@
  * in reading order, without layout. Each entry knows where its value
  * lives in the block tree, so a change touches only that value.
  */
+import { richTextToPlain, type RichText } from "@crust/blocks";
 import type { ComponentData, Data } from "@puckeditor/core";
 
-export type QuickKind = "text" | "textarea" | "image";
+/** "rich": a Text block's rich text (F042), edited with the same toolbar as the builder. */
+export type QuickKind = "text" | "textarea" | "image" | "rich";
 
 export interface QuickSpec {
   key: string;
@@ -18,7 +20,7 @@ export interface QuickSpec {
 /** What can be edited in each block; lists name their array and its item fields. */
 const blockSpecs: Record<string, { name: string; fields: QuickSpec[]; lists?: { key: string; item: string; fields: QuickSpec[] }[] }> = {
   Heading: { name: "Heading", fields: [{ key: "text", label: "Heading", kind: "text" }] },
-  Text: { name: "Text", fields: [{ key: "text", label: "Text", kind: "textarea" }] },
+  Text: { name: "Text", fields: [{ key: "text", label: "Text", kind: "rich" }] },
   Button: { name: "Button", fields: [{ key: "label", label: "Button label", kind: "text" }] },
   Image: {
     name: "Image",
@@ -124,7 +126,10 @@ export interface QuickField extends QuickSpec {
   blockId: string;
   list?: string;
   index?: number;
+  /** The words (for rich text: without styles, to tell whether there are any). */
   value: string;
+  /** Rich text fields: the value as stored. */
+  rich?: unknown;
 }
 
 export interface QuickGroup {
@@ -146,7 +151,13 @@ export function quickGroups(data: Data): QuickGroup[] {
       const spec = blockSpecs[b.type];
       const blockId = String(b.props.id ?? "");
       if (spec) {
-        const own = spec.fields.map((f) => ({ ...f, id: `${blockId}:${f.key}`, blockId, value: str(b.props[f.key]) }));
+        const own = spec.fields.map((f) => ({
+          ...f,
+          id: `${blockId}:${f.key}`,
+          blockId,
+          value: f.kind === "rich" ? richTextToPlain(b.props[f.key]) : str(b.props[f.key]),
+          ...(f.kind === "rich" ? { rich: b.props[f.key] } : {}),
+        }));
         // A Section only matters here when it has a background photo to swap.
         if (b.type !== "Section" || own.some((f) => f.value.trim())) {
           if (own.length) groups.push({ title: spec.name, blockId, fields: own });
@@ -170,7 +181,7 @@ export function quickGroups(data: Data): QuickGroup[] {
 }
 
 /** A copy of the page with one value changed (and, for a photo, its alt text). */
-export function applyQuickEdit(data: Data, field: Pick<QuickField, "blockId" | "key" | "list" | "index">, value: string, extra: Record<string, string> = {}): Data {
+export function applyQuickEdit(data: Data, field: Pick<QuickField, "blockId" | "key" | "list" | "index">, value: string | RichText, extra: Record<string, string> = {}): Data {
   const patch = { [field.key]: value, ...extra };
   const edit = (blocks: ComponentData[]): ComponentData[] =>
     blocks.map((b) => {

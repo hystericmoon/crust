@@ -5,6 +5,7 @@ import { validateTokens } from "@crust/blocks/tokens";
 import { validateChrome } from "@crust/blocks/chrome-model";
 import { isBlogPath, isSearchPath } from "@crust/blocks/posts";
 import { checkSeo } from "@crust/blocks/seo";
+import { richTextProblems } from "@crust/blocks/rich-text";
 
 const SEGMENT = /^[a-z0-9][a-z0-9-]*$/;
 export const MAX_BYTES = 512 * 1024;
@@ -127,7 +128,7 @@ export function checkLayout(layout: unknown): string[] {
   if (layout.kind !== "section" && layout.kind !== "page") problems.push("A layout is either a section or a whole page.");
   if (!Array.isArray(layout.content) || layout.content.length === 0 || !layout.content.every(isBlock)) {
     problems.push("The layout's blocks are missing or damaged.");
-  }
+  } else problems.push(...richTextProblems(layout.content));
   return problems;
 }
 
@@ -155,6 +156,7 @@ export function checkPage(page: unknown): string[] {
   else if (page.description.length > 300) problems.push("The page description is longer than 300 characters.");
   const puck = page.puck;
   if (!isObject(puck) || !Array.isArray(puck.content) || !isObject(puck.root)) problems.push("The page's blocks are missing or damaged.");
+  else problems.push(...richTextProblems(puck));
   problems.push(...checkSeo(page.seo));
   return problems;
 }
