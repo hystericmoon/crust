@@ -15,6 +15,7 @@ import { ActionBar, createUsePuck, useGetPuck, type Config, type Data } from "@p
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { HeightPicker, SectionStyleEditor, StyleSwatch, StyleTiles, TintPicker, RadioGroup } from "./controls";
 import { countSectionStyles, useSiteStyle } from "./site-style";
+import { ImageField } from "../media/ImageField";
 
 const usePuckSelector = createUsePuck();
 
@@ -250,16 +251,7 @@ export function SectionToolbar() {
           {pop === "height" ? <HeightPicker value={section.height ?? "auto"} onChange={(height) => patch({ height })} /> : null}
           {pop === "image" ? (
             <div className="sx-stack">
-              <label className="sx-custom">
-                Background image URL
-                <input
-                  className="sx-input"
-                  type="url"
-                  placeholder="https://…"
-                  defaultValue={section.imageSrc ?? ""}
-                  onChange={(e) => patch({ imageSrc: e.target.value })}
-                />
-              </label>
+              <ImageField label="Background image" value={section.imageSrc ?? ""} onChange={(imageSrc) => patch({ imageSrc })} />
               {section.imageSrc?.trim() ? (
                 <TintPicker tokens={site.tokens} style={style} value={section.tint ?? "medium"} onChange={(tint) => patch({ tint })} />
               ) : null}

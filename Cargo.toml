@@ -6,3 +6,8 @@ members = ["crates/*"]
 edition = "2024"
 license = "MIT"
 publish = false
+
+# Photos are resized at publish time (F034) with `cargo run`, a dev build;
+# optimised dependencies keep that fast.
+[profile.dev.package."*"]
+opt-level = 2

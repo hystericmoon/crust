@@ -46,10 +46,12 @@ import { SiteSettings } from "./settings/SiteSettings";
 import { loadSavedTokens, sameTokens, saveTokens } from "./tokens-store";
 import { loadSavedChrome, sameChrome, saveChrome, siteToSave } from "./chrome-store";
 import { SiteChromeContext, withSiteChrome } from "./chrome-canvas";
+import { withMediaFields } from "./media/fields";
+import { MediaPicker } from "./media/MediaPicker";
 
 const site = siteJson as Site;
-/** The builder's blocks: visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
-const editorConfig = withSiteChrome(withSettingsTabs(withResponsiveEditing(withSectionEditing(withItemEditing(config)))));
+/** The builder's blocks: image fields with the media library (F034), visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
+const editorConfig = withSiteChrome(withSettingsTabs(withResponsiveEditing(withSectionEditing(withItemEditing(withMediaFields(config))))));
 
 /** Responsive canvas widths for the viewport switcher. */
 const viewports = [
@@ -208,6 +210,7 @@ export function App() {
           chromeDirty={!sameChrome(savedChrome, chromeDraft)}
           pages={pageOptions}
         />
+        <MediaPicker />
       </MyLayoutsProvider>
     );
   }
@@ -218,6 +221,7 @@ export function App() {
       <SiteStyleContext.Provider value={siteStyle}>
         <SiteChromeContext.Provider value={{ chrome: chromeDraft, siteName: site.name, path: route.path }}>
           <Builder key={route.path} path={route.path} githubOn={githubOn} shortcut={shortcut("crust-header-link")} />
+          <MediaPicker />
         </SiteChromeContext.Provider>
       </SiteStyleContext.Provider>
     );

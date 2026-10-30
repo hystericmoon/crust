@@ -11,6 +11,7 @@ import type { ComponentConfig } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { alignField, headingTag, paragraphs, type Align } from "./block-helpers";
 import { sectionStyleIds, sectionStyleNames, tintLevels, tintNames, type SectionStyleId, type TintLevel } from "./section-styles";
+import { Img } from "./media-img";
 import { safeUrl } from "./url";
 
 type Editing = { puck?: { isEditing?: boolean } };
@@ -154,7 +155,7 @@ export const Grid: ComponentConfig<GridProps> = {
         {(items ?? []).map((c, i) => (
           <li key={i}>
             <article className={`cr-card cr-bg-${background}`}>
-              {c.imageSrc?.trim() ? <img className="cr-card-media" src={safeUrl(c.imageSrc)} {...altOf(c.imageAlt ?? "")} loading="lazy" decoding="async" /> : null}
+              {c.imageSrc?.trim() ? <Img className="cr-card-media" src={c.imageSrc} size="third" {...altOf(c.imageAlt ?? "")} loading="lazy" decoding="async" /> : null}
               <div className="cr-card-body">
                 {c.title?.trim() ? <Title className="cr-heading cr-card-title">{c.title}</Title> : null}
                 {c.text?.trim() ? <div className="cr-text">{paragraphs(c.text)}</div> : null}
@@ -215,7 +216,7 @@ export const Gallery: ComponentConfig<GalleryProps> = {
         {list.map((im, i) => (
           <li key={i}>
             <figure className="cr-gallery-item">
-              {im.src?.trim() ? <img src={safeUrl(im.src)} {...altOf(im.alt ?? "")} loading="lazy" decoding="async" /> : <Placeholder>Add an image URL</Placeholder>}
+              {im.src?.trim() ? <Img src={im.src} size="third" {...altOf(im.alt ?? "")} loading="lazy" decoding="async" /> : <Placeholder>Add an image URL</Placeholder>}
               {im.caption?.trim() ? <figcaption>{im.caption}</figcaption> : null}
             </figure>
           </li>
@@ -348,7 +349,7 @@ export const LogoRow: ComponentConfig<LogoRowProps> = {
     return (
       <ul className={`cr-logos cr-logos-${logoSize} cr-align-${align}${grayscale === "yes" ? " cr-logos-grey" : ""}`} role="list">
         {list.map((l, i) => {
-          const img = l.src?.trim() ? <img src={safeUrl(l.src)} {...altOf(l.alt ?? "")} loading="lazy" decoding="async" /> : <Placeholder>Logo</Placeholder>;
+          const img = l.src?.trim() ? <Img src={l.src} size="small" {...altOf(l.alt ?? "")} loading="lazy" decoding="async" /> : <Placeholder>Logo</Placeholder>;
           return <li key={i}>{l.href?.trim() ? <a href={safeUrl(l.href)}>{img}</a> : img}</li>;
         })}
       </ul>
@@ -380,7 +381,7 @@ export const Quote: ComponentConfig<QuoteProps> = {
       {name.trim() || role.trim() ? (
         <figcaption className="cr-quote-by">
           {/* The name is right next to the photo, so the photo itself is decoration. */}
-          {imageSrc.trim() ? <img className="cr-quote-photo" src={safeUrl(imageSrc)} alt="" loading="lazy" decoding="async" /> : null}
+          {imageSrc.trim() ? <Img className="cr-quote-photo" src={imageSrc} size="small" alt="" loading="lazy" decoding="async" /> : null}
           <span>
             {name.trim() ? <span className="cr-quote-name">{name}</span> : null}
             {role.trim() ? <span className="cr-quote-role">{role}</span> : null}
@@ -448,7 +449,7 @@ export const ImageOverlay: ComponentConfig<ImageOverlayProps> = {
     // The tint is the style's background over the photo, strong enough for its text (see effectiveTint).
     return (
       <div className={`cr-overlay cr-style-${background} cr-overlay-${position} cr-overlay-${height}`}>
-        {image !== "#" ? <img className="cr-section-media" src={image} {...altOf(imageAlt)} loading="lazy" decoding="async" /> : null}
+        {image !== "#" ? <Img className="cr-section-media" src={image} size="wide" {...altOf(imageAlt)} loading="lazy" decoding="async" /> : null}
         <div className={`cr-section-tint cr-tint-${tint}`} aria-hidden="true" />
         <div className="cr-overlay-body">
           {title.trim() ? <Title className="cr-heading cr-overlay-title">{title}</Title> : null}

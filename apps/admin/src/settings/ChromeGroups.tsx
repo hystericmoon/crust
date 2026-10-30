@@ -16,6 +16,7 @@ import {
 } from "@crust/blocks";
 import { useId, useState } from "react";
 import { StyleTiles } from "../sections/controls";
+import { ImageField } from "../media/ImageField";
 
 export interface PageOption {
   path: string;
@@ -196,7 +197,12 @@ export function HeaderOptions({ chrome, onChange, tokens, pages }: Props) {
         <fieldset className="st-fieldset">
           <legend className="st-field-label">Logo</legend>
           <TextField label="Name" value={h.logo.text} onChange={(text) => set({ logo: { ...h.logo, text } })} hint="Shown when there's no logo image, and links to the home page." />
-          <TextField label="Logo image address (optional)" value={h.logo.imageSrc} onChange={(imageSrc) => set({ logo: { ...h.logo, imageSrc } })} />
+          <ImageField
+            label="Logo image (optional)"
+            value={h.logo.imageSrc}
+            onChange={(imageSrc) => set({ logo: { ...h.logo, imageSrc } })}
+            onPick={(imageSrc, imageAlt) => set({ logo: { ...h.logo, imageSrc, imageAlt } })}
+          />
           {h.logo.imageSrc.trim() ? (
             <TextField label="Logo description" value={h.logo.imageAlt} onChange={(imageAlt) => set({ logo: { ...h.logo, imageAlt } })} hint={`What the logo says, for people who can't see it, e.g. "Haho Studio".`} />
           ) : null}

@@ -338,7 +338,7 @@
       "description": "Upload images from the Mac or phone into a media library (Cloudflare R2, free tier), pick them from a grid in every image field, with alt text asked for at upload. The publish step makes resized copies (srcset) so pages stay fast on phones. Image URLs keep working. Added by the owner (approved Milestone 3, 2026-10-30).",
       "depends_on": ["F006", "F011"],
       "done_check": "npm test -- media && npm run build && cargo test && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

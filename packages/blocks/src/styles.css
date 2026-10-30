@@ -256,7 +256,7 @@ main[tabindex="-1"]:focus { outline: none; }
   color: inherit; text-decoration: none;
   font-family: var(--cr-font-heading); font-weight: var(--cr-heading-weight, 700); font-size: 1.25rem;
 }
-.cr-logo-image { display: block; max-height: 40px; width: auto; }
+.cr-logo-image { display: block; max-height: 40px; width: auto; height: auto; }
 .cr-nav { display: flex; align-items: center; gap: var(--cr-space-sm); }
 .cr-menu { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 var(--cr-space-sm); }
 .cr-menu a {

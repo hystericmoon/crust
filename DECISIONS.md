@@ -65,6 +65,60 @@ Features Claude suggests. They are not work until the owner adds them to
   photos fits. Can move to Cloudflare R2 later without changing the UI.
 - **Published images:** resized copies (480–2400 px) with `srcset`.
 
+### Built (2026-10-30, Claude's recommendations; owner: "go with all your recommendations")
+
+- **Where the picker is:** every image field (Image, Card, Section
+  background, Image overlay, Quote photo, and the photos/cards/logos in
+  Gallery, Grid of cards and Logo row), the section toolbar's Image
+  button, and the header logo in Site settings. Each shows the photo, its
+  size, "Choose image" / "Change image", "Remove" and a folded "Use a web
+  address instead", so pasted addresses keep working.
+- **Alt text lives in the library and is copied into the block.** The
+  library keeps one description per photo (required before "Use this
+  photo"); picking a photo fills the block's own alt field, which can
+  still be changed for that one use. Why: most photos mean the same thing
+  wherever they're used, but a block-level override keeps WCAG 1.1.1
+  context-specific when needed. Changing the library text later doesn't
+  rewrite blocks that already use the photo.
+- **Keyboard:** the grid is one Tab stop; arrow keys, Home and End move
+  between photos (radio-group pattern), Enter uses the selected one.
+  Escape or Close returns focus to the button that opened the dialog.
+  Upload has a button; dropping files is only a shortcut.
+- **After an upload** the new photo is selected and focus goes to its
+  alt text box ("alt text asked for right away"). Several files can be
+  uploaded at once; each failure is listed by name.
+- **Formats:** JPG, PNG and WebP, up to 20 MB before shrinking. **SVG is
+  refused**: an SVG can carry scripts, and the published site would serve
+  it from its own address. **HEIC** (iPhone) is refused with a tip
+  (Settings > Camera > Formats > Most Compatible), because only Safari can
+  show it.
+- **Every upload is redrawn in the browser** (shrunk to 2400 px when
+  bigger, JPG quality 86): the photo is turned the right way up and
+  hidden details such as where a phone photo was taken are left out.
+  WebP becomes JPG (Safari can't write WebP); PNG stays PNG to keep
+  transparency, and a small PNG is sent untouched.
+- **The server never trusts the browser**: the type and pixel size are
+  read from the file's first bytes; anything else is refused. Files are
+  named from the original name (`img-2041.jpg`), never overwritten
+  (`-2`), and limited to 8 MB after shrinking. Photos and `media.json`
+  change in one commit.
+- **Deleting** is in the details pane, after a confirmation, and only
+  for photos no page or the header uses ("Used on" lists them). Saved
+  layouts aren't counted: they're copies, and a publish with a missing
+  photo stops with its name.
+- **Resized copies:** 480, 960 and 1440 px wide (only those smaller than
+  the photo), plus the photo itself as the largest, in the same format.
+  Made by crust-publish at publish time (not stored in GitHub). Published
+  `<img>` tags get `width`/`height` (no layout jumps) and `sizes` per
+  block (full width, a third for Gallery and Grid, small for logos). No
+  WebP conversion yet: the free Rust encoder only writes lossless WebP,
+  which is bigger than JPG for photos.
+- **The builder shows library photos** at the same address pages use
+  (`/media/<file>`), served from GitHub by a Pages Function behind
+  Cloudflare Access, so the preview matches the published page.
+- **Publish check:** a page that shows a library photo that isn't there
+  stops the publish, naming the photo and page.
+
 ## 2026-10-29 — F033 Theme pack export and import (Claude's recommendation, owner-approved overnight)
 
 - **Where:** a "Theme pack" group at the end of Site settings, with two

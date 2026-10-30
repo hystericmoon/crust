@@ -2,7 +2,7 @@
  * Browser side of the admin API (apps/admin/server). Every call resolves to
  * a plain result; it never throws, so the UI always has a message to show.
  */
-import type { Page, SavedLayout, Site } from "@crust/blocks";
+import type { MediaItem, Page, SavedLayout, Site } from "@crust/blocks";
 
 export type ApiResult<T = Record<string, never>> =
   | ({ ok: true } & T)
@@ -97,3 +97,13 @@ export const saveLayout = (layout: Pick<SavedLayout, "name" | "kind" | "content"
   call<{ layout: SavedLayout }>("/api/layouts", post({ action: "save", layout }));
 export const renameLayout = (id: string, name: string) => call<{ layout: SavedLayout }>("/api/layouts", post({ action: "rename", id, name }));
 export const deleteLayout = (id: string) => call("/api/layouts", post({ action: "delete", id }));
+
+/** Media library (F034): photos in content/media/, details in content/media.json. */
+export interface MediaUse {
+  path: string;
+  title: string;
+}
+export const listMedia = () => call<{ items: MediaItem[]; usage: Record<string, MediaUse[]> }>("/api/media");
+export const uploadMedia = (photo: { name: string; data: string; alt: string }) => call<{ item: MediaItem }>("/api/media", post({ action: "upload", ...photo }));
+export const setMediaAlt = (file: string, alt: string) => call<{ item: MediaItem }>("/api/media", post({ action: "alt", file, alt }));
+export const deleteMedia = (file: string) => call<{ usedOn?: MediaUse[] }>("/api/media", post({ action: "delete", file }));

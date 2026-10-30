@@ -56,13 +56,13 @@ export interface Env {
 export const DEFAULT_REPO = "hystericmoon/crust";
 export const PUBLISH_WORKFLOW = "publish.yml";
 
-const json = (status: number, body: unknown) =>
+export const json = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
   });
 
-const fail = (status: number, error: string, extra: Record<string, unknown> = {}) => json(status, { ok: false, error, ...extra });
+export const fail = (status: number, error: string, extra: Record<string, unknown> = {}) => json(status, { ok: false, error, ...extra });
 
 /** Which settings are missing, in the owner's words. Empty when ready. */
 export function missingSetup(env: Env): string[] {
@@ -72,7 +72,7 @@ export function missingSetup(env: Env): string[] {
   return missing;
 }
 
-const githubConfig = (env: Env): GitHubConfig => ({
+export const githubConfig = (env: Env): GitHubConfig => ({
   token: env.GITHUB_TOKEN!,
   repo: env.GITHUB_REPO || DEFAULT_REPO,
   branch: env.CONTENT_BRANCH || "main",
@@ -113,7 +113,7 @@ async function readBody(request: Request): Promise<unknown | Response> {
   }
 }
 
-const githubFailure = (e: unknown) =>
+export const githubFailure = (e: unknown) =>
   e instanceof GitHubError ? fail(e.status === 409 ? 409 : 502, e.message) : fail(502, "Couldn't reach GitHub. Try again in a minute.");
 
 /** GET /api/status: is saving switched on, and who is signed in. */
@@ -194,7 +194,7 @@ export async function handlePages(request: Request, env: Env, fetchFn: typeof fe
 }
 
 /** Every page file with its content; unreadable files are skipped. */
-async function readPages(cfg: GitHubConfig, fetchFn: typeof fetch): Promise<{ file: string; page: Page }[]> {
+export async function readPages(cfg: GitHubConfig, fetchFn: typeof fetch): Promise<{ file: string; page: Page }[]> {
   const files = (await listFolder(cfg, "content/pages", fetchFn)).filter((f) => f.name.endsWith(".json"));
   const pages = await Promise.all(
     files.map(async (f) => {

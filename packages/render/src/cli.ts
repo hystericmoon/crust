@@ -2,7 +2,7 @@
  * Usage: tsx packages/render/src/cli.ts <contentDir> <outDir>
  * Renders every page in <contentDir>/pages to static HTML in <outDir>.
  */
-import type { Page, Site } from "@crust/blocks";
+import { parseMediaIndex, type Page, type Site } from "@crust/blocks";
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -20,7 +20,9 @@ const pageFiles = (await readdir(join(contentDir, "pages"))).filter((f) => f.end
 await rm(outDir, { recursive: true, force: true });
 const pages = await Promise.all(pageFiles.map((file) => readJson<Page>(join(contentDir, "pages", file))));
 // Sites saved before F031 have no menu yet: it's made from these pages.
-const options = { pages: pages.map((p) => ({ path: p.path, title: p.title })) };
+// F034: uploaded photos get srcset; crust-publish makes the resized copies.
+const media = parseMediaIndex(await readFile(join(contentDir, "media.json"), "utf8").catch(() => null));
+const options = { pages: pages.map((p) => ({ path: p.path, title: p.title })), media };
 const seen = new Map<string, string>();
 for (const [i, file] of pageFiles.entries()) {
   const page = pages[i]!;

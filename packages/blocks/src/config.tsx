@@ -14,6 +14,7 @@ import {
 import { spaceVar, spacingField } from "./fields";
 import { sectionStyleIds, sectionStyleNames, tintLevels, tintNames, type SectionStyleId, type TintLevel } from "./section-styles";
 import type { SpacingStep } from "./tokens";
+import { Img } from "./media-img";
 import { safeUrl } from "./url";
 import { cleanAnchor, columnClasses, hiddenLabel, hideClasses, type ColumnWidths, type HideOn } from "./responsive";
 
@@ -160,7 +161,7 @@ const blocks: Config<Components> = {
             {image !== "#" ? (
               <>
                 {/* Background photos are decoration; the tint keeps text readable on any photo. */}
-                <img className="cr-section-media" src={image} alt="" decoding="async" />
+                <Img className="cr-section-media" src={image} size="wide" alt="" decoding="async" />
                 <div className={`cr-section-tint cr-tint-${tint ?? "medium"}`} aria-hidden="true" />
               </>
             ) : null}
@@ -226,7 +227,7 @@ const blocks: Config<Components> = {
         return (
           <figure className="cr-image">
             {src ? (
-              <img src={safeUrl(src)} {...altAttr} loading="lazy" decoding="async" />
+              <Img src={src} {...altAttr} loading="lazy" decoding="async" />
             ) : (
               <div className="cr-image-empty">Add an image URL</div>
             )}
@@ -341,7 +342,7 @@ const blocks: Config<Components> = {
         return (
           <article className={`cr-card cr-bg-${background}`}>
             {imageSrc.trim() ? (
-              <img className="cr-card-media" src={safeUrl(imageSrc)} {...altAttr} loading="lazy" decoding="async" />
+              <Img className="cr-card-media" src={imageSrc} size="half" {...altAttr} loading="lazy" decoding="async" />
             ) : null}
             <div className="cr-card-body">
               {title.trim() ? <Title className="cr-heading cr-card-title">{title}</Title> : null}
