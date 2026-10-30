@@ -48,6 +48,9 @@ export const slugForFile = (file: string): string | null => {
 /** Pages can't live at /blog or below it: that's where posts are published. */
 export const isBlogPath = (path: string) => path === BLOG_PATH || path.startsWith(`${BLOG_PATH}/`);
 
+/** The site search page lives at /search (F039); pages can't use it either. */
+export const isSearchPath = (path: string) => path === "/search" || path.startsWith("/search/");
+
 /** "My first post!" → "my-first-post", free among `taken` ("my-first-post-2"). */
 export function slugFor(title: string, taken: Iterable<string>): string {
   const base =

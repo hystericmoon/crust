@@ -18,7 +18,7 @@ describe("published header", () => {
   it("adds a skip link, the header before main, and marks the current page", () => {
     const html = renderPage(site, page("/about"), "", { pages });
     expect(html).toContain('<a class="cr-skip" href="#content">Skip to content</a>');
-    expect(html.indexOf("<header")).toBeLessThan(html.indexOf('<main id="content" tabindex="-1">'));
+    expect(html.indexOf("<header")).toBeLessThan(html.indexOf('<main id="content" tabindex="-1"'));
     expect(html).toContain('<a class="cr-logo" href="/">Haho &amp; Co</a>');
     expect(html).toContain('<a href="/about" aria-current="page">About</a>');
     expect(html).toContain('<a href="/">Home</a>');

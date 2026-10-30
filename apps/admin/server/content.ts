@@ -3,7 +3,7 @@
 import type { Page, Redirect, SavedLayout, Site } from "@crust/blocks/content";
 import { validateTokens } from "@crust/blocks/tokens";
 import { validateChrome } from "@crust/blocks/chrome-model";
-import { isBlogPath } from "@crust/blocks/posts";
+import { isBlogPath, isSearchPath } from "@crust/blocks/posts";
 import { checkSeo } from "@crust/blocks/seo";
 
 const SEGMENT = /^[a-z0-9][a-z0-9-]*$/;
@@ -133,6 +133,7 @@ export function checkPage(page: unknown): string[] {
   const problems: string[] = [];
   if (!isValidPagePath(page.path)) problems.push("The page address must look like /about (lowercase letters, numbers and dashes).");
   else if (isBlogPath(page.path)) problems.push("Addresses starting with /blog are where your posts are published. Choose another address.");
+  else if (isSearchPath(page.path)) problems.push("/search is where site search lives. Choose another address.");
   if (typeof page.title !== "string" || !page.title.trim()) problems.push("The page needs a title.");
   else if (page.title.length > 120) problems.push("The page title is longer than 120 characters.");
   if (typeof page.description !== "string") problems.push("The page description is missing.");

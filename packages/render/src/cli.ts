@@ -7,6 +7,7 @@ import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { renderBlogIndex, renderPost, rssFeed } from "./blog";
+import { renderSearchPage } from "./search";
 import { outputFileFor, renderNotFound, renderPage } from "./render";
 
 const [contentDir = "content", outDir = "dist/site"] = process.argv.slice(2);
@@ -31,6 +32,7 @@ const options = { pages: pages.map((p) => ({ path: p.path, title: p.title })), m
 const seen = new Map<string, string>();
 for (const [i, file] of pageFiles.entries()) {
   const page = pages[i]!;
+  if (page.path === "/search" || page.path.startsWith("/search/")) throw new Error(`Page ${file} uses the address ${page.path}, which belongs to site search. Rename the page.`);
   if (isBlogPath(page.path)) throw new Error(`Page ${file} uses the address ${page.path}, which belongs to your blog. Rename the page.`);
   const target = outputFileFor(page.path);
   const previous = seen.get(target);
@@ -62,5 +64,8 @@ if (posts.length) {
   }
   console.log(`rendered ${posts.length} post(s), /blog/ and /blog/feed.xml`);
 }
+// F039: the site search page; publish:local and the publish workflow run Pagefind afterwards.
+await mkdir(join(outDir, "search"), { recursive: true });
+await writeFile(join(outDir, "search", "index.html"), renderSearchPage(site, baseCss, options));
 await writeFile(join(outDir, "404.html"), renderNotFound(site, baseCss, options));
 console.log(`render: ${pageFiles.length} page(s) written to ${outDir}`);

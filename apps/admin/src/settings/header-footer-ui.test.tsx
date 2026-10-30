@@ -139,6 +139,13 @@ describe("Site settings: Header & menu and Footer", () => {
     expect(onSave).toHaveBeenCalled();
   });
 
+  it("switches on the header's Search link (F039)", () => {
+    const { chrome } = settings();
+    openGroup("Header & menu");
+    act(() => fireEvent.click(screen.getByLabelText("Show a Search link (site search)")));
+    expect(chrome().header.search).toBe(true);
+  });
+
   it("adds a footer column and edits the copyright line", () => {
     const { chrome } = settings();
     openGroup("Footer");

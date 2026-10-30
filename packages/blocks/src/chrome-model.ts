@@ -19,6 +19,8 @@ export interface SiteHeader {
   cta: MenuLink;
   sticky: boolean;
   style: SectionStyleId;
+  /** A "Search" link to the site search page (F039). Optional: off for older sites. */
+  search?: boolean;
 }
 
 export interface FooterColumn {

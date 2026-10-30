@@ -388,7 +388,7 @@
       "description": "Search for the published site with Pagefind, built at publish time, no server. A search page and an optional search link in the header; keyboard and screen-reader friendly. Added by the owner (approved Milestone 3, 2026-10-30).",
       "depends_on": ["F031"],
       "done_check": "npm test -- search && npm run build && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     }

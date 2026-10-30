@@ -69,6 +69,7 @@ export interface RenderOptions {
 
 /** Full HTML document for one page. `baseCss` is packages/blocks/src/styles.css. */
 export function renderPage(site: Site, page: Page, baseCss: string, options: RenderOptions = {}): string {
+  const searchable = page.path !== "/404";
   const seo = page.seo ?? {};
   return renderDocument(
     site,
@@ -79,6 +80,7 @@ export function renderPage(site: Site, page: Page, baseCss: string, options: Ren
       body: renderBody(page.puck, options.media, formsFor(options, page.path)),
       head: turnstileTag(options, page.puck),
       share: { searchTitle: seo.title, image: seo.image, imageAlt: seo.imageAlt, noindex: seo.noindex },
+      searchable,
     },
     baseCss,
     options,
@@ -95,6 +97,8 @@ export interface DocumentParts {
   head?: string;
   /** Search and sharing (F036). */
   share?: ShareInfo;
+  /** In the site search index (F039); not for hidden pages, lists or the 404. Default true. */
+  searchable?: boolean;
 }
 
 export interface ShareInfo {
@@ -161,7 +165,7 @@ ${shareTags(site, doc, options)}${doc.head ?? ""}<style>${css.replace(/<\/style/
 </head>
 <body class="cr-page">
 <a class="cr-skip" href="#content">Skip to content</a>
-${top}<main id="content" tabindex="-1">${doc.body}</main>
+${top}<main id="content" tabindex="-1"${doc.searchable === false || doc.share?.noindex ? "" : " data-pagefind-body"}>${doc.body}</main>
 ${bottom}
 </body>
 </html>

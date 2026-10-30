@@ -123,6 +123,7 @@ export {
   postPath,
   slugForFile,
   isBlogPath,
+  isSearchPath,
   slugFor,
   isValidDate,
   today,

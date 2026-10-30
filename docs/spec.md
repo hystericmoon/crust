@@ -51,7 +51,7 @@ Public site: static HTML on Cloudflare Pages (later also FTP to any host)
 | Admin UI | React + TypeScript + Vite; shadcn/ui + Tailwind and Lexical later |
 | Rendering | React `renderToStaticMarkup` in `packages/render` |
 | Publish engine | Rust, `crates/crust-publish` (images: `image` crate) |
-| Search | Pagefind (later) |
+| Search | Pagefind (at publish time, F039) |
 | Hosting/CI | Cloudflare Pages, GitHub Actions |
 | Forms | Cloudflare Worker + Turnstile, email via Resend (free plan) |
 
@@ -140,6 +140,11 @@ A page may carry `seo` (optional, added with F036): `{ "title": "…",
 picture shown when the link is shared (needs `imageAlt`); `noindex`
 keeps the page out of search engines and sitemap.xml. Every published
 page gets a canonical link and Open Graph tags.
+
+`header.search` in `site.json` (optional, added with F039): `true` shows
+a "Search" link to `/search/`, the site search page. The search index
+(`/pagefind/`) is built by Pagefind at publish time from each page's
+`<main data-pagefind-body>`. Pages can't use `/search`.
 
 `content/posts/<slug>.json` and `content/blog.json` (optional, added with F035)
 ```json
