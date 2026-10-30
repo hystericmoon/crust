@@ -8,32 +8,20 @@ to "Log".
 - **Milestone:** 1 complete. F001–F025 merged; first real publish live at
   https://crust-site.pages.dev (2026-10-29).
 - **Merged to main (2026-10-30, owner: "Both"):** Milestone 2, F026–F033
-  (PRs #10–#17). Not published yet: the live site changes when the owner
-  presses Publish.
-- **Milestone 3 approved (2026-10-30):** F034–F039, docs/milestone-3.md.
-  Owner (2026-10-30): "go with all your recommendations"; each feature is
-  built on its own branch stacked on the previous one, as a draft PR.
-  - **F034 Media library: done** (passes) on `f034-media-library`, draft
-    PR #18. Needs the owner's review on the preview link.
-  - **F035 Blog: done** (passes) on `f035-blog` (stacked on F034).
-    Needs the owner's review.
-  - **F036 Search and sharing: done** (passes) on `f036-seo` (stacked
-    on F035). Needs the owner's review.
-  - **F037 Contact form: done** (passes) on `f037-contact-form`
-    (stacked on F036). Sending email needs the owner's setup
-    (BLOCKED.md, docs/setup-contact-form.md).
-  - **F038 Phone quick edit: done** (passes) on `f038-quick-edit`
-    (stacked on F037). Needs the owner's review on a phone.
-  - **F039 Site search: done** (passes) on `f039-site-search` (stacked
-    on F038). **Milestone 3 is built**; all six PRs (#18–#23) are drafts
-    waiting for the owner's review and say-so to merge, in order.
+  (PRs #10–#17).
+- **Milestone 3 merged to main (2026-10-30, owner: "Merge them all in
+  order"):** F034–F039 (PRs #18–#23), all passing, now on
+  https://crust-admin.pages.dev. Uploads and "Save and publish" work there.
+- **Not published yet:** Milestones 2 and 3 are on main, but the live site
+  changes only when the owner presses Publish.
+- **F037 email** still needs the owner's setup (BLOCKED.md,
+  docs/setup-contact-form.md); until then the form shows but doesn't send.
+- **F034–F039 still need `reviewed: true`** from the owner (steps below).
 - **Waiting on the owner:**
-  - **F034:** on PR #18's preview link (or crust-admin.pages.dev after
-    merging), select a Card or Image block and press "Choose image".
+  - **F034:** on crust-admin.pages.dev, select a Card or Image block and press "Choose image".
     Upload a photo from the Mac and one from the phone, describe them,
     use them, then Save draft. Uploading only works on
-    crust-admin.pages.dev (saving to GitHub); preview links show the
-    library as "needs saving to GitHub".
+    crust-admin.pages.dev, not on preview links.
   - **F035:** on the Pages screen, open **Posts** → New post. Write a
     post with a cover photo, Save draft, then publish and open
     /blog/ on the live site. Add "/blog" to the menu in Site settings.
@@ -42,14 +30,14 @@ to "Log".
     image and "Hide from search engines"; watch the previews change.
     After publishing, paste a page link into a chat app to see the card.
   - **F037:** add a Contact form block to a Contact page and try it on
-    the preview link. To make it send email, follow
+    crust-admin.pages.dev. To make it send email, follow
     docs/setup-contact-form.md (about 20 minutes, all free).
-  - **F038:** on your phone, open the preview link, tap a page, change a
+  - **F038:** on your phone, open crust-admin.pages.dev, tap a page, change a
     heading and swap a photo, then Save.
-  - **F039:** after merging and publishing, open /search/ on the live
+  - **F039:** after publishing, open /search/ on the live
     site and search for a word from a page. Switch on the header's
     Search link in Site settings → Header & menu.
-  - Try https://crust-admin.pages.dev (main, now with Milestone 2) and set `reviewed: true`: F010, F004, F003,
+  - Try https://crust-admin.pages.dev (main) and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019,
     F020, F021, F022, F023, F024, F025, F026, F027, F028, F029, F030,
     F031, F032, F033.
@@ -337,3 +325,8 @@ to "Log".
   Search link (header.search); /search reserved. Checked in Chromium at
   1440 and 390 px: typed search with Enter, results, no-results, axe
   none, no sideways scroll. 7 new tests; done_check exits 0.
+- 2026-10-30 — Merged Milestone 3 to main in order, owner's say-so: PRs
+  #18–#23 (F034–F039), each with merge commits. Each stacked PR was
+  retargeted to main and brought up to date with "Update branch" (merge
+  commit, no rebase) so CI ran against main; all four checks green on
+  every PR before merging. Not published.
