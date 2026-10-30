@@ -1,0 +1,73 @@
+# F037: deploys the contact form Worker (packages/contact) to Cloudflare.
+# Runs when the Worker changes on main, or by hand. Skips cleanly until the
+# owner has done the setup in docs/setup-contact-form.md (see BLOCKED.md).
+name: Contact form Worker
+
+on:
+  push:
+    branches: [main]
+    paths: ["packages/contact/**", ".github/workflows/contact-worker.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: contact-worker
+  cancel-in-progress: false
+
+env:
+  WRANGLER_VERSION: 4.145.0
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      TURNSTILE_SECRET: ${{ secrets.TURNSTILE_SECRET_KEY }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      TO_EMAIL: ${{ secrets.CONTACT_TO_EMAIL }}
+      SITE_ORIGIN: ${{ vars.CONTACT_SITE_ORIGIN || 'https://crust-site.pages.dev' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the contact form setup
+        id: secrets
+        run: |
+          missing=""
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID TURNSTILE_SECRET RESEND_API_KEY TO_EMAIL; do
+            if [ -z "${!name}" ]; then missing="$missing $name"; fi
+          done
+          if [ -n "$missing" ]; then
+            echo "Contact form not set up yet (missing:$missing). See docs/setup-contact-form.md." >> "$GITHUB_STEP_SUMMARY"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.secrets.outputs.ready == 'true'
+        with:
+          node-version: 22
+
+      - name: Deploy the Worker
+        if: steps.secrets.outputs.ready == 'true'
+        working-directory: packages/contact
+        run: |
+          npx --yes "wrangler@$WRANGLER_VERSION" deploy --var "SITE_ORIGIN:$SITE_ORIGIN" | tee deploy.log
+          url=$(grep -oE 'https://[a-z0-9.-]+\.workers\.dev' deploy.log | head -n 1)
+          rm deploy.log
+          {
+            echo "Contact form Worker deployed."
+            echo "Set the repository variable CONTACT_FORM_URL to: ${url:-the workers.dev address shown above}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Give the Worker its secrets
+        if: steps.secrets.outputs.ready == 'true'
+        working-directory: packages/contact
+        run: |
+          jq -n --arg t "$TURNSTILE_SECRET" --arg r "$RESEND_API_KEY" --arg e "$TO_EMAIL" \
+            '{TURNSTILE_SECRET: $t, RESEND_API_KEY: $r, TO_EMAIL: $e}' \
+            | npx --yes "wrangler@$WRANGLER_VERSION" secret bulk

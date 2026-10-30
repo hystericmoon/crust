@@ -14,6 +14,7 @@ import {
 import { spaceVar, spacingField } from "./fields";
 import { sectionStyleIds, sectionStyleNames, tintLevels, tintNames, type SectionStyleId, type TintLevel } from "./section-styles";
 import type { SpacingStep } from "./tokens";
+import { ContactForm, type ContactFormProps } from "./contact-form";
 import { Img } from "./media-img";
 import { safeUrl } from "./url";
 import { cleanAnchor, columnClasses, hiddenLabel, hideClasses, type ColumnWidths, type HideOn } from "./responsive";
@@ -87,6 +88,7 @@ export type Components = {
   LogoRow: LogoRowProps & Visibility;
   Quote: QuoteProps & Visibility;
   ImageOverlay: ImageOverlayProps & Visibility;
+  ContactForm: ContactFormProps & Visibility;
 };
 
 const backgroundField = {
@@ -118,6 +120,7 @@ const blocks: Config<Components> = {
     layout: { title: "Layout", components: ["Section", "Columns", "Grid", "Spacer"] },
     content: { title: "Content", components: ["Heading", "Text", "Image", "Button", "Card", "IconList", "Quote", "Accordion"] },
     media: { title: "Media", components: ["Gallery", "ImageOverlay", "LogoRow"] },
+    forms: { title: "Forms", components: ["ContactForm"] },
   },
   components: {
     Section: {
@@ -358,6 +361,7 @@ const blocks: Config<Components> = {
       },
     },
     ...(moreBlocks as unknown as Pick<Config<Components>["components"], keyof typeof moreBlocks>),
+    ContactForm: ContactForm as unknown as Config<Components>["components"]["ContactForm"],
   },
 };
 

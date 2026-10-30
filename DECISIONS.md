@@ -53,6 +53,38 @@ Features Claude suggests. They are not work until the owner adds them to
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
 
+## 2026-10-30 — F037 Contact form (Claude's recommendations; owner: "go with all your recommendations")
+
+- **A "Contact form" block** in a new **Forms** group: Name, Email and
+  Message are always there (labels editable); up to 6 extra fields
+  (short text, phone number or long text, each required or optional);
+  button label and thank-you message. Put a Heading above it for the
+  title, like other blocks.
+- **Works without JavaScript** (except the spam check): it's a plain
+  HTML form with real labels, `autocomplete`, `required` and the
+  browser's own error messages. After sending, the Worker sends the
+  visitor back to the same page with `#…-sent` or `#…-error`; CSS shows
+  the thank-you (in place of the form) or the error (above the form),
+  and the browser moves focus there, so screen readers read it.
+- **Spam:** Cloudflare Turnstile (free, "Managed" mode, usually no
+  puzzle) plus a hidden trap field robots fill in; robots that fill it
+  see the thank-you, and nothing is sent. Lengths and the email address
+  are checked again in the Worker.
+- **Email:** Resend's free plan (3,000 a month). Its shared sender can
+  mail the account owner's own address with no domain, which suits a
+  site on pages.dev. The visitor's address is the Reply-To, so "Reply"
+  answers them. (MailChannels' free Workers sending ended in 2024;
+  Cloudflare Email Routing needs a domain on Cloudflare.)
+- **The Worker** lives in `packages/contact` and is installed by its own
+  workflow (`contact-worker.yml`) from GitHub secrets; it only accepts
+  posts from the site and only sends visitors back to it. Until the
+  setup is done (BLOCKED.md), published forms say "This form isn't
+  connected yet" and are disabled, so visitors never lose a message.
+- **The form's address and Turnstile site key** are repository
+  variables read at publish time, not page content: they're the same for
+  every form and change only with the setup. No page format change.
+- **Turnstile's script loads only on pages with a form.**
+
 ## 2026-10-30 — F036 Search and sharing settings (Claude's recommendations; owner: "go with all your recommendations")
 
 - **Where:** in the page settings panel (shown when no block is

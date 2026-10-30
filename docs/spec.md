@@ -53,7 +53,7 @@ Public site: static HTML on Cloudflare Pages (later also FTP to any host)
 | Publish engine | Rust, `crates/crust-publish` (images: `image` crate) |
 | Search | Pagefind (later) |
 | Hosting/CI | Cloudflare Pages, GitHub Actions |
-| Forms (later) | Cloudflare Workers + Turnstile |
+| Forms | Cloudflare Worker + Turnstile, email via Resend (free plan) |
 
 ## Repo layout
 
@@ -184,6 +184,13 @@ Section, Columns, Heading, Text, Image, Button, Spacer, Card.
 Added in F032: Grid (of cards), Gallery, Accordion, IconList, LogoRow,
 Quote, ImageOverlay. Their repeating items are arrays in the block's props
 (`items`, `images`, `logos`).
+
+Added in F037: ContactForm (props `nameLabel`, `emailLabel`,
+`messageLabel`, `fields` [{ label, kind, required }], `submitLabel`,
+`successMessage`). It posts to the contact Worker (`packages/contact`);
+the Worker's address and the Turnstile site key come from the publish
+workflow's repository variables `CONTACT_FORM_URL` and
+`TURNSTILE_SITE_KEY`.
 
 ### Acceptance criteria
 - Published pages display with no JavaScript.

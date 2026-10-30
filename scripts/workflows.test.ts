@@ -75,3 +75,19 @@ describe("CI", () => {
     expect(runs).toContain("npm run lint:workflows");
   });
 });
+
+describe("contact form Worker workflow (F037)", () => {
+  const wf = parse(readFileSync(".github/workflows/contact-worker.yml", "utf8"));
+  const steps: Step[] = wf.jobs.deploy.steps;
+  it("deploys only from main or by hand, and skips until the setup is done", () => {
+    expect(wf.on.push.branches).toEqual(["main"]);
+    expect(wf.on).toHaveProperty("workflow_dispatch");
+    expect(wf.permissions).toEqual({ contents: "read" });
+    for (const s of steps.filter((s) => s.name?.startsWith("Deploy") || s.name?.startsWith("Give"))) {
+      expect(s.if).toBe("steps.secrets.outputs.ready == 'true'");
+    }
+  });
+  it("never puts secrets straight into shell scripts", () => {
+    for (const s of steps) expect(s.run ?? "").not.toMatch(/\$\{\{\s*secrets\./);
+  });
+});

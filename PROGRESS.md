@@ -19,6 +19,9 @@ to "Log".
     Needs the owner's review.
   - **F036 Search and sharing: done** (passes) on `f036-seo` (stacked
     on F035). Needs the owner's review.
+  - **F037 Contact form: done** (passes) on `f037-contact-form`
+    (stacked on F036). Sending email needs the owner's setup
+    (BLOCKED.md, docs/setup-contact-form.md).
 - **Waiting on the owner:**
   - **F034:** on PR #18's preview link (or crust-admin.pages.dev after
     merging), select a Card or Image block and press "Choose image".
@@ -33,6 +36,9 @@ to "Log".
     canvas (or "Fields" on the phone) and scroll to Search title, Social
     image and "Hide from search engines"; watch the previews change.
     After publishing, paste a page link into a chat app to see the card.
+  - **F037:** add a Contact form block to a Contact page and try it on
+    the preview link. To make it send email, follow
+    docs/setup-contact-form.md (about 20 minutes, all free).
   - Try https://crust-admin.pages.dev (main, now with Milestone 2) and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019,
     F020, F021, F022, F023, F024, F025, F026, F027, F028, F029, F030,
@@ -298,3 +304,11 @@ to "Log".
   leaves noindex pages out of sitemap.xml. Checked in Chromium at 1440
   and 390 px (keyboard, axe: no serious issues). 13 new tests;
   done_check exits 0.
+- 2026-10-30 — F037 done: contact form. ContactForm block (Forms group;
+  name/email/message + up to 6 extra fields; works without JS; :target
+  thank-you/error), Worker in packages/contact (spam trap, Turnstile,
+  Resend, origin and redirect checks), contact-worker.yml (skips until
+  set up), renderer loads Turnstile only on form pages. Contact form
+  pages in check:layouts (axe, every preset, connected and not).
+  Checked in Chromium with JS off at 1440 and 390 px. Owner setup in
+  BLOCKED.md. 24 new tests; done_check exits 0.
