@@ -1,0 +1,68 @@
+/* F048: Start from a template. Builds on the .st admin variables (settings.css)
+   and the page list's .pg layout and dialog (pages.css). */
+.tp-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.tp-grid > li { display: grid; }
+.tp-card {
+  display: grid; align-content: start; width: 100%; padding: 0; overflow: hidden; text-align: left;
+  border: 1px solid var(--st-border); border-radius: 12px; background: var(--st-panel); color: var(--st-text); font: inherit; cursor: pointer;
+}
+.tp-card:hover { border-color: var(--st-text); }
+.tp-thumb { position: relative; display: block; aspect-ratio: 16 / 10; max-width: 100%; overflow: hidden; background: var(--st-bg); border-bottom: 1px solid var(--st-divider); }
+.tp-thumb iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 800px; border: 0; transform-origin: 0 0; pointer-events: none; background: #fff; }
+.tp-card-meta { display: grid; gap: 4px; padding: 12px 16px 16px; }
+.tp-card-meta span { color: var(--st-muted); font-size: 0.9375rem; }
+.tp-card-name { font-size: 1.0625rem; }
+.tp-facts { font-size: 0.875rem !important; }
+.tp-card-loading, .tp-card-broken { padding: 16px; gap: 4px; cursor: default; color: var(--st-muted); min-height: 120px; }
+.tp-card-broken strong { color: var(--st-text); }
+.tp-card-file { gap: 12px; padding: 16px; cursor: default; border-style: dashed; align-content: center; min-height: 160px; }
+.tp-file-label { display: grid; gap: 4px; cursor: pointer; }
+.tp-file-label span { color: var(--st-muted); font-size: 0.9375rem; }
+.tp-card-file input { max-width: 100%; min-height: 44px; font: inherit; }
+.st-error ul { margin: 4px 0 0; padding-left: 20px; }
+
+/* One template: page list beside the preview */
+.tp-back { border: 0; background: none; font: inherit; cursor: pointer; }
+.st-title[tabindex="-1"]:focus { outline: none; }
+.tp-detail { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: calc(100dvh - 61px); }
+.tp-pages { padding: 16px; border-right: 1px solid var(--st-divider); background: var(--st-panel); display: grid; align-content: start; gap: 8px; }
+.tp-pages ul { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 2px; }
+.tp-pages button {
+  display: grid; width: 100%; min-height: 44px; padding: 8px 12px; text-align: left;
+  border: 0; border-radius: 8px; background: none; color: var(--st-text); font: inherit; cursor: pointer;
+}
+.tp-pages button:hover { background: var(--st-bg); }
+.tp-pages button[aria-current="page"] { background: var(--st-bg); font-weight: 600; box-shadow: inset 3px 0 0 var(--st-action); }
+.tp-path { font: 0.8125rem/1.4 ui-monospace, Menlo, Consolas, monospace; color: var(--st-muted); font-weight: 400; }
+.tp-sub { margin: 8px 0 0; font-size: 0.875rem; font-weight: 500; color: var(--st-muted); }
+.tp-description { margin: 0 0 8px; color: var(--st-muted); }
+.tp-stage { min-width: 0; padding: 16px 24px 32px; display: grid; align-content: start; gap: 12px; }
+.tp-stage-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.tp-legend { margin: 0; color: var(--st-muted); font-size: 0.875rem; }
+.tp-pane { min-width: 0; }
+.tp-frame { margin: 0 auto; overflow: hidden; border: 1px solid var(--st-divider); border-radius: 8px; background: #fff; }
+.tp-frame iframe { display: block; border: 0; transform-origin: 0 0; }
+
+/* The confirm question */
+.tp-confirm { min-width: 0; }
+.pg-dialog:has(.tp-confirm) { width: min(40rem, calc(100vw - 32px)); }
+.tp-lists { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.tp-list { padding: 12px 16px; border-radius: 8px; border: 1px solid var(--st-divider); }
+.tp-list h3 { margin: 0 0 4px; font-size: 1rem; }
+.tp-list ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.tp-replaced { background: var(--st-danger-bg); border-color: #fecdca; }
+.tp-kept { background: #ecfdf3; border-color: #abefc6; }
+
+/* After the switch, on the Pages screen */
+.tp-banner { display: grid; gap: 8px; border-left: 4px solid var(--st-ok); }
+.tp-banner h2 { margin: 0; font-size: 1.0625rem; }
+.tp-banner p { margin: 0; }
+.tp-banner h2:focus { outline: none; }
+.tp-banner h2:focus-visible { outline: 2px solid var(--st-focus); outline-offset: 4px; }
+
+@media (max-width: 699px) {
+  .tp-detail { grid-template-columns: 1fr; }
+  .tp-pages { border-right: 0; border-bottom: 1px solid var(--st-divider); }
+  .tp-pages ul { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .tp-stage { padding: 16px; }
+}

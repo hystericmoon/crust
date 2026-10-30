@@ -7,6 +7,7 @@
 import { countPlaceholders, migrateRichText, type Page } from "@crust/blocks";
 import type { Data } from "@puckeditor/core";
 import { seoFromRoot, seoToRoot } from "../seo/fields";
+import { templateBase } from "../templates/local-site";
 
 export interface LocalDraft {
   page: Page;
@@ -38,7 +39,10 @@ const bundled: Page[] = Object.values(
   import.meta.glob<Page>("../../../../content/pages/*.json", { eager: true, import: "default" }),
 );
 
-export const bundledPages = (): Page[] => bundled;
+/** F048: after "Start from a template" without GitHub, the template's pages stand in for the bundled ones. */
+export const bundledPages = (): Page[] => templateBase()?.pages ?? bundled;
+/** The site that ships with the builder, whatever was applied since (the "Sample site" template). */
+export const contentPages = (): Page[] => bundled;
 
 function safeGet(key: string): string | null {
   try {

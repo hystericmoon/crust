@@ -35,6 +35,8 @@ export interface PageListProps {
   liveKnown?: boolean;
   /** Shown above the list (the Publish panel). */
   children?: ReactNode;
+  /** Shown first: after starting from a template (F048). */
+  notice?: ReactNode;
 }
 
 const formatDate = (iso: string | null) =>
@@ -42,7 +44,7 @@ const formatDate = (iso: string | null) =>
 
 export const editHref = (path: string) => `#/edit?path=${encodeURIComponent(path)}`;
 
-export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCreate, githubOn = false, onRename, onDelete, findLinks, deleted, onRestore, onSaveDraft, liveKnown = false, children }: PageListProps) {
+export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCreate, githubOn = false, onRename, onDelete, findLinks, deleted, onRestore, onSaveDraft, liveKnown = false, children, notice }: PageListProps) {
   const [creating, setCreating] = useState(false);
   // F023: find and sort.
   const [query, setQuery] = useState("");
@@ -107,6 +109,9 @@ export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCre
           <a className="st-button st-link-button" href="#/settings">
             Site settings
           </a>
+          <a className="st-button st-link-button" href="#/templates">
+            Start from a template
+          </a>
           <SignOutLink className="st-button st-link-button" />
           <button
             ref={newPageRef}
@@ -128,6 +133,7 @@ export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCre
           }}
           onCreate={onCreate}
         />
+        {notice}
         {/* What's live and the Publish button come first: it's the screen's main question and action, also on a phone. */}
         {children}
 

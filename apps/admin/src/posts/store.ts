@@ -6,6 +6,7 @@
 import { checkPost, defaultBlog, migrateRichTextBlocks, sortPosts, type BlogSettings, type Post } from "@crust/blocks";
 import type { Data } from "@puckeditor/core";
 import { getPost, listPosts, type PostSummary } from "../api-client";
+import { templateBase } from "../templates/local-site";
 
 const PREFIX = "crust:post:";
 
@@ -16,7 +17,8 @@ interface LocalPost {
 }
 
 const bundled: Post[] = Object.values(import.meta.glob<Post>("../../../../content/posts/*.json", { eager: true, import: "default" }));
-export const bundledPosts = (): Post[] => bundled;
+/** F048: after "Start from a template" without GitHub, the template's posts stand in for the bundled ones. */
+export const bundledPosts = (): Post[] => templateBase()?.posts ?? bundled;
 
 function read(slug: string): LocalPost | null {
   try {
@@ -84,8 +86,8 @@ export function mergePostRows(repo: PostSummary[], local: LocalPost[]): PostRow[
 }
 
 export async function loadPostRows(githubOn: boolean): Promise<{ rows: PostRow[]; blog: BlogSettings; error?: string }> {
-  const fromBundle = bundled.map(({ puck: _puck, ...rest }) => rest);
-  if (!githubOn) return { rows: mergePostRows(fromBundle, localPosts()), blog: defaultBlog };
+  const fromBundle = bundledPosts().map(({ puck: _puck, ...rest }) => rest);
+  if (!githubOn) return { rows: mergePostRows(fromBundle, localPosts()), blog: templateBase()?.blog ?? defaultBlog };
   const res = await listPosts();
   if (res.ok) return { rows: mergePostRows(res.posts, localPosts()), blog: res.blog };
   return { rows: mergePostRows(fromBundle, localPosts()), blog: defaultBlog, error: `Couldn't load your posts from GitHub: ${res.error}` };
@@ -99,7 +101,7 @@ export async function loadPost(slug: string, githubOn: boolean): Promise<Post | 
     const res = await getPost(slug);
     if (res.ok) return res.post;
   }
-  return local?.post ?? bundled.find((p) => p.slug === slug) ?? null;
+  return local?.post ?? bundledPosts().find((p) => p.slug === slug) ?? null;
 }
 
 /** The post's details live in Puck's root props while editing. */

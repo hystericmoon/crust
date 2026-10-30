@@ -134,3 +134,15 @@ export const updateSection = (id: string, content: LinkedSectionFile["content"])
   call<{ section: LinkedSectionFile; usedOn: SectionUse[] }>("/api/sections", post({ action: "update", id, content }));
 export const renameSection = (id: string, name: string) => call<{ section: LinkedSectionFile }>("/api/sections", post({ action: "rename", id, name }));
 export const deleteSection = (id: string) => call<{ usedOn?: SectionUse[] }>("/api/sections", post({ action: "delete", id }));
+
+// --- Start from a template (F048) ------------------------------------------------
+export interface AppliedTemplate {
+  commit: string;
+  name: string;
+  date: string;
+}
+export const lastTemplate = () => call<{ last: AppliedTemplate | null }>("/api/template");
+export const sendTemplatePhotos = (name: string, photos: { file: string; alt: string; data: string }[]) =>
+  call<{ files: string[] }>("/api/template", post({ action: "photos", name, photos }));
+export const applyTemplateContent = (template: unknown) => call<{ commit: string; site: Site }>("/api/template", post({ action: "apply", template }));
+export const undoTemplate = (commit: string) => call<{ commit: string; site: Site | null }>("/api/template", post({ action: "undo", commit }));

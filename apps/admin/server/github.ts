@@ -162,11 +162,16 @@ export async function latestRuns(cfg: GitHubConfig, workflow: string, fetchFn: t
   return body.workflow_runs.map((r) => ({ id: r.id, status: r.status, conclusion: r.conclusion, createdAt: r.created_at, url: r.html_url }));
 }
 
-/** One file in a multi-file commit: new text, or null to delete it. `base64` is for binary files (F034 photos). */
+/**
+ * One file in a multi-file commit: new text, or null to delete it. `base64`
+ * is for binary files (F034 photos); `sha` puts back a file's earlier
+ * version that Git already has (F048 undo).
+ */
 export interface FileChange {
   path: string;
   content: string | null;
   base64?: string;
+  sha?: string;
 }
 
 /**
@@ -205,7 +210,9 @@ export async function commitFiles(
     tree: changes.map((c, i) =>
       blobs[i]
         ? { path: c.path, mode: "100644", type: "blob", sha: blobs[i].sha }
-        : c.content === null
+        : c.sha
+          ? { path: c.path, mode: "100644", type: "blob", sha: c.sha }
+          : c.content === null
           ? { path: c.path, mode: "100644", type: "blob", sha: null }
           : { path: c.path, mode: "100644", type: "blob", content: c.content },
     ),
@@ -311,4 +318,24 @@ export async function recentCommits(cfg: GitHubConfig, path: string, fetchFn: ty
   if (!res.ok) throw new GitHubError(explain(res.status), res.status);
   const commits = (await res.json()) as { sha: string; parents?: { sha: string }[]; commit: { message: string; committer: { date: string } } }[];
   return commits.map((c) => ({ sha: c.sha, parent: c.parents?.[0]?.sha ?? null, message: c.commit.message, date: c.commit.committer.date }));
+}
+
+/** The files one commit changed, and its first parent (F048). */
+export async function commitChanges(
+  cfg: GitHubConfig,
+  sha: string,
+  fetchFn: typeof fetch = fetch,
+): Promise<{ parent: string | null; files: { path: string; status: string }[] }> {
+  const res = await fetchFn(`${api}/repos/${cfg.repo}/commits/${encodeURIComponent(sha)}`, { headers: headers(cfg.token) });
+  if (!res.ok) throw new GitHubError(explain(res.status), res.status);
+  const body = (await res.json()) as { parents?: { sha: string }[]; files?: { filename: string; status: string }[] };
+  return { parent: body.parents?.[0]?.sha ?? null, files: (body.files ?? []).map((f) => ({ path: f.filename, status: f.status })) };
+}
+
+/** Every file under `folder` as it was at a commit: path → blob sha (F048). */
+export async function filesAt(cfg: GitHubConfig, commit: string, folder: string, fetchFn: typeof fetch = fetch): Promise<Map<string, string>> {
+  const res = await fetchFn(`${api}/repos/${cfg.repo}/git/trees/${encodeURIComponent(commit)}?recursive=1`, { headers: headers(cfg.token) });
+  if (!res.ok) throw new GitHubError(explain(res.status), res.status);
+  const body = (await res.json()) as { tree: { path: string; type: string; sha: string }[] };
+  return new Map(body.tree.filter((e) => e.type === "blob" && e.path.startsWith(`${folder}/`)).map((e) => [e.path, e.sha]));
 }
