@@ -15,6 +15,8 @@ to "Log".
   built on its own branch stacked on the previous one, as a draft PR.
   - **F034 Media library: done** (passes) on `f034-media-library`, draft
     PR #18. Needs the owner's review on the preview link.
+  - **F035 Blog: done** (passes) on `f035-blog` (stacked on F034).
+    Needs the owner's review.
 - **Waiting on the owner:**
   - **F034:** on PR #18's preview link (or crust-admin.pages.dev after
     merging), select a Card or Image block and press "Choose image".
@@ -22,6 +24,9 @@ to "Log".
     use them, then Save draft. Uploading only works on
     crust-admin.pages.dev (saving to GitHub); preview links show the
     library as "needs saving to GitHub".
+  - **F035:** on the Pages screen, open **Posts** → New post. Write a
+    post with a cover photo, Save draft, then publish and open
+    /blog/ on the live site. Add "/blog" to the menu in Site settings.
   - Try https://crust-admin.pages.dev (main, now with Milestone 2) and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019,
     F020, F021, F022, F023, F024, F025, F026, F027, F028, F029, F030,
@@ -272,3 +277,10 @@ to "Log".
   390 px with the keyboard and axe (no serious issues); found and fixed
   an alt-box mix-up when moving fast between photos. 37 media tests
   (JS 32, Rust 5 + unit); done_check exits 0.
+- 2026-10-30 — F035 done: blog. Posts screen (#/posts: list, New post,
+  delete, blog page title/intro), post builder (#/post?slug=…: post
+  fields in the page settings, the post's top on the canvas), /api/posts,
+  renderer for /blog/, /blog/<slug>/ and /blog/feed.xml (BASE_URL from
+  the publish workflow). Pages can't use /blog. Sample blog pages added to
+  check:layouts (axe, every preset). Checked in Chromium at 1440 and 390
+  px (keyboard focus, axe: no issues). 26 new tests; done_check exits 0.
