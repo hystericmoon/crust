@@ -39,13 +39,14 @@ import { PublishPanel } from "./publish/PublishPanel";
 import { PublishShortcut, usePendingCount } from "./publish/shortcut";
 import { withResponsiveEditing } from "./responsive/fields";
 import { withSectionEditing } from "./sections/editing";
+import { withSettingsTabs } from "./tabs/tabs";
 import { SiteStyleContext, type SiteStyle } from "./sections/site-style";
 import { SiteSettings } from "./settings/SiteSettings";
 import { loadSavedTokens, sameTokens, saveTokens } from "./tokens-store";
 
 const site = siteJson as Site;
-/** The builder's blocks, with visual Section fields (F025) and per-device settings (F029). */
-const editorConfig = withResponsiveEditing(withSectionEditing(config));
+/** The builder's blocks: visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
+const editorConfig = withSettingsTabs(withResponsiveEditing(withSectionEditing(config)));
 
 /** Responsive canvas widths for the viewport switcher. */
 const viewports = [

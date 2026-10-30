@@ -4,6 +4,11 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Content, Style and Advanced (F030):** each block's settings are split
+  into three tabs at the top of the panel, so simple edits stay simple.
+  Advanced holds Show on, spacing, and a new **anchor name**: name a
+  block "team" and a button linking to #team jumps straight to it.
+
 - **Per-device columns (F029):** a Columns block now has widths for
   desktop, tablet and phone, side by side in the panel (for example 2/3
   + 1/3 on desktop, stacked on phone). Click a device name to preview it.

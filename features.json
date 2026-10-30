@@ -298,7 +298,7 @@
       "description": "The settings panel splits every block's options into Content, Style and Advanced tabs, so simple edits stay simple. Advanced holds spacing, visibility and an anchor name for links. Full keyboard support. Added by the owner (approved Milestone 2 step 2, 2026-10-29).",
       "depends_on": ["F001"],
       "done_check": "npm test -- settings-tabs && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

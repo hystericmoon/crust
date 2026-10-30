@@ -96,6 +96,10 @@ Any block's props may carry `hideOn` (optional, added with F029): a list of
 (`{ desktop, tablet, phone }`, each a width id such as `"two-one"` or
 `"stack"`). Blocks without them render as before.
 
+Any block may also carry `anchor` (optional, added with F030): a name made
+of lowercase letters, numbers and dashes. It's published as an empty
+target right before the block, so `#name` links jump there.
+
 `content/redirects.json` (optional, added with F015)
 ```json
 [{ "from": "/old-address", "to": "/new-address" }]

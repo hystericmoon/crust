@@ -1,0 +1,23 @@
+/* Content / Style / Advanced (F030): a segmented switch at the top of the block's settings. */
+.tb-tabs {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px;
+  border: 1px solid #d4d4d8; border-radius: 10px; background: #f4f4f5;
+}
+.tb-tab {
+  min-height: 36px; padding: 0 8px; border: 0; border-radius: 8px; background: transparent;
+  color: #3f3f46; font: inherit; font-size: 0.875rem; font-weight: 600; cursor: pointer;
+}
+.tb-tab:hover { color: #18181b; }
+.tb-tab[aria-checked="true"] { background: #fff; color: #3730a3; box-shadow: 0 1px 2px rgb(0 0 0 / 0.12), inset 0 0 0 1.5px #4338ca; }
+.tb-tab:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
+.tb-empty { margin: 0; font-size: 0.875rem; color: #52525b; }
+.tb-anchor { display: flex; flex-direction: column; gap: 6px; }
+.tb-label { font-weight: 600; font-size: 0.875rem; color: #18181b; }
+.tb-input {
+  min-height: 38px; padding: 0 10px; border: 1px solid #85858f; border-radius: 8px;
+  background: #fff; color: #18181b; font: inherit;
+}
+.tb-input[aria-invalid="true"] { border-color: #b42318; }
+.tb-input:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
+.tb-help { margin: 0; font-size: 0.8125rem; color: #52525b; }
+.tb-help.is-error { color: #b42318; font-weight: 600; }

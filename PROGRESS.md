@@ -13,7 +13,7 @@ the first unchecked step, `git checkout` its branch, carry on.
 
 - [x] F028 build on `f028-style-customizer` (PR #12), then merge it into `f029-per-device-columns`
 - [x] F029 build on `f029-per-device-columns` (PR #13)
-- [ ] F030 Content/Style/Advanced tabs on `f030-settings-tabs` (from F029's branch)
+- [x] F030 Content/Style/Advanced tabs on `f030-settings-tabs` (from F029's branch)
 - [ ] F031 Header, footer and menu on `f031-header-footer` (from F030's)
 - [ ] F032 More elements on `f032-more-elements` (from F031's)
 - [ ] F033 Theme pack on `f033-theme-pack` (from F032's)
@@ -234,3 +234,8 @@ the first unchecked step, `git checkout` its branch, carry on.
   render identically. 18 new tests (382 total). Checked in Chromium:
   canvas widths and the faded hidden block in the builder, and the
   published page at 375/800/1280. done_check passes.
+- 2026-10-29 — F030 Content/Style/Advanced tabs done. resolveFields per
+  tab (switching is not an undo step), anchor names with duplicate
+  warning. 9 new tests (391 total). Chromium: tabs, focus, undo, anchor
+  id on the canvas. Found 4 axe issues in Puck's own chrome (proposal in
+  DECISIONS). done_check and check:a11y pass.

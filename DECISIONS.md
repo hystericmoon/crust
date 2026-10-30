@@ -20,9 +20,42 @@ Features Claude suggests. They are not work until the owner adds them to
   renamed page removes its old-address redirect, and restoring it doesn't
   add the redirect back. Harmless today; matters once the site has
   visitors and bookmarks.
+- **Fix the 4 axe issues in Puck's own builder chrome.** Found while
+  checking F030: the canvas iframe has no title, the zoom menu has no
+  label, the "Layout"/"Content" headings in the block list are low
+  contrast, and a loading spinner has an aria-label it may not use. Small
+  CSS and attribute fixes from our side; not visitors-facing.
 - **Linked sections ("global sections").** A saved layout is a copy. A
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
+
+## 2026-10-29 — F030 Content, Style and Advanced tabs (Claude's recommendation, owner-approved overnight)
+
+- **No snapshot:** the owner asked Claude to go with its recommendations
+  and not wait. The design follows the panel's existing look.
+- **Where things go:** Content = words, links, images and counts; Style =
+  alignment, tone, button look, section style/height/position/background
+  image/tint, spacer size, column widths; Advanced = Show on, anchor
+  name, section padding and column gap ("spacing"). Anything new defaults
+  to Content.
+- **How:** Puck's `resolveFields` returns the current tab's fields (slot
+  fields always stay, the canvas needs them). Puck only recalculates
+  fields when the block changes, so switching tabs re-saves the same
+  props with `recordHistory: false`: no undo step, no visible change.
+- **The switch is a radio group** ("Settings to show"), not ARIA tabs:
+  the fields aren't inside one panel element Crust controls, so a
+  tablist without tabpanels would announce something that isn't there.
+  Arrow keys work like every other choice in the panel. The chosen tab
+  stays when you select another block.
+- **Empty tab:** says so ("Spacer has no content settings"); a Section's
+  Content tab points to the canvas and the + buttons.
+- **Anchor name (additive):** `anchor` on any block, cleaned to
+  lowercase letters, numbers and dashes. Published as
+  `<span class="cr-anchor" id="…">` right before the block inside the
+  F029 wrapper (an element with `display: contents` can't be scrolled
+  to). The field shows "#name" to use in links and warns when another
+  block on the page has the same name. `scroll-margin-top` leaves room
+  for F031's sticky header.
 
 ## 2026-10-29 — F029 Per-device columns (direction A, owner-approved recommendation)
 

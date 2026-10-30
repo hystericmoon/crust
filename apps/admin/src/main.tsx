@@ -7,6 +7,7 @@ import "./keyboard/keyboard.css";
 import "./sections/sections.css";
 import "./layouts/layouts.css";
 import "./responsive/responsive.css";
+import "./tabs/tabs.css";
 import "./pages/pages.css";
 import { App } from "./App";
 
