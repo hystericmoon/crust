@@ -40,6 +40,7 @@ import { markUnpublished } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
 import { PublishShortcut, usePendingCount } from "./publish/shortcut";
 import { SignOutLink } from "./sign-out";
+import { withRichText } from "./rich-text/field";
 export { SIGN_OUT_URL, SignOutLink } from "./sign-out";
 import { withItemEditing } from "./items/items";
 import { withResponsiveEditing } from "./responsive/fields";
@@ -60,8 +61,8 @@ import { prefersQuickEdit } from "./quick/quick";
 import { fromPuckData as postFromPuckData, loadPost, saveLocalPost, toPuckData as postToPuckData } from "./posts/store";
 
 const site = siteJson as Site;
-/** The builder's blocks: image fields with the media library (F034), visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
-const editorConfig = withSiteChrome(withSettingsTabs(withResponsiveEditing(withSectionEditing(withItemEditing(withMediaFields(config))))));
+/** The builder's blocks: rich text in Text blocks (F042), image fields with the media library (F034), visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
+const editorConfig = withSiteChrome(withSettingsTabs(withResponsiveEditing(withSectionEditing(withItemEditing(withMediaFields(withRichText(config)))))));
 /** Posts (F035): the same blocks, with the post's details and top. */
 const postEditorConfig = withPostEditing(editorConfig);
 /** Pages also get search and sharing settings (F036). */

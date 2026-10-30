@@ -3,7 +3,7 @@
  * saving is switched on, otherwise the posts bundled into the app, plus
  * drafts kept in this browser, which win until they're saved to GitHub.
  */
-import { checkPost, defaultBlog, sortPosts, type BlogSettings, type Post } from "@crust/blocks";
+import { checkPost, defaultBlog, migrateRichTextBlocks, sortPosts, type BlogSettings, type Post } from "@crust/blocks";
 import type { Data } from "@puckeditor/core";
 import { getPost, listPosts, type PostSummary } from "../api-client";
 
@@ -106,7 +106,8 @@ export async function loadPost(slug: string, githubOn: boolean): Promise<Post | 
 export const toPuckData = (post: Post): Data =>
   ({
     root: { props: { title: post.title, description: post.description, date: post.date, cover: post.cover, coverAlt: post.coverAlt } },
-    content: post.puck.content,
+    // F042: plain text in older Text blocks becomes rich text.
+    content: migrateRichTextBlocks(post.puck.content),
   }) as Data;
 
 export function fromPuckData(slug: string, data: Data): Post {

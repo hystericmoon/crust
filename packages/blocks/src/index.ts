@@ -141,3 +141,20 @@ export { seoLimits, seoAdvice, checkSeo, cleanSeo, displayUrl, shorten } from ".
 export type { PageSeo } from "./seo";
 export { ContactForm, FormsContext, contactLimits, formIdFor, extraName, hasContactForm } from "./contact-form";
 export type { ContactFormProps, ExtraField, FormsSetup } from "./contact-form";
+export {
+  checkRichText,
+  isAllowedLink,
+  isRichText,
+  mapRichLinks,
+  migrateRichText,
+  migrateRichTextBlocks,
+  normalizeRichText,
+  plainToRichText,
+  richLimits,
+  richParagraphs,
+  richTextProblems,
+  richTextToPlain,
+  toRichText,
+} from "./rich-text";
+export type { RichBlock, RichList, RichParagraph, RichSpan, RichText } from "./rich-text";
+export { RichTextView } from "./rich-text-view";

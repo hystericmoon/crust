@@ -98,6 +98,52 @@ Features Claude suggests. They are not work until the owner adds them to
   similar to Milestone 3. Left out on purpose: gallery lightbox (still a
   proposal above), and anything for other users (that's M6).
 
+## 2026-10-30 — F042 Rich text in Text blocks (Claude, reversible; owner: "keep on continuing")
+
+- **Design snapshot:** `design/f042-rich-text-v1.html`
+  (https://claude.ai/artifact/1d1Ujx7ENSrGCef6CWfg9Z). Claude built its
+  recommended direction **A, toolbar on the Text field** (builder panel
+  and Quick edit), because the owner asked to keep going. Direction B
+  (type on the canvas, floating toolbar) can still be chosen before the
+  PR merges, or added later on top of A (same saved format).
+- **Editor: Lexical (MIT, free)**, as the spec planned. Puck's own rich
+  text field saves HTML, which the rules don't allow. Lexical only loads
+  in the builder; published pages stay plain HTML with no JavaScript.
+- **Format change (contract, see docs/spec.md):** a Text block's `text`
+  is now `{ "rich": 1, "blocks": [...] }`: paragraphs (`p`) and lists
+  (`ul`, `ol`), each a list of spans with optional `bold`, `italic` and
+  `href`. Crust's own small format, not Lexical's state, so the files
+  don't depend on the editor's version.
+- **Migration:** older pages hold a plain string. Every reader accepts
+  both (`toRichText`), so old pages publish exactly as before;
+  `migrateRichText` converts a page's (or post's, or saved layout's) Text
+  blocks when it's opened in the builder, so it's saved in the new format
+  next time. Content files in the repo aren't rewritten in this PR, so
+  nothing clashes with edits made in the builder meanwhile.
+- **What's in:** bold, italic, links, bulleted and numbered lists (one
+  level; nested items are flattened), line breaks with Shift+Enter.
+  **Left out on purpose:** underline (reads as a link), colours, sizes,
+  headings inside text (heading checks need them as blocks), tables.
+- **Links:** allowed only when `safeUrl` keeps them as they are (page
+  paths, `https://`, `mailto:`, `tel:`, `#anchor`). Checked in the link
+  form, again by the server on save (pages, posts, layouts), in theme
+  packs, and `safeUrl` again when rendering. Renaming a page updates
+  links in text (F018). Published links use the section's accent colour
+  and are always underlined, so colour isn't the only cue (WCAG 1.4.1);
+  axe checks them on every section style in every preset.
+- **Keyboard:** ⌘B / ⌘I, ⌘K (link), ⌘⇧8 / ⌘⇧7 (lists, as in Google
+  Docs), "- " / "1. " to start a list. The toolbar is one Tab stop
+  (WAI-ARIA toolbar, arrow keys), buttons say their state with
+  `aria-pressed` and their shortcut in their name. Shortcuts typed in the
+  editor stay there: Puck's own ⌘Z (page undo) and ⌘I (preview
+  interactions) would otherwise fire too.
+- **Typing is never overwritten:** the builder echoes each change back,
+  sometimes a few keystrokes late (page settings resolve after each
+  change). While the field has focus it's the source of truth; outside
+  changes (another block, builder undo) apply when it doesn't.
+- **Builder axe check** now also selects a Text block, so the editor and
+  toolbar are checked.
+
 ## 2026-10-30 — F040 Builder tidy-up (Claude, reversible)
 
 - **Sign out** is a plain link to `/cdn-cgi/access/logout` in the top bar

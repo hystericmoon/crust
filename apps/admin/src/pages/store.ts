@@ -4,7 +4,7 @@
  *  - otherwise the pages bundled into the app at build time (content/pages);
  *  - plus drafts kept in this browser, which win until they're saved to GitHub.
  */
-import type { Page } from "@crust/blocks";
+import { migrateRichText, type Page } from "@crust/blocks";
 import type { Data } from "@puckeditor/core";
 import { seoFromRoot, seoToRoot } from "../seo/fields";
 
@@ -150,7 +150,8 @@ export function mergePageRows(
 export function toPuckData(page: Page): Data {
   // F036: search and sharing settings are edited in the page settings too.
   const props = { ...(page.puck.root?.props ?? {}), title: page.title, description: page.description, ...(page.seo ? seoToRoot(page.seo) : {}) };
-  return { ...page.puck, root: { ...page.puck.root, props } as Data["root"] };
+  // F042: plain text in older Text blocks becomes rich text; saved that way next time.
+  return migrateRichText({ ...page.puck, root: { ...page.puck.root, props } as Data["root"] });
 }
 
 /** And back: the page file stores them at the top level (content contract). */

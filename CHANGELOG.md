@@ -4,6 +4,14 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Rich text in Text blocks (F042):** make words **bold** or *italic*,
+  add links, and write bulleted or numbered lists. The Text field has a
+  small toolbar, in the builder and in Quick edit on your phone, plus
+  shortcuts: ⌘B, ⌘I, ⌘K for a link, ⌘⇧8 / ⌘⇧7 for lists, or type "- "
+  or "1. " to start a list. Links are checked, so only page addresses,
+  web, email and phone links are allowed, and renaming a page updates
+  links in text too. Text you already wrote keeps looking the same.
+
 - **Builder tidy-up (F040):** a **Sign out** link on the Pages screen
   and in the builder's top bar (pages and posts). Nothing is lost when you sign out: your edits
   are already kept in the browser. Restoring a deleted page that had

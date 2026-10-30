@@ -56,6 +56,20 @@
 
 .cr-text { max-width: 68ch; }
 .cr-text p { margin: 0 0 var(--cr-space-sm); }
+/* F042: lists and links inside Text blocks. Links are always underlined
+   (colour alone isn't enough) and use the section's accent, which falls
+   back to the text colour when the brand colour is too faint. */
+.cr-rich ul, .cr-rich ol { margin: 0 0 var(--cr-space-sm); padding-left: 1.4em; }
+.cr-rich li + li { margin-top: 0.25em; }
+.cr-rich.cr-align-center ul, .cr-rich.cr-align-center ol,
+.cr-rich.cr-align-right ul, .cr-rich.cr-align-right ol { display: inline-block; text-align: left; }
+.cr-rich a {
+  color: var(--cr-sec-accent, var(--cr-color-primary));
+  text-decoration: underline; text-underline-offset: 0.2em;
+  text-decoration-thickness: var(--cr-link-thickness, auto);
+  background: var(--cr-link-bg, none); border-radius: 2px;
+}
+.cr-rich a:focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }
 .cr-align-center { text-align: center; margin-inline: auto; }
 .cr-align-right { text-align: right; margin-left: auto; }
 .cr-tone-muted { color: var(--cr-sec-muted, var(--cr-color-muted)); }
