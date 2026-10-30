@@ -60,6 +60,11 @@ describe("header and footer: checks", () => {
     expect(validateChrome(withHeader({ menu: nine }))[0]!.message).toBe("Menu: keep it to 8 links.");
   });
 
+  it("refuse button and logo addresses Crust can't use", () => {
+    expect(validateChrome(withHeader({ cta: { label: "Go", href: "javascript:alert(1)" } }))[0]!.path).toBe("header.cta.href");
+    expect(validateChrome(withHeader({ logo: { text: "", imageSrc: "javascript:x", imageAlt: "Logo" } }))[0]!.path).toBe("header.logo.imageSrc");
+  });
+
   it("need an address for a header button with a label, and a known style", () => {
     expect(validateChrome(withHeader({ cta: { label: "Contact", href: "" } }))[0]!.path).toBe("header.cta.href");
     expect(validateChrome(withHeader({ style: "neon" as never }))[0]!.path).toBe("header.style");

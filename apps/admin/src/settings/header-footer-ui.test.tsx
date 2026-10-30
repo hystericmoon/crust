@@ -151,12 +151,23 @@ describe("Site settings: Header & menu and Footer", () => {
 });
 
 describe("saving header and footer", () => {
-  it("puts them in site.json next to the tokens", () => {
-    const chrome = migrateChrome(site, pages);
-    const saved = siteToSave(site, defaultTokens, chrome);
+  it("puts edited ones in site.json next to the tokens", () => {
+    const defaults = migrateChrome(site, pages);
+    const chrome = { ...defaults, header: { ...defaults.header, sticky: true } };
+    const saved = siteToSave(site, defaultTokens, chrome, defaults);
     expect(saved.header).toEqual(chrome.header);
-    expect(saved.footer).toEqual(chrome.footer);
     expect(saved.name).toBe("Haho");
+    // The footer is still at its defaults: left out, like before.
+    expect("footer" in saved).toBe(false);
+  });
+
+  it("leaves untouched defaults out, so the menu keeps following the pages", () => {
+    const defaults = migrateChrome(site, pages);
+    const saved = siteToSave(site, defaultTokens, defaults, defaults);
+    expect("header" in saved).toBe(false);
+    expect("footer" in saved).toBe(false);
+    // Once saved, a header stays saved even if it matches the defaults again.
+    expect(siteToSave({ ...site, header: defaults.header }, defaultTokens, defaults, defaults).header).toEqual(defaults.header);
   });
 
   it("keeps a browser copy, and ignores a damaged one", () => {

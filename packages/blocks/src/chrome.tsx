@@ -71,7 +71,7 @@ export function SiteHeaderView({ header, path }: { header: SiteHeader; path: str
 
 export function SiteFooterView({ footer, siteName, path, year }: { footer: SiteFooter; siteName: string; path: string; year: number }): ReactNode {
   if (!footer.show) return null;
-  const copyright = footer.copyright.replace(/\{year\}/g, String(year)).replace(/\{name\}/g, siteName).trim();
+  const copyright = footer.copyright.replace(/\{year\}/g, String(year)).replace(/\{name\}/g, () => siteName).trim();
   return (
     <footer className={`cr-site-footer cr-style-${footer.style}`}>
       <div className="cr-container">
