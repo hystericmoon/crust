@@ -21,7 +21,14 @@ to "Log".
   `f027-my-layouts`. Owner asked Claude to continue overnight; Claude
   built direction A (its recommendation). The owner can still ask for B
   or C from the snapshot before merging.
-- **Next:** F028 Style customizer v2 (design snapshot first).
+- **F028 Style customizer v2:** design snapshot v1 on branch
+  `f028-style-customizer` (draft PR #12, stacked on #11),
+  `design/f028-style-customizer-v1.html`, also at
+  https://claude.ai/artifact/VapdC2TJCBJddNoi6VGKmY. Waiting for the
+  owner to pick A/B/C (Claude recommends A: grouped panel + preview) and
+  to answer one question: how "Main button" relates to the per-style
+  button looks from F025 (proposal in the snapshot). Not built yet on
+  purpose: the answer changes the token format. Logged in BLOCKED.md.
   Other proposals waiting in DECISIONS.md (sign-out button, restore
   brings back the redirect).
 - **Waiting on the owner:**
@@ -187,3 +194,14 @@ to "Log".
   25 new tests (316 total). Checked in Chromium at 1440 and 390: save,
   page save, rename, Escape, delete, insert with fresh ids, reload keeps
   them, axe clean. done_check passes; F026's still passes.
+- 2026-10-29 — F028 design snapshot v1: three arrangements of the bigger
+  Site settings (A grouped panel, B one long page, C preview first), with
+  working controls and 9 presets (new: Ocean, Studio, Paper, Night; all
+  AA). Found an overlap with F025's per-style button looks; asked the
+  owner before building.
+- 2026-10-29 — F028 Style customizer v2 done (direction A, button
+  proposal accepted). tokens.style options, Soft button look, 9 presets,
+  grouped Site settings with preview-click jumps. 48 new tests (364
+  total). Chromium at 1440 and 390: axe clean in every group, canvas
+  picks up the styles, no console errors. done_check and check:a11y
+  (45 themed pages) pass.

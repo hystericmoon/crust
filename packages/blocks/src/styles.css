@@ -43,14 +43,16 @@
 
 .cr-heading {
   font-family: var(--cr-font-heading);
+  font-weight: var(--cr-heading-weight, 700);
   line-height: 1.15;
   margin: 0 0 var(--cr-space-sm);
   text-wrap: balance;
 }
-.cr-h1 { font-size: clamp(2.25rem, 5vw, 3.5rem); letter-spacing: -0.02em; }
-.cr-h2 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); letter-spacing: -0.015em; }
-.cr-h3 { font-size: 1.5rem; }
-.cr-h4 { font-size: 1.25rem; }
+/* Sizes and spacing come from the style options (F028); the fallbacks are the original look. */
+.cr-h1 { font-size: var(--cr-h1-size, clamp(2.25rem, 5vw, 3.5rem)); letter-spacing: var(--cr-h1-track, -0.02em); }
+.cr-h2 { font-size: var(--cr-h2-size, clamp(1.75rem, 3.5vw, 2.5rem)); letter-spacing: var(--cr-h2-track, -0.015em); }
+.cr-h3 { font-size: var(--cr-h3-size, 1.5rem); letter-spacing: var(--cr-h34-track, normal); }
+.cr-h4 { font-size: var(--cr-h4-size, 1.25rem); letter-spacing: var(--cr-h34-track, normal); }
 
 .cr-text { max-width: 68ch; }
 .cr-text p { margin: 0 0 var(--cr-space-sm); }
@@ -71,7 +73,7 @@
 .cr-button {
   display: inline-flex; align-items: center; justify-content: center;
   min-height: 44px; padding: 0 1.25rem;
-  border-radius: var(--cr-radius); border: 2px solid var(--cr-color-primary);
+  border-radius: var(--cr-button-radius, var(--cr-radius)); border: 2px solid var(--cr-color-primary);
   font-weight: 600; text-decoration: none;
   transition: background-color 150ms ease, color 150ms ease;
 }
@@ -129,6 +131,8 @@
   align-self: flex-start;
   color: var(--cr-color-primary); font-weight: 600;
   text-decoration: underline; text-underline-offset: 0.2em;
+  text-decoration-thickness: var(--cr-link-thickness, auto);
+  background: var(--cr-link-bg, none); border-radius: 2px;
   min-height: 24px;
 }
 .cr-bg-primary .cr-card-link { color: inherit; }

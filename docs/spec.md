@@ -86,6 +86,11 @@ scripts/               init.sh and other helpers
 section styles; a Section's `background` names one (`background`,
 `surface`, `primary`, `dark`).
 
+`tokens.style` (optional, added with F028) holds the style options:
+`typeScale`, `headingWeight`, `headingTracking`, `buttonShape`, `cardStyle`,
+`linkStyle`, each picked from a short list. Missing options keep the look
+sites had before F028. A section style's `button` can also be `"soft"`.
+
 `content/redirects.json` (optional, added with F015)
 ```json
 [{ "from": "/old-address", "to": "/new-address" }]

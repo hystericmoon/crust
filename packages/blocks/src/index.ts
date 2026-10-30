@@ -30,6 +30,21 @@ export type { SiteTokens, SpacingStep, ColorRole, TokenProblem } from "./tokens"
 export { AA, checkContrast, contrastPairs, contrastRatio, formatRatio, isHexColor, normalizeHex, suggestFix } from "./contrast";
 export type { ContrastPair, ContrastResult } from "./contrast";
 export { fontStacks, findFontStack } from "./fonts";
+export {
+  typeScales,
+  headingWeights,
+  headingTrackings,
+  buttonShapes,
+  cardStyles,
+  linkStyles,
+  defaultStyleOptions,
+  styleOptionNames,
+  styleOptionsOf,
+  styleOptionsCss,
+  headingSizes,
+  validateStyleOptions,
+} from "./style-options";
+export type { StyleOptions, TypeScale, HeadingWeight, HeadingTracking, ButtonShape, CardStyle, LinkStyle } from "./style-options";
 export type { FontStack } from "./fonts";
 export { safeUrl } from "./url";
 export type { Site, Page, Redirect, SavedLayout } from "./content";

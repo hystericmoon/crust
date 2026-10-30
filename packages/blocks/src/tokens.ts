@@ -4,6 +4,7 @@
  * so changing a token restyles the whole site.
  */
 import { sectionStylesCss, validateSectionStyles, type SectionStyle, type SectionStyleId } from "./section-styles";
+import { styleOptionsCss, validateStyleOptions, type StyleOptions } from "./style-options";
 
 export const spacingSteps = ["none", "xs", "sm", "md", "lg", "xl"] as const;
 export type SpacingStep = (typeof spacingSteps)[number];
@@ -22,6 +23,8 @@ export interface SiteTokens {
   maxWidth: number;
   /** Site-wide section styles (F025). Optional: sites saved before F025 use the defaults. */
   sectionStyles?: Record<SectionStyleId, SectionStyle>;
+  /** Type, buttons, cards and links (F028). Optional: missing options keep the pre-F028 look. */
+  style?: Partial<StyleOptions>;
 }
 
 export const defaultTokens: SiteTokens = {
@@ -62,7 +65,8 @@ export function tokensToCss(tokens: SiteTokens, selector = ":root"): string {
   lines.push(`--cr-radius: ${Number(tokens.radius)}px;`);
   lines.push(`--cr-max-width: ${Number(tokens.maxWidth)}px;`);
   const scope = selector === ":root" ? "" : selector;
-  return `${selector} {\n  ${lines.join("\n  ")}\n}\n${sectionStylesCss(tokens, scope)}`;
+  const options = styleOptionsCss(tokens, scope);
+  return `${selector} {\n  ${lines.join("\n  ")}\n}\n${sectionStylesCss(tokens, scope)}${options ? `\n${options}` : ""}`;
 }
 
 /** What each colour role does, in the owner's words. */
@@ -116,6 +120,7 @@ export function validateTokens(tokens: SiteTokens): TokenProblem[] {
     problems.push({ path: "maxWidth", message: `Page width: use ${tokenLimits.maxWidth.min} to ${tokenLimits.maxWidth.max} px.` });
   }
   problems.push(...validateSectionStyles(tokens));
+  problems.push(...validateStyleOptions(tokens));
   return problems;
 }
 

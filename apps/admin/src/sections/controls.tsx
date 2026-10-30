@@ -65,14 +65,15 @@ export function RadioGroup<V extends string>({
   };
   return (
     <div role="radiogroup" aria-label={label} className={className} onKeyDown={onKey}>
-      {options.map((o) => (
+      {options.map((o, i) => (
         <button
           key={o.value}
           type="button"
           role="radio"
           aria-checked={o.value === value}
           aria-label={o.content ? o.label : undefined}
-          tabIndex={o.value === value ? 0 : -1}
+          // With nothing chosen yet, the first option takes the Tab stop so the group stays reachable.
+          tabIndex={o.value === value || (i === 0 && !options.some((x) => x.value === value)) ? 0 : -1}
           className={optionClass}
           onClick={() => onChange(o.value)}
         >

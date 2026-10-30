@@ -136,6 +136,7 @@ describe("Site settings: Section styles", () => {
       return <SiteSettings site={site} page={page} saved={defaultTokens} draft={draft} onChange={setDraft} onSave={onSave} onDiscard={() => undefined} />;
     }
     render(<Harness />);
+    fireEvent.click(screen.getByRole("button", { name: "Section styles" }));
     const card = screen.getByRole("region", { name: "Section styles" });
     const dark = within(card).getByRole("group", { name: "Dark sections" });
     fireEvent.click(within(dark).getByRole("radio", { name: "Site colour: Primary" }));

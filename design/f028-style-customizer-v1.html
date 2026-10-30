@@ -1,0 +1,271 @@
+<title>Style Customizer Snapshot</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: same language as the F025-F027 snapshots. A Site settings mock with a live site preview, in three arrangements of the same controls. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6;
+  --accent:#4338ca; --accent-ink:#ffffff; --accent-soft:#e7e6fb; --ok:#127a4b; --ok-soft:#dff3e8; --bad:#b42318;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --ok-soft:#123323; --bad:#ff8a7d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --ok-soft:#123323; --bad:#ff8a7d; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1320px;margin:0 auto;padding-block:28px 64px;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.05;text-wrap:balance}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-.02em}
+.label{font:500 .7rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.lede{color:var(--soft);max-width:70ch;margin:0}
+button{font:inherit;color:inherit}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.dirs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.dir{border:1.5px solid var(--line);background:var(--panel);border-radius:14px;padding:12px 14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.dir b{font-family:var(--f-display);font-size:1.05rem}
+.dir span{color:var(--soft);font-size:.85rem}
+.dir[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.dir .rec{align-self:flex-start;color:var(--accent-ink);font:500 .66rem var(--f-mono);background:var(--accent);padding:3px 7px;border-radius:999px}
+
+/* settings mock */
+.app{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.bar b{margin-right:auto}
+.check{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--ok-soft);color:var(--ok)}
+.check.bad{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+.hbtn{min-height:34px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);cursor:pointer}
+.hbtn.dark{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.body{display:grid;grid-template-columns:200px 320px minmax(0,1fr);min-height:640px}
+.app.dir-b .body{grid-template-columns:360px minmax(0,1fr)}
+.app.dir-c .body{grid-template-columns:minmax(0,1fr)}
+.rail{border-right:1px solid var(--line);padding:12px 8px;display:flex;flex-direction:column;gap:2px;background:var(--bg)}
+.rail button{border:0;background:transparent;text-align:left;border-radius:8px;min-height:36px;padding:0 12px;cursor:pointer;color:var(--soft);font-size:.9rem;display:flex;justify-content:space-between;align-items:center}
+.rail button[aria-current="true"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.rail .new{font:500 .6rem var(--f-mono);letter-spacing:.06em;background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:2px 6px}
+.panel{border-right:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:18px;overflow:auto;max-height:760px}
+.panel h2{font-size:1.15rem}
+.group{display:flex;flex-direction:column;gap:12px;scroll-margin-top:60px}
+.app.dir-b .group+.group{border-top:1px solid var(--line);padding-top:18px}
+.index{position:sticky;top:-16px;z-index:2;background:var(--panel);display:flex;gap:4px;flex-wrap:wrap;padding:8px 0;margin:-8px 0 0;border-bottom:1px solid var(--line)}
+.index a{font-size:.78rem;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:999px;border:1px solid var(--line)}
+.index a:hover{color:var(--accent);border-color:var(--accent)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>span{font-size:.82rem;font-weight:600}
+.field small{color:var(--soft);font-size:.76rem}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{border:0;background:transparent;border-radius:7px;min-height:44px;padding:4px 6px;cursor:pointer;font-size:.8rem;color:var(--soft);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.seg button[aria-checked="true"]{background:var(--panel);color:var(--accent);font-weight:600;box-shadow:inset 0 0 0 1.5px var(--accent)}
+.seg i{display:block;font-style:normal}
+.presets{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.preset{border:1.5px solid var(--line);border-radius:10px;padding:0;background:var(--panel);cursor:pointer;overflow:hidden;text-align:left}
+.preset[aria-checked="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.preset .sw{display:flex;height:36px}
+.preset .sw span{flex:1}
+.preset .nm{display:block;padding:6px 8px 7px;font-size:.8rem;font-weight:600}
+.preset .nm small{display:block;font-weight:400;color:var(--soft);font-size:.7rem}
+.note{font-size:.8rem;color:var(--soft);margin:0}
+.pairs{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:.8rem}
+.pairs b{font:500 .78rem var(--f-mono);text-align:right}
+
+/* preview (a mini site). Every value from --s-* */
+.stage{background:var(--bg);padding:18px;overflow:auto;max-height:760px;position:relative}
+.site{max-width:820px;margin:0 auto;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.14);background:var(--s-bg);color:var(--s-text);font-family:var(--s-body);font-size:16px;line-height:1.6}
+.site [data-pick]{cursor:pointer;outline:2px dashed transparent;outline-offset:3px;border-radius:4px}
+.app.dir-c .site [data-pick]:hover,.app.dir-a .site [data-pick]:hover{outline-color:var(--accent)}
+.site section{padding:44px 40px}
+.site .alt{background:var(--s-surface)}
+.site h2,.site h3,.site h4{font-family:var(--s-head);font-weight:var(--s-hw);letter-spacing:var(--s-track);line-height:1.12;margin:0 0 .45em;color:var(--s-text)}
+.site .h1{font-size:calc(1em * var(--s-r) * var(--s-r) * var(--s-r) * var(--s-r));}
+.site .h2{font-size:calc(1em * var(--s-r) * var(--s-r) * var(--s-r));}
+.site .h3{font-size:calc(1em * var(--s-r) * var(--s-r));}
+.site p{margin:0 0 1em;max-width:60ch}
+.site .muted{color:var(--s-muted)}
+.site a{color:var(--s-primary)}
+.site .ln-underline a{text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px}
+.site .ln-thick a{text-decoration:underline;text-underline-offset:.22em;text-decoration-thickness:.14em}
+.site .ln-highlight a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.18em;background:color-mix(in srgb,var(--s-primary) 12%,transparent);padding:0 .15em;border-radius:3px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.b{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;font-weight:600;font-size:15px;border-radius:var(--s-br);border:2px solid var(--s-primary);text-decoration:none!important;background:none!important}
+.b.main.fill-solid{background:var(--s-primary)!important;color:var(--s-on)}
+.b.main.fill-outline{color:var(--s-primary)}
+.b.main.fill-soft{background:color-mix(in srgb,var(--s-primary) 14%,var(--s-bg))!important;border-color:transparent;color:var(--s-primary)}
+.b.second{color:var(--s-primary);border-color:color-mix(in srgb,var(--s-primary) 45%,transparent)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{padding:18px;border-radius:var(--s-cr);background:var(--s-bg)}
+.card.cs-flat{background:var(--s-surface)}
+.alt .card.cs-flat{background:var(--s-bg)}
+.card.cs-outline{border:1.5px solid color-mix(in srgb,var(--s-text) 18%,transparent);background:transparent}
+.card.cs-shadow{box-shadow:0 1px 2px rgba(0,0,0,.08),0 8px 24px rgba(0,0,0,.10)}
+.card p{font-size:.94em;margin:0}
+.pop{position:absolute;z-index:6;width:min(320px,92%);background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.28);padding:14px;display:flex;flex-direction:column;gap:12px}
+.pop .head{display:flex;justify-content:space-between;align-items:center}
+.pstrip{display:flex;gap:8px;overflow-x:auto;padding:10px 14px;border-bottom:1px solid var(--line)}
+.pstrip .preset{flex:0 0 130px}
+.tip{position:absolute;left:18px;top:18px;z-index:5;background:var(--ink);color:var(--panel);font-size:.8rem;padding:6px 10px;border-radius:8px}
+
+.compare{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.cmp{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:.88rem}
+.cmp h3{font-size:1rem}
+.cmp ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+.pro{color:var(--ok)}.con{color:var(--bad)}
+.why{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:.9rem;display:flex;flex-direction:column;gap:6px}
+.why p{margin:0;max-width:82ch}
+.ask{background:var(--accent);color:var(--accent-ink);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.ask p{margin:0}
+.ask code{font:500 .9rem var(--f-mono);background:rgba(255,255,255,.2);padding:1px 7px;border-radius:6px}
+@media (max-width:1000px){
+  .body,.app.dir-b .body{grid-template-columns:1fr}
+  .rail{flex-direction:row;flex-wrap:wrap;border-right:0;border-bottom:1px solid var(--line)}
+  .panel{border-right:0;border-bottom:1px solid var(--line);max-height:none}
+  .dirs,.compare{grid-template-columns:1fr}
+  .site section{padding:28px 20px}
+  .cards{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <span class="label">F028 · Design snapshot v1</span>
+    <h1>Style customizer</h1>
+    <p class="lede">Site settings grow into a full style customizer: type scale, heading weight and spacing, button shape and fill, card style, link style, and 9 complete presets. The controls below work. Pick how they're arranged.</p>
+  </div>
+
+  <div class="dirs" role="group" aria-label="Design direction">
+    <button type="button" class="dir" data-dir="a" aria-pressed="true"><span class="rec">Recommended</span><b>A · Grouped panel + preview</b><span>A list of groups on the left, one group's controls at a time, live preview on the right. Click the preview to jump.</span></button>
+    <button type="button" class="dir" data-dir="b" aria-pressed="false"><b>B · One long page</b><span>Today's Site settings, extended: every group stacked, with a sticky index and the preview beside it.</span></button>
+    <button type="button" class="dir" data-dir="c" aria-pressed="false"><b>C · Preview first</b><span>The page fills the screen. Click a button, card or heading to style it in a small panel. Presets on top.</span></button>
+  </div>
+
+  <div class="app dir-a" id="app">
+    <div class="bar">
+      <b>Site settings</b>
+      <span class="check" id="check" role="status"></span>
+      <button type="button" class="hbtn">Undo</button>
+      <button type="button" class="hbtn dark">Save</button>
+    </div>
+    <div id="strip"></div>
+    <div class="body" id="body"></div>
+  </div>
+
+  <div class="compare">
+    <div class="cmp"><h3>A · Grouped panel</h3><ul><li class="pro">One topic at a time: short, calm panel</li><li class="pro">Preview always in view while you change things</li><li class="pro">Grows cleanly as F031/F033 add groups</li><li class="con">You don't see every setting at once</li></ul></div>
+    <div class="cmp"><h3>B · One long page</h3><ul><li class="pro">Everything on one scroll, like today</li><li class="pro">Easy to scan for "what did I change?"</li><li class="con">Long already; 4 new groups make it very long</li><li class="con">The control you're changing scrolls away from its preview spot</li></ul></div>
+    <div class="cmp"><h3>C · Preview first</h3><ul><li class="pro">Direct: click the thing you want to change</li><li class="pro">Biggest preview</li><li class="con">Settings with no visible element (spacing, page width) need another way in</li><li class="con">Harder to discover what's adjustable; weaker for keyboard users</li></ul></div>
+  </div>
+
+  <div class="why">
+    <span class="label">Why A</span>
+    <p><b>Less to read at once.</b> Showing one group at a time (progressive disclosure) keeps the panel short even with four new groups. Fewer visible choices make each decision faster (Hick's law).</p>
+    <p><b>The preview stays put.</b> You change a button and watch the button, without scrolling away from it. A keeps C's best idea too: click a button in the preview and the Buttons group opens (it's how colours already work today).</p>
+    <p><b>Keyboard and screen readers:</b> the group list is a plain list of links with the current one marked. Every option is a labelled radio group, so arrow keys work, as they do in the section styles today.</p>
+  </div>
+
+  <div class="why">
+    <span class="label">The same in every direction</span>
+    <p><b>Links always stay underlined.</b> The three link styles differ in weight and tint, never "no underline". Colour alone can't mark a link (WCAG 1.4.1).</p>
+    <p><b>Presets set everything</b> (colours, fonts, type, buttons, cards, links), and one Undo takes a preset back. The contrast badge at the top checks every colour pair live; a combination that fails offers a one-click fix, as now.</p>
+    <p><b>Nothing else changes:</b> sites saved before F028 look exactly the same (Balanced scale, Bold headings, Rounded solid buttons, Flat cards, Underline links).</p>
+  </div>
+
+  <div class="why">
+    <span class="label">One question before building</span>
+    <p><b>"Main button" overlaps with section styles.</b> Since F025 each section style already chooses its button look (Solid, Outline or Inverse). A second, site-wide fill would make two places that set the same thing.</p>
+    <p><b>Proposal:</b> the Buttons group sets <b>shape</b> for every button. Its "Main button" switch edits the look of the <b>Page</b> and <b>Muted</b> styles together, where buttons are Solid today. Primary and Dark keep Inverse, which stays readable on a coloured background. "Soft" becomes a fourth look that section styles can use too. One setting, shown in two places, never two settings that disagree.</p>
+    <p>Reply <code style="font:500 .85rem var(--f-mono)">OK</code> to that, or tell me how you'd like buttons to work.</p>
+  </div>
+
+  <div class="ask">
+    <h3 style="font-size:1.2rem">Pick one</h3>
+    <p>Reply <code>A</code>, <code>B</code>, <code>C</code>, or a mix like <code>A + C's preset strip</code>.</p>
+  </div>
+</div>
+
+<script>
+const F={system:"system-ui,-apple-system,'Segoe UI',sans-serif",humanist:"Seravek,'Gill Sans Nova',Ubuntu,Calibri,'DejaVu Sans',sans-serif",geometric:"Avenir,Montserrat,Corbel,'URW Gothic',sans-serif",transitional:"Charter,'Bitstream Charter','Sitka Text',Cambria,serif",oldstyle:"'Iowan Old Style','Palatino Linotype','URW Palladio L',P052,serif",mono:"ui-monospace,'Cascadia Code','Source Code Pro',Menlo,Consolas,monospace"};
+const P=[
+ {id:"crust",name:"Crust",d:"Today's default",c:["#ffffff","#f4f4f5","#18181b","#52525b","#4338ca","#ffffff"],f:["system","system"],s:{scale:1.2,hw:700,track:-0.015,shape:"rounded",fill:"solid",card:"flat",link:"underline"}},
+ {id:"ink",name:"Ink",d:"Serif, editorial",c:["#FAF9F6","#EFEDE8","#1A1A1A","#55524C","#1A1A1A","#FAF9F6"],f:["oldstyle","system"],s:{scale:1.333,hw:500,track:-0.015,shape:"square",fill:"outline",card:"outline",link:"thick"}},
+ {id:"forest",name:"Forest",d:"Green, friendly",c:["#FFFFFF","#EEF4EF","#14231A","#4A5A50","#1F6B45","#FFFFFF"],f:["humanist","humanist"],s:{scale:1.2,hw:700,track:0,shape:"pill",fill:"solid",card:"flat",link:"underline"}},
+ {id:"sunset",name:"Sunset",d:"Terracotta, warm",c:["#FFFBF7","#FBEFE6","#2A1A14","#6B5148","#A63E1B","#FFFFFF"],f:["transitional","humanist"],s:{scale:1.25,hw:600,track:-0.015,shape:"rounded",fill:"solid",card:"shadow",link:"highlight"}},
+ {id:"mono",name:"Mono",d:"Black and white",c:["#FFFFFF","#F2F2F2","#111111","#595959","#111111","#FFFFFF"],f:["mono","system"],s:{scale:1.2,hw:700,track:-0.03,shape:"square",fill:"solid",card:"outline",link:"thick"}},
+ {id:"ocean",name:"Ocean",d:"Calm blue",c:["#F7FAFC","#E6EFF5","#0F2433","#4A5E6B","#0B5C8C","#FFFFFF"],f:["humanist","system"],s:{scale:1.2,hw:600,track:0,shape:"rounded",fill:"soft",card:"shadow",link:"underline"}},
+ {id:"studio",name:"Studio",d:"Bold, geometric",c:["#FFFFFF","#F5F0FF","#1C1530","#5B5470","#6D28D9","#FFFFFF"],f:["geometric","system"],s:{scale:1.333,hw:800,track:-0.03,shape:"pill",fill:"solid",card:"shadow",link:"highlight"}},
+ {id:"paper",name:"Paper",d:"Quiet, bookish",c:["#FFFEF9","#F3F0E6","#23211C","#5E5A50","#7A4B12","#FFFFFF"],f:["oldstyle","oldstyle"],s:{scale:1.125,hw:600,track:0,shape:"rounded",fill:"outline",card:"flat",link:"underline"}},
+ {id:"night",name:"Night",d:"Dark site",c:["#111318","#1C1F26","#F1F2F4","#A9AEB8","#8AB4FF","#0B1020"],f:["geometric","system"],s:{scale:1.25,hw:700,track:-0.015,shape:"rounded",fill:"solid",card:"outline",link:"thick"}}
+];
+const OPTS={
+ scale:{label:"Type scale",hint:"How much bigger each heading level is.",o:[[1.125,"Subtle","1.125"],[1.2,"Balanced","1.2"],[1.25,"Bold","1.25"],[1.333,"Dramatic","1.333"]]},
+ hw:{label:"Heading weight",o:[[500,"Regular",""],[600,"Medium",""],[700,"Bold",""],[800,"Heavy",""]]},
+ track:{label:"Heading letter spacing",o:[[-0.03,"Tight",""],[-0.015,"Snug",""],[0,"Normal",""],[0.02,"Wide",""]]},
+ shape:{label:"Button shape",o:[["square","Square","▭"],["rounded","Rounded","▢"],["pill","Pill","⬭"]]},
+ fill:{label:"Main button",o:[["solid","Solid",""],["outline","Outline",""],["soft","Soft",""]]},
+ card:{label:"Card style",o:[["flat","Flat",""],["outline","Outline",""],["shadow","Shadow",""]]},
+ link:{label:"Links in text",hint:"Always underlined, so links never rely on colour alone.",o:[["underline","Underline",""],["thick","Thick",""],["highlight","Highlight",""]]}
+};
+const GROUPS=[["presets","Presets",[],false],["colours","Colours",[],false],["type","Typography",["scale","hw","track"],true],["buttons","Buttons",["shape","fill"],true],["cards","Cards",["card"],true],["links","Links",["link"],true],["sections","Section styles",[],false],["spacing","Spacing & shape",[],false]];
+const S={dir:"a",group:"type",preset:"crust",v:{...P[0].s},pop:null,c:P[0].c,f:P[0].f};
+const $=s=>document.querySelector(s);
+const lum=h=>{const c=[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255).map(v=>v<=.03928?v/12.92:((v+.055)/1.055)**2.4);return .2126*c[0]+.7152*c[1]+.0722*c[2]};
+const ratio=(a,b)=>{const[x,y]=[lum(a),lum(b)].sort((p,q)=>q-p);return (x+.05)/(y+.05)};
+function pairs(){const[bg,su,tx,mu,pr,on]=S.c;return [["Text on page",tx,bg],["Muted text on page",mu,bg],["Text on muted sections",tx,su],["Button text",on,pr],["Links on page",pr,bg],["Links on muted sections",pr,su]].map(([n,a,b])=>[n,ratio(a,b)])}
+
+function seg(key){const d=OPTS[key];return `<div class="field"><span id="l-${key}">${d.label}</span><div class="seg" role="radiogroup" aria-labelledby="l-${key}" data-key="${key}">${d.o.map(([v,l,x])=>`<button type="button" role="radio" aria-checked="${S.v[key]===v}" tabindex="${S.v[key]===v?0:-1}" data-v="${v}"><i>${l}</i>${x?`<small>${x}</small>`:""}</button>`).join("")}</div>${d.hint?`<small>${d.hint}</small>`:""}</div>`}
+const presetBtn=p=>`<button type="button" class="preset" role="radio" aria-checked="${S.preset===p.id}" data-preset="${p.id}"><span class="sw" aria-hidden="true">${[0,1,4,2].map(i=>`<span style="background:${p.c[i]}"></span>`).join("")}</span><span class="nm">${p.name}<small>${p.d}</small></span></button>`;
+function groupHtml(id){
+  const g=GROUPS.find(x=>x[0]===id);
+  let inner="";
+  if(id==="presets")inner=`<div class="presets" role="radiogroup" aria-label="Presets">${P.map(presetBtn).join("")}</div><p class="note">A preset sets colours, fonts, type, buttons, cards and links. Undo takes it back.</p>`;
+  else if(id==="colours")inner=`<p class="note">As today: six colours with the contrast checks below.</p><div class="pairs">${pairs().map(([n,r])=>`<span>${n}</span><b style="color:${r>=4.5?"var(--ok)":"var(--bad)"}">${r.toFixed(1)}:1</b>`).join("")}</div>`;
+  else if(id==="sections"||id==="spacing")inner=`<p class="note">As today (F025 and F003).</p>`;
+  else inner=g[2].map(seg).join("");
+  return `<div class="group" id="g-${id}"><h2>${g[1]}</h2>${inner}</div>`;
+}
+function previewHtml(){
+  const v=S.v;
+  return `<div class="site ln-${v.link}" id="site">
+    <section><h2 class="h1" data-pick="type">Fresh bread, every morning</h2><p class="muted" data-pick="colours">A small bakery on Jalan Kemang. Sourdough, croissants and coffee from 7 am.</p>
+      <div class="btns" data-pick="buttons"><a class="b main fill-${v.fill}" href="#">See the menu</a><a class="b second" href="#">Find us</a></div></section>
+    <section class="alt"><h2 class="h2" data-pick="type">What we bake</h2>
+      <div class="cards" data-pick="cards">${[["Sourdough","Three days from starter to crust."],["Pastry","Butter laminated by hand."],["Coffee","Beans roasted down the road."]].map(([t,p])=>`<div class="card cs-${v.card}"><h3 class="h3">${t}</h3><p class="muted">${p}</p></div>`).join("")}</div></section>
+    <section><h2 class="h2" data-pick="type">Visit</h2><p data-pick="links">Open daily from 7 to 3. Order a cake <a href="#">online</a>, or read <a href="#">how we bake</a>.</p></section>
+  </div>`;
+}
+function applyVars(){
+  const el=$("#app");const[bg,su,tx,mu,pr,on]=S.c;const v=S.v;
+  const br={square:"2px",rounded:"8px",pill:"999px"}[v.shape];const cr={square:"2px",rounded:"10px",pill:"18px"}[v.shape];
+  Object.entries({bg,surface:su,text:tx,muted:mu,primary:pr,on,head:F[S.f[0]],body:F[S.f[1]],r:v.scale,hw:v.hw,track:v.track+"em",br,cr}).forEach(([k,x])=>el.style.setProperty("--s-"+k,x));
+  const worst=Math.min(...pairs().map(p=>p[1]));const c=$("#check");c.className="check"+(worst<4.5?" bad":"");c.textContent=worst>=4.5?`✓ All colour pairs pass (lowest ${worst.toFixed(1)}:1)`:`! A colour pair fails (${worst.toFixed(1)}:1)`;
+}
+function render(){
+  const app=$("#app");app.className="app dir-"+S.dir;
+  $("#strip").innerHTML=S.dir==="c"?`<div class="pstrip" role="radiogroup" aria-label="Presets">${P.map(presetBtn).join("")}</div>`:"";
+  let html="";
+  if(S.dir==="a")html=`<nav class="rail" aria-label="Style groups">${GROUPS.map(([id,l,,n])=>`<button type="button" data-group="${id}" aria-current="${S.group===id}"><span>${l}</span>${n?`<span class="new">NEW</span>`:""}</button>`).join("")}</nav><div class="panel">${groupHtml(S.group)}</div>`;
+  if(S.dir==="b")html=`<div class="panel"><nav class="index" aria-label="Jump to">${GROUPS.map(([id,l])=>`<a href="#g-${id}">${l}</a>`).join("")}</nav>${GROUPS.map(g=>groupHtml(g[0])).join("")}</div>`;
+  const pop=S.dir==="c"&&S.pop?`<div class="pop" role="group" aria-label="${GROUPS.find(g=>g[0]===S.pop)[1]}" style="right:18px;top:18px"><div class="head"><span class="label">${GROUPS.find(g=>g[0]===S.pop)[1]}</span><button type="button" class="hbtn" data-close>Done</button></div>${groupHtml(S.pop).replace(/<h2>.*?<\/h2>/,"")}</div>`:"";
+  const tip=S.dir==="c"&&!S.pop?`<div class="tip">Click a heading, button, card or link to style it</div>`:"";
+  html+=`<div class="stage">${tip}${pop}${previewHtml()}</div>`;
+  $("#body").innerHTML=html;applyVars();
+}
+document.addEventListener("click",e=>{
+  const t=e.target;
+  const d=t.closest(".dir");if(d){S.dir=d.dataset.dir;S.pop=null;document.querySelectorAll(".dir").forEach(x=>x.setAttribute("aria-pressed",String(x===d)));render();return}
+  const g=t.closest("[data-group]");if(g){S.group=g.dataset.group;render();return}
+  const pr=t.closest("[data-preset]");if(pr){const p=P.find(x=>x.id===pr.dataset.preset);S.preset=p.id;S.c=p.c;S.f=p.f;S.v={...p.s};render();return}
+  const r=t.closest(".seg [role=radio]");if(r){const key=r.parentElement.dataset.key;const raw=r.dataset.v;S.v[key]=isNaN(Number(raw))?raw:Number(raw);S.preset=null;render();const again=document.querySelector(`.seg[data-key="${key}"] [aria-checked="true"]`);again&&again.focus();return}
+  if(t.closest("[data-close]")){S.pop=null;render();return}
+  if(t.closest(".site a"))e.preventDefault();
+  const pk=t.closest("[data-pick]");if(pk){if(S.dir==="a"){S.group=pk.dataset.pick;render()}else if(S.dir==="c"){S.pop=pk.dataset.pick;render()}else{const el=document.getElementById("g-"+pk.dataset.pick);el&&el.scrollIntoView({block:"start",behavior:"smooth"})}}
+});
+document.addEventListener("keydown",e=>{
+  const r=e.target.closest&&e.target.closest(".seg [role=radio]");
+  if(r&&["ArrowRight","ArrowLeft","ArrowDown","ArrowUp"].includes(e.key)){e.preventDefault();const all=[...r.parentElement.children];const i=all.indexOf(r)+(["ArrowRight","ArrowDown"].includes(e.key)?1:-1);all[(i+all.length)%all.length].click()}
+  if(e.key==="Escape"&&S.pop){S.pop=null;render()}
+});
+render();
+</script>
