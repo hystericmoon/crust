@@ -408,7 +408,7 @@
       "description": "FAQ, gallery, logo strip, features grid, testimonial and contact layouts in the Layout library, built from the Milestone 2-3 blocks; each passes the layout accessibility check. Added by the owner (approved Milestone 4, 2026-10-30).",
       "depends_on": ["F026", "F032", "F037"],
       "done_check": "npm test -- layouts && npm run build && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
