@@ -51,6 +51,7 @@ import { SiteChromeContext, withSiteChrome } from "./chrome-canvas";
 import { withMediaFields } from "./media/fields";
 import { MediaPicker } from "./media/MediaPicker";
 import { BlogContext, withPostEditing } from "./posts/editing";
+import { SeoSiteProvider, withSeoEditing } from "./seo/fields";
 import { PostList } from "./posts/PostList";
 import { fromPuckData as postFromPuckData, loadPost, saveLocalPost, toPuckData as postToPuckData } from "./posts/store";
 
@@ -59,6 +60,8 @@ const site = siteJson as Site;
 const editorConfig = withSiteChrome(withSettingsTabs(withResponsiveEditing(withSectionEditing(withItemEditing(withMediaFields(config))))));
 /** Posts (F035): the same blocks, with the post's details and top. */
 const postEditorConfig = withPostEditing(editorConfig);
+/** Pages also get search and sharing settings (F036). */
+const pageEditorConfig = withSeoEditing(editorConfig);
 
 /** Responsive canvas widths for the viewport switcher. */
 const viewports = [
@@ -475,41 +478,43 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
   }
 
   return (
-    <MyLayoutsProvider githubOn={githubOn}>
-      <Puck
-        config={editorConfig}
-        data={toPuckData(page)}
-        viewports={viewports}
-        headerTitle={page.title || path}
-        overrides={{
-          headerActions: () => (
-            <>
-              <a className="crust-header-link" href="#/">
-                Pages
-              </a>
-              <LayoutsButton />
-              <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
-                Keyboard
-              </button>
-              <a className="crust-header-link" href="#/settings">
-                Site settings
-              </a>
-              {shortcut}
-              <SaveDraftButton onSave={saveDraft} />
-            </>
-          ),
-          puck: BuilderRoot,
-          iframe: BuilderCanvas,
-          actionBar: KeyboardActionBar,
-        }}
-        onPublish={saveDraft}
-        // Keep every edit in this browser, so leaving the page never loses work.
-        onChange={(data) => saveLocalDraft(fromPuckData(path, data), false)}
-      />
-      <div role="status" aria-live="polite" className="crust-status">
-        {status}
-      </div>
-    </MyLayoutsProvider>
+    <SeoSiteProvider value={{ baseUrl: site.baseUrl, siteName: site.name, path }}>
+      <MyLayoutsProvider githubOn={githubOn}>
+        <Puck
+          config={pageEditorConfig}
+          data={toPuckData(page)}
+          viewports={viewports}
+          headerTitle={page.title || path}
+          overrides={{
+            headerActions: () => (
+              <>
+                <a className="crust-header-link" href="#/">
+                  Pages
+                </a>
+                <LayoutsButton />
+                <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
+                  Keyboard
+                </button>
+                <a className="crust-header-link" href="#/settings">
+                  Site settings
+                </a>
+                {shortcut}
+                <SaveDraftButton onSave={saveDraft} />
+              </>
+            ),
+            puck: BuilderRoot,
+            iframe: BuilderCanvas,
+            actionBar: KeyboardActionBar,
+          }}
+          onPublish={saveDraft}
+          // Keep every edit in this browser, so leaving the page never loses work.
+          onChange={(data) => saveLocalDraft(fromPuckData(path, data), false)}
+        />
+        <div role="status" aria-live="polite" className="crust-status">
+          {status}
+        </div>
+      </MyLayoutsProvider>
+    </SeoSiteProvider>
   );
 }
 

@@ -358,7 +358,7 @@
       "description": "Per page: search title, social image, a preview of how the link looks when shared, and a 'hide from search engines' switch. Published as meta tags (Open Graph), and noindex pages leave the sitemap. Added by the owner (approved Milestone 3, 2026-10-30).",
       "depends_on": ["F007"],
       "done_check": "npm test -- seo && npm run build && cargo test",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

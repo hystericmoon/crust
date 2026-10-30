@@ -1,4 +1,4 @@
-import { config, MediaContext, migrateChrome, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
+import { config, MediaContext, mediaFileOf, migrateChrome, variantFile, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -49,11 +49,19 @@ export interface RenderOptions {
   year?: number;
   /** content/media.json (F034). Without it, images are published as they are. */
   media?: MediaItem[];
+  /** The site's public address, for links in sharing tags (F036); site.baseUrl by default. */
+  baseUrl?: string;
 }
 
 /** Full HTML document for one page. `baseCss` is packages/blocks/src/styles.css. */
 export function renderPage(site: Site, page: Page, baseCss: string, options: RenderOptions = {}): string {
-  return renderDocument(site, { path: page.path, title: page.title, description: page.description, body: renderBody(page.puck, options.media) }, baseCss, options);
+  const seo = page.seo ?? {};
+  return renderDocument(
+    site,
+    { path: page.path, title: page.title, description: page.description, body: renderBody(page.puck, options.media), share: { searchTitle: seo.title, image: seo.image, imageAlt: seo.imageAlt, noindex: seo.noindex } },
+    baseCss,
+    options,
+  );
 }
 
 export interface DocumentParts {
@@ -64,6 +72,50 @@ export interface DocumentParts {
   body: string;
   /** Extra tags for <head> (already escaped). */
   head?: string;
+  /** Search and sharing (F036). */
+  share?: ShareInfo;
+}
+
+export interface ShareInfo {
+  /** The whole <title> and the shared title, instead of "Page | Site". */
+  searchTitle?: string;
+  image?: string;
+  imageAlt?: string;
+  noindex?: boolean;
+  type?: "website" | "article";
+}
+
+/** A full address for sharing tags; library photos use their 1440 px copy when there is one. */
+function absolute(base: string, src: string, media: MediaItem[] | undefined): string | null {
+  const url = src.trim();
+  if (/^https?:\/\//i.test(url)) return url;
+  if (!url.startsWith("/") || url.startsWith("//")) return null;
+  const file = mediaFileOf(url);
+  const item = file ? media?.find((m) => m.file === file) : undefined;
+  return `${base}${item && item.width > 1440 ? `/media/${variantFile(item.file, 1440)}` : url}`;
+}
+
+/** Canonical address, Open Graph and Twitter card tags, and robots (F036). */
+function shareTags(site: Site, doc: DocumentParts, options: RenderOptions): string {
+  const share = doc.share ?? {};
+  const base = (options.baseUrl ?? site.baseUrl).replace(/\/+$/, "");
+  const url = `${base}${doc.path === "/" ? "/" : `${doc.path.replace(/\/+$/, "")}/`}`;
+  const image = share.image ? absolute(base, share.image, options.media) : null;
+  const tag = (attr: "property" | "name", key: string, value: string) => `<meta ${attr}="${key}" content="${escapeHtml(value)}">\n`;
+  let out = "";
+  if (share.noindex) out += `<meta name="robots" content="noindex">\n`;
+  out += `<link rel="canonical" href="${escapeHtml(url)}">\n`;
+  out += tag("property", "og:type", share.type ?? "website");
+  out += tag("property", "og:site_name", site.name);
+  out += tag("property", "og:title", share.searchTitle?.trim() || doc.title);
+  if (doc.description.trim()) out += tag("property", "og:description", doc.description);
+  out += tag("property", "og:url", url);
+  if (image) {
+    out += tag("property", "og:image", image);
+    if (share.imageAlt?.trim()) out += tag("property", "og:image:alt", share.imageAlt.trim());
+  }
+  out += tag("name", "twitter:card", image ? "summary_large_image" : "summary");
+  return out;
 }
 
 /** The page shell around any content: head, header, main, footer. */
@@ -75,7 +127,7 @@ export function renderDocument(site: Site, doc: DocumentParts, baseCss: string, 
   // A sticky header would cover whatever is scrolled or tabbed to; the page keeps room for it (WCAG 2.4.11).
   const htmlClass = header.show && header.sticky ? ' class="cr-has-sticky"' : "";
   const css = `${tokensToCss(site.tokens)}\n${baseCss}`;
-  const title = doc.path === "/" ? doc.title : `${doc.title} | ${site.name}`;
+  const title = doc.share?.searchTitle?.trim() || (doc.path === "/" ? doc.title : `${doc.title} | ${site.name}`);
   return `<!doctype html>
 <html lang="${escapeHtml(site.language)}"${htmlClass}>
 <head>
@@ -84,7 +136,7 @@ export function renderDocument(site: Site, doc: DocumentParts, baseCss: string, 
 <title>${escapeHtml(title)}</title>
 <meta name="description" content="${escapeHtml(doc.description)}">
 <meta name="generator" content="Crust">
-${doc.head ?? ""}<style>${css.replace(/<\/style/gi, "<\\/style")}</style>
+${shareTags(site, doc, options)}${doc.head ?? ""}<style>${css.replace(/<\/style/gi, "<\\/style")}</style>
 </head>
 <body class="cr-page">
 <a class="cr-skip" href="#content">Skip to content</a>

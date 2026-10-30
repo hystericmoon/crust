@@ -23,7 +23,9 @@ const pages = await Promise.all(pageFiles.map((file) => readJson<Page>(join(cont
 // Sites saved before F031 have no menu yet: it's made from these pages.
 // F034: uploaded photos get srcset; crust-publish makes the resized copies.
 const media = parseMediaIndex(await readFile(join(contentDir, "media.json"), "utf8").catch(() => null));
-const options = { pages: pages.map((p) => ({ path: p.path, title: p.title })), media };
+// The publish workflow passes the live address; locally the one in site.json is used.
+const baseUrl = process.env.BASE_URL || site.baseUrl;
+const options = { pages: pages.map((p) => ({ path: p.path, title: p.title })), media, baseUrl };
 const seen = new Map<string, string>();
 for (const [i, file] of pageFiles.entries()) {
   const page = pages[i]!;
@@ -49,8 +51,6 @@ for (const file of postFiles) {
 }
 if (posts.length) {
   const blog = parseBlog(await readFile(join(contentDir, "blog.json"), "utf8").catch(() => null));
-  // The publish workflow passes the live address; locally the one in site.json is used.
-  const baseUrl = process.env.BASE_URL || site.baseUrl;
   await mkdir(join(outDir, "blog"), { recursive: true });
   await writeFile(join(outDir, "blog", "index.html"), renderBlogIndex(site, posts, blog, baseCss, options));
   await writeFile(join(outDir, "blog", "feed.xml"), rssFeed(site, posts, blog, baseUrl));

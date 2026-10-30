@@ -49,6 +49,16 @@ pub fn media_refs(html: &str) -> Vec<String> {
     refs
 }
 
+/// True when the page asks search engines not to list it (`<meta name="robots" content="noindex">`, F036).
+pub fn is_noindex(html: &str) -> bool {
+    scan(html).iter().any(|t| {
+        !t.closing
+            && t.name == "meta"
+            && t.attr("name").is_some_and(|n| n.eq_ignore_ascii_case("robots"))
+            && t.attr("content").is_some_and(|c| c.to_ascii_lowercase().split(',').any(|v| v.trim() == "noindex"))
+    })
+}
+
 /// Checks one rendered page. `page` is its URL path, used in messages.
 pub fn validate_page(page: &str, html: &str) -> Vec<Issue> {
     let mut messages = Vec::new();

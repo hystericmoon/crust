@@ -15,7 +15,7 @@ use walkdir::WalkDir;
 
 pub use redirects::{Redirect, load_redirects, plan_redirects};
 pub use media::{MediaReport, publish_media};
-pub use validate::{Issue, media_refs, validate_page};
+pub use validate::{Issue, is_noindex, media_refs, validate_page};
 
 /// What a publish run produced, for the summary printed to the log.
 #[derive(Debug, PartialEq, Eq)]
@@ -74,6 +74,18 @@ fn page_files(site_dir: &Path) -> Result<Vec<(String, PathBuf)>> {
     }
     pages.sort();
     Ok(pages)
+}
+
+/// Pages for sitemap.xml: all of them except those hidden from search engines (F036).
+pub fn listed_pages(site_dir: &Path) -> Result<Vec<String>> {
+    let mut listed = Vec::new();
+    for (path, file) in page_files(site_dir)? {
+        let html = fs::read_to_string(&file).with_context(|| format!("Couldn't read {}", file.display()))?;
+        if !is_noindex(&html) {
+            listed.push(path);
+        }
+    }
+    Ok(listed)
 }
 
 /// Checks every page and returns all problems found, in page order.
@@ -165,7 +177,8 @@ pub fn publish_with_redirects(site_dir: &Path, base_url: &str, redirects: &[Redi
         bail!(issues_message(&issues));
     }
     let plan = plan_redirects(redirects, &pages)?;
-    fs::write(site_dir.join("sitemap.xml"), sitemap_xml(&base_url, &pages))
+    let listed = listed_pages(site_dir)?;
+    fs::write(site_dir.join("sitemap.xml"), sitemap_xml(&base_url, &listed))
         .context("Couldn't write sitemap.xml")?;
     fs::write(site_dir.join("robots.txt"), robots_txt(&base_url)).context("Couldn't write robots.txt")?;
     if !plan.file.is_empty() {

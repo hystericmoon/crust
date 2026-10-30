@@ -4,6 +4,13 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Search and sharing (F036):** in each page's settings, set the title
+  people see in search results, a picture for when the link is shared,
+  or hide the page from search engines. Live previews show how it will
+  look in Google and in a chat message. Every page now shares nicely by
+  default (title, description and address), and blog posts use their
+  cover photo.
+
 - **Blog (F035):** a new Posts screen (link next to Pages). Write news,
   notes or portfolio pieces in the builder, with a title, summary, date
   and cover photo. Your site gets a list of posts at /blog/, a page for

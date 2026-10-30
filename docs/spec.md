@@ -134,6 +134,13 @@ into a block's alt field when picked. Publishing copies the photos into
 the site with resized copies (`<name>-480w.jpg`, `-960w`, `-1440w`) for
 `srcset`; those are never stored in `content/`.
 
+A page may carry `seo` (optional, added with F036): `{ "title": "…",
+"image": "/media/…", "imageAlt": "…", "noindex": true }`, each optional.
+`title` replaces the page's `<title>` and shared title; `image` is the
+picture shown when the link is shared (needs `imageAlt`); `noindex`
+keeps the page out of search engines and sitemap.xml. Every published
+page gets a canonical link and Open Graph tags.
+
 `content/posts/<slug>.json` and `content/blog.json` (optional, added with F035)
 ```json
 { "slug": "opening-day", "title": "…", "description": "…", "date": "2026-10-30",
