@@ -5,7 +5,7 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-10-30, after F046 (session "Crust: Milestone 5 — F046
+Last updated: 2026-10-30, after F047 (session "Crust: Milestone 5 — F047
 onward").
 
 ## How sessions work (owner's rule, 2026-10-30)
@@ -72,13 +72,14 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | Feature | Status | Branch / PR |
 |---|---|---|
 | F045 Save a site as a template | built, passes, CI green | `f045-template-file`, draft PR #33 (base main) |
-| F046 Placeholder content | built, passes | `f046-placeholders`, draft PR #34 (stacked on #33) |
-| F047 Template quality check | next | |
-| F048 Start from a template | after F047 | design snapshot first |
+| F046 Placeholder content | built, passes, CI green | `f046-placeholders`, draft PR #34 (stacked on #33) |
+| F047 Template quality check | built, passes | `f047-template-check`, draft PR #35 (stacked on #34) |
+| F048 Start from a template | next | design snapshot first |
 | F049 First starter template | after F048 | design snapshot; owner must pick a direction (BLOCKED.md while waiting) |
 
-- **Merge order when the owner says so:** #33, then #34 (GitHub retargets
-  it to main), then the rest in feature order. Each later PR is stacked
+- **Merge order when the owner says so:** #33, then #34, then #35 (GitHub
+  retargets each to main as the one below merges), then the rest in
+  feature order. Each later PR is stacked
   on the one before it.
 - **Waiting on the owner:** see PROGRESS.md "Waiting on the owner"
   (preview links to try, F034–F046 still need `reviewed: true`), and
@@ -90,19 +91,22 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 
 ## Next
 
-1. **F047 Template quality check** (depends F045, F046). Branch from
-   `f046-placeholders` (stack it, PR base `f046-placeholders`). See
-   features.json for its description and done_check (`npm test --
-   template-check && npm run check:template`). Reuse what exists: the
-   axe check (`npm run check:a11y`), contrast in packages/blocks
-   contrast.ts and section-styles.ts, crust-publish validate.rs (h1,
-   heading order, alt text, and now leftover placeholders), Lighthouse
-   in CI if present. Writes a readable report page.
-2. **F048 Start from a template**: design snapshot (Artifact, 2–3
-   directions) in design/ first; build the recommended one and tell the
-   owner he can pick another.
+1. On start: subscribe_pr_activity to #33, #34 and #35 and fix any red CI
+   (reproduce locally first). #35's CI was starting at handover.
+2. **F048 Start from a template** (depends F045, F046). Branch from
+   `f047-template-check` (stack it, PR base `f047-template-check`). Design
+   snapshot first (Artifact, 2–3 directions, saved in design/): Pages
+   screen → "Start from a template" gallery with thumbnail, page list,
+   live preview at desktop/tablet/phone; applying asks first and says
+   exactly what it replaces; the old site stays in Git history and can be
+   restored. Build Claude's recommended direction and tell the owner he
+   can pick another. done_check: `npm test -- start-from-template && npm
+   run build && npm run check:a11y`. Reuse readTemplate (F045) and
+   unpackTemplate (packages/render/src/template-check.ts, F047).
 3. **F049 First starter template**: design snapshot with 2–3 directions;
-   add to BLOCKED.md until the owner picks, then build.
+   add to BLOCKED.md until the owner picks, then build. Save it as
+   `templates/<name>.crust`: `npm run check:template` checks every file
+   there in CI (F047).
 4. When F045–F049 are all built: tell the owner what's waiting (preview
    links, snapshot choices, merge order).
 
