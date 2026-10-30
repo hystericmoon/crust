@@ -141,3 +141,5 @@ export { seoLimits, seoAdvice, checkSeo, cleanSeo, displayUrl, shorten } from ".
 export type { PageSeo } from "./seo";
 export { ContactForm, FormsContext, contactLimits, formIdFor, extraName, hasContactForm } from "./contact-form";
 export type { ContactFormProps, ExtraField, FormsSetup } from "./contact-form";
+export { PLACEHOLDER_BASE_URL, isPlaceholderAddress, normalizeSiteAddress, isValidSiteAddress, siteHost } from "./site-address";
+export type { AddressResult } from "./site-address";

@@ -21,7 +21,19 @@ to "Log".
   docs/milestone-4.md. **F040 Builder tidy-up built** (draft PR, not
   merged). Next: F041 layouts, F042 rich text, F043 linked sections,
   F044 custom domain.
+- **F044 Custom domain built** (branch `f044-custom-domain`, draft PR,
+  not merged). Site settings → Site address, the publish workflow only
+  uses the domain once Cloudflare says it's connected, and
+  docs/setup-custom-domain.md. Buying the domain is in BLOCKED.md.
+  **Milestone 4 is fully built:** PRs merge in order #27 → #28 → #29 →
+  F044 once the owner says so (expect conflicts only in PROGRESS.md,
+  CHANGELOG.md, DECISIONS.md and the two settings test files' group lists).
 - **Waiting on the owner:**
+  - **F044:** on the PR's preview link, open Site settings → Site
+    address (last in the list). Type a domain with a mistake (like
+    studio.com/about), then a correct one; the example address below
+    updates. Don't save a domain you don't own yet. On the Pages screen
+    the Publish panel is unchanged until a domain is set.
   - **F040:** on the PR's preview link, open a page in the builder.
     The Pages screen and the builder's top bar have **Sign out** (after
     Site settings); on your phone the Pages buttons now wrap as whole
@@ -355,3 +367,10 @@ to "Log".
 - 2026-10-30 — F040, owner's request on the PR: Sign out on the Pages
   screen too (shared `SignOutLink`, apps/admin/src/sign-out.tsx). Phone
   header buttons wrap as whole buttons. 1 new test.
+- 2026-10-30 — F044 Custom domain: Site settings → Site address (domain
+  field, tidied and checked, saved as site.json's baseUrl); the publish
+  workflow asks Cloudflare whether the domain is active and otherwise
+  keeps the free address, reporting "Not connected yet" to the Publish
+  panel; guide docs/setup-custom-domain.md; BLOCKED.md entry for buying
+  the domain. 26 new tests (custom-domain) + 1 Rust test. done_check
+  passes.

@@ -98,6 +98,48 @@ Features Claude suggests. They are not work until the owner adds them to
   similar to Milestone 3. Left out on purpose: gallery lightbox (still a
   proposal above), and anything for other users (that's M6).
 
+## 2026-10-30 — F044 Custom domain (Claude, reversible)
+
+- **Where:** Site settings → **Site address**, a new last group. It's a
+  site-level setting rather than a style, but Site settings is where the
+  owner already sets things once for the whole site, and it saves with
+  the rest (one Save, one commit to `site.json`).
+- **The field takes just the domain** (`studio.com`), with `https://`
+  shown in front. Whatever is typed ("https://Studio.com/") is tidied to
+  `https://studio.com`. A page address after it, a port or `http://` is
+  refused with a plain explanation, because the site lives at the
+  domain's root and Cloudflare gives https for free. Empty means "use the
+  free address" and stores the existing placeholder
+  (`https://example.pages.dev`), so `site.json`'s shape doesn't change and
+  no migration is needed. Saving now also refuses a malformed `baseUrl`
+  on the server (same rule).
+- **Publishing never points at a domain that doesn't answer yet.** Before
+  rendering, the publish workflow asks Cloudflare for the Pages project's
+  custom domains (the token's existing Pages permission is enough). The
+  owner's domain is used only when Cloudflare reports it **active**;
+  otherwise the publish uses the free address and says why
+  (`scripts/site-address.mjs`). Why: a canonical link or sitemap pointing
+  at a dead domain hurts search results, and the "Check the live site"
+  step would fail the publish. Heuristic: error prevention (Nielsen #5)
+  instead of an error message after the fact.
+- **The Publish panel explains the gap.** The workflow adds a step named
+  "Not connected yet <domain>" (read the same way as F017's "Live at"
+  step), and the panel says "studio.com isn't connected to your site yet,
+  so the last publish used crust-site.pages.dev…". If the address was
+  just changed and not published yet, it says "Publish to start using it."
+  Visibility of system status (Nielsen #1).
+- **Connecting the domain stays a dashboard step** (the guide), not
+  automated by the workflow. Adding a root domain through the API depends
+  on how the domain's DNS is set up, and it's a one-time task; the guide
+  is safer than a workflow that half-succeeds.
+- **The guide link** opens `docs/setup-custom-domain.md` on GitHub.
+- **Contact form:** its Worker accepts one site address
+  (`CONTACT_SITE_ORIGIN`). The guide tells the owner to update it and
+  Turnstile's hostnames. Not changed in code (F037 is finished).
+- **Proposal (not built):** let the contact Worker accept both the free
+  address and the custom domain automatically, so step 5 of the guide
+  goes away.
+
 ## 2026-10-30 — F040 Builder tidy-up (Claude, reversible)
 
 - **Sign out** is a plain link to `/cdn-cgi/access/logout` in the top bar

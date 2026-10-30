@@ -438,7 +438,7 @@
       "description": "A Site settings field for the site's own address, used by the sitemap, canonical and sharing links, RSS and the 'Open live site' link, plus a step-by-step guide (docs/setup-custom-domain.md) for connecting a domain in Cloudflare. Buying the domain is the owner's step (BLOCKED.md). Added by the owner (approved Milestone 4, 2026-10-30).",
       "depends_on": ["F008", "F017", "F036"],
       "done_check": "npm test -- custom-domain && npm run build && cargo test",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     }

@@ -13,7 +13,8 @@
     "./chrome-model": "./src/chrome-model.ts",
     "./media": "./src/media.ts",
     "./posts": "./src/posts.ts",
-    "./seo": "./src/seo.ts"
+    "./seo": "./src/seo.ts",
+    "./site-address": "./src/site-address.ts"
   },
   "peerDependencies": {
     "@puckeditor/core": "^0.23.0",

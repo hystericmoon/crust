@@ -56,8 +56,11 @@ export interface PublishRun {
   url: string;
 }
 export const startPublish = () => call("/api/publish", post({}));
-/** liveUrl: where the last successful publish put the site (F017); null before the first. */
-export const publishRuns = () => call<{ runs: PublishRun[]; liveUrl?: string | null }>("/api/publish");
+/**
+ * liveUrl: where the last successful publish put the site (F017); null before the first.
+ * notConnected: the site's own domain when that publish found it not connected yet (F044).
+ */
+export const publishRuns = () => call<{ runs: PublishRun[]; liveUrl?: string | null; notConnected?: string | null }>("/api/publish");
 
 export interface LinkingPage {
   path: string;

@@ -7,3 +7,4 @@ removes an item once it's done.
 | Since | Feature | What's needed from the owner |
 |---|---|---|
 | 2026-10-30 | F037 Contact form | The block, the Worker and its install workflow are built. To make forms send email: a Turnstile widget, a free Resend account, Workers permission on the Cloudflare token, three GitHub secrets and two variables. Step by step: `docs/setup-contact-form.md`. Until then, published forms say "This form isn't connected yet". |
+| 2026-10-30 | F044 Custom domain | Buying the domain (it costs money, so it's your call) and connecting it in Cloudflare. The Site settings field and publishing are built; until the domain is connected the site stays at crust-site.pages.dev. Step by step: `docs/setup-custom-domain.md`. |

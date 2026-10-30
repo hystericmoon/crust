@@ -4,6 +4,13 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Your own domain (F044):** Site settings has a new **Site address**
+  group. Type your domain (like studio.com), save and publish: search
+  results, the sitemap, link previews, the blog's RSS feed and the "Open
+  live site" button all use it. Until the domain is connected in
+  Cloudflare, publishing keeps using the free address and the Publish
+  panel tells you so. Step-by-step guide: docs/setup-custom-domain.md.
+
 - **Builder tidy-up (F040):** a **Sign out** link on the Pages screen
   and in the builder's top bar (pages and posts). Nothing is lost when you sign out: your edits
   are already kept in the browser. Restoring a deleted page that had

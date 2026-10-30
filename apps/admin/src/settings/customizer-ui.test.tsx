@@ -52,6 +52,7 @@ describe("customizer: one group at a time", () => {
       "Spacing",
       "Shape & layout",
       "Theme pack",
+      "Site address",
     ]);
     expect(within(nav).getByRole("button", { name: "Presets" }).getAttribute("aria-current")).toBe("true");
     openGroup("Buttons");

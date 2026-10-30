@@ -48,7 +48,7 @@ import { withSettingsTabs } from "./tabs/tabs";
 import { SiteStyleContext, type SiteStyle } from "./sections/site-style";
 import { SiteSettings } from "./settings/SiteSettings";
 import { loadSavedTokens, sameTokens, saveTokens } from "./tokens-store";
-import { loadSavedChrome, sameChrome, saveChrome, siteToSave } from "./chrome-store";
+import { loadSavedAddress, loadSavedChrome, sameChrome, saveAddress, saveChrome, siteToSave } from "./chrome-store";
 import { SiteChromeContext, withSiteChrome } from "./chrome-canvas";
 import { withMediaFields } from "./media/fields";
 import { MediaPicker } from "./media/MediaPicker";
@@ -173,6 +173,9 @@ export function App() {
   const defaultChrome = useMemo(() => migrateChrome(site, bundledPages()), [site]);
   const [savedChrome, setSavedChrome] = useState<SiteChrome>(() => loadSavedChrome(defaultChrome));
   const [chromeDraft, setChromeDraft] = useState<SiteChrome>(savedChrome);
+  // F044: the site's own address (site.json's baseUrl), saved with the rest of Site settings.
+  const [savedAddress, setSavedAddress] = useState(() => loadSavedAddress(site.baseUrl));
+  const [addressDraft, setAddressDraft] = useState(savedAddress);
   const [githubOn, setGithubOn] = useState<boolean | null>(null);
   // The builder shows unsaved token edits too, so switching screens loses nothing.
   useTokenStyles(useMemo(() => tokensToCss(draft), [draft]));
@@ -196,15 +199,18 @@ export function App() {
 
   const saveSiteTokens = async (tokens: SiteTokens) => {
     const chrome = chromeDraft;
-    const local = saveTokens(tokens) && saveChrome(chrome);
+    const address = addressDraft;
+    const local = saveTokens(tokens) && saveChrome(chrome) && saveAddress(address);
     if (local) {
       setSaved(tokens);
       setSavedChrome(chrome);
+      setSavedAddress(address);
     }
-    const result = await saveContent({ kind: "site", site: siteToSave(site, tokens, chrome, defaultChrome) });
+    const result = await saveContent({ kind: "site", site: siteToSave(site, tokens, chrome, defaultChrome, address) });
     if (result.ok) {
       setSaved(tokens);
       setSavedChrome(chrome);
+      setSavedAddress(address);
     }
     return saveMessage(result, local, "Site settings");
   };
@@ -237,11 +243,15 @@ export function App() {
           onDiscard={() => {
             setDraft(saved);
             setChromeDraft(savedChrome);
+            setAddressDraft(savedAddress);
           }}
           chrome={chromeDraft}
           onChromeChange={setChromeDraft}
           chromeDirty={!sameChrome(savedChrome, chromeDraft)}
           pages={pageOptions}
+          address={addressDraft}
+          onAddressChange={setAddressDraft}
+          addressDirty={savedAddress !== addressDraft}
         />
         <MediaPicker />
       </MyLayoutsProvider>
@@ -418,7 +428,7 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
     >
       <PublishPanel
         githubOn={githubOn === true}
-        siteUrl={site.baseUrl}
+        siteUrl={loadSavedAddress(site.baseUrl)}
         changes={changes}
         titles={new Map((rows ?? []).map((r) => [r.path, r.title]))}
         drafts={drafts.map((r) => ({ path: r.path, title: r.title }))}
@@ -491,7 +501,7 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
   }
 
   return (
-    <SeoSiteProvider value={{ baseUrl: site.baseUrl, siteName: site.name, path }}>
+    <SeoSiteProvider value={{ baseUrl: loadSavedAddress(site.baseUrl), siteName: site.name, path }}>
       <MyLayoutsProvider githubOn={githubOn}>
         <Puck
           config={pageEditorConfig}

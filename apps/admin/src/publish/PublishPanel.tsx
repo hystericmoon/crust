@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { publishRuns, startPublish, type PendingChanges, type PublishRun } from "../api-client";
 import { Dialog } from "../pages/PageActions";
 import { describeChanges } from "./changes";
-import { chooseLiveUrl } from "./live-url";
+import { addressNote, chooseLiveUrl } from "./live-url";
 
 export interface PublishPanelProps {
   /** Publishing runs on GitHub, so it needs the GitHub connection. */
@@ -41,6 +41,7 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
   const [asking, setAsking] = useState(false);
   const [starting, setStarting] = useState(false);
   const [reportedUrl, setReportedUrl] = useState<string | null>(null);
+  const [notConnected, setNotConnected] = useState<string | null>(null);
   // The run seen in progress, so its finish can refresh what's waiting.
   const watching = useRef<number | null>(null);
   const finished = useRef(onFinished);
@@ -51,6 +52,7 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
     if (!res.ok) return;
     setRuns(res.runs);
     if (res.liveUrl !== undefined) setReportedUrl(res.liveUrl);
+    setNotConnected(res.notConnected ?? null);
     const latest = res.runs[0];
     if (latest && latest.status !== "completed") watching.current = latest.id;
     else if (latest && watching.current === latest.id) {
@@ -102,6 +104,7 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
   const state = describeRun(latest);
   const pending = changes ? describeChanges(changes, titles) : null;
   const liveUrl = chooseLiveUrl(reportedUrl, siteUrl);
+  const note = addressNote(reportedUrl, siteUrl, notConnected);
   // The button says how much it will change; with nothing waiting it steps back to a secondary "Publish again".
   const draftItems = drafts.map((d) => `${d.title} (${d.path}): changes in this browser, saved when you publish`);
   const allItems = [...draftItems, ...(pending?.items ?? [])];
@@ -186,6 +189,7 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
           ) : runs !== null ? (
             <p className="st-help pg-live-url">The link to your live site appears here after your first publish.</p>
           ) : null}
+          {note ? <p className="st-help pg-address-note">{note}</p> : null}
           <p className="st-status-inline" role="status">
             {message}
           </p>
