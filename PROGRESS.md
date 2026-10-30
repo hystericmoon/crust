@@ -11,12 +11,17 @@ to "Log".
   (PRs #10–#17). Not published yet: the live site changes when the owner
   presses Publish.
 - **Milestone 3 approved (2026-10-30):** F034–F039, docs/milestone-3.md.
-  Now: F034 Media library. Design snapshot v1 on branch
-  `f034-media-library`, `design/f034-media-library-v1.html`, also at
-  https://claude.ai/artifact/9QoSJrHftHwJ6bWRJUuVNA. Owner chose Claude's
-  recommendations (2026-10-30): **A + 1** (picker dialog, photos in GitHub).
-  Build it on `f034-media-library` (draft PR #18); see DECISIONS.md.
+  Owner (2026-10-30): "go with all your recommendations"; each feature is
+  built on its own branch stacked on the previous one, as a draft PR.
+  - **F034 Media library: done** (passes) on `f034-media-library`, draft
+    PR #18. Needs the owner's review on the preview link.
 - **Waiting on the owner:**
+  - **F034:** on PR #18's preview link (or crust-admin.pages.dev after
+    merging), select a Card or Image block and press "Choose image".
+    Upload a photo from the Mac and one from the phone, describe them,
+    use them, then Save draft. Uploading only works on
+    crust-admin.pages.dev (saving to GitHub); preview links show the
+    library as "needs saving to GitHub".
   - Try https://crust-admin.pages.dev (main, now with Milestone 2) and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019,
     F020, F021, F022, F023, F024, F025, F026, F027, F028, F029, F030,
@@ -255,3 +260,15 @@ to "Log".
   question (GitHub vs Cloudflare R2). Logged in BLOCKED.md.
 - 2026-10-30 — Owner: "go with all your recommendations" → F034 is A + 1.
   Handed to a new session to build.
+- 2026-10-30 — F034 done: media library. "Choose image" in every image
+  field (incl. Gallery/Grid/Logo row items, section toolbar, header logo)
+  opens a picker with upload (button or drop), search, a keyboard grid
+  (arrows/Home/End/Enter) and a details pane (alt text required, size,
+  used on, delete when unused). Photos shrink to 2400 px in the browser,
+  are committed to content/media/ + content/media.json via /api/media,
+  and shown in the builder via /media/<file>. Published pages get
+  width/height + srcset; crust-publish (image crate) makes 480/960/1440
+  copies and stops on missing photos. Checked in Chromium at 1440 and
+  390 px with the keyboard and axe (no serious issues); found and fixed
+  an alt-box mix-up when moving fast between photos. 37 media tests
+  (JS 32, Rust 5 + unit); done_check exits 0.
