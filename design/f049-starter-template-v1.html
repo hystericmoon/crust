@@ -1,0 +1,284 @@
+<title>Crust Starter Template</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: the F025–F043 snapshot language. Direction switch on top, a home page rendered in that direction's real Crust tokens, then pages, sections, tokens with live contrast, and what stays the same. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6; --field:#85858f;
+  --accent:#4338ca; --accent-ink:#ffffff; --accent-soft:#e7e6fb; --ok:#127a4b; --bad:#b42318;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --bad:#ff8a7d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --bad:#ff8a7d; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:40px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,5vw,44px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:24px;font-weight:600}
+h3{font-size:17px;font-weight:600;font-family:var(--f-body)}
+p{margin:0;max-width:65ch}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.intro{display:grid;gap:12px}
+.lead{color:var(--soft);font-size:18px}
+section{display:grid;gap:16px}
+.switch{display:flex;flex-wrap:wrap;gap:8px}
+.switch button{font:600 15px/1 var(--f-body);padding:12px 16px;min-height:44px;border:1px solid var(--field);border-radius:999px;background:var(--panel);color:var(--ink);cursor:pointer}
+.switch button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.switch .tag{font:500 11px/1 var(--f-mono);margin-left:6px;opacity:.85}
+button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.who{display:grid;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.who b{font-family:var(--f-display);font-size:20px}
+.who p{color:var(--soft)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:10px;align-content:start;min-width:0}
+.card ul{margin:0;padding-left:1.1em;display:grid;gap:4px}
+.keys{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:520px;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);font-size:15px;vertical-align:middle}
+th{font-weight:600}
+td.num{font-variant-numeric:tabular-nums;font-family:var(--f-mono);font-size:13px}
+.sw{display:inline-block;width:18px;height:18px;border-radius:4px;border:1px solid var(--line);vertical-align:-4px;margin-right:8px}
+.ok{color:var(--ok);font-weight:600}.bad{color:var(--bad);font-weight:600}
+.note{color:var(--soft);font-size:14px}
+
+/* The site mock: every value below comes from the direction's Crust tokens (set by script as --t-*). */
+.frame{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel)}
+.frame-bar{display:flex;gap:8px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);font:500 13px var(--f-mono);color:var(--soft);flex-wrap:wrap}
+.frame-bar .dots{display:flex;gap:6px}.frame-bar .dots i{width:10px;height:10px;border-radius:50%;background:var(--line);display:block}
+.site{background:var(--t-background);color:var(--t-text);font-family:var(--t-body);font-size:17px;line-height:1.6}
+.site *{font-family:inherit}
+.site .in{max-width:1000px;margin:0 auto;padding-inline:28px}
+.site h1,.site h2,.site h3{font-family:var(--t-heading);font-weight:var(--t-hw);letter-spacing:var(--t-track);color:inherit;text-wrap:balance}
+.site-head{border-bottom:1px solid color-mix(in srgb,var(--t-text) 12%,transparent)}
+.site-head .in{display:flex;align-items:center;gap:20px;padding-block:16px;flex-wrap:wrap}
+.logo{font-family:var(--t-heading);font-weight:var(--t-hw);font-size:19px;letter-spacing:var(--t-track)}
+.menu{display:flex;gap:18px;margin-left:auto;font-size:15px;flex-wrap:wrap}
+.menu span{color:var(--t-text)}
+.b{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;font-weight:600;font-size:15px;border-radius:var(--t-btn);background:var(--t-primary);color:var(--t-onPrimary);border:2px solid var(--t-primary)}
+.b.inv{background:var(--t-onPrimary);color:var(--t-primary);border-color:var(--t-onPrimary)}
+.b.ghost{background:transparent;color:var(--t-primary)}
+.hero .in{display:grid;gap:22px;padding-block:56px 48px}
+.hero h1{font-size:var(--t-h1);line-height:1.05;margin:0;max-width:16ch}
+.hero p{color:var(--t-muted);font-size:19px;max-width:46ch}
+.hero .acts{display:flex;gap:12px;flex-wrap:wrap}
+.hero.split .in{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:center}
+.hero.split .copy{display:grid;gap:22px}
+.ph{position:relative;background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--t-text) 7%,transparent) 0 10px,color-mix(in srgb,var(--t-text) 3%,transparent) 10px 20px);border:2px dashed color-mix(in srgb,var(--t-text) 45%,transparent);border-radius:var(--t-radius);aspect-ratio:4/3;max-width:100%;display:grid;place-items:center;color:var(--t-muted);font-size:13px;text-align:center;padding:10px}
+.ph::before{content:"Replace me";position:absolute;top:8px;left:8px;font:600 11px/1 var(--f-mono);letter-spacing:.04em;text-transform:uppercase;background:var(--t-text);color:var(--t-background);padding:5px 7px;border-radius:4px}
+.ph.wide{aspect-ratio:16/7}
+.sec{padding-block:48px}
+.sec.surface{background:var(--t-surface)}
+.sec h2{font-size:var(--t-h2);line-height:1.1;margin:0 0 20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px}
+.c{display:grid;gap:10px;align-content:start;padding:var(--t-cardpad);border-radius:var(--t-radius);background:var(--t-cardbg);border:var(--t-cardborder);box-shadow:var(--t-cardshadow)}
+.c h3{font-size:20px;margin:0}
+.c p{color:var(--t-muted);font-size:15px;margin:0}
+.c .ph{aspect-ratio:3/2}
+.lnk{color:var(--t-primary);font-weight:600;font-size:15px;text-decoration:var(--t-linkdeco);text-decoration-thickness:var(--t-linkthick);text-underline-offset:3px;background:var(--t-linkbg);justify-self:start;padding:var(--t-linkpad)}
+.quote{font-family:var(--t-heading);font-size:clamp(22px,3vw,30px);line-height:1.3;max-width:30ch;margin:0}
+.quote+p{color:var(--t-muted);margin-top:12px}
+.strip-wrap{position:relative;border:2px dashed var(--accent);border-radius:10px;margin:28px;padding:22px 0 0}
+.strip-tag{position:absolute;top:-13px;left:12px;background:var(--accent);color:var(--accent-ink);font:600 12px/1 var(--f-body);padding:6px 10px;border-radius:999px}
+.strip{background:var(--t-stripbg);color:var(--t-stripfg);display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;padding:28px;border-radius:0 0 8px 8px}
+.strip h2{font-size:var(--t-h3);margin:0}
+.strip p{opacity:.9;margin:4px 0 0}
+.site-foot{border-top:1px solid color-mix(in srgb,var(--t-text) 12%,transparent);font-size:14px;color:var(--t-muted)}
+.site-foot .in{display:flex;gap:16px;justify-content:space-between;padding-block:22px;flex-wrap:wrap}
+@media (max-width:720px){.hero.split .in{grid-template-columns:1fr}.site .in{padding-inline:18px}.strip-wrap{margin:18px 12px}}
+@media (prefers-reduced-motion:no-preference){.switch button{transition:background .12s}}
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">F049 · design snapshot v1 · Milestone 5</span>
+    <h1>Starter template</h1>
+    <p class="lead">The first complete template that ships with Crust. All three directions have the same pages, blocks and linked sections; they differ in who they're for and how they look. Every value shown is a real Crust setting (a built-in font stack, the six colours, the style options), so whichever you pick can be built exactly.</p>
+  </header>
+
+  <section aria-labelledby="dir-h">
+    <h2 id="dir-h">Pick a direction</h2>
+    <div class="switch" role="group" aria-label="Direction">
+      <button type="button" aria-pressed="true" data-dir="a">A · Practice <span class="tag">Recommended</span></button>
+      <button type="button" aria-pressed="false" data-dir="b">B · Counsel</button>
+      <button type="button" aria-pressed="false" data-dir="c">C · Workshop</button>
+    </div>
+    <div class="who" aria-live="polite">
+      <b id="who-name">Practice</b>
+      <p id="who-text"></p>
+    </div>
+  </section>
+
+  <section aria-labelledby="home-h">
+    <h2 id="home-h">Home page</h2>
+    <p class="note">Shown with your Mac's fonts. Crust uses fonts already on each visitor's device (no downloads), so Windows and Android show the next font in the same stack. Striped boxes are photo slots marked "Replace me" (F046); the dashed outline is the linked contact strip (F043).</p>
+    <div class="frame">
+      <div class="frame-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="addr">studio.com</span></div>
+      <div class="site" id="site">
+        <header class="site-head"><div class="in"><span class="logo" id="m-logo">Northlight</span><nav class="menu" aria-label="Sample menu"><span>Work</span><span>Services</span><span>About</span><span>Journal</span><span>Contact</span></nav><span class="b" id="m-cta">Start a project</span></div></header>
+        <div class="hero" id="m-hero"><div class="in"><div class="copy"><h1 id="m-h1"></h1><p id="m-lede"></p><div class="acts"><span class="b" id="m-b1"></span><span class="b ghost" id="m-b2"></span></div></div><div class="ph" id="m-heroph">Hero photo · 2400 × 1800</div></div></div>
+        <div class="sec surface"><div class="in"><h2 id="m-svc-h"></h2><div class="cards" id="m-cards"></div></div></div>
+        <div class="sec"><div class="in"><h2 id="m-work-h"></h2><div class="cards" id="m-work"></div></div></div>
+        <div class="sec surface"><div class="in"><p class="quote" id="m-quote"></p><p id="m-quote-by"></p></div></div>
+        <div class="strip-wrap"><span class="strip-tag">Linked section · Contact strip</span><div class="strip"><div><h2 id="m-strip-h"></h2><p id="m-strip-p"></p></div><span class="b inv" id="m-strip-b"></span></div></div>
+        <footer class="site-foot"><div class="in"><span id="m-foot"></span><span>Instagram · LinkedIn · Email</span></div></footer>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="pages-h">
+    <h2 id="pages-h">What's in the template</h2>
+    <div class="grid">
+      <div class="card"><h3>Pages</h3><ul id="pages"></ul></div>
+      <div class="card"><h3>Linked sections</h3><ul><li><b>Contact strip</b>: on every page except Contact</li><li><b>Call to action</b>: on Services and Work</li></ul><p class="note">Edit once, every page updates.</p></div>
+      <div class="card"><h3>Blog</h3><ul id="blog"></ul></div>
+      <div class="card"><h3>To replace before publishing</h3><ul id="replace"></ul><p class="note">Publishing stops until each one is done (F046).</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="tok-h">
+    <h2 id="tok-h">Its Site settings</h2>
+    <div class="keys">
+      <table>
+        <caption class="note" style="caption-side:bottom;text-align:left;padding-top:8px">Contrast is worked out from the colours on this page. Crust's own check (AA, 4.5:1) gives the same answers.</caption>
+        <thead><tr><th scope="col">Setting</th><th scope="col">Value</th><th scope="col">Contrast</th></tr></thead>
+        <tbody id="tokens"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="same-h">
+    <h2 id="same-h">The same in every direction</h2>
+    <div class="grid">
+      <div class="card"><h3>Accessible by default</h3><ul><li>One h1 per page, no skipped heading levels</li><li>Every photo slot asks for alt text</li><li>Passes the template quality check (F047): axe at three widths, contrast in every section style, Lighthouse 95+</li></ul></div>
+      <div class="card"><h3>Built from Crust blocks only</h3><ul><li>Section, Columns, Heading, Text, Button, Card, Grid, Gallery, Quote, Accordion, Contact form</li><li>No custom code, so anyone can edit it in the builder</li></ul></div>
+      <div class="card"><h3>Kept out of the template</h3><ul><li>Your domain, contact form setup and site name stay yours when someone applies it</li><li>Sample text reads like a real studio, never "lorem ipsum"</li></ul></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="rec-h">
+    <h2 id="rec-h">Recommendation</h2>
+    <p><b>A · Practice.</b> It fits the widest range of small studios and service businesses, so it's the best first template to sell and to show what Crust can do. Its square buttons and outlined cards are restrained enough that buyers can make it theirs with a preset or a colour change. B is the safer pick for professional services. C has the most personality but suits a narrower audience; it makes a good second template.</p>
+  </section>
+</div>
+
+<script>
+const dirs = {
+  a: {
+    name: "Practice", label: "A · Practice",
+    who: "For architects, designers and small studios. Calm and grid-led: geometric headings, plenty of white space, one cobalt accent, square buttons and outlined cards. The work is the star.",
+    site: "Northlight", addr: "northlight.studio",
+    fonts: { heading: ["geometric", "Avenir, Montserrat, Corbel, 'URW Gothic', sans-serif"], body: ["humanist", "Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', sans-serif"] },
+    colors: { background: "#FFFFFF", surface: "#F1F2EF", text: "#161A17", muted: "#525A55", primary: "#2440A0", onPrimary: "#FFFFFF" },
+    style: { typeScale: "bold", headingWeight: 600, headingTracking: "tight", buttonShape: "square", cardStyle: "outline", linkStyle: "underline" },
+    radius: 2, layout: "split", strip: "text",
+    copy: { h1: "Spaces and identities that last.", lede: "Northlight is a four-person studio designing homes, workplaces and the brands that live in them.", b1: "See our work", b2: "How we work", svc: "What we do", work: "Selected work", quote: "They listened for a month before drawing a line. The building works because of it.", by: "Maya Lund, director, Fjord Bakery", strip: "Have a project in mind?", stripP: "Tell us about it. We reply within two working days.", stripB: "Get in touch", foot: "© 2026 Northlight Studio" },
+    cards: [["Architecture", "Homes and small workplaces, from first sketch to handover."], ["Interiors", "Furniture, light and materials chosen to age well."], ["Identity", "Names, logos and signage for the spaces we build."]],
+  },
+  b: {
+    name: "Counsel", label: "B · Counsel",
+    who: "For consultants, accountants, coaches and other professional services. Trustworthy and readable: serif headings, a deep teal accent, rounded buttons and soft shadowed cards.",
+    site: "Hartwell & Co", addr: "hartwell.co",
+    fonts: { heading: ["transitional", "Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif"], body: ["system", "system-ui, -apple-system, 'Segoe UI', sans-serif"] },
+    colors: { background: "#FFFFFF", surface: "#EEF2F5", text: "#14202B", muted: "#4A5866", primary: "#0E5E5A", onPrimary: "#FFFFFF" },
+    style: { typeScale: "balanced", headingWeight: 700, headingTracking: "normal", buttonShape: "rounded", cardStyle: "shadow", linkStyle: "thick" },
+    radius: 10, layout: "split", strip: "primary",
+    copy: { h1: "Clear advice for growing businesses.", lede: "Hartwell & Co helps owners with tax, planning and the decisions in between, in plain language.", b1: "Book a call", b2: "Our services", svc: "How we help", work: "Recent case studies", quote: "For the first time, I understand my own numbers.", by: "Daniel Okafor, owner, Okafor Joinery", strip: "Talk it through with us", stripP: "The first 30-minute call is free.", stripB: "Book a call", foot: "© 2026 Hartwell & Co" },
+    cards: [["Tax and accounts", "Year-end, returns and bookkeeping, done on time."], ["Planning", "Cash flow, pricing and hiring, a year ahead."], ["Advisory", "A second opinion before the big decisions."]],
+  },
+  c: {
+    name: "Workshop", label: "C · Workshop",
+    who: "For makers, cafés and small shops. Warm and confident: big heavy headings, a burnt-orange accent on soft peach, pill buttons and highlighted links.",
+    site: "Ember & Oak", addr: "emberandoak.com",
+    fonts: { heading: ["geometric", "Avenir, Montserrat, Corbel, 'URW Gothic', sans-serif"], body: ["humanist", "Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', sans-serif"] },
+    colors: { background: "#FFFFFF", surface: "#FDEBDD", text: "#24170C", muted: "#5F4A37", primary: "#B23A0B", onPrimary: "#FFFFFF" },
+    style: { typeScale: "dramatic", headingWeight: 800, headingTracking: "tight", buttonShape: "pill", cardStyle: "flat", linkStyle: "highlight" },
+    radius: 16, layout: "stack", strip: "primary",
+    copy: { h1: "Handmade furniture from one small workshop.", lede: "Tables, chairs and shelves in solid oak, made to order in our workshop by the river.", b1: "Visit the shop", b2: "Our story", svc: "What we make", work: "From the workshop", quote: "Our table has hosted every birthday for six years. It just gets better.", by: "The Reyes family, Bristol", strip: "Come and see the workshop", stripP: "Open Thursday to Saturday, 10 to 5.", stripB: "Plan a visit", foot: "© 2026 Ember & Oak" },
+    cards: [["Tables", "Dining and kitchen tables, made to your size."], ["Seating", "Chairs and benches with woven seats."], ["Shelving", "Wall shelves and bookcases in oak or ash."]],
+  },
+};
+
+const scale = { subtle: [2.5, 2, 1.375], balanced: [3.5, 2.5, 1.5], bold: [4, 2.75, 1.625], dramatic: [4.75, 3.125, 1.75] };
+const tracking = { tight: "-0.02em", snug: "-0.01em", normal: "0", wide: "0.02em" };
+const btn = { square: "2px", rounded: "8px", pill: "999px" };
+
+function lum(hex) {
+  const v = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+}
+function ratio(a, b) {
+  const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
+  return (x + 0.05) / (y + 0.05);
+}
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+function show(id) {
+  const d = dirs[id];
+  document.querySelectorAll(".switch button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.dir === id)));
+  document.getElementById("who-name").textContent = d.label;
+  document.getElementById("who-text").textContent = d.who;
+  document.getElementById("addr").textContent = d.addr;
+
+  const s = document.getElementById("site").style;
+  for (const [k, v] of Object.entries(d.colors)) s.setProperty(`--t-${k}`, v);
+  s.setProperty("--t-heading", d.fonts.heading[1]);
+  s.setProperty("--t-body", d.fonts.body[1]);
+  s.setProperty("--t-hw", d.style.headingWeight);
+  s.setProperty("--t-track", tracking[d.style.headingTracking]);
+  const [h1, h2, h3] = scale[d.style.typeScale];
+  s.setProperty("--t-h1", `clamp(2.2rem, 6vw, ${h1}rem)`);
+  s.setProperty("--t-h2", `clamp(1.7rem, 4vw, ${h2 * 0.8}rem)`);
+  s.setProperty("--t-h3", `${h3}rem`);
+  s.setProperty("--t-btn", btn[d.style.buttonShape]);
+  s.setProperty("--t-radius", `${d.radius}px`);
+  const card = { flat: ["var(--t-surface)", "0", "none", "20px"], outline: ["transparent", `1px solid color-mix(in srgb, ${d.colors.text} 22%, transparent)`, "none", "20px"], shadow: ["var(--t-background)", "0", "0 1px 2px rgb(0 0 0 / .06), 0 6px 18px rgb(0 0 0 / .08)", "22px"] }[d.style.cardStyle];
+  // Flat cards sit on the plain background in the work row so they still read as cards.
+  s.setProperty("--t-cardbg", card[0]); s.setProperty("--t-cardborder", card[1]); s.setProperty("--t-cardshadow", card[2]); s.setProperty("--t-cardpad", card[3]);
+  const link = { underline: ["underline", "1px", "transparent", "0"], thick: ["underline", "3px", "transparent", "0"], highlight: ["none", "0", `color-mix(in srgb, ${d.colors.primary} 14%, transparent)`, "2px 6px"] }[d.style.linkStyle];
+  s.setProperty("--t-linkdeco", link[0]); s.setProperty("--t-linkthick", link[1]); s.setProperty("--t-linkbg", link[2]); s.setProperty("--t-linkpad", link[3]);
+  const strip = d.strip === "primary" ? [d.colors.primary, d.colors.onPrimary] : [d.colors.text, d.colors.background];
+  s.setProperty("--t-stripbg", strip[0]); s.setProperty("--t-stripfg", strip[1]);
+  // In a dark strip the button flips to background-on-text, as Crust's "inverse" button does.
+  const inv = document.getElementById("m-strip-b");
+  inv.style.background = strip[1]; inv.style.color = strip[0]; inv.style.borderColor = strip[1];
+
+  document.getElementById("m-hero").className = `hero ${d.layout}`;
+  document.getElementById("m-heroph").className = d.layout === "split" ? "ph" : "ph wide";
+  const c = d.copy;
+  const set = (id, text) => (document.getElementById(id).textContent = text);
+  set("m-logo", d.site); set("m-cta", d.copy.stripB);
+  set("m-h1", c.h1); set("m-lede", c.lede); set("m-b1", c.b1); set("m-b2", c.b2);
+  set("m-svc-h", c.svc); set("m-work-h", c.work); set("m-quote", `“${c.quote}”`); set("m-quote-by", c.by);
+  set("m-strip-h", c.strip); set("m-strip-p", c.stripP); set("m-strip-b", c.stripB); set("m-foot", c.foot);
+  document.getElementById("m-cards").innerHTML = d.cards.map(([t, p]) => `<div class="c"><h3>${esc(t)}</h3><p>${esc(p)}</p><span class="lnk">Learn more</span></div>`).join("");
+  document.getElementById("m-work").innerHTML = ["Harbour House", "Fjord Bakery", "The Reading Room"].map((t, i) => `<div class="c"><div class="ph">Project photo ${i + 1}</div><h3>${esc(t)}</h3><p>${["Home, 2025", "Shop and brand, 2026", "Library fit-out, 2024"][i]}</p></div>`).join("");
+
+  document.getElementById("pages").innerHTML = ["Home", "Work (with three project pages)", "Services", "About", "Contact (with the contact form)"].map((p) => `<li>${p}</li>`).join("");
+  document.getElementById("blog").innerHTML = [`List page titled "${d.name === "Counsel" ? "Insights" : "Journal"}"`, "One sample post with a cover photo", "RSS feed"].map((p) => `<li>${esc(p)}</li>`).join("");
+  document.getElementById("replace").innerHTML = ["Logo text or image", "12 photos (hero, projects, team)", "Contact details", "Sample post"].map((p) => `<li>${p}</li>`).join("");
+
+  const pair = (fg, bg) => {
+    const r = ratio(d.colors[fg], d.colors[bg]);
+    return `<span class="${r >= 4.5 ? "ok" : "bad"}">${r.toFixed(1)}:1 ${r >= 4.5 ? "pass" : "fail"}</span> on ${bg}`;
+  };
+  const rows = [
+    ...Object.entries(d.colors).map(([k, v]) => [{ background: "Page", surface: "Surface", text: "Text", muted: "Muted text", primary: "Primary", onPrimary: "Text on primary" }[k], `<span class="sw" style="background:${v}"></span><span class="num">${v}</span>`,
+      { text: pair("text", "background"), muted: pair("muted", "surface"), primary: pair("primary", "background"), onPrimary: pair("onPrimary", "primary") }[k] ?? ""]),
+    ["Heading font", `${d.fonts.heading[0]} stack`, ""],
+    ["Body font", `${d.fonts.body[0]} stack`, ""],
+    ["Type scale · weight · tracking", `${d.style.typeScale} · ${d.style.headingWeight} · ${d.style.headingTracking}`, ""],
+    ["Buttons · cards · links", `${d.style.buttonShape} · ${d.style.cardStyle} · ${d.style.linkStyle}`, ""],
+    ["Corner radius", `<span class="num">${d.radius}px</span>`, ""],
+  ];
+  document.getElementById("tokens").innerHTML = rows.map(([a, b, c2]) => `<tr><th scope="row">${a}</th><td>${b}</td><td>${c2}</td></tr>`).join("");
+}
+
+document.querySelectorAll(".switch button").forEach((b) => b.addEventListener("click", () => show(b.dataset.dir)));
+show("a");
+</script>
