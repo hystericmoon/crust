@@ -142,6 +142,14 @@ Features Claude suggests. They are not work until the owner adds them to
   similar to Milestone 3. Left out on purpose: gallery lightbox (still a
   proposal above), and anything for other users (that's M6).
 
+## 2026-10-30 — Sessions hand over through HANDOVER.md (owner)
+
+- The owner asked for everything a session needs in one written place,
+  one session at a time, and a new session (closing the old one) after
+  each finished task or when a session fills up. HANDOVER.md holds the
+  rules, the state and the next step; CLAUDE.md's session protocol now
+  starts and ends with it. It reaches main with the next merge.
+
 ## 2026-10-30 — F046 Placeholder content (Claude, reversible)
 
 - **The mark is per field, on the block: `placeholder: ["title", "imageSrc"]`.**
