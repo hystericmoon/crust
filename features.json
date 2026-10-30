@@ -441,6 +441,56 @@
       "passes": true,
       "needs_review": true,
       "reviewed": false
+    },
+    {
+      "id": "F045",
+      "title": "Save a site as a template",
+      "description": "Site settings → 'Save as template' downloads one .crust file with the whole site: design tokens, header and footer, pages, linked sections, saved layouts, a sample post and the photos. Builds on the theme pack file (F033) with kind 'template'; reading it checks everything and drops unknown fields. New file format: spec entry and DECISIONS.md entry. Added by the owner (approved Milestone 5, 2026-10-30).",
+      "depends_on": ["F033",  "F034",  "F035",  "F043"],
+      "done_check": "npm test -- template-file && npm run typecheck && npm run build",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F046",
+      "title": "Placeholder content",
+      "description": "Text and photos in a template can be marked 'replace me'. The builder outlines them and shows a checklist of what's left; publishing stops with a plain-language list while any remain. Added by the owner (approved Milestone 5, 2026-10-30).",
+      "depends_on": ["F045",  "F002"],
+      "done_check": "npm test -- placeholders && npm run build && cargo test",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F047",
+      "title": "Template quality check",
+      "description": "One command (npm run check:template) and a CI job that a template must pass: axe at three widths on every page, contrast in every section style, one h1 and heading order, alt text, Lighthouse >= 95 on the home page, every layout renders, no leftover placeholders. Writes a readable report page. Added by the owner (approved Milestone 5, 2026-10-30).",
+      "depends_on": ["F045",  "F046"],
+      "done_check": "npm test -- template-check && npm run check:template",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F048",
+      "title": "Start from a template",
+      "description": "Pages screen → 'Start from a template' opens a gallery: thumbnail, page list and a live preview at desktop, tablet and phone widths. Applying asks first and says exactly what it replaces; the previous site stays in Git history and can be restored. Design snapshot first. Added by the owner (approved Milestone 5, 2026-10-30).",
+      "depends_on": ["F045",  "F046"],
+      "done_check": "npm test -- start-from-template && npm run build && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F049",
+      "title": "First starter template",
+      "description": "One complete template designed with the owner: Home, About, Services, Work, Contact, a blog with one post, a linked contact strip. Passes the template quality check. Design snapshot with 2-3 directions first; the owner picks. Added by the owner (approved Milestone 5, 2026-10-30).",
+      "depends_on": ["F047",  "F048"],
+      "done_check": "npm test -- starter-template && npm run check:template",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
     }
   ]
 }

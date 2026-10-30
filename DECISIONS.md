@@ -65,6 +65,47 @@ Features Claude suggests. They are not work until the owner adds them to
   recommends a desktop app built with Tauri), what people pay for (Claude
   recommends a Crust licence with starter templates plus paid templates),
   and whether to sell plain-HTML exports early.
+- **Milestone 5 proposal: "Templates"** — *approved by the owner on
+  2026-10-30 ("Approve") and added as F045–F049; see docs/milestone-5.md.
+  Item 6 (review fixes) is added only when the owner asks.* Milestone 4 made
+  daily building comfortable. The roadmap's next step is templates:
+  complete sites the owner designs in Crust and, later, sells (M7). M5
+  makes a template a real, checkable thing; it doesn't sell anything yet.
+  1. **Save a site as a template.** Site settings → "Save as template"
+     downloads one `.crust` file with everything: design tokens, header
+     and footer, pages, linked sections, saved layouts, a sample blog post
+     and the photos. It builds on the theme pack file (F033), with a new
+     `kind: "template"`. Checked on import like theme packs; unknown
+     fields dropped.
+  2. **Start from a template.** On the Pages screen: "Start from a
+     template" opens a gallery. Each template shows a thumbnail, its pages
+     and a live preview at desktop, tablet and phone widths. Applying asks
+     first and says exactly what it replaces; your current site stays in
+     Git history, so it can be brought back (the existing "History" undo).
+     Design snapshot first.
+  3. **Placeholder content.** A template's text and photos can be marked
+     "replace me". The builder shows them with a dashed outline and a
+     checklist ("6 things to replace"), and publishing stops with a plain
+     list while any are left. Why: a buyer's first publish shouldn't show
+     "Lorem ipsum" or our sample photos. Error prevention (Nielsen #5).
+  4. **Template quality check.** One command (and a CI job) that a
+     template must pass before it's offered: axe at three widths on every
+     page, contrast in every section style, one h1 and heading order, alt
+     text, Lighthouse ≥ 95 on the home page, every layout renders, no
+     leftover placeholders. Produces a readable report page. This is what
+     makes "accessible by default" a promise we can sell later.
+  5. **First starter template.** One complete template, designed with the
+     owner: Home, About, Services, Work, Contact, a blog with one post,
+     linked header CTA and contact strip. It proves 1–4 end to end. Design
+     snapshot with 2–3 directions first; the owner picks.
+  6. **Fixes from the owner's review of Milestones 2–4.** A placeholder,
+     as in M4: added as rework items only when the owner asks.
+  Order: 1, 3, 4, 2, 5 (format first, then the checks, then the gallery
+  that uses them, then the first real template). Everything stays free
+  with $0 running cost. Rough size: like Milestone 4. Left out on purpose:
+  selling, licences, accounts, the desktop app (M6–M7), and the gallery
+  lightbox (still a proposal above; a template may want it, so it could
+  join M5 if the owner says so).
 - **Milestone 4 proposal: "Daily use"** — *approved by the owner on
   2026-10-30 ("Approve") and added as F040–F044; see docs/milestone-4.md.* Milestones 1–3 made the builder work. Before designing
   templates in Crust (M5), the owner needs to build real sites in it
