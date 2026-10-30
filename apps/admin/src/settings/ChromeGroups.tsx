@@ -217,6 +217,7 @@ export function HeaderOptions({ chrome, onChange, tokens, pages }: Props) {
           <TextField label="Button link" value={h.cta.href} onChange={(href) => set({ cta: { ...h.cta, href } })} />
         </fieldset>
         <Check label="Keep the header at the top while scrolling" checked={h.sticky} onChange={(sticky) => set({ sticky })} />
+        <Check label="Show a Search link (site search)" checked={!!h.search} onChange={(search) => set({ search })} />
         <div className="st-chrome-field">
           <span className="st-field-label" aria-hidden="true">
             Header style

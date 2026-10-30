@@ -53,6 +53,28 @@ Features Claude suggests. They are not work until the owner adds them to
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
 
+## 2026-10-30 — F039 Site search (Claude's recommendations; owner: "go with all your recommendations")
+
+- **Pagefind** (MIT, free) builds the search index when you publish,
+  right after crust-publish; the index is static files in `/pagefind/`.
+  No server, $0.
+- **A search page at `/search/`**: a labelled search box (`role=search`)
+  and a results list, in the site's own style. Results show the page
+  title as a link and a short excerpt with the words found highlighted;
+  the number of results is announced to screen readers. The address
+  carries the words (`/search/?q=bread`), so Back works and searches can
+  be shared. Our own small script instead of Pagefind's ready-made
+  widget, so the markup, headings and focus match the rest of the site.
+- **A "Search" link in the header** is optional: Site settings → Header &
+  menu → "Show a Search link". Off for existing sites.
+- **What's searchable:** every page's main content and every blog post.
+  Not the header, footer, 404, the blog list (it repeats the posts) or
+  pages hidden from search engines (F036). The search page itself is
+  hidden from search engines too.
+- **Search needs JavaScript in the visitor's browser** (Pagefind runs
+  there). Without it, the page says so and points to the menu.
+- **`/search` is reserved**, like `/blog`: pages can't use it.
+
 ## 2026-10-30 — F038 Phone quick edit (Claude's recommendations; owner: "go with all your recommendations")
 
 - **Opens by itself on a phone** (screens up to 760 px wide): tapping a

@@ -4,6 +4,11 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Site search (F039):** your site now has a search page at /search/.
+  Visitors type a word and see matching pages and posts, with the words
+  highlighted. Add a "Search" link to your header in Site settings →
+  Header & menu. Built when you publish; no server, no cost.
+
 - **Quick edit on your phone (F038):** open a page on your phone and you
   get a simple form with its words, button labels and photos, in page
   order. Fix a typo or swap a photo, then press Save, or Save and

@@ -23,7 +23,8 @@ export function renderPost(site: Site, post: Post, blog: BlogSettings, baseCss: 
 export function renderBlogIndex(site: Site, posts: Post[], blog: BlogSettings, baseCss: string, options: RenderOptions = {}): string {
   const body = renderToStaticMarkup(withMedia(<BlogListView posts={sortPosts(posts)} blog={blog} language={site.language} />, options.media));
   const description = blog.intro || `${blog.title} from ${site.name}`;
-  return renderDocument(site, { path: BLOG_PATH, title: blog.title, description, body, head: feedLink(site, blog) }, baseCss, options);
+  // The list repeats the posts' summaries; site search finds the posts themselves (F039).
+  return renderDocument(site, { path: BLOG_PATH, title: blog.title, description, body, head: feedLink(site, blog), searchable: false }, baseCss, options);
 }
 
 const xml = (s: string) => escapeHtml(s).replace(/'/g, "&apos;");

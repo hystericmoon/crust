@@ -39,6 +39,12 @@ export function SiteHeaderView({ header, path }: { header: SiteHeader; path: str
       {header.cta.label}
     </a>
   ) : null;
+  // F039: a Search link after the menu, before the button.
+  const search = header.search ? (
+    <a className="cr-header-search" href="/search/" aria-current={path === "/search" ? "page" : undefined}>
+      Search
+    </a>
+  ) : null;
   const logo = header.logo.imageSrc.trim() ? (
     <Img className="cr-logo-image" src={header.logo.imageSrc} size="small" alt={header.logo.imageAlt} />
   ) : (
@@ -50,16 +56,18 @@ export function SiteHeaderView({ header, path }: { header: SiteHeader; path: str
         <a className="cr-logo" href="/" aria-current={path === "/" ? "page" : undefined}>
           {logo}
         </a>
-        {header.menu.length || cta ? (
+        {header.menu.length || cta || search ? (
           <>
             <nav className="cr-nav cr-nav-wide" aria-label="Main">
               <MenuList menu={header.menu} path={path} />
+              {search}
               {cta}
             </nav>
             <details className="cr-nav-phone">
               <summary>Menu</summary>
               <nav className="cr-nav" aria-label="Main">
                 <MenuList menu={header.menu} path={path} />
+                {search}
                 {cta}
               </nav>
             </details>

@@ -24,6 +24,9 @@ to "Log".
     (BLOCKED.md, docs/setup-contact-form.md).
   - **F038 Phone quick edit: done** (passes) on `f038-quick-edit`
     (stacked on F037). Needs the owner's review on a phone.
+  - **F039 Site search: done** (passes) on `f039-site-search` (stacked
+    on F038). **Milestone 3 is built**; all six PRs (#18–#23) are drafts
+    waiting for the owner's review and say-so to merge, in order.
 - **Waiting on the owner:**
   - **F034:** on PR #18's preview link (or crust-admin.pages.dev after
     merging), select a Card or Image block and press "Choose image".
@@ -43,6 +46,9 @@ to "Log".
     docs/setup-contact-form.md (about 20 minutes, all free).
   - **F038:** on your phone, open the preview link, tap a page, change a
     heading and swap a photo, then Save.
+  - **F039:** after merging and publishing, open /search/ on the live
+    site and search for a word from a page. Switch on the header's
+    Search link in Site settings → Header & menu.
   - Try https://crust-admin.pages.dev (main, now with Milestone 2) and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019,
     F020, F021, F022, F023, F024, F025, F026, F027, F028, F029, F030,
@@ -323,3 +329,11 @@ to "Log".
   publish in a bottom bar. Found and fixed two fields with the same
   spoken name. Checked in Chromium at 390 (touch) and 1440 px: keyboard,
   axe none, no sideways scroll. 9 new tests; done_check exits 0.
+- 2026-10-30 — F039 done: site search. Pagefind (MIT) indexes the
+  finished site at publish (publish:local and publish.yml); renderer
+  writes /search/ (labelled role=search form, live result count,
+  excerpts with only <mark> kept, noindex) and marks main content with
+  data-pagefind-body (not 404, blog list, hidden pages); optional header
+  Search link (header.search); /search reserved. Checked in Chromium at
+  1440 and 390 px: typed search with Enter, results, no-results, axe
+  none, no sideways scroll. 7 new tests; done_check exits 0.

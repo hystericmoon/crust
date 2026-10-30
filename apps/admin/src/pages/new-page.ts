@@ -1,5 +1,5 @@
 import type { Page } from "@crust/blocks";
-import { isBlogPath } from "@crust/blocks/posts";
+import { isBlogPath, isSearchPath } from "@crust/blocks/posts";
 
 const SEGMENT = /^[a-z0-9][a-z0-9-]*$/;
 
@@ -37,6 +37,7 @@ export function checkAddress(input: string, existingPaths: string[]): string | n
   if (segments.length > 4) return "Use at most 4 levels, like work/2026/first-project.";
   if (existingPaths.includes(`/${address}`)) return `There's already a page at /${address}.`;
   if (isBlogPath(`/${address}`)) return "Addresses starting with blog are where your posts are published. Choose another one.";
+  if (isSearchPath(`/${address}`)) return "The search address is where site search lives. Choose another one.";
   return null;
 }
 
