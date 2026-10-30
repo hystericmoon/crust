@@ -17,6 +17,8 @@ export const layoutCategories = [
   "Hero",
   "Features",
   "Content",
+  "Gallery",
+  "Logos",
   "Testimonials",
   "Pricing",
   "FAQ",
@@ -405,6 +407,139 @@ export const sectionLayouts: SectionLayout[] = [
         text("hello@example.com", "center", "muted"),
         button("Email us", "mailto:hello@example.com", "primary", "center"),
       ], { paddingY: "xl" }),
+    ],
+  },
+
+  // --- F041: layouts built from the Milestone 2–3 blocks ------------------------
+  {
+    id: "features-grid",
+    name: "Features grid",
+    category: "Features",
+    description: "Six features as cards in a grid; add photos or links if you like.",
+    build: () => [
+      section("background", [
+        heading("Everything you need", "h2", "center"),
+        text("A short line that sums up what makes you different.", "center", "muted"),
+        spacer("sm"),
+        block("Grid", {
+          columns: "3",
+          titleLevel: "h3",
+          background: "surface",
+          items: [
+            ["Fast", "Pages load in a blink, even on a slow phone."],
+            ["Accessible", "Everyone can read and use every page."],
+            ["Easy to edit", "Change words and photos yourself, any time."],
+            ["Your style", "Colours and fonts follow your brand."],
+            ["Search-friendly", "Clear titles and descriptions on every page."],
+            ["No upkeep", "Nothing to update, patch or pay for."],
+          ].map(([title, body]) => ({ title, text: body, imageSrc: "", imageAlt: "", linkLabel: "", linkHref: "" })),
+        }),
+      ]),
+    ],
+  },
+  {
+    id: "gallery-grid",
+    name: "Photo gallery",
+    category: "Gallery",
+    description: "A heading and six photos in a square grid. Add your photos and describe each one.",
+    build: () => [
+      section("background", [
+        heading("Our work", "h2"),
+        text("A few recent projects.", "left", "muted"),
+        spacer("sm"),
+        block("Gallery", {
+          columns: "3",
+          shape: "square",
+          images: Array.from({ length: 6 }, () => ({ src: "", alt: "", caption: "" })),
+        }),
+      ]),
+    ],
+  },
+  {
+    id: "logos-strip",
+    name: "Logo strip",
+    category: "Logos",
+    description: "“Trusted by” and a row of client logos, grey until hovered.",
+    build: () => [
+      section("surface", [
+        text("Trusted by teams at", "center", "muted"),
+        block("LogoRow", {
+          logoSize: "medium",
+          grayscale: "yes",
+          align: "center",
+          logos: Array.from({ length: 5 }, () => ({ src: "", alt: "", href: "" })),
+        }),
+      ], { paddingY: "md" }),
+    ],
+  },
+  {
+    id: "testimonial",
+    name: "Testimonial",
+    category: "Testimonials",
+    description: "One large quote with the person's name, role and an optional photo.",
+    build: () => [
+      section("surface", [
+        block("Quote", {
+          text: "They listened, moved fast and gave us a site we're proud of. We edit it ourselves every week.",
+          name: "Rina Santoso",
+          role: "Founder, Studio Haho",
+          imageSrc: "",
+          align: "center",
+          size: "large",
+        }),
+      ], { paddingY: "xl" }),
+    ],
+  },
+  {
+    id: "faq-accordion",
+    name: "Questions to open",
+    category: "FAQ",
+    description: "Questions that open to show their answer, so a long list stays short.",
+    build: () => [
+      section("background", [
+        heading("Questions", "h2"),
+        block("Accordion", {
+          firstOpen: "no",
+          oneAtATime: "no",
+          items: [
+            { question: "How long does a site take?", answer: "Most sites are live in two to four weeks." },
+            { question: "Can I edit it myself?", answer: "Yes. You change words and photos in the builder, then publish." },
+            { question: "Where is it hosted?", answer: "On Cloudflare Pages, for free." },
+            { question: "What does it cost?", answer: "See our prices, or write to us for a quote." },
+          ],
+        }),
+      ]),
+    ],
+  },
+  {
+    id: "contact-form",
+    name: "Contact form",
+    category: "Contact",
+    description: "A contact form beside your details. Sends email once the form is set up.",
+    build: () => [
+      section("surface", [
+        columns([
+          [
+            heading("Get in touch", "h2"),
+            text("Tell us a little about your project. We reply within one working day.", "left", "muted"),
+            block("IconList", {
+              icon: "check",
+              iconColor: "primary",
+              items: [{ text: "hello@example.com" }, { text: "Monday to Friday, 9 to 5" }, { text: "Jakarta and online" }],
+            }),
+          ],
+          [
+            block("ContactForm", {
+              nameLabel: "Name",
+              emailLabel: "Email",
+              messageLabel: "Message",
+              fields: [],
+              submitLabel: "Send message",
+              successMessage: "Thank you! Your message is on its way. We'll reply by email.",
+            }),
+          ],
+        ], "lg"),
+      ]),
     ],
   },
 ];
