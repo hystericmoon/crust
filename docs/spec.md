@@ -138,6 +138,10 @@ Prove the full loop: build a page in the browser, publish it, see it live.
 ### Block library v1
 Section, Columns, Heading, Text, Image, Button, Spacer, Card.
 
+Added in F032: Grid (of cards), Gallery, Accordion, IconList, LogoRow,
+Quote, ImageOverlay. Their repeating items are arrays in the block's props
+(`items`, `images`, `logos`).
+
 ### Acceptance criteria
 - Published pages display with no JavaScript.
 - Every page has `<title>`, meta description, and appears in `sitemap.xml`.

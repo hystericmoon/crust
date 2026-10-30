@@ -37,6 +37,7 @@ import {
 import { markUnpublished } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
 import { PublishShortcut, usePendingCount } from "./publish/shortcut";
+import { withItemEditing } from "./items/items";
 import { withResponsiveEditing } from "./responsive/fields";
 import { withSectionEditing } from "./sections/editing";
 import { withSettingsTabs } from "./tabs/tabs";
@@ -48,7 +49,7 @@ import { SiteChromeContext, withSiteChrome } from "./chrome-canvas";
 
 const site = siteJson as Site;
 /** The builder's blocks: visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
-const editorConfig = withSiteChrome(withSettingsTabs(withResponsiveEditing(withSectionEditing(config))));
+const editorConfig = withSiteChrome(withSettingsTabs(withResponsiveEditing(withSectionEditing(withItemEditing(config)))));
 
 /** Responsive canvas widths for the viewport switcher. */
 const viewports = [

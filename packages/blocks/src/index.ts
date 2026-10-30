@@ -86,3 +86,5 @@ export {
   hasH1,
 } from "./layouts";
 export type { LayoutCategory, SectionLayout, PageLayout } from "./layouts";
+export { itemLimits, listIcons, listIconNames, moreBlocks } from "./more-blocks";
+export type { GridItem, GridProps, GalleryImage, GalleryProps, AccordionItem, AccordionProps, ListIcon, IconListProps, Logo, LogoRowProps, QuoteProps, ImageOverlayProps } from "./more-blocks";

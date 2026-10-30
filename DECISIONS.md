@@ -25,9 +25,46 @@ Features Claude suggests. They are not work until the owner adds them to
   label, the "Layout"/"Content" headings in the block list are low
   contrast, and a loading spinner has an aria-label it may not use. Small
   CSS and attribute fixes from our side; not visitors-facing.
+- **Layouts that use the new blocks.** Add FAQ, gallery, logo strip and
+  features-grid layouts to the Layout library (F026), so the new blocks
+  are one click away. Small.
+- **Gallery lightbox (opt-in).** Click a photo to see it large. Needs a
+  little JavaScript on pages that use it; off by default.
 - **Linked sections ("global sections").** A saved layout is a copy. A
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
+
+## 2026-10-29 — F032 More elements (Claude's recommendation, owner-approved overnight)
+
+- **Seven new blocks**, in the block list under Layout (Grid of cards),
+  Content (Icon list, Quote, Accordion / FAQ) and a new **Media** group
+  (Gallery, Image overlay, Logo row). New block types only add to the page
+  format; old pages are unchanged, so no migration.
+- **Repeating items** (cards, photos, questions, lines, logos) are edited
+  in a list in the settings panel with Move up / Move down / Remove
+  buttons, an "Add a …" button and announcements, instead of Puck's own
+  list, which can only be reordered by dragging (keyboard rule). Each item
+  folds open to edit; a new one opens with its sample text selected.
+  Limits: 12 cards, 24 photos, 20 questions, 20 lines, 12 logos.
+- **No JavaScript on the site:** the accordion is `<details>`; "Only one
+  open at a time" uses the browser's own grouping (`name`), which older
+  browsers ignore by letting several stay open (harmless). No lightbox
+  for the gallery: it would need JavaScript (could come later as an
+  opt-in).
+- **Accessibility:** lists are real lists (`role="list"` so Safari keeps
+  them); photos and logos need alt text like the Image block (publishing
+  flags any without); a quote's photo is decoration because the name sits
+  next to it; icons are hidden from screen readers; the accordion's
+  headers are 44px tall; card and overlay titles pick their heading level.
+- **Image overlay** uses a section style for its text and the same tint as
+  section background photos, so text stays readable on any photo (the
+  tint is raised automatically when a style needs it). Default: Dark.
+- **Grid of cards** uses the Card look (and the Card style option from
+  F028); it stacks on phones and shows 2 per row on tablets.
+- **Renaming a page** also updates links inside Grid cards, Logo rows and
+  Image overlays.
+- **Checked:** a sample page with every new block on every section style
+  is rendered with all 9 presets in the accessibility check.
 
 ## 2026-10-29 — F031 Header, footer and menu (Claude's recommendation, owner-approved overnight)
 

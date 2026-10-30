@@ -5,7 +5,10 @@
 import type { Data } from "@puckeditor/core";
 
 /** Which prop holds a page link, per block type. */
-export const LINK_PROPS: Record<string, string> = { Button: "href", Card: "linkHref" };
+export const LINK_PROPS: Record<string, string> = { Button: "href", Card: "linkHref", ImageOverlay: "linkHref" };
+
+/** Lists of items with a link in each (F032): block type → [list prop, link prop]. */
+export const ITEM_LINK_PROPS: Record<string, [string, string]> = { Grid: ["items", "linkHref"], LogoRow: ["logos", "href"] };
 
 /**
  * The new link if `href` points at the page `from` ("/about", "/about/",
@@ -41,6 +44,18 @@ function walk(blocks: unknown, from: string, to: string, counter: { n: number })
           props[key] = next;
           continue;
         }
+      }
+      const items = ITEM_LINK_PROPS[b.type];
+      if (items && key === items[0] && Array.isArray(value)) {
+        props[key] = value.map((item: unknown) => {
+          const href = (item as Record<string, unknown> | null)?.[items[1]];
+          if (typeof href !== "string") return item;
+          const next = relinkHref(href, from, to);
+          if (next === null) return item;
+          counter.n++;
+          return { ...(item as object), [items[1]]: next };
+        });
+        continue;
       }
       // Slots (Section content, Columns) hold more blocks.
       props[key] = Array.isArray(value) ? walk(value, from, to, counter) : value;

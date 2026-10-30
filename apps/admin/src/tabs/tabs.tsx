@@ -14,7 +14,26 @@ export type Tab = (typeof tabs)[number];
 export const tabNames: Record<Tab, string> = { content: "Content", style: "Style", advanced: "Advanced" };
 
 /** Where each field lives. Anything not listed is Content. */
-const styleFields = new Set(["align", "tone", "variant", "background", "height", "valign", "imageSrc:Section", "tint", "size", "widths"]);
+const styleFields = new Set([
+  "align",
+  "tone",
+  "variant",
+  "background",
+  "height",
+  "valign",
+  "imageSrc:Section",
+  "tint",
+  "size",
+  "widths",
+  // F032 blocks
+  "columns",
+  "shape",
+  "icon",
+  "iconColor",
+  "logoSize",
+  "grayscale",
+  "position",
+]);
 const advancedFields = new Set(["hideOn", "anchor", "paddingY", "gap"]);
 
 export function tabOf(component: string, field: string): Tab {

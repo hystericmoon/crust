@@ -4,6 +4,21 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **More elements (F032):** seven new blocks.
+  - **Grid of cards:** a row of cards (2–4 per row) you fill in one list.
+  - **Gallery:** photos in a grid, square, wide or as uploaded, with
+    captions.
+  - **Accordion / FAQ:** questions that open to show the answer; choose
+    to open the first one, or keep only one open at a time.
+  - **Icon list:** lines with a check, arrow, star, dot, plus or heart.
+  - **Logo row:** client or partner logos, optionally grey until hovered
+    and linked.
+  - **Quote:** a testimonial with name, role and photo.
+  - **Image overlay:** a title, text and button on a photo, with a tint
+    that keeps the text readable.
+  - Repeating items (cards, photos, questions…) are edited in a list with
+    arrow buttons to reorder, so it all works from the keyboard.
+
 - **Header, footer and menu (F031):** Site settings has two new groups.
   **Header & menu:** your logo (name or image), a menu built from your
   pages (reorder with the arrow buttons), an optional button at the end,
