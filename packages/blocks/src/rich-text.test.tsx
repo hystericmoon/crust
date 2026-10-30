@@ -168,7 +168,7 @@ describe("rich-text: migration", () => {
       Array.isArray(blocks)
         ? blocks.flatMap((b: { type: string; props: Record<string, unknown> }) => [
             ...(b.type === "Text" ? [b.props.text] : []),
-            ...Object.values(b.props).flatMap((v) => (Array.isArray(v) ? texts(v) : [])),
+            ...Object.values(b.props).flatMap((v) => (Array.isArray(v) && v.every((x) => x && typeof x === "object" && "props" in x) ? texts(v) : [])),
           ])
         : [];
     const all = [...texts(newPost("Hi", "hi", "2026-10-30").puck.content), ...sectionLayouts.flatMap((l) => texts(l.build()))];
