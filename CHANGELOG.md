@@ -4,6 +4,12 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Quick edit on your phone (F038):** open a page on your phone and you
+  get a simple form with its words, button labels and photos, in page
+  order. Fix a typo or swap a photo, then press Save, or Save and
+  publish. "Full builder" is one tap away if you need layout. On a
+  computer, the builder has a "Quick edit" link too.
+
 - **Contact form (F037):** a new Contact form block (block list → Forms).
   Visitors send you a message with their name, email and anything else
   you ask for; it arrives in your inbox, and spam is kept out. Works on

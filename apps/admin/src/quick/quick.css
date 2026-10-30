@@ -1,0 +1,36 @@
+/* Phone quick edit (F038). Phone first; on a computer it's a narrow column. */
+.qe { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; background: #f4f4f5; color: #18181b; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.qe-bar {
+  position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px; padding-top: max(10px, env(safe-area-inset-top)); background: #fff; border-bottom: 1px solid #e4e4e7;
+}
+.qe-title { margin: 0; flex: 1; font-size: 1.0625rem; text-align: center; }
+.qe-back, .qe-full { display: inline-flex; align-items: center; min-height: 44px; color: #3730a3; font-weight: 600; text-decoration: none; }
+.qe-back:hover, .qe-full:hover { text-decoration: underline; }
+.qe-main { flex: 1; width: 100%; max-width: 40rem; margin: 0 auto; padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 12px; }
+.qe-intro { margin: 0; color: #3f3f46; }
+.qe-intro a { color: #3730a3; }
+.qe-group { display: flex; flex-direction: column; gap: 12px; padding: 14px 16px 16px; background: #fff; border: 1px solid #e4e4e7; border-radius: 12px; }
+.qe-group-title { margin: 0; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: #52525b; }
+.qe-field { display: flex; flex-direction: column; gap: 6px; }
+.qe-label { font-weight: 600; font-size: 0.9375rem; }
+/* 16px text stops iPhones zooming into the field. */
+.qe-input { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #71717a; border-radius: 8px; background: #fff; color: #18181b; font: inherit; font-size: 16px; }
+textarea.qe-input { resize: vertical; }
+.qe-foot {
+  position: sticky; bottom: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+  padding: 10px 16px; padding-bottom: max(10px, env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid #e4e4e7;
+}
+.qe-status { margin: 0; flex: 1 1 100%; font-size: 0.875rem; color: #3f3f46; }
+.qe-status:empty { display: none; }
+.qe-actions { display: flex; gap: 8px; flex: 1; justify-content: flex-end; }
+.qe-button {
+  min-height: 44px; padding: 0 18px; border: 1px solid #71717a; border-radius: 10px; background: #fff; color: #18181b;
+  font: inherit; font-weight: 600; cursor: pointer;
+}
+.qe-button:disabled { opacity: 0.55; cursor: default; }
+.qe-primary { background: #18181b; border-color: #18181b; color: #fff; }
+.qe :is(a, button, input, textarea, summary):focus-visible { outline: 3px solid #4338ca; outline-offset: 2px; }
+.qe .mf-thumb { width: 96px; height: 72px; }
+.qe .mf-button { min-height: 44px; }
+.qe-part { display: inline-grid; place-items: center; min-width: 22px; height: 22px; margin-right: 4px; padding: 0 6px; border-radius: 11px; background: #e4e4e7; color: #3f3f46; font-size: 0.75rem; letter-spacing: 0; }
