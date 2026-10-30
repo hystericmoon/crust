@@ -186,6 +186,7 @@ Features Claude suggests. They are not work until the owner adds them to
   changes (another block, builder undo) apply when it doesn't.
 - **Builder axe check** now also selects a Text block, so the editor and
   toolbar are checked.
+
 ## 2026-10-30 — F041 Layouts for the new blocks (Claude, reversible; owner: "keep on continuing")
 
 - **Six section layouts**, one per block family the owner named:

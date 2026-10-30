@@ -19,10 +19,11 @@ to "Log".
 - **F034–F039 still need `reviewed: true`** from the owner (steps below).
 - **Milestone 4 "Daily use" approved (2026-10-30):** F040–F044,
   docs/milestone-4.md. **F040 merged** (PR #26, owner: "merge F040").
-  **F041 layouts** and **F042 rich text** built, each in its own PR (not
-  merged; F042 is direction A of its design snapshot, owner can still
-  pick B). **F043 linked sections built** (PR stacked on F041 and F042;
-  direction A, owner can pick B). Next: F044 custom domain.
+  **F041 layouts merged** (PR #27, owner: "Yes, merge all four in
+  order"). **F042 rich text** built (PR #28; direction A of its design
+  snapshot, owner can still pick B). **F043 linked sections built** (PR
+  #29, stacked on F042; direction A, owner can pick B). Next: F044 custom
+  domain.
 - **Waiting on the owner:**
   - **F043:** look at the design snapshot
     (https://claude.ai/artifact/DSXzme9pbKie3guoRpSizj; A was built). On
@@ -30,15 +31,15 @@ to "Log".
     it. Add it to a second page from Layouts → Linked. Select it, press
     **Edit linked section**, change a word, save, go Back: both pages
     show it. Then try **Unlink here**.
+  - **F041:** in the builder press **Layouts**: Features grid, Photo
+    gallery, Logo strip, Testimonial, Questions to open and Contact
+    form, plus the new Gallery and Logos categories. Insert one and
+    fill in your own photos and words.
   - **F042:** look at the design snapshot
     (https://claude.ai/artifact/1d1Ujx7ENSrGCef6CWfg9Z; A was built). On
     the PR's preview link, select a Text block: make words bold, add a
     link with ⌘K, type "- " to start a list. Try a bad link like
     "javascript:x". Then try the same in Quick edit on your phone.
-  - **F041:** in the builder press **Layouts**: Features grid, Photo
-    gallery, Logo strip, Testimonial, Questions to open and Contact
-    form, plus the new Gallery and Logos categories. Insert one and
-    fill in your own photos and words.
   - **F040:** on the PR's preview link, open a page in the builder.
     The Pages screen and the builder's top bar have **Sign out** (after
     Site settings); on your phone the Pages buttons now wrap as whole

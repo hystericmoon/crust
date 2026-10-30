@@ -10,7 +10,6 @@ User-visible changes, newest first, in plain language.
   pages use it, with **Edit linked section** (its own screen: one save
   updates every page) and **Unlink here** (a normal copy on that page
   only). A linked section can't be deleted while a page still uses it.
-
 - **Rich text in Text blocks (F042):** make words **bold** or *italic*,
   add links, and write bulleted or numbered lists. The Text field has a
   small toolbar, in the builder and in Quick edit on your phone, plus
@@ -24,7 +23,6 @@ User-visible changes, newest first, in plain language.
   details. Two new categories, Gallery and Logos. Photo and logo spots
   show as grey boxes until you add your own, and each photo asks for a
   description before it can go live.
-
 - **Builder tidy-up (F040):** a **Sign out** link on the Pages screen
   and in the builder's top bar (pages and posts). Nothing is lost when you sign out: your edits
   are already kept in the browser. Restoring a deleted page that had
