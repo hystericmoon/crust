@@ -4,6 +4,16 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Layout library (F026):** 20 designed sections and 5 whole pages,
+  ready to drop in.
+  - Hover the page in the builder and click a **+** between sections, or
+    use **Layouts** in the top bar (adds after the selected section).
+  - A large gallery opens with **Sections / Whole pages**, categories and
+    search. Previews show your own site style.
+  - Everything uses your site style, so it matches straight away; a page
+    keeps one main heading. One Undo takes it back out.
+  - A new, empty page shows an **Add a layout** button in the middle.
+
 - **Tooltips on icon buttons in the builder** (Duplicate, Delete, Select
   parent, the move arrows, the style dots): they show on hover and on
   keyboard focus, and Escape closes them.

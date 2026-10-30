@@ -1,0 +1,300 @@
+<title>Layout Library Snapshot</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a builder mock (canvas + chrome) and three ways to reach the same layout library. Layouts render with the site's tokens, so switching style restyles every thumbnail. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6;
+  --accent:#4338ca; --accent-soft:#e7e6fb;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --accent:#9b94ff; --accent-soft:#25234a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --accent:#9b94ff; --accent-soft:#25234a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1280px;margin:0 auto;padding-block:28px 64px;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.05;text-wrap:balance}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-.02em}
+.label{font:500 .7rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.lede{color:var(--soft);max-width:64ch}
+button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.dirs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.dir{border:1.5px solid var(--line);background:var(--panel);border-radius:14px;padding:12px 14px;text-align:left;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:4px}
+.dir b{font-family:var(--f-display);font-size:1.05rem}
+.dir span{color:var(--soft);font-size:.85rem}
+.dir[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.dir .rec{align-self:flex-start;color:var(--panel);font:500 .66rem var(--f-mono);background:var(--accent);padding:3px 7px;border-radius:999px}
+.seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;color:var(--soft);font:500 .82rem var(--f-body);padding:7px 11px;border-radius:8px;cursor:pointer;min-height:34px}
+.seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+
+/* builder mock */
+.builder{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr);min-height:620px;position:relative}
+.builder.has-side{grid-template-columns:280px minmax(0,1fr)}
+.side{border-right:1px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:10px;overflow:auto;max-height:720px}
+.side[hidden]{display:none}
+.stage{background:var(--bg);padding:20px;overflow:auto;max-height:720px}
+.page{max-width:760px;margin:0 auto;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.14);background:var(--t-bg)}
+.inserter{display:flex;justify-content:center;position:relative;height:0;z-index:3}
+.inserter button{position:absolute;top:-15px;width:30px;height:30px;border-radius:50%;border:2px solid var(--panel);background:var(--accent);color:#fff;font:700 18px/1 var(--f-body);cursor:pointer;opacity:.0;transition:opacity .15s;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.page:hover .inserter button,.inserter button:focus-visible{opacity:1}
+.dir-c .inserter button{opacity:.9}
+.toast{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:8px 14px;border-radius:10px;font-size:.85rem}
+.toast[hidden]{display:none}
+
+/* library UI */
+.search{width:100%;min-height:36px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+.cats{display:flex;flex-wrap:wrap;gap:6px}
+.cat{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:5px 10px;font:500 .78rem var(--f-body);cursor:pointer}
+.cat[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.grid{display:grid;gap:10px;align-items:start}
+.card{border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:hidden;cursor:pointer;text-align:left;padding:0;color:var(--ink);font:inherit;display:flex;flex-direction:column}
+.card:hover{border-color:var(--accent)}
+.card .meta{padding:7px 9px;display:flex;justify-content:space-between;gap:6px;font-size:.8rem;align-items:center}
+.card .meta small{color:var(--soft)}
+.thumb{height:var(--th,96px);overflow:hidden;position:relative;background:var(--t-bg)}
+.thumb .scale{position:absolute;top:0;left:0;width:760px;transform-origin:top left}
+.modal{position:absolute;inset:0;background:rgba(10,10,20,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}
+.modal[hidden]{display:none}
+.mbox{background:var(--panel);border-radius:16px;width:min(1000px,100%);max-height:100%;display:grid;grid-template-columns:200px minmax(0,1fr);overflow:hidden}
+.mside{border-right:1px solid var(--line);padding:14px;display:flex;flex-direction:column;gap:6px}
+.mside .cat{border-radius:8px;text-align:left}
+.mmain{padding:14px;overflow:auto;display:flex;flex-direction:column;gap:12px;max-height:600px}
+.mhead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.close{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;min-height:34px;padding:0 12px;cursor:pointer;font:inherit}
+.tabs{display:flex;gap:4px}
+.pop{position:absolute;z-index:9;width:min(560px,92%);left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:12px;display:flex;flex-direction:column;gap:10px}
+.pop[hidden]{display:none}
+
+/* site sections (scaled thumbnails + canvas). All colours from --t-* tokens. */
+.s{padding:44px 40px;font-family:var(--t-body);color:var(--t-text);background:var(--t-bg)}
+.s.muted{background:var(--t-surface)}
+.s.primary{background:var(--t-primary);color:var(--t-on)}
+.s.dark{background:var(--t-text);color:var(--t-bg)}
+.s h2,.s h3{font-family:var(--t-head);margin:0 0 10px;line-height:1.1}
+.s h2{font-size:34px;letter-spacing:-.01em}
+.s h3{font-size:19px}
+.s p{margin:0 0 12px;opacity:.85;font-size:15px}
+.btn{display:inline-block;background:var(--t-primary);color:var(--t-on);padding:10px 18px;border-radius:var(--t-r);font-weight:600;font-size:14px}
+.s.primary .btn,.s.dark .btn{background:currentColor}
+.s.primary .btn span,.s.dark .btn span{color:var(--t-primary)}
+.s.dark .btn span{color:var(--t-text)}
+.center{text-align:center}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+.box{background:var(--t-surface);border-radius:var(--t-r);padding:16px}
+.s.muted .box{background:var(--t-bg)}
+.img{background:linear-gradient(135deg,color-mix(in srgb,var(--t-primary) 45%,var(--t-surface)),var(--t-surface));border-radius:var(--t-r);min-height:180px}
+.ic{width:34px;height:34px;border-radius:10px;background:color-mix(in srgb,var(--t-primary) 18%,transparent);margin-bottom:10px}
+.q{font-size:24px;font-family:var(--t-head);line-height:1.3;margin:0 0 12px}
+.price{font-size:30px;font-weight:700;font-family:var(--t-head)}
+.faq div{border-bottom:1px solid color-mix(in srgb,currentColor 18%,transparent);padding:12px 0;display:flex;justify-content:space-between}
+.avatar{width:64px;height:64px;border-radius:50%;background:color-mix(in srgb,var(--t-primary) 30%,var(--t-surface));margin-bottom:10px}
+.logos{display:flex;gap:26px;justify-content:center;opacity:.6}
+.logos i{width:80px;height:22px;border-radius:4px;background:currentColor}
+.field{height:38px;border:1.5px solid color-mix(in srgb,currentColor 25%,transparent);border-radius:var(--t-r);margin-bottom:10px}
+
+.compare{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.cmp{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:.88rem}
+.cmp h3{font-size:1rem}
+.cmp ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+.pro{color:#127a4b}.con{color:#b42318}
+:root[data-theme="dark"] .pro{color:#5fd39a} :root[data-theme="dark"] .con{color:#ff8a7d}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pro{color:#5fd39a} :root:not([data-theme="light"]) .con{color:#ff8a7d}}
+.ask{background:var(--accent);color:var(--panel);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.ask code{font:500 .9rem var(--f-mono);background:rgba(255,255,255,.2);padding:1px 7px;border-radius:6px}
+@media (max-width:900px){
+  .dirs,.compare{grid-template-columns:1fr}
+  .builder,.builder.has-side{grid-template-columns:1fr}
+  .side{border-right:0;border-bottom:1px solid var(--line);max-height:340px}
+  .mbox{grid-template-columns:1fr}
+  .mside{flex-direction:row;flex-wrap:wrap;border-right:0;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <span class="label">F026 · Design snapshot v1</span>
+    <h1>Layout library</h1>
+    <p class="lede">Designed sections you drop into a page. Every layout uses your site style, so it matches the moment it lands. Pick how you'd like to open the library.</p>
+  </div>
+
+  <div class="dirs" role="group" aria-label="Design direction">
+    <button type="button" class="dir" data-dir="a" aria-pressed="false"><b>A · Side panel</b><span>A "Layouts" tab next to Blocks, always one click away</span></button>
+    <button type="button" class="dir" data-dir="b" aria-pressed="true"><span class="rec">Recommended</span><b>B · Big gallery + "+" between sections</b><span>Click + where you want it; a large visual gallery opens</span></button>
+    <button type="button" class="dir" data-dir="c" aria-pressed="false"><b>C · Quick picker</b><span>Click + and pick from a small popover in place</span></button>
+  </div>
+
+  <div class="row">
+    <span class="label">Site style</span>
+    <div class="seg" role="group" aria-label="Site style" id="styles"></div>
+    <span class="lede" style="font-size:.85rem">Switch it: every thumbnail and the page restyle.</span>
+  </div>
+
+  <div class="builder" id="builder">
+    <aside class="side" id="side" hidden aria-label="Layouts">
+      <span class="label">Layouts</span>
+      <input class="search" type="search" placeholder="Search layouts" aria-label="Search layouts" data-search>
+      <div class="cats" data-cats></div>
+      <div class="grid" data-grid style="--th:84px"></div>
+    </aside>
+    <div class="stage">
+      <div class="page" id="page"></div>
+    </div>
+
+    <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mtitle">
+      <div class="mbox">
+        <div class="mside">
+          <span class="label" style="margin-bottom:4px">Category</span>
+          <div data-cats style="display:contents"></div>
+        </div>
+        <div class="mmain">
+          <div class="mhead">
+            <div>
+              <h2 id="mtitle" style="font-size:1.3rem">Add a layout</h2>
+              <span class="lede" style="font-size:.85rem" id="mwhere"></span>
+            </div>
+            <div class="row">
+              <div class="seg tabs" role="group" aria-label="Kind"><button type="button" aria-pressed="true" data-kind="section">Sections</button><button type="button" aria-pressed="false" data-kind="page">Whole pages</button></div>
+              <button type="button" class="close" data-close>Close</button>
+            </div>
+          </div>
+          <input class="search" type="search" placeholder="Search layouts" aria-label="Search layouts" data-search>
+          <div class="grid" data-grid style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));--th:150px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pop" id="pop" hidden role="dialog" aria-label="Quick add">
+      <div class="mhead"><span class="label">Add here</span><button type="button" class="close" data-close>Close</button></div>
+      <div class="grid" data-grid style="grid-template-columns:repeat(3,1fr);--th:70px"></div>
+      <button type="button" class="close" data-more>Browse all layouts</button>
+    </div>
+
+    <div class="toast" id="toast" hidden role="status"></div>
+  </div>
+
+  <div class="compare">
+    <div class="cmp"><h3>A · Side panel</h3><ul><li class="pro">Always visible, quick to browse</li><li class="con">Thumbnails are small</li><li class="con">Inserts at the end or after the selection</li></ul></div>
+    <div class="cmp"><h3>B · Gallery + "+"</h3><ul><li class="pro">Big previews: judge the design before inserting</li><li class="pro">The + says exactly where it lands</li><li class="con">One extra click to open</li></ul></div>
+    <div class="cmp"><h3>C · Quick picker</h3><ul><li class="pro">Fastest for common sections</li><li class="con">Only a handful fit</li><li class="con">Needs "Browse all" for the rest</li></ul></div>
+  </div>
+
+  <div class="ask">
+    <h3 style="font-size:1.2rem">Pick one</h3>
+    <p>Reply <code>A</code>, <code>B</code>, <code>C</code>, or a mix like <code>B + C</code>.</p>
+  </div>
+</div>
+
+<script>
+const STYLES={
+  Crust:{bg:"#ffffff",surface:"#f4f4f5",text:"#18181b",primary:"#4338ca",on:"#ffffff",head:'system-ui,-apple-system,"Segoe UI",sans-serif',body:'system-ui,-apple-system,"Segoe UI",sans-serif',r:"8px"},
+  Ink:{bg:"#FAF9F6",surface:"#EFEDE8",text:"#1A1A1A",primary:"#1A1A1A",on:"#FAF9F6",head:'Georgia,"Times New Roman",serif',body:'system-ui,-apple-system,sans-serif',r:"2px"},
+  Forest:{bg:"#FFFFFF",surface:"#EEF4EF",text:"#14231A",primary:"#1F6B45",on:"#FFFFFF",head:'"Gill Sans","Trebuchet MS",sans-serif',body:'"Gill Sans","Trebuchet MS",sans-serif',r:"16px"}
+};
+const btn=t=>`<span class="btn"><span>${t}</span></span>`;
+const L=[
+ {id:"hero-center",cat:"Hero",name:"Centered hero",style:"",html:`<div class="center"><h2>Make something people love</h2><p>A short line about what you do and who it's for.</p>${btn("Get started")}</div>`},
+ {id:"hero-split",cat:"Hero",name:"Hero with image",style:"",html:`<div class="g2"><div><h2>Design studio for small teams</h2><p>Brand, web and campaigns, made with care.</p>${btn("See our work")}</div><div class="img"></div></div>`},
+ {id:"hero-dark",cat:"Hero",name:"Bold dark hero",style:"dark",html:`<div class="center"><h2>Fast sites. No servers.</h2><p>Publish plain HTML in one click.</p>${btn("Start now")}</div>`},
+ {id:"feat-3",cat:"Features",name:"Three features",style:"muted",html:`<h2 class="center">What we do</h2><div class="g3">${["Identity","Websites","Campaigns"].map(x=>`<div class="box"><div class="ic"></div><h3>${x}</h3><p>One line about ${x.toLowerCase()}.</p></div>`).join("")}</div>`},
+ {id:"feat-split",cat:"Features",name:"Image and text",style:"",html:`<div class="g2"><div class="img"></div><div><h2>Made with care</h2><p>Every project starts with listening.</p>${btn("About us")}</div></div>`},
+ {id:"quote",cat:"Testimonials",name:"Big quote",style:"muted",html:`<div class="center"><p class="q">"The fastest site we've ever shipped, and the easiest to edit."</p><p>Rina, Studio Haho</p></div>`},
+ {id:"logos",cat:"Testimonials",name:"Logo row",style:"",html:`<p class="center" style="margin-bottom:18px">Trusted by teams at</p><div class="logos"><i></i><i></i><i></i><i></i><i></i></div>`},
+ {id:"pricing",cat:"Pricing",name:"Three plans",style:"",html:`<h2 class="center">Simple pricing</h2><div class="g3">${[["Starter","0"],["Studio","19"],["Agency","49"]].map(([n,p])=>`<div class="box"><h3>${n}</h3><div class="price">$${p}</div><p>per month</p>${btn("Choose")}</div>`).join("")}</div>`},
+ {id:"faq",cat:"FAQ",name:"Questions",style:"",html:`<h2>Questions</h2><div class="faq"><div>How long does a site take?<span>+</span></div><div>Can I edit it myself?<span>+</span></div><div>Do you do hosting?<span>+</span></div></div>`},
+ {id:"team",cat:"Team",name:"Team grid",style:"muted",html:`<h2 class="center">The team</h2><div class="g3">${["Hosni","Rina","Bayu"].map(n=>`<div class="center"><div class="avatar" style="margin-inline:auto"></div><h3>${n}</h3><p>Designer</p></div>`).join("")}</div>`},
+ {id:"cta",cat:"Call to action",name:"Call to action",style:"primary",html:`<div class="center"><h2>Let's make something.</h2><p>Tell us about your project.</p>${btn("Get in touch")}</div>`},
+ {id:"contact",cat:"Contact",name:"Contact details",style:"",html:`<div class="g2"><div><h2>Say hello</h2><p>hello@studio.example<br>Mon–Fri, 9–5</p></div><div><div class="field"></div><div class="field"></div>${btn("Send")}</div></div>`}
+];
+const PAGES=[
+ {id:"p-landing",cat:"Pages",name:"Landing page",parts:["hero-split","feat-3","quote","cta"]},
+ {id:"p-about",cat:"Pages",name:"About",parts:["hero-center","feat-split","team"]},
+ {id:"p-services",cat:"Pages",name:"Services",parts:["hero-dark","feat-3","pricing","faq"]},
+ {id:"p-contact",cat:"Pages",name:"Contact",parts:["hero-center","contact"]}
+];
+const CATS=["All",...new Set(L.map(l=>l.cat))];
+let state={dir:"b",style:"Crust",cat:"All",q:"",kind:"section",insertAt:null,page:["hero-center","feat-3"]};
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const sec=id=>{const l=L.find(x=>x.id===id);return `<section class="s ${l.style}">${l.html}</section>`};
+
+function applyStyle(){const t=STYLES[state.style],b=$("#builder");
+  for(const [k,v] of Object.entries({bg:t.bg,surface:t.surface,text:t.text,primary:t.primary,on:t.on,head:t.head,body:t.body,r:t.r}))b.style.setProperty("--t-"+k,v);
+  $$("#styles button").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.s===state.style)));}
+$("#styles").innerHTML=Object.keys(STYLES).map(s=>`<button type="button" data-s="${s}" aria-pressed="false">${s}</button>`).join("");
+$("#styles").onclick=e=>{const x=e.target.closest("[data-s]");if(x){state.style=x.dataset.s;applyStyle()}};
+
+function renderPage(){
+  const p=$("#page");
+  p.innerHTML=state.page.map((id,i)=>`${inserter(i)}${sec(id)}`).join("")+inserter(state.page.length);
+}
+const inserter=i=>state.dir==="a"?"":`<div class="inserter"><button type="button" data-insert="${i}" aria-label="Add a layout here (position ${i+1})">+</button></div>`;
+
+function items(){
+  if(state.kind==="page"&&state.dir==="b")return PAGES.filter(p=>!state.q||p.name.toLowerCase().includes(state.q));
+  return L.filter(l=>(state.cat==="All"||l.cat===state.cat)&&(!state.q||(l.name+" "+l.cat).toLowerCase().includes(state.q)));
+}
+function card(it,scale){
+  const isPage=!!it.parts;const inner=isPage?it.parts.map(sec).join(""):sec(it.id);
+  return `<button type="button" class="card" data-add="${it.id}" aria-label="Insert ${it.name}${isPage?" page":""}">
+    <span class="thumb" aria-hidden="true"><span class="scale" style="transform:scale(${scale})">${inner}</span></span>
+    <span class="meta"><span>${it.name}</span><small>${isPage?it.parts.length+" sections":it.cat}</small></span></button>`;
+}
+function renderLib(){
+  $$("[data-cats]").forEach(c=>c.innerHTML=(state.kind==="page"&&state.dir==="b")?"":CATS.map(x=>`<button type="button" class="cat" data-cat="${x}" aria-pressed="${state.cat===x}">${x}</button>`).join(""));
+  const side=$("#side [data-grid]");if(side)side.innerHTML=items().map(i=>card(i,.32)).join("")||"<p class='lede'>No layouts match.</p>";
+  const modal=$("#modal [data-grid]");modal.innerHTML=items().map(i=>card(i,.3)).join("")||"<p class='lede'>No layouts match.</p>";
+  const pop=$("#pop [data-grid]");pop.innerHTML=L.filter(l=>["hero-center","feat-3","feat-split","quote","faq","cta"].includes(l.id)).map(i=>card(i,.2)).join("");
+  $$("[data-kind]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.kind===state.kind)));
+  fitThumbs();
+}
+/* Scale each preview to its card's width, and size the card to the preview (capped). */
+function fitThumbs(){
+  requestAnimationFrame(()=>$$(".thumb").forEach(t=>{
+    const w=t.clientWidth;if(!w)return;const inner=t.firstElementChild,s=w/760;
+    inner.style.transform=`scale(${s})`;
+    const max=parseFloat(getComputedStyle(t.closest("[data-grid]")).getPropertyValue("--th"))||150;
+    t.style.height=Math.min(inner.offsetHeight*s,max*1.6)+"px";
+  }));
+}
+window.addEventListener("resize",fitThumbs);
+let lastFocus=null;
+function open(kind,at){
+  lastFocus=document.activeElement;state.insertAt=at;
+  if(kind==="modal"){$("#modal").hidden=false;fitThumbs();$("#mwhere").textContent=at===null?"Adds to the end of the page":`Adds at position ${at+1}`;$("#modal [data-search]").focus()}
+  if(kind==="pop"){const pop=$("#pop"),btn=document.querySelector(`[data-insert="${at}"]`);pop.hidden=false;fitThumbs();
+    const r=btn.getBoundingClientRect(),b=$("#builder").getBoundingClientRect();pop.style.top=Math.min(r.bottom-b.top+8,b.height-330)+"px";pop.querySelector(".card").focus()}
+}
+function close(){$("#modal").hidden=true;$("#pop").hidden=true;lastFocus&&lastFocus.focus&&lastFocus.focus()}
+function insert(id){
+  const at=state.insertAt??state.page.length;const page=PAGES.find(p=>p.id===id);
+  const add=page?page.parts:[id];state.page.splice(at,0,...add);
+  renderPage();close();toast(page?`Added the ${page.name} page layout (${add.length} sections).`:`Added "${L.find(l=>l.id===id).name}". It already uses your site style.`);
+  state.insertAt=null;
+}
+let tt;function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2600)}
+
+document.addEventListener("click",e=>{
+  const ins=e.target.closest("[data-insert]");if(ins){open(state.dir==="c"?"pop":"modal",Number(ins.dataset.insert));return}
+  const add=e.target.closest("[data-add]");if(add){insert(add.dataset.add);return}
+  const c=e.target.closest("[data-cat]");if(c){state.cat=c.dataset.cat;renderLib();return}
+  const k=e.target.closest("[data-kind]");if(k){state.kind=k.dataset.kind;renderLib();return}
+  if(e.target.closest("[data-close]")){close();return}
+  if(e.target.closest("[data-more]")){$("#pop").hidden=true;open("modal",state.insertAt);return}
+  if(e.target.id==="modal")close();
+  const d=e.target.closest(".dir");if(d){state.dir=d.dataset.dir;state.kind="section";
+    $$(".dir").forEach(x=>x.setAttribute("aria-pressed",String(x===d)));
+    $("#side").hidden=state.dir!=="a";$("#builder").classList.toggle("has-side",state.dir==="a");
+    $("#builder").classList.toggle("dir-c",state.dir==="c");close();renderPage();renderLib()}
+});
+document.addEventListener("input",e=>{if(e.target.matches("[data-search]")){state.q=e.target.value.trim().toLowerCase();renderLib();$$("[data-search]").forEach(s=>{if(s!==e.target)s.value=e.target.value})}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&(!$("#modal").hidden||!$("#pop").hidden)){e.preventDefault();close()}});
+applyStyle();renderPage();renderLib();
+</script>

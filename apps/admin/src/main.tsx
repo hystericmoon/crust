@@ -5,6 +5,7 @@ import "@crust/blocks/styles.css";
 import "./settings/settings.css";
 import "./keyboard/keyboard.css";
 import "./sections/sections.css";
+import "./layouts/layouts.css";
 import "./pages/pages.css";
 import { App } from "./App";
 

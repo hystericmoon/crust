@@ -258,7 +258,7 @@
       "description": "A library panel in the builder with about 20 designed sections (hero, features, image + text, FAQ, call to action, team, pricing, contact...) and 5 page layouts. Click or press Enter to insert; everything uses the site style, so it matches automatically. Each layout passes the accessibility check. Added by the owner (approved Milestone 2 step 1, 2026-10-29).",
       "depends_on": ["F025"],
       "done_check": "npm test -- layout-library && npm run build && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

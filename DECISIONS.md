@@ -21,6 +21,35 @@ Features Claude suggests. They are not work until the owner adds them to
   add the redirect back. Harmless today; matters once the site has
   visitors and bookmarks.
 
+## 2026-10-29 — F026 Layout library (owner chose direction B)
+
+- **Direction B** from `design/f026-layout-library-v1.html`: a big gallery
+  dialog opened from a "+" between top-level sections, with a
+  Sections / Whole pages switch, categories on the left, and search.
+- **The "+" buttons are pointer shortcuts** (out of the tab order, hidden
+  from screen readers, with a tooltip). Keyboard and screen-reader users
+  get the **Layouts** button in the top bar, which adds after the selected
+  section (or at the end), and the gallery says where before you pick
+  ("Adds between “Welcome” and “About us”"). Reason: the "+" buttons live
+  at the end of the canvas document, so in the tab order they'd come
+  after every block, far from the spot they add to.
+- **An empty page shows a real "Add a layout" button** in the canvas: on a
+  blank page the library is the obvious first step.
+- **Thumbnails are the publish renderer's HTML** scaled down, styled by
+  the site's current (even unsaved) tokens, so they match what gets
+  published. They're `inert` and `aria-hidden`: pictures, not content.
+- **One undo step:** inserting dispatches Puck `setData` with
+  `recordHistory: true` (Puck leaves `setData` out of history otherwise).
+  The first inserted section is selected and focused, and the result is
+  announced.
+- **Headings:** a layout's h1 becomes h2 when the page already has one
+  (`fitHeadings`). Known edge: inserting a hero *above* the page's h1
+  leaves the new heading an h2 above the h1; the publish check names it.
+  Not rewriting the owner's existing heading was the safer default.
+- **The gallery remembers its tab and category** between openings, and
+  clears the search each time.
+- No change to the page JSON format: layouts are ordinary blocks.
+
 ## 2026-10-29 — F025 Section styles (owner chose "A + C's toolbar", plus site-wide editing)
 
 - **Direction:** the visual side panel (A) plus the on-canvas toolbar (C),
