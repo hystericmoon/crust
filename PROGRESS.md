@@ -13,8 +13,9 @@ to "Log".
 - **Milestone 3 approved (2026-10-30):** F034–F039, docs/milestone-3.md.
   Now: F034 Media library. Design snapshot v1 on branch
   `f034-media-library`, `design/f034-media-library-v1.html`, also at
-  https://claude.ai/artifact/9QoSJrHftHwJ6bWRJUuVNA. Waiting for the owner
-  to pick A/B/C and where photos live (Claude recommends A + GitHub).
+  https://claude.ai/artifact/9QoSJrHftHwJ6bWRJUuVNA. Owner chose Claude's
+  recommendations (2026-10-30): **A + 1** (picker dialog, photos in GitHub).
+  Build it on `f034-media-library` (draft PR #18); see DECISIONS.md.
 - **Waiting on the owner:**
   - Try https://crust-admin.pages.dev (main, now with Milestone 2) and set `reviewed: true`: F010, F004, F003,
     F005, F012, F013, F014, F007, F008, F015, F016, F017, F018, F019,
@@ -252,3 +253,5 @@ to "Log".
 - 2026-10-30 — F034 design snapshot v1: three layouts for the media
   library (picker dialog, sidebar tab, Media page) and the storage
   question (GitHub vs Cloudflare R2). Logged in BLOCKED.md.
+- 2026-10-30 — Owner: "go with all your recommendations" → F034 is A + 1.
+  Handed to a new session to build.

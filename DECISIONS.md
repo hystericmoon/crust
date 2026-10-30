@@ -53,6 +53,18 @@ Features Claude suggests. They are not work until the owner adds them to
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
 
+## 2026-10-30 — F034 Media library (owner: "go with all your recommendations")
+
+- **Direction A:** every image field gets "Choose image", which opens a
+  large picker dialog with upload, search, a grid and a details pane
+  (alt text required, file info, where the photo is used).
+- **Storage 1:** uploaded photos live in the GitHub repo next to the pages
+  (`content/media/`), saved through the same Pages Function and token as
+  pages. No new accounts, $0, every upload in the Git history. Big photos
+  are shrunk to 2400 px in the browser before upload; about 1 GB of
+  photos fits. Can move to Cloudflare R2 later without changing the UI.
+- **Published images:** resized copies (480–2400 px) with `srcset`.
+
 ## 2026-10-29 — F033 Theme pack export and import (Claude's recommendation, owner-approved overnight)
 
 - **Where:** a "Theme pack" group at the end of Site settings, with two
