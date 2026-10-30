@@ -1,0 +1,218 @@
+<title>Crust Linked Sections</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: same language as the F025–F034 snapshots. Direction switch on top, a working mock below it, then states, keyboard and the saved format. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6; --field:#85858f;
+  --accent:#4338ca; --accent-ink:#ffffff; --accent-soft:#e7e6fb; --ok:#127a4b; --bad:#b42318; --bad-soft:#fdecea;
+  --admin:#18181b; --admin-ink:#ffffff; --canvas:#f1f1f4; --site-ink:#1f2a24; --site-link:#1d6b48;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --bad:#ff8a7d; --bad-soft:#3a1d1b;
+  --admin:#ececf3; --admin-ink:#101016; --canvas:#15151d; --site-ink:#dfe9e3; --site-link:#7fd4a8; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --bad:#ff8a7d; --bad-soft:#3a1d1b;
+  --admin:#ececf3; --admin-ink:#101016; --canvas:#15151d; --site-ink:#dfe9e3; --site-link:#7fd4a8; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:40px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,5vw,44px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:24px;font-weight:600}
+h3{font-size:17px;font-weight:600;font-family:var(--f-body)}
+p{margin:0;max-width:65ch}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.intro{display:grid;gap:12px}
+.lead{color:var(--soft);font-size:18px}
+section{display:grid;gap:16px}
+.switch{display:flex;flex-wrap:wrap;gap:8px}
+.switch button{font:600 15px/1 var(--f-body);padding:12px 16px;min-height:44px;border:1px solid var(--field);border-radius:999px;background:var(--panel);color:var(--ink);cursor:pointer}
+.switch button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.switch .tag{font:500 11px/1 var(--f-mono);margin-left:6px;opacity:.85}
+button:focus-visible,a:focus-visible,input:focus-visible,[contenteditable]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.direction-note{color:var(--soft)}
+
+/* The mock builder */
+.builder{border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) 340px}
+.canvas{background:var(--canvas);padding:28px;min-width:0;position:relative}
+.page{background:#fff;color:#1f2a24;border-radius:6px;padding:32px;max-width:560px;margin:0 auto;box-shadow:0 1px 2px rgb(0 0 0/.06);font:17px/1.6 Georgia,"Iowan Old Style",serif}
+.page h4{font:700 26px/1.2 var(--f-display);margin:0 0 12px;color:#1f2a24}
+.page a{color:#1d6b48;text-decoration:underline;text-underline-offset:2px}
+.page ul,.page ol{padding-left:1.3em;margin:.6em 0}
+.page p{margin:0 0 .7em}
+.selected{outline:2px solid #6499cf;outline-offset:6px;border-radius:2px}
+.panel{border-left:1px solid var(--line);padding:20px;display:grid;gap:14px;align-content:start;min-width:0}
+.panel .label{font-weight:600;font-size:14px}
+.field{border:1px solid var(--field);border-radius:8px;background:var(--panel);overflow:hidden}
+.toolbar{display:flex;gap:2px;padding:6px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tb{width:40px;height:40px;border:0;border-radius:6px;background:transparent;color:var(--ink);display:grid;place-items:center;cursor:pointer}
+.tb:hover{background:var(--accent-soft)}
+.tb[aria-pressed="true"]{background:var(--admin);color:var(--admin-ink)}
+.tb svg{width:18px;height:18px}
+.sep{width:1px;background:var(--line);margin:6px 4px}
+.editor{min-height:170px;padding:12px 14px;font:16px/1.55 var(--f-body);color:var(--ink)}
+.editor:focus{outline:none}
+.field:focus-within{outline:3px solid var(--accent);outline-offset:2px}
+.editor a{color:var(--accent)}
+.editor ul,.editor ol{padding-left:1.3em;margin:.4em 0}
+.editor p{margin:0 0 .5em}
+.hint{font-size:13px;color:var(--soft)}
+.linkform{display:grid;gap:8px;padding:12px;border-top:1px solid var(--line);background:var(--bg)}
+.linkform input{font:16px var(--f-body);padding:10px 12px;min-height:44px;border:1px solid var(--field);border-radius:8px;background:var(--panel);color:var(--ink);width:100%}
+.linkform .row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:600 14px/1 var(--f-body);min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--field);background:var(--panel);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--admin);color:var(--admin-ink);border-color:var(--admin)}
+.err{color:var(--bad);font-size:14px}
+.err[hidden]{display:none}
+.float{position:absolute;display:flex;gap:2px;padding:4px;background:#18181b;border-radius:8px;box-shadow:0 6px 20px rgb(0 0 0/.25)}
+.float .tb{color:#fff;width:36px;height:36px}
+.float .tb:hover{background:#3f3f46}
+.float .tb[aria-pressed="true"]{background:#fff;color:#18181b}
+.mock-b .panel .field{opacity:.55}
+
+/* Cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:10px;align-content:start;min-width:0}
+.card .pill{justify-self:start;font:500 11px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.card .pill.ok{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+.card .pill.bad{background:var(--bad-soft);color:var(--bad)}
+.card ul{margin:0;padding-left:1.1em;display:grid;gap:4px}
+.keys{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:460px;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);font-size:15px}
+th{font-weight:600}
+kbd{font:500 13px var(--f-mono);padding:3px 6px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;background:var(--bg);white-space:nowrap}
+pre{margin:0;overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;font:500 13px/1.6 var(--f-mono);color:var(--ink)}
+.phone{width:300px;max-width:100%;border:1px solid var(--line);border-radius:28px;padding:14px;background:var(--panel);display:grid;gap:10px;justify-self:start}
+.phone .bar{font-weight:600}
+.compare{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+@media (max-width:860px){.builder{grid-template-columns:1fr}.panel{border-left:0;border-top:1px solid var(--line)}}
+@media (prefers-reduced-motion:no-preference){.switch button{transition:background .12s}}
+</style>
+<style>
+.linked{position:relative;border:2px dashed var(--accent);border-radius:8px;padding:28px 20px 20px;background:color-mix(in srgb,var(--accent) 5%,transparent)}
+.linked-tag{position:absolute;top:-13px;left:12px;background:var(--accent);color:var(--accent-ink);font:600 12px/1 var(--f-body);padding:6px 10px;border-radius:999px;max-width:calc(100% - 24px)}
+.strip{background:#1f2a24;color:#f2f5f3;border-radius:6px;padding:22px;font:16px/1.5 var(--f-body);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+.strip b{font:700 20px/1.2 var(--f-display)}
+.strip .cta{background:#9fe0bd;color:#10261a;padding:10px 14px;border-radius:6px;font-weight:600}
+.usage{margin:0;padding-left:1.1em}
+.banner{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--admin);color:var(--admin-ink);padding:12px 16px;border-radius:10px 10px 0 0;font-weight:600}
+.banner .push{margin-left:auto}
+.mock-b .only-a,.mock-a .only-b{display:none}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+</style>
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">F043 · design snapshot v1 · Milestone 4</span>
+    <h1>Linked sections</h1>
+    <p class="lead">Make a section once (a contact strip, a call to action), use it on many pages, and edit it in one place. Every page that uses it updates. Unlinking turns one back into a normal copy. Two ways to edit it:</p>
+  </header>
+
+  <section aria-labelledby="dir-h">
+    <h2 id="dir-h">Where you edit a linked section</h2>
+    <div class="switch" role="group" aria-label="Direction">
+      <button type="button" aria-pressed="true" data-dir="a">A · Its own editor <span class="tag">Recommended</span></button>
+      <button type="button" aria-pressed="false" data-dir="b">B · Edit in place on any page</button>
+    </div>
+    <p class="direction-note" id="dir-note"></p>
+
+    <div class="builder mock-a" id="builder">
+      <div class="canvas">
+        <div class="page">
+          <h4>About the bakery</h4>
+          <p>We bake every morning from 5. Our flour comes from the mill down the road.</p>
+          <div class="linked" style="margin-top:28px">
+            <span class="linked-tag">Linked section · Contact strip · on 4 pages</span>
+            <div class="strip"><div><b>Questions? Call us.</b><br>Open every day but Monday.</div><span class="cta">Call 021 555 0123</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <span class="label">Linked section: Contact strip</span>
+        <div class="card only-a">
+          <p>Used on 4 pages:</p>
+          <ul class="usage"><li>Home</li><li>About</li><li>Menu</li><li>Contact</li></ul>
+          <div class="actions"><button type="button" class="btn primary">Edit linked section</button><button type="button" class="btn">Unlink here</button></div>
+          <p class="hint">Edit opens it on its own. Saving updates all 4 pages. Unlink makes this page's copy normal; the other pages keep the link.</p>
+        </div>
+        <div class="card only-b">
+          <p>You're editing a section that is on 4 pages. Changes apply to all of them when you save this page.</p>
+          <div class="actions"><button type="button" class="btn">Unlink here</button></div>
+          <p class="hint">The fields of the blocks inside it appear as usual when you select them.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="own-h" id="own">
+    <h2 id="own-h">A: the section's own editor</h2>
+    <p>The same builder with only the section on the canvas, and a dark bar that says what you're editing. Back returns to the page you came from.</p>
+    <div class="builder" style="grid-template-columns:1fr">
+      <div>
+        <div class="banner"><span>Editing linked section “Contact strip” · used on 4 pages</span><button type="button" class="btn push">Back to About</button><button type="button" class="btn primary">Save for all 4 pages</button></div>
+        <div class="canvas"><div class="page"><div class="strip"><div><b>Questions? Call us.</b><br>Open every day but Monday.</div><span class="cta">Call 021 555 0123</span></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="cmp-h">
+    <h2 id="cmp-h">Trade-offs</h2>
+    <div class="compare">
+      <div class="card"><span class="pill ok">A · Recommended</span><h3>Its own editor</h3><ul>
+        <li>You can't change four pages by accident while tidying one.</li>
+        <li>Saving says exactly what it does: “Save for all 4 pages”.</li>
+        <li>Keyboard and screen readers: one clear button, one clear screen.</li>
+        <li>One extra step to see the change in the page around it.</li></ul></div>
+      <div class="card"><span class="pill">B</span><h3>Edit in place</h3><ul>
+        <li>Quickest: change it where you see it.</li>
+        <li>Easy to forget it's shared; a typo fix for one page lands on all of them.</li>
+        <li>Undo and Save draft mix page edits with shared edits.</li>
+        <li>Harder to build reliably on top of the page builder.</li></ul></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="flow-h">
+    <h2 id="flow-h">Making and using one</h2>
+    <div class="grid">
+      <div class="card"><span class="pill">Make</span><h3>“Make linked” on a section</h3><p>Next to “Save as layout” on the selected section's toolbar. Give it a name; the section on this page becomes the linked one.</p></div>
+      <div class="card"><span class="pill">Use</span><h3>Layouts → Linked sections</h3><p>A tab in the layout gallery lists your linked sections with a preview and how many pages use each. Insert adds it as a link, not a copy.</p></div>
+      <div class="card"><span class="pill">Unlink</span><h3>A normal copy again</h3><p>On one page only. The blocks stay as they are and become editable there; the other pages keep the link.</p></div>
+      <div class="card"><span class="pill bad">Delete</span><h3>Only when unused</h3><p>A linked section can be deleted once no page uses it. Until then the list names the pages, so nothing breaks on the live site.</p></div>
+      <div class="card"><span class="pill">Headings</span><h3>No page title inside</h3><p>A linked section can't hold the page's main heading (h1), because every page has its own. An h1 becomes an h2 when you make it linked.</p></div>
+      <div class="card"><span class="pill ok">Publishing</span><h3>Plain HTML, as always</h3><p>Each page is published with the section's current content built in. Renaming a page updates links inside linked sections too.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="fmt-h">
+    <h2 id="fmt-h">How it's saved</h2>
+    <p>The section lives once in its own file; pages hold a small block that points to it.</p>
+    <pre>content/sections/contact-strip.json
+{ "id": "contact-strip", "name": "Contact strip", "savedAt": "…",
+  "content": [ { "type": "Section", "props": { … } } ] }
+
+In a page:
+{ "type": "LinkedSection", "props": { "id": "LinkedSection-…", "section": "contact-strip" } }</pre>
+  </section>
+</div>
+<script>
+(() => {
+  const notes = {
+    a: 'On a page, a linked section is one block you select as a whole. The panel says where it is used and offers Edit (its own screen) or Unlink.',
+    b: 'On a page, you click into a linked section and edit its blocks right there. A note in the panel says it is on other pages too.'
+  };
+  const builder = document.getElementById('builder');
+  const own = document.getElementById('own');
+  const note = document.getElementById('dir-note');
+  const set = (d) => {
+    builder.className = 'builder mock-' + d; note.textContent = notes[d]; own.hidden = d !== 'a';
+    document.querySelectorAll('.switch button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.dir === d)));
+  };
+  document.querySelectorAll('.switch button').forEach((b) => b.addEventListener('click', () => set(b.dataset.dir)));
+  set('a');
+})();
+</script>

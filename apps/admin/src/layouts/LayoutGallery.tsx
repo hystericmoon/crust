@@ -8,6 +8,7 @@
  */
 import { layoutCategories, sectionLayouts, type LayoutCategory } from "@crust/blocks";
 import { renderPreview } from "@crust/render";
+import { sectionHtml, useInSectionEditor, useLinkedSections } from "../linked/store";
 import { createUsePuck, useGetPuck, type ComponentData, type Config, type Data } from "@puckeditor/core";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -36,11 +37,12 @@ const previews = new Map<string, string>();
 /** The layout as published, rendered once. */
 function previewHtml(item: LayoutItem): string {
   // A saved layout deleted and saved again under the same name gets the same id.
-  const key = item.kind === "mine" ? `mine:${item.layout.id}:${item.layout.savedAt}` : `${item.kind}:${item.layout.id}`;
+  const key = item.kind === "mine" || item.kind === "linked" ? `${item.kind}:${item.layout.id}:${item.layout.savedAt}` : `${item.kind}:${item.layout.id}`;
   let html = previews.get(key);
   if (html === undefined) {
     try {
-      html = renderPreview({ root: { props: {} }, content: buildItem(item) });
+      // F043: a linked section's preview is its blocks, not the link.
+      html = item.kind === "linked" ? sectionHtml(item.layout.content) : renderPreview({ root: { props: {} }, content: buildItem(item) });
     } catch {
       html = "";
     }
@@ -79,7 +81,7 @@ function Thumb({ item, maxHeight }: { item: LayoutItem; maxHeight: number }) {
   );
 }
 
-type BuiltIn = Exclude<LayoutItem, { kind: "mine" }>;
+type BuiltIn = Exclude<LayoutItem, { kind: "mine" } | { kind: "linked" }>;
 
 function Card({ item, onPick }: { item: BuiltIn; onPick: (item: LayoutItem) => void }) {
   const { layout } = item;
@@ -95,6 +97,27 @@ function Card({ item, onPick }: { item: BuiltIn; onPick: (item: LayoutItem) => v
         </button>
         <p id={descId} className="lg-card-desc">
           {layout.description}
+        </p>
+      </div>
+    </li>
+  );
+}
+
+/** A linked section (F043): inserting adds a link; the card says where it's used. */
+function LinkedCard({ item, onPick }: { item: Extract<LayoutItem, { kind: "linked" }>; onPick: (item: LayoutItem) => void }) {
+  const { usage } = useLinkedSections();
+  const used = usage[item.layout.id]?.length ?? 0;
+  const descId = `lg-desc-linked-${item.layout.id}`;
+  return (
+    <li className="lg-card">
+      <Thumb item={item} maxHeight={190} />
+      <div className="lg-card-text">
+        <button type="button" className="lg-card-button" aria-describedby={descId} onClick={() => onPick(item)}>
+          <span className="lg-card-name">{item.layout.name}</span>
+          <span className="lg-card-meta">Linked</span>
+        </button>
+        <p id={descId} className="lg-card-desc">
+          {used === 0 ? "Not on any page yet." : `On ${used} page${used === 1 ? "" : "s"}. Editing it changes all of them.`}
         </p>
       </div>
     </li>
@@ -353,8 +376,12 @@ export function LayoutGallery() {
 
   const mine = useMyLayouts();
   const close = () => dialog.current?.close();
-  const items = useMemo(() => filterLayouts(kind, category, query, mine.layouts ?? []), [kind, category, query, mine.layouts]);
+  const linked = useLinkedSections();
+  // A linked section can't hold another one, so its own editor doesn't offer them.
+  const linkedOn = !useInSectionEditor();
+  const items = useMemo(() => filterLayouts(kind, category, query, mine.layouts ?? [], linked.sections ?? []), [kind, category, query, mine.layouts, linked.sections]);
   const mineCount = mine.layouts?.length ?? 0;
+  const linkedCount = linked.sections?.length ?? 0;
   const where = open ? describeInsertion(getPuck().config as Config, (getPuck().appState.data as Data).content, index) : "";
 
   const pick = (item: LayoutItem) => {
@@ -400,6 +427,7 @@ export function LayoutGallery() {
                 { value: "section", label: "Sections" },
                 { value: "page", label: "Whole pages" },
                 { value: "mine", label: mineCount ? `My layouts (${mineCount})` : "My layouts" },
+                ...(linkedOn ? [{ value: "linked" as const, label: linkedCount ? `Linked (${linkedCount})` : "Linked" }] : []),
               ]}
             />
             <button type="button" className="lg-close" onClick={close}>
@@ -421,6 +449,11 @@ export function LayoutGallery() {
                 </ul>
               ) : kind === "page" ? (
                 <p className="lg-side-note">A whole page adds all its sections at once. Change or remove any of them after.</p>
+              ) : kind === "linked" ? (
+                <p className="lg-side-note">
+                  Sections shown on many pages, kept in {linked.where}. Adding one adds a link: edit it once and every page that shows it
+                  changes.
+                </p>
               ) : (
                 <p className="lg-side-note">
                   Sections and pages you saved, kept in {mine.where}. They're copies: renaming or deleting one never changes your pages.
@@ -444,11 +477,29 @@ export function LayoutGallery() {
                   ? ""
                   : kind === "mine"
                     ? `${items.length} of your layout${items.length === 1 ? "" : "s"}`
+                    : kind === "linked"
+                      ? `${items.length} linked section${items.length === 1 ? "" : "s"}`
                     : `${items.length} ${kind === "page" ? "page layout" : "section"}${items.length === 1 ? "" : "s"}${
                         kind === "section" && category !== "All" ? ` in ${category}` : ""
                       }`}
               </p>
-              {kind === "mine" && mine.loadError ? (
+              {kind === "linked" && linked.loadError ? (
+                <div className="lg-empty" role="alert">
+                  <p>{linked.loadError}</p>
+                  <button type="button" className="lg-close" onClick={linked.reload}>
+                    Try again
+                  </button>
+                </div>
+              ) : kind === "linked" && linked.sections === null ? (
+                <p className="lg-empty">Loading your linked sections…</p>
+              ) : kind === "linked" && linkedCount === 0 ? (
+                <div className="lg-empty">
+                  <p>
+                    <strong>No linked sections yet.</strong> Select a section on the page and choose <strong>Make linked</strong> on its
+                    toolbar. Then add it to other pages from here.
+                  </p>
+                </div>
+              ) : kind === "mine" && mine.loadError ? (
                 <div className="lg-empty" role="alert">
                   <p>{mine.loadError}</p>
                   <button type="button" className="lg-close" onClick={mine.reload}>
@@ -469,6 +520,8 @@ export function LayoutGallery() {
                   {items.map((item) =>
                     item.kind === "mine" ? (
                       <MineCard key={`mine:${item.layout.id}`} item={item} onPick={pick} />
+                    ) : item.kind === "linked" ? (
+                      <LinkedCard key={`linked:${item.layout.id}`} item={item} onPick={pick} />
                     ) : (
                       <Card key={`${item.kind}:${item.layout.id}`} item={item} onPick={pick} />
                     ),

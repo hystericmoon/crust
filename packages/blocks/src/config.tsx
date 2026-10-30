@@ -17,6 +17,7 @@ import { spaceVar, spacingField } from "./fields";
 import { sectionStyleIds, sectionStyleNames, tintLevels, tintNames, type SectionStyleId, type TintLevel } from "./section-styles";
 import type { SpacingStep } from "./tokens";
 import { ContactForm, type ContactFormProps } from "./contact-form";
+import { LinkedSection, type LinkedSectionProps } from "./linked-section-block";
 import { Img } from "./media-img";
 import { safeUrl } from "./url";
 import { cleanAnchor, columnClasses, hiddenLabel, hideClasses, type ColumnWidths, type HideOn } from "./responsive";
@@ -92,6 +93,7 @@ export type Components = {
   Quote: QuoteProps & Visibility;
   ImageOverlay: ImageOverlayProps & Visibility;
   ContactForm: ContactFormProps & Visibility;
+  LinkedSection: LinkedSectionProps & Visibility;
 };
 
 const backgroundField = {
@@ -124,6 +126,8 @@ const blocks: Config<Components> = {
     content: { title: "Content", components: ["Heading", "Text", "Image", "Button", "Card", "IconList", "Quote", "Accordion"] },
     media: { title: "Media", components: ["Gallery", "ImageOverlay", "LogoRow"] },
     forms: { title: "Forms", components: ["ContactForm"] },
+    // F043: added through Layouts → Linked sections, not from the block list.
+    linked: { title: "Linked", components: ["LinkedSection"], visible: false },
   },
   components: {
     Section: {
@@ -368,6 +372,7 @@ const blocks: Config<Components> = {
     },
     ...(moreBlocks as unknown as Pick<Config<Components>["components"], keyof typeof moreBlocks>),
     ContactForm: ContactForm as unknown as Config<Components>["components"]["ContactForm"],
+    LinkedSection: LinkedSection as unknown as Config<Components>["components"]["LinkedSection"],
   },
 };
 

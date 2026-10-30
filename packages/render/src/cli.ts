@@ -2,7 +2,7 @@
  * Usage: tsx packages/render/src/cli.ts <contentDir> <outDir>
  * Renders every page in <contentDir>/pages to static HTML in <outDir>.
  */
-import { isBlogPath, parseBlog, parseMediaIndex, parsePost, type Page, type Post, type Site } from "@crust/blocks";
+import { isBlogPath, parseBlog, parseLinkedSection, parseMediaIndex, parsePost, type LinkedSectionFile, type Page, type Post, type Site } from "@crust/blocks";
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -28,7 +28,15 @@ const media = parseMediaIndex(await readFile(join(contentDir, "media.json"), "ut
 const baseUrl = process.env.BASE_URL || site.baseUrl;
 // F037: set by the publish workflow once the contact form service is set up (BLOCKED.md).
 const forms = process.env.CONTACT_FORM_URL ? { endpoint: process.env.CONTACT_FORM_URL, siteKey: process.env.TURNSTILE_SITE_KEY ?? "" } : undefined;
-const options = { pages: pages.map((p) => ({ path: p.path, title: p.title })), media, baseUrl, forms };
+// F043: linked sections, built into every page that uses them.
+const linkedSections = new Map<string, LinkedSectionFile>();
+for (const file of (await readdir(join(contentDir, "sections")).catch(() => [] as string[])).filter((f) => f.endsWith(".json")).sort()) {
+  const id = file.replace(/\.json$/, "");
+  const section = parseLinkedSection(await readFile(join(contentDir, "sections", file), "utf8"), id);
+  if (!section) throw new Error(`content/sections/${file} isn't a linked section Crust can read.`);
+  linkedSections.set(id, section);
+}
+const options = { pages: pages.map((p) => ({ path: p.path, title: p.title })), media, baseUrl, forms, linkedSections };
 const seen = new Map<string, string>();
 for (const [i, file] of pageFiles.entries()) {
   const page = pages[i]!;

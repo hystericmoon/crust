@@ -4,7 +4,7 @@
  */
 import { BLOG_PATH, BlogListView, PostHeaderView, postPath, sortPosts, type BlogSettings, type Post, type Site } from "@crust/blocks";
 import { renderToStaticMarkup } from "react-dom/server";
-import { escapeHtml, formsFor, renderBody, renderDocument, turnstileTag, withMedia, type RenderOptions } from "./render";
+import { escapeHtml, formsFor, renderBody, renderDocument, turnstileTag, withLinkedSections, withMedia, type RenderOptions } from "./render";
 
 const FEED = `${BLOG_PATH}/feed.xml`;
 
@@ -12,7 +12,8 @@ const FEED = `${BLOG_PATH}/feed.xml`;
 const feedLink = (site: Site, blog: BlogSettings) =>
   `<link rel="alternate" type="application/rss+xml" title="${escapeHtml(`${blog.title} | ${site.name}`)}" href="${FEED}">\n`;
 
-export function renderPost(site: Site, post: Post, blog: BlogSettings, baseCss: string, options: RenderOptions = {}): string {
+export function renderPost(site: Site, input: Post, blog: BlogSettings, baseCss: string, options: RenderOptions = {}): string {
+  const post = { ...input, puck: withLinkedSections(input.puck, options, `Post ${postPath(input.slug)}`) };
   const top = renderToStaticMarkup(withMedia(<PostHeaderView post={post} blog={blog} language={site.language} />, options.media));
   const body = `<article class="cr-post">${top}${renderBody(post.puck, options.media, formsFor(options, postPath(post.slug)))}</article>`;
   // F036: a shared post shows its cover.

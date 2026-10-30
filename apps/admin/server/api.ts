@@ -7,7 +7,9 @@
 import type { Page, SavedLayout, Site } from "@crust/blocks/content";
 import { countLinks, relinkPage } from "@crust/blocks/links";
 import { isBlogPath, isSearchPath } from "@crust/blocks/posts";
+import { parseLinkedSection, sectionFileFor, sectionIdForFile } from "@crust/blocks/linked-sections";
 import { AccessError, verifyAccessJwt, type AccessUser } from "./access";
+import { readSections } from "./sections";
 import {
   checkLayout,
   checkLayoutName,
@@ -105,7 +107,7 @@ export async function gate(request: Request, env: Env, fetchFn: typeof fetch, wr
   }
 }
 
-async function readBody(request: Request): Promise<unknown | Response> {
+export async function readBody(request: Request): Promise<unknown | Response> {
   const text = await request.text();
   if (new TextEncoder().encode(text).length > MAX_BYTES) return fail(413, "This page is too large to save (over 512 KB).");
   try {
@@ -301,6 +303,13 @@ export async function handleRename(request: Request, env: Env, fetchFn: typeof f
       relinkChanges.push({ path: other.file, content: serialize({ ...other.page, puck }) });
       relinked.push({ path: other.page.path, title: other.page.title, count });
     }
+    // F043: links inside linked sections follow too; they show on many pages.
+    for (const section of await readSections(cfg, fetchFn)) {
+      const { puck, count } = relinkPage({ root: { props: {} }, content: section.content } as Page["puck"], from, to);
+      if (!count) continue;
+      relinkChanges.push({ path: sectionFileFor(section.id), content: `${JSON.stringify({ ...section, content: puck.content }, null, 2)}\n` });
+      relinked.push({ path: `linked section: ${section.name}`, title: section.name, count });
+    }
     const links = relinked.reduce((n, r) => n + r.count, 0);
     const result = await commitFiles(
       cfg,
@@ -361,6 +370,8 @@ export interface PendingChanges {
   moved: { from: string; to: string }[];
   site: boolean;
   redirects: boolean;
+  /** Linked sections saved since (F043); each changes every page that shows it. */
+  sections?: { id: string; name: string; change: "new" | "edited" | "removed" }[];
 }
 
 /** GET /api/changes: what the next publish will change (F016). */
@@ -381,6 +392,12 @@ export async function handleChanges(request: Request, env: Env, fetchFn: typeof 
     for (const f of await changedFiles(cfg, last.sha, fetchFn)) {
       if (f.path === "content/site.json") changes.site = true;
       else if (f.path === REDIRECTS_FILE) changes.redirects = true;
+      const sectionId = sectionIdForFile(f.path);
+      if (sectionId) {
+        const change = f.status === "removed" ? "removed" : f.status === "added" ? "new" : "edited";
+        const name = change === "removed" ? sectionId : (parseLinkedSection(await readFile(cfg, f.path, fetchFn), sectionId)?.name ?? sectionId);
+        (changes.sections ??= []).push({ id: sectionId, name, change });
+      }
       const path = pagePathForFile(f.path);
       if (!path) continue;
       if (f.status === "removed") changes.removed.push(path);

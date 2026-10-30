@@ -101,6 +101,46 @@ Features Claude suggests. They are not work until the owner adds them to
   similar to Milestone 3. Left out on purpose: gallery lightbox (still a
   proposal above), and anything for other users (that's M6).
 
+## 2026-10-30 — F043 Linked sections (Claude, reversible; owner: "keep on continuing")
+
+- **Design snapshot:** `design/f043-linked-sections-v1.html`
+  (https://claude.ai/artifact/DSXzme9pbKie3guoRpSizj). Claude built its
+  recommended direction **A, its own editor**: on a page a linked section
+  is one block (dashed frame and a label, builder only); its panel lists
+  the pages using it and offers Edit linked section and Unlink here.
+  Direction B (edit in place) can still be chosen before the PR merges.
+  Why A: a typo fix on one page can't silently change four, and "Save for
+  all 4 pages" says exactly what saving does.
+- **Format change (contract, see docs/spec.md):** `content/sections/<id>.json`
+  plus a `LinkedSection` block (`section`: the id). Additive: pages
+  without it are unchanged, so no migration of existing pages.
+- **Publishing:** the renderer builds the section's current blocks into
+  each page before rendering, so search, sitemap, heading and axe checks
+  see the real content. Ids are made unique per use; the link's own
+  Hide on and anchor apply to the first block. A missing section stops
+  the publish with the page's name, rather than quietly dropping it.
+- **Rules:** no h1 inside (an h1 becomes an h2 when made linked; every
+  page has its own); no linked section inside another; delete only when
+  no page or post uses it (the error names them). Renaming a page updates
+  links inside linked sections in the same commit (F018). Linked
+  sections changed since the last publish are listed in the Publish
+  panel ("Linked section “Contact strip”: edited").
+- **Making one:** "Make linked" on a selected Section's toolbar, next to
+  Save as layout; the name starts as the section's heading. The page
+  then holds the link (save the page to keep it). Inserting from Layouts
+  → Linked adds a link, not a copy. Not offered inside a section's own
+  editor.
+- **Its own editor** (`#/section?id=…&from=…`): the same builder with
+  only the section, no page title fields; the save button says "Save for
+  all N pages". Back with unsaved changes warns once, then leaves.
+- **Before GitHub is switched on**, linked sections are kept in this
+  browser, like My layouts.
+- **Stacked:** this branch builds on F041 (gallery previews) and F042
+  (rich text in the sections' Text blocks). Merge order F041, F042, F043.
+- **Not yet:** Quick edit (phone) shows a page's own words only; a
+  linked section is edited in the full builder. Theme packs (F033) don't
+  export linked sections.
+
 ## 2026-10-30 — F042 Rich text in Text blocks (Claude, reversible; owner: "keep on continuing")
 
 - **Design snapshot:** `design/f042-rich-text-v1.html`

@@ -21,9 +21,16 @@ to "Log".
   docs/milestone-4.md. **F040 merged** (PR #26, owner: "merge F040").
   **F041 layouts merged** (PR #27, owner: "Yes, merge all four in
   order"). **F042 rich text** built (PR #28; direction A of its design
-  snapshot, owner can still pick B). Next: F043 linked sections, F044
-  custom domain.
+  snapshot, owner can still pick B). **F043 linked sections built** (PR
+  #29, stacked on F042; direction A, owner can pick B). Next: F044 custom
+  domain.
 - **Waiting on the owner:**
+  - **F043:** look at the design snapshot
+    (https://claude.ai/artifact/DSXzme9pbKie3guoRpSizj; A was built). On
+    the PR's preview link: select a section, press **Make linked**, name
+    it. Add it to a second page from Layouts → Linked. Select it, press
+    **Edit linked section**, change a word, save, go Back: both pages
+    show it. Then try **Unlink here**.
   - **F041:** in the builder press **Layouts**: Features grid, Photo
     gallery, Logo strip, Testimonial, Questions to open and Contact
     form, plus the new Gallery and Logos categories. Insert one and
@@ -380,3 +387,10 @@ to "Log".
   packs and when rendering, and updated on rename. Builder axe check now
   covers the editor; block samples cover links on every section style.
   29 new tests; done_check exits 0.
+- 2026-10-30 — F043 on branch f043-linked-sections (stacked on F041 and
+  F042): design snapshot (design/f043-linked-sections-v1.html, direction
+  A). content/sections/<id>.json + LinkedSection block (spec, DECISIONS);
+  built into pages at publish; /api/sections (make, edit, rename, delete
+  only when unused); Make linked, Layouts → Linked, panel with Edit and
+  Unlink, its own editor screen; links follow renamed pages; Publish
+  panel lists changed sections. 17 new tests; done_check exits 0.

@@ -41,6 +41,9 @@ import { PublishPanel } from "./publish/PublishPanel";
 import { PublishShortcut, usePendingCount } from "./publish/shortcut";
 import { SignOutLink } from "./sign-out";
 import { withRichText } from "./rich-text/field";
+import { withLinkedSectionFields } from "./linked/fields";
+import { LinkedSectionsProvider } from "./linked/store";
+import { SectionEditor } from "./linked/SectionEditor";
 export { SIGN_OUT_URL, SignOutLink } from "./sign-out";
 import { withItemEditing } from "./items/items";
 import { withResponsiveEditing } from "./responsive/fields";
@@ -62,7 +65,7 @@ import { fromPuckData as postFromPuckData, loadPost, saveLocalPost, toPuckData a
 
 const site = siteJson as Site;
 /** The builder's blocks: rich text in Text blocks (F042), image fields with the media library (F034), visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
-const editorConfig = withSiteChrome(withSettingsTabs(withResponsiveEditing(withSectionEditing(withItemEditing(withMediaFields(withRichText(config)))))));
+const editorConfig = withSiteChrome(withSettingsTabs(withResponsiveEditing(withSectionEditing(withItemEditing(withMediaFields(withRichText(withLinkedSectionFields(config))))))));
 /** Posts (F035): the same blocks, with the post's details and top. */
 const postEditorConfig = withPostEditing(editorConfig);
 /** Pages also get search and sharing settings (F036). */
@@ -115,7 +118,9 @@ export type Route =
   | { name: "settings" }
   // F035: the Posts screen and one post in the builder.
   | { name: "posts" }
-  | { name: "post"; slug: string };
+  | { name: "post"; slug: string }
+  /** F043: a linked section's own editor; `from` is where Back goes. */
+  | { name: "section"; id: string; from: string };
 
 export function parseRoute(hash: string): Route {
   if (hash.startsWith("#/settings")) return { name: "settings" };
@@ -123,6 +128,13 @@ export function parseRoute(hash: string): Route {
   if (hash.startsWith("#/post?")) {
     const slug = new URLSearchParams(hash.split("?")[1] ?? "").get("slug");
     if (slug) return { name: "post", slug };
+  }
+  if (hash.startsWith("#/section?")) {
+    const q = new URLSearchParams(hash.split("?").slice(1).join("?"));
+    const id = q.get("id");
+    const from = q.get("from") ?? "";
+    // Back only ever goes to a screen of this app.
+    if (id) return { name: "section", id, from: from.startsWith("#/") ? from : "#/" };
   }
   if (hash.startsWith("#/edit")) {
     const path = new URLSearchParams(hash.split("?")[1] ?? "").get("path");
@@ -192,7 +204,9 @@ export function App() {
             ? "Posts · Crust"
             : route.name === "post"
               ? `Editing post /blog/${route.slug} · Crust`
-              : "Pages · Crust";
+              : route.name === "section"
+                ? "Editing a linked section · Crust"
+                : "Pages · Crust";
   }, [route]);
 
   const saveSiteTokens = async (tokens: SiteTokens) => {
@@ -260,6 +274,27 @@ export function App() {
       <SiteStyleContext.Provider value={siteStyle}>
         <SiteChromeContext.Provider value={{ chrome: chromeDraft, siteName: site.name, path: `/blog/${route.slug}` }}>
           <PostBuilder key={route.slug} slug={route.slug} githubOn={githubOn} shortcut={shortcut("crust-header-link")} />
+          <MediaPicker />
+        </SiteChromeContext.Provider>
+      </SiteStyleContext.Provider>
+    );
+  }
+
+  if (route.name === "section") {
+    if (githubOn === null) return <Loading />;
+    return (
+      <SiteStyleContext.Provider value={siteStyle}>
+        <SiteChromeContext.Provider value={{ chrome: chromeDraft, siteName: site.name, path: "/" }}>
+          <LinkedSectionsProvider githubOn={githubOn}>
+            <SectionEditor
+              key={route.id}
+              id={route.id}
+              back={route.from}
+              githubOn={githubOn}
+              config={editorConfig}
+              overrides={{ puck: BuilderRoot, iframe: BuilderCanvas, actionBar: KeyboardActionBar }}
+            />
+          </LinkedSectionsProvider>
           <MediaPicker />
         </SiteChromeContext.Provider>
       </SiteStyleContext.Provider>
@@ -493,6 +528,7 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
 
   return (
     <SeoSiteProvider value={{ baseUrl: site.baseUrl, siteName: site.name, path }}>
+      <LinkedSectionsProvider githubOn={githubOn}>
       <MyLayoutsProvider githubOn={githubOn}>
         <Puck
           config={pageEditorConfig}
@@ -532,6 +568,7 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
           {status}
         </div>
       </MyLayoutsProvider>
+      </LinkedSectionsProvider>
     </SeoSiteProvider>
   );
 }
@@ -586,6 +623,7 @@ function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boo
 
   return (
     <BlogContext.Provider value={{ blog, language: site.language }}>
+      <LinkedSectionsProvider githubOn={githubOn}>
       <MyLayoutsProvider githubOn={githubOn}>
         <Puck
           config={postEditorConfig}
@@ -618,6 +656,7 @@ function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boo
           {status}
         </div>
       </MyLayoutsProvider>
+      </LinkedSectionsProvider>
     </BlogContext.Provider>
   );
 }

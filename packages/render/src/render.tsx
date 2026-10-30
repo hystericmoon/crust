@@ -1,4 +1,4 @@
-import { config, FormsContext, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
+import { config, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -72,10 +72,23 @@ export interface RenderOptions {
   baseUrl?: string;
   /** Where contact forms send messages, and the Turnstile site key (F037). */
   forms?: { endpoint: string; siteKey: string };
+  /** content/sections (F043): linked sections are built into each page that uses them. */
+  linkedSections?: ReadonlyMap<string, LinkedSectionFile>;
+}
+
+/** A page's or post's blocks with linked sections built in (F043). Says which page uses a missing one. */
+export function withLinkedSections<D extends Page["puck"]>(puck: D, options: RenderOptions, where: string): D {
+  try {
+    return resolveLinkedSections(puck, options.linkedSections ?? new Map());
+  } catch (e) {
+    if (e instanceof MissingLinkedSection) throw new Error(`${where}: ${e.message}`);
+    throw e;
+  }
 }
 
 /** Full HTML document for one page. `baseCss` is packages/blocks/src/styles.css. */
-export function renderPage(site: Site, page: Page, baseCss: string, options: RenderOptions = {}): string {
+export function renderPage(site: Site, input: Page, baseCss: string, options: RenderOptions = {}): string {
+  const page = { ...input, puck: withLinkedSections(input.puck, options, `Page ${input.path}`) };
   const searchable = page.path !== "/404";
   const seo = page.seo ?? {};
   return renderDocument(

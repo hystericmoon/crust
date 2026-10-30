@@ -23,6 +23,8 @@ export function describeChanges(changes: PendingChanges, titles: Map<string, str
     ...changes.removed.map((path) => `${path}: removed`),
     ...changes.moved.map((m) => `${m.from}: moved to ${m.to}`),
     ...(changes.site ? ["Site settings"] : []),
+    // F043: a linked section shows on many pages.
+    ...(changes.sections ?? []).map((sec) => `Linked section “${sec.name}”: ${sec.change === "new" ? "new" : sec.change === "removed" ? "deleted" : "edited"}`),
     // Redirect changes not already explained by a move above.
     ...(changes.redirects && changes.moved.length === 0 ? ["Redirects from old page addresses"] : []),
   ];
