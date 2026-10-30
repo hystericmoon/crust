@@ -32,6 +32,23 @@ impl Tag {
     }
 }
 
+/// Library photos (`/media/<file>`) a page shows, from `src` and `srcset`, in order, without repeats (F034).
+pub fn media_refs(html: &str) -> Vec<String> {
+    let mut refs: Vec<String> = Vec::new();
+    for tag in scan(html).iter().filter(|t| !t.closing && t.name == "img") {
+        let src = tag.attr("src").into_iter();
+        let srcset = tag.attr("srcset").into_iter().flat_map(|s| s.split(',').filter_map(|c| c.split_whitespace().next()));
+        for url in src.chain(srcset) {
+            if let Some(file) = url.strip_prefix("/media/")
+                && !refs.iter().any(|r| r == file)
+            {
+                refs.push(file.to_string());
+            }
+        }
+    }
+    refs
+}
+
 /// Checks one rendered page. `page` is its URL path, used in messages.
 pub fn validate_page(page: &str, html: &str) -> Vec<Issue> {
     let mut messages = Vec::new();

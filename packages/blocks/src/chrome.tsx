@@ -9,6 +9,7 @@
  */
 import type { ReactNode } from "react";
 import type { MenuLink, SiteFooter, SiteHeader } from "./chrome-model";
+import { Img } from "./media-img";
 import { safeUrl } from "./url";
 
 export * from "./chrome-model";
@@ -39,7 +40,7 @@ export function SiteHeaderView({ header, path }: { header: SiteHeader; path: str
     </a>
   ) : null;
   const logo = header.logo.imageSrc.trim() ? (
-    <img className="cr-logo-image" src={safeUrl(header.logo.imageSrc)} alt={header.logo.imageAlt} />
+    <Img className="cr-logo-image" src={header.logo.imageSrc} size="small" alt={header.logo.imageAlt} />
   ) : (
     header.logo.text
   );

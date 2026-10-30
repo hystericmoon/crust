@@ -1,9 +1,10 @@
 //! Crust publish engine.
 //!
 //! Takes a folder of rendered HTML pages and finishes it into a deployable
-//! static site: validation, `sitemap.xml`, `robots.txt`, and (in later
-//! features) image optimisation and the search index.
+//! static site: validation, `sitemap.xml`, `robots.txt`, resized copies of
+//! library photos (F034), and (in later features) the search index.
 
+pub mod media;
 pub mod redirects;
 pub mod validate;
 
@@ -13,7 +14,8 @@ use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
 pub use redirects::{Redirect, load_redirects, plan_redirects};
-pub use validate::{Issue, validate_page};
+pub use media::{MediaReport, publish_media};
+pub use validate::{Issue, media_refs, validate_page};
 
 /// What a publish run produced, for the summary printed to the log.
 #[derive(Debug, PartialEq, Eq)]
@@ -80,8 +82,31 @@ pub fn validate_site(site_dir: &Path) -> Result<Vec<Issue>> {
     for (path, file) in page_files(site_dir)? {
         let html = fs::read_to_string(&file).with_context(|| format!("Couldn't read {}", file.display()))?;
         issues.extend(validate_page(&path, &html));
+        // F034: every library photo a page shows must be in the site (copied by publish_media).
+        let mut missing: Vec<String> = Vec::new();
+        for file in media_refs(&html) {
+            let original = media_original(&file);
+            if !site_dir.join("media").join(&file).is_file() && !missing.contains(&original) {
+                missing.push(original);
+            }
+        }
+        issues.extend(missing.into_iter().map(|original| Issue {
+            page: path.clone(),
+            message: format!("The photo {original} isn't in the media library. Choose another photo for this image, or upload it again."),
+        }));
     }
     Ok(issues)
+}
+
+/// `harbour-480w.jpg` → `harbour.jpg`, so a missing photo is named once, as the owner knows it.
+fn media_original(file: &str) -> String {
+    if let Some((stem, ext)) = file.rsplit_once('.')
+        && let Some((base, width)) = stem.rsplit_once('-')
+        && width.strip_suffix('w').is_some_and(|n| media::VARIANT_WIDTHS.iter().any(|w| w.to_string() == n))
+    {
+        return format!("{base}.{ext}");
+    }
+    file.to_string()
 }
 
 /// Plain-language summary of validation problems, one per line.

@@ -1,0 +1,278 @@
+<title>Media Library Snapshot</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: same language as the F025–F029 snapshots. Direction switch on top, a working mock of the builder below, then the storage question. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6;
+  --accent:#4338ca; --accent-ink:#ffffff; --accent-soft:#e7e6fb; --ok:#127a4b; --bad:#b42318; --bad-soft:#fdecea;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --bad:#ff8a7d; --bad-soft:#3a1d1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --bad:#ff8a7d; --bad-soft:#3a1d1b; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1320px;margin:0 auto;padding-block:28px 64px;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.05;text-wrap:balance}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.35rem;font-weight:800}
+h3{font-size:1.02rem;font-weight:600}
+.label{font:500 .7rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.lede{color:var(--soft);max-width:70ch;margin:0}
+p{margin:0}
+button,input,textarea{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.dirs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.dir{border:1.5px solid var(--line);background:var(--panel);border-radius:14px;padding:12px 14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.dir b{font-family:var(--f-display);font-size:1.05rem}
+.dir span{color:var(--soft);font-size:.85rem}
+.dir[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.rec,.dir .rec{align-self:flex-start;color:var(--accent-ink);font:500 .66rem var(--f-mono);background:var(--accent);padding:3px 7px;border-radius:999px}
+
+/* Mock builder */
+.app{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.bar .t{font-weight:600;margin-right:auto}
+.pill{border:1px solid var(--line);border-radius:8px;padding:0 12px;min-height:34px;display:inline-flex;align-items:center;background:var(--panel);font-size:.85rem;cursor:default}
+.pill.on{border-color:var(--accent);color:var(--accent);font-weight:600}
+.body{display:grid;grid-template-columns:220px minmax(0,1fr) 300px;min-height:560px}
+.side{border-right:1px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.tabs{display:flex;gap:4px}
+.tabs span{flex:1;text-align:center;font-size:.78rem;padding:6px 0;border-radius:7px;color:var(--soft)}
+.tabs span.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.blk{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.82rem}
+.canvas{background:var(--bg);padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.cv{background:#fff;color:#18181b;border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:10px;border:1px solid var(--line)}
+.cv h4{margin:0;font:700 1.2rem system-ui,sans-serif}
+.cv .img{border-radius:8px;aspect-ratio:16/7;outline:2px solid #4338ca;outline-offset:3px}
+.props{border-left:1px solid var(--line);padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.fname{font-size:.82rem;font-weight:600}
+.small{color:var(--soft);font-size:.78rem}
+.imgfield{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px}
+.thumb{width:64px;height:48px;border-radius:6px;flex:none}
+.btn{border:1.5px solid var(--accent);color:var(--accent);background:var(--panel);border-radius:8px;min-height:36px;padding:0 12px;font-weight:600;font-size:.84rem;cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.input{border:1px solid var(--soft);border-radius:8px;min-height:36px;padding:6px 10px;width:100%;background:var(--panel)}
+
+/* "Photos": gradients standing in for real uploads */
+.p1{background:linear-gradient(135deg,#f4a261,#e76f51 55%,#264653)}
+.p2{background:linear-gradient(160deg,#a8dadc,#457b9d 60%,#1d3557)}
+.p3{background:linear-gradient(120deg,#e9c46a,#2a9d8f)}
+.p4{background:linear-gradient(200deg,#ddd5c8,#8d7b68)}
+.p5{background:linear-gradient(140deg,#cdb4db,#a2d2ff 60%,#bde0fe)}
+.p6{background:linear-gradient(180deg,#90be6d,#43aa8b 50%,#277da1)}
+.p7{background:linear-gradient(135deg,#f8edeb,#fec5bb 50%,#fcd5ce)}
+.p8{background:linear-gradient(160deg,#3d405b,#81b29a)}
+
+/* Picker dialog (A) */
+.dlgwrap{position:relative}
+.dlg{position:absolute;inset:16px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 60px rgb(0 0 0 / .25);display:grid;grid-template-rows:auto minmax(0,1fr);overflow:hidden}
+.dlg header{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.dlg header h3{margin-right:auto}
+.dlgbody{display:grid;grid-template-columns:minmax(0,1fr) 260px;min-height:0}
+.gridpane{padding:12px;display:flex;flex-direction:column;gap:10px;overflow:auto}
+.drop{border:2px dashed var(--line);border-radius:10px;padding:12px;text-align:center;color:var(--soft);font-size:.85rem}
+.drop b{color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.ph{aspect-ratio:4/3;border-radius:8px;border:0;cursor:pointer;position:relative;padding:0}
+.ph[aria-pressed="true"]{outline:3px solid var(--accent);outline-offset:2px}
+.ph .warn{position:absolute;left:4px;bottom:4px;background:var(--bad);color:#fff;font:500 .62rem var(--f-mono);padding:2px 5px;border-radius:4px}
+.detail{border-left:1px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:10px;overflow:auto}
+.detail .big{aspect-ratio:4/3;border-radius:8px}
+.meta{font:500 .72rem var(--f-mono);color:var(--soft);display:flex;flex-direction:column;gap:2px}
+.err{background:var(--bad-soft);color:var(--bad);border-radius:8px;padding:6px 8px;font-size:.78rem}
+
+/* Media page (C) */
+.mediapage{padding:16px;display:flex;flex-direction:column;gap:12px}
+.table{display:grid;gap:6px}
+.trow{display:grid;grid-template-columns:56px minmax(0,1.4fr) minmax(0,1fr) 90px;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:.84rem}
+.trow .thumb{width:56px;height:42px}
+.trow .used{color:var(--soft)}
+.badge{font:500 .66rem var(--f-mono);padding:2px 6px;border-radius:999px;justify-self:start}
+.badge.ok{color:var(--ok);border:1px solid currentColor}
+.badge.bad{color:var(--bad);border:1px solid currentColor}
+.popover{border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;box-shadow:0 8px 30px rgb(0 0 0 / .15);background:var(--panel)}
+.mini{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.mini .ph{aspect-ratio:1}
+
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.card ul{margin:0;padding-left:18px;color:var(--soft);font-size:.88rem;display:flex;flex-direction:column;gap:3px}
+.card .pro{color:var(--ok);font-weight:600;font-size:.8rem}
+.card .con{color:var(--bad);font-weight:600;font-size:.8rem}
+.q{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.opt{border:1.5px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.opt.recd{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.opt dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.86rem}
+.opt dt{color:var(--soft)}
+.opt dd{margin:0}
+.ask{border-left:4px solid var(--accent);padding:10px 14px;background:var(--accent-soft);border-radius:0 12px 12px 0}
+
+@media (max-width:1000px){
+  .body{grid-template-columns:minmax(0,1fr)}
+  .side,.props{border:0;border-top:1px solid var(--line)}
+  .side{order:3}
+  .dlgbody{grid-template-columns:minmax(0,1fr)}
+  .detail{border-left:0;border-top:1px solid var(--line)}
+  .dlg{position:static;margin:12px;box-shadow:none}
+}
+@media (max-width:760px){
+  .dirs,.cards,.opts{grid-template-columns:minmax(0,1fr)}
+  .trow{grid-template-columns:48px minmax(0,1fr);}
+  .trow .used,.trow .badge{grid-column:2}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <span class="label">F034 · Design snapshot v1 · Milestone 3</span>
+    <h1>Media library</h1>
+    <p class="lede">Today every image is a pasted web address. F034 lets you upload photos from your Mac or phone, keep them in one library, and pick them in any image field. Alt text is asked for when a photo comes in, and visitors get resized copies that suit their screen. Three ways to arrange it are below, plus one question about where the photos are stored.</p>
+  </header>
+
+  <div class="dirs" role="group" aria-label="Directions">
+    <button class="dir" type="button" data-dir="a" aria-pressed="true"><span class="rec">Recommended</span><b>A · Picker from the field</b><span>Every image field gets "Choose image". A large dialog opens with upload, search and a details pane.</span></button>
+    <button class="dir" type="button" data-dir="b" aria-pressed="false"><b>B · Media tab in the sidebar</b><span>Photos live next to Blocks and Outline. Drag one onto an image, or use "Put in selected block".</span></button>
+    <button class="dir" type="button" data-dir="c" aria-pressed="false"><b>C · Media page + quick picker</b><span>A full Media page beside Pages and Site settings, and a small popover of recent photos in fields.</span></button>
+  </div>
+
+  <section class="app" aria-label="Builder mock-up">
+    <div class="bar">
+      <span class="t">Home</span>
+      <span class="pill">Pages</span><span class="pill" id="media-pill" hidden>Media</span><span class="pill">Layouts</span><span class="pill">Site settings</span><span class="pill" style="background:var(--ink);color:var(--panel);border-color:var(--ink)">Save draft</span>
+    </div>
+
+    <!-- A -->
+    <div data-view="a" class="dlgwrap">
+      <div class="body" aria-hidden="true">
+        <div class="side"><div class="tabs"><span class="on">Blocks</span><span>Outline</span></div><div class="blk">Section</div><div class="blk">Heading</div><div class="blk">Image</div><div class="blk">Gallery</div></div>
+        <div class="canvas"><div class="cv"><h4>Our studio</h4><div class="img p2"></div></div></div>
+        <div class="props"><span class="fname">Image</span><div class="imgfield"><div class="thumb p2"></div><span class="small">harbour.jpg</span></div></div>
+      </div>
+      <div class="dlg" role="dialog" aria-label="Choose an image (mock-up)">
+        <header><h3>Choose an image</h3><input class="input" id="a-search" style="max-width:220px" placeholder="Search by alt text or name" aria-label="Search photos"><button class="btn" type="button">Close</button></header>
+        <div class="dlgbody">
+          <div class="gridpane">
+            <div class="drop"><b>Upload photos</b> or drop them here · JPG, PNG, WebP, up to 20 MB · we resize big ones to 2400 px first</div>
+            <div class="grid" id="grid-a"></div>
+          </div>
+          <div class="detail" id="detail-a"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div data-view="b" hidden>
+      <div class="body">
+        <div class="side">
+          <div class="tabs"><span>Blocks</span><span>Outline</span><span class="on">Media</span></div>
+          <div class="drop" style="padding:8px"><b>Upload</b> or drop</div>
+          <div class="grid" id="grid-b" style="grid-template-columns:repeat(2,1fr)"></div>
+        </div>
+        <div class="canvas"><div class="cv"><h4>Our studio</h4><div class="img p2" id="b-img"></div><p style="margin:0;font-size:.8rem;color:#52525b">Drag a photo here, or select this image and press "Put in selected block".</p></div></div>
+        <div class="props"><span class="fname">Selected photo</span><div class="big p4" id="b-big" style="aspect-ratio:4/3;border-radius:8px"></div><label class="fname" for="b-alt">Alt text</label><input class="input" id="b-alt" value="Linen and clay mugs on a shelf"><button class="btn primary" type="button" id="b-put">Put in selected block</button><p class="small">Dragging is a shortcut; the button does the same from the keyboard.</p></div>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div data-view="c" hidden>
+      <div class="body" style="grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)">
+        <div class="mediapage">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><h3 style="margin-right:auto">Media · 8 photos · 14 MB</h3><input class="input" style="max-width:200px" placeholder="Search" aria-label="Search media" id="c-search"><button class="btn primary" type="button">Upload</button></div>
+          <div class="table" id="table-c"></div>
+        </div>
+        <div class="props" style="gap:10px">
+          <span class="fname">In the builder: image field</span>
+          <div class="imgfield"><div class="thumb p2"></div><span class="small">harbour.jpg</span></div>
+          <div class="popover"><span class="small">Recent photos</span><div class="mini" id="mini-c"></div><button class="btn" type="button">Open Media page…</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cards" aria-label="Trade-offs">
+    <article class="card"><h3>A · Picker from the field</h3><ul><li>Works the same in every image field, including Gallery and Logo row items.</li><li>Big previews make choosing and writing alt text easy.</li><li>A familiar pattern (it's how YOOtheme and WordPress do it).</li></ul><span class="pro">Best for: picking and describing photos. No dragging needed.</span><span class="con">Cost: a dialog covers the page while you choose.</span></article>
+    <article class="card"><h3>B · Media tab in the sidebar</h3><ul><li>Photos are always one click away while you build.</li><li>Drag-and-drop feels quick on a Mac.</li><li>Thumbnails are small; alt text gets less room.</li></ul><span class="pro">Best for: placing many photos fast.</span><span class="con">Cost: drag-first, and cramped on small screens and phones.</span></article>
+    <article class="card"><h3>C · Media page + quick picker</h3><ul><li>A full page to tidy the library: alt text, unused photos, sizes.</li><li>Shows where each photo is used before you delete it.</li><li>Two places to learn instead of one.</li></ul><span class="pro">Best for: managing a large library.</span><span class="con">Cost: more to build; the popover alone can't upload.</span></article>
+  </section>
+
+  <section class="q" aria-labelledby="q-h">
+    <span class="label">One question for you</span>
+    <h2 id="q-h">Where should uploaded photos live?</h2>
+    <div class="opts">
+      <div class="opt recd">
+        <span class="rec">Recommended</span>
+        <h3>1 · In GitHub, next to your pages</h3>
+        <dl><dt>Setup</dt><dd>None. It uses the GitHub access saving already has.</dd><dt>Cost</dt><dd>$0</dd><dt>Undo</dt><dd>Every upload is in the history, like your pages.</dd><dt>Limit</dt><dd>About 1 GB of photos (around 2,000 resized photos). Big photos are shrunk to 2400 px in your browser before upload.</dd></dl>
+      </div>
+      <div class="opt">
+        <h3>2 · Cloudflare R2 storage</h3>
+        <dl><dt>Setup</dt><dd>You turn on R2 in Cloudflare and add one more secret. Cloudflare asks for a payment method to turn R2 on, even for the free tier.</dd><dt>Cost</dt><dd>$0 up to 10 GB</dd><dt>Undo</dt><dd>Deleted photos are gone.</dd><dt>Limit</dt><dd>10 GB free.</dd></dl>
+      </div>
+    </div>
+    <p class="ask">Claude's recommendation: <b>A</b>, with photos in <b>GitHub (1)</b>. It needs no new accounts, and it can move to R2 later without changing how the library looks. Either way, the published site gets resized copies (480 to 2400 px wide) with <code>srcset</code>, so phones download small files.</p>
+  </section>
+</div>
+
+<script>
+const photos=[
+  {c:"p1",name:"sunset-terrace.jpg",alt:"Terrace at sunset with lanterns",kb:612,used:["Home","About"]},
+  {c:"p2",name:"harbour.jpg",alt:"Boats in the harbour at dawn",kb:844,used:["Home"]},
+  {c:"p3",name:"studio-plants.jpg",alt:"Plants on the studio windowsill",kb:530,used:[]},
+  {c:"p4",name:"mugs.jpg",alt:"Linen and clay mugs on a shelf",kb:401,used:["Shop"]},
+  {c:"p5",name:"workshop-01.jpg",alt:"",kb:960,used:["Workshops"]},
+  {c:"p6",name:"garden.jpg",alt:"Kitchen garden in spring",kb:722,used:[]},
+  {c:"p7",name:"ceramics.jpg",alt:"Pink glazed bowls drying",kb:488,used:["Shop","Home"]},
+  {c:"p8",name:"team.jpg",alt:"The team around the long table",kb:1210,used:["About"]},
+];
+let sel=1;
+const $=(s)=>document.querySelector(s);
+function grid(el,size){
+  el.innerHTML="";
+  photos.forEach((p,i)=>{
+    const b=document.createElement("button");
+    b.type="button";b.className="ph "+p.c;b.setAttribute("aria-pressed",String(i===sel));
+    b.setAttribute("aria-label",(p.alt||p.name)+(p.alt?"":" (needs alt text)"));
+    if(!p.alt&&size!=="mini"){const w=document.createElement("span");w.className="warn";w.textContent="No alt";b.appendChild(w);}
+    b.onclick=()=>{sel=i;render();};
+    el.appendChild(b);
+  });
+}
+function detail(){
+  const p=photos[sel];const d=$("#detail-a");
+  d.innerHTML=`<div class="big ${p.c}"></div>
+  <label class="fname" for="a-alt">Alt text <span class="small">(required)</span></label>
+  <textarea class="input" id="a-alt" rows="2">${p.alt}</textarea>
+  ${p.alt?"":'<p class="err">Describe the photo so people using screen readers know what it shows. Publishing is blocked without it.</p>'}
+  <div class="meta"><span>${p.name}</span><span>${p.kb} KB · 2400 × 1600</span><span>Used on: ${p.used.length?p.used.join(", "):"no pages yet"}</span></div>
+  <button class="btn primary" type="button" ${p.alt?"":"disabled aria-disabled=true"}>Use this photo</button>`;
+  $("#a-alt").oninput=(e)=>{photos[sel].alt=e.target.value;grid($("#grid-a"));const ok=!!e.target.value.trim();d.querySelector(".err")?.toggleAttribute("hidden",ok);const u=d.querySelector(".btn.primary");u.disabled=!ok;};
+}
+function table(){
+  const t=$("#table-c");t.innerHTML="";
+  photos.forEach((p)=>{
+    const r=document.createElement("div");r.className="trow";
+    r.innerHTML=`<div class="thumb ${p.c}"></div><div><b>${p.alt||p.name}</b><div class="small">${p.name} · ${p.kb} KB</div></div><div class="used">${p.used.length?"On "+p.used.join(", "):"Not used"}</div><span class="badge ${p.alt?"ok":"bad"}">${p.alt?"Alt ok":"Needs alt"}</span>`;
+    t.appendChild(r);
+  });
+}
+function render(){
+  grid($("#grid-a"));grid($("#grid-b"));grid($("#mini-c"),"mini");detail();table();
+  const p=photos[sel];$("#b-big").className="big "+p.c;$("#b-alt").value=p.alt;
+}
+$("#b-put").onclick=()=>{$("#b-img").className="img "+photos[sel].c;};
+document.querySelectorAll(".dir").forEach((b)=>b.onclick=()=>{
+  document.querySelectorAll(".dir").forEach((x)=>x.setAttribute("aria-pressed",String(x===b)));
+  document.querySelectorAll("[data-view]").forEach((v)=>v.hidden=v.dataset.view!==b.dataset.dir);
+  $("#media-pill").hidden=b.dataset.dir!=="c";
+});
+render();
+</script>

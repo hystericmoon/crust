@@ -4,6 +4,15 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Media library (F034):** every image field now has "Choose image".
+  Upload photos from your Mac or phone (button or drag and drop), find
+  them again by searching, and pick one from a grid. Each photo needs a
+  short description (alt text) before it can be used; it's filled into
+  the block for you. Big photos are shrunk to 2400 px before upload, and
+  hidden location details are removed. Photos are kept in GitHub next to
+  your pages. On the published site, phones get smaller copies of each
+  photo automatically. Pasting a web address still works.
+
 - **Theme packs (F033):** Site settings → Theme pack. Download your
   site's look (style, header and footer look, My layouts) as one .crust
   file, and bring one into another Crust site. A pack is checked first

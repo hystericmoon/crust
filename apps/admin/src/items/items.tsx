@@ -7,10 +7,13 @@
 import type { Components } from "@crust/blocks";
 import type { Config } from "@puckeditor/core";
 import { useId, useState } from "react";
+import { ImageField } from "../media/ImageField";
 
 type SubField =
   | { type: "text" | "textarea"; label?: string }
-  | { type: "select" | "radio"; label?: string; options: { label: string; value: string }[] };
+  | { type: "select" | "radio"; label?: string; options: { label: string; value: string }[] }
+  // F034: a photo from the media library; picking one also fills `altKey`.
+  | { type: "image"; label?: string; altKey?: string };
 
 export type ItemsFieldDef = {
   type: "array";
@@ -53,6 +56,7 @@ export function ItemsField({ field, value, onChange }: { field: ItemsFieldDef; v
     });
 
   const set = (i: number, key: string, v: string) => onChange(items.map((it, j) => (j === i ? { ...it, [key]: v } : it)));
+  const setMany = (i: number, patch: Item) => onChange(items.map((it, j) => (j === i ? { ...it, ...patch } : it)));
   const move = (i: number, by: number) => {
     const j = i + by;
     if (j < 0 || j >= items.length) return;
@@ -124,7 +128,18 @@ export function ItemsField({ field, value, onChange }: { field: ItemsFieldDef; v
                   </button>
                 </div>
                 <div className="it-body" id={`${id}-${i}-body`} hidden={!expanded}>
-                  {Object.entries(field.arrayFields).map(([key, sub], k) => (
+                  {Object.entries(field.arrayFields).map(([key, sub], k) =>
+                    sub.type === "image" ? (
+                      <ImageField
+                        key={key}
+                        firstId={k === 0 ? `${id}-${i}-first` : undefined}
+                        label={sub.label ?? key}
+                        context={`${cap(noun)} ${i + 1}`}
+                        value={typeof item[key] === "string" ? (item[key] as string) : ""}
+                        onChange={(v) => set(i, key, v)}
+                        onPick={sub.altKey ? (src, alt) => setMany(i, { [key]: src, [sub.altKey!]: alt }) : undefined}
+                      />
+                    ) : (
                     <SubInput
                       key={key}
                       id={k === 0 ? `${id}-${i}-first` : `${id}-${i}-${key}`}
@@ -134,7 +149,8 @@ export function ItemsField({ field, value, onChange }: { field: ItemsFieldDef; v
                       value={typeof item[key] === "string" ? (item[key] as string) : ""}
                       onChange={(v) => set(i, key, v)}
                     />
-                  ))}
+                    ),
+                  )}
                 </div>
               </li>
             );

@@ -106,6 +106,16 @@ export async function readFile(cfg: GitHubConfig, path: string, fetchFn: typeof 
   return fromBase64(body.content);
 }
 
+/** Reads a file's raw bytes (any size up to 100 MB); null if missing (F034 photos). */
+export async function readRaw(cfg: GitHubConfig, path: string, fetchFn: typeof fetch = fetch): Promise<ArrayBuffer | null> {
+  const res = await fetchFn(`${api}/repos/${cfg.repo}/contents/${encodePath(path)}?ref=${encodeURIComponent(cfg.branch)}`, {
+    headers: { ...headers(cfg.token), Accept: "application/vnd.github.raw+json" },
+  });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new GitHubError(explain(res.status), res.status);
+  return res.arrayBuffer();
+}
+
 /** When a file last changed (latest commit touching it), as an ISO date. */
 export async function lastCommitDate(cfg: GitHubConfig, path: string, fetchFn: typeof fetch = fetch): Promise<string | null> {
   const res = await fetchFn(
@@ -152,10 +162,11 @@ export async function latestRuns(cfg: GitHubConfig, workflow: string, fetchFn: t
   return body.workflow_runs.map((r) => ({ id: r.id, status: r.status, conclusion: r.conclusion, createdAt: r.created_at, url: r.html_url }));
 }
 
-/** One file in a multi-file commit: new text, or null to delete it. */
+/** One file in a multi-file commit: new text, or null to delete it. `base64` is for binary files (F034 photos). */
 export interface FileChange {
   path: string;
   content: string | null;
+  base64?: string;
 }
 
 /**
@@ -185,12 +196,18 @@ export async function commitFiles(
 
   const ref = await send<{ object: { sha: string } }>(`${repo}/ref/heads/${encodePath(cfg.branch)}`, "GET");
   const head = await send<{ tree: { sha: string } }>(`${repo}/commits/${ref.object.sha}`, "GET");
+  // Binary files can't go inline in a tree; they're uploaded as blobs first.
+  const blobs = await Promise.all(
+    changes.map((c) => (c.base64 === undefined ? null : send<{ sha: string }>(`${repo}/blobs`, "POST", { content: c.base64, encoding: "base64" }))),
+  );
   const tree = await send<{ sha: string }>(`${repo}/trees`, "POST", {
     base_tree: head.tree.sha,
-    tree: changes.map((c) =>
-      c.content === null
-        ? { path: c.path, mode: "100644", type: "blob", sha: null }
-        : { path: c.path, mode: "100644", type: "blob", content: c.content },
+    tree: changes.map((c, i) =>
+      blobs[i]
+        ? { path: c.path, mode: "100644", type: "blob", sha: blobs[i].sha }
+        : c.content === null
+          ? { path: c.path, mode: "100644", type: "blob", sha: null }
+          : { path: c.path, mode: "100644", type: "blob", content: c.content },
     ),
   });
   const commit = await send<{ sha: string; html_url: string }>(`${repo}/commits`, "POST", {

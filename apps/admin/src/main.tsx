@@ -11,6 +11,7 @@ import "./layouts/layouts.css";
 import "./responsive/responsive.css";
 import "./tabs/tabs.css";
 import "./items/items.css";
+import "./media/media.css";
 import "./chrome-canvas.css";
 import "./pages/pages.css";
 import { App } from "./App";

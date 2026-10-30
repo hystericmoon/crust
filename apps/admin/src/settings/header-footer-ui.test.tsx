@@ -129,7 +129,7 @@ describe("Site settings: Header & menu and Footer", () => {
   it("won't save a logo image without a description, and marks the group to fix", async () => {
     const { onSave } = settings();
     openGroup("Header & menu");
-    act(() => fireEvent.change(screen.getByLabelText("Logo image address (optional)"), { target: { value: "/logo.svg" } }));
+    act(() => fireEvent.change(screen.getByLabelText("Web address for logo image (optional)"), { target: { value: "/logo.svg" } }));
     expect(within(screen.getByRole("navigation", { name: "Style groups" })).getByRole("button", { name: /^Header & menu \(fix\)/ })).toBeTruthy();
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Save" })));
     expect(onSave).not.toHaveBeenCalled();

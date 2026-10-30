@@ -1,4 +1,4 @@
-import { config, migrateChrome, SiteFooterView, SiteHeaderView, tokensToCss, type Page, type Site } from "@crust/blocks";
+import { config, MediaContext, migrateChrome, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -31,8 +31,12 @@ function ComponentShell({ render, props }: { render: AnyComponentConfig["render"
   return <>{render({ ...props, puck: { isEditing: false } })}</>;
 }
 
-export function renderBody(data: Data): string {
-  return renderToStaticMarkup(<>{data.content.map((item) => renderItem(item))}</>);
+/** With the media library (F034), uploaded photos get their size and a srcset of resized copies. */
+const withMedia = (node: ReactNode, media: MediaItem[] | undefined) =>
+  media ? <MediaContext.Provider value={new Map(media.map((m) => [m.file, m]))}>{node}</MediaContext.Provider> : node;
+
+export function renderBody(data: Data, media?: MediaItem[]): string {
+  return renderToStaticMarkup(withMedia(<>{data.content.map((item) => renderItem(item))}</>, media));
 }
 
 const escapeHtml = (s: string) =>
@@ -43,14 +47,16 @@ export interface RenderOptions {
   pages?: { path: string; title: string }[];
   /** For "{year}" in the footer; this year by default. */
   year?: number;
+  /** content/media.json (F034). Without it, images are published as they are. */
+  media?: MediaItem[];
 }
 
 /** Full HTML document for one page. `baseCss` is packages/blocks/src/styles.css. */
 export function renderPage(site: Site, page: Page, baseCss: string, options: RenderOptions = {}): string {
-  const body = renderBody(page.puck);
+  const body = renderBody(page.puck, options.media);
   const { header, footer } = migrateChrome(site, options.pages ?? [{ path: page.path, title: page.title }]);
   const year = options.year ?? new Date().getFullYear();
-  const top = renderToStaticMarkup(<SiteHeaderView header={header} path={page.path} />);
+  const top = renderToStaticMarkup(withMedia(<SiteHeaderView header={header} path={page.path} />, options.media));
   const bottom = renderToStaticMarkup(<SiteFooterView footer={footer} siteName={site.name} path={page.path} year={year} />);
   // A sticky header would cover whatever is scrolled or tabbed to; the page keeps room for it (WCAG 2.4.11).
   const htmlClass = header.show && header.sticky ? ' class="cr-has-sticky"' : "";

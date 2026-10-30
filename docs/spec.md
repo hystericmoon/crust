@@ -1,6 +1,6 @@
 # Crust — product spec
 
-Working name. Owner: Hosni. Status: Milestone 1 complete (2026-10-29); Milestone 2 planned in `docs/milestone-2.md`.
+Working name. Owner: Hosni. Status: Milestones 1 and 2 complete (2026-10-29/30); Milestone 3 in progress, `docs/milestone-3.md`.
 
 ## What it is
 
@@ -50,7 +50,7 @@ Public site: static HTML on Cloudflare Pages (later also FTP to any host)
 | Builder | Puck (`@puckeditor/core`, MIT) |
 | Admin UI | React + TypeScript + Vite; shadcn/ui + Tailwind and Lexical later |
 | Rendering | React `renderToStaticMarkup` in `packages/render` |
-| Publish engine | Rust, `crates/crust-publish` |
+| Publish engine | Rust, `crates/crust-publish` (images: `image` crate) |
 | Search | Pagefind (later) |
 | Hosting/CI | Cloudflare Pages, GitHub Actions |
 | Forms (later) | Cloudflare Workers + Turnstile |
@@ -121,6 +121,18 @@ uploaded in Site settings, never stored in `content/`:
 ```
 `tokens`, `chrome` and `layouts` are each optional. Importing checks
 everything (see `readThemePack`) and drops unknown fields.
+
+`content/media/<file>` and `content/media.json` (optional, added with F034):
+uploaded photos (JPG, PNG, WebP; at most 2400 px) and their details.
+```json
+[{ "file": "harbour.jpg", "alt": "Boats in the harbour at dawn", "width": 2400,
+   "height": 1600, "bytes": 512000, "uploadedAt": "…" }]
+```
+Pages use a photo by its address, `/media/<file>`, in any image field
+(web addresses still work). `alt` is the library's description, copied
+into a block's alt field when picked. Publishing copies the photos into
+the site with resized copies (`<name>-480w.jpg`, `-960w`, `-1440w`) for
+`srcset`; those are never stored in `content/`.
 
 `content/layouts/<id>.json` (optional, added with F027)
 ```json
