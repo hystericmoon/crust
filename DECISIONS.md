@@ -28,6 +28,9 @@ Features Claude suggests. They are not work until the owner adds them to
 - **Layouts that use the new blocks.** Add FAQ, gallery, logo strip and
   features-grid layouts to the Layout library (F026), so the new blocks
   are one click away. Small.
+- **Use the new layouts in the whole-page layouts.** For example the
+  Contact page with the Contact form, Landing with the Logo strip,
+  Services with Questions to open. Small; changes F026's page layouts.
 - **Gallery lightbox (opt-in).** Click a photo to see it large. Needs a
   little JavaScript on pages that use it; off by default.
 - **Milestone 3 proposal: "Real content"** — *approved by the owner on
@@ -143,6 +146,30 @@ Features Claude suggests. They are not work until the owner adds them to
   changes (another block, builder undo) apply when it doesn't.
 - **Builder axe check** now also selects a Text block, so the editor and
   toolbar are checked.
+## 2026-10-30 — F041 Layouts for the new blocks (Claude, reversible; owner: "keep on continuing")
+
+- **Six section layouts**, one per block family the owner named:
+  - Features grid (Grid, 6 cards, 3 columns)
+  - Photo gallery (Gallery, 6 square photos)
+  - Logo strip ("Trusted by teams at" + Logo row, 5 logos, grey until hovered)
+  - Testimonial (large centred Quote, photo optional)
+  - Questions to open (Accordion, 4 questions, all closed)
+  - Contact form (details with an Icon list beside the Contact form)
+- **Two new categories, Gallery and Logos.** The others fit existing
+  ones (Features, Testimonials, FAQ, Contact).
+- **No design snapshot:** these reuse the blocks and section styles as
+  they are, like F026's layouts; the gallery cards are the preview.
+- **Photos and logos start empty, alt text too.** No sample pictures
+  (they'd be someone else's or need hosting), and no made-up
+  descriptions that could outlive the photo. Empty slots publish as
+  nothing; a photo added without a description has no alt, so the
+  publish check stops it.
+- **Gallery cards preview empty slots as grey boxes** (`renderPreview`,
+  the blocks as the builder draws them), so the gallery and logo cards
+  don't look blank. Publishing is unchanged.
+- **Whole-page layouts unchanged** (F026 is finished work); e.g. the
+  Contact page could use the new Contact form layout if the owner wants.
+  See Proposals.
 
 ## 2026-10-30 — F040 Builder tidy-up (Claude, reversible)
 

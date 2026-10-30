@@ -28,6 +28,10 @@ to "Log".
     the PR's preview link, select a Text block: make words bold, add a
     link with ⌘K, type "- " to start a list. Try a bad link like
     "javascript:x". Then try the same in Quick edit on your phone.
+  - **F041:** in the builder press **Layouts**: Features grid, Photo
+    gallery, Logo strip, Testimonial, Questions to open and Contact
+    form, plus the new Gallery and Logos categories. Insert one and
+    fill in your own photos and words.
   - **F040:** on the PR's preview link, open a page in the builder.
     The Pages screen and the builder's top bar have **Sign out** (after
     Site settings); on your phone the Pages buttons now wrap as whole
@@ -62,7 +66,8 @@ to "Log".
     F031, F032, F033.
   - F027 and F028–F033 were built with Claude's recommendations (owner's
     instruction); the choices are in DECISIONS.md and can be changed.
-  - Proposal waiting in DECISIONS.md: gallery lightbox.
+  - Proposals waiting in DECISIONS.md: gallery lightbox; the new
+    layouts in the whole-page layouts.
 - **Reminder:** the Cloudflare API token expires on the date the owner set
   (recommended 2027-01-26), and the GitHub token (crust-admin-save) after
   90 days, around 2027-01-27. Both fail with a clear error; make a new one
@@ -361,7 +366,12 @@ to "Log".
 - 2026-10-30 — F040, owner's request on the PR: Sign out on the Pages
   screen too (shared `SignOutLink`, apps/admin/src/sign-out.tsx). Phone
   header buttons wrap as whole buttons. 1 new test.
-- 2026-10-30 — Merged F040 (PR #26), owner's say-so. Not published.
+- 2026-10-30 — Merged F040 (PR #26), owner's say-so ("merge F040 and
+  keep on continuing"). Not published.
+- 2026-10-30 — F041 on branch f041-layouts: six section layouts from the
+  F032/F037 blocks, Gallery and Logos categories, gallery cards preview
+  empty photo slots (`renderPreview`). All pass the layout axe check.
+  22 new tests; done_check exits 0.
 - 2026-10-30 — F042 on branch f042-rich-text: design snapshot
   (design/f042-rich-text-v1.html, direction A built). Lexical editor on
   the Text field (builder and Quick edit); new rich text format in page

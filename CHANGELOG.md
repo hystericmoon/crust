@@ -11,6 +11,12 @@ User-visible changes, newest first, in plain language.
   or "1. " to start a list. Links are checked, so only page addresses,
   web, email and phone links are allowed, and renaming a page updates
   links in text too. Text you already wrote keeps looking the same.
+- **Layouts for the new blocks (F041):** six more ready-made sections
+  in Layouts: a Features grid, a Photo gallery, a Logo strip, a
+  Testimonial, Questions that open (FAQ) and a Contact form beside your
+  details. Two new categories, Gallery and Logos. Photo and logo spots
+  show as grey boxes until you add your own, and each photo asks for a
+  description before it can go live.
 
 - **Builder tidy-up (F040):** a **Sign out** link on the Pages screen
   and in the builder's top bar (pages and posts). Nothing is lost when you sign out: your edits
