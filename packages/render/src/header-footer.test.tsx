@@ -62,6 +62,11 @@ describe("published footer", () => {
     expect(html.indexOf("</main>")).toBeLessThan(html.indexOf("<footer"));
   });
 
+  it("keeps a site name with $ in it as typed", () => {
+    const html = renderPage({ ...site, name: "Rock $' Roll $&" }, page("/"), "", { pages, year: 2031 });
+    expect(html).toContain("© 2031 Rock $&#x27; Roll $&amp;</p>");
+  });
+
   it("renders text and titled columns of links as labelled navigation", () => {
     const footer = { text: "A small studio.", columns: [{ title: "Studio", links: [{ label: "About", href: "/about" }] }], copyright: "" };
     const html = renderPage({ ...site, footer }, page("/about"), "", { pages });

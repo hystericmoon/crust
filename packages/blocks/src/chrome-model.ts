@@ -108,6 +108,11 @@ export function validateChrome(chrome: { header?: unknown; footer?: unknown }): 
     if (h.menu !== undefined) problems.push(...checkLinks(h.menu, "header.menu", "Menu", chromeLimits.menu));
     if (h.cta && isStr(h.cta.label) && h.cta.label.trim() && !(isStr(h.cta.href) && h.cta.href.trim())) {
       problems.push({ path: "header.cta.href", message: "Header: the button needs an address." });
+    } else if (h.cta && isStr(h.cta.href) && h.cta.href.trim() && safeUrl(h.cta.href) !== h.cta.href.trim()) {
+      problems.push({ path: "header.cta.href", message: "Header: the button has an address Crust can't link to. Use a page like /contact or a web address." });
+    }
+    if (h.logo && isStr(h.logo.imageSrc) && h.logo.imageSrc.trim() && safeUrl(h.logo.imageSrc) !== h.logo.imageSrc.trim()) {
+      problems.push({ path: "header.logo.imageSrc", message: "Header: Crust can't use that logo image address. Use a web address (https://…) or a path like /logo.svg." });
     }
     if (h.style !== undefined && !(sectionStyleIds as readonly string[]).includes(h.style)) problems.push({ path: "header.style", message: "Header: pick one of the section styles." });
   }
