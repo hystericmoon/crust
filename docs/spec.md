@@ -127,6 +127,23 @@ uploaded in Site settings, never stored in `content/`:
 `tokens`, `chrome` and `layouts` are each optional. Importing checks
 everything (see `readThemePack`) and drops unknown fields.
 
+Template files (`<name>.crust`, added with F045) hold a whole site and are
+downloaded from Site settings → Template, never stored in `content/`:
+```json
+{ "format": "crust-template", "version": 1, "name": "…", "description": "…", "exportedAt": "…",
+  "site": { "name": "…", "language": "en" }, "tokens": { … }, "header": { … }, "footer": { … },
+  "pages": [{ "path": "/", "title": "…", "description": "…", "seo": { … }, "puck": { … } }],
+  "sections": [{ "id": "…", "name": "…", "content": [ … ] }],
+  "layouts": [{ "name": "…", "kind": "section", "content": [ … ] }],
+  "blog": { "title": "…", "intro": "…" }, "posts": [ … ],
+  "media": [{ "file": "harbour.jpg", "alt": "…", "width": 2400, "height": 1600, "data": "<base64>" }] }
+```
+Only photos the template uses go in. Reading one (`readTemplate`) refuses
+the whole file on any problem (unknown blocks, unsafe links, contrast,
+missing Home page, a photo or linked section used but not included) and
+drops unknown fields. The site's address, redirects and history never go
+in.
+
 `content/media/<file>` and `content/media.json` (optional, added with F034):
 uploaded photos (JPG, PNG, WebP; at most 2400 px) and their details.
 ```json

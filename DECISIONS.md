@@ -142,6 +142,40 @@ Features Claude suggests. They are not work until the owner adds them to
   similar to Milestone 3. Left out on purpose: gallery lightbox (still a
   proposal above), and anything for other users (that's M6).
 
+## 2026-10-30 — F045 Save a site as a template (Claude, reversible)
+
+- **Its own format, `crust-template`, not theme pack v2.** A theme pack is
+  a look you mix into a site; a template is a whole site you start from.
+  Keeping them apart means a theme pack import can never replace pages by
+  surprise, and each file's error message can say what it is ("This file
+  is a theme pack, not a whole-site template"). Both use `.crust`.
+- **One JSON file, photos inside as base64.** No zip library, one thing to
+  check, and the same reader works in the browser and in the template
+  check (F047). Cost: base64 is a third bigger. Only photos the template
+  uses go in (at most 60, each at most 8 MB and 2400 px, like uploads), so
+  a typical template stays a few MB. Limit: 60 MB per file.
+- **The browser builds the file, not the server.** It reads the saved site
+  through the same calls the builder already uses (pages, linked sections,
+  posts, photo library, `/media/<file>`). Cloudflare's free plan gives a
+  server function about 10 ms of work, too little to pack photos.
+- **What goes in:** style, header and footer (with menus), pages, linked
+  sections, saved layouts, blog and posts, used photos, site name and
+  language. **Not:** the site address, redirects, history or anything
+  in the browser only. Site settings changes count as they're shown on
+  screen (like the theme pack); page drafts kept only in the browser
+  don't, and the screen says so.
+- **A file only downloads if Crust can read it back.** The builder runs
+  the template reader on what it made; if the site isn't template-ready
+  (no Home page, a style failing contrast, a photo used but missing from
+  the library) it lists every reason and downloads nothing. Error
+  prevention: catch it when it's made, not when a buyer opens it.
+- **Where:** Site settings → **Template** (menu label), heading "Save as
+  template". The menu item isn't called "Save as template" because the
+  action button is, and two controls with one name confuse screen readers.
+- **On preview links** (no GitHub), the template holds the sample site
+  that comes with the builder, and the screen says so, so the owner can
+  try it there.
+
 ## 2026-10-30 — F044 Custom domain (Claude, reversible)
 
 - **Where:** Site settings → **Site address**, a new last group. It's a

@@ -4,6 +4,14 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Save a site as a template (F045):** Site settings → **Template**.
+  Give it a name and a short description, press **Save as template**,
+  and the whole site downloads as one .crust file: pages, linked
+  sections, saved layouts, blog, the photos they use, and the style,
+  header and footer. Crust checks the file before it downloads, and
+  lists anything that stops the site being a template (for example, no
+  Home page). Starting a site from a template comes next.
+
 - **Your own domain (F044):** Site settings has a new **Site address**
   group. Type your domain (like studio.com), save and publish: search
   results, the sitemap, link previews, the blog's RSS feed and the "Open

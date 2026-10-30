@@ -448,7 +448,7 @@
       "description": "Site settings → 'Save as template' downloads one .crust file with the whole site: design tokens, header and footer, pages, linked sections, saved layouts, a sample post and the photos. Builds on the theme pack file (F033) with kind 'template'; reading it checks everything and drops unknown fields. New file format: spec entry and DECISIONS.md entry. Added by the owner (approved Milestone 5, 2026-10-30).",
       "depends_on": ["F033",  "F034",  "F035",  "F043"],
       "done_check": "npm test -- template-file && npm run typecheck && npm run build",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
