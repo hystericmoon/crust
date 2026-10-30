@@ -26,7 +26,7 @@ to "Log".
   BLOCKED.md.
 - **Milestone 5 "Templates" approved (2026-10-30, owner: "Approve"):**
   F045–F049, docs/milestone-5.md. **F045 Save a site as a template
-  built** (branch `f045-template-file`, draft PR, not merged). Next: F046
+  built** (branch `f045-template-file`, draft PR #33, not merged). Next: F046
   Placeholder content.
 - **Waiting on the owner** (all on crust-admin.pages.dev unless noted):
   - **F045:** on the PR's preview link, open Site settings → Template
