@@ -398,7 +398,7 @@
       "description": "A Sign out item in the builder's top bar; fix the 4 axe issues in Puck's own builder chrome (canvas iframe title, zoom menu label, low-contrast block-list headings, spinner label); bring a renamed page's old-address redirect back when the page is restored. Added by the owner (approved Milestone 4, 2026-10-30).",
       "depends_on": ["F015", "F019", "F030"],
       "done_check": "npm test -- tidy-up && npm run build && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

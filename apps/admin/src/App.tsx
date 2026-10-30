@@ -96,6 +96,21 @@ function SaveDraftButton({ onSave }: { onSave: (data: Data) => void }) {
   );
 }
 
+/** Cloudflare Access's own sign-out address (F040). */
+export const SIGN_OUT_URL = "/cdn-cgi/access/logout";
+
+/**
+ * Signs out of Cloudflare Access. Nothing is lost: every edit is already
+ * kept in this browser as you type.
+ */
+export function SignOutLink() {
+  return (
+    <a className="crust-header-link" href={SIGN_OUT_URL}>
+      Sign out
+    </a>
+  );
+}
+
 /** What to tell the owner after a save: GitHub first, the browser copy as the safety net. */
 export function saveMessage(result: ApiResult<unknown>, savedLocally: boolean, what: string): string {
   if (result.ok) return `${what} saved to GitHub. Visitors see it after you publish.`;
@@ -512,6 +527,7 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
                 <a className="crust-header-link" href="#/settings">
                   Site settings
                 </a>
+                <SignOutLink />
                 {shortcut}
                 <SaveDraftButton onSave={saveDraft} />
               </>
@@ -598,6 +614,7 @@ function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boo
                 <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
                   Keyboard
                 </button>
+                <SignOutLink />
                 {shortcut}
                 <SaveDraftButton onSave={saveDraft} />
               </>

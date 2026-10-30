@@ -642,6 +642,40 @@ describe("save-api: restoring deleted pages (F019)", () => {
     expect((await list.json()).pages).toEqual([]);
   });
 
+  it("brings back the redirects the deletion removed (F040)", async () => {
+    // Before the deletion, /about-us and /team led to /about; /old led elsewhere.
+    filesAt.get("aaa1111-parent")!.set(
+      "content/redirects.json",
+      JSON.stringify([
+        { from: "/about-us", to: "/about" },
+        { from: "/old", to: "/contact" },
+        { from: "/team", to: "/about" },
+      ]),
+    );
+    // Since then /team became a page of its own.
+    files.set("content/redirects.json", { content: JSON.stringify([{ from: "/old", to: "/contact" }]), sha: "r" });
+    files.set("content/pages/team.json", pageFile("/team", "Team"));
+    const res = await handleRestore(await post("/api/restore", { path: "/about", commit: "aaa1111" }), env, fakeFetch);
+    expect(res.status).toBe(200);
+    expect((await res.json()).redirects).toEqual(["/about-us"]);
+    expect(redirectsIn()).toEqual([
+      { from: "/about-us", to: "/about" },
+      { from: "/old", to: "/contact" },
+    ]);
+    expect(multiCommits).toHaveLength(1);
+    expect(multiCommits[0]!.paths).toEqual(["content/pages/about.json", "content/redirects.json"]);
+    expect(multiCommits[0]!.message).toBe(
+      'Restore page /about ("About us") from the builder\n\nVisitors to /about-us are sent to /about again.\nRestored by hosni@example.com',
+    );
+  });
+
+  it("leaves redirects.json alone when no redirect pointed to the page", async () => {
+    files.set("content/redirects.json", { content: JSON.stringify([{ from: "/old", to: "/contact" }]), sha: "r" });
+    const res = await handleRestore(await post("/api/restore", { path: "/about", commit: "aaa1111" }), env, fakeFetch);
+    expect((await res.json()).redirects).toEqual([]);
+    expect(multiCommits[0]!.paths).toEqual(["content/pages/about.json"]);
+  });
+
   it("refuses anything that isn't a builder deletion of that page, or a taken address", async () => {
     const cases: [unknown, number][] = [
       [{ path: "/about", commit: "bbb2222" }, 404],

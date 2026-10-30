@@ -26,6 +26,7 @@ import {
   parseRedirects,
   REDIRECTS_FILE,
   redirectsAfterDelete,
+  redirectsAfterRestore,
   redirectsAfterRename,
   serialize,
 } from "./content";
@@ -466,13 +467,24 @@ export async function handleRestore(request: Request, env: Env, fetchFn: typeof 
     const page = JSON.parse(text) as Page;
     const problems = checkPage(page);
     if (problems.length) return fail(422, `Not restored. ${problems.join(" ")}`);
+    // F040: redirects the deletion removed come back with the page.
+    const [redirectsText, redirectsBefore, files] = await Promise.all([
+      readFile(cfg, REDIRECTS_FILE, fetchFn),
+      readFile(cfg, REDIRECTS_FILE, fetchFn, deletion.parent),
+      listFolder(cfg, "content/pages", fetchFn),
+    ]);
+    const current = parseRedirects(redirectsText);
+    const pages = new Set(files.map((f) => pagePathForFile(f.path)).filter((p): p is string => p !== null));
+    const redirects = redirectsAfterRestore(current, parseRedirects(redirectsBefore), path, pages);
+    const back = redirects.filter((r) => r.to === path && !current.some((c) => c.from === r.from)).map((r) => r.from);
+    const changed = back.length > 0 || current.some((r) => r.from === path);
     const result = await commitFiles(
       cfg,
-      [{ path: pageFileFor(path), content: serialize(page) }],
-      `Restore page ${path} ("${page.title}") from the builder\n\nRestored by ${user.email}`,
+      [{ path: pageFileFor(path), content: serialize(page) }, ...(changed ? [{ path: REDIRECTS_FILE, content: serialize(redirects) }] : [])],
+      `Restore page ${path} ("${page.title}") from the builder\n\n${back.length ? `Visitors to ${back.join(", ")} are sent to ${path} again.\n` : ""}Restored by ${user.email}`,
       fetchFn,
     );
-    return json(200, { ok: true, page, commit: result.commit, url: result.url });
+    return json(200, { ok: true, page, redirects: back, commit: result.commit, url: result.url });
   } catch (e) {
     return githubFailure(e);
   }

@@ -89,6 +89,9 @@ jobs:
       - name: Install Chromium for the checks
         run: npx playwright-core install --with-deps chromium
 
+      - name: Build the builder (for its own axe check, F040)
+        run: npm run build
+
       - name: Accessibility (axe, no serious issues)
         run: npm run check:a11y
 

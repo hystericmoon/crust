@@ -14,9 +14,10 @@
     "lint:workflows": "docker run --rm -v \"$PWD:/repo\" --workdir /repo rhysd/actionlint:1.7.7 -color",
     "render": "tsx packages/render/src/cli.ts content dist/site",
     "publish:local": "npm run render && cargo run -q -p crust-publish -- dist/site --base-url https://example.pages.dev --redirects content/redirects.json --media content/media && pagefind --site dist/site --silent",
-    "check:a11y": "npm run publish:local && node scripts/check-a11y.mjs && npm run -s check:layouts",
+    "check:a11y": "npm run publish:local && node scripts/check-a11y.mjs && npm run -s check:layouts && npm run -s check:builder",
     "check:perf": "npm run publish:local && node scripts/check-perf.mjs",
     "check:layouts": "tsx packages/render/src/layouts-cli.ts content dist/layout-check && node scripts/check-a11y.mjs dist/layout-check",
+    "check:builder": "node scripts/check-builder-a11y.mjs",
     "gen:responsive-css": "tsx scripts/responsive-css.ts"
   },
   "devDependencies": {
