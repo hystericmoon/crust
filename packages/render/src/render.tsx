@@ -1,4 +1,4 @@
-import { config, FormsContext, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
+import { config, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -12,7 +12,7 @@ type AnyComponentConfig = {
  * Renders one block and its nested slots. We walk the tree ourselves instead
  * of using Puck's <Render> so the published HTML contains only our markup.
  */
-function renderItem(item: ComponentData): ReactNode {
+function renderItem(item: ComponentData, editing = false): ReactNode {
   const component = (config.components as unknown as Record<string, AnyComponentConfig | undefined>)[item.type];
   if (!component) throw new Error(`Unknown block type "${item.type}"`);
 
@@ -20,15 +20,15 @@ function renderItem(item: ComponentData): ReactNode {
   for (const [name, field] of Object.entries(component.fields ?? {})) {
     if (field.type === "slot") {
       const children = (item.props[name] ?? []) as ComponentData[];
-      props[name] = () => <>{children.map((child) => renderItem(child))}</>;
+      props[name] = () => <>{children.map((child) => renderItem(child, editing))}</>;
     }
   }
   const id = String(item.props.id ?? item.type);
-  return <ComponentShell key={id} render={component.render} props={props} />;
+  return <ComponentShell key={id} render={component.render} props={props} editing={editing} />;
 }
 
-function ComponentShell({ render, props }: { render: AnyComponentConfig["render"]; props: Record<string, unknown> }) {
-  return <>{render({ ...props, puck: { isEditing: false } })}</>;
+function ComponentShell({ render, props, editing }: { render: AnyComponentConfig["render"]; props: Record<string, unknown>; editing: boolean }) {
+  return <>{render({ ...props, puck: { isEditing: editing } })}</>;
 }
 
 /** With the media library (F034), uploaded photos get their size and a srcset of resized copies. */
@@ -40,6 +40,13 @@ export function renderBody(data: Data, media?: MediaItem[], forms?: FormsSetup):
   // F037: contact forms post to the Worker and come back to this page.
   return renderToStaticMarkup(forms ? <FormsContext.Provider value={forms}>{blocks}</FormsContext.Provider> : blocks);
 }
+
+/**
+ * Blocks as the builder draws them, for previews such as the layout
+ * gallery's cards (F041): photos without an address show as placeholders
+ * instead of being left out. Never used for publishing.
+ */
+export const renderPreview = (data: Data): string => renderToStaticMarkup(<>{data.content.map((item) => renderItem(item, true))}</>);
 
 /** The contact form setup for one page, when the publish step has one (F037). */
 export const formsFor = (options: RenderOptions, path: string): FormsSetup | undefined =>
@@ -65,10 +72,23 @@ export interface RenderOptions {
   baseUrl?: string;
   /** Where contact forms send messages, and the Turnstile site key (F037). */
   forms?: { endpoint: string; siteKey: string };
+  /** content/sections (F043): linked sections are built into each page that uses them. */
+  linkedSections?: ReadonlyMap<string, LinkedSectionFile>;
+}
+
+/** A page's or post's blocks with linked sections built in (F043). Says which page uses a missing one. */
+export function withLinkedSections<D extends Page["puck"]>(puck: D, options: RenderOptions, where: string): D {
+  try {
+    return resolveLinkedSections(puck, options.linkedSections ?? new Map());
+  } catch (e) {
+    if (e instanceof MissingLinkedSection) throw new Error(`${where}: ${e.message}`);
+    throw e;
+  }
 }
 
 /** Full HTML document for one page. `baseCss` is packages/blocks/src/styles.css. */
-export function renderPage(site: Site, page: Page, baseCss: string, options: RenderOptions = {}): string {
+export function renderPage(site: Site, input: Page, baseCss: string, options: RenderOptions = {}): string {
+  const page = { ...input, puck: withLinkedSections(input.puck, options, `Page ${input.path}`) };
   const searchable = page.path !== "/404";
   const seo = page.seo ?? {};
   return renderDocument(

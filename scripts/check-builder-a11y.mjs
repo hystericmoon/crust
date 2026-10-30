@@ -27,16 +27,18 @@ const samplePost = {
   coverAlt: "",
   puck: { root: { props: {} }, content: [{ type: "Text", props: { id: "t1", text: "Come and say hello." } }] },
 };
+// [label, address, post to seed, block to select first (F042: the rich text editor)]
 const screens = [
-  ["page builder", "/#/edit?path=/", null],
-  ["post builder", "/#/post?slug=check-post", samplePost],
+  ["page builder", "/#/edit?path=/", null, null],
+  ["page builder, Text block selected", "/#/edit?path=/", null, '[data-puck-component^="Text"]'],
+  ["post builder", "/#/post?slug=check-post", samplePost, null],
 ];
 
 const server = await serve(distDir);
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 let failures = 0;
 try {
-  for (const [label, hash, post] of screens) {
+  for (const [label, hash, post, select] of screens) {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     if (post) {
       await page.addInitScript((p) => {
@@ -47,6 +49,11 @@ try {
     // Wait for Puck's canvas and the blocks inside it.
     await page.waitForSelector("iframe", { timeout: 20_000 });
     await page.waitForTimeout(1500);
+    if (select) {
+      await page.frameLocator("#preview-frame").locator(select).first().click();
+      await page.waitForSelector(".rt-editor", { state: "attached", timeout: 10_000 });
+      await page.waitForTimeout(500);
+    }
     await page.addScriptTag({ content: axeSource });
     const results = await page.evaluate(() =>
       // eslint-disable-next-line no-undef

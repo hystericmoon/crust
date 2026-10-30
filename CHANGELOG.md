@@ -10,7 +10,25 @@ User-visible changes, newest first, in plain language.
   live site" button all use it. Until the domain is connected in
   Cloudflare, publishing keeps using the free address and the Publish
   panel tells you so. Step-by-step guide: docs/setup-custom-domain.md.
-
+- **Linked sections (F043):** make a section once and show it on many
+  pages. Select a section and press **Make linked** on its toolbar; add
+  it to other pages from **Layouts → Linked**. Selecting it shows which
+  pages use it, with **Edit linked section** (its own screen: one save
+  updates every page) and **Unlink here** (a normal copy on that page
+  only). A linked section can't be deleted while a page still uses it.
+- **Rich text in Text blocks (F042):** make words **bold** or *italic*,
+  add links, and write bulleted or numbered lists. The Text field has a
+  small toolbar, in the builder and in Quick edit on your phone, plus
+  shortcuts: ⌘B, ⌘I, ⌘K for a link, ⌘⇧8 / ⌘⇧7 for lists, or type "- "
+  or "1. " to start a list. Links are checked, so only page addresses,
+  web, email and phone links are allowed, and renaming a page updates
+  links in text too. Text you already wrote keeps looking the same.
+- **Layouts for the new blocks (F041):** six more ready-made sections
+  in Layouts: a Features grid, a Photo gallery, a Logo strip, a
+  Testimonial, Questions that open (FAQ) and a Contact form beside your
+  details. Two new categories, Gallery and Logos. Photo and logo spots
+  show as grey boxes until you add your own, and each photo asks for a
+  description before it can go live.
 - **Builder tidy-up (F040):** a **Sign out** link on the Pages screen
   and in the builder's top bar (pages and posts). Nothing is lost when you sign out: your edits
   are already kept in the browser. Restoring a deleted page that had

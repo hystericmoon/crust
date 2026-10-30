@@ -28,6 +28,9 @@ Features Claude suggests. They are not work until the owner adds them to
 - **Layouts that use the new blocks.** Add FAQ, gallery, logo strip and
   features-grid layouts to the Layout library (F026), so the new blocks
   are one click away. Small.
+- **Use the new layouts in the whole-page layouts.** For example the
+  Contact page with the Contact form, Landing with the Logo strip,
+  Services with Questions to open. Small; changes F026's page layouts.
 - **Gallery lightbox (opt-in).** Click a photo to see it large. Needs a
   little JavaScript on pages that use it; off by default.
 - **Milestone 3 proposal: "Real content"** — *approved by the owner on
@@ -139,6 +142,117 @@ Features Claude suggests. They are not work until the owner adds them to
 - **Proposal (not built):** let the contact Worker accept both the free
   address and the custom domain automatically, so step 5 of the guide
   goes away.
+
+## 2026-10-30 — F043 Linked sections (Claude, reversible; owner: "keep on continuing")
+
+- **Design snapshot:** `design/f043-linked-sections-v1.html`
+  (https://claude.ai/artifact/DSXzme9pbKie3guoRpSizj). Claude built its
+  recommended direction **A, its own editor**: on a page a linked section
+  is one block (dashed frame and a label, builder only); its panel lists
+  the pages using it and offers Edit linked section and Unlink here.
+  Direction B (edit in place) can still be chosen before the PR merges.
+  Why A: a typo fix on one page can't silently change four, and "Save for
+  all 4 pages" says exactly what saving does.
+- **Format change (contract, see docs/spec.md):** `content/sections/<id>.json`
+  plus a `LinkedSection` block (`section`: the id). Additive: pages
+  without it are unchanged, so no migration of existing pages.
+- **Publishing:** the renderer builds the section's current blocks into
+  each page before rendering, so search, sitemap, heading and axe checks
+  see the real content. Ids are made unique per use; the link's own
+  Hide on and anchor apply to the first block. A missing section stops
+  the publish with the page's name, rather than quietly dropping it.
+- **Rules:** no h1 inside (an h1 becomes an h2 when made linked; every
+  page has its own); no linked section inside another; delete only when
+  no page or post uses it (the error names them). Renaming a page updates
+  links inside linked sections in the same commit (F018). Linked
+  sections changed since the last publish are listed in the Publish
+  panel ("Linked section “Contact strip”: edited").
+- **Making one:** "Make linked" on a selected Section's toolbar, next to
+  Save as layout; the name starts as the section's heading. The page
+  then holds the link (save the page to keep it). Inserting from Layouts
+  → Linked adds a link, not a copy. Not offered inside a section's own
+  editor.
+- **Its own editor** (`#/section?id=…&from=…`): the same builder with
+  only the section, no page title fields; the save button says "Save for
+  all N pages". Back with unsaved changes warns once, then leaves.
+- **Before GitHub is switched on**, linked sections are kept in this
+  browser, like My layouts.
+- **Stacked:** this branch builds on F041 (gallery previews) and F042
+  (rich text in the sections' Text blocks). Merge order F041, F042, F043.
+- **Not yet:** Quick edit (phone) shows a page's own words only; a
+  linked section is edited in the full builder. Theme packs (F033) don't
+  export linked sections.
+
+## 2026-10-30 — F042 Rich text in Text blocks (Claude, reversible; owner: "keep on continuing")
+
+- **Design snapshot:** `design/f042-rich-text-v1.html`
+  (https://claude.ai/artifact/1d1Ujx7ENSrGCef6CWfg9Z). Claude built its
+  recommended direction **A, toolbar on the Text field** (builder panel
+  and Quick edit), because the owner asked to keep going. Direction B
+  (type on the canvas, floating toolbar) can still be chosen before the
+  PR merges, or added later on top of A (same saved format).
+- **Editor: Lexical (MIT, free)**, as the spec planned. Puck's own rich
+  text field saves HTML, which the rules don't allow. Lexical only loads
+  in the builder; published pages stay plain HTML with no JavaScript.
+- **Format change (contract, see docs/spec.md):** a Text block's `text`
+  is now `{ "rich": 1, "blocks": [...] }`: paragraphs (`p`) and lists
+  (`ul`, `ol`), each a list of spans with optional `bold`, `italic` and
+  `href`. Crust's own small format, not Lexical's state, so the files
+  don't depend on the editor's version.
+- **Migration:** older pages hold a plain string. Every reader accepts
+  both (`toRichText`), so old pages publish exactly as before;
+  `migrateRichText` converts a page's (or post's, or saved layout's) Text
+  blocks when it's opened in the builder, so it's saved in the new format
+  next time. Content files in the repo aren't rewritten in this PR, so
+  nothing clashes with edits made in the builder meanwhile.
+- **What's in:** bold, italic, links, bulleted and numbered lists (one
+  level; nested items are flattened), line breaks with Shift+Enter.
+  **Left out on purpose:** underline (reads as a link), colours, sizes,
+  headings inside text (heading checks need them as blocks), tables.
+- **Links:** allowed only when `safeUrl` keeps them as they are (page
+  paths, `https://`, `mailto:`, `tel:`, `#anchor`). Checked in the link
+  form, again by the server on save (pages, posts, layouts), in theme
+  packs, and `safeUrl` again when rendering. Renaming a page updates
+  links in text (F018). Published links use the section's accent colour
+  and are always underlined, so colour isn't the only cue (WCAG 1.4.1);
+  axe checks them on every section style in every preset.
+- **Keyboard:** ⌘B / ⌘I, ⌘K (link), ⌘⇧8 / ⌘⇧7 (lists, as in Google
+  Docs), "- " / "1. " to start a list. The toolbar is one Tab stop
+  (WAI-ARIA toolbar, arrow keys), buttons say their state with
+  `aria-pressed` and their shortcut in their name. Shortcuts typed in the
+  editor stay there: Puck's own ⌘Z (page undo) and ⌘I (preview
+  interactions) would otherwise fire too.
+- **Typing is never overwritten:** the builder echoes each change back,
+  sometimes a few keystrokes late (page settings resolve after each
+  change). While the field has focus it's the source of truth; outside
+  changes (another block, builder undo) apply when it doesn't.
+- **Builder axe check** now also selects a Text block, so the editor and
+  toolbar are checked.
+
+## 2026-10-30 — F041 Layouts for the new blocks (Claude, reversible; owner: "keep on continuing")
+
+- **Six section layouts**, one per block family the owner named:
+  - Features grid (Grid, 6 cards, 3 columns)
+  - Photo gallery (Gallery, 6 square photos)
+  - Logo strip ("Trusted by teams at" + Logo row, 5 logos, grey until hovered)
+  - Testimonial (large centred Quote, photo optional)
+  - Questions to open (Accordion, 4 questions, all closed)
+  - Contact form (details with an Icon list beside the Contact form)
+- **Two new categories, Gallery and Logos.** The others fit existing
+  ones (Features, Testimonials, FAQ, Contact).
+- **No design snapshot:** these reuse the blocks and section styles as
+  they are, like F026's layouts; the gallery cards are the preview.
+- **Photos and logos start empty, alt text too.** No sample pictures
+  (they'd be someone else's or need hosting), and no made-up
+  descriptions that could outlive the photo. Empty slots publish as
+  nothing; a photo added without a description has no alt, so the
+  publish check stops it.
+- **Gallery cards preview empty slots as grey boxes** (`renderPreview`,
+  the blocks as the builder draws them), so the gallery and logo cards
+  don't look blank. Publishing is unchanged.
+- **Whole-page layouts unchanged** (F026 is finished work); e.g. the
+  Contact page could use the new Contact form layout if the owner wants.
+  See Proposals.
 
 ## 2026-10-30 — F040 Builder tidy-up (Claude, reversible)
 

@@ -3,9 +3,13 @@
  * admin's server code imports this to update links when a page is renamed.
  */
 import type { Data } from "@puckeditor/core";
+import { mapRichLinks } from "./rich-text";
 
 /** Which prop holds a page link, per block type. */
 export const LINK_PROPS: Record<string, string> = { Button: "href", Card: "linkHref", ImageOverlay: "linkHref" };
+
+/** Blocks whose rich text can hold links (F042): block type → text prop. */
+export const RICH_TEXT_PROPS: Record<string, string> = { Text: "text" };
 
 /** Lists of items with a link in each (F032): block type → [list prop, link prop]. */
 export const ITEM_LINK_PROPS: Record<string, [string, string]> = { Grid: ["items", "linkHref"], LogoRow: ["logos", "href"] };
@@ -44,6 +48,12 @@ function walk(blocks: unknown, from: string, to: string, counter: { n: number })
           props[key] = next;
           continue;
         }
+      }
+      if (key === RICH_TEXT_PROPS[b.type]) {
+        const next = mapRichLinks(value, (href) => relinkHref(href, from, to));
+        counter.n += next.count;
+        props[key] = next.value;
+        continue;
       }
       const items = ITEM_LINK_PROPS[b.type];
       if (items && key === items[0] && Array.isArray(value)) {

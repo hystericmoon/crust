@@ -1,0 +1,29 @@
+/* Linked sections in the builder (F043). The frame and label are builder
+   only: published pages get the section's blocks, nothing else. Puck copies
+   these styles into the canvas. Indigo #4338ca: 7.9:1 with white text. */
+.cr-linked { position: relative; outline: 2px dashed #4338ca; outline-offset: -2px; }
+.cr-linked-tag {
+  position: absolute; top: 8px; left: 8px; z-index: 2; max-width: calc(100% - 16px);
+  padding: 4px 10px; border-radius: 999px; background: #4338ca; color: #fff;
+  font: 600 12px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none;
+}
+.cr-linked-missing { padding: 24px; background: #fef3f2; color: #912018; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+
+.ls-panel { display: grid; gap: 10px; font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; color: #18181b; }
+.ls-title { margin: 0; font-size: 15px; }
+.ls-note { margin: 0; color: #52525b; }
+.ls-uses { margin: 0; padding-left: 1.2em; }
+.ls-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.ls-btn {
+  display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px;
+  border: 1px solid #85858f; border-radius: 6px; background: #fff; color: #18181b;
+  font: 600 14px system-ui, -apple-system, "Segoe UI", sans-serif; text-decoration: none; cursor: pointer;
+}
+.ls-btn-primary { background: #18181b; border-color: #18181b; color: #fff; }
+.ls-btn:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
+.ls-pop-note { margin: 0 0 8px; color: #52525b; font-size: 14px; }
+
+/* The section's own editor: a dark bar says what you're editing. */
+.ls-editing { color: #fff; background: #4338ca; padding: 4px 10px; border-radius: 999px; font-weight: 600; white-space: nowrap; }
+@media (pointer: coarse) { .ls-btn { min-height: 44px; } }

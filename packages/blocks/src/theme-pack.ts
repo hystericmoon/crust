@@ -5,6 +5,7 @@
  * CSS or HTML: every value is checked against what Crust itself would
  * save, and anything unknown is dropped or refused before it's used.
  */
+import { richTextProblems } from "./rich-text";
 import { checkContrast, formatRatio } from "./contrast";
 import { sectionStyleIds, sectionStyleNames, sectionStyleWarnings, type SectionStyleId } from "./section-styles";
 import { colorRoles, spacingSteps, validateTokens, type SiteTokens } from "./tokens";
@@ -171,6 +172,12 @@ function pickLayouts(v: unknown, known: BlockSpecs): { layouts: PackLayout[]; pr
     const content = Array.isArray(l.content) && l.content.length ? cleanValue(l.content, known, 0, count) : undefined;
     if (!Array.isArray(content) || !content.every((b) => isObject(b) && typeof b.type === "string")) {
       problems.push(`${label} has blocks Crust doesn't know, or damaged ones.`);
+      return;
+    }
+    // F042: links inside Text blocks follow the same rules as anywhere else.
+    const textProblems = richTextProblems(content);
+    if (textProblems.length) {
+      problems.push(`${label}: ${textProblems[0]}`);
       return;
     }
     layouts.push({ name: l.name.trim(), kind: l.kind, content: content as PackLayout["content"] });

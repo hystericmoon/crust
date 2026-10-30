@@ -18,22 +18,33 @@ to "Log".
   docs/setup-contact-form.md); until then the form shows but doesn't send.
 - **F034–F039 still need `reviewed: true`** from the owner (steps below).
 - **Milestone 4 "Daily use" approved (2026-10-30):** F040–F044,
-  docs/milestone-4.md. **F040 Builder tidy-up built** (draft PR, not
-  merged). Next: F041 layouts, F042 rich text, F043 linked sections,
-  F044 custom domain.
-- **F044 Custom domain built** (branch `f044-custom-domain`, draft PR #30,
-  not merged). Site settings → Site address, the publish workflow only
-  uses the domain once Cloudflare says it's connected, and
-  docs/setup-custom-domain.md. Buying the domain is in BLOCKED.md.
-  **Milestone 4 is fully built:** PRs merge in order #27 → #28 → #29 → #30
-  once the owner says so (expect conflicts only in PROGRESS.md,
-  CHANGELOG.md, DECISIONS.md and the two settings test files' group lists).
+  docs/milestone-4.md. **F040 merged** (PR #26, owner: "merge F040").
+  **F041 layouts** (PR #27) and **F042 rich text** (PR #28) merged, owner:
+  "Yes, merge all four in order". **F043 linked sections** (PR #29) and
+  **F044 custom domain** (PR #30) built, merging next in that order.
+  F042 and F043 are direction A of their design snapshots; the owner can
+  still pick B. Buying the domain is in BLOCKED.md.
 - **Waiting on the owner:**
-  - **F044:** on the PR's preview link, open Site settings → Site
+  - **F044:** open Site settings → Site
     address (last in the list). Type a domain with a mistake (like
     studio.com/about), then a correct one; the example address below
     updates. Don't save a domain you don't own yet. On the Pages screen
     the Publish panel is unchanged until a domain is set.
+  - **F043:** look at the design snapshot
+    (https://claude.ai/artifact/DSXzme9pbKie3guoRpSizj; A was built). On
+    the PR's preview link: select a section, press **Make linked**, name
+    it. Add it to a second page from Layouts → Linked. Select it, press
+    **Edit linked section**, change a word, save, go Back: both pages
+    show it. Then try **Unlink here**.
+  - **F041:** in the builder press **Layouts**: Features grid, Photo
+    gallery, Logo strip, Testimonial, Questions to open and Contact
+    form, plus the new Gallery and Logos categories. Insert one and
+    fill in your own photos and words.
+  - **F042:** look at the design snapshot
+    (https://claude.ai/artifact/1d1Ujx7ENSrGCef6CWfg9Z; A was built). On
+    the PR's preview link, select a Text block: make words bold, add a
+    link with ⌘K, type "- " to start a list. Try a bad link like
+    "javascript:x". Then try the same in Quick edit on your phone.
   - **F040:** on the PR's preview link, open a page in the builder.
     The Pages screen and the builder's top bar have **Sign out** (after
     Site settings); on your phone the Pages buttons now wrap as whole
@@ -68,7 +79,8 @@ to "Log".
     F031, F032, F033.
   - F027 and F028–F033 were built with Claude's recommendations (owner's
     instruction); the choices are in DECISIONS.md and can be changed.
-  - Proposal waiting in DECISIONS.md: gallery lightbox.
+  - Proposals waiting in DECISIONS.md: gallery lightbox; the new
+    layouts in the whole-page layouts.
 - **Reminder:** the Cloudflare API token expires on the date the owner set
   (recommended 2027-01-26), and the GitHub token (crust-admin-save) after
   90 days, around 2027-01-27. Both fail with a clear error; make a new one
@@ -367,6 +379,26 @@ to "Log".
 - 2026-10-30 — F040, owner's request on the PR: Sign out on the Pages
   screen too (shared `SignOutLink`, apps/admin/src/sign-out.tsx). Phone
   header buttons wrap as whole buttons. 1 new test.
+- 2026-10-30 — Merged F040 (PR #26), owner's say-so ("merge F040 and
+  keep on continuing"). Not published.
+- 2026-10-30 — F041 on branch f041-layouts: six section layouts from the
+  F032/F037 blocks, Gallery and Logos categories, gallery cards preview
+  empty photo slots (`renderPreview`). All pass the layout axe check.
+  22 new tests; done_check exits 0.
+- 2026-10-30 — F042 on branch f042-rich-text: design snapshot
+  (design/f042-rich-text-v1.html, direction A built). Lexical editor on
+  the Text field (builder and Quick edit); new rich text format in page
+  JSON with migration (spec + DECISIONS); links checked on save, in theme
+  packs and when rendering, and updated on rename. Builder axe check now
+  covers the editor; block samples cover links on every section style.
+  29 new tests; done_check exits 0.
+- 2026-10-30 — F043 on branch f043-linked-sections (stacked on F041 and
+  F042): design snapshot (design/f043-linked-sections-v1.html, direction
+  A). content/sections/<id>.json + LinkedSection block (spec, DECISIONS);
+  built into pages at publish; /api/sections (make, edit, rename, delete
+  only when unused); Make linked, Layouts → Linked, panel with Edit and
+  Unlink, its own editor screen; links follow renamed pages; Publish
+  panel lists changed sections. 17 new tests; done_check exits 0.
 - 2026-10-30 — F044 Custom domain: Site settings → Site address (domain
   field, tidied and checked, saved as site.json's baseUrl); the publish
   workflow asks Cloudflare whether the domain is active and otherwise

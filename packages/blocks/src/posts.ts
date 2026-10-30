@@ -6,6 +6,7 @@
  * Deep-importable (no React) so the server functions can use it.
  */
 import type { Data } from "@puckeditor/core";
+import { richParagraphs, richTextProblems } from "./rich-text";
 
 /** content/posts/<slug>.json */
 export interface Post {
@@ -113,6 +114,7 @@ export function checkPost(post: unknown): string[] {
   else if (post.cover.trim() && !post.coverAlt.trim()) problems.push("The cover photo needs alt text.");
   const puck = post.puck;
   if (!isObject(puck) || !Array.isArray(puck.content) || !isObject(puck.root)) problems.push("The post's blocks are missing or damaged.");
+  else problems.push(...richTextProblems(puck));
   return problems;
 }
 
@@ -172,7 +174,7 @@ export function newPost(title: string, slug: string, date = today()): Post {
             valign: "top",
             imageSrc: "",
             tint: "medium",
-            content: [{ type: "Text", props: { id: `Text-${slug}`, text: "Start writing here.", align: "left", tone: "default" } }],
+            content: [{ type: "Text", props: { id: `Text-${slug}`, text: richParagraphs("Start writing here."), align: "left", tone: "default" } }],
           },
         },
       ],

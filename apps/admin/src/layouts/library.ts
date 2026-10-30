@@ -6,27 +6,33 @@
 import {
   buildPageLayout,
   insertLayout,
+  linkedBlock,
+  migrateRichTextBlocks,
   pageLayouts,
   sectionLayouts,
   type LayoutCategory,
+  type LinkedSectionFile,
   type PageLayout,
   type SavedLayout,
   type SectionLayout,
 } from "@crust/blocks";
 import type { ComponentData, Config, Data } from "@puckeditor/core";
 
-export type LayoutKind = "section" | "page" | "mine";
+export type LayoutKind = "section" | "page" | "mine" | "linked";
 export type LayoutItem =
   | { kind: "section"; layout: SectionLayout }
   | { kind: "page"; layout: PageLayout }
-  | { kind: "mine"; layout: SavedLayout };
+  | { kind: "mine"; layout: SavedLayout }
+  /** F043: inserted as a link to the shared section, not a copy. */
+  | { kind: "linked"; layout: LinkedSectionFile };
 
 const words = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 
 /** Layouts of one kind, in one category ("All" for every one), matching every word of the search. */
-export function filterLayouts(kind: LayoutKind, category: LayoutCategory | "All", query: string, mine: SavedLayout[] = []): LayoutItem[] {
+export function filterLayouts(kind: LayoutKind, category: LayoutCategory | "All", query: string, mine: SavedLayout[] = [], linked: LinkedSectionFile[] = []): LayoutItem[] {
   const terms = words(query).split(/\s+/).filter(Boolean);
   const matches = (text: string) => terms.every((t) => words(text).includes(t));
+  if (kind === "linked") return linked.filter((l) => matches(`${l.name} linked section`)).map((layout) => ({ kind: "linked", layout }));
   if (kind === "mine") {
     return mine.filter((l) => matches(`${l.name} ${l.kind === "page" ? "page" : "section"}`)).map((layout) => ({ kind: "mine", layout }));
   }
@@ -54,7 +60,9 @@ export function freshIds(items: ComponentData[]): ComponentData[] {
 
 /** Fresh blocks for a layout. */
 export const buildItem = (item: LayoutItem): ComponentData[] =>
-  item.kind === "page" ? buildPageLayout(item.layout) : item.kind === "mine" ? freshIds(item.layout.content) : item.layout.build();
+  item.kind === "linked"
+    ? [linkedBlock(item.layout.id)]
+    : item.kind === "page" ? buildPageLayout(item.layout) : item.kind === "mine" ? freshIds(migrateRichTextBlocks(item.layout.content)) : item.layout.build();
 
 const contains = (item: ComponentData, id: string): boolean =>
   item.props.id === id || Object.values(item.props).some((v) => isTree(v) && v.some((child) => contains(child, id)));
@@ -122,6 +130,8 @@ export function planLayoutInsert(data: Data, item: LayoutItem, index: number): I
       ? `Added the ${item.layout.name} page layout: ${blocks.length} sections. It uses your site style.`
       : item.kind === "mine"
         ? `Added your layout “${item.layout.name}”${sections}.`
+        : item.kind === "linked"
+          ? `Added the linked section “${item.layout.name}”. Edit it once and every page that shows it changes.`
         : `Added ${item.layout.name}. It uses your site style.`;
   return { data: { ...data, content }, firstId, index: at, announcement };
 }
