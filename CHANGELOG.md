@@ -4,6 +4,15 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Template quality check (F047):** one check a template must pass
+  before it's offered: it opens, text reads in every section style,
+  every page has one main heading with headings in order, photos are
+  described, axe finds no serious accessibility issue at desktop, tablet
+  and phone widths, the home page scores 95+ for speed, every saved
+  layout renders, and no lorem ipsum or stand-in photo slipped through
+  unmarked. It runs on every pull request and writes a readable report
+  page (a download on the CI run).
+
 - **Sample content to replace (F046):** a template's sample words and
   photos can be marked "Replace me" (any block's **Advanced** tab). In
   the builder they get a dashed outline and a label, and a **To replace**
