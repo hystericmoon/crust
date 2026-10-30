@@ -7,7 +7,7 @@
  * already on the page, so they show the site's current style.
  */
 import { layoutCategories, sectionLayouts, type LayoutCategory } from "@crust/blocks";
-import { renderBody } from "@crust/render";
+import { renderPreview } from "@crust/render";
 import { createUsePuck, useGetPuck, type ComponentData, type Config, type Data } from "@puckeditor/core";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -40,7 +40,7 @@ function previewHtml(item: LayoutItem): string {
   let html = previews.get(key);
   if (html === undefined) {
     try {
-      html = renderBody({ root: { props: {} }, content: buildItem(item) });
+      html = renderPreview({ root: { props: {} }, content: buildItem(item) });
     } catch {
       html = "";
     }
