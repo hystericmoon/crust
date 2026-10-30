@@ -30,9 +30,67 @@ Features Claude suggests. They are not work until the owner adds them to
   are one click away. Small.
 - **Gallery lightbox (opt-in).** Click a photo to see it large. Needs a
   little JavaScript on pages that use it; off by default.
+- **Milestone 3 proposal: "Real content" (needs the owner's yes; Claude's
+  recommended order).** Milestone 2 made pages look good; the gaps that
+  matter next are getting real content in and helping people find it.
+  1. **Media library with uploads.** Drop images in, pick them from a grid,
+     alt text asked at upload. Stored in Cloudflare R2 (free tier: 10 GB),
+     and crust-publish makes resized WebP copies with `srcset`, so pages
+     stay fast on phones. Biggest daily friction today: pasting image URLs.
+  2. **Blog / collections.** A "Posts" list with a post template, an index
+     page and an RSS feed. Most small sites need news or a portfolio.
+  3. **SEO and sharing panel per page.** Social image, search title,
+     preview of how the link looks when shared, `noindex` switch.
+  4. **Contact form block.** Cloudflare Worker + Turnstile (free), messages
+     emailed to the owner; keyboard- and screen-reader-friendly errors.
+  5. **Phone quick-edit mode.** Edit text and swap images on the phone,
+     then publish (the spec's "later" phone story).
+  6. **Site search** with Pagefind, built at publish time, no server.
+  Every item keeps $0 running cost; 1 and 4 need new Cloudflare setup the
+  owner does (logged in BLOCKED.md when the time comes). Each visual one
+  starts with a design snapshot, as before.
 - **Linked sections ("global sections").** A saved layout is a copy. A
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
+
+## 2026-10-29 — F033 Theme pack export and import (Claude's recommendation, owner-approved overnight)
+
+- **Where:** a "Theme pack" group at the end of Site settings, with two
+  parts: "Download this site's look" and "Bring in a theme pack".
+- **What a pack holds** (each part can be left out): the style (all
+  design tokens: colours, fonts, spacing, section styles, buttons, cards,
+  links), the header and footer *look* (their section styles and the
+  sticky option, never the menu, links or text, which belong to one
+  site), and My layouts. File: `<name>.crust`, plain JSON
+  (`docs/spec.md`).
+- **Exports what the preview shows**, including unsaved changes, so what
+  you see is what you share. Refused while a field is invalid.
+- **Import is checked before anything changes.** The whole file is
+  refused, with every reason listed, if it isn't a pack, is from a newer
+  Crust, is over 2 MB, has damaged or unsafe values (the same checks as
+  saving), or a layout with blocks this Crust doesn't know or choice
+  values a block doesn't offer (e.g. a heading level of "script"). Unknown
+  fields are dropped, not copied. A style with any colour pair below 4.5:1
+  or an unreadable section style is left out (with the reasons shown) and
+  the rest of the pack can still be used: stricter than Site settings,
+  which saves such a style with a warning, because the file comes from
+  elsewhere.
+- **Published pages only use known tag names and spacing values** (a
+  heading level outside H1–H4 becomes H2/H3; an unknown spacing step
+  becomes none), whatever a page file says. Found by a code review of
+  F031–F033 (2026-10-30), with the fixes in F031: an untouched header or
+  footer isn't written to site.json, so the menu keeps following the
+  pages; header button and logo addresses get the safe-address check; a
+  "$" in the site name no longer breaks the copyright line.
+- **Preview first:** a good pack shows in the live preview (only while
+  the Theme pack group is open), with its colours listed. Tick which
+  parts to use. "Use this theme" puts the style and header/footer look
+  into the unsaved draft (Save keeps it, Discard undoes it); layouts are
+  added to My layouts right away, renamed "FAQ (2)" when a name is taken,
+  so nothing of yours is replaced. Cancel changes nothing.
+- **Also fixed:** the F031 Header & menu and Footer groups had no styles
+  (their CSS was never written); fixed on the F031 branch and merged
+  forward.
 
 ## 2026-10-29 — F032 More elements (Claude's recommendation, owner-approved overnight)
 

@@ -189,23 +189,26 @@ export function App() {
 
   if (route.name === "settings") {
     return (
-      <SiteSettings
-        headerLink={shortcut("st-button st-link-button")}
-        site={site}
-        page={getLocalDraft("/")?.page ?? bundledPages().find((p) => p.path === "/") ?? bundledPages()[0]!}
-        saved={saved}
-        draft={draft}
-        onChange={setDraft}
-        onSave={saveSiteTokens}
-        onDiscard={() => {
-          setDraft(saved);
-          setChromeDraft(savedChrome);
-        }}
-        chrome={chromeDraft}
-        onChromeChange={setChromeDraft}
-        chromeDirty={!sameChrome(savedChrome, chromeDraft)}
-        pages={pageOptions}
-      />
+      // My layouts are here too: a theme pack can carry them (F033).
+      <MyLayoutsProvider githubOn={!!githubOn}>
+        <SiteSettings
+          headerLink={shortcut("st-button st-link-button")}
+          site={site}
+          page={getLocalDraft("/")?.page ?? bundledPages().find((p) => p.path === "/") ?? bundledPages()[0]!}
+          saved={saved}
+          draft={draft}
+          onChange={setDraft}
+          onSave={saveSiteTokens}
+          onDiscard={() => {
+            setDraft(saved);
+            setChromeDraft(savedChrome);
+          }}
+          chrome={chromeDraft}
+          onChromeChange={setChromeDraft}
+          chromeDirty={!sameChrome(savedChrome, chromeDraft)}
+          pages={pageOptions}
+        />
+      </MyLayoutsProvider>
     );
   }
 

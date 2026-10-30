@@ -4,6 +4,12 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Theme packs (F033):** Site settings → Theme pack. Download your
+  site's look (style, header and footer look, My layouts) as one .crust
+  file, and bring one into another Crust site. A pack is checked first
+  (format and contrast) and shown in the preview; nothing changes until
+  you choose "Use this theme", and the style still waits for Save.
+
 - **More elements (F032):** seven new blocks.
   - **Grid of cards:** a row of cards (2–4 per row) you fill in one list.
   - **Gallery:** photos in a grid, square, wide or as uploaded, with

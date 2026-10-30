@@ -4,6 +4,7 @@ import "@puckeditor/core/puck.css";
 import "@crust/blocks/styles.css";
 import "./settings/settings.css";
 import "./settings/chrome-groups.css";
+import "./settings/theme-pack.css";
 import "./keyboard/keyboard.css";
 import "./sections/sections.css";
 import "./layouts/layouts.css";

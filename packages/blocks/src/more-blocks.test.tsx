@@ -153,3 +153,14 @@ describe("renaming a page updates links inside the new blocks", () => {
     expect(overlay!.props.linkHref).toBe("/studio/");
   });
 });
+
+describe("published tags and styles come only from known values", () => {
+  it("never turns a stored level into another tag, or a spacing value into CSS", () => {
+    const heading = config.components.Heading.render as unknown as Render;
+    expect(renderToStaticMarkup(<>{heading({ text: "x", level: "script", align: "left" })}</>)).toBe('<h2 class="cr-heading cr-h2 cr-align-left">x</h2>');
+    expect(html("Grid", { titleLevel: "style" })).toContain('<h3 class="cr-heading cr-card-title">Plan</h3>');
+    expect(html("ImageOverlay", { titleLevel: "script" })).toContain('<h2 class="cr-heading cr-overlay-title">');
+    const spacer = config.components.Spacer.render as unknown as Render;
+    expect(renderToStaticMarkup(<>{spacer({ size: "x);position:fixed" })}</>)).toContain('style="height:var(--cr-space-none)"');
+  });
+});

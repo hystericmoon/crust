@@ -1,6 +1,6 @@
 import type { Config, Slot } from "@puckeditor/core";
 import type { ReactNode } from "react";
-import { alignField, paragraphs, vars, type Align } from "./block-helpers";
+import { alignField, headingTag, paragraphs, vars, type Align } from "./block-helpers";
 import {
   moreBlocks,
   type AccordionProps,
@@ -189,8 +189,8 @@ const blocks: Config<Components> = {
       },
       defaultProps: { text: "Heading", level: "h2", align: "left" },
       render: ({ text, level, align }) => {
-        const Tag = level;
-        return <Tag className={`cr-heading cr-${level} cr-align-${align}`}>{text}</Tag>;
+        const Tag = headingTag(level, "h2");
+        return <Tag className={`cr-heading cr-${Tag} cr-align-${align}`}>{text}</Tag>;
       },
     },
     Text: {
@@ -335,7 +335,7 @@ const blocks: Config<Components> = {
         background: "surface",
       },
       render: ({ imageSrc, imageAlt, title, titleLevel, text, linkLabel, linkHref, background }) => {
-        const Title = titleLevel;
+        const Title = headingTag(titleLevel, "h3");
         // Same rule as the Image block: missing alt is left out for the publish check.
         const altAttr = imageAlt.trim() ? { alt: imageAlt.trim() } : {};
         return (

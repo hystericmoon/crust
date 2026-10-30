@@ -9,7 +9,7 @@
  */
 import type { ComponentConfig } from "@puckeditor/core";
 import type { ReactNode } from "react";
-import { alignField, paragraphs, type Align } from "./block-helpers";
+import { alignField, headingTag, paragraphs, type Align } from "./block-helpers";
 import { sectionStyleIds, sectionStyleNames, tintLevels, tintNames, type SectionStyleId, type TintLevel } from "./section-styles";
 import { safeUrl } from "./url";
 
@@ -148,7 +148,7 @@ export const Grid: ComponentConfig<GridProps> = {
     background: "surface",
   },
   render: ({ items, columns, titleLevel, background }) => {
-    const Title = titleLevel;
+    const Title = headingTag(titleLevel, "h3");
     return (
       <ul className={`cr-grid cr-grid-${columns}`} role="list">
         {(items ?? []).map((c, i) => (
@@ -443,7 +443,7 @@ export const ImageOverlay: ComponentConfig<ImageOverlayProps> = {
     height: "medium",
   },
   render: ({ imageSrc, imageAlt, title, titleLevel, text, linkLabel, linkHref, background, tint, position, height }) => {
-    const Title = titleLevel;
+    const Title = headingTag(titleLevel, "h2");
     const image = imageSrc.trim() ? safeUrl(imageSrc) : "#";
     // The tint is the style's background over the photo, strong enough for its text (see effectiveTint).
     return (

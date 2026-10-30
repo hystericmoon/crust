@@ -7,4 +7,6 @@ export const spacingField = (label: string) => ({
   options: spacingSteps.map((step) => ({ label: step.toUpperCase(), value: step })),
 });
 
-export const spaceVar = (step: SpacingStep | undefined) => `var(--cr-space-${step ?? "none"})`;
+/** Only known steps reach the inline style, whatever the page file says. */
+export const spaceVar = (step: SpacingStep | undefined) =>
+  `var(--cr-space-${step && (spacingSteps as readonly string[]).includes(step) ? step : "none"})`;

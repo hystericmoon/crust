@@ -11,6 +11,12 @@ export const alignField = {
   ],
 };
 
+const headingTags = ["h1", "h2", "h3", "h4"] as const;
+/** A heading tag from a block's props: anything else (e.g. "script") becomes `fallback`. */
+type HeadingTag = (typeof headingTags)[number];
+export const headingTag = (level: unknown, fallback: HeadingTag): HeadingTag =>
+  (headingTags as readonly unknown[]).includes(level) ? (level as HeadingTag) : fallback;
+
 /** Inline style that only sets CSS custom properties. */
 export const vars = (v: Record<string, string>) => v as CSSProperties;
 
