@@ -69,6 +69,10 @@ export function packFileName(name: string): string {
 
 // --- Reading a pack: everything is untrusted until checked ------------------------
 
+/** What the pack reader needs from the builder's block config: each block's fields. */
+export type FieldSpec = { type: string; options?: readonly { value: unknown }[]; arrayFields?: Record<string, FieldSpec> };
+export type BlockSpecs = Record<string, { fields?: Record<string, unknown> }>;
+
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
 const BLOCK_TYPE = /^[A-Z][A-Za-z0-9]{0,39}$/;
 const PROP_KEY = /^[A-Za-z][A-Za-z0-9_-]{0,39}$/;
@@ -105,7 +109,22 @@ function pickChrome(v: unknown): PackChrome | null {
  * look like Crust's, values that are text, numbers, yes/no, lists or
  * objects of those. Returns null when anything else is found.
  */
-function cleanValue(v: unknown, known: ReadonlySet<string>, depth: number, count: { blocks: number }): unknown {
+/**
+ * Choice fields (select, radio) must hold one of their own options, in lists
+ * too: these values become tag names and style values when published.
+ */
+function fitsFields(props: Record<string, unknown>, fields: Record<string, unknown> | undefined): boolean {
+  if (!fields) return true;
+  return Object.entries(props).every(([k, v]) => {
+    const f = fields[k] as FieldSpec | undefined;
+    if (!f || typeof f !== "object") return true;
+    if (f.type === "select" || f.type === "radio") return (f.options ?? []).some((o) => o.value === v);
+    if (f.type === "array") return Array.isArray(v) && v.every((item) => isObject(item) && fitsFields(item, f.arrayFields));
+    return true;
+  });
+}
+
+function cleanValue(v: unknown, known: BlockSpecs, depth: number, count: { blocks: number }): unknown {
   if (depth > packLimits.depth) return undefined;
   if (typeof v === "string") return v.length <= packLimits.text ? v : undefined;
   if (typeof v === "number") return Number.isFinite(v) ? v : undefined;
@@ -117,10 +136,11 @@ function cleanValue(v: unknown, known: ReadonlySet<string>, depth: number, count
   if (!isObject(v)) return undefined;
   // A block: { type, props }
   if ("type" in v && "props" in v) {
-    if (typeof v.type !== "string" || !BLOCK_TYPE.test(v.type) || !known.has(v.type) || !isObject(v.props)) return undefined;
+    if (typeof v.type !== "string" || !BLOCK_TYPE.test(v.type) || !Object.hasOwn(known, v.type) || !isObject(v.props)) return undefined;
     if (++count.blocks > packLimits.blocks) return undefined;
-    const props = cleanValue(v.props, known, depth + 1, count);
-    return props === undefined ? undefined : { type: v.type, props };
+    const props = cleanValue(v.props, known, depth + 1, count) as Record<string, unknown> | undefined;
+    if (props === undefined || !fitsFields(props, known[v.type]!.fields)) return undefined;
+    return { type: v.type, props };
   }
   const out: Record<string, unknown> = {};
   for (const [k, x] of Object.entries(v)) {
@@ -132,7 +152,7 @@ function cleanValue(v: unknown, known: ReadonlySet<string>, depth: number, count
   return out;
 }
 
-function pickLayouts(v: unknown, known: ReadonlySet<string>): { layouts: PackLayout[]; problems: string[] } {
+function pickLayouts(v: unknown, known: BlockSpecs): { layouts: PackLayout[]; problems: string[] } {
   if (!Array.isArray(v)) return { layouts: [], problems: ["The layouts in this file are damaged."] };
   if (v.length > packLimits.layouts) return { layouts: [], problems: [`This file has more than ${packLimits.layouts} layouts.`] };
   const layouts: PackLayout[] = [];
@@ -163,14 +183,17 @@ export interface PackCheck {
   pack: ThemePack | null;
   /** Why it can't be used. Nothing changes while there are any. */
   problems: string[];
+  /** Parts left out of an otherwise usable pack, and why (e.g. a style that fails contrast). */
+  warnings?: string[];
 }
 
 /**
- * Reads a `.crust` file's text. `knownBlocks` is the builder's block types.
+ * Reads a `.crust` file's text. `blocks` is the builder's block config
+ * (`config.components`): only its block types, with values its fields allow.
  * Refuses the whole file on any format problem, and a style that fails the
  * contrast checks, so a pack never makes a site harder to read.
  */
-export function readThemePack(text: string, knownBlocks: Iterable<string>): PackCheck {
+export function readThemePack(text: string, blocks: BlockSpecs): PackCheck {
   if (text.length > packLimits.bytes) return { pack: null, problems: ["This file is too big to be a theme pack."] };
   let raw: unknown;
   try {
@@ -182,6 +205,7 @@ export function readThemePack(text: string, knownBlocks: Iterable<string>): Pack
   if (raw.version !== PACK_VERSION) return { pack: null, problems: ["This theme pack was made by a newer Crust. Update Crust, then try again."] };
 
   const problems: string[] = [];
+  const warnings: string[] = [];
   const name = typeof raw.name === "string" && raw.name.trim() ? raw.name.trim().slice(0, packLimits.name) : "Theme pack";
   const pack: ThemePack = { format: PACK_FORMAT, version: PACK_VERSION, name, exportedAt: typeof raw.exportedAt === "string" ? raw.exportedAt.slice(0, 40) : "" };
 
@@ -197,10 +221,15 @@ export function readThemePack(text: string, knownBlocks: Iterable<string>): Pack
       }
       problems.push(...format);
       if (!format.length) {
-        const failing = checkContrast(tokens.colors).filter((r) => !r.passes);
-        for (const r of failing) problems.push(`Contrast: ${r.label.toLowerCase()} is ${formatRatio(r.ratio)}, below the 4.5:1 minimum.`);
-        for (const w of sectionStyleWarnings(tokens)) problems.push(`Contrast: ${w.message}`);
-        pack.tokens = tokens;
+        // A style that's hard to read is left out; the rest of the pack can still be used.
+        const contrast = [
+          ...checkContrast(tokens.colors)
+            .filter((r) => !r.passes)
+            .map((r) => `Contrast: ${r.label.toLowerCase()} is ${formatRatio(r.ratio)}, below the 4.5:1 minimum.`),
+          ...sectionStyleWarnings(tokens).map((w) => `Contrast: ${w.message}`),
+        ];
+        if (contrast.length) warnings.push(...contrast);
+        else pack.tokens = tokens;
       }
     }
   }
@@ -210,12 +239,17 @@ export function readThemePack(text: string, knownBlocks: Iterable<string>): Pack
     else pack.chrome = chrome;
   }
   if (raw.layouts !== undefined) {
-    const { layouts, problems: p } = pickLayouts(raw.layouts, new Set(knownBlocks));
+    const { layouts, problems: p } = pickLayouts(raw.layouts, blocks);
     problems.push(...p);
     if (layouts.length) pack.layouts = layouts;
   }
-  if (!pack.tokens && !pack.chrome && !pack.layouts && !problems.length) problems.push("This theme pack is empty.");
-  return problems.length ? { pack: null, problems } : { pack, problems: [] };
+  if (!pack.tokens && !pack.chrome && !pack.layouts && !problems.length) {
+    // Nothing usable left: the reasons are the problems.
+    if (warnings.length) problems.push(...warnings);
+    else problems.push("This theme pack is empty.");
+  }
+  if (problems.length) return { pack: null, problems };
+  return warnings.length ? { pack, problems: [], warnings: ["The style was left out because it's hard to read:", ...warnings] } : { pack, problems: [] };
 }
 
 /** "Studio intro" taken → "Studio intro (2)": imported layouts never replace yours. */

@@ -4,7 +4,7 @@ import { applyPreset, themePresets } from "./presets";
 import { freeLayoutName, makeThemePack, packFileName, packLimits, packSummary, readThemePack, type PackChrome, type PackLayout } from "./theme-pack";
 import { defaultTokens, type SiteTokens } from "./tokens";
 
-const known = Object.keys(config.components);
+const known = config.components;
 const chrome: PackChrome = { header: { style: "dark", sticky: true }, footer: { style: "surface" } };
 const layouts: PackLayout[] = [
   {
@@ -71,11 +71,30 @@ describe("theme pack: import", () => {
     expect(read({ ...pack(), tokens: { colors: "red" } }).problems).toEqual(["The style in this file is damaged."]);
   });
 
-  it("refuses a style that fails the contrast checks", () => {
+  it("leaves out a style that fails the contrast checks, and keeps the rest", () => {
     const pale = { ...defaultTokens, colors: { ...defaultTokens.colors, text: "#cccccc" } };
-    const { pack: back, problems } = read(pack(pale));
-    expect(back).toBeNull();
-    expect(problems.some((p) => p.startsWith("Contrast: text on the page is"))).toBe(true);
+    const { pack: back, problems, warnings } = read(pack(pale));
+    expect(problems).toEqual([]);
+    expect(back?.tokens).toBeUndefined();
+    expect(back?.layouts).toHaveLength(2);
+    expect(warnings?.[0]).toBe("The style was left out because it's hard to read:");
+    expect(warnings?.some((p) => p.startsWith("Contrast: text on the page is"))).toBe(true);
+    // A pack with nothing else is refused, with the same reasons.
+    const styleOnly = makeThemePack("x", { tokens: true, chrome: false, layouts: false }, { tokens: pale, chrome, layouts });
+    const refused = read(styleOnly);
+    expect(refused.pack).toBeNull();
+    expect(refused.problems.some((p) => p.startsWith("Contrast: text on the page is"))).toBe(true);
+  });
+
+  it("refuses choice fields with values the block doesn't offer (they become tags and styles)", () => {
+    const withBlock = (b: unknown) => ({ ...pack(), layouts: [{ name: "X", kind: "section", content: [b] }] });
+    expect(read(withBlock({ type: "Heading", props: { id: "h", text: "alert(1)", level: "script", align: "left" } })).pack).toBeNull();
+    expect(read(withBlock({ type: "Spacer", props: { id: "s", size: "x);position:fixed;inset:0" } })).pack).toBeNull();
+    // Inside a slot, and inside a list item, too.
+    expect(read(withBlock({ type: "Section", props: { content: [{ type: "Grid", props: { titleLevel: "style", items: [] } }] } })).pack).toBeNull();
+    expect(read(withBlock({ type: "Grid", props: { titleLevel: "h3", items: [{ title: "A" }, "x"] } })).pack).toBeNull();
+    // Known values pass.
+    expect(read(withBlock({ type: "Heading", props: { id: "h", text: "Hi", level: "h2", align: "center" } })).problems).toEqual([]);
   });
 
   it("keeps only the token fields Crust knows", () => {

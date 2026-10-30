@@ -39,7 +39,6 @@ type Props = {
   onApply: (p: PackPreview) => void;
 };
 
-const knownBlocks = Object.keys(config.components);
 export const chromeLook = (c: SiteChrome): PackChrome => ({ header: { style: c.header.style, sticky: c.header.sticky }, footer: { style: c.footer.style } });
 
 function Check({ label, checked, disabled, onChange }: { label: string; checked: boolean; disabled?: boolean; onChange: (v: boolean) => void }) {
@@ -73,6 +72,7 @@ export function ThemePackGroup({ siteName, tokens, chrome, canExport, onPreview,
   const [loaded, setLoaded] = useState<ThemePack | null>(null);
   const [take, setTake] = useState<PackParts>({ tokens: true, chrome: true, layouts: true });
   const [problems, setProblems] = useState<string[]>([]);
+  const [warnings, setWarnings] = useState<string[]>([]);
   const [importMessage, setImportMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -100,7 +100,8 @@ export function ThemePackGroup({ siteName, tokens, chrome, canExport, onPreview,
   const choose = async (file: File | undefined) => {
     setImportMessage("");
     if (!file) return;
-    const { pack, problems: found } = readThemePack(await file.text(), knownBlocks);
+    const { pack, problems: found, warnings: leftOut = [] } = readThemePack(await file.text(), config.components);
+    setWarnings(leftOut);
     if (fileRef.current) fileRef.current.value = "";
     if (!pack) {
       setLoaded(null);
@@ -218,6 +219,16 @@ export function ThemePackGroup({ siteName, tokens, chrome, canExport, onPreview,
                   </li>
                 ))}
               </ul>
+            ) : null}
+            {warnings.length ? (
+              <div className="st-warning" role="alert">
+                <p className="st-pack-alert-title">{warnings[0]}</p>
+                <ul>
+                  {warnings.slice(1).map((w) => (
+                    <li key={w}>{w}</li>
+                  ))}
+                </ul>
+              </div>
             ) : null}
             <fieldset className="st-pack-parts">
               <legend className="st-field-label">Use</legend>

@@ -48,6 +48,9 @@ the first unchecked step, `git checkout` its branch, carry on.
 
 ## Known gaps
 
+- A header menu or footer you've edited isn't updated when a page is
+  renamed or deleted (the redirect still takes visitors there; a deleted
+  page's link shows "Page not found"). Untouched menus follow the pages.
 - Saving only works from crust-admin.pages.dev; preview links sign in
   but can't save (different Access app). Intended.
 - Signing out needs the address
@@ -252,3 +255,10 @@ the first unchecked step, `git checkout` its branch, carry on.
   1440 and 390: download, import, preview, use; no overflow; axe clean.
   17 new tests (457 total); done check passes. Owner to try: download
   the pack, change a colour, then bring the pack back in.
+- 2026-10-30 — Code review of F031–F033 (independent reviewer): fixed two
+  security holes in theme-pack import (a heading level or spacing value
+  could become a script tag or page-wide CSS on the published site),
+  plus four smaller issues (frozen default menu, unsafe button/logo
+  addresses, "$" in site names, a hard-to-read style blocking a whole
+  pack). 463 tests; check:a11y passes. Milestone 3 proposal in
+  DECISIONS.md, waiting for the owner.

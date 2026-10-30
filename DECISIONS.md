@@ -68,10 +68,20 @@ Features Claude suggests. They are not work until the owner adds them to
 - **Import is checked before anything changes.** The whole file is
   refused, with every reason listed, if it isn't a pack, is from a newer
   Crust, is over 2 MB, has damaged or unsafe values (the same checks as
-  saving), any colour pair below 4.5:1, a section style nobody can read,
-  or a layout with blocks this Crust doesn't know. Unknown fields are
-  dropped, not copied. Stricter than Site settings (which lets you save a
-  failing pair with a warning) because the file comes from elsewhere.
+  saving), or a layout with blocks this Crust doesn't know or choice
+  values a block doesn't offer (e.g. a heading level of "script"). Unknown
+  fields are dropped, not copied. A style with any colour pair below 4.5:1
+  or an unreadable section style is left out (with the reasons shown) and
+  the rest of the pack can still be used: stricter than Site settings,
+  which saves such a style with a warning, because the file comes from
+  elsewhere.
+- **Published pages only use known tag names and spacing values** (a
+  heading level outside H1–H4 becomes H2/H3; an unknown spacing step
+  becomes none), whatever a page file says. Found by a code review of
+  F031–F033 (2026-10-30), with the fixes in F031: an untouched header or
+  footer isn't written to site.json, so the menu keeps following the
+  pages; header button and logo addresses get the safe-address check; a
+  "$" in the site name no longer breaks the copyright line.
 - **Preview first:** a good pack shows in the live preview (only while
   the Theme pack group is open), with its colours listed. Tick which
   parts to use. "Use this theme" puts the style and header/footer look

@@ -104,14 +104,25 @@ describe("theme pack: Site settings", () => {
 
   it("refuses a bad file, says why, and changes nothing", async () => {
     const latest = setup();
+    await choose(JSON.stringify({ ...JSON.parse(goodPack()), version: 9 }));
+    const alert = screen.getByRole("alert");
+    expect(alert.textContent).toContain("Nothing was changed. This file can't be used:");
+    expect(alert.textContent).toContain("newer Crust");
+    expect(latest().tokens).toBe(defaultTokens);
+    expect(screen.queryByRole("button", { name: "Use this theme" })).toBeNull();
+  });
+
+  it("leaves out a style that's hard to read, and offers the rest", async () => {
+    const latest = setup();
     const pale = JSON.parse(goodPack());
     pale.tokens.colors.text = "#dddddd";
     await choose(JSON.stringify(pale));
-    const alert = screen.getByRole("alert");
-    expect(alert.textContent).toContain("Nothing was changed. This file can't be used:");
-    expect(alert.textContent).toContain("Contrast: text on the page");
+    expect(screen.getByRole("alert").textContent).toContain("The style was left out because it's hard to read:");
+    const card = screen.getByRole("region", { name: "Previewing “Forest look”" });
+    expect(within(card).queryByLabelText(/^Style:/)).toBeNull();
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Use this theme" })));
     expect(latest().tokens).toBe(defaultTokens);
-    expect(screen.queryByRole("button", { name: "Use this theme" })).toBeNull();
+    expect(readLocalLayouts().map((l) => l.name)).toEqual(["FAQ"]);
   });
 
   it("previews a good pack first, and Cancel leaves everything as it was", async () => {

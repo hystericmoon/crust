@@ -89,4 +89,4 @@ export type { LayoutCategory, SectionLayout, PageLayout } from "./layouts";
 export { itemLimits, listIcons, listIconNames, moreBlocks } from "./more-blocks";
 export type { GridItem, GridProps, GalleryImage, GalleryProps, AccordionItem, AccordionProps, ListIcon, IconListProps, Logo, LogoRowProps, QuoteProps, ImageOverlayProps } from "./more-blocks";
 export { PACK_FORMAT, PACK_VERSION, packLimits, makeThemePack, packFileName, readThemePack, freeLayoutName, packSummary } from "./theme-pack";
-export type { ThemePack, PackLayout, PackChrome, PackParts, PackCheck } from "./theme-pack";
+export type { ThemePack, PackLayout, PackChrome, PackParts, PackCheck, BlockSpecs } from "./theme-pack";
