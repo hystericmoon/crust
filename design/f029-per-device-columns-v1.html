@@ -1,0 +1,231 @@
+<title>Per-device Columns Snapshot</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: same language as the F025-F028 snapshots. A Columns block's settings panel beside three device previews that update live. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6;
+  --accent:#4338ca; --accent-ink:#ffffff; --accent-soft:#e7e6fb; --ok:#127a4b; --bad:#b42318;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  /* demo site */
+  --t-bg:#ffffff; --t-surface:#f4f4f5; --t-text:#18181b; --t-muted:#52525b; --t-primary:#4338ca;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --bad:#ff8a7d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --bad:#ff8a7d; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1320px;margin:0 auto;padding-block:28px 64px;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.05;text-wrap:balance}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-.02em}
+.label{font:500 .7rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.lede{color:var(--soft);max-width:70ch;margin:0}
+button{font:inherit;color:inherit}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.dirs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.dir{border:1.5px solid var(--line);background:var(--panel);border-radius:14px;padding:12px 14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.dir b{font-family:var(--f-display);font-size:1.05rem}
+.dir span{color:var(--soft);font-size:.85rem}
+.dir[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.dir .rec{align-self:flex-start;color:var(--accent-ink);font:500 .66rem var(--f-mono);background:var(--accent);padding:3px 7px;border-radius:999px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;color:var(--soft);font-weight:600;font-size:.84rem;padding:0 12px;min-height:34px;border-radius:8px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+
+.app{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:grid;grid-template-columns:340px minmax(0,1fr)}
+.panel{border-right:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:16px}
+.panel h2{font-size:1.1rem}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>span,.fname{font-size:.82rem;font-weight:600}
+.field small,.note{color:var(--soft);font-size:.78rem;margin:0}
+.devtabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:3px}
+.devtabs button{border:0;background:transparent;border-radius:7px;min-height:40px;cursor:pointer;font-size:.82rem;color:var(--soft);display:flex;align-items:center;justify-content:center;gap:6px}
+.devtabs button[aria-selected="true"]{background:var(--panel);color:var(--accent);font-weight:600;box-shadow:inset 0 0 0 1.5px var(--accent)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.tile{border:1.5px solid var(--line);border-radius:9px;background:var(--panel);padding:7px 6px 6px;cursor:pointer;display:flex;flex-direction:column;gap:5px;align-items:stretch;min-height:56px}
+.tile[aria-checked="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.tile .bars{display:flex;gap:3px;height:18px}
+.tile .bars.stack{flex-direction:column;height:22px}
+.tile .bars i{display:block;background:var(--soft);opacity:.45;border-radius:3px;flex:var(--w,1)}
+.tile[aria-checked="true"] .bars i{background:var(--accent);opacity:.9}
+.tile small{font-size:.7rem;color:var(--soft);text-align:center}
+.devrow{display:grid;grid-template-columns:70px minmax(0,1fr);gap:8px;align-items:start}
+.devrow .dn{font-size:.8rem;font-weight:600;padding-top:16px;display:flex;align-items:center;gap:6px}
+.devrow .dn button{border:0;background:none;color:var(--accent);cursor:pointer;padding:0;font:inherit;text-decoration:underline;text-underline-offset:.2em}
+.summary{display:flex;flex-direction:column;gap:4px;font-size:.8rem;background:var(--bg);border-radius:10px;padding:8px 10px}
+.summary b{font-weight:600}
+.show{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border:1.5px solid var(--line);border-radius:999px;background:var(--panel);cursor:pointer;font-size:.82rem}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-weight:600}
+.chip[aria-pressed="false"]{text-decoration:line-through;color:var(--soft)}
+.chip svg{width:14px;height:14px}
+.hr{height:1px;background:var(--line)}
+
+.stage{background:var(--bg);padding:18px;display:flex;gap:16px;align-items:flex-start;overflow-x:auto;position:relative}
+.device{flex:none;display:flex;flex-direction:column;gap:6px;align-items:center}
+.device .cap{font:500 .7rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--soft)}
+.device.on .cap{color:var(--accent)}
+.screen{background:var(--t-bg);color:var(--t-text);border:1px solid var(--line);border-radius:10px;overflow:hidden;padding:14px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.device.on .screen{box-shadow:0 0 0 2px var(--accent)}
+.d-desktop .screen{width:440px}.d-tablet .screen{width:290px}.d-phone .screen{width:170px}
+.cols{display:flex;gap:10px}
+.cols.stack{flex-direction:column}
+.col{display:flex;flex-direction:column;gap:6px;min-width:0}
+.blk{border-radius:6px;padding:8px;font-size:11px;line-height:1.35}
+.blk.h{font-weight:700;font-size:13px;padding:2px 0}
+.blk.t{color:var(--t-muted);padding:0}
+.blk.img{background:linear-gradient(135deg,#c7c3f3,var(--t-surface));min-height:70px;display:grid;place-items:center;color:#3730a3;font-weight:600}
+.blk.btn{align-self:flex-start;background:var(--t-primary);color:#fff;font-weight:600;padding:5px 10px}
+.blk.hidden-ed{opacity:.35;background-image:repeating-linear-gradient(45deg,transparent 0 6px,rgba(0,0,0,.08) 6px 12px);position:relative}
+.blk.hidden-ed::after{content:attr(data-hidden);position:absolute;left:4px;top:4px;font:600 9px var(--f-mono);background:#18181b;color:#fff;padding:1px 5px;border-radius:4px}
+.handle{position:absolute;width:12px;margin-left:-6px;top:0;bottom:0;cursor:col-resize;display:grid;place-items:center;background:none;border:0;padding:0}
+.handle::before{content:"";width:4px;height:44px;border-radius:2px;background:var(--accent)}
+.handle:focus-visible{outline:2px solid var(--accent)}
+.colwrap{position:relative}
+
+.compare{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.cmp{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:.88rem}
+.cmp h3{font-size:1rem}
+.cmp ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+.pro{color:var(--ok)}.con{color:var(--bad)}
+.why{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:.9rem;display:flex;flex-direction:column;gap:6px}
+.why p{margin:0;max-width:82ch}
+.ask{background:var(--accent);color:var(--accent-ink);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.ask p{margin:0}
+.ask code{font:500 .9rem var(--f-mono);background:rgba(255,255,255,.2);padding:1px 7px;border-radius:6px}
+@media (max-width:1000px){.app{grid-template-columns:1fr}.panel{border-right:0;border-bottom:1px solid var(--line)}.dirs,.compare{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <span class="label">F029 · Design snapshot v1</span>
+    <h1>Per-device columns</h1>
+    <p class="lede">Columns get a width for each device (for example two-thirds and one-third on desktop, stacked on a phone), and any block can be hidden on phone, tablet or desktop. The published site does it with plain CSS, no JavaScript. The controls below work. Pick how you set them.</p>
+  </div>
+
+  <div class="dirs" role="group" aria-label="Design direction">
+    <button type="button" class="dir" data-dir="a" aria-pressed="true"><span class="rec">Recommended</span><b>A · All three devices at once</b><span>One row of width tiles per device, always visible. Nothing depends on which device the canvas shows.</span></button>
+    <button type="button" class="dir" data-dir="b" aria-pressed="false"><b>B · Follows the canvas device</b><span>Desktop / Tablet / Phone tabs in the panel, linked to the canvas switch. Shorter panel; one device at a time.</span></button>
+    <button type="button" class="dir" data-dir="c" aria-pressed="false"><b>C · Drag on the canvas</b><span>Drag the line between columns (arrow keys work too). Snaps to sensible widths.</span></button>
+  </div>
+
+  <div class="row">
+    <span class="label">Try with</span>
+    <div class="seg" role="group" aria-label="Number of columns"><button type="button" data-count="2" aria-pressed="true">2 columns</button><button type="button" data-count="3" aria-pressed="false">3 columns</button></div>
+  </div>
+
+  <div class="app">
+    <div class="panel" id="panel"></div>
+    <div class="stage" id="stage"></div>
+  </div>
+
+  <div class="compare">
+    <div class="cmp"><h3>A · All devices at once</h3><ul><li class="pro">See and change every device in one place</li><li class="pro">No hidden mode: what you see is what's set</li><li class="con">Three rows of tiles: a longer panel</li></ul></div>
+    <div class="cmp"><h3>B · Follows the canvas</h3><ul><li class="pro">Short panel, matches the preview you're looking at</li><li class="con">Easy to change Phone while thinking you're on Desktop</li><li class="con">You can't compare devices without switching</li></ul></div>
+    <div class="cmp"><h3>C · Drag on the canvas</h3><ul><li class="pro">Direct and quick for odd widths</li><li class="con">Small target on a zoomed-out canvas</li><li class="con">Needs a separate way to stack on phones and to hide blocks</li></ul></div>
+  </div>
+
+  <div class="why">
+    <span class="label">Why A</span>
+    <p><b>No mode errors.</b> In B the same tiles mean different things depending on a switch somewhere else on screen, which is the classic way to change the wrong thing. In A each row says which device it's for. Seeing all three at once also shows you the whole result (visibility of system status).</p>
+    <p><b>Short anyway:</b> the tiles are small, and the Phone row usually stays on "Stacked". The device names are links that switch the canvas preview, so you can check each one.</p>
+  </div>
+
+  <div class="why">
+    <span class="label">The same in every direction</span>
+    <p><b>Widths are fixed fractions</b> (halves, thirds, quarters), not free numbers, so pages stay tidy and the published CSS stays small.</p>
+    <p><b>"Show on" for any block:</b> Desktop, Tablet and Phone toggles (in F030's Advanced tab). In the builder a hidden block stays visible but faded and striped with "Hidden on phone", so you can still select it. On the published site it's left out for that device, for screen readers too.</p>
+    <p><b>Old pages don't change:</b> today's behaviour (equal widths, 2 per row on tablet, stacked on phone) becomes the default.</p>
+  </div>
+
+  <div class="ask">
+    <h3 style="font-size:1.2rem">Pick one</h3>
+    <p>Reply <code>A</code>, <code>B</code>, <code>C</code>, or a mix like <code>A + C's drag handles</code>.</p>
+  </div>
+</div>
+
+<script>
+const W2=[["half","1/2 + 1/2",[1,1]],["two-one","2/3 + 1/3",[2,1]],["one-two","1/3 + 2/3",[1,2]],["three-one","3/4 + 1/4",[3,1]],["one-three","1/4 + 3/4",[1,3]],["stack","Stacked",null]];
+const W3=[["equal","Equal",[1,1,1]],["wide-first","1/2 + 1/4 + 1/4",[2,1,1]],["wide-middle","1/4 + 1/2 + 1/4",[1,2,1]],["wide-last","1/4 + 1/4 + 1/2",[1,1,2]],["two-one-wrap","2, then 1",null,"wrap"],["stack","Stacked",null]];
+const DEV=[["desktop","Desktop"],["tablet","Tablet"],["phone","Phone"]];
+const S={dir:"a",count:2,dev:"desktop",w:{2:{desktop:"two-one",tablet:"half",phone:"stack"},3:{desktop:"equal",tablet:"two-one-wrap",phone:"stack"}},show:{desktop:true,tablet:true,phone:false},drag:{2:[2,1],3:[1,1,1]}};
+const $=s=>document.querySelector(s);
+const opts=()=>S.count===2?W2:W3;
+const ico={desktop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>',tablet:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/></svg>',phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2"/></svg>'};
+const nameOf=(dev)=>opts().find(o=>o[0]===S.w[S.count][dev])[1];
+function tiles(dev){
+  return `<div class="tiles" role="radiogroup" aria-label="${DEV.find(d=>d[0]===dev)[1]} widths">${opts().map(([id,l,r,wrap])=>{
+    const on=S.w[S.count][dev]===id;
+    const bars=r?`<span class="bars">${r.map(x=>`<i style="--w:${x}"></i>`).join("")}</span>`:wrap?`<span class="bars stack"><span style="display:flex;gap:3px;flex:1"><i></i><i></i></span><i></i></span>`:`<span class="bars stack">${Array(S.count).fill("<i></i>").join("")}</span>`;
+    return `<button type="button" class="tile" role="radio" aria-checked="${on}" tabindex="${on?0:-1}" data-dev="${dev}" data-w="${id}">${bars}<small>${l}</small></button>`}).join("")}</div>`;
+}
+const showChips=()=>`<div class="field"><span id="show-l">Show this image on</span><div class="show" role="group" aria-labelledby="show-l">${DEV.map(([d,l])=>`<button type="button" class="chip" aria-pressed="${S.show[d]}" data-show="${d}">${ico[d]}${l}</button>`).join("")}</div><small>In the example, the image is hidden on phones to keep the page short.</small></div>`;
+function panel(){
+  let h=`<h2>Columns</h2>`;
+  if(S.dir==="a"){
+    h+=`<div class="field"><span>Widths</span>${DEV.map(([d,l])=>`<div class="devrow"><span class="dn">${ico[d].replace("<svg","<svg width=\"14\" height=\"14\"")}<button type="button" data-view="${d}" aria-label="${l}: show in the canvas">${l}</button></span>${tiles(d)}</div>`).join("")}</div>`;
+  } else if(S.dir==="b"){
+    h+=`<div class="field"><span>Widths on</span><div class="devtabs" role="tablist" aria-label="Device">${DEV.map(([d,l])=>`<button type="button" role="tab" aria-selected="${S.dev===d}" data-tab="${d}">${ico[d].replace("<svg","<svg width=\"14\" height=\"14\"")}${l}</button>`).join("")}</div><small>Follows the device switch above the canvas.</small>${tiles(S.dev)}</div>
+      <div class="summary" aria-label="All devices">${DEV.map(([d,l])=>`<span><b>${l}:</b> ${nameOf(d)}</span>`).join("")}</div>`;
+  } else {
+    h+=`<p class="note">Drag the blue line between columns on the desktop preview, or focus it and use ← →. Widths snap to quarters and thirds.</p><div class="field"><span>Tablet and phone</span>${["tablet","phone"].map(d=>`<div class="devrow"><span class="dn">${DEV.find(x=>x[0]===d)[1]}</span>${tiles(d)}</div>`).join("")}</div>`;
+  }
+  h+=`<div class="hr"></div>${showChips()}`;
+  $("#panel").innerHTML=h;
+}
+function layoutFor(dev){
+  if(S.dir==="c"&&dev==="desktop")return {ratios:S.drag[S.count]};
+  const id=S.w[S.count][dev];const o=opts().find(x=>x[0]===id);
+  if(o[3]==="wrap")return {wrap:true};
+  return o[2]?{ratios:o[2]}:{stack:true};
+}
+const content=(i,dev)=>{
+  if(i===0)return `<div class="blk h">Our studio</div><div class="blk t">Small team, careful work, sites that load in a blink.</div><div class="blk btn">About us</div>`;
+  if(i===1){const hidden=!S.show[dev];return `<div class="blk img${hidden?" hidden-ed":""}" data-hidden="Hidden on ${dev}">Photo</div>`}
+  return `<div class="blk h">Visit</div><div class="blk t">Open daily, 7 to 3.</div>`;
+};
+function stage(){
+  $("#stage").innerHTML=DEV.map(([d,l])=>{
+    const L=layoutFor(d);let cols;
+    if(L.stack)cols=`<div class="cols stack">${Array.from({length:S.count},(_, i)=>`<div class="col">${content(i,d)}</div>`).join("")}</div>`;
+    else if(L.wrap)cols=`<div class="cols stack"><div class="cols"><div class="col" style="flex:1">${content(0,d)}</div><div class="col" style="flex:1">${content(1,d)}</div></div><div class="col">${content(2,d)}</div></div>`;
+    else{
+      let acc=0;const tot=L.ratios.reduce((a,b)=>a+b,0);
+      const handles=S.dir==="c"&&d==="desktop"?L.ratios.slice(0,-1).map((r,i)=>{acc+=r;return `<button type="button" class="handle" style="left:${acc/tot*100}%" role="slider" aria-label="Width between column ${i+1} and ${i+2}" aria-valuemin="1" aria-valuemax="11" aria-valuenow="${Math.round(acc/tot*12)}" aria-valuetext="${Math.round(acc/tot*12)} of 12" data-handle="${i}"></button>`}).join(""):"";
+      cols=`<div class="colwrap"><div class="cols">${L.ratios.map((r,i)=>`<div class="col" style="flex:${r} 1 0">${content(i,d)}</div>`).join("")}</div>${handles}</div>`;
+    }
+    const on=S.dir==="b"?S.dev===d:false;
+    return `<div class="device d-${d}${on?" on":""}"><span class="cap">${l}</span><div class="screen">${cols}</div></div>`;
+  }).join("");
+}
+function render(){panel();stage()}
+document.addEventListener("click",e=>{
+  const t=e.target;
+  const d=t.closest(".dir");if(d){S.dir=d.dataset.dir;document.querySelectorAll(".dir").forEach(x=>x.setAttribute("aria-pressed",String(x===d)));render();return}
+  const c=t.closest("[data-count]");if(c){S.count=Number(c.dataset.count);document.querySelectorAll("[data-count]").forEach(x=>x.setAttribute("aria-pressed",String(x===c)));render();return}
+  const tl=t.closest(".tile");if(tl){S.w[S.count][tl.dataset.dev]=tl.dataset.w;render();document.querySelector(`.tile[data-dev="${tl.dataset.dev}"][data-w="${tl.dataset.w}"]`)?.focus();return}
+  const tb=t.closest("[data-tab]");if(tb){S.dev=tb.dataset.tab;render();return}
+  const v=t.closest("[data-view]");if(v){S.dev=v.dataset.view;document.querySelectorAll(".device").forEach(x=>x.classList.toggle("on",x.classList.contains("d-"+S.dev)));return}
+  const sh=t.closest("[data-show]");if(sh){S.show[sh.dataset.show]=!S.show[sh.dataset.show];render();return}
+});
+document.addEventListener("keydown",e=>{
+  const tl=e.target.closest&&e.target.closest(".tile");
+  if(tl&&["ArrowRight","ArrowLeft","ArrowDown","ArrowUp"].includes(e.key)){e.preventDefault();const all=[...tl.parentElement.children];const i=all.indexOf(tl)+(["ArrowRight","ArrowDown"].includes(e.key)?1:-1);all[(i+all.length)%all.length].click();return}
+  const h=e.target.closest&&e.target.closest("[data-handle]");
+  if(h&&(e.key==="ArrowLeft"||e.key==="ArrowRight")){e.preventDefault();const i=Number(h.dataset.handle);const r=S.drag[S.count];const step=e.key==="ArrowRight"?1:-1;
+    const scale=12/r.reduce((a,b)=>a+b,0);let units=r.map(x=>Math.round(x*scale));if(units[i]+step<2||units[i+1]-step<2)return;units[i]+=step;units[i+1]-=step;S.drag[S.count]=units;stage();document.querySelector(`[data-handle="${i}"]`).focus()}
+});
+let dragging=null;
+document.addEventListener("pointerdown",e=>{const h=e.target.closest("[data-handle]");if(h){dragging={i:Number(h.dataset.handle)};e.preventDefault()}});
+document.addEventListener("pointermove",e=>{if(!dragging)return;const box=document.querySelector(".d-desktop .colwrap").getBoundingClientRect();const r=S.drag[S.count];const scale=12/r.reduce((a,b)=>a+b,0);let units=r.map(x=>Math.round(x*scale));
+  const before=units.slice(0,dragging.i).reduce((a,b)=>a+b,0);const pos=Math.round((e.clientX-box.left)/box.width*12);const pair=units[dragging.i]+units[dragging.i+1];const left=Math.max(2,Math.min(pair-2,pos-before));
+  if(left!==units[dragging.i]){units[dragging.i]=left;units[dragging.i+1]=pair-left;S.drag[S.count]=units;stage()}});
+document.addEventListener("pointerup",()=>{dragging=null});
+render();
+</script>

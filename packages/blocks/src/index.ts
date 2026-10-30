@@ -1,5 +1,18 @@
 export { config, sectionHeights, sectionHeightNames } from "./config";
-export type { Components, SectionProps, SectionHeight, SectionAlign } from "./config";
+export type { Components, SectionProps, SectionHeight, SectionAlign, Visibility } from "./config";
+export {
+  devices,
+  deviceNames,
+  widthOptions,
+  defaultWidths,
+  resolveWidths,
+  columnClasses,
+  cleanHideOn,
+  hideClasses,
+  hiddenLabel,
+  responsiveCss,
+} from "./responsive";
+export type { Device, WidthOption, ColumnWidths, HideOn } from "./responsive";
 export {
   sectionStyleIds,
   sectionStyleNames,

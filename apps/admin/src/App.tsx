@@ -37,14 +37,15 @@ import {
 import { markUnpublished } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
 import { PublishShortcut, usePendingCount } from "./publish/shortcut";
+import { withResponsiveEditing } from "./responsive/fields";
 import { withSectionEditing } from "./sections/editing";
 import { SiteStyleContext, type SiteStyle } from "./sections/site-style";
 import { SiteSettings } from "./settings/SiteSettings";
 import { loadSavedTokens, sameTokens, saveTokens } from "./tokens-store";
 
 const site = siteJson as Site;
-/** The builder's blocks, with visual Section fields (F025). */
-const editorConfig = withSectionEditing(config);
+/** The builder's blocks, with visual Section fields (F025) and per-device settings (F029). */
+const editorConfig = withResponsiveEditing(withSectionEditing(config));
 
 /** Responsive canvas widths for the viewport switcher. */
 const viewports = [

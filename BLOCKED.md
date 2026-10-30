@@ -6,4 +6,3 @@ removes an item once it's done.
 
 | Since | Feature | What's needed from the owner |
 |---|---|---|
-| 2026-10-29 | F028 Style customizer v2 | Pick A, B or C in `design/f028-style-customizer-v1.html` (https://claude.ai/artifact/VapdC2TJCBJddNoi6VGKmY), and reply OK (or say otherwise) to the "Main button" proposal at the bottom. |

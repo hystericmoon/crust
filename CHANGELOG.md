@@ -4,6 +4,13 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Per-device columns (F029):** a Columns block now has widths for
+  desktop, tablet and phone, side by side in the panel (for example 2/3
+  + 1/3 on desktop, stacked on phone). Click a device name to preview it.
+- **Show on:** any block can be hidden on desktop, tablet or phone. In
+  the builder it stays visible but faded and labelled, so you can still
+  select it; visitors on that device don't see it. No JavaScript.
+
 - **Style customizer (F028):** Site settings show one group at a time
   next to the preview, with new groups:
   - **Typography:** heading sizes (Subtle to Dramatic), weight and letter

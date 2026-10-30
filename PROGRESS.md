@@ -3,6 +3,21 @@
 Read this first in every session. Keep it short: replace "Current", append
 to "Log".
 
+## Overnight plan (owner, 2026-10-29: "go with all your recommendations, finish everything, don't wait for me")
+
+Owner approved: F027 A (built), F028 A + OK to the "Main button" proposal,
+F029 A, and building F030–F033 with Claude's recommendations (no snapshot
+picks needed; decisions go in DECISIONS.md). Never merge or publish; each
+feature is a draft PR stacked on the one before. A resumed session: find
+the first unchecked step, `git checkout` its branch, carry on.
+
+- [x] F028 build on `f028-style-customizer` (PR #12), then merge it into `f029-per-device-columns`
+- [x] F029 build on `f029-per-device-columns` (PR #13)
+- [ ] F030 Content/Style/Advanced tabs on `f030-settings-tabs` (from F029's branch)
+- [ ] F031 Header, footer and menu on `f031-header-footer` (from F030's)
+- [ ] F032 More elements on `f032-more-elements` (from F031's)
+- [ ] F033 Theme pack on `f033-theme-pack` (from F032's)
+
 ## Current
 
 - **Milestone:** 1 complete. F001–F024 pass; setup done; first real
@@ -29,6 +44,11 @@ to "Log".
   to answer one question: how "Main button" relates to the per-style
   button looks from F025 (proposal in the snapshot). Not built yet on
   purpose: the answer changes the token format. Logged in BLOCKED.md.
+- **F029 Per-device columns:** design snapshot v1 on branch
+  `f029-per-device-columns` (draft PR, stacked on #12),
+  `design/f029-per-device-columns-v1.html`, also at
+  https://claude.ai/artifact/WFkZUGwYwQbX79bc6Jicye. Waiting for the
+  owner to pick A/B/C (Claude recommends A: all three devices at once).
   Other proposals waiting in DECISIONS.md (sign-out button, restore
   brings back the redirect).
 - **Waiting on the owner:**
@@ -199,9 +219,18 @@ to "Log".
   working controls and 9 presets (new: Ocean, Studio, Paper, Night; all
   AA). Found an overlap with F025's per-style button looks; asked the
   owner before building.
+- 2026-10-29 — F029 design snapshot v1: width tiles per device (A all
+  devices at once, B follows the canvas device, C drag on the canvas with
+  arrow keys), plus "Show on" toggles per block.
 - 2026-10-29 — F028 Style customizer v2 done (direction A, button
   proposal accepted). tokens.style options, Soft button look, 9 presets,
   grouped Site settings with preview-click jumps. 48 new tests (364
   total). Chromium at 1440 and 390: axe clean in every group, canvas
   picks up the styles, no console errors. done_check and check:a11y
   (45 themed pages) pass.
+- 2026-10-29 — F029 Per-device columns done (direction A). Width tiles
+  for all three devices, device names switch the canvas, "Show on" for
+  every block (display: contents wrapper + media queries). Old pages
+  render identically. 18 new tests (382 total). Checked in Chromium:
+  canvas widths and the faded hidden block in the builder, and the
+  published page at 375/800/1280. done_check passes.
