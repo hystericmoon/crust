@@ -32,7 +32,9 @@ describe("pages: new page rules", () => {
       title: "Keep the title under 120 characters.",
       description: "Keep the description under 300 characters.",
     });
-    expect(checkNewPage({ title: "Blog post", address: "blog/first-post", description: "" }, ["/"])).toEqual({});
+    expect(checkNewPage({ title: "Project", address: "work/first-project", description: "" }, ["/"])).toEqual({});
+    // F035: /blog belongs to the posts.
+    expect(checkNewPage({ title: "Blog post", address: "blog/first-post", description: "" }, ["/"]).address).toMatch(/where your posts are published/);
   });
 
   it("starts a new page with its H1, so it passes the publish checks", () => {

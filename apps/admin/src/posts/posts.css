@@ -1,0 +1,18 @@
+/* Posts screen (F035). Matches the Pages screen. */
+.po-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.po-row { display: flex; align-items: center; gap: 12px 16px; flex-wrap: wrap; padding: 12px 0; border-top: 1px solid var(--st-divider); }
+.po-row:first-child { border-top: 0; }
+.po-main { display: flex; flex-direction: column; gap: 2px; flex: 1 1 260px; min-width: 0; }
+.po-title { font-weight: 600; overflow-wrap: anywhere; }
+.po-meta { color: var(--st-muted); font-size: 0.875rem; }
+.po-confirm { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.po-danger { background: var(--st-danger); border-color: var(--st-danger); color: #fff; }
+.po-danger:hover { background: #991b1b; }
+.po-empty { margin: 0; color: var(--st-muted); }
+.po-form { display: grid; gap: 14px; }
+.po-prefix { display: flex; align-items: center; gap: 6px; max-width: 32rem; }
+.po-prefix > span { color: var(--st-muted); font-family: ui-monospace, Menlo, monospace; font-size: 0.875rem; }
+.po-prefix .st-input { flex: 1; min-width: 0; }
+.po-date { max-width: 12rem; }
+.po-buttons { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.po-field { display: flex; flex-direction: column; gap: 8px; }

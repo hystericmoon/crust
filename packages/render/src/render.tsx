@@ -32,14 +32,14 @@ function ComponentShell({ render, props }: { render: AnyComponentConfig["render"
 }
 
 /** With the media library (F034), uploaded photos get their size and a srcset of resized copies. */
-const withMedia = (node: ReactNode, media: MediaItem[] | undefined) =>
+export const withMedia = (node: ReactNode, media: MediaItem[] | undefined) =>
   media ? <MediaContext.Provider value={new Map(media.map((m) => [m.file, m]))}>{node}</MediaContext.Provider> : node;
 
 export function renderBody(data: Data, media?: MediaItem[]): string {
   return renderToStaticMarkup(withMedia(<>{data.content.map((item) => renderItem(item))}</>, media));
 }
 
-const escapeHtml = (s: string) =>
+export const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 export interface RenderOptions {
@@ -53,28 +53,42 @@ export interface RenderOptions {
 
 /** Full HTML document for one page. `baseCss` is packages/blocks/src/styles.css. */
 export function renderPage(site: Site, page: Page, baseCss: string, options: RenderOptions = {}): string {
-  const body = renderBody(page.puck, options.media);
-  const { header, footer } = migrateChrome(site, options.pages ?? [{ path: page.path, title: page.title }]);
+  return renderDocument(site, { path: page.path, title: page.title, description: page.description, body: renderBody(page.puck, options.media) }, baseCss, options);
+}
+
+export interface DocumentParts {
+  path: string;
+  title: string;
+  description: string;
+  /** Rendered HTML inside <main>. */
+  body: string;
+  /** Extra tags for <head> (already escaped). */
+  head?: string;
+}
+
+/** The page shell around any content: head, header, main, footer. */
+export function renderDocument(site: Site, doc: DocumentParts, baseCss: string, options: RenderOptions): string {
+  const { header, footer } = migrateChrome(site, options.pages ?? [{ path: doc.path, title: doc.title }]);
   const year = options.year ?? new Date().getFullYear();
-  const top = renderToStaticMarkup(withMedia(<SiteHeaderView header={header} path={page.path} />, options.media));
-  const bottom = renderToStaticMarkup(<SiteFooterView footer={footer} siteName={site.name} path={page.path} year={year} />);
+  const top = renderToStaticMarkup(withMedia(<SiteHeaderView header={header} path={doc.path} />, options.media));
+  const bottom = renderToStaticMarkup(<SiteFooterView footer={footer} siteName={site.name} path={doc.path} year={year} />);
   // A sticky header would cover whatever is scrolled or tabbed to; the page keeps room for it (WCAG 2.4.11).
   const htmlClass = header.show && header.sticky ? ' class="cr-has-sticky"' : "";
   const css = `${tokensToCss(site.tokens)}\n${baseCss}`;
-  const title = page.path === "/" ? page.title : `${page.title} | ${site.name}`;
+  const title = doc.path === "/" ? doc.title : `${doc.title} | ${site.name}`;
   return `<!doctype html>
 <html lang="${escapeHtml(site.language)}"${htmlClass}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(title)}</title>
-<meta name="description" content="${escapeHtml(page.description)}">
+<meta name="description" content="${escapeHtml(doc.description)}">
 <meta name="generator" content="Crust">
-<style>${css.replace(/<\/style/gi, "<\\/style")}</style>
+${doc.head ?? ""}<style>${css.replace(/<\/style/gi, "<\\/style")}</style>
 </head>
 <body class="cr-page">
 <a class="cr-skip" href="#content">Skip to content</a>
-${top}<main id="content" tabindex="-1">${body}</main>
+${top}<main id="content" tabindex="-1">${doc.body}</main>
 ${bottom}
 </body>
 </html>

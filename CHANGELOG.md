@@ -4,6 +4,13 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Blog (F035):** a new Posts screen (link next to Pages). Write news,
+  notes or portfolio pieces in the builder, with a title, summary, date
+  and cover photo. Your site gets a list of posts at /blog/, a page for
+  each post, and an RSS feed so people can follow along. Rename the list
+  page (e.g. "News") on the Posts screen, and add /blog to your menu in
+  Site settings.
+
 - **Media library (F034):** every image field now has "Choose image".
   Upload photos from your Mac or phone (button or drag and drop), find
   them again by searching, and pick one from a grid. Each photo needs a

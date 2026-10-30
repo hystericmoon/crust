@@ -1,4 +1,5 @@
 import type { Page } from "@crust/blocks";
+import { isBlogPath } from "@crust/blocks/posts";
 
 const SEGMENT = /^[a-z0-9][a-z0-9-]*$/;
 
@@ -17,7 +18,7 @@ export function slugify(title: string): string {
 
 export interface NewPageInput {
   title: string;
-  /** What the owner typed after the "/" prefix, e.g. "about" or "blog/first-post". */
+  /** What the owner typed after the "/" prefix, e.g. "about" or "work/first-project". */
   address: string;
   description: string;
 }
@@ -33,8 +34,9 @@ export function checkAddress(input: string, existingPaths: string[]): string | n
   const segments = address.split("/");
   if (!address) return "Add an address, like about or contact.";
   if (segments.some((s) => !SEGMENT.test(s))) return "Use lowercase letters, numbers and dashes, starting with a letter or number (like about-us).";
-  if (segments.length > 4) return "Use at most 4 levels, like blog/2026/first-post.";
+  if (segments.length > 4) return "Use at most 4 levels, like work/2026/first-project.";
   if (existingPaths.includes(`/${address}`)) return `There's already a page at /${address}.`;
+  if (isBlogPath(`/${address}`)) return "Addresses starting with blog are where your posts are published. Choose another one.";
   return null;
 }
 

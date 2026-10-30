@@ -5,11 +5,12 @@
  * whole-page layout with every theme preset, plus one page of the F032
  * blocks per preset.
  */
-import { applyPreset, buildPageLayout, fitHeadings, pageLayouts, sectionLayouts, themePresets, type Page, type Site } from "@crust/blocks";
+import { applyPreset, buildPageLayout, fitHeadings, newPost, pageLayouts, sectionLayouts, themePresets, type Page, type Site } from "@crust/blocks";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { blockSamples } from "./block-samples";
+import { renderBlogIndex, renderPost } from "./blog";
 import { renderPage } from "./render";
 
 const [contentDir = "content", outDir = "dist/layout-check"] = process.argv.slice(2);
@@ -30,5 +31,17 @@ for (const preset of themePresets) {
   for (const layout of pageLayouts) await write(`${layout.id}-${preset.id}`, themed, `${layout.name} (${preset.name})`, buildPageLayout(layout));
   // F032: the new blocks, on every section style, in every preset.
   await write(`blocks-${preset.id}`, themed, `New blocks (${preset.name})`, blockSamples());
+}
+// F035: the blog's list page and a post, in every preset.
+const posts = [
+  { ...newPost("Opening day", "opening-day", "2026-10-01"), description: "We open on Friday, with coffee for the first fifty visitors." },
+  { ...newPost("Autumn menu", "autumn-menu", "2026-10-30"), description: "Soup, bread and the last tomatoes." },
+];
+const blog = { title: "News", intro: "Notes from the studio." };
+for (const preset of themePresets) {
+  const themed: Site = { ...site, tokens: applyPreset(site.tokens, preset) };
+  await mkdir(join(outDir, `blog-${preset.id}`, "post"), { recursive: true });
+  await writeFile(join(outDir, `blog-${preset.id}`, "index.html"), renderBlogIndex(themed, posts, blog, baseCss));
+  await writeFile(join(outDir, `blog-${preset.id}`, "post", "index.html"), renderPost(themed, posts[0]!, blog, baseCss));
 }
 console.log(`layouts: ${sectionLayouts.length} sections and ${pageLayouts.length * themePresets.length} themed pages written to ${outDir}`);

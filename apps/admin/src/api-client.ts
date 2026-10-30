@@ -2,7 +2,7 @@
  * Browser side of the admin API (apps/admin/server). Every call resolves to
  * a plain result; it never throws, so the UI always has a message to show.
  */
-import type { MediaItem, Page, SavedLayout, Site } from "@crust/blocks";
+import type { BlogSettings, MediaItem, Page, Post, SavedLayout, Site } from "@crust/blocks";
 
 export type ApiResult<T = Record<string, never>> =
   | ({ ok: true } & T)
@@ -107,3 +107,11 @@ export const listMedia = () => call<{ items: MediaItem[]; usage: Record<string, 
 export const uploadMedia = (photo: { name: string; data: string; alt: string }) => call<{ item: MediaItem }>("/api/media", post({ action: "upload", ...photo }));
 export const setMediaAlt = (file: string, alt: string) => call<{ item: MediaItem }>("/api/media", post({ action: "alt", file, alt }));
 export const deleteMedia = (file: string) => call<{ usedOn?: MediaUse[] }>("/api/media", post({ action: "delete", file }));
+
+/** Blog posts (F035): content/posts/<slug>.json; list page title and intro in content/blog.json. */
+export type PostSummary = Omit<Post, "puck">;
+export const listPosts = () => call<{ posts: PostSummary[]; blog: BlogSettings }>("/api/posts");
+export const getPost = (slug: string) => call<{ post: Post }>(`/api/posts?slug=${encodeURIComponent(slug)}`);
+export const savePost = (p: Post) => call<{ post: Post }>("/api/posts", post({ action: "save", post: p }));
+export const deletePost = (slug: string) => call("/api/posts", post({ action: "delete", slug }));
+export const saveBlog = (blog: BlogSettings) => call<{ blog: BlogSettings }>("/api/posts", post({ action: "blog", blog }));
