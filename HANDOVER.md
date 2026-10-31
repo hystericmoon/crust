@@ -118,9 +118,13 @@ The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
 2. ~~Write Milestones 6 and 7~~ done 2026-10-31 (F054–F068; F054 depends
    on F048 so M6 can start while F053 waits for the owner). Next feature
    after F053's approval wait: **F054 Content store**.
-3. **Review the 48 `needs_review` features** (delegated by the owner):
-   check each on the preview, set `reviewed: true` with a note, list
-   fixes as proposals.
+3. ~~Review the 48 `needs_review` features~~ done 2026-10-31: all have
+   `reviewed: true` + `review_note`; 12 fixes in DECISIONS.md
+   Proposals "From the review"; page for the owner
+   https://claude.ai/artifact/53YM8oVKV9XrECZJSNHo1J
+   (`design/review-2026-10-31.html`). **Waiting for the owner: A (one
+   fix batch 1–10 now, recommended), B (1–5 only) or C (later).** Only
+   he adds the rework item to features.json.
 4. ~~Live site publish~~ checked: run 3 succeeded, site up.
 
 ## Where to find things
