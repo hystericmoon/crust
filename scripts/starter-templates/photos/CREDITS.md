@@ -23,3 +23,24 @@ Cropped and resized here (at most 1920 px), metadata stripped.
 Left out on purpose: photos of artworks or installations (the photo can be
 CC0 while the artwork isn't), architecture models, and photos with
 recognisable people.
+
+## Round 2 (recommended, waiting for the owner)
+
+Comparison: https://claude.ai/artifact/2hkW4FDzmjPcXuzjYG4FYS. All CC0
+(NegativeSpace: https://negativespace.co/license/ ; Skitterphoto:
+https://skitterphoto.com/license). Neither site shows a photographer for
+every NegativeSpace file, so the original file address is the record.
+
+| File | Original title | Author | Licence | Source |
+|---|---|---|---|---|
+| balconies.jpg | Modern Building (Hamburg apartments) | NegativeSpace | CC0 | https://negativespace.co/wp-content/uploads/2020/09/negative-space-hamburg-apartment-modern.jpg |
+| angles.jpg | Modern Architecture | NegativeSpace | CC0 | https://negativespace.co/wp-content/uploads/2019/12/negative-space-white-linear-angled-architecture.jpg |
+| white-stair.jpg | Industrial Tank Stairs | NegativeSpace | CC0 | https://negativespace.co/wp-content/uploads/2019/12/negative-space-grey-iron-staircase-between-two-buildings.jpg |
+| pool-house.jpg | Modern House Pool | NegativeSpace | CC0 | https://negativespace.co/wp-content/uploads/2023/07/negative-space-modern-house.jpg |
+| wood-spiral.jpg | Staircase at Groningen Forum | Peter Heeling | CC0 | https://skitterphoto.com/photos/11870/staircase-at-groningen-forum |
+| home-office.jpg | Minimalist white home office | Peter Heeling | CC0 | https://skitterphoto.com/photos/9911/minimalist-white-home-office |
+| lake-pier.jpg | Lake pier (direction B hero) | Martijn Meijerink | CC0 | https://skitterphoto.com/photos/430/lake-pier |
+
+wood-spiral.jpg shows the inside of Forum Groningen (2019); Dutch
+freedom of panorama clearly covers outside views only. Low risk (a
+stair, not an artwork); spiral.jpg is the fallback.

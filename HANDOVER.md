@@ -118,6 +118,15 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
       and `river.jpg` are ~650 KB (fine texture); try 1600 px if
       Lighthouse or the template size complains.
    b. **Snapshot done:** A Daylight (recommended) / B Shoreline.
+   b2. **Round 2 photos** (owner asked to also search NegativeSpace,
+      Skitterphoto; Pexels allowed but blocked here, needs an API key):
+      comparison https://claude.ai/artifact/2hkW4FDzmjPcXuzjYG4FYS.
+      Recommended swaps: vaults→balconies, grid→angles (grid moves to
+      Work), spiral→wood-spiral, cubes→white-stair,
+      lake-house→pool-house, studio-desk→home-office; B hero
+      river→lake-pier. New files are already in `photos/`, credits in
+      CREDITS.md "Round 2". Delete the losing files once the owner
+      confirms.
    c. **To build after the pick** (in `scripts/starter-templates/starter.ts`,
       Harbour only; Signal and Corner keep their stand-ins):
       - `buildStarter` reads photos from `photos/` for Harbour instead

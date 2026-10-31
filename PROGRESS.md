@@ -517,3 +517,8 @@ to "Log".
   directions published (https://claude.ai/artifact/FksfsnM6msMtjBu4v5YHDm,
   A recommended). Waiting for the owner's pick (BLOCKED.md); nothing
   built yet.
+- 2026-10-31 — F052 photos round 2: 1,931 more CC0 candidates from
+  NegativeSpace and Skitterphoto; six replace current picks, plus a new
+  hero for direction B. Comparison:
+  https://claude.ai/artifact/2hkW4FDzmjPcXuzjYG4FYS. Waiting for the
+  owner (direction A/B and the photo set).
