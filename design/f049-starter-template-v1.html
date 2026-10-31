@@ -1,0 +1,223 @@
+<title>Crust Starter Template</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: same language as the F025–F048 snapshots (page chrome). The mock site inside uses ONLY Crust's own system font stacks and token values, so it looks the way the template would publish. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6; --field:#85858f;
+  --accent:#4338ca; --accent-ink:#ffffff; --canvas:#e9e9ef;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --canvas:#15151d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --canvas:#15151d; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body)}
+.wrap{max-width:1160px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:40px}
+h1,h2{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,5vw,44px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:24px;font-weight:600}
+h3{margin:0;font-size:17px}
+p{margin:0;max-width:65ch}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.intro{display:grid;gap:12px}
+.lead{color:var(--soft);font-size:18px}
+section{display:grid;gap:16px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.switch button,.seg button{font:600 15px/1 var(--f-body);padding:12px 16px;min-height:44px;border:1px solid var(--field);border-radius:999px;background:var(--panel);color:var(--ink);cursor:pointer}
+.switch button[aria-pressed="true"],.seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.switch .tag{font:500 11px/1 var(--f-mono);margin-left:6px;opacity:.85}
+.seg button{font-size:14px;padding:8px 14px;min-height:40px}
+button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.note{color:var(--soft)}
+.cols3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:8px;align-content:start}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600}
+.num{font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums}
+.chip{display:inline-block;width:14px;height:14px;border-radius:3px;border:1px solid var(--line);vertical-align:-2px;margin-right:6px}
+
+/* The mock site: every value comes from the direction's tokens */
+.stage{background:var(--canvas);border-radius:14px;padding:16px;display:grid;justify-items:center}
+.site{width:100%;max-width:100%;transition:max-width .25s;background:var(--s-bg);color:var(--s-text);font-family:var(--s-body);border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgb(0 0 0/.15)}
+@media (prefers-reduced-motion: reduce){.site{transition:none}}
+.site.phone{max-width:380px}
+.site h1,.site h2,.site h3{font-family:var(--s-head);font-weight:var(--s-hw);letter-spacing:var(--s-track);color:inherit}
+.s-in{max-width:980px;margin:0 auto;padding:0 24px}
+.s-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;border-bottom:1px solid var(--s-line)}
+.s-logo{font-family:var(--s-head);font-weight:var(--s-hw);font-size:19px}
+.s-nav{display:flex;gap:18px;font-size:15px;color:var(--s-muted)}
+.s-btn{display:inline-block;padding:11px 20px;border-radius:var(--s-btnr);background:var(--s-primary);color:var(--s-on);font-weight:600;font-size:15px;text-decoration:none}
+.s-btn.ghost{background:transparent;color:inherit;box-shadow:inset 0 0 0 2px currentColor}
+.s-hero{padding:var(--s-heropad) 0;background:var(--s-herobg);color:var(--s-heroink)}
+.s-hero h1{font-size:var(--s-h1);line-height:1.05;max-width:16ch;margin-bottom:16px}
+.s-hero p{color:var(--s-heromuted);font-size:18px;max-width:46ch;margin-bottom:24px}
+.s-hero .s-btn{background:var(--s-herobtn);color:var(--s-herobtnink)}
+.s-sec{padding:56px 0}
+.s-sec.surface{background:var(--s-surface)}
+.s-sec h2{font-size:var(--s-h2);margin-bottom:24px}
+.s-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.s-card{padding:20px;border-radius:var(--s-cardr);background:var(--s-cardbg);box-shadow:var(--s-cardshadow);display:grid;gap:8px}
+.s-card p{color:var(--s-muted);font-size:15px}
+.s-photo{aspect-ratio:4/3;border-radius:var(--s-cardr);background:var(--s-photo);max-width:100%}
+.s-work{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.s-work figure{margin:0;display:grid;gap:8px}
+.s-work figcaption{font-size:15px;color:var(--s-muted)}
+.s-link{color:var(--s-primary);text-decoration:underline;text-decoration-thickness:var(--s-linkt);text-underline-offset:3px;background:var(--s-linkbg)}
+.s-strip{background:var(--s-dark);color:var(--s-darkink);padding:44px 0}
+.s-strip .s-in{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.s-strip h2{font-size:var(--s-h2);margin:0}
+.s-strip .s-btn{background:var(--s-darkink);color:var(--s-dark)}
+.s-foot{padding:28px 24px;font-size:14px;color:var(--s-muted);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;border-top:1px solid var(--s-line)}
+.pl{outline:2px dashed #b54708;outline-offset:3px;border-radius:2px}
+.hide-pl .pl{outline:none}
+.site.phone .s-nav{display:none}
+.site.phone .s-grid,.site.phone .s-work{grid-template-columns:1fr}
+.site.phone .s-hero h1{font-size:calc(var(--s-h1) * .62)}
+.site.phone .s-sec h2,.site.phone .s-strip h2{font-size:calc(var(--s-h2) * .8)}
+@media (max-width:640px){.s-grid,.s-work{grid-template-columns:1fr}.s-nav{display:none}.s-hero h1{font-size:calc(var(--s-h1) * .62)}}
+
+/* Direction tokens (values Crust's Site settings can hold) */
+.site[data-dir="a"]{--s-bg:#fbfaf7;--s-surface:#f0ede4;--s-text:#1d2420;--s-muted:#4f5a53;--s-primary:#1f5135;--s-on:#fff;--s-dark:#1d2420;--s-darkink:#f3f1ea;--s-line:#e2ddd0;
+  --s-head:'Iowan Old Style','Palatino Linotype','URW Palladio L',P052,serif;--s-body:Seravek,'Gill Sans Nova',Ubuntu,Calibri,'DejaVu Sans',sans-serif;--s-hw:500;--s-track:-.01em;
+  --s-h1:54px;--s-h2:32px;--s-btnr:2px;--s-cardr:2px;--s-cardbg:transparent;--s-cardshadow:inset 0 0 0 1px #d6d0c1;--s-linkt:3px;--s-linkbg:none;
+  --s-herobg:#fbfaf7;--s-heroink:#1d2420;--s-heromuted:#4f5a53;--s-herobtn:#1f5135;--s-herobtnink:#fff;--s-heropad:72px;--s-photo:linear-gradient(135deg,#c9d4c4,#8fa58f)}
+.site[data-dir="b"]{--s-bg:#ffffff;--s-surface:#f3f4f6;--s-text:#0b0d12;--s-muted:#4b5160;--s-primary:#c2410c;--s-on:#fff;--s-dark:#0b0d12;--s-darkink:#f5f6f8;--s-line:#e5e7eb;
+  --s-head:Avenir,Montserrat,Corbel,'URW Gothic',sans-serif;--s-body:system-ui,-apple-system,'Segoe UI',sans-serif;--s-hw:800;--s-track:-.03em;
+  --s-h1:68px;--s-h2:38px;--s-btnr:999px;--s-cardr:14px;--s-cardbg:#fff;--s-cardshadow:0 1px 2px rgb(0 0 0/.06),0 8px 24px rgb(0 0 0/.08);--s-linkt:2px;--s-linkbg:none;
+  --s-herobg:#0b0d12;--s-heroink:#f5f6f8;--s-heromuted:#c9ccd4;--s-herobtn:#f5f6f8;--s-herobtnink:#0b0d12;--s-heropad:88px;--s-photo:linear-gradient(135deg,#fdba74,#c2410c)}
+.site[data-dir="c"]{--s-bg:#fffdf6;--s-surface:#fbf1d0;--s-text:#1c2340;--s-muted:#4a5170;--s-primary:#1e3a8a;--s-on:#fff;--s-dark:#1c2340;--s-darkink:#fbf1d0;--s-line:#efe4c2;
+  --s-head:Charter,'Bitstream Charter','Sitka Text',Cambria,serif;--s-body:system-ui,-apple-system,'Segoe UI',sans-serif;--s-hw:700;--s-track:0;
+  --s-h1:46px;--s-h2:28px;--s-btnr:10px;--s-cardr:10px;--s-cardbg:#fbf1d0;--s-cardshadow:none;--s-linkt:1px;--s-linkbg:linear-gradient(transparent 60%,#fbe7a1 60%);
+  --s-herobg:#fbf1d0;--s-heroink:#1c2340;--s-heromuted:#4a5170;--s-herobtn:#1e3a8a;--s-herobtnink:#fff;--s-heropad:64px;--s-photo:linear-gradient(135deg,#bfd0f5,#1e3a8a)}
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Crust · F049 · design snapshot · your pick</span>
+    <h1>The first starter template</h1>
+    <p class="lead">Three directions for the template that ships with Crust: Home, About, Services, Work, Contact, a blog with one post and a linked contact strip. Every colour, font and shape below is a value Crust's Site settings can hold, so what you see is what the template would publish.</p>
+  </header>
+
+  <section aria-labelledby="pick-h">
+    <h2 id="pick-h">Directions</h2>
+    <div class="row switch" role="group" aria-label="Direction">
+      <button type="button" aria-pressed="true" data-dir="a">A · Harbour <span class="tag">recommended</span></button>
+      <button type="button" aria-pressed="false" data-dir="b">B · Signal</button>
+      <button type="button" aria-pressed="false" data-dir="c">C · Corner</button>
+    </div>
+    <div class="cols3">
+      <div class="box" data-show="a"><h3>A · Harbour: calm and editorial</h3><p>Old-style serif headings, a humanist sans for text, deep green on warm paper. Square buttons, outlined cards, thick link underlines. Lots of air.</p><p class="note">Suits studios, consultants, architects, therapists: anyone selling judgement. Easiest to make your own because nothing in it shouts.</p></div>
+      <div class="box" data-show="b" hidden><h3>B · Signal: bold and current</h3><p>Heavy geometric sans set tight, a dark opening section, one burnt-orange accent. Pill buttons, soft-shadow cards, dramatic type scale.</p><p class="note">Suits agencies, product studios, events. Strong first impression; harder to adapt to quieter businesses, and dark-first pages need good photos.</p></div>
+      <div class="box" data-show="c" hidden><h3>C · Corner: warm and local</h3><p>Sturdy transitional serif, navy on butter yellow, highlighter-style links, rounded corners, flat filled cards.</p><p class="note">Suits shops, cafés, makers, local services. Friendly and very readable; the yellow sets a mood some businesses won't want.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="mock-h">
+    <div class="row" style="justify-content:space-between">
+      <h2 id="mock-h">Home page</h2>
+      <div class="row">
+        <div class="row seg" role="group" aria-label="Preview width">
+          <button type="button" aria-pressed="true" data-w="desktop">Desktop</button>
+          <button type="button" aria-pressed="false" data-w="phone">Phone</button>
+        </div>
+        <div class="row seg" role="group" aria-label="Sample content outlines">
+          <button type="button" aria-pressed="true" id="pl">Show “Replace me”</button>
+        </div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="site" data-dir="a" id="site">
+        <div class="s-head"><span class="s-logo"><span class="pl" id="biz">Harbour Studio</span></span><nav class="s-nav" aria-label="Sample site menu"><span>About</span><span>Services</span><span>Work</span><span>Journal</span><span>Contact</span></nav></div>
+        <div class="s-hero"><div class="s-in">
+          <h1><span class="pl" id="hero">Design for places people remember</span></h1>
+          <p><span class="pl">One or two sentences about what you do and who it's for. Say it the way you would to a new client.</span></p>
+          <a class="s-btn" href="#mock-h">See our work</a>
+        </div></div>
+        <div class="s-sec"><div class="s-in">
+          <h2>What we do</h2>
+          <div class="s-grid">
+            <div class="s-card"><h3><span class="pl">Brand identity</span></h3><p><span class="pl">A short line on this service: what the client gets and how long it takes.</span></p></div>
+            <div class="s-card"><h3><span class="pl">Websites</span></h3><p><span class="pl">A short line on this service: what the client gets and how long it takes.</span></p></div>
+            <div class="s-card"><h3><span class="pl">Signage</span></h3><p><span class="pl">A short line on this service: what the client gets and how long it takes.</span></p></div>
+          </div>
+        </div></div>
+        <div class="s-sec surface"><div class="s-in">
+          <h2>Recent work</h2>
+          <div class="s-work">
+            <figure><div class="s-photo pl" role="img" aria-label="Sample photo: a finished project"></div><figcaption><span class="pl">Project name, the client, the year</span></figcaption></figure>
+            <figure><div class="s-photo pl" role="img" aria-label="Sample photo: a finished project"></div><figcaption><span class="pl">Project name, the client, the year</span></figcaption></figure>
+          </div>
+          <p style="margin-top:20px"><a class="s-link" href="#mock-h">All projects</a></p>
+        </div></div>
+        <div class="s-strip"><div class="s-in"><h2>Have a project in mind?</h2><a class="s-btn" href="#mock-h">Get in touch</a></div></div>
+        <div class="s-foot"><span>© 2026 <span class="pl">Harbour Studio</span></span><span>About · Services · Work · Journal · Contact</span></div>
+      </div>
+    </div>
+    <p class="note">Dashed outlines are the “Replace me” marks (F046): whoever starts from the template sees them in the builder, and publishing waits until they're replaced. The dark band is the linked contact strip: edit it once and every page changes.</p>
+  </section>
+
+  <section aria-labelledby="tok-h">
+    <h2 id="tok-h">What goes into Site settings</h2>
+    <div class="scroll"><table>
+      <thead><tr><th scope="col"></th><th scope="col">A · Harbour</th><th scope="col">B · Signal</th><th scope="col">C · Corner</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Headings</th><td>Old-style serif, weight 500, tracking snug</td><td>Geometric sans, weight 800, tracking tight</td><td>Transitional serif, weight 700, normal</td></tr>
+        <tr><th scope="row">Text</th><td>Humanist sans</td><td>System sans</td><td>System sans</td></tr>
+        <tr><th scope="row">Type scale</th><td>Balanced</td><td>Dramatic</td><td>Subtle</td></tr>
+        <tr><th scope="row">Primary</th><td><span class="chip" style="background:#1f5135"></span><span class="num">#1F5135</span></td><td><span class="chip" style="background:#c2410c"></span><span class="num">#C2410C</span></td><td><span class="chip" style="background:#1e3a8a"></span><span class="num">#1E3A8A</span></td></tr>
+        <tr><th scope="row">Background / surface</th><td><span class="num">#FBFAF7 / #F0EDE4</span></td><td><span class="num">#FFFFFF / #F3F4F6</span></td><td><span class="num">#FFFDF6 / #FBF1D0</span></td></tr>
+        <tr><th scope="row">Buttons · cards · links</th><td>Square · outline · thick</td><td>Pill · shadow · underline</td><td>Rounded · flat · highlight</td></tr>
+        <tr><th scope="row">Text contrast</th><td class="num">15.2:1</td><td class="num">19.4:1</td><td class="num">15.1:1</td></tr>
+        <tr><th scope="row">Muted text on surface</th><td class="num">6.1:1</td><td class="num">7.2:1</td><td class="num">6.9:1</td></tr>
+        <tr><th scope="row">Primary on surface</th><td class="num">7.8:1</td><td class="num">4.7:1</td><td class="num">9.2:1</td></tr>
+        <tr><th scope="row">Button label</th><td class="num">9.2:1</td><td class="num">5.2:1</td><td class="num">10.4:1</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">All pass WCAG AA (4.5:1). B's orange is the closest to the line, so it's the one to avoid using for small text on the grey surface. Fonts are system font stacks: they look like this on a Mac and fall back to close relatives elsewhere, with no web-font download (good for the 95+ speed score).</p>
+  </section>
+
+  <section aria-labelledby="pages-h">
+    <h2 id="pages-h">The same in every direction</h2>
+    <div class="cols3">
+      <div class="box"><h3>Pages</h3><p>Home, About (story, team of three), Services (three services with prices “from …”), Work (six projects), Contact (form, address, hours), a Journal with one post.</p></div>
+      <div class="box"><h3>Built for replacing</h3><p>Every sample word and photo is marked “Replace me”. Text is written as instructions (“A short line on this service…”) rather than fake copy, so nothing fake survives by accident.</p></div>
+      <div class="box"><h3>Checked</h3><p>It must pass the template quality check (F047): axe at three widths, contrast in every section style, one h1 per page, alt text, Lighthouse 95+ on Home.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="why-h">
+    <h2 id="why-h">Why I'd pick A</h2>
+    <p>A first starter template should fit the widest range of businesses and be easy to make your own. Harbour's restraint does both: swap the green for a brand colour and it still works, which is less true of Signal's dark, loud opening or Corner's yellow. It also has the most contrast headroom. If Crust later ships several templates, B and C are good second and third ones.</p>
+    <p class="note">Tell me A, B or C (or a mix, like “A with C's rounded buttons”), and I'll build it.</p>
+  </section>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+const names = { a: "Harbour Studio", b: "Signal & Co", c: "Corner Workshop" };
+const heroes = { a: "Design for places people remember", b: "We make brands people talk about", c: "Made by hand, around the corner" };
+$$(".switch button").forEach((b) => b.addEventListener("click", () => {
+  $$(".switch button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  $$("[data-show]").forEach((d) => (d.hidden = d.dataset.show !== b.dataset.dir));
+  $("#site").dataset.dir = b.dataset.dir;
+  $$(".s-logo .pl, .s-foot .pl").forEach((e) => (e.textContent = names[b.dataset.dir]));
+  $("#hero").textContent = heroes[b.dataset.dir];
+}));
+$$("[data-w]").forEach((b) => b.addEventListener("click", () => {
+  $$("[data-w]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  $("#site").classList.toggle("phone", b.dataset.w === "phone");
+}));
+$("#pl").addEventListener("click", (e) => {
+  const on = e.currentTarget.getAttribute("aria-pressed") !== "true";
+  e.currentTarget.setAttribute("aria-pressed", String(on));
+  $("#site").classList.toggle("hide-pl", !on);
+});
+</script>

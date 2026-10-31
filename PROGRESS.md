@@ -31,10 +31,17 @@ to "Log".
   stacked on #33). **F047 Template quality check built** (branch
   `f047-template-check`, draft PR #35, stacked on #34). **F048 Start
   from a template built** (branch `f048-start-from-template`, draft PR
-  #36, stacked on #35). Next: F049 First starter template (design
-  snapshot; the owner picks a direction). Sessions now hand
+  #36, stacked on #35). **F049 Harbour built** (branch
+  `f049-starter-template`, draft PR #37, stacked on #36). Owner chose
+  "All three" starter templates: next F050 Signal, then F051 Corner. Sessions now hand
   over through HANDOVER.md (owner's rule, 2026-10-30).
 - **Waiting on the owner** (all on crust-admin.pages.dev unless noted):
+  - **F049:** on PR #37's preview link
+    (https://f049-starter-template.crust-admin.pages.dev) press **Start
+    from a template**: Harbour is first. Look through its pages at the
+    three widths; dashed outlines are the sample content. Try **Use this
+    template** (on the preview link it only changes your browser), open
+    a page in the builder and see the **To replace** list.
   - **F048:** design snapshot https://claude.ai/artifact/JQoY8bbRJ9U58jZawRx2kV
     (A was built). On PR #36's preview link
     (https://f048-start-from-template.crust-admin.pages.dev) press
@@ -480,3 +487,7 @@ to "Log".
   exactly that commit, browser-only mode for preview links. Builder a11y
   check covers the 3 new screens. 25 new tests (766 JS total). Session
   paused overnight at the owner's request.
+- 2026-10-31 — Owner: "All three" starter templates (F050, F051 added).
+  F049 Harbour built (PR #37): pages from scripts/starter-templates,
+  stand-in PNGs, templates/harbour.crust, passes check:template (axe at
+  3 widths, contrast, headings, Lighthouse). 6 new tests (772 JS total).

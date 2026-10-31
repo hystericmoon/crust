@@ -19,6 +19,7 @@
     "check:layouts": "tsx packages/render/src/layouts-cli.ts content dist/layout-check && node scripts/check-a11y.mjs dist/layout-check",
     "check:builder": "node scripts/check-builder-a11y.mjs",
     "check:template": "tsx scripts/check-template.ts",
+    "build:starters": "tsx scripts/starter-templates/build.ts",
     "gen:responsive-css": "tsx scripts/responsive-css.ts"
   },
   "devDependencies": {

@@ -81,7 +81,9 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | F046 Placeholder content | built, passes, CI green | `f046-placeholders`, draft PR #34 (stacked on #33) |
 | F047 Template quality check | built, passes, CI green | `f047-template-check`, draft PR #35 (stacked on #34) |
 | F048 Start from a template | built, passes | `f048-start-from-template`, draft PR #36 (stacked on #35) |
-| F049 First starter template | after F048 | design snapshot; owner must pick a direction (BLOCKED.md while waiting) |
+| F049 First starter template: Harbour | built, passes | `f049-starter-template`, draft PR #37 (stacked on #36) |
+| F050 Second starter template: Signal | next | owner chose "All three" (2026-10-31) |
+| F051 Third starter template: Corner | after F050 | |
 
 - **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in
@@ -100,18 +102,18 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 
 1. On start: subscribe_pr_activity to #33–#36 and fix any red CI
    (reproduce locally first). All four were green at handover.
-2. **F049 First starter template** (depends F047, F048). Branch from
-   `f048-start-from-template` (PR base `f048-start-from-template`).
-   Design snapshot with 2–3 directions first (Artifact, saved in
-   design/), then add F049 to BLOCKED.md until the owner picks one; build
-   only after he picks. Content per features.json: Home, About, Services,
-   Work, Contact, a blog with one post, a linked contact strip, sample
-   content marked Replace me. Save it as `templates/<name>.crust`: CI's
-   `npm run check:template` checks it, and the F048 gallery lists it
-   automatically. done_check: `npm test -- starter-template && npm run
-   check:template`.
+2. **F050 Signal, then F051 Corner.** Branch F050 from
+   `f049-starter-template` (PR base it), F051 from F050. Add a
+   `StarterSpec` to `scripts/starter-templates/starter.ts` (look,
+   business name, headline, image colours from the snapshot
+   https://claude.ai/artifact/JFfJLZ3Va9hoPNkdwUeFnH, direction B or C),
+   add it to `starters`, run `npm run build:starters`, then the
+   done_check `npm test -- starter-template && npm run check:template`.
+   Signal has a dark opening section (heroStyle "dark"); its orange is
+   closest to the contrast limit. If a local test can't see a new
+   templates/ file, delete node_modules/.vitest-cache (stale cache).
 3. When F045–F049 are all built: tell the owner what's waiting (preview
-   links, snapshot choices, merge order #33 → #37).
+   links, snapshot choices, merge order #33 → #39).
 
 Notes from F048 for whoever builds on it: templates in the gallery come
 from `apps/admin/src/templates/sources.ts`; applying is
