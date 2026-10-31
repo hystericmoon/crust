@@ -81,7 +81,7 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | F046 Placeholder content | built, passes, CI green | `f046-placeholders`, draft PR #34 (stacked on #33) |
 | F047 Template quality check | built, passes, CI green | `f047-template-check`, draft PR #35 (stacked on #34) |
 | F048 Start from a template | built, passes | `f048-start-from-template`, draft PR #36 (stacked on #35) |
-| F049 First starter template | after F048 | design snapshot; owner must pick a direction (BLOCKED.md while waiting) |
+| F049 First starter template | waiting on the owner's pick (BLOCKED.md) | `f049-starter-template`; snapshot https://claude.ai/artifact/JFfJLZ3Va9hoPNkdwUeFnH |
 
 - **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in
@@ -102,9 +102,10 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
    (reproduce locally first). All four were green at handover.
 2. **F049 First starter template** (depends F047, F048). Branch from
    `f048-start-from-template` (PR base `f048-start-from-template`).
-   Design snapshot with 2–3 directions first (Artifact, saved in
-   design/), then add F049 to BLOCKED.md until the owner picks one; build
-   only after he picks. Content per features.json: Home, About, Services,
+   Snapshot done: design/f049-starter-template-v1.html,
+   https://claude.ai/artifact/JFfJLZ3Va9hoPNkdwUeFnH (A Harbour
+   recommended, B Signal, C Corner; every value is a real Site settings
+   value). In BLOCKED.md until the owner picks; build only after he picks. Content per features.json: Home, About, Services,
    Work, Contact, a blog with one post, a linked contact strip, sample
    content marked Replace me. Save it as `templates/<name>.crust`: CI's
    `npm run check:template` checks it, and the F048 gallery lists it
