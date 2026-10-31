@@ -4,6 +4,10 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Second starter template, Signal (F050):** the same pages as
+  Harbour with a bold look: heavy geometric headings, a dark opening
+  section, one burnt-orange accent, pill buttons and soft-shadow cards.
+
 - **First starter template, Harbour (F049):** a complete site to start
   from: Home, About, Services, Work, Contact, a Journal with one post,
   and a contact strip shared by every page. Calm serif headings, deep

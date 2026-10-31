@@ -56,7 +56,24 @@ export const harbour: StarterSpec = {
   imageColors: ["#D9E0D3", "#8FA58F", "#1F5135"],
 };
 
-export const starters: StarterSpec[] = [harbour];
+export const signal: StarterSpec = {
+  id: "signal",
+  name: "Signal",
+  description: "Bold and current: heavy sans set tight, a dark opening, one burnt-orange accent. For agencies, product studios and events.",
+  siteName: "Signal & Co",
+  tagline: "We make brands people talk about",
+  tokens: {
+    ...defaultTokens,
+    colors: { background: "#FFFFFF", surface: "#F3F4F6", text: "#0B0D12", muted: "#4B5160", primary: "#C2410C", onPrimary: "#FFFFFF" },
+    fonts: { heading: font("geometric"), body: font("system") },
+    radius: 14,
+    style: { typeScale: "dramatic", headingWeight: 800, headingTracking: "tight", buttonShape: "pill", cardStyle: "shadow", linkStyle: "underline" },
+  },
+  heroStyle: "dark",
+  imageColors: ["#FDE7D6", "#FDBA74", "#C2410C"],
+};
+
+export const starters: StarterSpec[] = [harbour, signal];
 
 // --- Building blocks ----------------------------------------------------------------------
 
