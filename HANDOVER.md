@@ -83,7 +83,7 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | F048 Start from a template | built, passes | `f048-start-from-template`, draft PR #36 (stacked on #35) |
 | F049 First starter template: Harbour | built, passes | `f049-starter-template`, draft PR #37 (stacked on #36) |
 | F050 Second starter template: Signal | built, passes | `f050-signal-template` (stacked on #37) |
-| F051 Third starter template: Corner | next | |
+| F051 Third starter template: Corner | built, passes | `f051-corner-template` (stacked on F050) |
 
 - **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in
@@ -102,16 +102,8 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 
 1. On start: subscribe_pr_activity to #33–#36 and fix any red CI
    (reproduce locally first). All four were green at handover.
-2. **F050 Signal, then F051 Corner.** Branch F050 from
-   `f049-starter-template` (PR base it), F051 from F050. Add a
-   `StarterSpec` to `scripts/starter-templates/starter.ts` (look,
-   business name, headline, image colours from the snapshot
-   https://claude.ai/artifact/JFfJLZ3Va9hoPNkdwUeFnH, direction B or C),
-   add it to `starters`, run `npm run build:starters`, then the
-   done_check `npm test -- starter-template && npm run check:template`.
-   Signal has a dark opening section (heroStyle "dark"); its orange is
-   closest to the contrast limit. If a local test can't see a new
-   templates/ file, delete node_modules/.vitest-cache (stale cache).
+2. Milestone 5 is fully built (F045–F051). Nothing else to build until
+   the owner reviews, picks merges, or approves Milestone 6.
 3. When F045–F049 are all built: tell the owner what's waiting (preview
    links, snapshot choices, merge order #33 → #39).
 

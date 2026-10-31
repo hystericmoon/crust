@@ -495,3 +495,8 @@ to "Log".
   stacked on #37): a second StarterSpec, templates/signal.crust, passes
   check:template. On dark sections buttons are white (orange on near
   black is 3.8:1, so Crust's section styles switch it).
+- 2026-10-31 — F051 Corner built (branch f051-corner-template, PR
+  stacked on F050's). Milestone 5 (F045–F051) is fully built; waiting on
+  the owner's review and merge. Noticed: the "highlight" link style
+  reads as a grey-beige block on yellow cards (Crust's shared style, not
+  this template); flagged to the owner.

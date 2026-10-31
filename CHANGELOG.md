@@ -4,6 +4,11 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Third starter template, Corner (F051):** the same pages again, warm
+  and local: a sturdy serif, navy on butter yellow, rounded buttons,
+  flat cards and highlighter-style links. All three starter templates
+  are now in **Start from a template**.
+
 - **Second starter template, Signal (F050):** the same pages as
   Harbour with a bold look: heavy geometric headings, a dark opening
   section, one burnt-orange accent, pill buttons and soft-shadow cards.

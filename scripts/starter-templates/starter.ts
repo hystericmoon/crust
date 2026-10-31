@@ -73,7 +73,24 @@ export const signal: StarterSpec = {
   imageColors: ["#FDE7D6", "#FDBA74", "#C2410C"],
 };
 
-export const starters: StarterSpec[] = [harbour, signal];
+export const corner: StarterSpec = {
+  id: "corner",
+  name: "Corner",
+  description: "Warm and local: a sturdy serif, navy on butter yellow, highlighter links. For shops, cafés, makers and local services.",
+  siteName: "Corner Workshop",
+  tagline: "Made by hand, around the corner",
+  tokens: {
+    ...defaultTokens,
+    colors: { background: "#FFFDF6", surface: "#FBF1D0", text: "#1C2340", muted: "#4A5170", primary: "#1E3A8A", onPrimary: "#FFFFFF" },
+    fonts: { heading: font("transitional"), body: font("system") },
+    radius: 10,
+    style: { typeScale: "subtle", headingWeight: 700, headingTracking: "normal", buttonShape: "rounded", cardStyle: "flat", linkStyle: "highlight" },
+  },
+  heroStyle: "surface",
+  imageColors: ["#E3EAFB", "#BFD0F5", "#1E3A8A"],
+};
+
+export const starters: StarterSpec[] = [harbour, signal, corner];
 
 // --- Building blocks ----------------------------------------------------------------------
 
