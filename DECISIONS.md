@@ -8,6 +8,53 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
+- **From the review (2026-10-31).** Claude reviewed the 48 features
+  waiting for review, at the owner's request (verdicts in features.json,
+  `review_note`; 45 work as described with small notes, 3 have a real
+  problem). Fixes, most important first (S small, M medium):
+  1. *Keyboard gap in the builder (F005, WCAG 2.1.1/2.4.1):* the
+     "Blocks / Outline" switch can't be reached with the keyboard; add a
+     "Skip to page" link too (33 Tab presses to the first block). S
+  2. *Focus lost after dialogs (F022, F015, F013, WCAG 2.4.3):* closing
+     the publish question, rename/delete dialogs or "Undo preset" drops
+     keyboard focus to the top of the page; return it to the button. S
+  3. *Blog posts touch the screen edge (F035, every template and the
+     owner's own posts):* post body blocks aren't inside the page
+     column. S
+  4. *Template preview shows only sky (F048):* tall opening sections
+     stretch the preview frame (Harbour: 2244 px desktop, 5185 px
+     phone); give the preview a fixed viewport height. S
+  5. *Canvas jumps sideways (F025, F027, F043):* the Section toolbar is
+     wider than the canvas, and the "Make linked" / "Save as layout" name
+     box opens past its right edge; the page stays scrolled. S–M
+  6. *Failed saves and publishes (F006, F008):* a failed save looks like
+     a success and vanishes after 10 s; "Publishing started…" stays under
+     "Failed". Persistent error with "Try again". S
+  7. *Contact form loses the message on a failed send (F037):* keep what
+     the visitor typed and name the field that's wrong. M
+  8. *Rename misses header, footer and post links (F018):* they rely on
+     the redirect; update them too and say how many links changed. M
+  9. *New Image block doesn't get the photo's description (F034):*
+     picking a library photo on a just-added block leaves alt empty. S
+  10. *Smaller polish:* page list breaks addresses mid-word (F007/F021);
+      one page counted twice in "Publish N changes" (F022); a block added
+      with nothing selected lands outside any section (F032); the "Site
+      header" badge covers the Home link and the phone Menu button
+      (F029); click-to-colour points header links and copyright at the
+      wrong colour (F014); search results and the posts list use default
+      blue links, focus doesn't move to results (F035, F039); Sign out
+      sits next to Save draft (F040); the rich text field's right edge
+      is cut off (F042); "To replace" isn't in page order and the tags
+      cover the words (F046); duplicate contrast messages on theme
+      import (F033); "1 of your layout" (F027); mixed label styles
+      (F030); "For: Photo, part 6" on phones (F034). All S.
+  11. *Template check sees layout (F047):* add a page-margin check and
+      preview screenshots, so problems like 3 and 4 are caught. M
+  12. *Harbour polish (F052):* a stronger opening photo (too pale; the
+      phone crop loses the stair), roomier "What we do" headings, less
+      space after each page's opening block. Signal's stand-in pictures
+      and Corner's grey highlighter links are covered by F053. S–M
+
 - **Header over the hero photo (from F052).** An option for the site
   header to sit transparently on top of the first section's photo, with
   light text, as premium templates do. Small.
