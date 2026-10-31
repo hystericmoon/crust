@@ -5,7 +5,7 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-10-30, after F047 (session "Crust: Milestone 5 — F047
+Last updated: 2026-10-31, after F048 (session "Crust: Milestone 5 — F048
 onward").
 
 ## How sessions work (owner's rule, 2026-10-30)
@@ -19,6 +19,12 @@ always write the information down somewhere. So:
    (`archive_session`, the parent named in the handover prompt) and any
    other idle Crust session still open. Never archive sessions of other
    projects (Adwam, Whittle, OpenRef, Smol).
+   **Limit found 2026-10-31:** a chain of sessions, each started by the
+   one before, stops at depth 8. The F048 session was at the limit, so
+   it could not start the next session or set reminders (send_later). If
+   `create_session` is refused, tell the owner to start a fresh Claude
+   Code session on the crust repo with the prompt from step 2; that
+   resets the chain.
 2. **Write first, then move.** After each finished feature (or when the
    context is getting long): commit and push, update this file,
    PROGRESS.md and CHANGELOG.md, then create the next session
@@ -73,11 +79,11 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 |---|---|---|
 | F045 Save a site as a template | built, passes, CI green | `f045-template-file`, draft PR #33 (base main) |
 | F046 Placeholder content | built, passes, CI green | `f046-placeholders`, draft PR #34 (stacked on #33) |
-| F047 Template quality check | built, passes | `f047-template-check`, draft PR #35 (stacked on #34) |
-| F048 Start from a template | next | design snapshot first |
+| F047 Template quality check | built, passes, CI green | `f047-template-check`, draft PR #35 (stacked on #34) |
+| F048 Start from a template | built, passes | `f048-start-from-template`, draft PR #36 (stacked on #35) |
 | F049 First starter template | after F048 | design snapshot; owner must pick a direction (BLOCKED.md while waiting) |
 
-- **Merge order when the owner says so:** #33, then #34, then #35 (GitHub
+- **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in
   feature order. Each later PR is stacked
   on the one before it.
@@ -87,28 +93,31 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 - **Design snapshots so far:** roadmap
   https://claude.ai/artifact/4eHUDzJ3tDeeaNPBf4T4ii, F042
   https://claude.ai/artifact/1d1Ujx7ENSrGCef6CWfg9Z, F043
-  https://claude.ai/artifact/DSXzme9pbKie3guoRpSizj (A built for both).
+  https://claude.ai/artifact/DSXzme9pbKie3guoRpSizj (A built for both), F048
+  https://claude.ai/artifact/JQoY8bbRJ9U58jZawRx2kV (A built).
 
 ## Next
 
-1. On start: subscribe_pr_activity to #33, #34 and #35 and fix any red CI
-   (reproduce locally first). #35's CI was starting at handover.
-2. **F048 Start from a template** (depends F045, F046). Branch from
-   `f047-template-check` (stack it, PR base `f047-template-check`). Design
-   snapshot first (Artifact, 2–3 directions, saved in design/): Pages
-   screen → "Start from a template" gallery with thumbnail, page list,
-   live preview at desktop/tablet/phone; applying asks first and says
-   exactly what it replaces; the old site stays in Git history and can be
-   restored. Build Claude's recommended direction and tell the owner he
-   can pick another. done_check: `npm test -- start-from-template && npm
-   run build && npm run check:a11y`. Reuse readTemplate (F045) and
-   unpackTemplate (packages/render/src/template-check.ts, F047).
-3. **F049 First starter template**: design snapshot with 2–3 directions;
-   add to BLOCKED.md until the owner picks, then build. Save it as
-   `templates/<name>.crust`: `npm run check:template` checks every file
-   there in CI (F047).
-4. When F045–F049 are all built: tell the owner what's waiting (preview
-   links, snapshot choices, merge order).
+1. On start: subscribe_pr_activity to #33–#36 and fix any red CI
+   (reproduce locally first). All four were green at handover.
+2. **F049 First starter template** (depends F047, F048). Branch from
+   `f048-start-from-template` (PR base `f048-start-from-template`).
+   Design snapshot with 2–3 directions first (Artifact, saved in
+   design/), then add F049 to BLOCKED.md until the owner picks one; build
+   only after he picks. Content per features.json: Home, About, Services,
+   Work, Contact, a blog with one post, a linked contact strip, sample
+   content marked Replace me. Save it as `templates/<name>.crust`: CI's
+   `npm run check:template` checks it, and the F048 gallery lists it
+   automatically. done_check: `npm test -- starter-template && npm run
+   check:template`.
+3. When F045–F049 are all built: tell the owner what's waiting (preview
+   links, snapshot choices, merge order #33 → #37).
+
+Notes from F048 for whoever builds on it: templates in the gallery come
+from `apps/admin/src/templates/sources.ts`; applying is
+`apps/admin/server/template.ts` (`/api/template`); the builder a11y check
+(`scripts/check-builder-a11y.mjs`) needs `npm run build` first, or it
+tests a stale build.
 
 ## Where to find things
 

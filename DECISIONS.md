@@ -150,6 +150,45 @@ Features Claude suggests. They are not work until the owner adds them to
   rules, the state and the next step; CLAUDE.md's session protocol now
   starts and ends with it. It reaches main with the next merge.
 
+## 2026-10-31 — F048 Start from a template (Claude, reversible)
+
+- **Direction A of the design snapshot** (its own screen, `#/templates`;
+  https://claude.ai/artifact/JQoY8bbRJ9U58jZawRx2kV). The choice is
+  visual, so the preview gets the full width; a dialog (B) squeezes the
+  desktop view and nests the confirm question inside another dialog. The
+  owner can still pick B or C.
+- **Where templates come from:** `templates/*.crust` in the repo (F049's
+  starter goes there, checked by `check:template` in CI), the sample site
+  the builder ships with, and any `.crust` file opened from the computer.
+  Every one goes through `readTemplate` first.
+- **What applying replaces and keeps.** Replaced: every page, blog post
+  and linked section, the blog's title, Site settings' style, header,
+  footer and language (the pages are written in it). Kept: the site's
+  name and address, the photo library (the template's photos are added;
+  same-name files are replaced and the question names them), My layouts
+  (the template's are added), and the live site until Publish. Redirects
+  to pages that no longer exist are dropped. Replace me marks stay, so
+  the F046 checklist and publish stop guide what to fill in.
+- **One commit, so undo is exact.** Photos go first, a few per request
+  (Cloudflare caps a function's requests to GitHub), as "Add photos from
+  template" commits; then everything else is one "Start from template"
+  commit. "Bring back my previous site" (Pages screen) undoes only the
+  latest such commit, by putting back the earlier version of exactly the
+  files it changed (Git blobs, no re-upload). Photos stay in the library;
+  edits made since to those same files are replaced, and the question
+  says so. Asking once with specifics plus undo (Nielsen #5 and #3) rather
+  than a typed confirmation.
+- **The server checks again.** It doesn't trust the browser's template
+  check: every page, section, post, layout and the new Site settings go
+  through the same checks as the save endpoints.
+- **Browser drafts are set aside, not lost.** Page and post drafts only
+  in this browser would win over the template's pages, so they're kept
+  aside and come back with the previous site.
+- **Preview links (no GitHub):** the template replaces the site in this
+  browser only (the same set-aside mechanism). Its photos can't be kept
+  there (no library, too big for browser storage); the question says so.
+- No content format change.
+
 ## 2026-10-30 — F047 Template quality check (Claude, reversible)
 
 - **One command, many templates.** `npm run check:template` checks every

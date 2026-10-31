@@ -34,7 +34,7 @@ const screens = [
   ["post builder", "/#/post?slug=check-post", samplePost, null],
   ["template gallery", "/#/templates", null, null],
   ["template preview", "/#/templates", null, null, [".tp-card[id]"]],
-  ["template confirm question", "/#/templates", null, null, [".tp-card[id]", ".tp-detail ~ * .st-button-primary, .st-header .st-button-primary"]],
+  ["template confirm question", "/#/templates", null, null, [".tp-card[id]", 'button:has-text("Use this template")', "dialog[open]"]],
 ];
 
 const server = await serve(distDir);
@@ -52,8 +52,10 @@ try {
     // Wait for Puck's canvas and the blocks inside it.
     await page.waitForSelector("iframe", { timeout: 20_000 });
     await page.waitForTimeout(1500);
+    // Buttons to press in order; a last "dialog[open]" only waits for the dialog to be there.
     for (const button of clicks) {
-      await page.locator(button).first().click();
+      if (button === "dialog[open]") await page.waitForSelector(button, { timeout: 10_000 });
+      else await page.locator(button).first().click();
       await page.waitForTimeout(800);
     }
     if (select) {

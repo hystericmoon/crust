@@ -127,6 +127,13 @@ uploaded in Site settings, never stored in `content/`:
 `tokens`, `chrome` and `layouts` are each optional. Importing checks
 everything (see `readThemePack`) and drops unknown fields.
 
+Starting from a template (F048) writes ordinary content files: the
+template's pages, posts, linked sections and blog settings replace the
+site's, its style, header, footer and language go into `site.json` (name
+and `baseUrl` stay), its photos join `content/media/`, its layouts join
+`content/layouts/`. One commit ("Start from template …"), which "Bring
+back my previous site" undoes.
+
 Template files (`<name>.crust`, added with F045) hold a whole site and are
 downloaded from Site settings → Template, never stored in `content/`:
 ```json

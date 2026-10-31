@@ -4,6 +4,15 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Start from a template (F048):** the Pages screen has **Start from a
+  template**. Pick one from the gallery (or open a .crust file), look
+  through every page and post at desktop, tablet and phone widths, with
+  sample content outlined. **Use this template** asks first and lists
+  exactly what's replaced (your pages by name, posts, style, header and
+  footer) and what's kept (site name and address, photo library, saved
+  layouts, the live site until you publish). Afterwards the Pages screen
+  offers **Bring back my previous site**.
+
 - **Template quality check (F047):** one check a template must pass
   before it's offered: it opens, text reads in every section style,
   every page has one main heading with headings in order, photos are
