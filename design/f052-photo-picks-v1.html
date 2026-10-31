@@ -1,0 +1,211 @@
+<title>Harbour Photo Picks</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: same page chrome as the F052 snapshot. Slot rows compare "now" and "new" side by side; the pick carries a badge.
+   Hero options are drawn with the exact veil Crust applies (paper 55%, dark 65%). */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6; --accent:#4338ca; --pick:#1F5135; --pick-bg:#e6efe9;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --h-bg:#FBFAF7; --h-surface:#F0EDE4; --h-text:#1D2420; --h-muted:#4F5A53; --h-primary:#1F5135;
+  --h-serif:'Iowan Old Style','Palatino Linotype','URW Palladio L',P052,Palatino,Georgia,serif;
+  --h-sans:Seravek,'Gill Sans Nova',Ubuntu,Calibri,'DejaVu Sans',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --accent:#9b94ff; --pick:#8fd3a8; --pick-bg:#1b2a21; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --accent:#9b94ff; --pick:#8fd3a8; --pick-bg:#1b2a21; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 80px;display:grid;gap:52px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1}
+h1{font-size:clamp(2rem,4vw,2.8rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.5rem;font-weight:800}
+h3{font-size:1rem;font-weight:600}
+p{margin:0}
+.eyebrow{font:500 .75rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.intro{display:grid;gap:14px;max-width:70ch}
+.intro p,.lead{color:var(--soft)}
+section{display:grid;gap:18px}
+.strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+@media (max-width:700px){.strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.strip figure{margin:0;display:grid;gap:4px;min-width:0}
+.strip img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;display:block;max-width:100%}
+.strip figcaption{font-size:.78rem;color:var(--soft)}
+.strip .new{color:var(--pick);font-weight:600}
+.slots{display:grid;gap:14px}
+.slot{display:grid;grid-template-columns:200px minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+@media (max-width:760px){.slot{grid-template-columns:1fr 1fr}.slot .what{grid-column:1/-1}}
+.what{display:grid;gap:6px;align-content:start}
+.what p{color:var(--soft);font-size:.9rem}
+.opt{margin:0;display:grid;gap:6px;min-width:0;padding:6px;border-radius:9px;border:2px solid transparent}
+.opt.is-pick{border-color:var(--pick);background:var(--pick-bg)}
+.opt img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:5px;display:block;max-width:100%}
+.opt.tall img{aspect-ratio:4/5;max-height:300px;object-fit:cover}
+.opt figcaption{font-size:.8rem;color:var(--soft);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tag{font:500 .66rem/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-radius:999px;border:1px solid var(--line);color:var(--soft)}
+.is-pick .tag.pick{border-color:var(--pick);color:var(--pick)}
+.heroes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.heroes{grid-template-columns:1fr}}
+.hero-opt{display:grid;gap:8px;min-width:0}
+.hero-opt p{font-size:.88rem;color:var(--soft)}
+.mock{position:relative;overflow:hidden;border-radius:10px;aspect-ratio:16/9;display:flex;align-items:flex-end;padding:7% 6%;max-width:100%;border:2px solid transparent}
+.mock.is-pick{border-color:var(--pick)}
+.mock img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.mock .tint{position:absolute;inset:0}
+.mock .txt{position:relative;display:grid;gap:6px}
+.mock .h{font:500 clamp(18px,2.3vw,26px)/1.05 var(--h-serif);letter-spacing:-.01em;max-width:14ch}
+.mock .l{font:600 11px/1 var(--h-sans);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.light .txt{color:var(--h-text)} .light .l{color:var(--h-primary)}
+.dark .txt{color:#fff}
+.site{background:var(--h-bg);color:var(--h-text);font:10px/1.6 var(--h-sans);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.s-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 4%;font-size:10px}
+.s-head b{font:500 13px/1 var(--h-serif)}
+.s-head nav{display:flex;gap:14px;flex-wrap:wrap}
+.s-sec{padding:4.5% 4%;display:grid;gap:10px}
+.s-h2{font:500 clamp(15px,1.9vw,21px)/1.15 var(--h-serif);margin:0}
+.s-statement{font:500 clamp(16px,2.3vw,26px)/1.22 var(--h-serif);max-width:26ch;margin:0}
+.s-link{font-size:10.5px;font-weight:600;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;color:var(--h-primary)}
+.s-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.mosaic{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mosaic .stack{display:grid;gap:10px}
+.mosaic img{width:100%;display:block}
+.cols{display:grid;grid-template-columns:1fr 2fr;gap:16px;align-items:center}
+.cols img{width:100%;display:block}
+.s-dark{background:var(--h-text);color:#fff}
+.btn{display:inline-block;font-size:10px;font-weight:600;padding:7px 12px;background:#fff;color:var(--h-text)}
+.notes{display:grid;gap:8px;padding:0;margin:0;list-style:none}
+.notes li{padding-left:18px;position:relative;color:var(--soft);font-size:.92rem}
+.notes li::before{content:"";position:absolute;left:2px;top:.62em;width:7px;height:1px;background:var(--soft)}
+.notes b{color:var(--ink);font-weight:600}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">F052 · Photo picks, round 2 · 31 Oct 2026</span>
+    <h1>Harbour photo picks</h1>
+    <p>I went through 1,931 more photos from NegativeSpace and Skitterphoto, both CC0. Six of them beat what we had. Below are the recommended ten, the home page with them in place, and each slot compared side by side. The pick in each slot is outlined in green.</p>
+  </header>
+
+  <section aria-labelledby="set-t">
+    <h2 id="set-t">The recommended ten</h2>
+    <div class="strip">
+      <figure><img src="../scripts/starter-templates/photos/now-terraces.jpg" alt="White concrete terraces under a blue sky"><figcaption>Hero · kept</figcaption></figure>
+      <figure><img src="../scripts/starter-templates/photos/balconies.jpg" alt="White tower with curving balconies"><figcaption class="new">Work, tall · new</figcaption></figure>
+      <figure><img src="../scripts/starter-templates/photos/angles.jpg" alt="White angled ceiling beams receding into light"><figcaption class="new">Work, wide · new</figcaption></figure>
+      <figure><img src="../scripts/starter-templates/photos/wood-spiral.jpg" alt="Wooden spiral staircase seen from above"><figcaption class="new">Work, wide · new</figcaption></figure>
+      <figure><img src="../scripts/starter-templates/photos/white-stair.jpg" alt="Thin stair climbing a white ribbed wall"><figcaption class="new">Work, tall · new</figcaption></figure>
+      <figure><img src="../scripts/starter-templates/photos/pool-house.jpg" alt="Terrace with an infinity pool above a valley"><figcaption class="new">Work, wide · new</figcaption></figure>
+      <figure><img src="../scripts/starter-templates/photos/now-grid.jpg" alt="White grid facade against a blue sky"><figcaption>Work, wide · kept</figcaption></figure>
+      <figure><img src="../scripts/starter-templates/photos/now-window-tree.jpg" alt="Young tree in front of a white wall with a tall window"><figcaption>Work, wide · kept</figcaption></figure>
+      <figure><img src="../scripts/starter-templates/photos/home-office.jpg" alt="White desk with a lamp, plant and leather chair"><figcaption class="new">About, studio · new</figcaption></figure>
+      <figure><img src="../scripts/starter-templates/photos/now-shadows.jpg" alt="Shadow of a window frame and plants on a linen curtain"><figcaption>Journal · kept</figcaption></figure>
+    </div>
+  </section>
+
+  <section aria-labelledby="home-t">
+    <h2 id="home-t">Home page with the new set (direction A)</h2>
+    <div class="site" role="img" aria-label="Harbour home page mock-up with the recommended photos">
+      <div class="s-head"><b>Harbour Studio</b><nav><span>About</span><span>Services</span><span>Work</span><span>Journal</span><span>Contact</span></nav></div>
+      <div class="mock light" style="aspect-ratio:21/9;border-radius:0;border:0">
+        <img src="../scripts/starter-templates/photos/now-terraces.jpg" alt=""><div class="tint" style="background:#FBFAF7;opacity:.55"></div>
+        <div class="txt"><div class="h" style="font-size:clamp(22px,3.4vw,38px)">Design for places people remember</div><span class="l">See the work</span></div>
+      </div>
+      <div class="s-sec"><p class="s-statement">We take on a few projects a year, and see each one through from the first sketch to the last fitting.</p></div>
+      <div class="s-sec" style="padding-top:0">
+        <div class="s-row"><span class="s-h2">Recent work</span><span class="s-link">All projects</span></div>
+        <div class="mosaic">
+          <img src="../scripts/starter-templates/photos/balconies.jpg" alt="">
+          <div class="stack"><img src="../scripts/starter-templates/photos/angles.jpg" alt=""><img src="../scripts/starter-templates/photos/wood-spiral.jpg" alt=""></div>
+        </div>
+      </div>
+      <div class="s-sec" style="background:var(--h-surface)">
+        <div class="cols"><img src="../scripts/starter-templates/photos/now-shadows.jpg" alt=""><div style="display:grid;gap:6px"><span class="s-h2">News from the studio</span><span class="s-link">Read the post</span></div></div>
+      </div>
+      <div class="s-sec s-dark"><div class="s-row"><span class="s-h2">Have a project in mind?</span><span class="btn">Get in touch</span></div></div>
+    </div>
+    <p class="lead">The new mosaic is crisper and warmer than the old one (white vaults, white grid, grey spiral). The wooden stair brings in the one warm tone, which sits well with Harbour's sand and green.</p>
+  </section>
+
+  <section aria-labelledby="hero-t">
+    <h2 id="hero-t">Opening photo: three options under the real veil</h2>
+    <div class="heroes">
+      <div class="hero-opt">
+        <div class="mock light is-pick"><img src="../scripts/starter-templates/photos/now-terraces.jpg" alt=""><div class="tint" style="background:#FBFAF7;opacity:.55"></div><div class="txt"><div class="h">Design for places people remember</div><span class="l">See the work</span></div></div>
+        <h3>Terraces (kept) · pick</h3>
+        <p>Architecture is the subject, and the tiny figure gives scale. It survives the veil because it has strong lines.</p>
+      </div>
+      <div class="hero-opt">
+        <div class="mock light"><img src="../scripts/starter-templates/photos/sky.jpg" alt=""><div class="tint" style="background:#FBFAF7;opacity:.55"></div><div class="txt"><div class="h">Design for places people remember</div><span class="l">See the work</span></div></div>
+        <h3>Sky on still water (new)</h3>
+        <p>It says "harbour" literally and is very calm. But it says nothing about design, and a lake hero suits a hotel better than a studio.</p>
+      </div>
+      <div class="hero-opt">
+        <div class="mock light"><img src="../scripts/starter-templates/photos/angles.jpg" alt=""><div class="tint" style="background:#FBFAF7;opacity:.55"></div><div class="txt"><div class="h">Design for places people remember</div><span class="l">See the work</span></div></div>
+        <h3>White angles (new)</h3>
+        <p>Beautiful on its own, but nearly disappears under the veil (white on white). Better in the mosaic, where it has no veil.</p>
+      </div>
+    </div>
+    <p class="lead">If you go with direction B (dark opening), the new <b>lake pier at dusk</b> replaces the river view. It reads calm and premium under the dark veil, where the river looked like a holiday cottage.</p>
+    <div class="heroes" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr)">
+      <div class="hero-opt"><div class="mock dark is-pick"><img src="../scripts/starter-templates/photos/lake-pier.jpg" alt=""><div class="tint" style="background:#1D2420;opacity:.65"></div><div class="txt"><div class="h">Design for places people remember</div></div></div><h3>B: lake pier (new) · pick for B</h3></div>
+      <div class="hero-opt"><div class="mock dark"><img src="../scripts/starter-templates/photos/now-river.jpg" alt=""><div class="tint" style="background:#1D2420;opacity:.65"></div><div class="txt"><div class="h">Design for places people remember</div></div></div><h3>B: river (now)</h3></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="slot-t">
+    <h2 id="slot-t">Slot by slot</h2>
+    <div class="slots">
+      <div class="slot">
+        <div class="what"><h3>Work mosaic, tall</h3><p>The new tower is modern, crisp and reads as a building a studio designed. The vaults are a church interior.</p></div>
+        <figure class="opt tall"><img src="../scripts/starter-templates/photos/now-vaults.jpg" alt="White church vaults"><figcaption><span class="tag">now</span>White vaults</figcaption></figure>
+        <figure class="opt tall is-pick"><img src="../scripts/starter-templates/photos/balconies.jpg" alt="White tower with curving balconies"><figcaption><span class="tag pick">pick</span>Curving balconies · NegativeSpace</figcaption></figure>
+      </div>
+      <div class="slot">
+        <div class="what"><h3>Work mosaic, wide 1</h3><p>More depth and light, same calm white. The grid moves to the Work page.</p></div>
+        <figure class="opt"><img src="../scripts/starter-templates/photos/now-grid.jpg" alt="White grid facade"><figcaption><span class="tag">now</span>White grid</figcaption></figure>
+        <figure class="opt is-pick"><img src="../scripts/starter-templates/photos/angles.jpg" alt="White angled ceiling"><figcaption><span class="tag pick">pick</span>White angles · NegativeSpace</figcaption></figure>
+      </div>
+      <div class="slot">
+        <div class="what"><h3>Work mosaic, wide 2</h3><p>The warm wood adds the one colour the page was missing. The grey spiral was the weakest of the old ten.</p></div>
+        <figure class="opt"><img src="../scripts/starter-templates/photos/now-spiral.jpg" alt="Grey spiral staircase"><figcaption><span class="tag">now</span>Grey spiral</figcaption></figure>
+        <figure class="opt is-pick"><img src="../scripts/starter-templates/photos/wood-spiral.jpg" alt="Wooden spiral staircase"><figcaption><span class="tag pick">pick</span>Wooden spiral · Skitterphoto, Peter Heeling</figcaption></figure>
+      </div>
+      <div class="slot">
+        <div class="what"><h3>Work page, tall</h3><p>Quieter and more minimal than the stacked cubes, which compete with the balconies.</p></div>
+        <figure class="opt tall"><img src="../scripts/starter-templates/photos/now-cubes.jpg" alt="White stacked cubes"><figcaption><span class="tag">now</span>Stacked cubes</figcaption></figure>
+        <figure class="opt tall is-pick"><img src="../scripts/starter-templates/photos/white-stair.jpg" alt="Thin stair on white ribbed wall"><figcaption><span class="tag pick">pick</span>Stair on white wall · NegativeSpace</figcaption></figure>
+      </div>
+      <div class="slot">
+        <div class="what"><h3>Work page, wide</h3><p>A finished home with a view looks like a real project. The lake house is lovely but reads as travel.</p></div>
+        <figure class="opt"><img src="../scripts/starter-templates/photos/now-lake-house.jpg" alt="House on stilts on a lake"><figcaption><span class="tag">now</span>Lake house</figcaption></figure>
+        <figure class="opt is-pick"><img src="../scripts/starter-templates/photos/pool-house.jpg" alt="Infinity pool terrace"><figcaption><span class="tag pick">pick</span>Pool terrace · NegativeSpace</figcaption></figure>
+      </div>
+      <div class="slot">
+        <div class="what"><h3>About, the studio</h3><p>A whole workplace instead of a styled shelf, so "your studio" is easier to picture.</p></div>
+        <figure class="opt"><img src="../scripts/starter-templates/photos/now-studio-desk.jpg" alt="White desk with lamp"><figcaption><span class="tag">now</span>Desk and print</figcaption></figure>
+        <figure class="opt is-pick"><img src="../scripts/starter-templates/photos/home-office.jpg" alt="White home office with leather chair"><figcaption><span class="tag pick">pick</span>White studio · Skitterphoto, Peter Heeling</figcaption></figure>
+      </div>
+      <div class="slot">
+        <div class="what"><h3>Journal cover</h3><p>Keeping the curtain shadows: quieter and more Harbour. The bedroom is the alternative if you want warmer.</p></div>
+        <figure class="opt is-pick"><img src="../scripts/starter-templates/photos/now-shadows.jpg" alt="Window shadow on a curtain"><figcaption><span class="tag pick">pick</span>Curtain shadows (kept)</figcaption></figure>
+        <figure class="opt"><img src="../scripts/starter-templates/photos/bedroom.jpg" alt="Soft white bedroom with a copper lamp"><figcaption><span class="tag">alt</span>White bedroom · NegativeSpace</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="n-t">
+    <h2 id="n-t">Licences and checks</h2>
+    <ul class="notes">
+      <li><b>All CC0.</b> NegativeSpace and Skitterphoto put every photo under CC0, which allows selling inside a template with no credit needed. The source of each file stays in our own credits list as proof; nothing shows on the buyer's site.</li>
+      <li><b>Full size:</b> every new photo is 2,800–6,000 px in the original. The template gets them at most 1,920 px and compressed.</li>
+      <li><b>One small risk:</b> the wooden spiral is inside Forum Groningen (2019). Dutch law allows photos of buildings in public places, but it's less clear for interiors. The risk is low, since it's a stair, not an artwork. The grey spiral stays as a fallback if you'd rather be strict.</li>
+      <li><b>No people, no logos</b> in the picks. The tiny figure on the terraces faces away.</li>
+    </ul>
+  </section>
+</div>

@@ -5,8 +5,8 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-10-31, F052 photos and design snapshot done, waiting
-for the owner's pick (session "F052 Harbour rework", branch
+Last updated: 2026-10-31, F052 built and passing, waiting for the
+owner's review (session "F052 Harbour rework", branch
 `claude/peaceful-shannon-x32vlp`, stacked on PR #40).
 
 ## How sessions work (owner's rule, 2026-10-30)
@@ -106,47 +106,12 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
    the handover prompt). PR #40 is notes only; merge it only when the
    owner says so. The F052 branch `claude/peaceful-shannon-x32vlp` is
    stacked on it (its PR targets `m5-merged-notes`).
-2. **F052 Harbour, premium-minimal rework**, in BLOCKED.md until the
-   owner picks a direction in the snapshot
-   https://claude.ai/artifact/FksfsnM6msMtjBu4v5YHDm
-   (`design/f052-harbour-rework-v1.html`). Done so far:
-   a. **Photos done:** ten CC0 photos from Wikimedia Commons, cropped
-      (tall ones 4:5, wide ones 16:10) and in
-      `scripts/starter-templates/photos/` with `CREDITS.md`. Why these and
-      what was left out: DECISIONS.md "F052 photos and snapshot". `river.jpg`
-      is only used by direction B; drop it if A is picked. `shadows.jpg`
-      and `river.jpg` are ~650 KB (fine texture); try 1600 px if
-      Lighthouse or the template size complains.
-   b. **Snapshot done:** A Daylight (recommended) / B Shoreline.
-   b2. **Round 2 photos** (owner asked to also search NegativeSpace,
-      Skitterphoto; Pexels allowed but blocked here, needs an API key):
-      comparison https://claude.ai/artifact/2hkW4FDzmjPcXuzjYG4FYS.
-      Recommended swaps: vaults→balconies, grid→angles (grid moves to
-      Work), spiral→wood-spiral, cubes→white-stair,
-      lake-house→pool-house, studio-desk→home-office; B hero
-      river→lake-pier. New files are already in `photos/`, credits in
-      CREDITS.md "Round 2". Delete the losing files once the owner
-      confirms.
-   c. **To build after the pick** (in `scripts/starter-templates/starter.ts`,
-      Harbour only; Signal and Corner keep their stand-ins):
-      - `buildStarter` reads photos from `photos/` for Harbour instead
-        of `standIn()`; media entries get real width/height and alt
-        text that describes the photo (still `placeholder`-marked).
-      - Home (A): hero Section `imageSrc` terraces, style background,
-        tint light, height large, valign bottom; H1 + one line + a
-        rich-text link "See the work". Statement band (h2, text only).
-        "Recent work" h2 + link, then Columns equal: Image vaults |
-        Images grid + spiral (no captions on home). Services as
-        Columns 3 (h3 + one line + link "More on …"), not boxed cards.
-        Journal cue: Columns one-two, Image shadows | eyebrow, post
-        title h2, date, link. "Join us" line. Contact strip.
-      - Work: text hero, mosaic (vaults | grid + spiral), statement
-        line, mirrored mosaic (lake-house + window-tree | cubes).
-      - About uses studio-desk; post cover = shadows.
-      - The Replace me marks stay as in F049. Then `npm run
-        build:starters`, the done_check, and tests for the photo
-        wiring (credits listed for every Harbour photo file, alt text
-        present, no stand-ins left in Harbour).
+2. **F052 is built and passes** (branch `claude/peaceful-shannon-x32vlp`,
+   PR #41, stacked on #40). Waiting for the owner's review on the
+   preview link (`needs_review`), and his word to merge #40 then #41.
+   Design: DECISIONS.md "F052 photos and snapshot"; photos and credits:
+   `scripts/starter-templates/photos/`. No feature in features.json is
+   left unbuilt; new work needs the owner to add it.
 3. Proposals waiting for the owner: header over hero photo, latest posts
    block, highlight-link fix (DECISIONS.md → Proposals).
 
