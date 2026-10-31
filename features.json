@@ -488,7 +488,7 @@
       "description": "One complete template designed with the owner: Home, About, Services, Work, Contact, a blog with one post, a linked contact strip. Passes the template quality check. Design snapshot with 2-3 directions first; the owner picks. Added by the owner (approved Milestone 5, 2026-10-30).",
       "depends_on": ["F047",  "F048"],
       "done_check": "npm test -- starter-template && npm run check:template",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

@@ -150,6 +150,30 @@ Features Claude suggests. They are not work until the owner adds them to
   rules, the state and the next step; CLAUDE.md's session protocol now
   starts and ends with it. It reaches main with the next merge.
 
+## 2026-10-31 — F049 Harbour (Claude, reversible)
+
+- **Built from code, not by hand in the builder:**
+  `scripts/starter-templates/starter.ts` describes the pages once; each
+  template (Harbour now, Signal and Corner next) only changes the look,
+  business name, headline and image colours. `npm run build:starters`
+  writes `templates/<id>.crust`; a test fails if the committed file is
+  out of date, so the file and its source can't drift.
+- **Sample content is instructions, all marked Replace me.** "A short
+  line on this service: what the client gets, how long it takes, and a
+  starting price" tells the buyer what to write; fake copy could survive
+  unnoticed. Unmarked: section headings that work as they are ("What we
+  do", "Recent work") and page titles.
+- **Stand-in images, not stock photos.** Flat compositions in the
+  template's colours, generated as small PNGs (7 images, 67 KB for the
+  whole template), described as "Stand-in image: replace with a photo
+  of …". No licences to track, and nobody mistakes them for their own
+  photos.
+- **No contact strip on Contact** (it would point to the page you're
+  on). The Services page got a "What we offer" h2 so the service cards
+  (h3) don't skip a level; the template check caught it.
+- With a template in `templates/`, `npm run check:template` and the CI
+  job now check Harbour instead of the sample site.
+
 ## 2026-10-31 — Three starter templates (owner)
 
 - The F049 snapshot (https://claude.ai/artifact/JFfJLZ3Va9hoPNkdwUeFnH)

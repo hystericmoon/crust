@@ -4,6 +4,15 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **First starter template, Harbour (F049):** a complete site to start
+  from: Home, About, Services, Work, Contact, a Journal with one post,
+  and a contact strip shared by every page. Calm serif headings, deep
+  green on warm paper. Every sample word and image is marked "Replace
+  me" and written as a short instruction ("A short line on this
+  service…"), and the images are simple stand-ins in the template's own
+  colours. It's first in **Start from a template**. Signal and Corner
+  follow.
+
 - **Start from a template (F048):** the Pages screen has **Start from a
   template**. Pick one from the gallery (or open a .crust file), look
   through every page and post at desktop, tablet and phone widths, with
