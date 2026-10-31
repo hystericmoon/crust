@@ -521,6 +521,16 @@
       "passes": true,
       "needs_review": true,
       "reviewed": false
+    },
+    {
+      "id": "F053",
+      "title": "Signal and Corner with real photos",
+      "description": "The F052 treatment for the other two starter templates, at the owner's request (2026-10-31: 'yes, do Signal and Corner with real photos'). Each gets curated CC0 photos (credited in scripts/starter-templates/photos/CREDITS.md, same sources and rules as Harbour) instead of the stand-in shapes, and a photo-led layout that suits its own look (Signal bold and dark, Corner warm and local) rather than a copy of Harbour's. Sample content still marked Replace me. Photo picks and a design snapshot first; the owner approves before building. Added by the owner.",
+      "depends_on": ["F052"],
+      "done_check": "npm test -- starter-template && npm run check:template",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
     }
   ]
 }

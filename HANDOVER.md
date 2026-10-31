@@ -110,9 +110,17 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
    PR #41, stacked on #40). Waiting for the owner's review on the
    preview link (`needs_review`), and his word to merge #40 then #41.
    Design: DECISIONS.md "F052 photos and snapshot"; photos and credits:
-   `scripts/starter-templates/photos/`. No feature in features.json is
-   left unbuilt; new work needs the owner to add it.
-3. Proposals waiting for the owner: header over hero photo, latest posts
+   `scripts/starter-templates/photos/`.
+3. **F053 Signal and Corner with real photos** (owner said yes,
+   2026-10-31). Same process as F052: CC0 photo picks (sources and rules
+   in DECISIONS.md "F052 photos and snapshot"; Skitterphoto full size
+   comes from its download form, StockSnap/Pexels are blocked here),
+   then a design snapshot with directions per template, owner approves,
+   then build in starter.ts (generalise `photos` per spec). A resume is
+   scheduled for 2026-10-31 23:00 Jakarta.
+4. **Roadmap** (updated 2026-10-31): https://claude.ai/artifact/4eHUDzJ3tDeeaNPBf4T4ii.
+   M6/M7 are proposals gated on the owner's three decisions there.
+5. Proposals waiting for the owner: header over hero photo, latest posts
    block, highlight-link fix (DECISIONS.md → Proposals).
 
 ## Where to find things
