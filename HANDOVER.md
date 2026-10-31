@@ -71,8 +71,8 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 
 - **Live site** https://crust-site.pages.dev: last published at
   Milestone 1. Only the owner decides when to publish.
-- **Admin** https://crust-admin.pages.dev: main, Milestones 1–4
-  (F001–F044) merged.
+- **Admin** https://crust-admin.pages.dev: main, Milestones 1–5
+  (F001–F051) merged (Milestone 5: PRs #33–#39, 2026-10-31).
 - **Milestone 5 "Templates"** (docs/milestone-5.md), F045–F049:
 
 | Feature | Status | Branch / PR |
@@ -100,18 +100,16 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 
 ## Next
 
-1. On start: subscribe_pr_activity to #33–#36 and fix any red CI
-   (reproduce locally first). All four were green at handover.
-2. Milestone 5 is fully built (F045–F051). Nothing else to build until
-   the owner reviews, picks merges, or approves Milestone 6.
-3. When F045–F049 are all built: tell the owner what's waiting (preview
-   links, snapshot choices, merge order #33 → #39).
-
-Notes from F048 for whoever builds on it: templates in the gallery come
-from `apps/admin/src/templates/sources.ts`; applying is
-`apps/admin/server/template.ts` (`/api/template`); the builder a11y check
-(`scripts/check-builder-a11y.mjs`) needs `npm run build` first, or it
-tests a stale build.
+1. Milestone 5 is merged. Nothing is queued: wait for the owner's
+   review (F034–F051 need `reviewed: true`), fixes he asks for, or a
+   Milestone 6 proposal he approves (roadmap:
+   https://claude.ai/artifact/4eHUDzJ3tDeeaNPBf4T4ii; selling templates
+   was planned for Milestones 6–7).
+2. Open point from F051: the "highlight" link style reads as a
+   grey-beige block on yellow cards (Corner). Only a proposal if the
+   owner agrees.
+3. Work from a branch off `main`; never publish the live site unless the
+   owner says so.
 
 ## Where to find things
 
