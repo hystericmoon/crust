@@ -163,6 +163,26 @@ Features Claude suggests. They are not work until the owner adds them to
   proposal above), and anything for other users (that's M6).
 
 
+## 2026-10-31 — Milestones 6 and 7 written up (Claude, reversible)
+
+- docs/milestone-6.md (F054–F062) and docs/milestone-7.md (F063–F068),
+  from the approved roadmap. Technical choices, all reversible until
+  built: Tauri 2 for the app; a content store in front of the existing
+  server code (GitHub or local folder) instead of a second backend; one
+  hidden Git repository per site (gitoxide) so history and "Bring back"
+  work offline; render, crust-publish and Pagefind run inside the app;
+  host tokens in the OS keychain; installers and updates on a free
+  Cloudflare Pages site (private-repo releases aren't public); delivery
+  through a Worker and Workers KV (R2 needs a card on file, KV doesn't).
+- F054 depends on F048, not F053, so M6 can start while the F053 photos
+  wait for the owner.
+- Mac/Windows installers only from a hand-started release workflow:
+  private-repo minutes count 10× (Mac) and 2× (Windows).
+- Launch-only owner tasks (signing, update key, payment provider, terms)
+  are in BLOCKED.md labelled "Launch:", so they don't stop the features
+  from being built.
+- Premium templates are not features yet: the owner adds each one.
+
 ## 2026-10-31 — Free Crust, desktop app, M6 and M7 approved (owner)
 
 - Owner, answering the roadmap (https://claude.ai/artifact/4eHUDzJ3tDeeaNPBf4T4ii):
