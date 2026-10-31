@@ -65,6 +65,16 @@ Features Claude suggests. They are not work until the owner adds them to
 - **Linked sections ("global sections").** A saved layout is a copy. A
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
+- **Free Crust, paid templates (owner's idea, 2026-10-31, not yet
+  confirmed).** The owner is thinking of making Crust free and selling
+  only templates. Roadmap redrafted around it (same link,
+  https://claude.ai/artifact/4eHUDzJ3tDeeaNPBf4T4ii): M6 becomes the free
+  app (no licence keys; the template gallery also shows premium
+  templates with a link to the store), M7 a template store, plus an
+  ongoing premium-template track (about six for launch). Claude agrees
+  with free, with the caveat that all income then rides on a strong
+  template catalogue. New optional decision: open source or not (Claude:
+  free but not open source, for now).
 - **Direction: a YOOtheme-style builder and a template business**
   (discussed with the owner on 2026-10-30; roadmap page:
   https://claude.ai/artifact/4eHUDzJ3tDeeaNPBf4T4ii). The aim is for
@@ -159,6 +169,40 @@ Features Claude suggests. They are not work until the owner adds them to
   each finished task or when a session fills up. HANDOVER.md holds the
   rules, the state and the next step; CLAUDE.md's session protocol now
   starts and ends with it. It reaches main with the next merge.
+
+## 2026-10-31 — F052 photos and snapshot (Claude, reversible)
+
+- **Photos: ten CC0 files from Wikimedia Commons**, picked by eye from
+  about 480 candidates (searches for minimal architecture, interiors,
+  stairs, light and shadow, lakes). Commons shows a checked licence per
+  file, which makes the credits list auditable. Five are pre-June-2017
+  Unsplash uploads that were CC0 then; the dedication can't be
+  withdrawn, so they're safe to resell. Credits:
+  `scripts/starter-templates/photos/CREDITS.md`.
+- **Pexels allowed (owner, with the licence text):** the Pexels License
+  lets photos be used in "a template you sell"; it only forbids selling
+  the photos on their own. Pexels photos are credited as "Pexels
+  License", not CC0. pexels.com refuses this environment's requests; its
+  API needs a free key only the owner can create. Unsplash stays out
+  (its licence forbids compiling photos into a competing service, and
+  the owner hasn't asked).
+- **More CC0 sources (owner's list):** NegativeSpace and Skitterphoto
+  (both plain CC0, licence pages checked) are searched too. StockSnap
+  refuses automated requests; getting past that would mean posing as a
+  browser, so it's only used for photos the owner links directly.
+  Smithsonian/Met/Cleveland aren't reachable and are mostly artworks.
+- **Left out:** photos of artworks or installations (the artwork keeps
+  its own copyright), architecture models, recognisable people.
+- **Blocked hosts:** StockSnap, Flickr images, rawpixel, pxhere and
+  Pexels return 403 from this environment's network, so they were not
+  searched. Openverse's API was too slow to use.
+- **Sizes:** at most 1920 px (under Crust's 2400 px),
+  about 90–650 KB each; publishing makes 480/960/1440 copies for srcset.
+- **Snapshot** https://claude.ai/artifact/FksfsnM6msMtjBu4v5YHDm
+  (`design/f052-harbour-rework-v1.html`): A Daylight (recommended, light
+  hero under the 55% paper veil, rhythm on paper and sand, one dark
+  band) and B Shoreline (dark 65% veil over the river photo, green
+  statement band, three dark bands). Waiting for the owner's pick.
 
 ## 2026-10-31 — Harbour rework, F052 (owner)
 

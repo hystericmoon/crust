@@ -512,3 +512,23 @@ to "Log".
   best ones; design snapshot first). Two small proposals (header over
   hero photo, latest posts block) and the highlight-link fix are in
   DECISIONS → Proposals. Owner asked for a new session.
+- 2026-10-31 — F052 started: ten CC0 photos picked and credited
+  (scripts/starter-templates/photos), design snapshot with two
+  directions published (https://claude.ai/artifact/FksfsnM6msMtjBu4v5YHDm,
+  A recommended). Waiting for the owner's pick (BLOCKED.md); nothing
+  built yet.
+- 2026-10-31 — F052 photos round 2: 1,931 more CC0 candidates from
+  NegativeSpace and Skitterphoto; six replace current picks, plus a new
+  hero for direction B. Comparison:
+  https://claude.ai/artifact/2hkW4FDzmjPcXuzjYG4FYS. Waiting for the
+  owner (direction A/B and the photo set).
+- 2026-10-31 — F052 built (owner: "A, photos as recommended"): Harbour
+  uses the ten CC0 photos (photos/, CREDITS.md) and the photo-led
+  layout of direction A: photo opening (light veil), statement band,
+  tall-beside-two-wide mosaic, services as quiet links, journal cue
+  with a hiring line; Work page has two mirrored mosaics, a statement
+  line and a full-width photo; About uses the studio photo. Signal and
+  Corner unchanged. done_check passes (starter tests + check:template:
+  axe at 3 widths, contrast, headings, Lighthouse). 783 JS tests.
+  **Owner to test:** Start from a template → Harbour on the PR preview
+  link; needs `reviewed: true` after.

@@ -4,6 +4,14 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Harbour, reworked (F052):** the first starter template now opens
+  with a full-width photo behind the headline, shows recent work as a
+  tall photo beside two wide ones, puts short statement lines between
+  the photo sections and uses quiet underlined links instead of most
+  buttons. Ten real public-domain photos replace the stand-in shapes
+  (still marked Replace me), and the home page gets a journal cue and a
+  "we're hiring" line. Signal and Corner are unchanged.
+
 - **Third starter template, Corner (F051):** the same pages again, warm
   and local: a sturdy serif, navy on butter yellow, rounded buttons,
   flat cards and highlighter-style links. All three starter templates
