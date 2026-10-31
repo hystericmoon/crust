@@ -82,8 +82,8 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | F047 Template quality check | built, passes, CI green | `f047-template-check`, draft PR #35 (stacked on #34) |
 | F048 Start from a template | built, passes | `f048-start-from-template`, draft PR #36 (stacked on #35) |
 | F049 First starter template: Harbour | built, passes | `f049-starter-template`, draft PR #37 (stacked on #36) |
-| F050 Second starter template: Signal | next | owner chose "All three" (2026-10-31) |
-| F051 Third starter template: Corner | after F050 | |
+| F050 Second starter template: Signal | built, passes | `f050-signal-template` (stacked on #37) |
+| F051 Third starter template: Corner | next | |
 
 - **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in

@@ -491,3 +491,7 @@ to "Log".
   F049 Harbour built (PR #37): pages from scripts/starter-templates,
   stand-in PNGs, templates/harbour.crust, passes check:template (axe at
   3 widths, contrast, headings, Lighthouse). 6 new tests (772 JS total).
+- 2026-10-31 — F050 Signal built (branch f050-signal-template, PR
+  stacked on #37): a second StarterSpec, templates/signal.crust, passes
+  check:template. On dark sections buttons are white (orange on near
+  black is 3.8:1, so Crust's section styles switch it).
