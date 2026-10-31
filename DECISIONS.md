@@ -65,6 +65,16 @@ Features Claude suggests. They are not work until the owner adds them to
 - **Linked sections ("global sections").** A saved layout is a copy. A
   linked section (for example a contact strip on every page) would update
   everywhere when edited once. Useful later; needs a page-format change.
+- **Free Crust, paid templates (owner's idea, 2026-10-31, not yet
+  confirmed).** The owner is thinking of making Crust free and selling
+  only templates. Roadmap redrafted around it (same link,
+  https://claude.ai/artifact/4eHUDzJ3tDeeaNPBf4T4ii): M6 becomes the free
+  app (no licence keys; the template gallery also shows premium
+  templates with a link to the store), M7 a template store, plus an
+  ongoing premium-template track (about six for launch). Claude agrees
+  with free, with the caveat that all income then rides on a strong
+  template catalogue. New optional decision: open source or not (Claude:
+  free but not open source, for now).
 - **Direction: a YOOtheme-style builder and a template business**
   (discussed with the owner on 2026-10-30; roadmap page:
   https://claude.ai/artifact/4eHUDzJ3tDeeaNPBf4T4ii). The aim is for
