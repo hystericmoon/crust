@@ -25,8 +25,15 @@ to "Log".
   pick B (a rework item, only if he asks). Buying the domain is in
   BLOCKED.md.
 - **Milestone 5 "Templates" approved (2026-10-30, owner: "Approve"):**
-  F045–F049, docs/milestone-5.md. Next: F045 Save a site as a template.
+  F045–F049, docs/milestone-5.md. **F045 Save a site as a template
+  built** (branch `f045-template-file`, draft PR #33, not merged). Next: F046
+  Placeholder content.
 - **Waiting on the owner** (all on crust-admin.pages.dev unless noted):
+  - **F045:** on the PR's preview link, open Site settings → Template
+    (near the bottom). Add a description, press **Save as template**: a
+    .crust file downloads, and the screen lists what's in it. The preview
+    isn't connected to GitHub, so it holds the sample site; on
+    crust-admin.pages.dev (once merged) it holds your real site.
   - **F044:** open Site settings → Site
     address (last in the list). Type a domain with a mistake (like
     studio.com/about), then a correct one; the example address below
@@ -417,3 +424,8 @@ to "Log".
 - 2026-10-30 — Owner: "Go ahead merge and move to new milestone". M4 was
   already merged (#27–#31). Proposed Milestone 5 "Templates" (PR #32);
   owner approved; added F045–F049 and docs/milestone-5.md.
+- 2026-10-30 — F045 Save a site as a template: `crust-template` format
+  (packages/blocks/src/template.ts: make, read, summary), collected in the
+  browser (apps/admin/src/templates/collect.ts), Site settings → Template.
+  The file is read back before it downloads. 15 new tests (template-file).
+  done_check passes.

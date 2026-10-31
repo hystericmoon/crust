@@ -32,6 +32,8 @@ import { ButtonOptions, CardOptions, LinkOptions, TypeOptions } from "./StyleGro
 import { chromeProblems, FooterOptions, HeaderOptions, type PageOption } from "./ChromeGroups";
 import { migrateChrome, validateChrome, type SiteChrome } from "@crust/blocks";
 import { SiteAddressGroup } from "./SiteAddress";
+import { TemplateGroup } from "./TemplateGroup";
+import { bundledLoader, type TemplateLoader } from "../templates/collect";
 
 export interface SiteSettingsProps {
   site: Site;
@@ -57,6 +59,9 @@ export interface SiteSettingsProps {
   onAddressChange?: (baseUrl: string) => void;
   /** True when the address differs from what's saved. */
   addressDirty?: boolean;
+  /** Where "Save as template" (F045) reads the site from, and whether that's GitHub. */
+  templateLoader?: TemplateLoader;
+  githubOn?: boolean;
 }
 
 /** Direction A (F028): one group at a time, beside the live preview. */
@@ -73,6 +78,7 @@ export const groups = [
   { id: "spacing", label: "Spacing" },
   { id: "shape", label: "Shape & layout" },
   { id: "theme-pack", label: "Theme pack" },
+  { id: "template", label: "Template" },
   { id: "address", label: "Site address" },
 ] as const;
 export type GroupId = (typeof groups)[number]["id"];
@@ -113,6 +119,8 @@ export function SiteSettings({
   address = site.baseUrl,
   onAddressChange = () => undefined,
   addressDirty = false,
+  templateLoader = bundledLoader,
+  githubOn = false,
 }: SiteSettingsProps) {
   const [status, setStatus] = useState("");
   const [invalid, setInvalid] = useState<ReadonlySet<string>>(new Set());
@@ -462,6 +470,18 @@ export function SiteSettings({
                 }
                 if (p.chrome) onChromeChange(next.chrome);
               }}
+            />
+          </section>
+
+          <section className="st-card" id="template" aria-labelledby="template-h" hidden={group !== "template"}>
+            <h2 id="template-h" tabIndex={-1}>Save as template</h2>
+            <TemplateGroup
+              site={{ name: site.name, language: site.language }}
+              tokens={draft}
+              chrome={chrome}
+              canSave={invalid.size === 0 && validateTokens(draft).length === 0}
+              loader={templateLoader}
+              connected={githubOn}
             />
           </section>
 

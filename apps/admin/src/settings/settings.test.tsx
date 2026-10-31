@@ -79,6 +79,7 @@ describe("Site settings screen", () => {
       "Spacing",
       "Shape & layout",
       "Theme pack",
+      "Save as template",
       "Site address",
     ]);
     expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Presets"]);

@@ -51,6 +51,7 @@ import { withSectionEditing } from "./sections/editing";
 import { withSettingsTabs } from "./tabs/tabs";
 import { SiteStyleContext, type SiteStyle } from "./sections/site-style";
 import { SiteSettings } from "./settings/SiteSettings";
+import { bundledLoader, githubLoader } from "./templates/collect";
 import { loadSavedTokens, sameTokens, saveTokens } from "./tokens-store";
 import { loadSavedAddress, loadSavedChrome, sameChrome, saveAddress, saveChrome, siteToSave } from "./chrome-store";
 import { SiteChromeContext, withSiteChrome } from "./chrome-canvas";
@@ -267,6 +268,8 @@ export function App() {
           address={addressDraft}
           onAddressChange={setAddressDraft}
           addressDirty={savedAddress !== addressDraft}
+          templateLoader={githubOn ? githubLoader : bundledLoader}
+          githubOn={githubOn === true}
         />
         <MediaPicker />
       </MyLayoutsProvider>

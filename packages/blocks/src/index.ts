@@ -182,3 +182,16 @@ export {
 export type { LinkedSectionFile } from "./linked-sections";
 export { LinkedSection, LinkedSectionsContext } from "./linked-section-block";
 export type { LinkedSectionProps, LinkedSectionsSetup } from "./linked-section-block";
+export {
+  TEMPLATE_FORMAT,
+  TEMPLATE_VERSION,
+  templateLimits,
+  photosUsed,
+  makeTemplate,
+  templateFileName,
+  templateSummary,
+  readTemplate,
+  isTemplatePagePath,
+  photoType,
+} from "./template";
+export type { Template, TemplatePage, TemplatePhoto, TemplateSource, TemplateCheck } from "./template";

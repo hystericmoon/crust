@@ -6,6 +6,7 @@ import "./settings/settings.css";
 import "./settings/chrome-groups.css";
 import "./settings/theme-pack.css";
 import "./settings/site-address.css";
+import "./settings/template-group.css";
 import "./keyboard/keyboard.css";
 import "./sections/sections.css";
 import "./layouts/layouts.css";

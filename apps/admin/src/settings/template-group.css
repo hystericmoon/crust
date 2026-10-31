@@ -1,0 +1,9 @@
+/* Site settings → Save as template (F045) */
+.tp-fields { display: grid; gap: 16px; max-width: 32rem; margin-bottom: 12px; }
+.tp-field { display: grid; gap: 6px; }
+.tp-field .st-help { margin: 0; font-weight: 400; }
+.tp-textarea { min-height: 5rem; padding: 10px 12px; resize: vertical; }
+.tp-problems { padding-left: 2rem; display: grid; gap: 4px; }
+.tp-summary { margin-top: 16px; }
+.tp-summary h3 { margin: 0 0 8px; font-size: 1rem; }
+.tp-summary ul { margin: 0; padding-left: 1.25rem; display: grid; gap: 4px; }

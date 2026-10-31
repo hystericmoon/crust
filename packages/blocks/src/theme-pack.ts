@@ -79,7 +79,7 @@ const BLOCK_TYPE = /^[A-Z][A-Za-z0-9]{0,39}$/;
 const PROP_KEY = /^[A-Za-z][A-Za-z0-9_-]{0,39}$/;
 
 /** Copies tokens field by field, so nothing Crust doesn't know about comes along. */
-function pickTokens(v: unknown): SiteTokens | null {
+export function pickTokens(v: unknown): SiteTokens | null {
   if (!isObject(v) || !isObject(v.colors) || !isObject(v.fonts) || !isObject(v.spacing)) return null;
   const colors = Object.fromEntries(colorRoles.map((r) => [r, String((v.colors as Record<string, unknown>)[r] ?? "")])) as SiteTokens["colors"];
   const fonts = { heading: String(v.fonts.heading ?? ""), body: String(v.fonts.body ?? "") };
@@ -153,6 +153,20 @@ function cleanValue(v: unknown, known: BlockSpecs, depth: number, count: { block
   return out;
 }
 
+/**
+ * F045: a list of top-level blocks as plain, known data (the same rules as
+ * a pack's layouts); null when anything is unknown or damaged. `count` is
+ * shared across a whole file, so one file can't hold too many blocks.
+ */
+export function cleanBlocks(v: unknown, known: BlockSpecs, count: { blocks: number }, max: number = packLimits.blocks): { type: string; props: Record<string, unknown> }[] | null {
+  if (!Array.isArray(v)) return null;
+  const local = { blocks: 0 };
+  const out = cleanValue(v, known, 0, local);
+  count.blocks += local.blocks;
+  if (!Array.isArray(out) || count.blocks > max || !out.every((b) => isObject(b) && typeof b.type === "string" && isObject(b.props))) return null;
+  return out as { type: string; props: Record<string, unknown> }[];
+}
+
 function pickLayouts(v: unknown, known: BlockSpecs): { layouts: PackLayout[]; problems: string[] } {
   if (!Array.isArray(v)) return { layouts: [], problems: ["The layouts in this file are damaged."] };
   if (v.length > packLimits.layouts) return { layouts: [], problems: [`This file has more than ${packLimits.layouts} layouts.`] };
@@ -208,6 +222,7 @@ export function readThemePack(text: string, blocks: BlockSpecs): PackCheck {
   } catch {
     return { pack: null, problems: ["This file isn't a Crust theme pack (it couldn't be read)."] };
   }
+  if (isObject(raw) && raw.format === "crust-template") return { pack: null, problems: ["This file is a whole-site template, not a theme pack."] };
   if (!isObject(raw) || raw.format !== PACK_FORMAT) return { pack: null, problems: ["This file isn't a Crust theme pack."] };
   if (raw.version !== PACK_VERSION) return { pack: null, problems: ["This theme pack was made by a newer Crust. Update Crust, then try again."] };
 
