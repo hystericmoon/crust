@@ -162,6 +162,26 @@ Features Claude suggests. They are not work until the owner adds them to
   similar to Milestone 3. Left out on purpose: gallery lightbox (still a
   proposal above), and anything for other users (that's M6).
 
+
+## 2026-10-31 — Free Crust, desktop app, M6 and M7 approved (owner)
+
+- Owner, answering the roadmap (https://claude.ai/artifact/4eHUDzJ3tDeeaNPBf4T4ii):
+  "i agree" to (1) Crust is free, people buy templates from us;
+  (2) people run Crust as a desktop app for Mac and Windows (Tauri);
+  (3) free but not open source, for now. "M6: go ahead", "m7: yes go
+  ahead": Milestone 6 (the free Crust app) and Milestone 7 (the template
+  store) are approved as drafted on the roadmap page. The next session
+  writes docs/milestone-6.md and docs/milestone-7.md and adds their
+  features to features.json (owner-approved scope).
+- Owner, about the "waiting on you" list: "you do it all for me".
+  Done by Claude the same day: merged #40 and #41 (CI green), started
+  Publish on the live site. Delegated to Claude: the review of the 48
+  features with `needs_review` (Claude reviews each on the preview, sets
+  `reviewed: true` with a note "reviewed by Claude at the owner's request",
+  and lists anything worth fixing as proposals). Still the owner's (they
+  need his accounts, logins or money): contact-form email setup (F037),
+  buying a domain (F044), app signing (Apple developer fee, Windows
+  certificate), the payment provider account, terms and refunds.
 ## 2026-10-30 — Sessions hand over through HANDOVER.md (owner)
 
 - The owner asked for everything a session needs in one written place,

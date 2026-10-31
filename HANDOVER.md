@@ -5,8 +5,8 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-10-31, F052 built and passing, waiting for the
-owner's review (session "F052 Harbour rework", branch
+Last updated: 2026-10-31 evening: #40 and #41 merged, live site
+publish started, M6/M7 approved; next F053 (session "F052 Harbour rework", branch
 `claude/peaceful-shannon-x32vlp`, stacked on PR #40).
 
 ## How sessions work (owner's rule, 2026-10-30)
@@ -102,26 +102,29 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 
 ## Next
 
-1. On start: archive the previous session (archive_session; it's named in
-   the handover prompt). PR #40 is notes only; merge it only when the
-   owner says so. The F052 branch `claude/peaceful-shannon-x32vlp` is
-   stacked on it (its PR targets `m5-merged-notes`).
-2. **F052 is built and passes** (branch `claude/peaceful-shannon-x32vlp`,
-   PR #41, stacked on #40). Waiting for the owner's review on the
-   preview link (`needs_review`), and his word to merge #40 then #41.
-   Design: DECISIONS.md "F052 photos and snapshot"; photos and credits:
-   `scripts/starter-templates/photos/`.
-3. **F053 Signal and Corner with real photos** (owner said yes,
-   2026-10-31). Same process as F052: CC0 photo picks (sources and rules
-   in DECISIONS.md "F052 photos and snapshot"; Skitterphoto full size
-   comes from its download form, StockSnap/Pexels are blocked here),
-   then a design snapshot with directions per template, owner approves,
-   then build in starter.ts (generalise `photos` per spec). A resume is
-   scheduled for 2026-10-31 23:00 Jakarta.
-4. **Roadmap** (updated 2026-10-31): https://claude.ai/artifact/4eHUDzJ3tDeeaNPBf4T4ii.
-   M6/M7 are proposals gated on the owner's three decisions there.
-5. Proposals waiting for the owner: header over hero photo, latest posts
-   block, highlight-link fix (DECISIONS.md → Proposals).
+The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
+"Free Crust, desktop app, M6 and M7 approved". In order:
+
+1. **F053 Signal and Corner with real photos** (features.json). Same
+   process as F052 (DECISIONS.md "F052 photos and snapshot"): CC0 photo
+   picks (Wikimedia Commons API, NegativeSpace category pages,
+   Skitterphoto: full size via its download form with the page's
+   _token; StockSnap/Pexels refuse automated requests here), comparison
+   page, design snapshot with directions per template, owner approves,
+   build in `scripts/starter-templates/starter.ts` (generalise
+   `photos` per spec; Harbour's `homeWithPhotos`/`workWithPhotos` are
+   Harbour-shaped), `npm run build:starters`, done_check.
+2. **Write Milestones 6 and 7** (approved): docs/milestone-6.md and
+   docs/milestone-7.md from the roadmap page, features F054 onwards in
+   features.json with done_checks, BLOCKED.md entries for what only the
+   owner can do (signing, payment provider account). Watch costs: macOS
+   runners on a private repo use 10x Actions minutes; ask before
+   anything that may cost money.
+3. **Review the 48 `needs_review` features** (delegated by the owner):
+   check each on the preview, set `reviewed: true` with a note, list
+   fixes as proposals.
+4. Live site: Publish was started on 2026-10-31 (first since M1); check
+   the run succeeded (Actions → Publish site).
 
 ## Where to find things
 
