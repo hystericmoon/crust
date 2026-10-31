@@ -27,18 +27,21 @@ const samplePost = {
   coverAlt: "",
   puck: { root: { props: {} }, content: [{ type: "Text", props: { id: "t1", text: "Come and say hello." } }] },
 };
-// [label, address, post to seed, block to select first (F042: the rich text editor)]
+// [label, address, post to seed, block to select first (F042: the rich text editor), buttons to press (F048)]
 const screens = [
   ["page builder", "/#/edit?path=/", null, null],
   ["page builder, Text block selected", "/#/edit?path=/", null, '[data-puck-component^="Text"]'],
   ["post builder", "/#/post?slug=check-post", samplePost, null],
+  ["template gallery", "/#/templates", null, null],
+  ["template preview", "/#/templates", null, null, [".tp-card[id]"]],
+  ["template confirm question", "/#/templates", null, null, [".tp-card[id]", 'button:has-text("Use this template")', "dialog[open]"]],
 ];
 
 const server = await serve(distDir);
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 let failures = 0;
 try {
-  for (const [label, hash, post, select] of screens) {
+  for (const [label, hash, post, select, clicks = []] of screens) {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     if (post) {
       await page.addInitScript((p) => {
@@ -49,6 +52,12 @@ try {
     // Wait for Puck's canvas and the blocks inside it.
     await page.waitForSelector("iframe", { timeout: 20_000 });
     await page.waitForTimeout(1500);
+    // Buttons to press in order; a last "dialog[open]" only waits for the dialog to be there.
+    for (const button of clicks) {
+      if (button === "dialog[open]") await page.waitForSelector(button, { timeout: 10_000 });
+      else await page.locator(button).first().click();
+      await page.waitForTimeout(800);
+    }
     if (select) {
       await page.frameLocator("#preview-frame").locator(select).first().click();
       await page.waitForSelector(".rt-editor", { state: "attached", timeout: 10_000 });

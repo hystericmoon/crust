@@ -478,7 +478,7 @@
       "description": "Pages screen → 'Start from a template' opens a gallery: thumbnail, page list and a live preview at desktop, tablet and phone widths. Applying asks first and says exactly what it replaces; the previous site stays in Git history and can be restored. Design snapshot first. Added by the owner (approved Milestone 5, 2026-10-30).",
       "depends_on": ["F045",  "F046"],
       "done_check": "npm test -- start-from-template && npm run build && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

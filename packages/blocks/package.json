@@ -17,7 +17,8 @@
     "./site-address": "./src/site-address.ts",
     "./rich-text": "./src/rich-text.ts",
     "./linked-sections": "./src/linked-sections.ts",
-    "./placeholders": "./src/placeholders.ts"
+    "./placeholders": "./src/placeholders.ts",
+    "./template": "./src/template.ts"
   },
   "peerDependencies": {
     "@puckeditor/core": "^0.23.0",

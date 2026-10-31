@@ -29,10 +29,23 @@ to "Log".
   built** (branch `f045-template-file`, draft PR #33, not merged). **F046
   Placeholder content built** (branch `f046-placeholders`, draft PR #34,
   stacked on #33). **F047 Template quality check built** (branch
-  `f047-template-check`, draft PR #35, stacked on #34). Next: F048 Start
-  from a template (design snapshot first). Sessions now hand
+  `f047-template-check`, draft PR #35, stacked on #34). **F048 Start
+  from a template built** (branch `f048-start-from-template`, draft PR
+  #36, stacked on #35). Next: F049 First starter template (design
+  snapshot; the owner picks a direction). Sessions now hand
   over through HANDOVER.md (owner's rule, 2026-10-30).
 - **Waiting on the owner** (all on crust-admin.pages.dev unless noted):
+  - **F048:** design snapshot https://claude.ai/artifact/JQoY8bbRJ9U58jZawRx2kV
+    (A was built). On PR #36's preview link
+    (https://f048-start-from-template.crust-admin.pages.dev) press
+    **Start from a template** on the Pages screen. Open **Sample site**,
+    switch pages and widths, press **Use this template**: the question
+    lists your pages by name. Try Cancel, then Replace: the Pages screen
+    says the site uses the template. Press **Bring back my previous
+    site**. The preview link isn't connected to GitHub, so this happens in
+    your browser only; on the real admin it's saved to GitHub (and
+    nothing goes live until you publish). You can also open a .crust
+    file you saved with Site settings → Template.
   - **F047:** nothing to click in the builder; it's a check that runs on
     every pull request. On PR #35, open **Checks** → **CI** → the
     **template-check** job: its summary lists each check, and the
@@ -460,3 +473,10 @@ to "Log".
   style, unmarked filler check; report at dist/template-check/index.html
   (CI download). check:a11y/check:perf share scripts/site-audit.mjs. 21
   new tests (741 JS total). New session took over from the F046 one.
+- 2026-10-31 — F048 Start from a template (PR #36, stacked on #35):
+  design snapshot (3 directions, A built), `#/templates` gallery with
+  thumbnails, preview at 3 widths, confirm question (replaced / kept),
+  apply as one commit after photo batches (/api/template), undo of
+  exactly that commit, browser-only mode for preview links. Builder a11y
+  check covers the 3 new screens. 25 new tests (766 JS total). Session
+  paused overnight at the owner's request.

@@ -54,6 +54,9 @@ import { withSettingsTabs } from "./tabs/tabs";
 import { SiteStyleContext, type SiteStyle } from "./sections/site-style";
 import { SiteSettings } from "./settings/SiteSettings";
 import { bundledLoader, githubLoader } from "./templates/collect";
+import { currentSiteNow } from "./templates/current";
+import { TemplateBanner } from "./templates/TemplateBanner";
+import { TemplatesScreen } from "./templates/TemplatesScreen";
 import { loadSavedTokens, sameTokens, saveTokens } from "./tokens-store";
 import { loadSavedAddress, loadSavedChrome, sameChrome, saveAddress, saveChrome, siteToSave } from "./chrome-store";
 import { SiteChromeContext, withSiteChrome } from "./chrome-canvas";
@@ -123,10 +126,13 @@ export type Route =
   | { name: "posts" }
   | { name: "post"; slug: string }
   /** F043: a linked section's own editor; `from` is where Back goes. */
-  | { name: "section"; id: string; from: string };
+  | { name: "section"; id: string; from: string }
+  /** F048: Start from a template. */
+  | { name: "templates" };
 
 export function parseRoute(hash: string): Route {
   if (hash.startsWith("#/settings")) return { name: "settings" };
+  if (hash.startsWith("#/templates")) return { name: "templates" };
   if (hash.startsWith("#/posts")) return { name: "posts" };
   if (hash.startsWith("#/post?")) {
     const slug = new URLSearchParams(hash.split("?")[1] ?? "").get("slug");
@@ -212,7 +218,9 @@ export function App() {
               ? `Editing post /blog/${route.slug} · Crust`
               : route.name === "section"
                 ? "Editing a linked section · Crust"
-                : "Pages · Crust";
+                : route.name === "templates"
+                  ? "Start from a template · Crust"
+                  : "Pages · Crust";
   }, [route]);
 
   const saveSiteTokens = async (tokens: SiteTokens) => {
@@ -276,6 +284,11 @@ export function App() {
         <MediaPicker />
       </MyLayoutsProvider>
     );
+  }
+
+  if (route.name === "templates") {
+    if (githubOn === null) return <Loading />;
+    return <TemplatesScreen siteName={site.name} githubOn={githubOn} currentSite={() => currentSiteNow(githubOn, site.language)} />;
   }
 
   if (route.name === "posts") {
@@ -466,6 +479,7 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
         saveLocalDraft(page, false);
         location.hash = editHref(page.path);
       }}
+      notice={<TemplateBanner githubOn={githubOn} />}
     >
       <PublishPanel
         githubOn={githubOn === true}

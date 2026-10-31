@@ -1,0 +1,247 @@
+<title>Crust Start From Template</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: same language as the F025–F043 snapshots. Direction switch on top, a working mock of the chosen direction, then the confirm step, the after state, keyboard and what's kept. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6; --field:#85858f;
+  --accent:#4338ca; --accent-ink:#ffffff; --accent-soft:#e7e6fb; --ok:#127a4b; --ok-soft:#e3f4ea; --bad:#b42318; --bad-soft:#fdecea;
+  --canvas:#ececf1;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --ok-soft:#173326; --bad:#ff8a7d; --bad-soft:#3a1d1b; --canvas:#15151d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --ok-soft:#173326; --bad:#ff8a7d; --bad-soft:#3a1d1b; --canvas:#15151d; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:40px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,5vw,44px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:24px;font-weight:600}
+h3{font-size:17px;font-weight:600;font-family:var(--f-body)}
+p{margin:0;max-width:65ch}
+ul{margin:0;padding-left:20px}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.intro{display:grid;gap:12px}
+.lead{color:var(--soft);font-size:18px}
+section{display:grid;gap:16px}
+.switch{display:flex;flex-wrap:wrap;gap:8px}
+.switch button,.seg button{font:600 15px/1 var(--f-body);padding:12px 16px;min-height:44px;border:1px solid var(--field);border-radius:999px;background:var(--panel);color:var(--ink);cursor:pointer}
+.switch button[aria-pressed="true"],.seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.switch .tag{font:500 11px/1 var(--f-mono);margin-left:6px;opacity:.85}
+button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.note{color:var(--soft)}
+.pros{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.pros div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:8px;align-content:start}
+
+/* Mock admin */
+.app{border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.bar .t{font-weight:600;flex:1;min-width:0}
+.btn{font:600 15px/1 var(--f-body);padding:12px 16px;min-height:44px;border-radius:8px;border:1px solid var(--field);background:var(--panel);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:var(--panel)}
+.btn.danger{background:var(--bad);border-color:var(--bad);color:#fff}
+:root[data-theme="dark"] .btn.danger{color:#101016}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.danger{color:#101016}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;padding:20px}
+.card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel);display:grid;text-align:left;font:inherit;color:inherit;padding:0;cursor:pointer}
+.card:hover{border-color:var(--field)}
+.thumb{aspect-ratio:16/10;background:var(--canvas);display:grid;place-items:center;max-width:100%}
+.card .meta{padding:12px 14px;display:grid;gap:4px}
+.card .meta span{color:var(--soft);font-size:14px}
+.card.file .thumb{border-bottom:1px dashed var(--field);font:500 13px/1.4 var(--f-mono);color:var(--soft);text-align:center;padding:12px}
+.detail{display:grid;grid-template-columns:220px minmax(0,1fr)}
+.pagelist{border-right:1px solid var(--line);padding:16px;display:grid;gap:4px;align-content:start}
+.pagelist button{display:block;width:100%;text-align:left;font:inherit;padding:10px 12px;min-height:44px;border-radius:8px;border:0;background:none;color:var(--ink);cursor:pointer}
+.pagelist button[aria-current="page"]{background:var(--accent-soft);font-weight:600}
+.pagelist .sub{font-size:13px;color:var(--soft);padding:12px 12px 4px}
+.stage{background:var(--canvas);padding:16px;display:grid;gap:12px;min-width:0}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{font-size:14px;padding:8px 14px;min-height:40px}
+.frame{background:#fff;color:#20251f;border-radius:8px;margin:0 auto;width:100%;transition:max-width .25s;box-shadow:0 1px 3px rgb(0 0 0/.12);overflow:hidden}
+@media (prefers-reduced-motion: reduce){.frame{transition:none}}
+.site-h{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid #e7e4dc;font:600 14px/1 var(--f-body)}
+.site-h nav{display:flex;gap:14px;font-weight:500;color:#4c5a49}
+.hero{padding:40px 20px;background:#26402f;color:#f3efe6;display:grid;gap:10px}
+.hero b{font:800 clamp(22px,3.5vw,34px)/1.1 var(--f-display)}
+.hero .pl{outline:2px dashed #f2b84b;outline-offset:3px;border-radius:2px}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:20px}
+.cols div{background:#f3efe6;border-radius:6px;height:70px}
+.frame.tablet .cols{grid-template-columns:repeat(2,1fr)}
+.frame.phone .cols{grid-template-columns:1fr}
+.frame.phone .site-h nav{display:none}
+.foot{padding:12px 20px;display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--line);background:var(--panel)}
+
+/* Confirm dialog mock */
+.dialog{max-width:620px;border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:24px;display:grid;gap:16px;box-shadow:0 12px 40px rgb(0 0 0/.18)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.box{border-radius:10px;padding:14px 16px;display:grid;gap:8px;align-content:start}
+.box.rep{background:var(--bad-soft)}
+.box.keep{background:var(--ok-soft)}
+.box h3{font-size:15px}
+.box ul{font-size:15px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.banner{border:1px solid var(--line);border-left:4px solid var(--ok);border-radius:10px;background:var(--panel);padding:16px;display:grid;gap:10px}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600}
+kbd{font:500 13px/1 var(--f-mono);border:1px solid var(--field);border-bottom-width:2px;border-radius:4px;padding:2px 6px}
+.scroll{overflow-x:auto}
+@media (max-width:760px){
+  .detail{grid-template-columns:1fr}
+  .pagelist{border-right:0;border-bottom:1px solid var(--line);grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+  .pagelist .sub{grid-column:1/-1}
+}
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Crust · F048 · design snapshot</span>
+    <h1>Start from a template</h1>
+    <p class="lead">Pick a template, look at every page at three widths, then replace your site with it, knowing exactly what changes and how to get your old site back.</p>
+  </header>
+
+  <section aria-labelledby="dir-h">
+    <h2 id="dir-h">Three directions</h2>
+    <div class="switch" role="group" aria-label="Direction">
+      <button type="button" aria-pressed="true" data-dir="a">A · Gallery screen <span class="tag">recommended</span></button>
+      <button type="button" aria-pressed="false" data-dir="b">B · Dialog on Pages</button>
+      <button type="button" aria-pressed="false" data-dir="c">C · Three steps</button>
+    </div>
+    <div class="pros">
+      <div data-show="a"><h3>A · Gallery screen</h3><p>“Start from a template” on the Pages screen opens its own screen: a grid of templates, then a full-width preview with the page list beside it. The Back button works and the preview gets the whole width, so the desktop view is readable.</p><p class="note">Cost: one more screen to learn, but it behaves like Posts and Site settings already do.</p></div>
+      <div data-show="b" hidden><h3>B · Dialog on Pages</h3><p>A large dialog over the Pages screen with the template list on the left and the preview on the right. Feels quick and keeps you on Pages.</p><p class="note">Cost: the desktop preview is squeezed into a dialog, the confirm question becomes a dialog inside a dialog (confusing for screen reader users), and on a phone it turns into a full screen anyway.</p></div>
+      <div data-show="c" hidden><h3>C · Three steps</h3><p>One thing at a time: 1 Choose, 2 Look through the pages, 3 Confirm. Very calm on a phone.</p><p class="note">Cost: comparing two templates means stepping back and forth; more clicks for something you'll do rarely but carefully.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="mock-h">
+    <h2 id="mock-h">Direction A, working mock</h2>
+    <p class="note">Click a template, switch pages and widths, then “Use this template”.</p>
+
+    <div class="app" id="gallery">
+      <div class="bar"><span class="t">Templates</span><a class="btn" href="#mock-h">Back to pages</a></div>
+      <div class="grid">
+        <button class="card" type="button" data-open="Harbour">
+          <span class="thumb" aria-hidden="true"><svg viewBox="0 0 160 100" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"><rect width="160" height="100" fill="#f3efe6"/><rect width="160" height="44" fill="#26402f"/><rect x="12" y="14" width="70" height="8" rx="2" fill="#f3efe6"/><rect x="12" y="27" width="46" height="5" rx="2" fill="#b9c7b5"/><rect x="12" y="54" width="40" height="34" rx="3" fill="#e2dccd"/><rect x="60" y="54" width="40" height="34" rx="3" fill="#e2dccd"/><rect x="108" y="54" width="40" height="34" rx="3" fill="#e2dccd"/></svg></span>
+          <span class="meta"><strong>Harbour</strong><span>Studio or small business · 5 pages, blog, 9 photos</span></span>
+        </button>
+        <button class="card" type="button" data-open="Sample site">
+          <span class="thumb" aria-hidden="true"><svg viewBox="0 0 160 100" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"><rect width="160" height="100" fill="#fff"/><rect x="12" y="14" width="90" height="10" rx="2" fill="#18181b"/><rect x="12" y="30" width="60" height="5" rx="2" fill="#a1a1aa"/><rect x="12" y="44" width="34" height="10" rx="5" fill="#4338ca"/><rect x="12" y="64" width="136" height="24" rx="3" fill="#f4f4f5"/></svg></span>
+          <span class="meta"><strong>Sample site</strong><span>The site Crust ships with · 3 pages</span></span>
+        </button>
+        <label class="card file">
+          <span class="thumb">Open a template file<br>(.crust, from Save as template)</span>
+          <span class="meta"><strong>Open a file…</strong><span>A template someone sent you</span></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="app" id="detail" hidden>
+      <div class="bar"><button class="btn" type="button" id="back">All templates</button><span class="t" id="tname">Harbour</span><button class="btn primary" type="button" id="use">Use this template</button></div>
+      <div class="detail">
+        <nav class="pagelist" aria-label="Pages in this template">
+          <span class="sub">5 pages</span>
+          <button type="button" aria-current="page">Home</button>
+          <button type="button">About</button>
+          <button type="button">Services</button>
+          <button type="button">Work</button>
+          <button type="button">Contact</button>
+          <span class="sub">Blog · 1 post</span>
+          <button type="button">Opening day</button>
+        </nav>
+        <div class="stage">
+          <div class="seg" role="group" aria-label="Preview width">
+            <button type="button" aria-pressed="true" data-w="desktop">Desktop</button>
+            <button type="button" aria-pressed="false" data-w="tablet">Tablet</button>
+            <button type="button" aria-pressed="false" data-w="phone">Phone</button>
+          </div>
+          <div class="frame desktop" id="frame" style="max-width:100%">
+            <div class="site-h"><span>Harbour Studio</span><nav><span>About</span><span>Services</span><span>Work</span><span>Contact</span></nav></div>
+            <div class="hero"><b id="ptitle"><span class="pl">Design for the waterfront</span></b><span><span class="pl">One line about what you do.</span></span></div>
+            <div class="cols"><div></div><div></div><div></div></div>
+          </div>
+          <p class="note" style="font-size:14px">Dashed outlines mark sample content the template asks you to replace (F046).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="confirm-h">
+    <h2 id="confirm-h">Asking first</h2>
+    <p class="note">“Use this template” opens this question. Focus starts on Cancel; Escape closes it. The list is worked out from your site, so it names your actual pages.</p>
+    <div class="dialog" role="group" aria-labelledby="dlg-h" id="dialog">
+      <h3 id="dlg-h" style="font:600 22px/1.2 var(--f-display)">Replace your site with “Harbour”?</h3>
+      <div class="two">
+        <div class="box rep"><h3>Replaced</h3><ul><li>Your 3 pages: Home, About, Menu</li><li>Colours, fonts and styles</li><li>Header and footer</li><li>Your 2 blog posts and the blog’s title</li><li>Your linked section “Contact strip”</li></ul></div>
+        <div class="box keep"><h3>Kept</h3><ul><li>Site name and address</li><li>Your photo library (9 photos added)</li><li>My layouts (2 added)</li><li>The live site, until you publish</li></ul></div>
+      </div>
+      <p>Your current site stays in the history. The Pages screen offers “Bring back my previous site” afterwards.</p>
+      <div class="actions"><button class="btn" type="button">Cancel</button><button class="btn danger" type="button">Replace my site</button></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="after-h">
+    <h2 id="after-h">Afterwards, on the Pages screen</h2>
+    <div class="banner" role="status">
+      <strong>Your site now uses the “Harbour” template.</strong>
+      <p>14 places hold sample text or photos; each page shows how many. Publishing waits until they're replaced.</p>
+      <div><button class="btn" type="button">Bring back my previous site</button></div>
+    </div>
+    <p class="note">Bringing it back asks first too, and puts back exactly the files the template changed. Edits made since then on those pages are replaced, and the question says so.</p>
+  </section>
+
+  <section aria-labelledby="kbd-h">
+    <h2 id="kbd-h">Keyboard, screen readers, phone</h2>
+    <div class="scroll"><table>
+      <thead><tr><th scope="col">Where</th><th scope="col">How it works</th></tr></thead>
+      <tbody>
+        <tr><td>Gallery</td><td>Each template is one button; <kbd>Tab</kbd> moves between them, <kbd>Enter</kbd> opens the preview. Focus moves to the template's name heading.</td></tr>
+        <tr><td>Page list</td><td>Buttons with <code>aria-current</code> on the page shown; the preview's title says which page and width (“Harbour, About, phone width”).</td></tr>
+        <tr><td>Widths</td><td>Toggle buttons (<code>aria-pressed</code>), 44 px tall. On a phone the preview starts at phone width.</td></tr>
+        <tr><td>Preview</td><td>A sandboxed frame with no scripts, scaled to fit, rendered exactly as publishing renders it. Photos come from inside the template file.</td></tr>
+        <tr><td>Confirm</td><td>A modal dialog (<code>alertdialog</code>), focus on Cancel, Escape cancels. Replace is red because it replaces.</td></tr>
+        <tr><td>Result</td><td>Announced on the Pages screen; focus goes to its heading.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section aria-labelledby="why-h">
+    <h2 id="why-h">Why A, and why the confirm step looks like this</h2>
+    <ul>
+      <li><strong>Room for the preview.</strong> The decision is visual; a desktop page squeezed into a dialog misrepresents the template (direction B's main problem).</li>
+      <li><strong>Error prevention plus undo</strong> (Nielsen #5 and #3). Replacing a site is rare and big, so it asks once with specifics, and it can be undone. A typed confirmation would add friction without adding safety, because undo exists.</li>
+      <li><strong>“Replaced” next to “Kept”.</strong> People mostly worry about what they'd lose; naming what survives (photos, layouts, the live site) answers that before it's asked.</li>
+      <li><strong>Nothing goes live.</strong> Applying changes the draft site only; the live site changes when you publish, same as every other change.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+$$('.switch button').forEach(b => b.addEventListener('click', () => {
+  $$('.switch button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  $$('[data-show]').forEach(d => d.hidden = d.dataset.show !== b.dataset.dir);
+}));
+$$('[data-open]').forEach(b => b.addEventListener('click', () => {
+  $('#tname').textContent = b.dataset.open;
+  $('#gallery').hidden = true; $('#detail').hidden = false; $('#tname').focus?.();
+}));
+$('#back').addEventListener('click', () => { $('#detail').hidden = true; $('#gallery').hidden = false; $('[data-open]').focus(); });
+$('#use').addEventListener('click', () => { $('#dialog').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); $('#dialog .btn').focus({ preventScroll: true }); });
+const widths = { desktop: '100%', tablet: '520px', phone: '300px' };
+$$('.seg button').forEach(b => b.addEventListener('click', () => {
+  $$('.seg button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  const f = $('#frame'); f.className = 'frame ' + b.dataset.w; f.style.maxWidth = widths[b.dataset.w];
+}));
+$$('.pagelist button').forEach(b => b.addEventListener('click', () => {
+  $$('.pagelist button').forEach(x => x.removeAttribute('aria-current'));
+  b.setAttribute('aria-current', 'page');
+  $('#ptitle').innerHTML = '<span class="pl">' + (b.textContent === 'Home' ? 'Design for the waterfront' : b.textContent) + '</span>';
+}));
+</script>

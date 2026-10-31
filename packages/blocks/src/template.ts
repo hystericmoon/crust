@@ -215,6 +215,24 @@ function decodeBase64(data: string): Uint8Array | null {
 }
 
 /**
+ * One photo from a template file: a real JPG, PNG or WebP within the
+ * library's limits, with alt text. Returns the cleaned photo, or why not.
+ */
+export function readTemplatePhoto(m: unknown): TemplatePhoto | string {
+  const file = isObject(m) && typeof m.file === "string" && PHOTO_FILE.test(m.file) ? m.file : null;
+  const label = file ? `The photo ${file}` : "A photo in the template";
+  const alt = isObject(m) ? text(m.alt, mediaLimits.alt)?.trim() : null;
+  const bytes = isObject(m) && typeof m.data === "string" ? decodeBase64(m.data) : null;
+  const sniffed = bytes ? sniffImage(bytes) : null;
+  if (!file || !bytes || !sniffed) return `${label} is damaged or isn't a JPG, PNG or WebP.`;
+  if (file.slice(file.lastIndexOf(".") + 1) !== sniffed.ext) return `${label} isn't the kind of image its name says.`;
+  if (bytes.length > mediaLimits.uploadBytes) return `${label} is bigger than ${mediaLimits.uploadBytes / 1024 / 1024} MB.`;
+  if (sniffed.width > MAX_EDGE || sniffed.height > MAX_EDGE) return `${label} is bigger than ${MAX_EDGE} pixels.`;
+  if (!alt) return `${label} needs a description (alt text).`;
+  return { file, alt, width: sniffed.width, height: sniffed.height, data: (m as { data: string }).data };
+}
+
+/**
  * Reads a template file's text. `blocks` is the builder's block config
  * (`config.components`). The whole file is refused on any problem, with
  * every reason listed: a template either arrives complete or not at all.
@@ -353,18 +371,10 @@ export function readTemplate(fileText: string, blocks: BlockSpecs): TemplateChec
   const rawMedia = Array.isArray(raw.media) ? raw.media : [];
   if (rawMedia.length > templateLimits.photos) problems.push(`The template has more than ${templateLimits.photos} photos.`);
   for (const m of rawMedia.slice(0, templateLimits.photos)) {
-    const file = isObject(m) && typeof m.file === "string" && PHOTO_FILE.test(m.file) ? m.file : null;
-    const label = file ? `The photo ${file}` : "A photo in the template";
-    const alt = isObject(m) ? text(m.alt, mediaLimits.alt)?.trim() : null;
-    const bytes = isObject(m) && typeof m.data === "string" ? decodeBase64(m.data) : null;
-    const sniffed = bytes ? sniffImage(bytes) : null;
-    if (!file || !bytes || !sniffed) problems.push(`${label} is damaged or isn't a JPG, PNG or WebP.`);
-    else if (file.slice(file.lastIndexOf(".") + 1) !== sniffed.ext) problems.push(`${label} isn't the kind of image its name says.`);
-    else if (bytes.length > mediaLimits.uploadBytes) problems.push(`${label} is bigger than ${mediaLimits.uploadBytes / 1024 / 1024} MB.`);
-    else if (sniffed.width > MAX_EDGE || sniffed.height > MAX_EDGE) problems.push(`${label} is bigger than ${MAX_EDGE} pixels.`);
-    else if (!alt) problems.push(`${label} needs a description (alt text).`);
-    else if (media.some((x) => x.file === file)) problems.push(`${label} is in the template twice.`);
-    else media.push({ file, alt, width: sniffed.width, height: sniffed.height, data: m.data as string });
+    const read = readTemplatePhoto(m);
+    if (typeof read === "string") problems.push(read);
+    else if (media.some((x) => x.file === read.file)) problems.push(`The photo ${read.file} is in the template twice.`);
+    else media.push(read);
   }
 
   if (header && footer && tokens) {
