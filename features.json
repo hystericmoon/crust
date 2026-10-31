@@ -381,7 +381,7 @@
       "passes": true,
       "needs_review": true,
       "reviewed": true,
-      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. The published blog and feed work well. The admin list is plainer than the page list, and its links look like default browser links. Fixes: DECISIONS.md, Proposals, 'From the review'."
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. The published blog and feed work well. The admin list is plainer than the page list, and its links look like default browser links. Found later while checking the templates: post body text sits against the screen edge (proposal 3). Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F036",

@@ -10,8 +10,9 @@ Features Claude suggests. They are not work until the owner adds them to
 
 - **From the review (2026-10-31).** Claude reviewed the 48 features
   waiting for review, at the owner's request (verdicts in features.json,
-  `review_note`; 45 work as described with small notes, 3 have a real
-  problem). Fixes, most important first (S small, M medium):
+  `review_note`: 46 work as described, most with small notes; F005 and
+  F048 have a real problem, and checking the templates found one more
+  in F035, blog post margins). Fixes, most important first (S small, M medium):
   1. *Keyboard gap in the builder (F005, WCAG 2.1.1/2.4.1):* the
      "Blocks / Outline" switch can't be reached with the keyboard; add a
      "Skip to page" link too (33 Tab presses to the first block). S
