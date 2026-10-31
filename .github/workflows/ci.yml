@@ -97,3 +97,37 @@ jobs:
 
       - name: Performance (Lighthouse 95 or more)
         run: npm run check:perf
+
+  template-check:
+    # F047: every template in templates/ (or the sample site) must pass the
+    # template quality check. The readable report is a download on the run.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Chromium for the checks
+        run: npx playwright-core install --with-deps chromium
+
+      - name: Template quality check
+        run: npm run check:template
+
+      - name: Upload the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: template-check-report
+          path: dist/template-check/index.html
+          retention-days: 30

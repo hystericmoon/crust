@@ -69,6 +69,15 @@ describe("CI", () => {
     expect(runs).toContain("npm run check:perf");
   });
 
+  it("runs the template quality check and keeps its report (F047)", () => {
+    const ci = parse(readFileSync(".github/workflows/ci.yml", "utf8"));
+    const steps: Step[] = ci.jobs["template-check"].steps;
+    expect(steps.map((s) => s.run)).toContain("npm run check:template");
+    const upload = steps.find((s) => s.name === "Upload the report") as Step & { with: Record<string, string> };
+    expect(upload.if).toBe("always()");
+    expect(upload.with.path).toBe("dist/template-check/index.html");
+  });
+
   it("lints the workflow files", () => {
     const ci = parse(readFileSync(".github/workflows/ci.yml", "utf8"));
     const runs = ci.jobs["workflow-lint"].steps.map((s: Step) => s.run);

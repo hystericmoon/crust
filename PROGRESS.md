@@ -28,9 +28,17 @@ to "Log".
   F045–F049, docs/milestone-5.md. **F045 Save a site as a template
   built** (branch `f045-template-file`, draft PR #33, not merged). **F046
   Placeholder content built** (branch `f046-placeholders`, draft PR #34,
-  stacked on #33). Next: F047 Template quality check. Sessions now hand
+  stacked on #33). **F047 Template quality check built** (branch
+  `f047-template-check`, draft PR #35, stacked on #34). Next: F048 Start
+  from a template (design snapshot first). Sessions now hand
   over through HANDOVER.md (owner's rule, 2026-10-30).
 - **Waiting on the owner** (all on crust-admin.pages.dev unless noted):
+  - **F047:** nothing to click in the builder; it's a check that runs on
+    every pull request. On PR #35, open **Checks** → **CI** → the
+    **template-check** job: its summary lists each check, and the
+    **template-check-report** download (bottom of the run page) is the
+    readable report. Today it checks the sample site; with F049 it will
+    check the starter template.
   - **F046:** on PR #34's preview link, open the home page in the
     builder, select the big heading, open its **Advanced** tab and tick
     **Replace me → Text**. A dashed amber outline and a label appear,
@@ -445,3 +453,10 @@ to "Log".
   Pages screen, Publish panel holds publishing, crust-publish refuses
   pages with `data-crust-placeholder`. 24 new tests (720 JS total).
   HANDOVER.md added at the owner's request; CLAUDE.md points to it.
+- 2026-10-30 — F047 done (PR #35, stacked on #34): `npm run
+  check:template` + CI job `template-check`. Unpacks a template into a
+  content folder, runs the real render + crust-publish, axe at 3 widths
+  on pages and saved layouts, Lighthouse on Home, contrast per section
+  style, unmarked filler check; report at dist/template-check/index.html
+  (CI download). check:a11y/check:perf share scripts/site-audit.mjs. 21
+  new tests (741 JS total). New session took over from the F046 one.

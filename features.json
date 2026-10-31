@@ -468,7 +468,7 @@
       "description": "One command (npm run check:template) and a CI job that a template must pass: axe at three widths on every page, contrast in every section style, one h1 and heading order, alt text, Lighthouse >= 95 on the home page, every layout renders, no leftover placeholders. Writes a readable report page. Added by the owner (approved Milestone 5, 2026-10-30).",
       "depends_on": ["F045",  "F046"],
       "done_check": "npm test -- template-check && npm run check:template",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

@@ -150,6 +150,42 @@ Features Claude suggests. They are not work until the owner adds them to
   rules, the state and the next step; CLAUDE.md's session protocol now
   starts and ends with it. It reaches main with the next merge.
 
+## 2026-10-30 — F047 Template quality check (Claude, reversible)
+
+- **One command, many templates.** `npm run check:template` checks every
+  `templates/*.crust` in the repo (where F049's starter template will
+  live), or given files (`npm run check:template -- my.crust`). With no
+  templates yet it packs the sample site in `content/` the same way Site
+  settings → Template does, so the CI job always checks something real.
+- **It reuses the real publish path, not a copy of it.** The template is
+  unpacked into a content folder and goes through the same renderer and
+  crust-publish as a real publish, so "one h1, heading order, alt text,
+  titles" are exactly the rules that would stop a publish. axe and
+  Lighthouse run through one shared helper (`scripts/site-audit.mjs`) that
+  `check:a11y` and `check:perf` now use too.
+- **Replace me marks are expected, unmarked filler fails.** A template is
+  supposed to have marks (that's how a buyer learns what to replace), so
+  the check lists them as a note and publishes with them taken off, the
+  way a buyer's site would look once filled in. What fails is filler
+  nobody marked: lorem ipsum, TODO/TBD, "[Your …]", `{{…}}`, and stand-in
+  photo services (picsum, placehold.co…), anywhere on pages, posts,
+  linked sections, header, footer, titles. Marked fields and saved
+  layouts are skipped (layouts are filled in after inserting). "Nothing
+  marked" is a note, not a failure: a template made of real content is
+  fine.
+- **Contrast is checked per section style as the renderer resolves it:**
+  text, muted text, links and button label at 4.5:1 (WCAG 1.4.3), solid
+  and inverse buttons against their section at 3:1 (1.4.11). Soft buttons
+  are a deliberate low-contrast tint, identified by their label, so they
+  have no 3:1 edge rule.
+- **Three widths:** desktop 1280, tablet 768, phone 375, on every page and
+  every saved layout. Serious and critical axe findings fail; minor ones
+  are counted as notes.
+- **The report** is one HTML page (`dist/template-check/index.html`), a
+  card per template and a row per check, each with a one-line "why it
+  matters". In CI it's the **template-check-report** download on the run,
+  and the failures are on the job's summary page.
+
 ## 2026-10-30 — F046 Placeholder content (Claude, reversible)
 
 - **The mark is per field, on the block: `placeholder: ["title", "imageSrc"]`.**
