@@ -24,6 +24,11 @@ to "Log".
   F043 are direction A of their design snapshots; the owner can still
   pick B (a rework item, only if he asks). Buying the domain is in
   BLOCKED.md.
+- **Milestone 5 "Templates" merged to main (2026-10-31, owner: "Merge
+  them all in order"):** F045–F051, PRs #33–#39, now on
+  https://crust-admin.pages.dev. Start from a template offers Harbour,
+  Signal and Corner. Not published: the live site changes only when the
+  owner presses Publish. F045–F051 still need `reviewed: true`.
 - **Milestone 5 "Templates" approved (2026-10-30, owner: "Approve"):**
   F045–F049, docs/milestone-5.md. **F045 Save a site as a template
   built** (branch `f045-template-file`, draft PR #33, not merged). **F046
@@ -500,3 +505,10 @@ to "Log".
   the owner's review and merge. Noticed: the "highlight" link style
   reads as a grey-beige block on yellow cards (Crust's shared style, not
   this template); flagged to the owner.
+- 2026-10-31 — Milestone 5 merged to main in order (#33 → #39), owner:
+  "Merge them all in order". All seven were green before merging.
+- 2026-10-31 — Owner: Harbour should be as good as the YOOtheme Fuse demo
+  at minimal; added F052 "Harbour, premium-minimal rework" (CC0 photos,
+  best ones; design snapshot first). Two small proposals (header over
+  hero photo, latest posts block) and the highlight-link fix are in
+  DECISIONS → Proposals. Owner asked for a new session.
