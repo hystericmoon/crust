@@ -3,8 +3,7 @@
 All public domain (CC0 1.0), from Wikimedia Commons, where each file's
 licence is shown on its page. Files marked "Unsplash, pre-2017" were first
 published on Unsplash while Unsplash released photos as CC0 (before June
-2017); a CC0 dedication can't be withdrawn. Today's Unsplash and Pexels
-licences are not CC0 and are not used.
+2017); a CC0 dedication can't be withdrawn.
 
 Cropped and resized here (at most 1920 px), metadata stripped.
 

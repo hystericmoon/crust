@@ -167,10 +167,20 @@ Features Claude suggests. They are not work until the owner adds them to
   stairs, light and shadow, lakes). Commons shows a checked licence per
   file, which makes the credits list auditable. Five are pre-June-2017
   Unsplash uploads that were CC0 then; the dedication can't be
-  withdrawn, so they're safe to resell. Today's Unsplash/Pexels licences
-  are not CC0 and are not used (owner asked about Pexels: it moved from
-  CC0 to its own licence in 2017). Credits:
+  withdrawn, so they're safe to resell. Credits:
   `scripts/starter-templates/photos/CREDITS.md`.
+- **Pexels allowed (owner, with the licence text):** the Pexels License
+  lets photos be used in "a template you sell"; it only forbids selling
+  the photos on their own. Pexels photos are credited as "Pexels
+  License", not CC0. pexels.com refuses this environment's requests; its
+  API needs a free key only the owner can create. Unsplash stays out
+  (its licence forbids compiling photos into a competing service, and
+  the owner hasn't asked).
+- **More CC0 sources (owner's list):** NegativeSpace and Skitterphoto
+  (both plain CC0, licence pages checked) are searched too. StockSnap
+  refuses automated requests; getting past that would mean posing as a
+  browser, so it's only used for photos the owner links directly.
+  Smithsonian/Met/Cleveland aren't reachable and are mostly artworks.
 - **Left out:** photos of artworks or installations (the artwork keeps
   its own copyright), architecture models, recognisable people.
 - **Blocked hosts:** StockSnap, Flickr images, rawpixel, pxhere and
