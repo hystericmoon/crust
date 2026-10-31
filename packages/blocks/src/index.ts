@@ -195,3 +195,16 @@ export {
   photoType,
 } from "./template";
 export type { Template, TemplatePage, TemplatePhoto, TemplateSource, TemplateCheck } from "./template";
+export {
+  blockName,
+  cleanPlaceholder,
+  clearEditedPlaceholders,
+  countPlaceholders,
+  findPlaceholders,
+  markableFields,
+  placeholderBadge,
+  placeholderLabel,
+  placeholderSummary,
+  unmarkPlaceholder,
+} from "./placeholders";
+export type { MarkableField, Placeholder, PlaceholderKind } from "./placeholders";

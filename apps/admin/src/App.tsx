@@ -1,4 +1,4 @@
-import { checkPost, config, defaultBlog, migrateChrome, tokensToCss, type BlogSettings, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
+import { checkPost, config, countPlaceholders, defaultBlog, migrateChrome, tokensToCss, type BlogSettings, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
 import { relinkPage } from "@crust/blocks/links";
 import { Puck, useGetPuck, type Data } from "@puckeditor/core";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
@@ -47,6 +47,8 @@ import { SectionEditor } from "./linked/SectionEditor";
 export { SIGN_OUT_URL, SignOutLink } from "./sign-out";
 import { withItemEditing } from "./items/items";
 import { withResponsiveEditing } from "./responsive/fields";
+import { withPlaceholderEditing } from "./placeholders/fields";
+import { PlaceholderChecklist, PlaceholderWatcher } from "./placeholders/Checklist";
 import { withSectionEditing } from "./sections/editing";
 import { withSettingsTabs } from "./tabs/tabs";
 import { SiteStyleContext, type SiteStyle } from "./sections/site-style";
@@ -65,8 +67,8 @@ import { prefersQuickEdit } from "./quick/quick";
 import { fromPuckData as postFromPuckData, loadPost, saveLocalPost, toPuckData as postToPuckData } from "./posts/store";
 
 const site = siteJson as Site;
-/** The builder's blocks: rich text in Text blocks (F042), image fields with the media library (F034), visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
-const editorConfig = withSiteChrome(withSettingsTabs(withResponsiveEditing(withSectionEditing(withItemEditing(withMediaFields(withRichText(withLinkedSectionFields(config))))))));
+/** The builder's blocks: "Replace me" marks (F046), rich text in Text blocks (F042), image fields with the media library (F034), visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
+const editorConfig = withSiteChrome(withSettingsTabs(withPlaceholderEditing(withResponsiveEditing(withSectionEditing(withItemEditing(withMediaFields(withRichText(withLinkedSectionFields(config)))))))));
 /** Posts (F035): the same blocks, with the post's details and top. */
 const postEditorConfig = withPostEditing(editorConfig);
 /** Pages also get search and sharing settings (F036). */
@@ -357,7 +359,7 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
 
   useEffect(() => {
     if (githubOn === null) return;
-    const bundled = bundledPages().map((p) => ({ path: p.path, title: p.title, lastEdited: null }));
+    const bundled = bundledPages().map((p) => ({ path: p.path, title: p.title, lastEdited: null, ...(countPlaceholders(p.puck.content) ? { placeholders: countPlaceholders(p.puck.content) } : {}) }));
     if (!githubOn) {
       setRows(mergePageRows(bundled, localDrafts()));
       return;
@@ -471,6 +473,7 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
         changes={changes}
         titles={new Map((rows ?? []).map((r) => [r.path, r.title]))}
         drafts={drafts.map((r) => ({ path: r.path, title: r.title }))}
+        placeholders={(rows ?? []).filter((r) => r.placeholders).map((r) => ({ path: r.path, title: r.title, count: r.placeholders! }))}
         onSaveDrafts={saveAllDrafts}
         onFinished={reload}
       />
@@ -484,6 +487,7 @@ function BuilderRoot({ children }: { children: ReactNode }) {
     <KeyboardRoot>
       {children}
       <LayoutGallery />
+      <PlaceholderWatcher />
     </KeyboardRoot>
   );
 }
@@ -558,6 +562,7 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
                   Quick edit
                 </a>
                 <LayoutsButton />
+                <PlaceholderChecklist />
                 <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
                   Keyboard
                 </button>
@@ -650,6 +655,7 @@ function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boo
                   Posts
                 </a>
                 <LayoutsButton />
+                <PlaceholderChecklist />
                 <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
                   Keyboard
                 </button>

@@ -8,6 +8,7 @@ import type { Page, SavedLayout, Site } from "@crust/blocks/content";
 import { countLinks, relinkPage } from "@crust/blocks/links";
 import { isBlogPath, isSearchPath } from "@crust/blocks/posts";
 import { parseLinkedSection, sectionFileFor, sectionIdForFile } from "@crust/blocks/linked-sections";
+import { countPlaceholders } from "@crust/blocks/placeholders";
 import { AccessError, verifyAccessJwt, type AccessUser } from "./access";
 import { readSections } from "./sections";
 import {
@@ -170,6 +171,8 @@ export interface PageSummary {
   title: string;
   file: string;
   lastEdited: string | null;
+  /** F046: sample content from a template still to replace; left out when none. */
+  placeholders?: number;
 }
 
 /** GET /api/pages: every page with its title and when it last changed (F007). */
@@ -185,7 +188,8 @@ export async function handlePages(request: Request, env: Env, fetchFn: typeof fe
         if (!text) return null;
         try {
           const page = JSON.parse(text) as Page;
-          return { path: page.path, title: page.title, file: f.path, lastEdited: await lastCommitDate(cfg, f.path, fetchFn) };
+          const placeholders = countPlaceholders(page.puck?.content);
+          return { path: page.path, title: page.title, file: f.path, lastEdited: await lastCommitDate(cfg, f.path, fetchFn), ...(placeholders ? { placeholders } : {}) };
         } catch {
           return null;
         }

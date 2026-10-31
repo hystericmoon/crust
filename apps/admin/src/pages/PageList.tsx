@@ -1,4 +1,4 @@
-import type { Page } from "@crust/blocks";
+import { placeholderSummary, type Page } from "@crust/blocks";
 import type { DeletedPage } from "../api-client";
 import { SignOutLink } from "../sign-out";
 import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
@@ -239,6 +239,7 @@ export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCre
                         <span className="pg-dot" aria-hidden="true" />
                         {status.label}
                       </span>
+                      {row.placeholders ? <span className="pg-replace">{placeholderSummary(row.placeholders)}</span> : null}
                     </td>
                     <td className="pg-path" data-label="Address">
                       {row.path}

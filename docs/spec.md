@@ -197,6 +197,14 @@ is a line break. Pages saved before F042 hold a plain string (paragraphs
 split by blank lines); it reads the same and becomes rich text the next
 time the page is opened and saved (`migrateRichText`).
 
+Any block with words or photos may carry `placeholder` (optional, added
+with F046): the fields still holding a template's sample content, e.g.
+`["title", "imageSrc"]` (which fields a block can mark: `markableFields`).
+The builder outlines marked blocks and lists them under "To replace";
+editing a marked word or photo field drops its mark, lists (`items`,
+`images`, `logos`) are cleared with "Keep as is". Marked blocks render
+with `data-crust-placeholder`, and publishing stops while any page has one.
+
 `content/sections/<id>.json` (optional, added with F043): a linked section,
 shown on many pages and edited once.
 ```json

@@ -458,7 +458,7 @@
       "description": "Text and photos in a template can be marked 'replace me'. The builder outlines them and shows a checklist of what's left; publishing stops with a plain-language list while any remain. Added by the owner (approved Milestone 5, 2026-10-30).",
       "depends_on": ["F045",  "F002"],
       "done_check": "npm test -- placeholders && npm run build && cargo test",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

@@ -4,6 +4,14 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Sample content to replace (F046):** a template's sample words and
+  photos can be marked "Replace me" (any block's **Advanced** tab). In
+  the builder they get a dashed outline and a label, and a **To replace**
+  button lists them, with **Show** and **Keep as is**. Changing the words
+  or the photo clears the mark by itself. The Pages screen shows how many
+  are left on each page, and publishing waits until none are left, so a
+  first publish never shows a template's sample text or photos.
+
 - **Save a site as a template (F045):** Site settings → **Template**.
   Give it a name and a short description, press **Save as template**,
   and the whole site downloads as one .crust file: pages, linked

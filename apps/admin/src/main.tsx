@@ -10,6 +10,7 @@ import "./settings/template-group.css";
 import "./keyboard/keyboard.css";
 import "./sections/sections.css";
 import "./layouts/layouts.css";
+import "./placeholders/placeholders.css";
 import "./responsive/responsive.css";
 import "./tabs/tabs.css";
 import "./items/items.css";

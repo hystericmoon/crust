@@ -44,6 +44,8 @@ export interface PageSummary {
   title: string;
   file: string;
   lastEdited: string | null;
+  /** F046: sample content still to replace (missing from older servers). */
+  placeholders?: number;
 }
 export const listPages = () => call<{ pages: PageSummary[] }>("/api/pages");
 export const getPage = (path: string) => call<{ page: Page }>(`/api/page?path=${encodeURIComponent(path)}`);

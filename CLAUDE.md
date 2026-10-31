@@ -13,7 +13,8 @@ reasoning on UX decisions.
 
 ## Session protocol (one feature per session)
 
-1. Read `PROGRESS.md`, `features.json`, and `git log --oneline -20`.
+1. Read `HANDOVER.md` first (current state, next step, how sessions hand
+   over), then `PROGRESS.md`, `features.json`, and `git log --oneline -20`.
 2. Pick the first feature with `"passes": false` whose `depends_on` all pass
    and that is not listed in `BLOCKED.md`.
 3. Build it, with tests.
@@ -23,6 +24,10 @@ reasoning on UX decisions.
    the owner should test) and `CHANGELOG.md`.
 6. Visual/UX items also have `needs_review: true`; only the owner sets
    `reviewed: true` after testing the preview link.
+7. Update `HANDOVER.md`, then hand over: one session works at a time. When
+   a feature is done or the session is getting full, start a new session
+   pointing at `HANDOVER.md`, and the new session archives the old one
+   (see `HANDOVER.md`, "How sessions work").
 
 ## Decision policy
 

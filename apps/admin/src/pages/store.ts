@@ -4,7 +4,7 @@
  *  - otherwise the pages bundled into the app at build time (content/pages);
  *  - plus drafts kept in this browser, which win until they're saved to GitHub.
  */
-import { migrateRichText, type Page } from "@crust/blocks";
+import { countPlaceholders, migrateRichText, type Page } from "@crust/blocks";
 import type { Data } from "@puckeditor/core";
 import { seoFromRoot, seoToRoot } from "../seo/fields";
 
@@ -27,6 +27,8 @@ export interface PageRow {
   inRepo: boolean;
   /** Saved to GitHub but not live yet (F016). */
   unpublished?: "new" | "edited";
+  /** F046: how many template placeholders are left to replace. */
+  placeholders?: number;
 }
 
 const PREFIX = "crust:page:";
@@ -127,13 +129,14 @@ export function moveLocalDraft(from: string, to: string): boolean {
  * with browser drafts; a draft not yet on GitHub is flagged.
  */
 export function mergePageRows(
-  remote: { path: string; title: string; lastEdited: string | null }[],
+  remote: { path: string; title: string; lastEdited: string | null; placeholders?: number }[],
   drafts: LocalDraft[],
 ): PageRow[] {
   const rows = new Map<string, PageRow>();
   for (const r of remote) rows.set(r.path, { ...r, localChanges: false, inRepo: true });
   for (const d of drafts) {
     const existing = rows.get(d.page.path);
+    const placeholders = countPlaceholders(d.page.puck?.content);
     const newer = !existing?.lastEdited || d.updatedAt > existing.lastEdited;
     rows.set(d.page.path, {
       path: d.page.path,
@@ -141,6 +144,8 @@ export function mergePageRows(
       lastEdited: newer ? d.updatedAt : existing!.lastEdited,
       localChanges: !d.savedToGitHub,
       inRepo: existing?.inRepo ?? false,
+      // The draft is what gets saved before publishing, so its own count wins.
+      ...(placeholders ? { placeholders } : {}),
     });
   }
   return [...rows.values()].sort((a, b) => (a.path === "/" ? -1 : b.path === "/" ? 1 : a.path.localeCompare(b.path)));

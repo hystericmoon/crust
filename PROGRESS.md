@@ -26,9 +26,18 @@ to "Log".
   BLOCKED.md.
 - **Milestone 5 "Templates" approved (2026-10-30, owner: "Approve"):**
   F045–F049, docs/milestone-5.md. **F045 Save a site as a template
-  built** (branch `f045-template-file`, draft PR #33, not merged). Next: F046
-  Placeholder content.
+  built** (branch `f045-template-file`, draft PR #33, not merged). **F046
+  Placeholder content built** (branch `f046-placeholders`, draft PR #34,
+  stacked on #33). Next: F047 Template quality check. Sessions now hand
+  over through HANDOVER.md (owner's rule, 2026-10-30).
 - **Waiting on the owner** (all on crust-admin.pages.dev unless noted):
+  - **F046:** on PR #34's preview link, open the home page in the
+    builder, select the big heading, open its **Advanced** tab and tick
+    **Replace me → Text**. A dashed amber outline and a label appear,
+    and **To replace 1** shows in the top bar. Open it, try **Show**,
+    then change the heading's words: the mark goes away by itself. Back
+    on the Pages screen, a page with marks says "1 thing to replace" and
+    the Publish panel explains why it's waiting.
   - **F045:** on the PR's preview link, open Site settings → Template
     (near the bottom). Add a description, press **Save as template**: a
     .crust file downloads, and the screen lists what's in it. The preview
@@ -429,3 +438,10 @@ to "Log".
   browser (apps/admin/src/templates/collect.ts), Site settings → Template.
   The file is read back before it downloads. 15 new tests (template-file).
   done_check passes.
+- 2026-10-30 — F046 done (PR #34, stacked on #33): "Replace me" marks
+  per field on blocks (`placeholder`), dashed outline + label on the
+  canvas, "To replace" list in the builder (Show / Keep as is), marks
+  clear when the field is edited (lists need Keep as is), counts on the
+  Pages screen, Publish panel holds publishing, crust-publish refuses
+  pages with `data-crust-placeholder`. 24 new tests (720 JS total).
+  HANDOVER.md added at the owner's request; CLAUDE.md points to it.
