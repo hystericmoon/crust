@@ -36,10 +36,10 @@ any account, and publish to the host they already have.
   layer. F054 puts a "content store" in front of it with two versions:
   GitHub (the owner's web admin, unchanged) and a local folder (the app).
   Every existing API test runs against both.
-- **History on the computer.** Each site folder is a Git repository
-  managed by the app (gitoxide, MIT/Apache-2.0), so "every save is kept"
-  and "Bring back my previous site" (F048) work the same as on the web.
-  People never see Git.
+- **History on the computer.** Each site folder keeps its own history in
+  a hidden `.crust` folder (F054: every version of every file, named the
+  way Git names them), so "every save is kept" and "Bring back my
+  previous site" (F048) work the same as on the web. People never see it.
 - **Publishing on the computer.** The renderer (React, already runs in a
   browser), `crust-publish` (Rust, becomes a library the app calls) and
   Pagefind (Rust library) all run inside the app. No Node, no server.

@@ -18,8 +18,8 @@ import {
 } from "@crust/blocks/linked-sections";
 import { POSTS_FOLDER, parsePost, postPath, slugForFile } from "@crust/blocks/posts";
 import { richTextProblems } from "@crust/blocks/rich-text";
-import { fail, gate, githubConfig, githubFailure, json, readBody, readPages, type Env } from "./api";
-import { commitFiles, listFolder, readFile, type GitHubConfig } from "./github";
+import { fail, gate, keptIn, githubFailure, repoFor, json, readBody, readPages, type Env } from "./api";
+import { commitFiles, listFolder, readFile, type Repo } from "./github";
 
 const serialize = (value: LinkedSectionFile) => `${JSON.stringify(value, null, 2)}\n`;
 
@@ -29,7 +29,7 @@ export interface SectionUse {
 }
 
 /** Every linked section, by name. Unreadable files are skipped. */
-export async function readSections(cfg: GitHubConfig, fetchFn: typeof fetch): Promise<LinkedSectionFile[]> {
+export async function readSections(cfg: Repo, fetchFn: typeof fetch): Promise<LinkedSectionFile[]> {
   const files = await listFolder(cfg, SECTIONS_FOLDER, fetchFn);
   const sections = await Promise.all(
     files.map(async (f) => {
@@ -41,7 +41,7 @@ export async function readSections(cfg: GitHubConfig, fetchFn: typeof fetch): Pr
 }
 
 /** Which pages and posts use each linked section. */
-async function readUsage(cfg: GitHubConfig, fetchFn: typeof fetch): Promise<Record<string, SectionUse[]>> {
+async function readUsage(cfg: Repo, fetchFn: typeof fetch): Promise<Record<string, SectionUse[]>> {
   const usage: Record<string, SectionUse[]> = {};
   const add = (ids: Set<string>, use: SectionUse) => {
     for (const id of ids) (usage[id] ??= []).push(use);
@@ -68,7 +68,7 @@ export async function handleSections(request: Request, env: Env, fetchFn: typeof
   const write = request.method === "POST";
   const user = await gate(request, env, fetchFn, write);
   if (user instanceof Response) return user;
-  const cfg = githubConfig(env);
+  const cfg = repoFor(env);
   try {
     if (!write) {
       const [sections, usage] = await Promise.all([readSections(cfg, fetchFn), readUsage(cfg, fetchFn)]);
@@ -94,7 +94,7 @@ export async function handleSections(request: Request, env: Env, fetchFn: typeof
 
     if (!isValidSectionId(id)) return fail(400, "That isn't one of your linked sections.");
     const current = parseLinkedSection(await readFile(cfg, sectionFileFor(id), fetchFn), id);
-    if (!current) return fail(404, "That linked section isn't on GitHub any more. It may have been deleted.");
+    if (!current) return fail(404, `That linked section isn't ${keptIn(env)} any more. It may have been deleted.`);
 
     if (action === "update") {
       const problems = contentProblems(content);

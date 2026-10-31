@@ -163,6 +163,25 @@ Features Claude suggests. They are not work until the owner adds them to
   proposal above), and anything for other users (that's M6).
 
 
+## 2026-10-31 — F054 Content store (Claude, reversible)
+
+- **Same server code, two places.** The content operations in
+  `apps/admin/server/github.ts` take a `Repo`: the GitHub settings (as
+  before) or a `ContentStore`. With a store they hand the work to it, so
+  every handler runs unchanged on a local folder. Chosen over rewriting
+  each handler: the diff stays small and the GitHub path is untouched
+  (all its tests pass as they were).
+- **LocalStore keeps its own history** in `.crust/` inside the site
+  folder (objects named like Git blobs, one JSON file per commit with the
+  full file list, HEAD, last publish), instead of a real Git repository
+  through gitoxide as the M6 draft said. Simpler for the app: Rust only
+  has to read and write files (F055); no Git library to bundle. A real
+  Git repository can still be added later if power users want one.
+- With a store there is no Cloudflare Access (the app is the person's
+  own); writes still need the builder's own header. Publishing answers
+  "not available yet" until F056. Messages say "in this site" instead of
+  "on GitHub".
+
 ## 2026-10-31 — Milestones 6 and 7 written up (Claude, reversible)
 
 - docs/milestone-6.md (F054–F062) and docs/milestone-7.md (F063–F068),

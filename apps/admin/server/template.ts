@@ -13,7 +13,7 @@ import { MEDIA_FOLDER, MEDIA_INDEX, mediaLimits, parseMediaIndex, type MediaItem
 import { BLOG_FILE, POSTS_FOLDER, checkBlog, checkPost, postFileFor, type BlogSettings, type Post } from "@crust/blocks/posts";
 import { readTemplatePhoto, type TemplatePage } from "@crust/blocks/template";
 import type { Page, SavedLayout, Site } from "@crust/blocks";
-import { fail, gate, githubConfig, githubFailure, json, type Env } from "./api";
+import { fail, gate, githubFailure, repoFor, json, type Env } from "./api";
 import {
   LAYOUTS_FOLDER,
   REDIRECTS_FILE,
@@ -27,7 +27,7 @@ import {
   parseRedirects,
   serialize,
 } from "./content";
-import { commitChanges, commitFiles, filesAt, listFolder, readFile, recentCommits, type FileChange, type GitHubConfig } from "./github";
+import { commitChanges, commitFiles, filesAt, listFolder, readFile, recentCommits, type FileChange, type Repo } from "./github";
 
 /** The parts of a template the apply step writes; photos were sent before. */
 export interface TemplateContent {
@@ -170,7 +170,7 @@ function applyMessage(t: TemplateContent, current: { pageFiles: string[]; sectio
 const jsonFiles = (files: { path: string }[], folder: string) => files.map((f) => f.path).filter((p) => p.startsWith(`${folder}/`) && p.endsWith(".json"));
 
 /** The latest template switch still in place, or null (an undo after it, or none). */
-export async function lastApplied(cfg: GitHubConfig, fetchFn: typeof fetch): Promise<{ commit: string; name: string; date: string } | null> {
+export async function lastApplied(cfg: Repo, fetchFn: typeof fetch): Promise<{ commit: string; name: string; date: string } | null> {
   for (const c of await recentCommits(cfg, "content", fetchFn, 30)) {
     const s = subject(c.message);
     if (UNDO_SUBJECT.test(s)) return null;
@@ -191,7 +191,7 @@ export async function handleTemplate(request: Request, env: Env, fetchFn: typeof
   const write = request.method === "POST";
   const user = await gate(request, env, fetchFn, write);
   if (user instanceof Response) return user;
-  const cfg = githubConfig(env);
+  const cfg = repoFor(env);
 
   if (!write) {
     try {

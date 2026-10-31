@@ -49,6 +49,8 @@ import {
   readFile,
   recentCommits,
 } from "./github";
+import { StoreError } from "./local-store";
+import type { ContentStore, Repo } from "./store";
 
 export interface Env {
   GITHUB_TOKEN?: string;
@@ -56,6 +58,14 @@ export interface Env {
   CONTENT_BRANCH?: string;
   ACCESS_TEAM_DOMAIN?: string;
   ACCESS_AUD?: string;
+  /**
+   * F054: keep content in this store instead of GitHub (the desktop app's
+   * local folder). There's no Cloudflare Access then: the app runs on the
+   * person's own computer, for them alone.
+   */
+  store?: ContentStore;
+  /** Who the history says made a change, with a store. */
+  localUser?: string;
 }
 
 export const DEFAULT_REPO = "hystericmoon/crust";
@@ -77,6 +87,9 @@ export function missingSetup(env: Env): string[] {
   return missing;
 }
 
+/** Where this request's content lives (F054): the app's store, or GitHub. */
+export const repoFor = (env: Env): Repo => env.store ?? githubConfig(env);
+
 export const githubConfig = (env: Env): GitHubConfig => ({
   token: env.GITHUB_TOKEN!,
   repo: env.GITHUB_REPO || DEFAULT_REPO,
@@ -85,7 +98,7 @@ export const githubConfig = (env: Env): GitHubConfig => ({
 
 /** Shared gate. Returns the signed-in user, or the Response to send instead. */
 export async function gate(request: Request, env: Env, fetchFn: typeof fetch, write: boolean): Promise<AccessUser | Response> {
-  const missing = missingSetup(env);
+  const missing = env.store ? [] : missingSetup(env);
   if (missing.length) {
     return fail(503, `Saving to GitHub isn't switched on yet: ${missing.join(" and ")} still need setting up.`, { notConfigured: true });
   }
@@ -97,6 +110,7 @@ export async function gate(request: Request, env: Env, fetchFn: typeof fetch, wr
     const origin = request.headers.get("Origin");
     if (origin && origin !== new URL(request.url).origin) return fail(403, "This request came from another site.");
   }
+  if (env.store) return { email: env.localUser || "you" };
   try {
     return await verifyAccessJwt(
       request.headers.get("Cf-Access-Jwt-Assertion"),
@@ -118,12 +132,17 @@ export async function readBody(request: Request): Promise<unknown | Response> {
   }
 }
 
+/** Where content is kept, for messages: "on GitHub", or "in this site" with the app's store (F054). */
+export const keptIn = (env: Env) => (env.store ? "in this site" : "on GitHub");
+
 export const githubFailure = (e: unknown) =>
-  e instanceof GitHubError ? fail(e.status === 409 ? 409 : 502, e.message) : fail(502, "Couldn't reach GitHub. Try again in a minute.");
+  e instanceof StoreError
+    ? fail(e.status === 409 ? 409 : e.status === 404 ? 404 : e.status === 422 ? 422 : 500, e.message)
+    : e instanceof GitHubError ? fail(e.status === 409 ? 409 : 502, e.message) : fail(502, "Couldn't reach GitHub. Try again in a minute.");
 
 /** GET /api/status: is saving switched on, and who is signed in. */
 export async function handleStatus(request: Request, env: Env, fetchFn: typeof fetch = fetch): Promise<Response> {
-  const missing = missingSetup(env);
+  const missing = env.store ? [] : missingSetup(env);
   if (missing.length) return json(200, { ok: true, configured: false, missing });
   const user = await gate(request, env, fetchFn, false);
   if (user instanceof Response) return user;
@@ -159,7 +178,7 @@ export async function handleSave(request: Request, env: Env, fetchFn: typeof fet
   }
 
   try {
-    const result = await putFile(githubConfig(env), path, content, `${message}\n\nSaved by ${user.email}`, fetchFn);
+    const result = await putFile(repoFor(env), path, content, `${message}\n\nSaved by ${user.email}`, fetchFn);
     return json(200, { ok: true, path, commit: result.commit, url: result.url });
   } catch (e) {
     return githubFailure(e);
@@ -179,7 +198,7 @@ export interface PageSummary {
 export async function handlePages(request: Request, env: Env, fetchFn: typeof fetch = fetch): Promise<Response> {
   const user = await gate(request, env, fetchFn, false);
   if (user instanceof Response) return user;
-  const cfg = githubConfig(env);
+  const cfg = repoFor(env);
   try {
     const files = (await listFolder(cfg, "content/pages", fetchFn)).filter((f) => f.name.endsWith(".json"));
     const pages = await Promise.all(
@@ -202,7 +221,7 @@ export async function handlePages(request: Request, env: Env, fetchFn: typeof fe
 }
 
 /** Every page file with its content; unreadable files are skipped. */
-export async function readPages(cfg: GitHubConfig, fetchFn: typeof fetch): Promise<{ file: string; page: Page }[]> {
+export async function readPages(cfg: Repo, fetchFn: typeof fetch): Promise<{ file: string; page: Page }[]> {
   const files = (await listFolder(cfg, "content/pages", fetchFn)).filter((f) => f.name.endsWith(".json"));
   const pages = await Promise.all(
     files.map(async (f) => {
@@ -224,7 +243,7 @@ export async function handleLinks(request: Request, env: Env, fetchFn: typeof fe
   const path = new URL(request.url).searchParams.get("path");
   if (!isValidPagePath(path)) return fail(400, "That isn't a valid page address.");
   try {
-    const pages = (await readPages(githubConfig(env), fetchFn))
+    const pages = (await readPages(repoFor(env), fetchFn))
       .filter((p) => p.page.path !== path)
       .map((p) => ({ path: p.page.path, title: p.page.title, count: countLinks(p.page.puck, path) }))
       .filter((p) => p.count > 0)
@@ -242,7 +261,7 @@ export async function handlePage(request: Request, env: Env, fetchFn: typeof fet
   const path = new URL(request.url).searchParams.get("path");
   if (!isValidPagePath(path)) return fail(400, "That isn't a valid page address.");
   try {
-    const text = await readFile(githubConfig(env), pageFileFor(path), fetchFn);
+    const text = await readFile(repoFor(env), pageFileFor(path), fetchFn);
     if (text === null) return fail(404, `There's no page at ${path}.`);
     return json(200, { ok: true, page: JSON.parse(text) as Page });
   } catch (e) {
@@ -255,6 +274,8 @@ export async function handlePublish(request: Request, env: Env, fetchFn: typeof 
   const write = request.method === "POST";
   const user = await gate(request, env, fetchFn, write);
   if (user instanceof Response) return user;
+  // Publishing from the desktop app runs on the computer (F056), not through GitHub.
+  if (env.store) return fail(501, "Publishing from the app isn't available yet.", { notConfigured: true });
   const cfg = githubConfig(env);
   try {
     if (write) {
@@ -284,14 +305,14 @@ export async function handleRename(request: Request, env: Env, fetchFn: typeof f
   if (isBlogPath(to)) return fail(400, "Addresses starting with /blog are where your posts are published. Choose another address.");
   if (isSearchPath(to)) return fail(400, "/search is where site search lives. Choose another address.");
 
-  const cfg = githubConfig(env);
+  const cfg = repoFor(env);
   try {
     const [text, clash, redirectsText] = await Promise.all([
       readFile(cfg, pageFileFor(from), fetchFn),
       readFile(cfg, pageFileFor(to), fetchFn),
       readFile(cfg, REDIRECTS_FILE, fetchFn),
     ]);
-    if (text === null) return fail(404, `There's no page at ${from} on GitHub.`);
+    if (text === null) return fail(404, `There's no page at ${from} ${keptIn(env)}.`);
     if (clash !== null) return fail(409, `There's already a page at ${to}.`);
     // Links on the page itself (e.g. a "back to top" button) follow it too.
     const own = JSON.parse(text) as Page;
@@ -343,10 +364,10 @@ export async function handleDelete(request: Request, env: Env, fetchFn: typeof f
   if (!isValidPagePath(path)) return fail(400, "That isn't a valid page address.");
   if (path === "/") return fail(400, "The Home page can't be deleted. Every site needs one.");
 
-  const cfg = githubConfig(env);
+  const cfg = repoFor(env);
   try {
     const [text, redirectsText] = await Promise.all([readFile(cfg, pageFileFor(path), fetchFn), readFile(cfg, REDIRECTS_FILE, fetchFn)]);
-    if (text === null) return fail(404, `There's no page at ${path} on GitHub.`);
+    if (text === null) return fail(404, `There's no page at ${path} ${keptIn(env)}.`);
     const before = parseRedirects(redirectsText);
     const after = redirectsAfterDelete(before, path);
     const result = await commitFiles(
@@ -383,7 +404,7 @@ export interface PendingChanges {
 export async function handleChanges(request: Request, env: Env, fetchFn: typeof fetch = fetch): Promise<Response> {
   const user = await gate(request, env, fetchFn, false);
   if (user instanceof Response) return user;
-  const cfg = githubConfig(env);
+  const cfg = repoFor(env);
   try {
     const last = await lastSuccessfulRun(cfg, PUBLISH_WORKFLOW, fetchFn);
     if (!last) {
@@ -437,7 +458,7 @@ export interface DeletedPage {
 export async function handleDeleted(request: Request, env: Env, fetchFn: typeof fetch = fetch): Promise<Response> {
   const user = await gate(request, env, fetchFn, false);
   if (user instanceof Response) return user;
-  const cfg = githubConfig(env);
+  const cfg = repoFor(env);
   try {
     const [commits, files] = await Promise.all([recentCommits(cfg, "content/pages", fetchFn), listFolder(cfg, "content/pages", fetchFn)]);
     const existing = new Set(files.map((f) => pagePathForFile(f.path)));
@@ -476,7 +497,7 @@ export async function handleRestore(request: Request, env: Env, fetchFn: typeof 
   if (body instanceof Response) return body;
   const { path, commit } = (body ?? {}) as { path?: unknown; commit?: unknown };
   if (!isValidPagePath(path) || typeof commit !== "string" || !/^[0-9a-f]{7,40}$/i.test(commit)) return fail(400, "That isn't a page that can be restored.");
-  const cfg = githubConfig(env);
+  const cfg = repoFor(env);
   try {
     // Only a deletion made by the builder, found in the recent history, can be undone here.
     const deletion = (await recentCommits(cfg, "content/pages", fetchFn)).find((c) => c.sha === commit);
@@ -515,7 +536,7 @@ export async function handleRestore(request: Request, env: Env, fetchFn: typeof 
 // --- My layouts (F027) ---------------------------------------------------------------
 
 /** Every saved layout, newest first; unreadable files are skipped. */
-async function readLayouts(cfg: GitHubConfig, fetchFn: typeof fetch): Promise<SavedLayout[]> {
+async function readLayouts(cfg: Repo, fetchFn: typeof fetch): Promise<SavedLayout[]> {
   const files = await listFolder(cfg, LAYOUTS_FOLDER, fetchFn);
   const layouts = await Promise.all(
     files.map(async (f) => {
@@ -537,7 +558,7 @@ export async function handleLayouts(request: Request, env: Env, fetchFn: typeof 
   const write = request.method === "POST";
   const user = await gate(request, env, fetchFn, write);
   if (user instanceof Response) return user;
-  const cfg = githubConfig(env);
+  const cfg = repoFor(env);
   if (!write) {
     try {
       return json(200, { ok: true, layouts: await readLayouts(cfg, fetchFn) });
@@ -567,7 +588,7 @@ export async function handleLayouts(request: Request, env: Env, fetchFn: typeof 
 
     if (!isValidLayoutId(id)) return fail(400, "That isn't one of your layouts.");
     const current = parseLayout(await readFile(cfg, layoutFileFor(id), fetchFn), id);
-    if (!current) return fail(404, "That layout isn't on GitHub any more. It may have been deleted.");
+    if (!current) return fail(404, `That layout isn't ${keptIn(env)} any more. It may have been deleted.`);
 
     if (action === "rename") {
       const problems = checkLayoutName(name);
