@@ -5,8 +5,8 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-10-31, after F048 (session "Crust: Milestone 5 — F048
-onward").
+Last updated: 2026-10-31, after Milestone 5 was merged and F052 was
+added (session "Crust: Milestone 5 — F048 onward").
 
 ## How sessions work (owner's rule, 2026-10-30)
 
@@ -100,16 +100,38 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 
 ## Next
 
-1. Milestone 5 is merged. Nothing is queued: wait for the owner's
-   review (F034–F051 need `reviewed: true`), fixes he asks for, or a
-   Milestone 6 proposal he approves (roadmap:
-   https://claude.ai/artifact/4eHUDzJ3tDeeaNPBf4T4ii; selling templates
-   was planned for Milestones 6–7).
-2. Open point from F051: the "highlight" link style reads as a
-   grey-beige block on yellow cards (Corner). Only a proposal if the
-   owner agrees.
-3. Work from a branch off `main`; never publish the live site unless the
-   owner says so.
+1. On start: archive the previous session (archive_session; it's named in
+   the handover prompt). Subscribe to PR #40 (notes only; CI green; merge
+   only when the owner says so).
+2. **F052 Harbour, premium-minimal rework** (features.json). Read
+   DECISIONS.md "Harbour rework, F052" first. Branch from `main`.
+   a. **Photos:** public-domain (CC0) only, the best that can be found
+      (owner's words). Good CC0 sources: Openverse with the CC0 filter,
+      Wikimedia Commons (check each file's licence), StockSnap.io. Not
+      Unsplash/Pexels (their licences restrict reselling inside a
+      product). Keep a credits list (source URL, author, licence) in
+      `scripts/starter-templates/photos/CREDITS.md`. Check the
+      environment's network access first (read_documentation,
+      environment.network); if image hosts are blocked, say so to the
+      owner and ask him to allow them rather than working around it.
+      Resize to at most 2400 px, compress (the template file and
+      Lighthouse 95+ both matter).
+   b. **Design snapshot** (Artifact, saved in design/) of the reworked
+      Harbour home page plus one inner page, with the real photos: hero
+      photo with headline over it, a tall-beside-two-wide work mosaic,
+      a statement band, fewer words, quiet links, latest-posts cue.
+      Quality bar: the YOOtheme Fuse demo
+      (https://demo.yootheme.com/joomla/themes/fuse/); original design,
+      never a copy. Show 2 directions within that brief and recommend
+      one. The owner approves before building (add F052 to BLOCKED.md
+      while waiting).
+   c. Build it in `scripts/starter-templates/starter.ts` with today's
+      blocks (Section `imageSrc` + `tint`, Columns `widths`, Heading
+      bands); photos replace stand-ins for Harbour only (Signal and
+      Corner keep theirs unless the owner asks). Then `npm run
+      build:starters` and the done_check.
+3. Proposals waiting for the owner: header over hero photo, latest posts
+   block, highlight-link fix (DECISIONS.md → Proposals).
 
 ## Where to find things
 

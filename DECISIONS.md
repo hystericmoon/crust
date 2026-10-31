@@ -8,6 +8,16 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
+- **Header over the hero photo (from F052).** An option for the site
+  header to sit transparently on top of the first section's photo, with
+  light text, as premium templates do. Small.
+- **Latest posts block (from F052).** A block that shows the newest 3
+  journal posts (title, date, cover) on any page, filled in at publish
+  time. Small to medium.
+- **Highlight link style on tinted cards (from F051).** The "highlight"
+  link style reads as a grey-beige block on Corner's yellow cards; tint
+  it from the card's own background instead. Small.
+
 - *(All proposals so far were approved by the owner on 2026-10-28: the
   first four are F011–F014, "rename and delete pages" is F015 and "show
   what's not published yet" is F016. Claude's next four recommendations
@@ -149,6 +159,28 @@ Features Claude suggests. They are not work until the owner adds them to
   each finished task or when a session fills up. HANDOVER.md holds the
   rules, the state and the next step; CLAUDE.md's session protocol now
   starts and ends with it. It reaches main with the next merge.
+
+## 2026-10-31 — Harbour rework, F052 (owner)
+
+- The owner: "I think our first template should be this good at minimal"
+  (YOOtheme Fuse demo). Claude's comparison: Fuse feels premium mainly
+  because of (1) photography doing the work (full-width hero photo with
+  the headline over it), (2) rhythm (mixed-ratio images, text-only
+  statement bands), (3) few words and quiet links, (4) real-business
+  cues (latest posts, careers line). Harbour has a flat colour hero,
+  geometric stand-ins, even sections and instruction-heavy copy.
+- Owner: rework yes (F052); photos "A but find the best ones":
+  public-domain (CC0) photos, curated for quality. Not Unsplash/Pexels:
+  their licences restrict redistributing photos inside a product that's
+  sold (templates are planned for sale in Milestones 6–7).
+- Fuse is a quality bar, not a design to copy: original layout,
+  wording and photos.
+- Crust can already do most of it (Section background photo + tint,
+  Columns with uneven widths, Heading bands, Button "secondary" or
+  rich-text links). Gaps, as proposals only: a header that sits
+  transparently over the hero photo, and a "latest posts" block (see
+  Proposals). No sliders: they need JavaScript and are hard to make
+  accessible.
 
 ## 2026-10-31 — F049 Harbour (Claude, reversible)
 

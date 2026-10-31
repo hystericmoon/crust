@@ -507,3 +507,8 @@ to "Log".
   this template); flagged to the owner.
 - 2026-10-31 — Milestone 5 merged to main in order (#33 → #39), owner:
   "Merge them all in order". All seven were green before merging.
+- 2026-10-31 — Owner: Harbour should be as good as the YOOtheme Fuse demo
+  at minimal; added F052 "Harbour, premium-minimal rework" (CC0 photos,
+  best ones; design snapshot first). Two small proposals (header over
+  hero photo, latest posts block) and the highlight-link fix are in
+  DECISIONS → Proposals. Owner asked for a new session.
