@@ -160,6 +160,30 @@ Features Claude suggests. They are not work until the owner adds them to
   rules, the state and the next step; CLAUDE.md's session protocol now
   starts and ends with it. It reaches main with the next merge.
 
+## 2026-10-31 — F052 photos and snapshot (Claude, reversible)
+
+- **Photos: ten CC0 files from Wikimedia Commons**, picked by eye from
+  about 480 candidates (searches for minimal architecture, interiors,
+  stairs, light and shadow, lakes). Commons shows a checked licence per
+  file, which makes the credits list auditable. Five are pre-June-2017
+  Unsplash uploads that were CC0 then; the dedication can't be
+  withdrawn, so they're safe to resell. Today's Unsplash/Pexels licences
+  are not CC0 and are not used (owner asked about Pexels: it moved from
+  CC0 to its own licence in 2017). Credits:
+  `scripts/starter-templates/photos/CREDITS.md`.
+- **Left out:** photos of artworks or installations (the artwork keeps
+  its own copyright), architecture models, recognisable people.
+- **Blocked hosts:** StockSnap, Flickr images, rawpixel, pxhere and
+  Pexels return 403 from this environment's network, so they were not
+  searched. Openverse's API was too slow to use.
+- **Sizes:** at most 1920 px (under Crust's 2400 px),
+  about 90–650 KB each; publishing makes 480/960/1440 copies for srcset.
+- **Snapshot** https://claude.ai/artifact/FksfsnM6msMtjBu4v5YHDm
+  (`design/f052-harbour-rework-v1.html`): A Daylight (recommended, light
+  hero under the 55% paper veil, rhythm on paper and sand, one dark
+  band) and B Shoreline (dark 65% veil over the river photo, green
+  statement band, three dark bands). Waiting for the owner's pick.
+
 ## 2026-10-31 — Harbour rework, F052 (owner)
 
 - The owner: "I think our first template should be this good at minimal"

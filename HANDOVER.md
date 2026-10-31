@@ -5,8 +5,9 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-10-31, after Milestone 5 was merged and F052 was
-added (session "Crust: Milestone 5 — F048 onward").
+Last updated: 2026-10-31, F052 photos and design snapshot done, waiting
+for the owner's pick (session "F052 Harbour rework", branch
+`claude/peaceful-shannon-x32vlp`, stacked on PR #40).
 
 ## How sessions work (owner's rule, 2026-10-30)
 
@@ -96,40 +97,47 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
   https://claude.ai/artifact/4eHUDzJ3tDeeaNPBf4T4ii, F042
   https://claude.ai/artifact/1d1Ujx7ENSrGCef6CWfg9Z, F043
   https://claude.ai/artifact/DSXzme9pbKie3guoRpSizj (A built for both), F048
-  https://claude.ai/artifact/JQoY8bbRJ9U58jZawRx2kV (A built).
+  https://claude.ai/artifact/JQoY8bbRJ9U58jZawRx2kV (A built), F052
+  https://claude.ai/artifact/FksfsnM6msMtjBu4v5YHDm (waiting).
 
 ## Next
 
 1. On start: archive the previous session (archive_session; it's named in
-   the handover prompt). Subscribe to PR #40 (notes only; CI green; merge
-   only when the owner says so).
-2. **F052 Harbour, premium-minimal rework** (features.json). Read
-   DECISIONS.md "Harbour rework, F052" first. Branch from `main`.
-   a. **Photos:** public-domain (CC0) only, the best that can be found
-      (owner's words). Good CC0 sources: Openverse with the CC0 filter,
-      Wikimedia Commons (check each file's licence), StockSnap.io. Not
-      Unsplash/Pexels (their licences restrict reselling inside a
-      product). Keep a credits list (source URL, author, licence) in
-      `scripts/starter-templates/photos/CREDITS.md`. Check the
-      environment's network access first (read_documentation,
-      environment.network); if image hosts are blocked, say so to the
-      owner and ask him to allow them rather than working around it.
-      Resize to at most 2400 px, compress (the template file and
-      Lighthouse 95+ both matter).
-   b. **Design snapshot** (Artifact, saved in design/) of the reworked
-      Harbour home page plus one inner page, with the real photos: hero
-      photo with headline over it, a tall-beside-two-wide work mosaic,
-      a statement band, fewer words, quiet links, latest-posts cue.
-      Quality bar: the YOOtheme Fuse demo
-      (https://demo.yootheme.com/joomla/themes/fuse/); original design,
-      never a copy. Show 2 directions within that brief and recommend
-      one. The owner approves before building (add F052 to BLOCKED.md
-      while waiting).
-   c. Build it in `scripts/starter-templates/starter.ts` with today's
-      blocks (Section `imageSrc` + `tint`, Columns `widths`, Heading
-      bands); photos replace stand-ins for Harbour only (Signal and
-      Corner keep theirs unless the owner asks). Then `npm run
-      build:starters` and the done_check.
+   the handover prompt). PR #40 is notes only; merge it only when the
+   owner says so. The F052 branch `claude/peaceful-shannon-x32vlp` is
+   stacked on it (its PR targets `m5-merged-notes`).
+2. **F052 Harbour, premium-minimal rework**, in BLOCKED.md until the
+   owner picks a direction in the snapshot
+   https://claude.ai/artifact/FksfsnM6msMtjBu4v5YHDm
+   (`design/f052-harbour-rework-v1.html`). Done so far:
+   a. **Photos done:** ten CC0 photos from Wikimedia Commons, cropped
+      (tall ones 4:5, wide ones 16:10) and in
+      `scripts/starter-templates/photos/` with `CREDITS.md`. Why these and
+      what was left out: DECISIONS.md "F052 photos and snapshot". `river.jpg`
+      is only used by direction B; drop it if A is picked. `shadows.jpg`
+      and `river.jpg` are ~650 KB (fine texture); try 1600 px if
+      Lighthouse or the template size complains.
+   b. **Snapshot done:** A Daylight (recommended) / B Shoreline.
+   c. **To build after the pick** (in `scripts/starter-templates/starter.ts`,
+      Harbour only; Signal and Corner keep their stand-ins):
+      - `buildStarter` reads photos from `photos/` for Harbour instead
+        of `standIn()`; media entries get real width/height and alt
+        text that describes the photo (still `placeholder`-marked).
+      - Home (A): hero Section `imageSrc` terraces, style background,
+        tint light, height large, valign bottom; H1 + one line + a
+        rich-text link "See the work". Statement band (h2, text only).
+        "Recent work" h2 + link, then Columns equal: Image vaults |
+        Images grid + spiral (no captions on home). Services as
+        Columns 3 (h3 + one line + link "More on …"), not boxed cards.
+        Journal cue: Columns one-two, Image shadows | eyebrow, post
+        title h2, date, link. "Join us" line. Contact strip.
+      - Work: text hero, mosaic (vaults | grid + spiral), statement
+        line, mirrored mosaic (lake-house + window-tree | cubes).
+      - About uses studio-desk; post cover = shadows.
+      - The Replace me marks stay as in F049. Then `npm run
+        build:starters`, the done_check, and tests for the photo
+        wiring (credits listed for every Harbour photo file, alt text
+        present, no stand-ins left in Harbour).
 3. Proposals waiting for the owner: header over hero photo, latest posts
    block, highlight-link fix (DECISIONS.md → Proposals).
 

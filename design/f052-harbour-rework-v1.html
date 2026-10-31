@@ -1,0 +1,297 @@
+<title>Harbour Rework</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: same page chrome as the earlier Crust snapshots. The mock sites inside use ONLY Harbour's own tokens
+   (old-style serif headings, humanist sans body, deep green on warm paper) and the exact tint opacities Crust computes,
+   so they look the way the template would publish. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6;
+  --accent:#4338ca; --accent-ink:#ffffff; --canvas:#e9e9ef; --rec:#1F5135;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  /* Harbour tokens (fixed: they are the site being designed, same in both themes) */
+  --h-bg:#FBFAF7; --h-surface:#F0EDE4; --h-text:#1D2420; --h-muted:#4F5A53; --h-primary:#1F5135; --h-on:#FFFFFF;
+  --h-serif:'Iowan Old Style','Palatino Linotype','URW Palladio L',P052,Palatino,Georgia,serif;
+  --h-sans:Seravek,'Gill Sans Nova',Ubuntu,Calibri,'DejaVu Sans',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --accent:#9b94ff; --accent-ink:#101016; --canvas:#15151d; --rec:#7fc79b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --accent:#9b94ff; --accent-ink:#101016; --canvas:#15151d; --rec:#7fc79b; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body)}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 80px;display:grid;gap:56px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1}
+h1{font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.6rem;font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.05rem;font-weight:600}
+p{margin:0}
+.eyebrow{font:500 .75rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.intro{display:grid;gap:16px;max-width:68ch}
+.intro p{color:var(--soft)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:8px}
+.fact{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:4px;min-width:0}
+.fact b{font-weight:600}
+.fact span{color:var(--soft);font-size:.9rem}
+.dir{display:grid;gap:20px}
+.dir-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 16px}
+.dir-head p{color:var(--soft);max-width:70ch;flex-basis:100%}
+.badge{font:500 .72rem/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 9px;border-radius:999px;border:1px solid var(--rec);color:var(--rec)}
+.screens{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.screens{grid-template-columns:1fr}}
+.frame{background:var(--canvas);border:1px solid var(--line);border-radius:12px;overflow:hidden;min-width:0}
+.frame-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;font:500 .72rem/1 var(--f-mono);color:var(--soft);border-bottom:1px solid var(--line);background:var(--panel)}
+.frame-bar i{width:8px;height:8px;border-radius:50%;background:var(--line);display:inline-block}
+.frame-bar span{margin-left:6px}
+.notes{display:grid;gap:8px;padding:0;margin:0;list-style:none}
+.notes li{padding-left:18px;position:relative;color:var(--soft);font-size:.92rem}
+.notes li::before{content:"";position:absolute;left:2px;top:.62em;width:7px;height:1px;background:var(--soft)}
+.notes b{color:var(--ink);font-weight:600}
+.callout{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:16px 18px;display:grid;gap:8px}
+.callout h3{font-size:1rem}
+.callout p{color:var(--soft);font-size:.93rem}
+
+/* ---- Mock site: Harbour (scaled; 1 rem in the mock = 10px) ---- */
+.site{background:var(--h-bg);color:var(--h-text);font:10px/1.6 var(--h-sans);--pad:clamp(14px,4%,40px)}
+.site *{box-sizing:border-box}
+.s-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px var(--pad);font-size:10px}
+.s-head .logo{font:500 13px/1 var(--h-serif);letter-spacing:-.005em}
+.s-head nav{display:flex;gap:14px;flex-wrap:wrap}
+.s-head.dark{background:var(--h-text);color:#fff}
+.s-sec{position:relative;padding:calc(var(--pad)*1.4) var(--pad);overflow:hidden}
+.s-sec>.in{position:relative;display:grid;gap:10px}
+.s-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.s-tint{position:absolute;inset:0}
+.s-bg{background:var(--h-bg)} .s-surface{background:var(--h-surface)} .s-dark{background:var(--h-text);color:#fff} .s-primary{background:var(--h-primary);color:#fff}
+.s-hero{min-height:300px;display:flex;align-items:flex-end}
+.s-hero.center{align-items:center;justify-content:center;text-align:center}
+.s-hero.center .in{justify-items:center}
+.s-h1{font:500 clamp(24px,3.6vw,40px)/1.04 var(--h-serif);letter-spacing:-.015em;margin:0;max-width:15ch;text-wrap:balance}
+.s-h2{font:500 clamp(16px,2vw,22px)/1.15 var(--h-serif);letter-spacing:-.01em;margin:0;text-wrap:balance}
+.s-h2.statement{font-size:clamp(17px,2.4vw,27px);line-height:1.22;max-width:26ch}
+.s-h3{font:500 13px/1.2 var(--h-serif);margin:0}
+.s-p{font-size:10.5px;max-width:52ch;color:inherit;opacity:.92}
+.s-muted{color:var(--h-muted)}
+.s-dark .s-muted,.s-primary .s-muted{color:#D2DCD7}
+.s-link{font-size:10.5px;font-weight:600;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;color:var(--h-primary)}
+.s-dark .s-link,.s-primary .s-link,.on-dark .s-link{color:#fff}
+.s-btn{display:inline-block;font-size:10px;font-weight:600;padding:7px 12px;background:var(--h-primary);color:#fff}
+.s-btn.inv{background:#fff;color:var(--h-text)}
+.s-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.mosaic{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mosaic .stack{display:grid;gap:10px}
+.mosaic img{display:block;width:100%;height:auto}
+.mosaic figure{margin:0;display:grid;gap:4px}
+.mosaic figcaption{font-size:9px;color:var(--h-muted)}
+.cols3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.cols3>div{display:grid;gap:5px;align-content:start;border-top:1px solid #C9CFC4;padding-top:10px}
+.cols21{display:grid;grid-template-columns:2fr 1fr;gap:16px;align-items:center}
+.cols12{display:grid;grid-template-columns:1fr 2fr;gap:16px;align-items:center}
+.cols21 img,.cols12 img{width:100%;display:block}
+.s-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px var(--pad);font-size:9px;background:var(--h-surface);color:var(--h-muted)}
+.rm{outline:1px dashed rgba(31,81,53,.0)}
+.post{display:grid;gap:3px}
+.post small{font-size:9px;color:var(--h-muted)}
+.s-dark .post small{color:#D2D3D2}
+
+/* credits */
+.credits{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.credit{display:grid;gap:6px;min-width:0;font-size:.82rem}
+.credit img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:6px;display:block;max-width:100%}
+.credit b{font-weight:600;overflow-wrap:anywhere}
+.credit span{color:var(--soft);overflow-wrap:anywhere}
+.credit a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">F052 · Design snapshot · 31 Oct 2026</span>
+    <h1>Harbour, reworked</h1>
+    <p>Two directions for the reworked Harbour template, drawn with the ten public-domain photos picked for it and Harbour's own colours and fonts. Both use only blocks Crust has today: Section with a background photo and tint, Columns with uneven widths, Headings as text-only bands, and rich-text links. Photo veils are drawn at the exact strength Crust applies, so text contrast here is what will publish.</p>
+    <div class="facts">
+      <div class="fact"><b>Photography leads</b><span>A full-width photo behind the opening headline, and real photos in the work, studio and journal.</span></div>
+      <div class="fact"><b>Rhythm, not a grid</b><span>A tall photo beside two wide ones, mirrored on the Work page. Text-only statement bands sit between the photo sections.</span></div>
+      <div class="fact"><b>Fewer words</b><span>One headline, one line under it. Quiet underlined links in place of most boxed buttons.</span></div>
+      <div class="fact"><b>Real-business cues</b><span>Latest journal post on the home page and a one-line "join us" note. All sample text stays marked Replace me.</span></div>
+    </div>
+  </header>
+
+  <!-- ================= Direction A ================= -->
+  <section class="dir" aria-labelledby="a-title">
+    <div class="dir-head">
+      <h2 id="a-title">A · Daylight</h2>
+      <span class="badge">Recommended</span>
+      <p>Light opening: the white terraces under Harbour's paper veil (Crust's "Light" tint, 55%), dark serif headline at the bottom left. Everything stays on paper and sand; the only dark band is the contact strip at the end.</p>
+    </div>
+    <div class="screens">
+      <div class="frame" role="img" aria-label="Direction A home page mock-up">
+        <div class="frame-bar"><i></i><i></i><i></i><span>harbour-studio.pages.dev /</span></div>
+        <div class="site">
+          <div class="s-head"><span class="logo">Harbour Studio</span><nav><span>About</span><span>Services</span><span>Work</span><span>Journal</span><span>Contact</span></nav></div>
+          <div class="s-sec s-hero">
+            <img class="s-media" src="../scripts/starter-templates/photos/terraces.jpg" alt="">
+            <div class="s-tint" style="background:#FBFAF7;opacity:.55"></div>
+            <div class="in"><h3 class="s-h1">Design for places people remember</h3><p class="s-p">Houses, studios and public rooms, designed to stay calm for decades.</p><span class="s-link">See the work</span></div>
+          </div>
+          <div class="s-sec s-bg"><div class="in"><p class="s-h2 statement">We take on a few projects a year, and see each one through from the first sketch to the last fitting.</p></div></div>
+          <div class="s-sec s-bg" style="padding-top:0">
+            <div class="in">
+              <div class="s-row"><h3 class="s-h2">Recent work</h3><span class="s-link">All projects</span></div>
+              <div class="mosaic">
+                <figure><img src="../scripts/starter-templates/photos/vaults.jpg" alt=""><figcaption>Project name, the client, the year</figcaption></figure>
+                <div class="stack">
+                  <figure><img src="../scripts/starter-templates/photos/grid.jpg" alt=""><figcaption>Project name, the client, the year</figcaption></figure>
+                  <figure><img src="../scripts/starter-templates/photos/spiral.jpg" alt=""><figcaption>Project name, the client, the year</figcaption></figure>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="s-sec s-surface"><div class="in">
+            <h3 class="s-h2">What we do</h3>
+            <div class="cols3">
+              <div><h4 class="s-h3">Architecture</h4><p class="s-p s-muted">One line on this service and who it's for.</p><span class="s-link">More on architecture</span></div>
+              <div><h4 class="s-h3">Interiors</h4><p class="s-p s-muted">One line on this service and who it's for.</p><span class="s-link">More on interiors</span></div>
+              <div><h4 class="s-h3">Landscape</h4><p class="s-p s-muted">One line on this service and who it's for.</p><span class="s-link">More on landscape</span></div>
+            </div>
+          </div></div>
+          <div class="s-sec s-bg"><div class="in">
+            <div class="cols12">
+              <img src="../scripts/starter-templates/photos/shadows.jpg" alt="">
+              <div class="post" style="gap:6px"><span class="eyebrow" style="font-size:8px;color:var(--h-muted)">From the journal</span><h4 class="s-h2">News from the studio</h4><small>31 October 2026</small><span class="s-link">Read the post</span></div>
+            </div>
+            <p class="s-p s-muted" style="margin-top:8px">We're hiring: one line about the role. <span class="s-link">Join us</span></p>
+          </div></div>
+          <div class="s-sec s-dark"><div class="in s-row"><h3 class="s-h2">Have a project in mind?</h3><span class="s-btn inv">Get in touch</span></div></div>
+          <div class="s-foot"><span>One line about the studio, and where you are.</span><span>© 2026 Harbour Studio</span></div>
+        </div>
+      </div>
+
+      <div class="frame" role="img" aria-label="Direction A work page mock-up">
+        <div class="frame-bar"><i></i><i></i><i></i><span>/work</span></div>
+        <div class="site">
+          <div class="s-head"><span class="logo">Harbour Studio</span><nav><span>Work</span><span>Contact</span></nav></div>
+          <div class="s-sec s-bg"><div class="in"><h3 class="s-h1" style="font-size:30px">Work</h3><p class="s-p s-muted">A line about the projects below: who they were for and what they share.</p></div></div>
+          <div class="s-sec s-bg" style="padding-top:0"><div class="in" style="gap:18px">
+            <div class="mosaic">
+              <figure><img src="../scripts/starter-templates/photos/vaults.jpg" alt=""><figcaption>Project name, the client, the year</figcaption></figure>
+              <div class="stack"><figure><img src="../scripts/starter-templates/photos/grid.jpg" alt=""><figcaption>Project name, the client, the year</figcaption></figure><figure><img src="../scripts/starter-templates/photos/spiral.jpg" alt=""><figcaption>Project name, the client, the year</figcaption></figure></div>
+            </div>
+            <p class="s-h2 statement" style="font-size:17px">Every project starts with a walk around the site.</p>
+            <div class="mosaic">
+              <div class="stack"><figure><img src="../scripts/starter-templates/photos/lake-house.jpg" alt=""><figcaption>Project name, the client, the year</figcaption></figure><figure><img src="../scripts/starter-templates/photos/window-tree.jpg" alt=""><figcaption>Project name, the client, the year</figcaption></figure></div>
+              <figure><img src="../scripts/starter-templates/photos/cubes.jpg" alt=""><figcaption>Project name, the client, the year</figcaption></figure>
+            </div>
+          </div></div>
+          <div class="s-sec s-dark"><div class="in"><h3 class="s-h2">Have a project in mind?</h3><span class="s-btn inv" style="justify-self:start">Get in touch</span></div></div>
+        </div>
+      </div>
+    </div>
+    <ul class="notes">
+      <li><b>Why recommended:</b> it keeps Harbour's identity (warm paper, deep green, serif) and lets the photos carry the colour. A light veil over pale architecture reads as calm and expensive; a dark veil over every photo would flatten them.</li>
+      <li><b>Contrast:</b> the 55% paper veil is the minimum Crust allows for dark text on any photo (it checks the worst case, a pure black or white pixel), so the headline passes WCAG AA by construction.</li>
+      <li><b>Header:</b> sits on paper above the hero. Putting it over the photo needs the "header over hero" proposal; not in this feature.</li>
+    </ul>
+  </section>
+
+  <!-- ================= Direction B ================= -->
+  <section class="dir" aria-labelledby="b-title">
+    <div class="dir-head">
+      <h2 id="b-title">B · Shoreline</h2>
+      <p>Darker and more atmospheric: the river houses under Crust's "Medium" dark veil (65%), white headline centred, full-screen opening. The statement band is deep green, and the work mosaic is mirrored (two wide, then tall).</p>
+    </div>
+    <div class="screens">
+      <div class="frame" role="img" aria-label="Direction B home page mock-up">
+        <div class="frame-bar"><i></i><i></i><i></i><span>harbour-studio.pages.dev /</span></div>
+        <div class="site">
+          <div class="s-head dark"><span class="logo">Harbour Studio</span><nav><span>About</span><span>Services</span><span>Work</span><span>Journal</span><span>Contact</span></nav></div>
+          <div class="s-sec s-hero center s-dark" style="min-height:360px">
+            <img class="s-media" src="../scripts/starter-templates/photos/river.jpg" alt="">
+            <div class="s-tint" style="background:#1D2420;opacity:.65"></div>
+            <div class="in"><h3 class="s-h1">Design for places people remember</h3><p class="s-p">Houses, studios and public rooms, designed to stay calm for decades.</p><span class="s-btn inv">See the work</span></div>
+          </div>
+          <div class="s-sec s-primary"><div class="in"><p class="s-h2 statement">We take on a few projects a year, and see each one through from the first sketch to the last fitting.</p></div></div>
+          <div class="s-sec s-bg"><div class="in">
+            <div class="s-row"><h3 class="s-h2">Recent work</h3><span class="s-link">All projects</span></div>
+            <div class="mosaic">
+              <div class="stack"><figure><img src="../scripts/starter-templates/photos/grid.jpg" alt=""></figure><figure><img src="../scripts/starter-templates/photos/spiral.jpg" alt=""></figure></div>
+              <figure><img src="../scripts/starter-templates/photos/vaults.jpg" alt=""></figure>
+            </div>
+          </div></div>
+          <div class="s-sec s-bg" style="padding-top:0"><div class="in">
+            <div class="cols3">
+              <div><h4 class="s-h3">Architecture</h4><p class="s-p s-muted">One line on this service and who it's for.</p><span class="s-link">More on architecture</span></div>
+              <div><h4 class="s-h3">Interiors</h4><p class="s-p s-muted">One line on this service and who it's for.</p><span class="s-link">More on interiors</span></div>
+              <div><h4 class="s-h3">Landscape</h4><p class="s-p s-muted">One line on this service and who it's for.</p><span class="s-link">More on landscape</span></div>
+            </div>
+          </div></div>
+          <div class="s-sec s-dark"><div class="in">
+            <div class="cols21">
+              <div class="post" style="gap:6px"><span class="eyebrow" style="font-size:8px;color:#D2D3D2">From the journal</span><h4 class="s-h2">News from the studio</h4><small>31 October 2026</small><span class="s-link">Read the post</span></div>
+              <img src="../scripts/starter-templates/photos/shadows.jpg" alt="">
+            </div>
+            <div class="s-row" style="margin-top:14px"><h3 class="s-h2">Have a project in mind?</h3><span class="s-btn inv">Get in touch</span></div>
+          </div></div>
+          <div class="s-foot"><span>One line about the studio, and where you are.</span><span>© 2026 Harbour Studio</span></div>
+        </div>
+      </div>
+
+      <div class="frame" role="img" aria-label="Direction B work page mock-up">
+        <div class="frame-bar"><i></i><i></i><i></i><span>/work</span></div>
+        <div class="site">
+          <div class="s-head dark"><span class="logo">Harbour Studio</span><nav><span>Work</span><span>Contact</span></nav></div>
+          <div class="s-sec s-dark s-hero" style="min-height:150px">
+            <img class="s-media" src="../scripts/starter-templates/photos/lake-house.jpg" alt="">
+            <div class="s-tint" style="background:#1D2420;opacity:.65"></div>
+            <div class="in"><h3 class="s-h1" style="font-size:30px">Work</h3><p class="s-p">A line about the projects below.</p></div>
+          </div>
+          <div class="s-sec s-bg"><div class="in" style="gap:18px">
+            <div class="mosaic">
+              <div class="stack"><figure><img src="../scripts/starter-templates/photos/grid.jpg" alt=""></figure><figure><img src="../scripts/starter-templates/photos/spiral.jpg" alt=""></figure></div>
+              <figure><img src="../scripts/starter-templates/photos/vaults.jpg" alt=""></figure>
+            </div>
+            <div class="mosaic">
+              <figure><img src="../scripts/starter-templates/photos/cubes.jpg" alt=""></figure>
+              <div class="stack"><figure><img src="../scripts/starter-templates/photos/window-tree.jpg" alt=""></figure><figure><img src="../scripts/starter-templates/photos/studio-desk.jpg" alt=""></figure></div>
+            </div>
+          </div></div>
+          <div class="s-sec s-dark"><div class="in"><h3 class="s-h2">Have a project in mind?</h3><span class="s-btn inv" style="justify-self:start">Get in touch</span></div></div>
+        </div>
+      </div>
+    </div>
+    <ul class="notes">
+      <li><b>Strength:</b> more drama in the first screen, closer to a hospitality or travel mood.</li>
+      <li><b>Cost:</b> the 65% dark veil mutes the photo a lot (Crust needs it for white text on any photo), and three dark bands make the page heavier, which works against "minimal". The river view also reads "holiday cottage" more than "design studio".</li>
+    </ul>
+  </section>
+
+  <section class="callout" aria-labelledby="p-title">
+    <h3 id="p-title">The photos: ten, all CC0, credited in the template</h3>
+    <p>All from Wikimedia Commons, where each file's licence is checked by Commons reviewers. Five were first published on Unsplash before June 2017, when Unsplash photos were released as CC0; that dedication can't be withdrawn, so these copies are free to resell inside a template. Today's Unsplash and Pexels licences are not CC0 and are not used. Sizes: at most 1920 px, about 2 MB for all ten in the template file. StockSnap, Flickr, rawpixel and Pexels are blocked by this session's network, so they weren't searched.</p>
+    <div class="credits">
+      <div class="credit"><img src="../scripts/starter-templates/photos/terraces.jpg" alt="White concrete terraces and a stair under a blue sky, one small figure"><b>Woman outside a white building</b><span>Daniel Lozano Valdés · CC0 · <a href="https://commons.wikimedia.org/wiki/File:Woman_outside_a_white_building_(Unsplash).jpg" target="_blank" rel="noopener">source</a></span></div>
+      <div class="credit"><img src="../scripts/starter-templates/photos/vaults.jpg" alt="White pointed vaults of a church nave seen from below"><b>Light building architecture white</b><span>Pixel.la · CC0 · <a href="https://commons.wikimedia.org/wiki/File:Light-building-architecture-white_(23697083824).jpg" target="_blank" rel="noopener">source</a></span></div>
+      <div class="credit"><img src="../scripts/starter-templates/photos/grid.jpg" alt="White grid facade against a blue sky"><b>Bright white building facade</b><span>Matthew Hamilton · CC0 · <a href="https://commons.wikimedia.org/wiki/File:Bright_white_building_facade_(Unsplash).jpg" target="_blank" rel="noopener">source</a></span></div>
+      <div class="credit"><img src="../scripts/starter-templates/photos/spiral.jpg" alt="Spiral staircase seen from above"><b>Spiral Staircase, Keck Center</b><span>Jorge Mendoza · CC0 · <a href="https://commons.wikimedia.org/wiki/File:Spiral_Staircase,_Keck_Center_(U.S._National_Academies).jpg" target="_blank" rel="noopener">source</a></span></div>
+      <div class="credit"><img src="../scripts/starter-templates/photos/cubes.jpg" alt="White apartment block of stacked cubes against a pale sky"><b>White apartment building</b><span>Joel Filipe · CC0 · <a href="https://commons.wikimedia.org/wiki/File:White_apartment_building_(Unsplash).jpg" target="_blank" rel="noopener">source</a></span></div>
+      <div class="credit"><img src="../scripts/starter-templates/photos/lake-house.jpg" alt="Wooden house on stilts on a still lake at dawn"><b>Floating House at Inle Lake</b><span>mydaydream89 · CC0 · <a href="https://commons.wikimedia.org/wiki/File:Floating_House_at_Inle_Lake.JPG" target="_blank" rel="noopener">source</a></span></div>
+      <div class="credit"><img src="../scripts/starter-templates/photos/window-tree.jpg" alt="Young tree in front of a white wall with a tall window"><b>Tree beside white building</b><span>Imani Bahati · CC0 · <a href="https://commons.wikimedia.org/wiki/File:Imani-bahati-green-leafed-tree-beside-white-concrete-building-with-glass-window.jpg" target="_blank" rel="noopener">source</a></span></div>
+      <div class="credit"><img src="../scripts/starter-templates/photos/studio-desk.jpg" alt="White desk with a lamp and books under a framed print"><b>Minimal desk and painting</b><span>Breather · CC0 · <a href="https://commons.wikimedia.org/wiki/File:Minimal_desk_and_painting_(Unsplash).jpg" target="_blank" rel="noopener">source</a></span></div>
+      <div class="credit"><img src="../scripts/starter-templates/photos/shadows.jpg" alt="Shadow of a window frame and plants on a linen curtain"><b>Window frame shadow on a curtain</b><span>Steinar Engeland · CC0 · <a href="https://commons.wikimedia.org/wiki/File:Window_frame_shadow_on_a_curtain_(Unsplash).jpg" target="_blank" rel="noopener">source</a></span></div>
+      <div class="credit"><img src="../scripts/starter-templates/photos/river.jpg" alt="Stone houses on a wooded riverbank"><b>Léguer river at Lannion</b><span>Syced · CC0 · <a href="https://commons.wikimedia.org/wiki/File:Stairs_on_L%C3%A9guer_river_at_entrance_of_Lannion.jpg" target="_blank" rel="noopener">source</a></span></div>
+    </div>
+  </section>
+
+  <section class="callout" aria-labelledby="x-title">
+    <h3 id="x-title">Accessibility and what stays the same</h3>
+    <ul class="notes">
+      <li><b>Alt text:</b> every photo gets a real description (as in the credits above), still marked Replace me so buyers swap in their own photo and words.</li>
+      <li><b>Links:</b> quiet links say where they go ("More on interiors", never a bare "Learn more"), so they make sense when a screen reader lists the links.</li>
+      <li><b>Headings:</b> one H1 per page; statement bands are H2s, service names H3s. The template check enforces this.</li>
+      <li><b>Not changing:</b> Signal and Corner keep their stand-in images unless you ask. Page list, journal and Replace me marks stay as in F049.</li>
+    </ul>
+  </section>
+</div>

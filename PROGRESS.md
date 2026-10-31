@@ -512,3 +512,8 @@ to "Log".
   best ones; design snapshot first). Two small proposals (header over
   hero photo, latest posts block) and the highlight-link fix are in
   DECISIONS → Proposals. Owner asked for a new session.
+- 2026-10-31 — F052 started: ten CC0 photos picked and credited
+  (scripts/starter-templates/photos), design snapshot with two
+  directions published (https://claude.ai/artifact/FksfsnM6msMtjBu4v5YHDm,
+  A recommended). Waiting for the owner's pick (BLOCKED.md); nothing
+  built yet.
