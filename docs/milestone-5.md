@@ -30,7 +30,9 @@ from. Selling templates comes later (Milestones 6–7).
 | F046 Placeholder content | Publish check stops on leftovers |
 | F047 Template quality check | `npm run check:template`, CI job, report page |
 | F048 Start from a template | Design snapshot first; asks before replacing; undo via Git history |
-| F049 First starter template | Design snapshot with 2–3 directions; the owner picks |
+| F049 First starter template | Design snapshot with 2–3 directions; the owner picks. Owner (2026-10-31): "All three": F049 is A Harbour |
+| F050 Second starter template: Signal | Direction B of the F049 snapshot (added 2026-10-31) |
+| F051 Third starter template: Corner | Direction C of the F049 snapshot (added 2026-10-31) |
 
 Fixes from the owner's review of Milestones 2–4 are added as rework items
 only when the owner asks (CLAUDE.md).

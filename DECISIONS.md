@@ -150,6 +150,16 @@ Features Claude suggests. They are not work until the owner adds them to
   rules, the state and the next step; CLAUDE.md's session protocol now
   starts and ends with it. It reaches main with the next merge.
 
+## 2026-10-31 — Three starter templates (owner)
+
+- The F049 snapshot (https://claude.ai/artifact/JFfJLZ3Va9hoPNkdwUeFnH)
+  offered A Harbour, B Signal and C Corner, with A recommended. The owner
+  asked "why not 3 of them?" and, after the trade-offs (about three times
+  the content and checking), answered "All three". Added as F050 (Signal)
+  and F051 (Corner); F049 is Harbour, built first as the reference the
+  other two reuse (same pages, same Replace me wording, their own look,
+  business name and photos).
+
 ## 2026-10-31 — F048 Start from a template (Claude, reversible)
 
 - **Direction A of the design snapshot** (its own screen, `#/templates`;

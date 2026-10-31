@@ -491,6 +491,26 @@
       "passes": false,
       "needs_review": true,
       "reviewed": false
+    },
+    {
+      "id": "F050",
+      "title": "Second starter template: Signal",
+      "description": "Direction B of the F049 design snapshot (bold geometric sans, dark opening section, burnt-orange accent, pill buttons, shadow cards) as a complete template with the same pages as F049: Home, About, Services, Work, Contact, a blog with one post, a linked contact strip. Sample content marked Replace me; passes the template quality check; listed in the Start from a template gallery. Added by the owner (2026-10-31: 'All three').",
+      "depends_on": ["F049"],
+      "done_check": "npm test -- starter-template && npm run check:template",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F051",
+      "title": "Third starter template: Corner",
+      "description": "Direction C of the F049 design snapshot (transitional serif, navy on butter yellow, highlighter links, rounded buttons, flat cards) as a complete template with the same pages as F049: Home, About, Services, Work, Contact, a blog with one post, a linked contact strip. Sample content marked Replace me; passes the template quality check; listed in the Start from a template gallery. Added by the owner (2026-10-31: 'All three').",
+      "depends_on": ["F049"],
+      "done_check": "npm test -- starter-template && npm run check:template",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
     }
   ]
 }
