@@ -5,9 +5,10 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-10-31 evening: #40 and #41 merged, live site
-publish started, M6/M7 approved; next F053 (session "F052 Harbour rework", branch
-`claude/peaceful-shannon-x32vlp`, stacked on PR #40).
+Last updated: 2026-10-31 night (Jakarta): live-site publish checked (run 3
+succeeded); M6/M7 written (docs/milestone-6.md, -7.md, F054–F068); F053
+photo hunts and the delegated review running. Branch
+`claude/peaceful-shannon-x32vlp`, PR #42.
 
 ## How sessions work (owner's rule, 2026-10-30)
 
@@ -70,8 +71,8 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 
 ## Where things stand
 
-- **Live site** https://crust-site.pages.dev: last published at
-  Milestone 1. Only the owner decides when to publish.
+- **Live site** https://crust-site.pages.dev: published 2026-10-31
+  (Milestones 1–5). Only the owner decides when to publish.
 - **Admin** https://crust-admin.pages.dev: main, Milestones 1–5
   (F001–F051) merged (Milestone 5: PRs #33–#39, 2026-10-31).
 - **Milestone 5 "Templates"** (docs/milestone-5.md), F045–F049:
@@ -114,17 +115,13 @@ The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
    build in `scripts/starter-templates/starter.ts` (generalise
    `photos` per spec; Harbour's `homeWithPhotos`/`workWithPhotos` are
    Harbour-shaped), `npm run build:starters`, done_check.
-2. **Write Milestones 6 and 7** (approved): docs/milestone-6.md and
-   docs/milestone-7.md from the roadmap page, features F054 onwards in
-   features.json with done_checks, BLOCKED.md entries for what only the
-   owner can do (signing, payment provider account). Watch costs: macOS
-   runners on a private repo use 10x Actions minutes; ask before
-   anything that may cost money.
+2. ~~Write Milestones 6 and 7~~ done 2026-10-31 (F054–F068; F054 depends
+   on F048 so M6 can start while F053 waits for the owner). Next feature
+   after F053's approval wait: **F054 Content store**.
 3. **Review the 48 `needs_review` features** (delegated by the owner):
    check each on the preview, set `reviewed: true` with a note, list
    fixes as proposals.
-4. Live site: Publish was started on 2026-10-31 (first since M1); check
-   the run succeeded (Actions → Publish site).
+4. ~~Live site publish~~ checked: run 3 succeeded, site up.
 
 ## Where to find things
 
