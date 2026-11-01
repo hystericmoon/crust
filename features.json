@@ -596,7 +596,7 @@
       "description": "A Tauri 2 app (crates/crust-desktop) that opens the builder in a native window for Mac and Windows, keeps sites in a folder on the computer (with its own history, F054, invisible to people) and uses the local content store. Linux build and tests in CI; Mac and Windows installers only from a release workflow started by hand (private-repo runner minutes). Unsigned until the owner sets up signing (BLOCKED.md). Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F054"],
       "done_check": "cargo test -p crust-desktop && npm test -- desktop && cargo clippy -- -D warnings",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

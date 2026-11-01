@@ -4,6 +4,14 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Crust as an app for Mac and Windows (F055, first step).** The builder
+  can now run in its own window instead of a browser. Your site is kept
+  in a folder on your computer (Documents → Crust → My site), and every
+  save is kept there too, so going back works as on the web. Nothing
+  needs GitHub or an account. The first time it opens, it starts a new
+  site with a Home page. Publishing from the app comes next (F056).
+  Installers are made by hand for testing and are not signed yet, so
+  your Mac will ask you to confirm the first time (right-click → Open).
 - **Fixes from the review (F069):**
   - *Keyboard:* the "Blocks / Outline" switch on the left of the builder
     works with Tab and Enter, and a "Skip to page" link (first Tab

@@ -548,3 +548,16 @@ to "Log".
   headline is visible); select a Section and use "Make linked" (no
   sideways jump); rename a page that's in the menu (menu link follows).
 
+- 2026-11-01 — F055 Desktop app shell built (branch `f055-desktop-shell`,
+  from main). `crates/crust-desktop` (Tauri 2) opens the builder in a
+  window; the site lives in Documents/Crust/My site with its own history
+  (F054); the builder's server handlers run inside the window. CI now
+  opens the real window on a virtual screen and checks saving, history,
+  photos and the folder fence (8 checks, all pass). Mac/Windows
+  installers: Actions → "Desktop installers" → Run (by hand, ~150 counted
+  minutes, unsigned). done_check exit 0; 879 JS + 12 desktop Rust tests.
+  **Owner can try:** nothing in the browser. If you want the app on your
+  Mac now, say "build the Mac installer" and Claude starts the workflow
+  (it uses about 150 of the 2,000 free minutes); open it with
+  right-click → Open the first time. Window screenshot:
+  design/f055-app-window.png. Next: F056 Publish on your computer.

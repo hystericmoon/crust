@@ -8,6 +8,11 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
+- **App wording (from F055, 2026-11-01).** In the desktop app about 70
+  messages still say "GitHub" or "this browser" (Publish card, page
+  status, Template banner, Site settings). Suggest one pass that gives
+  each a desktop wording ("in this site", "on your computer"), best done
+  with F056 when Publish works in the app. Size S–M.
 - **From the review (2026-10-31).** Claude reviewed the 48 features
   waiting for review, at the owner's request (verdicts in features.json,
   `review_note`: 46 work as described, most with small notes; F005 and
@@ -282,6 +287,48 @@ Features Claude suggests. They are not work until the owner adds them to
   recommended direction for Signal and Corner; the photo picks and
   snapshot are still shown to the owner first, and he can switch
   direction before the build is merged.
+
+## 2026-11-01 — F055 Desktop app shell (Claude, reversible)
+
+- **The builder's server runs inside the window.** The app has no
+  server: a small router (`apps/admin/src/desktop/local-api.ts`) answers
+  the builder's `/api/…` and `/media/…` requests with the same handlers
+  the web admin's Pages Functions call, with the site folder's
+  LocalStore (F054) as `env.store`. A test checks the router has every
+  address and method in `apps/admin/functions/api`. Chosen over a local
+  HTTP server in Rust: no second backend, no open port.
+- **Rust only touches files.** Four commands (read, write, remove, list)
+  scoped to the site folder; anything with `..`, a leading `/`, a drive
+  letter or a backslash is refused. Writes go to a temporary file first,
+  then move into place, so a crash never leaves half a page. Photos are
+  sent as raw bytes, not JSON.
+- **Photos at `/media/<file>`** are served by wrapping Tauri's built-in
+  files (`Context::set_assets`), so `<img src="/media/…">` works in the
+  canvas exactly as on the web, with no custom address scheme.
+- **The site comes from the folder, not the build.** The web admin ships
+  with `content/site.json`, pages and posts built in (it's rebuilt on
+  every change). In the app, `main.tsx` opens the folder first, then
+  loads the builder, which reads them from `desktopContent()`. The web
+  admin is unchanged (null there).
+- **Where sites live:** `Documents/Crust/My site` (F057 adds more sites).
+  An empty folder gets a new site: settings plus a Home page with an h1
+  (commit "Start a new site"). A folder copied in without history gets
+  one (commit "Start the site's history"). `CRUST_SITE_FOLDER` overrides
+  the folder (tests).
+- **Self-check in CI:** `CRUST_SELF_CHECK=1` opens the real window on a
+  virtual screen (xvfb) and checks the builder shows, saving lands in the
+  folder with history, photos show, and outside files are refused. CI
+  runs it on every push (Linux only, normal minutes).
+- **Installers:** `.github/workflows/desktop-release.yml`, started by
+  hand, Mac (Intel + Apple silicon in one) and/or Windows; installers are
+  kept 30 days as workflow downloads. Unsigned (BLOCKED.md). App id
+  `app.crust.desktop`, a placeholder until the owner names the company
+  that signs it. The icon is a placeholder (green tile, white "C", crust
+  line) until there's a brand.
+- **Words:** "Sign out" is hidden in the app and saves say "Page saved"
+  instead of "saved to GitHub". Other screens still mention GitHub or
+  "this browser" (about 70 places); see Proposals → "App wording".
+  Publishing in the app answers "not available yet" until F056.
 
 ## 2026-10-31 — F054 Content store (Claude, reversible)
 

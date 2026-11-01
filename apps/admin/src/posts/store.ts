@@ -6,6 +6,7 @@
 import { checkPost, defaultBlog, migrateRichTextBlocks, sortPosts, type BlogSettings, type Post } from "@crust/blocks";
 import type { Data } from "@puckeditor/core";
 import { getPost, listPosts, type PostSummary } from "../api-client";
+import { desktopContent } from "../desktop/content";
 import { templateBase } from "../templates/local-site";
 
 const PREFIX = "crust:post:";
@@ -16,9 +17,11 @@ interface LocalPost {
   savedToGitHub: boolean;
 }
 
-const bundled: Post[] = Object.values(import.meta.glob<Post>("../../../../content/posts/*.json", { eager: true, import: "default" }));
+const built: Post[] = Object.values(import.meta.glob<Post>("../../../../content/posts/*.json", { eager: true, import: "default" }));
+/** The posts built into the web admin, or the desktop app's site folder (F055). */
+const bundled = (): Post[] => desktopContent()?.posts ?? built;
 /** F048: after "Start from a template" without GitHub, the template's posts stand in for the bundled ones. */
-export const bundledPosts = (): Post[] => templateBase()?.posts ?? bundled;
+export const bundledPosts = (): Post[] => templateBase()?.posts ?? bundled();
 
 function read(slug: string): LocalPost | null {
   try {
