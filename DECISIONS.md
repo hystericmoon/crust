@@ -211,6 +211,15 @@ Features Claude suggests. They are not work until the owner adds them to
   proposal above), and anything for other users (that's M6).
 
 
+## 2026-11-01 — Review fixes and F053 directions (owner)
+
+- Owner, after the review page: "go with all your recommendations".
+  So: option A, one batch with fixes 1–10, added as F069 (fixes 11 and
+  12 ride with the next template work). For F053, Claude builds its
+  recommended direction for Signal and Corner; the photo picks and
+  snapshot are still shown to the owner first, and he can switch
+  direction before the build is merged.
+
 ## 2026-10-31 — F054 Content store (Claude, reversible)
 
 - **Same server code, two places.** The content operations in
