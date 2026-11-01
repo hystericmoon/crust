@@ -2003,3 +2003,12 @@ Workers (100k requests/day), R2 (10 GB). Only optional cost: a custom domain.
 - **Also fixed** in the shared Change dialog: its text was split into
   fragments on separate lines (a grid around mixed text); now two
   sentences. Affects F058's version too.
+- **FTPS that breaks off is tried again (CI fix, 2026-11-01).** CI's
+  FTPS test failed about one run in five: the test server (libunftp)
+  answers "234" to AUTH TLS and switches to TLS a moment later, so a
+  quick client's first TLS bytes can be read as a command and answered
+  in plain text ("InvalidContentType"). Real hosts using libunftp can
+  do the same. Crust now tries a secure connection that broke off up to
+  three times (not a refused certificate, which still stops at once),
+  and no longer calls that a certificate problem. 0 failures in 100
+  local runs (8 in 40 before).
