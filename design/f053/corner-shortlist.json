@@ -1,0 +1,362 @@
+[
+ {
+  "n": 1,
+  "file": "raw/01-table-window-light.jpg",
+  "preview": "previews/01-table-window-light.jpg",
+  "title": "Classy meal for two (Unsplash).jpg",
+  "author": "Brooke Lark brookelark",
+  "licence": "CC0 (Commons; Unsplash photo dated 2016-05-18, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Classy_meal_for_two_(Unsplash).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/JkTv__BqmaA",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Classy_meal_for_two_%28Unsplash%29.jpg",
+  "width": 5716,
+  "height": 3811,
+  "downloaded": {
+   "kind": "thumb1920",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Classy_meal_for_two_%28Unsplash%29.jpg/1920px-Classy_meal_for_two_%28Unsplash%29.jpg"
+  },
+  "suggested_role": "hero",
+  "why": "Soft window daylight, weathered oak table, cream curtains: airy and warm, big calm top half for a navy headline.",
+  "concerns": "Wine glass and stew read 'restaurant' more than 'shop'; crop to the right half for cafés."
+ },
+ {
+  "n": 2,
+  "file": "raw/02-sourdough-board.jpg",
+  "preview": "previews/02-sourdough-board.jpg",
+  "title": "Ben Garratt 2016 (Unsplash).jpg",
+  "author": "Ben Garratt wstn",
+  "licence": "CC0 (Commons; Unsplash photo dated 2016-09-09, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Ben_Garratt_2016_(Unsplash).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/AumHYHRn2AM",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/b/ba/Ben_Garratt_2016_%28Unsplash%29.jpg",
+  "width": 4800,
+  "height": 3204,
+  "downloaded": {
+   "kind": "thumb3840",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Ben_Garratt_2016_%28Unsplash%29.jpg/3840px-Ben_Garratt_2016_%28Unsplash%29.jpg"
+  },
+  "suggested_role": "hero",
+  "why": "Sourdough on a light wood board from above: warm, clean, lots of pale wood around it for text.",
+  "concerns": "Slightly washed-out wood; fine on butter yellow, may want a touch of warmth."
+ },
+ {
+  "n": 3,
+  "file": "raw/03-hands-holding-bread.jpg",
+  "preview": "previews/03-hands-holding-bread.jpg",
+  "title": "Man holding bread (Unsplash).jpg",
+  "author": "Kate Remmer studioktr",
+  "licence": "CC0 (Commons; Unsplash photo dated 2017-02-12, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Man_holding_bread_(Unsplash).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/RZn4_FzNUCY",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Man_holding_bread_%28Unsplash%29.jpg",
+  "width": 5184,
+  "height": 3456,
+  "downloaded": {
+   "kind": "thumb1920",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Man_holding_bread_%28Unsplash%29.jpg/1920px-Man_holding_bread_%28Unsplash%29.jpg"
+  },
+  "suggested_role": "hero",
+  "why": "Hands cradling a loaf in a linen cloth, navy shirt behind: tactile, human, and the blue echoes Corner's navy.",
+  "concerns": "Torso only (no face). Darker background than 01/02, so text goes beside rather than over."
+ },
+ {
+  "n": 4,
+  "file": "raw/04-moka-croissants-flatlay.jpg",
+  "preview": "previews/04-moka-croissants-flatlay.jpg",
+  "title": "Annie Spratt 2016-02-14 (Unsplash OyUUIbN4a3c).jpg",
+  "author": "Annie Spratt anniespratt",
+  "licence": "CC0 (Commons; Unsplash photo dated 2016-02-14, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Annie_Spratt_2016-02-14_(Unsplash_OyUUIbN4a3c).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/OyUUIbN4a3c",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/0/07/Annie_Spratt_2016-02-14_%28Unsplash_OyUUIbN4a3c%29.jpg",
+  "width": 3000,
+  "height": 2000,
+  "downloaded": {
+   "kind": "thumb1920",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Annie_Spratt_2016-02-14_%28Unsplash_OyUUIbN4a3c%29.jpg/1920px-Annie_Spratt_2016-02-14_%28Unsplash_OyUUIbN4a3c%29.jpg"
+  },
+  "suggested_role": "wide",
+  "why": "Moka pot, croissants and coffee bag on oak, from above: morning-café warmth.",
+  "concerns": "Small printed label on the coffee bag and a card with a logo at the top edge: crop the top ~15%."
+ },
+ {
+  "n": 5,
+  "file": "raw/05-market-crates.jpg",
+  "preview": "previews/05-market-crates.jpg",
+  "title": "Vegetable Market (Unsplash).jpg",
+  "author": "Lukas Budimaier lukasbudimaier",
+  "licence": "CC0 (Commons; Unsplash photo dated 2016-05-16, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Vegetable_Market_(Unsplash).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/qUre9NsY_CM",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/9/99/Vegetable_Market_%28Unsplash%29.jpg",
+  "width": 6000,
+  "height": 4000,
+  "downloaded": {
+   "kind": "thumb3840",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Vegetable_Market_%28Unsplash%29.jpg/3840px-Vegetable_Market_%28Unsplash%29.jpg"
+  },
+  "suggested_role": "full-width",
+  "why": "Market crates from above: ochre lemons, melons, potatoes; graphic grid that works as a full-width band.",
+  "concerns": "Handwritten price cards (Spanish) are legible but generic, no brand."
+ },
+ {
+  "n": 6,
+  "file": "raw/06-loaves-and-flowers.jpg",
+  "preview": "previews/06-loaves-and-flowers.jpg",
+  "title": "Bread (Unsplash).jpg",
+  "author": "Kim Cruickshanks helloimkim",
+  "licence": "CC0 (Commons; Unsplash photo dated 2016-12-16, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Bread_(Unsplash).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/ztgcyQILXsM",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Bread_%28Unsplash%29.jpg",
+  "width": 5184,
+  "height": 3456,
+  "downloaded": {
+   "kind": "thumb1920",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Bread_%28Unsplash%29.jpg/1920px-Bread_%28Unsplash%29.jpg"
+  },
+  "suggested_role": "wide",
+  "why": "Dark-crust loaves with yellow flowers: rich, warm, artisan bakery.",
+  "concerns": "Fairly busy; best as a wide in the Products grid, not under text."
+ },
+ {
+  "n": 7,
+  "file": "raw/07-pottery-wheel-hands.jpg",
+  "preview": "previews/07-pottery-wheel-hands.jpg",
+  "title": "Making pottery (Unsplash).jpg",
+  "author": "Jared Sluyter jaredsluyter",
+  "licence": "CC0 (Commons; Unsplash photo dated 2017-03-29, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Making_pottery_(Unsplash).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/znw9Xs5I9ro",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Making_pottery_%28Unsplash%29.jpg",
+  "width": 5519,
+  "height": 3679,
+  "downloaded": {
+   "kind": "thumb3840",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Making_pottery_%28Unsplash%29.jpg/3840px-Making_pottery_%28Unsplash%29.jpg"
+  },
+  "suggested_role": "about",
+  "why": "Hands shaping clay on a wheel from above: the clearest 'maker' image, terracotta tones.",
+  "concerns": "Kept as 3840 px thumbnail (original 5519 px)."
+ },
+ {
+  "n": 8,
+  "file": "raw/08-hands-shaping-clay.jpg",
+  "preview": "previews/08-hands-shaping-clay.jpg",
+  "title": "Pottery and craft (Unsplash).jpg",
+  "author": "Alex Jones alexjones",
+  "licence": "CC0 (Commons; Unsplash photo dated 2015-01-25, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Pottery_and_craft_(Unsplash).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/Tq4YjCa2BSc",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/4/41/Pottery_and_craft_%28Unsplash%29.jpg",
+  "width": 5184,
+  "height": 3456,
+  "downloaded": {
+   "kind": "thumb3840",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Pottery_and_craft_%28Unsplash%29.jpg/3840px-Pottery_and_craft_%28Unsplash%29.jpg"
+  },
+  "suggested_role": "about",
+  "why": "Clay-covered hands on a pale table, shallow focus: quiet and tactile, ideal for About.",
+  "concerns": "Muted, slightly cool; pairs best next to warmer wood shots."
+ },
+ {
+  "n": 9,
+  "file": "raw/09-woodworker-sanding.jpg",
+  "preview": "previews/09-woodworker-sanding.jpg",
+  "title": "Woodworker in a workshop (Unsplash).jpg",
+  "author": "Ian Schneider goian",
+  "licence": "CC0 (Commons; Unsplash photo dated 2016-05-12, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Woodworker_in_a_workshop_(Unsplash).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/IQbC4VU4YPQ",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Woodworker_in_a_workshop_%28Unsplash%29.jpg",
+  "width": 6016,
+  "height": 4016,
+  "downloaded": {
+   "kind": "thumb3840",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Woodworker_in_a_workshop_%28Unsplash%29.jpg/3840px-Woodworker_in_a_workshop_%28Unsplash%29.jpg"
+  },
+  "suggested_role": "about",
+  "why": "Woodworker sanding a walnut board among shavings, seen from behind: workshop and hands.",
+  "concerns": "Back of head/hair visible (no face). Somewhat dark floor."
+ },
+ {
+  "n": 10,
+  "file": "raw/10-tool-wall.jpg",
+  "preview": "previews/10-tool-wall.jpg",
+  "title": "Werkstatt Werkzeuge work shop tools 690038.jpg",
+  "author": "Igor Trepeshchenok",
+  "licence": "Public domain (Commons, PD-self via barnimages.com)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Werkstatt_Werkzeuge_work_shop_tools_690038.jpg",
+  "unsplash_or_origin": "https://barnimages.com/woodworking-tools-in-a-workshop/",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/0/05/Werkstatt_Werkzeuge_work_shop_tools_690038.jpg",
+  "width": 5000,
+  "height": 3333,
+  "downloaded": {
+   "kind": "thumb1920",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Werkstatt_Werkzeuge_work_shop_tools_690038.jpg/1920px-Werkstatt_Werkzeuge_work_shop_tools_690038.jpg"
+  },
+  "suggested_role": "full-width",
+  "why": "Wall of chisels, saws and planes on pale wood: orderly, warm, perfect full-width workshop band.",
+  "concerns": "A bit flat/even; wall sockets bottom-left (crop)."
+ },
+ {
+  "n": 11,
+  "file": "raw/11-plane-wood-shavings.jpg",
+  "preview": "previews/11-plane-wood-shavings.jpg",
+  "title": "Shaving wood (Unsplash).jpg",
+  "author": "fireskystudios.com asthetik",
+  "licence": "CC0 (Commons; Unsplash photo dated 2014-10-28, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Shaving_wood_(Unsplash).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/o14nNEbLa-s",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Shaving_wood_%28Unsplash%29.jpg",
+  "width": 5018,
+  "height": 3049,
+  "downloaded": {
+   "kind": "thumb1920",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Shaving_wood_%28Unsplash%29.jpg/1920px-Shaving_wood_%28Unsplash%29.jpg"
+  },
+  "suggested_role": "wide",
+  "why": "Hand plane with curled wood shavings, very shallow focus: calm, lots of negative space.",
+  "concerns": "Desaturated grey-lavender cast; warm it slightly to match the set."
+ },
+ {
+  "n": 12,
+  "file": "raw/12-pouring-coffee.jpg",
+  "preview": "previews/12-pouring-coffee.jpg",
+  "title": "Nathan Dumlao 2017-05-27 (Unsplash).jpg",
+  "author": "Nathan Dumlao nate_dumlao",
+  "licence": "CC0 (Commons; Unsplash photo dated 2017-05-27, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Nathan_Dumlao_2017-05-27_(Unsplash).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/zTZRZV86GhE",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Nathan_Dumlao_2017-05-27_%28Unsplash%29.jpg",
+  "width": 4480,
+  "height": 6720,
+  "downloaded": {
+   "kind": "thumb1280",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Nathan_Dumlao_2017-05-27_%28Unsplash%29.jpg/1280px-Nathan_Dumlao_2017-05-27_%28Unsplash%29.jpg"
+  },
+  "suggested_role": "tall",
+  "why": "Pouring coffee into a cup on a worn wooden counter, portrait: warm, candid hands.",
+  "concerns": "Darker; Unsplash date 2017-05-27 is close to the June 2017 licence change (still before it)."
+ },
+ {
+  "n": 13,
+  "file": "raw/13-cappuccino-croissant.jpg",
+  "preview": "previews/13-cappuccino-croissant.jpg",
+  "title": "Breakfast on a table (Unsplash).jpg",
+  "author": "Katerina Pavlickova katerinapavlickova",
+  "licence": "CC0 (Commons; Unsplash photo dated 2016-10-04, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Breakfast_on_a_table_(Unsplash).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/rZPFvJGRaXM",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Breakfast_on_a_table_%28Unsplash%29.jpg",
+  "width": 2912,
+  "height": 4368,
+  "downloaded": {
+   "kind": "thumb1280",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Breakfast_on_a_table_%28Unsplash%29.jpg/1280px-Breakfast_on_a_table_%28Unsplash%29.jpg"
+  },
+  "suggested_role": "tall",
+  "why": "Cappuccino and croissant on pale wood, bright daylight, portrait: the lightest tall in the set.",
+  "concerns": "Simple/clean; a little 'stock'. Only 2912x4368 needed is fine."
+ },
+ {
+  "n": 14,
+  "file": "raw/14-carnations-paper.jpg",
+  "preview": "previews/14-carnations-paper.jpg",
+  "title": "Pink carnation bouquets (Unsplash).jpg",
+  "author": "Lizzie amianyuhua",
+  "licence": "CC0 (Commons; Unsplash photo dated 2017-05-09, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Pink_carnation_bouquets_(Unsplash).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/BqYoSL76lGo",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/7/75/Pink_carnation_bouquets_%28Unsplash%29.jpg",
+  "width": 3456,
+  "height": 5184,
+  "downloaded": {
+   "kind": "thumb1920",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Pink_carnation_bouquets_%28Unsplash%29.jpg/1920px-Pink_carnation_bouquets_%28Unsplash%29.jpg"
+  },
+  "suggested_role": "tall",
+  "why": "Carnations wrapped in kraft paper on white linen, portrait: florist/shop feel, soft and fresh.",
+  "concerns": "Wrapping has a tiny printed tag (not legible at web sizes)."
+ },
+ {
+  "n": 15,
+  "file": "raw/15-ceramic-bottles.jpg",
+  "preview": "previews/15-ceramic-bottles.jpg",
+  "title": "Large ceramic bottles (Unsplash).jpg",
+  "author": "Jessica Ruscello jruscello",
+  "licence": "CC0 (Commons; Unsplash photo dated 2016-12-10, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Large_ceramic_bottles_(Unsplash).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/G8vPQ-XVxxY",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/0/07/Large_ceramic_bottles_%28Unsplash%29.jpg",
+  "width": 4733,
+  "height": 3155,
+  "downloaded": {
+   "kind": "thumb3840",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Large_ceramic_bottles_%28Unsplash%29.jpg/3840px-Large_ceramic_bottles_%28Unsplash%29.jpg"
+  },
+  "suggested_role": "wide",
+  "why": "Rows of glazed ceramic bottles in sage and blue: the blue bonus, calm shop-shelf feel.",
+  "concerns": "Cooler than the rest; use once as a wide accent."
+ },
+ {
+  "n": 16,
+  "file": "raw/16-flower-shop-front.jpg",
+  "preview": "previews/16-flower-shop-front.jpg",
+  "title": "Barcelona, Spain (Unsplash oH66az yug).jpg",
+  "author": "Roman Kraft romankraft",
+  "licence": "CC0 (Commons; Unsplash photo dated 2017-02-14, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Barcelona,_Spain_(Unsplash_oH66az_yug).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/_oH66az_yug",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/4/41/Barcelona%2C_Spain_%28Unsplash_oH66az_yug%29.jpg",
+  "width": 7360,
+  "height": 4912,
+  "downloaded": {
+   "kind": "thumb3840",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Barcelona%2C_Spain_%28Unsplash_oH66az_yug%29.jpg/3840px-Barcelona%2C_Spain_%28Unsplash_oH66az_yug%29.jpg"
+  },
+  "suggested_role": "wide",
+  "why": "Flower shop front with crates, ladders and buckets on a street: the 'small shop' image.",
+  "concerns": "Chalkboard has handwritten (Spanish) menu text, no brand; busy, best as wide not hero."
+ },
+ {
+  "n": 17,
+  "file": "raw/17-lemon-lavender-loaf.jpg",
+  "preview": "previews/17-lemon-lavender-loaf.jpg",
+  "title": "Lemon and lavender Bread (Unsplash).jpg",
+  "author": "Annie Spratt anniespratt",
+  "licence": "CC0 (Commons; Unsplash photo dated 2016-09-07, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Lemon_and_lavender_Bread_(Unsplash).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/1HPTYLozDGw",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Lemon_and_lavender_Bread_%28Unsplash%29.jpg",
+  "width": 4000,
+  "height": 3201,
+  "downloaded": {
+   "kind": "thumb3840",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Lemon_and_lavender_Bread_%28Unsplash%29.jpg/3840px-Lemon_and_lavender_Bread_%28Unsplash%29.jpg"
+  },
+  "suggested_role": "journal",
+  "why": "Lemon-lavender loaf on a cooling rack, linen and lemons: bright, homely journal cover.",
+  "concerns": "Flat-lay with cooler white; embroidered cloth edge is fussy."
+ },
+ {
+  "n": 18,
+  "file": "raw/18-moka-pour-blue-cup.jpg",
+  "preview": "previews/18-moka-pour-blue-cup.jpg",
+  "title": "Coffee from a steel kettle (Unsplash).jpg",
+  "author": "Annie Spratt anniespratt",
+  "licence": "CC0 (Commons; Unsplash photo dated 2016-02-14, before the June 2017 licence change)",
+  "source_page_url": "https://commons.wikimedia.org/wiki/File:Coffee_from_a_steel_kettle_(Unsplash).jpg",
+  "unsplash_or_origin": "https://unsplash.com/photos/CSQQ6_T0sks",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Coffee_from_a_steel_kettle_%28Unsplash%29.jpg",
+  "width": 3000,
+  "height": 2000,
+  "downloaded": {
+   "kind": "thumb1920",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Coffee_from_a_steel_kettle_%28Unsplash%29.jpg/1920px-Coffee_from_a_steel_kettle_%28Unsplash%29.jpg"
+  },
+  "suggested_role": "journal",
+  "why": "Coffee pouring from a moka pot into a blue-striped cup: warm with a navy-blue note, journal cover.",
+  "concerns": "Only 3000x2000; newspaper behind (out of focus, not legible)."
+ }
+]

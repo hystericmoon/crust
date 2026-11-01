@@ -5,7 +5,7 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-01 (Jakarta): F069 built; F053 photo picks in progress. Before that, 2026-10-31 night: live-site publish checked (run 3
+Last updated: 2026-11-01 afternoon (Jakarta): #42–#44 merged by the owner (main green); F053 photo shortlists saved in design/f053/, snapshot next. Before that, 2026-10-31 night: live-site publish checked (run 3
 succeeded); M6/M7 written (docs/milestone-6.md, -7.md, F054–F068); F053
 photo hunts and the delegated review running. Branch
 `claude/peaceful-shannon-x32vlp`, PR #42.
@@ -106,19 +106,39 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
 "Free Crust, desktop app, M6 and M7 approved". In order:
 
-1. **F053 Signal and Corner with real photos** (features.json). Same
-   process as F052 (DECISIONS.md "F052 photos and snapshot"): CC0 photo
-   picks (Wikimedia Commons API, NegativeSpace category pages,
-   Skitterphoto: full size via its download form with the page's
-   _token; StockSnap/Pexels refuse automated requests here), comparison
-   page, design snapshot with directions per template, owner approves,
-   build in `scripts/starter-templates/starter.ts` (generalise
+1. **F053 Signal and Corner with real photos** (branch
+   `f053-signal-corner-photos` from main; `claude/peaceful-shannon-x32vlp`
+   was merged in #42 and can't be force-pushed, so don't reuse it).
+   **Photo shortlists are done and saved** (all CC0, Wikimedia Commons,
+   licence checked per file):
+   - Corner: `design/f053/corner-shortlist.json` (18, with source and
+     original URLs) and `design/f053/corner-contact.jpg`. Claude's
+     direction idea: a split opening (headline on butter yellow, photo
+     02 or 03 beside it), products as cards with photos (06, 04, 13,
+     17), talls 12/14, full-width 10 or 05, About 07, journal 18,
+     Contact 16 (shop front).
+   - Signal: `design/f053/signal-picks.json` (18) and
+     `design/f053/signal-contact.jpg`. Hero candidates 01/02/03
+     (amber city, amber stage crowd, band silhouettes), dark full-bleed
+     opening under a dark veil, ImageOverlay tiles for work.
+   - Commons refuses originals with HTTP 429 from here: download
+     large thumbnails (`iiurlwidth` 1920–2400) slowly, with a real
+     User-Agent; crop/resize to ≤1920 px, strip metadata, credit in
+     `scripts/starter-templates/photos/CREDITS.md`.
+   Next: comparison page + design snapshot with two directions per
+   template (owner preference: options drawn as UI, recommendation
+   marked). **The owner pre-approved Claude's recommended direction**
+   (2026-11-01, "go with all your recommendations"): send the page,
+   then build it without waiting; he can switch before the PR merges.
+   Build in `scripts/starter-templates/starter.ts` (generalise
    `photos` per spec; Harbour's `homeWithPhotos`/`workWithPhotos` are
-   Harbour-shaped), `npm run build:starters`, done_check.
+   Harbour-shaped), `npm run build:starters`, done_check. Fixes 11
+   (template check sees layout) and 12 (Harbour polish) from the review
+   ride along if they fit.
 2. ~~Write Milestones 6 and 7~~ done 2026-10-31 (F054–F068; F054 depends
    on F048 so M6 can start while F053 waits for the owner).
-   **F054 Content store done** (branch `f054-content-store`, PR #43,
-   stacked on #42). Next: **F055 Desktop app shell** (Tauri 2; the app
+   **F054 Content store done and merged** (PR #43). After F053:
+   **F055 Desktop app shell** (Tauri 2; the app
    gives LocalStore a Folder backed by Tauri file commands; see
    `apps/admin/server/local-store.ts` and DECISIONS "F054").
 3. ~~Review the 48 `needs_review` features~~ done 2026-10-31: all have
@@ -126,8 +146,8 @@ The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
    Proposals "From the review"; page for the owner
    https://claude.ai/artifact/53YM8oVKV9XrECZJSNHo1J
    (`design/review-2026-10-31.html`). Owner chose A (2026-11-01, "go
-   with all your recommendations"): **F069 Review fixes built**, branch
-   `f069-review-fixes` (stacked on F054), done_check exit 0. Fixes 11–12
+   with all your recommendations"): **F069 Review fixes built and
+   merged** (PR #44), done_check exit 0. Fixes 11–12
    ride with the next template work. Leftover: the "+" between sections
    overlaps the Section toolbar slightly (DECISIONS F069).
 4. ~~Live site publish~~ checked: run 3 succeeded, site up.

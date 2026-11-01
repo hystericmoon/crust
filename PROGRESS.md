@@ -547,4 +547,8 @@ to "Log".
   a blog post (text in the column); Start from a template → Harbour (the
   headline is visible); select a Section and use "Make linked" (no
   sideways jump); rename a page that's in the menu (menu link follows).
+- 2026-11-01 — Owner merged #42, #43, #44 (asked Claude: "merge #42, #43
+  and #44 in order"); main CI, preview and contact Worker deploy green.
+  F053 photo shortlists saved to design/f053/; the delegated review's
+  full notes to design/review-2026-10-31/.
 
