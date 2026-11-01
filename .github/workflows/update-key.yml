@@ -1,0 +1,80 @@
+# F061: makes the desktop app's update key, once, when started by hand
+# (Actions → Make update key → Run workflow). Updates are signed with the
+# key's secret half and the app checks them with its public half, so nobody
+# else can push an update to people's computers. The secret half and its
+# password come out as a download that disappears after a day; the owner
+# pastes them into GitHub's secret settings (docs/setup-updates.md). They
+# never go into the repository or the logs.
+name: Make update key
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "make a new key". A new key means copies of Crust installed with an older key stop getting updates.'
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  TAURI_CLI_VERSION: 2.12.4
+
+jobs:
+  key:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check the confirmation
+        env:
+          CONFIRM: ${{ inputs.confirm }}
+        run: |
+          if [ "$CONFIRM" != "make a new key" ]; then
+            echo "::error::Type exactly: make a new key"
+            exit 1
+          fi
+
+      - name: Make the key
+        id: key
+        run: |
+          mkdir update-key
+          password=$(openssl rand -base64 24)
+          echo "::add-mask::$password"
+          npx --yes "@tauri-apps/cli@$TAURI_CLI_VERSION" signer generate --ci -p "$password" -w update-key/private-key.txt > /dev/null
+          printf '%s' "$password" > update-key/password.txt
+          mv update-key/private-key.txt.pub update-key/public-key.txt
+          echo "public=$(cat update-key/public-key.txt)" >> "$GITHUB_OUTPUT"
+
+      - name: Keep the key for a day
+        uses: actions/upload-artifact@v4
+        with:
+          name: update-key
+          path: update-key/
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Write job summary
+        env:
+          PUBLIC_KEY: ${{ steps.key.outputs.public }}
+        run: |
+          {
+            echo "### The update key is made"
+            echo ""
+            echo "1. Download **update-key** below (Artifacts) and open it."
+            echo "2. Settings → Secrets and variables → Actions → Secrets: add"
+            echo "   **TAURI_SIGNING_PRIVATE_KEY** (paste private-key.txt) and"
+            echo "   **TAURI_SIGNING_PRIVATE_KEY_PASSWORD** (paste password.txt)."
+            echo "3. Same page, Variables: add **CRUST_UPDATE_PUBKEY** with this public half:"
+            echo ""
+            echo '```'
+            echo "$PUBLIC_KEY"
+            echo '```'
+            echo ""
+            echo "4. Keep private-key.txt and password.txt in your password manager, then delete the download."
+            echo "   Lose them and installed copies of Crust can't be updated any more."
+          } >> "$GITHUB_STEP_SUMMARY"

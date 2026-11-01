@@ -2070,3 +2070,71 @@ Workers (100k requests/day), R2 (10 GB). Only optional cost: a custom domain.
 - **Leftover:** the "Adding photos (3 of 10)" line can pause for a
   moment while large photos are prepared (the same as Start from a
   template).
+
+## 2026-11-02 — F061 Updates built in (Claude, reversible)
+
+- **Tauri's updater** (`tauri-plugin-updater`, MIT OR Apache-2.0), driven
+  from our own commands (`update_status`, `update_check`,
+  `update_download`, `update_restart` in `src/updates.rs`). The plugin's
+  own JavaScript commands aren't allowed in the window (no `updater:`
+  permission), so only our code decides when to download and install.
+- **Signed, and strict about it.** Every update is checked against the
+  key's public half before it's kept, and `requireSignedVersion` is on: a
+  signature must name the version the feed announces, so an old release
+  can't be passed off as a new one. Tested with keys made in the tests
+  and with a file signed by the real `tauri signer` (throwaway key; only
+  its public half and the signature are in the test).
+- **No key, no updates.** The public half is built in at release time
+  (repository variable `CRUST_UPDATE_PUBKEY`). A copy built without it
+  never looks ("This copy of Crust doesn't update itself"). Test builds
+  (debug) may point at another feed and key with `CRUST_UPDATE_URL` /
+  `CRUST_UPDATE_PUBKEY` when they start; release builds can't be
+  redirected that way.
+- **When it looks:** 15 seconds after opening, then at most once a day
+  (checked hourly while open; the last look is remembered in the
+  window's storage). By itself it stays quiet when offline or up to date;
+  "Check for updates" (Sites screen → Crust card) shows every outcome.
+- **Download in the background, install on quit.** A found update
+  downloads straight away; it's installed when Crust quits (Tauri's
+  `RunEvent::Exit`), so the next opening is the new version, like
+  browsers do. Why: an update never interrupts work (user control,
+  Nielsen #3), and nothing has to be decided. "Restart now" is only a
+  shortcut. On Windows the installer runs in passive mode (a small
+  progress window). If Site settings has unsaved changes, "Restart now"
+  says so first and turns into "Restart anyway" (it asks the page's own
+  leave warning, so it can't drift from it).
+- **Where it shows:** a banner on the Pages and Sites screens ("Crust
+  0.2.0 is ready", Restart now / What's new / Later) and the Crust card
+  on the Sites screen. Not over the builder: a floating notice there
+  could cover what someone is working on or has focused (WCAG 2.2
+  2.4.11), and it isn't needed because the update installs on quit
+  anyway. "Later" hides it until the next opening; then the Crust card
+  offers the buttons. The card's line is a polite live region (the
+  screen keeps one `status`).
+- **What's new** is plain lines (list marks and headings stripped, at
+  most 20 lines of 300 characters), shown as a list in a dialog with the
+  release date. Written per version in `crates/crust-desktop/whats-new.json`;
+  releasing fails if the version has no entry.
+- **Downloads site:** Cloudflare Pages project `crust-downloads` (free),
+  because a private repository's releases can't be downloaded publicly.
+  `scripts/updates-site.ts` makes `updates/latest.json` (Tauri's static
+  feed format), `<version>/<files>`, a download page, and `_headers`
+  (feed never cached). The "Desktop installers" workflow gained "Put on
+  the downloads site" (off by default, only with both platforms, so
+  every computer finds its update). If Cloudflare gives the project
+  another address, the run stops and says to set `CRUST_UPDATE_FEED`.
+  Cloudflare Pages takes files up to 25 MB; today's installers are well
+  under, but a much bigger app would need another home for them.
+- **The key:** a "Make update key" workflow (by hand, after typing
+  "make a new key") makes it with the same Tauri tool version, masks the
+  password, and hands the secret half over as a download that expires
+  after a day; the owner pastes it into secrets (`docs/setup-updates.md`).
+  The secret half never goes into the repository, the logs or chat.
+- **Builds:** with the key secret set, the installer build adds
+  `createUpdaterArtifacts` (the Mac `.app.tar.gz` and the Windows
+  installer, each with a `.sig`); a secret without the public variable
+  (or the other way round) stops the build with a plain message.
+- **Not done:** the Linux AppImage/deb aren't on the downloads site
+  (the installers workflow builds Mac and Windows only). Never tried
+  end to end with a real release (needs the key and a ~150-minute
+  installers run; the owner's call).

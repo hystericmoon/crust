@@ -29,7 +29,7 @@ const samplePost = {
 };
 // [label, address, post to seed, block to select first (F042: the rich text editor), buttons to press (F048),
 //  F058: { app: run as the desktop app (scripts/fake-tauri.js) with this host state, wait: what to wait for instead of the canvas,
-//  F060: firstRun: a brand new Crust (the welcome screen) }]
+//  F060: firstRun: a brand new Crust (the welcome screen), F061: update: "available" }]
 const screens = [
   ["page builder", "/#/edit?path=/", null, null],
   ["page builder, Text block selected", "/#/edit?path=/", null, '[data-puck-component^="Text"]'],
@@ -47,6 +47,10 @@ const screens = [
   ["app change or disconnect, SFTP", "/#/", null, null, ['button:has-text("Change or disconnect")', "dialog[open]"], { app: "ftp", wait: ".hp-where" }],
   // F060: a brand new Crust opens on the welcome screen.
   ["app welcome screen (first run)", "/", null, null, [], { app: "none", firstRun: true, wait: ".fr-card iframe" }],
+  // F061: an update found from the Sites screen: the banner, the Crust card, and What's new.
+  ["app Sites screen, update ready", "/#/sites", null, null, ['button:has-text("Check for updates")'], { app: "none", update: "available", wait: ".up-about" }],
+  ["app What's new dialog", "/#/sites", null, null, ['button:has-text("Check for updates")', '.up-banner button:has-text("What\'s new")', "dialog[open]"], { app: "none", update: "available", wait: ".up-about" }],
+  ["app Pages screen, update ready", "/#/sites", null, null, ['button:has-text("Check for updates")', ".st-back"], { app: "none", update: "available", wait: ".up-about" }],
   ["app welcome screen, Blank picked", "/", null, null, ['label:has-text("Blank")'], { app: "none", firstRun: true, wait: ".fr-card iframe" }],
 ];
 const fakeApp = await readFile(new URL("./fake-tauri.js", import.meta.url), "utf8");
@@ -55,9 +59,9 @@ const server = await serve(distDir);
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 let failures = 0;
 try {
-  for (const [label, hash, post, select, clicks = [], { app, wait, firstRun } = {}] of screens) {
+  for (const [label, hash, post, select, clicks = [], { app, wait, firstRun, update } = {}] of screens) {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    if (app) await page.addInitScript(`window.__FAKE_TAURI__ = ${JSON.stringify({ host: app, firstRun })};\n${fakeApp}`);
+    if (app) await page.addInitScript(`window.__FAKE_TAURI__ = ${JSON.stringify({ host: app, firstRun, update })};\n${fakeApp}`);
     if (post) {
       await page.addInitScript((p) => {
         localStorage.setItem(`crust:post:${p.slug}`, JSON.stringify({ post: p, updatedAt: new Date().toISOString(), savedToGitHub: false }));

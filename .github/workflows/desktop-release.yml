@@ -3,6 +3,12 @@
 # repository is private, so Mac minutes count 10× and Windows 2× against
 # the free monthly minutes; one run is roughly 150 counted minutes. Builds
 # are unsigned until the owner sets up signing (BLOCKED.md).
+#
+# F061: with the update key set (secret TAURI_SIGNING_PRIVATE_KEY, its
+# password TAURI_SIGNING_PRIVATE_KEY_PASSWORD, and the public half as the
+# variable CRUST_UPDATE_PUBKEY; docs/setup-updates.md), the build also makes
+# signed update files, and "Put on the downloads site" uploads installers and
+# the update feed to the free Cloudflare Pages site the app updates from.
 name: Desktop installers
 
 on:
@@ -13,6 +19,10 @@ on:
         type: choice
         default: both
         options: [both, mac, windows]
+      downloads:
+        description: "Put on the downloads site (needs both; everyone with Crust gets this version)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -20,6 +30,11 @@ permissions:
 concurrency:
   group: desktop-release
   cancel-in-progress: false
+
+env:
+  DOWNLOADS_PROJECT: crust-downloads
+  PRODUCTION_BRANCH: main
+  WRANGLER_VERSION: 4.145.0
 
 jobs:
   build:
@@ -42,8 +57,11 @@ jobs:
       - name: Skip if not asked for
         id: wanted
         shell: bash
+        env:
+          PLATFORMS: ${{ inputs.platforms }}
+          NAME: ${{ matrix.name }}
         run: |
-          if [ "${{ inputs.platforms }}" = "both" ] || [ "${{ inputs.platforms }}" = "${{ matrix.name }}" ]; then
+          if [ "$PLATFORMS" = "both" ] || [ "$PLATFORMS" = "$NAME" ]; then
             echo "build=true" >> "$GITHUB_OUTPUT"
           else
             echo "build=false" >> "$GITHUB_OUTPUT"
@@ -70,9 +88,37 @@ jobs:
         if: steps.wanted.outputs.build == 'true'
         run: npm ci
 
+      - name: Check the update key
+        if: steps.wanted.outputs.build == 'true'
+        shell: bash
+        env:
+          HAS_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY != '' }}
+          CRUST_UPDATE_PUBKEY: ${{ vars.CRUST_UPDATE_PUBKEY }}
+        run: |
+          if [ "$HAS_KEY" = "true" ] && [ -n "$CRUST_UPDATE_PUBKEY" ]; then
+            echo "Update key found: this build updates itself."
+          elif [ "$HAS_KEY" != "true" ] && [ -z "$CRUST_UPDATE_PUBKEY" ]; then
+            echo "::notice::No update key yet (BLOCKED.md): this build won't update itself."
+          else
+            echo "::error::The update key needs both halves: the secret TAURI_SIGNING_PRIVATE_KEY and the variable CRUST_UPDATE_PUBKEY. See docs/setup-updates.md."
+            exit 1
+          fi
+
       - name: Build the installer
         if: steps.wanted.outputs.build == 'true'
-        run: npm run desktop:build -- --target ${{ matrix.target }}
+        shell: bash
+        env:
+          TARGET: ${{ matrix.target }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          CRUST_UPDATE_PUBKEY: ${{ vars.CRUST_UPDATE_PUBKEY }}
+          CRUST_UPDATE_FEED: ${{ vars.CRUST_UPDATE_FEED }}
+        run: |
+          if [ -n "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            npm run desktop:build -- --target "$TARGET" --config '{"bundle":{"createUpdaterArtifacts":true}}'
+          else
+            npm run desktop:build -- --target "$TARGET"
+          fi
 
       - name: Keep the installer
         if: steps.wanted.outputs.build == 'true'
@@ -82,5 +128,96 @@ jobs:
           path: |
             target/${{ matrix.target }}/release/bundle/dmg/*.dmg
             target/${{ matrix.target }}/release/bundle/nsis/*.exe
+            target/${{ matrix.target }}/release/bundle/nsis/*.exe.sig
+            target/${{ matrix.target }}/release/bundle/macos/*.app.tar.gz
+            target/${{ matrix.target }}/release/bundle/macos/*.app.tar.gz.sig
           if-no-files-found: error
           retention-days: 30
+
+  # F061: the downloads site: installers, what's new and the update feed
+  # (scripts/updates-site.ts), on the Cloudflare Pages project
+  # "crust-downloads". Only when asked, and only with both installers, so
+  # every computer finds its update.
+  downloads:
+    needs: build
+    if: inputs.downloads && inputs.platforms == 'both'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CRUST_UPDATE_FEED: ${{ vars.CRUST_UPDATE_FEED }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Fetch the installers
+        uses: actions/download-artifact@v4
+        with:
+          path: built
+
+      - name: Check Cloudflare secrets
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID is not set."
+            exit 1
+          fi
+
+      - name: Create Pages project if missing
+        id: project
+        run: |
+          api="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects"
+          auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          status=$(curl -sS -o project.json -w '%{http_code}' -H "$auth" "$api/$DOWNLOADS_PROJECT")
+          if [ "$status" = "404" ]; then
+            echo "Creating Pages project $DOWNLOADS_PROJECT"
+            body=$(jq -n --arg n "$DOWNLOADS_PROJECT" --arg b "$PRODUCTION_BRANCH" '{name: $n, production_branch: $b}')
+            status=$(curl -sS -o project.json -w '%{http_code}' -X POST -H "$auth" \
+              -H "Content-Type: application/json" --data "$body" "$api")
+          fi
+          if [ "$status" != "200" ]; then
+            echo "::error::Cloudflare API returned $status. Check that the token has 'Cloudflare Pages: Edit'."
+            jq -c '.errors' project.json || true
+            exit 1
+          fi
+          echo "subdomain=$(jq -r '.result.subdomain' project.json)" >> "$GITHUB_OUTPUT"
+          rm project.json
+
+      - name: Check the update address
+        env:
+          SUBDOMAIN: ${{ steps.project.outputs.subdomain }}
+        run: |
+          actual="https://$SUBDOMAIN/updates/latest.json"
+          built_in="${CRUST_UPDATE_FEED:-https://crust-downloads.pages.dev/updates/latest.json}"
+          if [ "$actual" != "$built_in" ]; then
+            echo "::error::The app looks for updates at $built_in, but the downloads site is at $actual. Set the repository variable CRUST_UPDATE_FEED to $actual and run this again."
+            exit 1
+          fi
+
+      - name: Put together the downloads site
+        env:
+          CRUST_DOWNLOADS_URL: https://${{ steps.project.outputs.subdomain }}
+        run: npx tsx scripts/updates-site.ts built dist/downloads
+
+      - name: Upload to Cloudflare Pages
+        run: |
+          npx --yes "wrangler@$WRANGLER_VERSION" pages deploy dist/downloads \
+            --project-name "$DOWNLOADS_PROJECT" --branch "$PRODUCTION_BRANCH" --commit-dirty=true
+
+      - name: Write job summary
+        env:
+          SUBDOMAIN: ${{ steps.project.outputs.subdomain }}
+        run: |
+          {
+            echo "### Downloads site updated"
+            echo ""
+            echo "Download page: https://$SUBDOMAIN/"
+            echo "Everyone with Crust gets this version the next time it checks (at most a day)."
+          } >> "$GITHUB_STEP_SUMMARY"

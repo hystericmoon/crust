@@ -5,6 +5,7 @@
  */
 import { useCallback, useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { Dialog, focusAfterDialog } from "../pages/PageActions";
+import { AboutCrust, UpdateBanner } from "../updates/UpdateNotice";
 import { Icon } from "../settings/icons";
 import { copyName, siteNameProblem, tidyName, type DeletedSite, type SiteSummary, type SitesApi } from "./sites";
 
@@ -93,6 +94,7 @@ export function SitesScreen({ api, openName }: SitesScreenProps) {
         <p className="pg-sr" role="status">
           {status}
         </p>
+        <UpdateBanner />
         <section className="st-card" aria-labelledby="sites-h">
           <h2 id="sites-h" ref={headingRef} tabIndex={-1}>
             Sites
@@ -163,6 +165,8 @@ export function SitesScreen({ api, openName }: SitesScreenProps) {
             }}
           />
         ) : null}
+
+        <AboutCrust />
       </main>
 
       {action?.kind === "new" ? (

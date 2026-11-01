@@ -11,6 +11,7 @@ import { localPublisher, setDesktopPublisher } from "./local-publish";
 import { hostsApi, setDesktopHosts, type Listen } from "../publish/hosts";
 import { tauriFolder, type Invoke } from "./tauri-folder";
 import { setSitesInvoke } from "../sites/sites";
+import { setDesktopUpdates, startUpdates, Updater, updatesApi } from "../updates/updates";
 import { checkFirstRun, setFirstRunContext, type FirstRunContext } from "../first-run/first-run";
 
 /** True when the builder runs in the desktop app's window. */
@@ -105,6 +106,10 @@ export async function startDesktop(invoke?: Invoke, listen?: Listen): Promise<De
   setDesktopPublisher(publisher);
   // F058: and to Cloudflare Pages or Netlify.
   setDesktopHosts(hostsApi(call, hear, (hostUrl) => publisher.buildToPublish(hostUrl)));
+  // F061: and keeps itself up to date.
+  const updater = new Updater(updatesApi(call, hear));
+  setDesktopUpdates(updater);
+  startUpdates(updater);
   window.fetch = routedFetch(window.fetch.bind(window), localApi({ store, localUser: "you" }), window.location.href);
   document.title = `${content.site.name} · Crust`;
   return content;
