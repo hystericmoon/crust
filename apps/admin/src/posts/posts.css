@@ -4,6 +4,8 @@
 .po-row:first-child { border-top: 0; }
 .po-main { display: flex; flex-direction: column; gap: 2px; flex: 1 1 260px; min-width: 0; }
 .po-title { font-weight: 600; overflow-wrap: anywhere; }
+/* F069: the same quiet links as the Pages list, not the browser's blue. */
+.po-title, .po-lede a { color: var(--st-text); text-underline-offset: 0.2em; }
 .po-meta { color: var(--st-muted); font-size: 0.875rem; }
 .po-confirm { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .po-danger { background: var(--st-danger); border-color: var(--st-danger); color: #fff; }

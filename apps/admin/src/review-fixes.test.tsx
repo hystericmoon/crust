@@ -8,6 +8,7 @@ import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PendingChanges } from "./api-client";
 import { KeyboardCanvas, KeyboardRoot, skipToPage } from "./keyboard/KeyboardEditing";
+import { planInsert, ROOT_ZONE } from "./keyboard/moves";
 import { fixPuckChrome, installPuckChromeFixes } from "./keyboard/puck-chrome";
 import { Dialog } from "./pages/PageActions";
 import { withoutDraftPages } from "./publish/changes";
@@ -262,6 +263,19 @@ describe("review-fixes 6: failed saves and publishes (F006, F008)", () => {
 });
 
 describe("review-fixes 10: polish", () => {
+  it("adds a block with nothing selected at the end of the last Section, not outside it (F032)", () => {
+    const cfg = config as unknown as Config;
+    const section = (id: string, content: unknown[] = []) => ({ type: "Section", props: { ...cfg.components.Section!.defaultProps, id, content } });
+    const data = { root: { props: {} }, content: [section("a"), section("b", [{ type: "Heading", props: { id: "h", text: "Hi", level: "h2" } }])] } as never;
+    const plan = planInsert(data, cfg, "Accordion", null, "acc-1");
+    expect(plan?.action).toMatchObject({ destinationZone: "b:content", destinationIndex: 1 });
+    expect(plan?.announcement).toMatch(/ added to Section, position 2 of 2\./);
+    // A Section itself still goes on the page, and so does anything when the page doesn't end with a Section.
+    expect(planInsert(data, cfg, "Section", null, "s-new")?.action).toMatchObject({ destinationZone: ROOT_ZONE, destinationIndex: 2 });
+    const endsWithText = { root: { props: {} }, content: [section("a"), { type: "Text", props: { id: "t", text: "x" } }] } as never;
+    expect(planInsert(endsWithText, cfg, "Image", null, "i")?.action).toMatchObject({ destinationZone: ROOT_ZONE, destinationIndex: 2 });
+  });
+
   it("counts a page with a browser draft once in Publish (F022)", async () => {
     const changes: PendingChanges = {
       lastPublish: { at: "2026-10-28T09:00:00Z", url: "#" },

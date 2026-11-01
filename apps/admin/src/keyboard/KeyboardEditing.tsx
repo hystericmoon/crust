@@ -56,7 +56,7 @@ const shortcuts: [string, string][] = [
   ["Alt + ←", "Move the block out of its section or column"],
   ["Alt + →", "Move the block into the section or columns above it"],
   ["Alt + Shift + ← / →", "Move the block to the previous or next column"],
-  ["Enter", "In the block list: add that block after the selected one (or at the end of the page)"],
+  ["Enter", "In the block list: add that block after the selected one (or at the end of the last section)"],
   ["Layouts", "Top-bar button: add a designed section or a whole page after the selected section (or at the end)"],
   ["Escape", "Deselect"],
   ["?", "Show these shortcuts"],

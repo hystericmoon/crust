@@ -39,6 +39,8 @@ if (q) {
     }));
     const n = found.results.length;
     status.textContent = n ? n + (n === 1 ? " result" : " results") + " for “" + q + "”" + (n > 20 ? ", showing the first 20." : ".") : "No results for “" + q + "”. Try another word.";
+    // F069: the page reloaded with focus at the top; take keyboard and screen-reader users to the count.
+    status.focus();
   } catch {
     status.textContent = "Search isn't available right now. Please use the menu.";
   }
@@ -52,7 +54,7 @@ export function renderSearchPage(site: Site, baseCss: string, options: RenderOpt
 <label for="cr-search-q">Search this site</label>
 <div class="cr-search-row"><input id="cr-search-q" name="q" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search"><button class="cr-button cr-button-primary" type="submit">Search</button></div>
 </form>
-<p id="cr-search-status" class="cr-search-status" role="status" aria-live="polite"></p>
+<p id="cr-search-status" class="cr-search-status" role="status" aria-live="polite" tabindex="-1"></p>
 <ol id="cr-search-results" class="cr-search-results"></ol>
 <noscript><p>Search needs JavaScript. Please use the menu to find pages.</p></noscript>
 </div></section>

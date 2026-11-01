@@ -105,7 +105,7 @@ export function PostList({ siteName, githubOn, language }: { siteName: string; g
           <h2 id="posts-h" ref={headingRef} tabIndex={-1}>
             Posts
           </h2>
-          <p className="st-lede">
+          <p className="st-lede po-lede">
             News, notes or portfolio pieces, newest first, listed at /blog/ with an RSS feed. They go live when you{" "}
             <a href="#/?focus=publish">publish</a>.
           </p>

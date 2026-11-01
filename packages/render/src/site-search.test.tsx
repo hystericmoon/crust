@@ -21,7 +21,7 @@ describe("site search (F039)", () => {
     expect(html).toContain('<form class="cr-search-form" role="search" action="/search/" method="get">');
     expect(html).toContain('<label for="cr-search-q">Search this site</label>');
     expect(html).toContain('<input id="cr-search-q" name="q" type="search"');
-    expect(html).toContain('<p id="cr-search-status" class="cr-search-status" role="status" aria-live="polite"></p>');
+    expect(html).toContain('<p id="cr-search-status" class="cr-search-status" role="status" aria-live="polite" tabindex="-1"></p>');
     expect(html).toContain('import("/pagefind/pagefind.js")');
     expect(html).toContain("<noscript>");
     expect(html).toContain('<meta name="robots" content="noindex">');

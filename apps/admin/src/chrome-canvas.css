@@ -2,8 +2,17 @@
    say they're edited elsewhere. Puck copies this into the canvas iframe. */
 .cc-chrome { position: relative; outline: 1px dashed rgb(67 56 202 / 0.45); outline-offset: -1px; }
 .cc-chrome > [inert] { opacity: 0.92; }
-.cc-chrome::after {
-  content: attr(data-part); position: absolute; right: 8px; top: 8px; z-index: 60;
-  padding: 2px 8px; border-radius: 4px; background: #4338ca; color: #fff;
+/* F069: the label is a thin strip above the header or footer, in the flow,
+   so it never covers the Home link or the phone Menu button. */
+.cc-chrome::before {
+  content: attr(data-part); display: block; padding: 2px 8px; text-align: right;
+  background: #eef2ff; color: #3730a3;
   font: 600 12px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; pointer-events: none;
+}
+
+/* F069: page-level blocks outside a Section sit in the page column on the
+   canvas too, as they're published (packages/render, pageLevel). */
+[data-puck-dropzone="root:default-zone"] > [data-puck-component]:not(section):not(.cr-linked) {
+  /* Where the page column's text starts: the gutter, or more on wide canvases. */
+  margin-inline: max(var(--cr-space-sm), calc((100% - var(--cr-max-width)) / 2 + var(--cr-space-sm)));
 }

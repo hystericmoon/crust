@@ -35,8 +35,38 @@ function ComponentShell({ render, props, editing }: { render: AnyComponentConfig
 export const withMedia = (node: ReactNode, media: MediaItem[] | undefined) =>
   media ? <MediaContext.Provider value={new Map(media.map((m) => [m.file, m]))}>{node}</MediaContext.Provider> : node;
 
+/** Blocks that span the whole width themselves; everything else needs the page column. */
+const FULL_WIDTH = new Set(["Section", "LinkedSection"]);
+
+/**
+ * F069: page-level blocks outside a Section (a post's body text, a block
+ * dropped between sections) go inside the page column, so their text
+ * doesn't touch the screen edge. Next to each other, they share one column.
+ */
+function pageLevel(items: ComponentData[], editing = false): ReactNode[] {
+  const out: ReactNode[] = [];
+  let run: ComponentData[] = [];
+  const flush = () => {
+    if (!run.length) return;
+    out.push(
+      <div key={`column-${out.length}`} className="cr-container cr-page-column">
+        {run.map((item) => renderItem(item, editing))}
+      </div>,
+    );
+    run = [];
+  };
+  for (const item of items) {
+    if (FULL_WIDTH.has(item.type)) {
+      flush();
+      out.push(renderItem(item, editing));
+    } else run.push(item);
+  }
+  flush();
+  return out;
+}
+
 export function renderBody(data: Data, media?: MediaItem[], forms?: FormsSetup): string {
-  const blocks = withMedia(<>{data.content.map((item) => renderItem(item))}</>, media);
+  const blocks = withMedia(<>{pageLevel(data.content)}</>, media);
   // F037: contact forms post to the Worker and come back to this page.
   return renderToStaticMarkup(forms ? <FormsContext.Provider value={forms}>{blocks}</FormsContext.Provider> : blocks);
 }
@@ -46,7 +76,7 @@ export function renderBody(data: Data, media?: MediaItem[], forms?: FormsSetup):
  * gallery's cards (F041): photos without an address show as placeholders
  * instead of being left out. Never used for publishing.
  */
-export const renderPreview = (data: Data): string => renderToStaticMarkup(<>{data.content.map((item) => renderItem(item, true))}</>);
+export const renderPreview = (data: Data): string => renderToStaticMarkup(<>{pageLevel(data.content, true)}</>);
 
 /** The contact form setup for one page, when the publish step has one (F037). */
 export const formsFor = (options: RenderOptions, path: string): FormsSetup | undefined =>
