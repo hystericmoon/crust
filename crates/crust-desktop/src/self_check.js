@@ -67,6 +67,24 @@
       refused = String(e).includes("outside the site folder");
     }
     check("files outside the site folder are refused", refused);
+
+    // F057: several sites. A second site is made, written to by name, renamed,
+    // copied, deleted and restored, without the open site changing.
+    const { id: openId } = await invoke("site_info");
+    const other = await invoke("sites_create", { name: "Self check two" });
+    await invoke("site_write", new TextEncoder().encode('{"name":"Self check two"}'), {
+      headers: { "x-crust-path": encodeURIComponent("content/site.json"), "x-crust-site": encodeURIComponent(other) },
+    });
+    const listed = await invoke("sites_list");
+    check("sites are listed", listed.some((s) => s.id === openId && s.open) && listed.some((s) => s.id === other && s.name === "Self check two" && !s.open), JSON.stringify(listed));
+    const renamed = await invoke("sites_rename", { id: other, name: "Self check renamed" });
+    const copy = await invoke("sites_duplicate", { id: renamed, name: "Self check copy" });
+    const copied = new TextDecoder().decode(await invoke("site_read", { path: "content/site.json", site: copy }));
+    check("sites rename and duplicate", renamed === "Self check renamed" && copied.includes("Self check two"), `${renamed} ${copied}`);
+    const stillOpen = await invoke("sites_delete", { id: copy });
+    const deleted = await invoke("sites_deleted");
+    const restored = await invoke("sites_restore", { id: deleted.find((d) => d.name === "Self check two").id });
+    check("sites delete and restore", stillOpen === openId && typeof restored === "string" && (await invoke("site_info")).id === openId, `${stillOpen} ${restored}`);
   } catch (e) {
     report.errors.push(String(e && e.stack ? e.stack : e));
   }

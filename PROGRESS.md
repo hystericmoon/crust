@@ -575,3 +575,16 @@ to "Log".
   exports. **Owner can try:** only in the app (Mac installer by hand,
   ~150 counted minutes; ask Claude). The web admin is unchanged.
 
+
+- 2026-11-01 — F057 Several sites built (branch `f057-several-sites`,
+  stacked on F056 / PR #47). The app keeps one folder per site in
+  Documents/Crust and opens the one used last. A **Sites screen**
+  (Pages → "All sites") lists them with Open, New site, Rename,
+  Duplicate, Delete, and Recently deleted (30 days, then removed for
+  good). Design snapshot https://claude.ai/artifact/7nKCuGhkAuhTJ5gMEXxfw3
+  (direction A built); screenshot design/f057-sites-screen.png.
+  done_check exit 0; 920 JS + 37 desktop Rust tests; the window
+  self-check (14 checks) now also makes, renames, copies, deletes and
+  restores a site. **Owner can try:** only in the app (Mac installer by
+  hand, ~150 counted minutes; ask Claude). The web admin is unchanged
+  (one site, no Sites screen).

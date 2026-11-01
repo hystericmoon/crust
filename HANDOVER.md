@@ -5,11 +5,12 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-01 (Jakarta): F056 Publish on your computer built
-and passing on branch `f056-publish-on-computer` (stacked on
-`f055-desktop-shell` / PR #46), PR #47 (base `f055-desktop-shell`, CI green, not merged). F055
-is PR #46, F053 is PR #45 (both CI green, not merged; the owner merges).
-Next: F057 Several sites (design snapshot first).
+Last updated: 2026-11-01 (Jakarta): F057 Several sites built and passing
+on branch `f057-several-sites` (stacked on `f056-publish-on-computer` /
+PR #47), PR #48 (CI green, not merged). F056 is PR #47 (stacked on
+#46), F055 is PR #46, F053 is PR #45 (all CI green, not merged; the
+owner merges). Next: F058 Publish to Cloudflare Pages or Netlify (design
+snapshot first).
 
 ## How sessions work (owner's rule, 2026-10-30)
 
@@ -90,6 +91,7 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | F053 Signal and Corner with real photos | built, passes, CI green | `f053-signal-corner-photos`, PR #45 |
 | F055 Desktop app shell (M6) | built, passes, CI green | `f055-desktop-shell`, PR #46 (base main) |
 | F056 Publish on your computer | built, passes, CI green | `f056-publish-on-computer`, PR #47 (stacked on #46) |
+| F057 Several sites | built, passes, CI green | `f057-several-sites`, PR #48 (stacked on #47) |
 
 - **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in
@@ -104,7 +106,9 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
   https://claude.ai/artifact/DSXzme9pbKie3guoRpSizj (A built for both), F048
   https://claude.ai/artifact/JQoY8bbRJ9U58jZawRx2kV (A built), F052
   https://claude.ai/artifact/FksfsnM6msMtjBu4v5YHDm (waiting), F053
-  https://claude.ai/artifact/B3dfAGM3m15EcN1n83oooB (A built for both).
+  https://claude.ai/artifact/B3dfAGM3m15EcN1n83oooB (A built for both), F056
+  https://claude.ai/artifact/JdsQXqRu8kTu5KwQQ8qcb9 (A built), F057
+  https://claude.ai/artifact/7nKCuGhkAuhTJ5gMEXxfw3 (A built).
 
 ## Next
 
@@ -149,11 +153,31 @@ The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
    `apt-get` line, then `cargo build -p crust-desktop --features
    tauri/custom-protocol`; screenshot with `xvfb-run` + `import -window
    root` (how design/f056-app-publish-card.png was made).
-   **Next: F057 Several sites** (design snapshot first; site switcher,
-   new/rename/duplicate/delete with 30-day "Recently deleted"). Branch
-   from `f056-publish-on-computer` until #46/#47 merge. The "App
-   wording" proposal (DECISIONS) is still open; it fits well with F057
-   or F060.
+   ~~F057 Several sites~~ **built, passes** (PR #48, branch
+   `f057-several-sites`, stacked on #47). See DECISIONS "F057". How it
+   fits: `crates/crust-desktop/src/sites.rs` (`Sites`: the Crust folder,
+   the open site, create/rename/duplicate/delete/restore, Recently
+   deleted in `Crust/.Recently deleted`, open site remembered in
+   `Crust/.sites.json`); the file commands take an optional `site`
+   (arg, or `x-crust-site` header for writes); `apps/admin/src/sites/`
+   (`sites.ts` API, `SitesScreen.tsx`, route `#/sites`, desktop only;
+   Pages header gets "All sites"). Per-site publish settings for F058
+   go in the site's `.crust` folder (`.crust/hosts.json` is already
+   left out of duplicates). Screenshots: design/f057-sites-screen.png
+   (made with Playwright over `apps/admin/dist` and a fake
+   `__TAURI_INTERNALS__`, quicker than the real window for a screen).
+   **CI time warning:** on #48 the `check` job took 30 of its 35
+   minutes (ci.yml `timeout-minutes`). If F058 adds much Rust (HTTP
+   client, keychain), expect it to cross 35: either cache `target/`
+   better or raise the limit, and log it in DECISIONS (it costs free
+   minutes, so mention it to the owner).
+   **Next: F058 Publish to Cloudflare Pages or Netlify** (design
+   snapshot first; tokens in the keychain, never the site folder).
+   Branch from `f057-several-sites` until #46–#48 merge. The "App
+   wording" proposal (DECISIONS) is still open; it fits well with F060.
+   Owner-facing note still open: Pagefind brings minicbor
+   (BlueOak-1.0.0) and Tauri brought MPL-2.0 packages; both in
+   DECISIONS "F056", owner told, no answer yet.
 2. ~~Write Milestones 6 and 7~~ done 2026-10-31 (F054–F068; F054 depends
    on F048 so M6 can start while F053 waits for the owner).
    **F054 Content store done and merged** (PR #43). After F053:

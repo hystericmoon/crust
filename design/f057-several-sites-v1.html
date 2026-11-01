@@ -1,0 +1,236 @@
+<title>Crust Several Sites</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: same language as the earlier Crust snapshots. Three ways to keep several sites in the app, drawn as app screens, then the states of the recommended one. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6; --field:#85858f;
+  --accent:#4338ca; --accent-ink:#ffffff; --accent-soft:#e7e6fb; --ok:#127a4b; --ok-soft:#e3f4ea; --warn:#8a5a00; --warn-soft:#fdf3dc; --bad:#b42318; --bad-soft:#fdecea;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --ok-soft:#173326; --warn:#f2c35b; --warn-soft:#352a12; --bad:#ff8a7d; --bad-soft:#3a1d1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --ok-soft:#173326; --warn:#f2c35b; --warn-soft:#352a12; --bad:#ff8a7d; --bad-soft:#3a1d1b; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:40px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,5vw,44px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:24px;font-weight:600}
+h3{font-size:18px;font-weight:600}
+p{margin:0;max-width:65ch}
+ul{margin:0;padding-left:20px}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.intro,section{display:grid;gap:16px}
+.lead{color:var(--soft);font-size:18px}
+.soft{color:var(--soft)}
+.dirs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;align-items:start}
+.dir{display:grid;gap:12px;min-width:0}
+.dir header{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.pick{font:500 11px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-radius:999px;background:var(--accent);color:var(--accent-ink)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:12px}
+.dir.rec .card{border:2px solid var(--accent)}
+.card h4{font:600 20px/1.2 var(--f-display);margin:0}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:600 15px/1 var(--f-body);padding:12px 16px;min-height:44px;border-radius:8px;border:1px solid var(--field);background:var(--panel);color:var(--ink)}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:var(--panel)}
+.btn.split{border-top-right-radius:0;border-bottom-right-radius:0}
+.btn.caret{border-top-left-radius:0;border-bottom-left-radius:0;margin-left:-9px;padding-inline:12px}
+.menu{border:1px solid var(--line);border-radius:8px;padding:6px;display:grid;gap:2px;width:max-content;max-width:100%;box-shadow:0 8px 24px rgb(0 0 0/.12);background:var(--panel)}
+.menu span{padding:8px 10px;border-radius:6px}
+.menu span:first-child{background:var(--accent-soft)}
+.steps{list-style:none;padding:0;display:grid;gap:8px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;counter-increment:s;padding:8px 0;border-top:1px solid var(--line)}
+.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);font:600 13px/1 var(--f-mono)}
+.steps .btn{padding:8px 12px;min-height:36px;font-size:14px}
+.status{font-size:15px}
+.status b{color:var(--ok)}
+.help{font-size:14px;color:var(--soft)}
+.path{font:500 13px/1.4 var(--f-mono);overflow-wrap:anywhere}
+.box{border-radius:8px;padding:12px 14px;display:grid;gap:8px;font-size:15px}
+.box.warn{background:var(--warn-soft);border:1px solid var(--warn)}
+.box.bad{background:var(--bad-soft);border:1px solid var(--bad)}
+.box.ok{background:var(--ok-soft);border:1px solid var(--ok)}
+.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.why div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:8px;align-content:start}
+.states{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;align-items:start}
+.state{display:grid;gap:8px;min-width:0}
+.dialog{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:20px;display:grid;gap:12px;box-shadow:0 12px 40px rgb(0 0 0/.18)}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--ink);border-radius:50%;vertical-align:-2px;margin-right:6px}
+@media (prefers-reduced-motion: no-preference){.spin{animation:r 1s linear infinite}@keyframes r{to{transform:rotate(360deg)}}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+.win{background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid;min-width:0}
+.bar{background:var(--panel);border-bottom:1px solid var(--line);padding:12px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bar .t{font:600 16px/1.2 var(--f-body);margin-right:auto;display:grid;gap:4px}
+.crumb{font-size:13px;color:var(--soft);text-decoration:underline}
+.bar .btn{padding:8px 10px;min-height:36px;font-size:13px}
+.body{padding:14px;display:grid;gap:12px;min-width:0}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{font-weight:500;color:var(--soft);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+.tbl td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl td a{color:var(--ink);font-weight:600}
+.tbl .acts{display:flex;gap:6px;flex-wrap:wrap}
+.tbl .acts span{border:1px solid var(--field);border-radius:6px;padding:4px 8px;font-size:12px;white-space:nowrap}
+.scroll{overflow-x:auto}
+.here{font:500 11px/1 var(--f-mono);letter-spacing:.04em;text-transform:uppercase;background:var(--accent-soft);color:var(--ink);padding:4px 6px;border-radius:999px;margin-left:6px;vertical-align:2px}
+.sub{font-size:12px;color:var(--soft);display:block;font-weight:400}
+.menubtn{font:600 16px/1.2 var(--f-body);border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:var(--panel)}
+.menu.sites{position:relative;margin:-6px 0 0 14px;width:260px}
+.menu.sites span{display:flex;justify-content:space-between;gap:8px}
+.menu.sites hr{border:0;border-top:1px solid var(--line);margin:4px 0;width:100%}
+.split2{display:grid;grid-template-columns:150px 1fr;min-height:220px}
+.rail{background:var(--panel);border-right:1px solid var(--line);padding:12px 8px;display:grid;gap:4px;align-content:start;font-size:14px}
+.rail span{padding:8px;border-radius:6px}
+.rail .on{background:var(--accent-soft);font-weight:600}
+.rail .add{color:var(--soft)}
+.field{display:grid;gap:6px}
+.field label{font-weight:600;font-size:15px}
+.input{border:1px solid var(--field);border-radius:8px;padding:10px 12px;background:var(--panel);min-height:44px}
+.deleted{display:grid;gap:8px;font-size:14px}
+.deleted li{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:8px}
+.deleted ul{list-style:none;padding:0;display:grid;gap:8px}
+@media (max-width:520px){.split2{grid-template-columns:1fr}.rail{border-right:0;border-bottom:1px solid var(--line)}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+
+<div class="wrap">
+  <div class="intro">
+    <p class="eyebrow">F057 · Milestone 6 · design snapshot</p>
+    <h1>Several sites</h1>
+    <p class="lead">In the app you can keep one site per client and move between them. Each site is its own folder in <span class="path">Documents/Crust</span>, with its own pages, history and publish settings. You can make a new site, rename, duplicate or delete one. A deleted site waits 30 days in <b>Recently deleted</b>, so it can be brought back.</p>
+    <p class="soft">Only in the desktop app. The web admin stays one site.</p>
+  </div>
+
+  <section aria-labelledby="dirs-h">
+    <h2 id="dirs-h">Three directions</h2>
+    <div class="dirs">
+      <div class="dir rec">
+        <header><h3>A · A Sites screen</h3><span class="pick">Recommended</span></header>
+        <div class="win" aria-label="Direction A mock">
+          <div class="bar"><span class="t">Your sites</span><span class="btn primary">New site</span></div>
+          <div class="body scroll">
+            <table class="tbl">
+              <thead><tr><th>Site</th><th>Last edited</th><th><span class="sr">Actions</span></th></tr></thead>
+              <tbody>
+                <tr><td><a>Harbour Studio</a><span class="here">Open</span><span class="sub">8 pages</span></td><td>Today, 9:26</td><td><div class="acts"><span>Rename</span><span>Duplicate</span><span>Delete</span></div></td></tr>
+                <tr><td><a>Bakery Lumière</a><span class="sub">5 pages</span></td><td>Oct 30</td><td><div class="acts"><span>Rename</span><span>Duplicate</span><span>Delete</span></div></td></tr>
+                <tr><td><a>Rina's portfolio</a><span class="sub">3 pages</span></td><td>Oct 12</td><td><div class="acts"><span>Rename</span><span>Duplicate</span><span>Delete</span></div></td></tr>
+              </tbody>
+            </table>
+            <p class="help">▸ Recently deleted (1)</p>
+          </div>
+        </div>
+        <div class="win" aria-label="Pages screen header in direction A">
+          <div class="bar"><span class="t"><span class="crumb">← All sites</span>Harbour Studio: pages</span><span class="btn">Posts</span><span class="btn primary">New page</span></div>
+        </div>
+        <p class="soft">A screen of its own, built like the Pages screen. The Pages screen gets an "All sites" link above its title.</p>
+      </div>
+
+      <div class="dir">
+        <header><h3>B · Switcher menu</h3></header>
+        <div class="win" aria-label="Direction B mock">
+          <div class="bar"><span class="menubtn">Harbour Studio ▾</span><span class="t"></span><span class="btn primary">New page</span></div>
+          <div class="body">
+            <div class="menu sites"><span>✓ Harbour Studio</span><span>Bakery Lumière</span><span>Rina's portfolio</span><hr><span>New site…</span><span>Manage sites…</span></div>
+          </div>
+        </div>
+        <p class="soft">Switching is one click from anywhere, but rename, duplicate, delete and Recently deleted still need a second place ("Manage sites…"). Two places for one job.</p>
+      </div>
+
+      <div class="dir">
+        <header><h3>C · Sites in a side rail</h3></header>
+        <div class="win" aria-label="Direction C mock">
+          <div class="split2">
+            <div class="rail"><span class="on">Harbour Studio</span><span>Bakery Lumière</span><span>Rina's portfolio</span><span class="add">+ New site</span></div>
+            <div class="body"><p><b>Harbour Studio: pages</b></p><p class="help">Home · About · Contact · Services · Work</p></div>
+          </div>
+        </div>
+        <p class="soft">Always visible, like Slack's workspaces. Costs ~150 px on every screen, including the builder, where canvas width matters most.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="why-h">
+    <h2 id="why-h">Why A</h2>
+    <div class="why">
+      <div><h3>Frequency sets the cost</h3><p>You switch sites a few times a day at most; you edit pages hundreds of times. The switch can take one extra click (A) instead of taking space from every screen (C) or every header (B).</p></div>
+      <div><h3>One place for the whole job</h3><p>Open, new, rename, duplicate, delete and restore all sit together, in the same table, buttons and "Recently deleted" pattern as the Pages screen (Nielsen #4, consistency). Nothing to learn twice.</p></div>
+      <div><h3>Ready for first run</h3><p>F060's welcome (pick a starter, name your site) ends on this screen's "New site" step. Later, the template gallery and hosts (F058) can also start here. B's menu would grow into a screen anyway.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="states-h">
+    <h2 id="states-h">Direction A, state by state</h2>
+    <div class="states">
+      <div class="state">
+        <h3>New site</h3>
+        <div class="dialog" role="presentation">
+          <h4 style="font:600 20px/1.2 var(--f-display);margin:0">New site</h4>
+          <div class="field"><label>Site name</label><span class="input">Bakery Lumière</span><span class="help">Also the name of its folder in Documents/Crust. You can change it later.</span></div>
+          <div class="btns"><span class="btn primary">Create site</span><span class="btn">Cancel</span></div>
+        </div>
+        <p class="help">Opens the new site's Pages screen with a Home page, ready for "Start from a template".</p>
+      </div>
+
+      <div class="state">
+        <h3>Rename</h3>
+        <div class="card">
+          <div class="field"><label>New name for “Harbour Studio”</label><span class="input">Harbour Studio Jakarta</span></div>
+          <div class="btns"><span class="btn primary">Rename</span><span class="btn">Cancel</span></div>
+        </div>
+        <p class="help">Changes the name visitors see in the header and tab, and the folder's name. It's saved in the site's history like any other change.</p>
+      </div>
+
+      <div class="state">
+        <h3>Duplicate</h3>
+        <div class="card">
+          <div class="box ok"><p><strong>Made “Harbour Studio copy”.</strong> Same pages, photos and history; its publish settings start empty, so it never publishes over the original.</p></div>
+        </div>
+        <p class="help">Good for a new client with the same look. Focus moves to the new row.</p>
+      </div>
+
+      <div class="state">
+        <h3>Delete</h3>
+        <div class="dialog" role="presentation">
+          <h4 style="font:600 20px/1.2 var(--f-display);margin:0">Delete “Bakery Lumière”?</h4>
+          <p>It moves to Recently deleted. You can bring it back for 30 days; after that it's removed from your computer.</p>
+          <div class="btns"><span class="btn primary">Delete</span><span class="btn">Cancel</span></div>
+        </div>
+        <p class="help">The live website isn't touched. Deleting the open site opens your most recent other site (or a new empty one).</p>
+      </div>
+
+      <div class="state">
+        <h3>Recently deleted</h3>
+        <div class="card deleted">
+          <p class="help">▾ Recently deleted (1)</p>
+          <ul><li><span><strong>Bakery Lumière</strong> <span class="sub">Deleted Oct 31 · removed for good on Nov 30</span></span><span class="btn" style="padding:6px 10px;min-height:36px;font-size:13px">Restore</span></li></ul>
+        </div>
+        <p class="help">“Restore”, as on the Pages screen. Restoring a site whose name is taken adds “2”. Nothing is ever removed before its 30 days.</p>
+      </div>
+
+      <div class="state">
+        <h3>Something went wrong</h3>
+        <div class="card">
+          <div class="box bad"><p><strong>Couldn't rename “Harbour Studio”.</strong> Another program is using its folder. Close it and try again.</p></div>
+        </div>
+        <p class="help">The computer's own reason, in plain words, and what to do.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="a11y-h">
+    <h2 id="a11y-h">Accessibility</h2>
+    <ul>
+      <li>The site list is a real table with a caption; each button names its site for screen readers ("Delete Bakery Lumière").</li>
+      <li>Dialogs take focus on the name field (or the safe button, Cancel, for Delete), close with Escape and give focus back to the button that opened them (WCAG 2.4.3).</li>
+      <li>Results ("Made Harbour Studio copy", "Restored") are announced through a status line; errors as alerts.</li>
+      <li>"All sites" is a link at the start of every Pages screen, first in tab order. Buttons are at least 36 px tall, with 8 px gaps (2.5.8).</li>
+      <li>The open site is marked in words ("Open"), not by colour alone (1.4.1).</li>
+    </ul>
+  </section>
+</div>

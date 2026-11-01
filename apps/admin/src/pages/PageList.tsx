@@ -1,3 +1,4 @@
+import { Icon } from "../settings/icons";
 import { placeholderSummary, type Page } from "@crust/blocks";
 import type { DeletedPage } from "../api-client";
 import { SignOutLink } from "../sign-out";
@@ -54,6 +55,8 @@ export interface PageListProps {
   children?: ReactNode;
   /** Shown first: after starting from a template (F048). */
   notice?: ReactNode;
+  /** F057: the desktop app keeps several sites; a link to them leads the header. */
+  allSites?: boolean;
 }
 
 const formatDate = (iso: string | null) =>
@@ -61,7 +64,7 @@ const formatDate = (iso: string | null) =>
 
 export const editHref = (path: string) => `#/edit?path=${encodeURIComponent(path)}`;
 
-export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCreate, githubOn = false, onRename, onDelete, findLinks, deleted, onRestore, onSaveDraft, liveKnown = false, children, notice }: PageListProps) {
+export function PageList({ allSites = false, siteName, rows, sourceNote, loadError, onRetry, onCreate, githubOn = false, onRename, onDelete, findLinks, deleted, onRestore, onSaveDraft, liveKnown = false, children, notice }: PageListProps) {
   const [creating, setCreating] = useState(false);
   // F023: find and sort.
   const [query, setQuery] = useState("");
@@ -127,6 +130,11 @@ export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCre
   return (
     <div className="st">
       <header className="st-header">
+        {allSites ? (
+          <a className="st-back" href="#/sites">
+            <Icon name="back" /> All sites
+          </a>
+        ) : null}
         <h1 className="st-title">{siteName}: pages</h1>
         <div className="st-actions">
           <a className="st-button st-link-button" href="#/posts">

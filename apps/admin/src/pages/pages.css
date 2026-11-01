@@ -151,3 +151,18 @@
   @keyframes dp-spin { to { transform: rotate(360deg); } }
 }
 .dp-help a { color: var(--st-text); text-underline-offset: 0.2em; }
+
+/* F057: the desktop app's Sites screen, built from the Pages screen's parts. */
+.pg-table th.sites-name { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.sites-meta { flex-basis: 100%; }
+.sites-open {
+  min-height: 24px; padding: 0; border: 0; background: none; font: inherit; font-weight: 600;
+  color: var(--st-text); text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; text-align: left;
+}
+.sites-open:focus-visible { outline: 2px solid var(--st-focus); outline-offset: 2px; }
+.sites-open[aria-disabled="true"] { cursor: progress; }
+.sites-here {
+  font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+  border: 1px solid var(--st-border); color: var(--st-text);
+}
+.pg-table .sites-meta { font-weight: 400; }

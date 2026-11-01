@@ -1830,3 +1830,37 @@ Workers (100k requests/day), R2 (10 GB). Only optional cost: a custom domain.
 - cPanel as the main platform — shared hosting can't reliably run Rust; it can
   be a publish target via FTP later.
 - Hosted multi-user version (SaaS) — would bring back server cost and risk.
+
+## 2026-11-01 — F057 Several sites (Claude, reversible)
+
+- **Direction A of the snapshot** (https://claude.ai/artifact/7nKCuGhkAuhTJ5gMEXxfw3,
+  `design/f057-several-sites-v1.html`): a Sites screen built from the
+  Pages screen's parts, reached by "All sites" at the start of the Pages
+  header. Switching is rare compared with editing, so it costs one click
+  instead of space on every screen. Wording follows the Pages screen:
+  "Restore" (not "Bring back"), "Keep site / Delete site".
+- **A site is a folder; its id is the folder's name.** The Crust folder
+  is `Documents/Crust` (F055's "My site" stays the first site, so
+  existing setups keep working). Folder names are made safe for Mac and
+  Windows (no `/\:*?"<>|`, no leading dot, no trailing dot or space, no
+  CON/PRN/…), and case-insensitively unique ("Bakery 2"). The open site
+  is remembered in `Crust/.sites.json`. `CRUST_SITE_FOLDER` still opens
+  one folder; its neighbours become the other sites.
+- **Names change through each site's history.** Rename and Duplicate
+  write `content/site.json` with a commit in that site's own `.crust`
+  history (the file commands take an optional `site`), then Rust moves
+  the folder. Renaming or deleting the open site reloads the builder,
+  because the site's name is read once at start.
+- **Duplicate copies everything but publish settings**: the whole
+  folder including history, minus `.crust/published` (and the future
+  `.crust/hosts.json` of F058); the copy's `baseUrl` is reset to the
+  placeholder so it can't publish over the original's domain. Per-site
+  publish settings for F058/F059 belong in the site's `.crust` folder.
+- **Recently deleted** is `Crust/.Recently deleted/<folder>`, with
+  `.crust/deleted.json` (name, time) inside. Folders older than 30 days
+  are removed when the list is read; folders without that note (put
+  there by hand) are never removed. Deleting the open site opens the most
+  recently edited other one, or a new empty "My site". No "delete now"
+  button: nothing is removed before its 30 days (can be added if asked).
+- **Duplicate site names are refused** in the dialogs (case-insensitive),
+  so two rows never look the same; folder numbering is the backstop.

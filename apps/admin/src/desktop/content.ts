@@ -13,6 +13,8 @@ export interface DesktopContent {
   posts: Post[];
   /** The site folder on the computer, to show where the site is kept. */
   folder: string;
+  /** F057: the open site's id (its folder's name). */
+  siteId: string;
 }
 
 let current: DesktopContent | null = null;

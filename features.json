@@ -616,7 +616,7 @@
       "description": "Design snapshot first. A site switcher in the app: new site, rename, duplicate, delete (moved to a 'Recently deleted' list for 30 days, so it can be undone). Each site keeps its own content, history and publish settings. Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F055"],
       "done_check": "cargo test -p crust-desktop && npm test -- sites && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
