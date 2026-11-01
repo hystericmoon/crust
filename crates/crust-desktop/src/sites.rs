@@ -22,7 +22,7 @@ pub const STATE: &str = ".sites.json";
 /// What a deleted site remembers about itself (inside its `.crust`).
 const DELETED: &str = ".crust/deleted.json";
 /// Files a copy leaves behind: where and when the original was published.
-const PUBLISH_FILES: &[&str] = &[".crust/published", ".crust/hosts.json"];
+const PUBLISH_FILES: &[&str] = &[".crust/published", ".crust/hosts.json", ".crust/ftp-sent.json"];
 /// The site opened when there's nothing else.
 pub const FIRST_SITE: &str = "My site";
 /// How long a deleted site can be brought back.
@@ -505,6 +505,8 @@ mod tests {
         make_site(&sites, "My site", "Harbour");
         let original = SiteFolder::new(sites.home().join("My site"));
         original.write(".crust/published", b"{}").unwrap();
+        original.write(".crust/hosts.json", b"{}").unwrap();
+        original.write(".crust/ftp-sent.json", b"{}").unwrap();
         original.write(".crust/objects/ab", b"old version").unwrap();
         original.write("content/media/harbour.jpg", &[1, 2, 3]).unwrap();
         let id = sites.duplicate("My site", "Harbour copy").unwrap();
@@ -514,6 +516,8 @@ mod tests {
         assert_eq!(copy.read(".crust/objects/ab").unwrap().unwrap(), b"old version");
         assert_eq!(copy.read(".crust/HEAD").unwrap().unwrap(), b"abc");
         assert_eq!(copy.read(".crust/published").unwrap(), None);
+        assert_eq!(copy.read(".crust/hosts.json").unwrap(), None);
+        assert_eq!(copy.read(".crust/ftp-sent.json").unwrap(), None);
         assert_eq!(sites.current_id(), "My site", "the copy doesn't open by itself");
         assert_eq!(sites.duplicate("My site", "Harbour copy").unwrap(), "Harbour copy 2");
     }

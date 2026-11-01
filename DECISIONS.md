@@ -216,6 +216,13 @@ Features Claude suggests. They are not work until the owner adds them to
   proposal above), and anything for other users (that's M6).
 
 
+- **Redirects and "page not found" on FTP hosts (from F059).** Cloudflare
+  reads `_redirects`; most FTP hosts (Apache) read `.htaccess` instead,
+  so after F059 a renamed page's old address gives the host's own "not
+  found" page there. Publishing by FTP could write an `.htaccess` with
+  the redirects and Crust's 404 page. Small (M). Only helps Apache hosts
+  (most shared hosting); Nginx hosts ignore it, harmlessly.
+
 ## 2026-11-01 — F069 Review fixes (Claude, reversible)
 
 - **Blocks outside a Section (fixes 3 and 10, F032).** Two parts. (a)
@@ -1926,3 +1933,82 @@ Workers (100k requests/day), R2 (10 GB). Only optional cost: a custom domain.
   real test. Logged so a failure there is expected to be small (a field
   name), not a design problem.
 
+## 2026-11-01 — F059 Publish by FTP or SFTP (Claude, reversible)
+
+- **Where it lives.** A third button in the app's Publish card, "Your
+  own web host · FTP or SFTP", next to Cloudflare Pages and Netlify.
+  No design snapshot (the feature doesn't ask for one); it follows
+  F058's direction A. One form, not steps: hosts hand out these details
+  together (welcome email or control panel), so splitting them adds
+  clicks without lowering the load. Order follows that email: how to
+  send files, server and port, username, password, folder, site address.
+- **SFTP first and recommended, then FTPS, then FTP.** Plain FTP works
+  but the dialog shows a warning box when it's chosen, and the card
+  keeps a one-line "⚠ Plain FTP: your password and files travel
+  unencrypted" while connected (F059: "warns"). No extra "I understand"
+  checkbox: the warning is visible at the moment of choosing and stays
+  visible after, which informs without adding a step.
+- **Only changed files.** `.crust/ftp-sent.json` remembers each file's
+  hash for one server + username + folder ("target"). Publishing sends
+  new or changed files, makes missing folders first, sends photos and
+  other files before pages (a page never points at a photo that isn't
+  there yet), then removes files Crust sent before that the site no
+  longer has. Files Crust never sent (a host's own files, a
+  verification file) are never touched. The memory is saved after a
+  failed publish too, so publishing again carries on. Another server or
+  folder starts over (sends everything, removes nothing). "Send every
+  file next time" (Change dialog) clears it, for when files were
+  changed on the server by hand. Left out of duplicates (F057) and
+  cleared on disconnect.
+- **Checks when connecting.** Crust signs in, writes a small
+  `.crust-check` file in the folder and removes it, so a wrong folder or
+  missing permission shows at once under the Folder field. Errors land
+  under the field they're about (server/port unreachable → Server;
+  login refused → Password; folder → Folder).
+- **SFTP server key.** The key's SHA-256 fingerprint is remembered when
+  connecting (trust on first use, like FTP apps do) and shown in the
+  Change dialog. If it changes, publishing stops before anything is
+  sent and says why (host moved servers, or someone pretending); "Check
+  the server details" re-connects and trusts the new key. SFTP signs in
+  by password, and by keyboard-interactive with the same password
+  (many hosts only offer that). SSH key files aren't supported yet.
+- **FTPS** is explicit TLS on the usual port (AUTH TLS), checked against
+  the computer's own certificate store; a certificate for another name
+  is refused with a hint to use the host's FTPS server name or SFTP.
+  Implicit FTPS (port 990) is left out (deprecated, rare).
+- **Site address** is typed in the form (https:// added if missing,
+  nothing after the domain, http:// allowed for hosts without HTTPS).
+  It's used like F058's host address: canonical links and the sitemap
+  use it unless Site settings has its own address.
+- **`_redirects` and `_headers` aren't uploaded** (only Cloudflare reads
+  them). Redirects on FTP hosts are a proposal (`.htaccess`).
+- **Libraries** (all permissive): `suppaftp` 12 (MIT OR Apache-2.0,
+  rustls + ring like ureq), `russh` 0.65 + `russh-sftp` 3 (Apache-2.0,
+  ring, pure Rust: no OpenSSL/libssh2 to build on Mac/Windows),
+  `rustls` + `rustls-platform-verifier` (already in via ureq), `tokio`
+  (already in via Tauri). russh's `rsa` feature stays on so servers
+  with RSA keys work; the `rsa` crate's known timing issue
+  (RUSTSEC-2023-0071) is about using an RSA private key, which Crust
+  never does (it only checks a server's signature). Test-only:
+  `libunftp` + `unftp-sbe-fs` + `unftp-core` (Apache-2.0, a real FTP/FTPS
+  server inside the tests), `rcgen` (test certificates), `async-trait`.
+  137 new packages in Cargo.lock, all MIT/Apache/BSD/ISC (`ring` is
+  "Apache-2.0 AND ISC", `winx` test-only "Apache-2.0 WITH
+  LLVM-exception").
+- **Tests against real servers in CI** (F059: "tested against a local
+  test server"): `cargo test` starts an FTP server (libunftp), an FTPS
+  one (with a test certificate authority) and an SFTP server (russh's
+  server side with a small file handler) on 127.0.0.1, so CI needs no
+  service containers. Never tried against a real host here.
+- **Also fixed** in the shared Change dialog: its text was split into
+  fragments on separate lines (a grid around mixed text); now two
+  sentences. Affects F058's version too.
+- **FTPS that breaks off is tried again (CI fix, 2026-11-01).** CI's
+  FTPS test failed about one run in five: the test server (libunftp)
+  answers "234" to AUTH TLS and switches to TLS a moment later, so a
+  quick client's first TLS bytes can be read as a command and answered
+  in plain text ("InvalidContentType"). Real hosts using libunftp can
+  do the same. Crust now tries a secure connection that broke off up to
+  three times (not a refused certificate, which still stops at once),
+  and no longer calls that a certificate problem. 0 failures in 100
+  local runs (8 in 40 before).

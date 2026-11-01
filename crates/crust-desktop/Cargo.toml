@@ -31,10 +31,25 @@ ureq = { version = "3", default-features = false, features = ["rustls-no-provide
 blake3 = { version = "1.8.7", default-features = false, features = ["pure"] }
 sha1_smol = "1.0.1"
 base64 = "0.22"
+# F059: FTP/FTPS (suppaftp, MIT OR Apache-2.0) and SFTP (russh + russh-sftp,
+# Apache-2.0), both on rustls/ring like ureq above.
+suppaftp = { version = "12.2", default-features = false, features = ["rustls-ring"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+rustls-platform-verifier = "0.7"
+russh = { version = "0.65", default-features = false, features = ["ring", "rsa", "flate2"] }
+russh-sftp = "3"
+tokio = { version = "1", features = ["rt", "net", "io-util", "time"] }
 
 [dev-dependencies]
 tempfile = "3.27"
 image = { version = "0.25", default-features = false, features = ["png"] }
+# F059: real FTP/FTPS and SFTP servers inside the tests (no outside server needed in CI).
+libunftp = { version = "0.24", default-features = false, features = ["ring"] }
+unftp-sbe-fs = "0.4"
+rcgen = { version = "0.14", default-features = false, features = ["crypto", "ring", "pem"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync"] }
+unftp-core = "0.1"
+async-trait = "0.1"
 
 # F058: host tokens live in the computer's keychain, never in the site folder.
 [target.'cfg(target_os = "macos")'.dependencies]

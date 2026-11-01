@@ -189,3 +189,10 @@
 .hp-accounts { border: 0; margin: 0; padding: 0; display: grid; gap: 6px; }
 .hp-account-choice { display: flex; align-items: center; gap: 8px; min-height: 32px; }
 .hp-change { flex-wrap: wrap; }
+/* F059: your own web host (FTP or SFTP). */
+.hp-ftp .hp-account-choice { flex-wrap: wrap; align-items: baseline; }
+.hp-choice-help { flex-basis: 100%; padding-left: 24px; margin-top: -2px; font-size: 0.8125rem; }
+.hp-row { display: grid; grid-template-columns: minmax(0, 1fr) 6.5rem; gap: 12px; align-items: start; }
+.hp-port { width: 100%; }
+.hp-plain { color: var(--st-text); }
+@media (max-width: 30rem) { .hp-row { grid-template-columns: 1fr; } }

@@ -110,6 +110,7 @@ fn connection(host: HostKind) -> Connection {
         url: "https://harbour-studio.pages.dev".into(),
         token_key: "k".into(),
         last_published: None,
+        ftp: None,
     }
 }
 

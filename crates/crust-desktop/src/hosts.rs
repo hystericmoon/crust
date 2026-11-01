@@ -18,6 +18,7 @@ use base64::Engine;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
+use crate::ftp::{self, FtpSettings, Password, Trust};
 use crate::site::SiteFolder;
 
 /// Where a site's host connection is kept (left out of duplicates, F057).
@@ -33,6 +34,8 @@ pub const NETLIFY_API: &str = "https://api.netlify.com/api/v1";
 pub enum HostKind {
     Cloudflare,
     Netlify,
+    /// F059: any web host by SFTP, FTPS or FTP (details in `Connection::ftp`).
+    Ftp,
 }
 
 impl HostKind {
@@ -41,6 +44,7 @@ impl HostKind {
         match self {
             HostKind::Cloudflare => "https://dash.cloudflare.com/profile/api-tokens",
             HostKind::Netlify => "https://app.netlify.com/user/applications#personal-access-tokens",
+            HostKind::Ftp => "",
         }
     }
 
@@ -48,6 +52,7 @@ impl HostKind {
         match self {
             HostKind::Cloudflare => "Cloudflare",
             HostKind::Netlify => "Netlify",
+            HostKind::Ftp => "the server",
         }
     }
 }
@@ -66,7 +71,7 @@ pub struct HostError {
 }
 
 impl HostError {
-    fn new(kind: &'static str, message: impl Into<String>) -> Self {
+    pub(crate) fn new(kind: &'static str, message: impl Into<String>) -> Self {
         Self { kind, message: message.into(), suggestion: None }
     }
     pub fn other(message: impl Into<String>) -> Self {
@@ -103,6 +108,9 @@ pub struct Connection {
     /// When the site was last published here (ms since 1970).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_published: Option<u64>,
+    /// F059: how to reach an FTP host.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ftp: Option<FtpSettings>,
 }
 
 /// What the Publish card is told about a connection (no token key).
@@ -116,6 +124,7 @@ pub struct ConnectionView {
     pub last_published: Option<u64>,
     /// False when the keychain no longer has the token (ask for a new one).
     pub has_token: bool,
+    pub ftp: Option<FtpSettings>,
 }
 
 impl Connection {
@@ -127,6 +136,7 @@ impl Connection {
             url: self.url.clone(),
             last_published: self.last_published,
             has_token,
+            ftp: self.ftp.clone(),
         }
     }
 }
@@ -366,6 +376,7 @@ impl Client {
                 let name = ["full_name", "email", "slug"].iter().find_map(|k| value[*k].as_str().filter(|s| !s.is_empty())).unwrap_or("Netlify");
                 Ok(vec![Account { id: String::new(), name: name.into() }])
             }
+            HostKind::Ftp => Err(HostError::other("FTP hosts sign in with a password, not a token.")),
         }
     }
 
@@ -414,6 +425,7 @@ impl Client {
                     .unwrap_or_else(|| format!("https://{name}.netlify.app"));
                 Ok(Project { project: name.into(), site_id, url })
             }
+            HostKind::Ftp => Err(HostError::other("FTP hosts are connected with their server details.")),
         }
     }
 
@@ -428,6 +440,7 @@ impl Client {
         match connection.host {
             HostKind::Cloudflare => self.publish_cloudflare(connection, token, &files, progress),
             HostKind::Netlify => self.publish_netlify(connection, token, &files, progress),
+            HostKind::Ftp => Err(HostError::other("FTP hosts are published by the host service.")),
         }
     }
 
@@ -547,6 +560,7 @@ fn token_refused(host: HostKind, token: Token) -> HostError {
         (HostKind::Netlify, Token::New) => "Netlify didn't accept this token. Check you copied all of it.",
         (HostKind::Cloudflare, Token::Saved) => "Cloudflare no longer accepts the saved token. It may have expired or been deleted on Cloudflare.",
         (HostKind::Netlify, Token::Saved) => "Netlify no longer accepts the saved token. It may have expired or been deleted on Netlify.",
+        (HostKind::Ftp, _) => return ftp::login_refused(if token == Token::New { Password::New } else { Password::Saved }),
     };
     HostError::new("token", message)
 }
@@ -593,7 +607,7 @@ fn failed(host: HostKind, reply: &Reply) -> HostError {
 pub fn check_name(host: HostKind, name: &str) -> Result<(), HostError> {
     let max = match host {
         HostKind::Cloudflare => 58,
-        HostKind::Netlify => 63,
+        HostKind::Netlify | HostKind::Ftp => 63,
     };
     let ok = !name.is_empty()
         && name.len() <= max
@@ -637,6 +651,8 @@ pub struct HostStatus {
 pub struct HostService {
     pub client: Client,
     pub keychain: Box<dyn Keychain>,
+    /// F059: certificates the tests' FTPS server uses (empty in the app).
+    pub trust: Trust,
 }
 
 fn keychain_failed(message: String) -> HostError {
@@ -645,7 +661,7 @@ fn keychain_failed(message: String) -> HostError {
 
 impl HostService {
     pub fn new(client: Client, keychain: Box<dyn Keychain>) -> Self {
-        Self { client, keychain }
+        Self { client, keychain, trust: Trust::default() }
     }
 
     pub fn status(&self, site: &SiteFolder, site_name: &str) -> HostStatus {
@@ -678,7 +694,13 @@ impl HostService {
             url: project.url,
             token_key,
             last_published: None,
+            ftp: None,
         };
+        self.keep(site, connection, previous)
+    }
+
+    /// Saves a new connection; forgets the previous one's secret and (for FTP) what it sent.
+    fn keep(&self, site: &SiteFolder, connection: Connection, previous: Option<Connection>) -> Result<ConnectionView, HostError> {
         if let Err(e) = save_connection(site, &connection) {
             let _ = self.keychain.delete(&connection.token_key);
             return Err(HostError::other(e));
@@ -686,12 +708,61 @@ impl HostService {
         if let Some(old) = previous.filter(|old| old.token_key != connection.token_key) {
             let _ = self.keychain.delete(&old.token_key);
         }
+        // What was sent stays useful only for the same server and folder (ftp::plan checks).
+        if connection.ftp.is_none() {
+            let _ = ftp::forget_sent(site);
+        }
         Ok(connection.view(true))
+    }
+
+    /// F059: signs in to the server, checks the folder can be written, and
+    /// keeps the details (password in the keychain). SFTP remembers the
+    /// server's key from now on.
+    pub fn connect_ftp(&self, site: &SiteFolder, settings: FtpSettings, password: &str, url: &str) -> Result<ConnectionView, HostError> {
+        let mut settings = settings.tidy()?;
+        let url = ftp::tidy_site_url(url)?;
+        if password.is_empty() {
+            return Err(HostError::new("token", "Type the password."));
+        }
+        let (mut remote, key) = ftp::open(&settings, password, Password::New, "", &self.trust)?;
+        let checked = ftp::check_folder(remote.as_mut(), &settings);
+        remote.close();
+        checked?;
+        settings.host_key = key;
+        let previous = load_connection(site);
+        let token_key = new_token_key(HostKind::Ftp);
+        self.keychain.set(&token_key, password).map_err(keychain_failed)?;
+        let connection = Connection {
+            host: HostKind::Ftp,
+            account: String::new(),
+            account_name: settings.label(),
+            project: settings.server.clone(),
+            site_id: String::new(),
+            url,
+            token_key,
+            last_published: None,
+            ftp: Some(settings),
+        };
+        self.keep(site, connection, previous)
+    }
+
+    /// F059: the next publish sends every file again.
+    pub fn resend_all(&self, site: &SiteFolder) -> Result<(), String> {
+        ftp::forget_sent(site)
     }
 
     /// "Paste a new token": checks it reaches the same account, then keeps it.
     pub fn replace_token(&self, site: &SiteFolder, token: &str) -> Result<ConnectionView, HostError> {
         let connection = load_connection(site).ok_or_else(not_connected)?;
+        if let Some(settings) = &connection.ftp {
+            if token.is_empty() {
+                return Err(HostError::new("token", "Type the password."));
+            }
+            let (mut remote, _) = ftp::open(settings, token, Password::New, &settings.host_key, &self.trust)?;
+            remote.close();
+            self.keychain.set(&connection.token_key, token).map_err(keychain_failed)?;
+            return Ok(connection.view(true));
+        }
         let accounts = self.client.check_token(connection.host, token)?;
         if connection.host == HostKind::Cloudflare && !accounts.iter().any(|a| a.id == connection.account) {
             return Err(HostError::new(
@@ -708,19 +779,41 @@ impl HostService {
         if let Some(connection) = load_connection(site) {
             self.keychain.delete(&connection.token_key)?;
         }
+        ftp::forget_sent(site)?;
         remove_connection(site)
     }
 
     /// Uploads the finished site in `dir` and remembers when.
     pub fn publish(&self, site: &SiteFolder, dir: &Path, progress: &dyn Fn(Progress)) -> Result<Published, HostError> {
         let mut connection = load_connection(site).ok_or_else(not_connected)?;
-        let token = self.keychain.get(&connection.token_key).map_err(keychain_failed)?.ok_or_else(|| {
-            HostError::new("token", format!("This computer's keychain no longer has the {} token. Paste it again.", connection.host.name()))
+        let token = self.keychain.get(&connection.token_key).map_err(keychain_failed)?.ok_or_else(|| match connection.host {
+            HostKind::Ftp => HostError::new("token", "This computer's keychain no longer has the server's password. Type it again."),
+            host => HostError::new("token", format!("This computer's keychain no longer has the {} token. Paste it again.", host.name())),
         })?;
-        let published = self.client.publish(&connection, &token, dir, progress)?;
+        let published = match &connection.ftp {
+            Some(settings) => self.publish_ftp(site, &connection, settings, &token, dir, progress)?,
+            None => self.client.publish(&connection, &token, dir, progress)?,
+        };
         connection.last_published = Some(now_ms());
         save_connection(site, &connection).map_err(HostError::other)?;
         Ok(published)
+    }
+}
+
+impl HostService {
+    fn publish_ftp(&self, site: &SiteFolder, c: &Connection, settings: &FtpSettings, password: &str, dir: &Path, progress: &dyn Fn(Progress)) -> Result<Published, HostError> {
+        let files = site_files(dir).map_err(|e| HostError::other(format!("Couldn't read the finished site: {e}")))?;
+        if !files.iter().any(|f| f.path == "/index.html") {
+            return Err(HostError::other("There's no finished site to publish yet. Try again."));
+        }
+        let (mut remote, _) = ftp::open(settings, password, Password::Saved, &settings.host_key, &self.trust)?;
+        let mut sent = ftp::load_sent(site);
+        let result = ftp::run(remote.as_mut(), settings, &files, &mut sent, progress);
+        if result.is_err() {
+            remote.close();
+        }
+        ftp::save_sent(site, &sent).map_err(HostError::other)?;
+        result.map(|p| Published { url: c.url.clone(), ..p })
     }
 }
 

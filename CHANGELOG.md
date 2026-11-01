@@ -4,6 +4,20 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Publish to your own web host by FTP or SFTP (F059).** In the app,
+  the Publish card has a third choice, **Your own web host**, for the
+  hosting you already pay for. Fill in the details from your host's
+  welcome email (SFTP, FTPS or FTP; server; username; password; the
+  folder, often public_html; and the site's address) and press **Check
+  and connect**: Crust signs in and checks it can save files there
+  before anything is kept. Then **Publish** sends only the files that
+  changed since last time, and removes pages you deleted (it never
+  touches files it didn't put there). Plain FTP works but warns that the
+  password travels unencrypted. The password stays in your computer's
+  keychain. For SFTP, Crust remembers the server's key and stops if it
+  ever changes. **Send every file next time** (under Change or
+  disconnect) is there for when files were changed on the server by
+  hand.
 - **Publish to Cloudflare Pages or Netlify (F058).** In the app, the
   Publish card now offers both hosts. Press one, follow the four steps
   to make a token on the host's website (a button opens the right page),

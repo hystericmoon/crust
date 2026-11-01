@@ -8,7 +8,24 @@
 import type { BuildReport } from "../desktop/local-publish";
 import type { Invoke } from "../desktop/tauri-folder";
 
-export type HostKind = "cloudflare" | "netlify";
+export type HostKind = "cloudflare" | "netlify" | "ftp";
+/** The hosts that take a token (F058). */
+export type TokenHost = Exclude<HostKind, "ftp">;
+
+/** F059: how files reach an FTP host. */
+export type FtpProtocol = "sftp" | "ftps" | "ftp";
+
+/** crust_desktop::ftp::FtpSettings */
+export interface FtpSettings {
+  protocol: FtpProtocol;
+  server: string;
+  port: number;
+  username: string;
+  /** Where the site goes on the server ("public_html"); empty: where the login lands. */
+  folder: string;
+  /** SFTP: the server's key fingerprint, remembered when connecting. */
+  hostKey?: string;
+}
 
 /** crust_desktop::hosts::ConnectionView */
 export interface HostConnection {
@@ -20,6 +37,8 @@ export interface HostConnection {
   lastPublished: number | null;
   /** False when the keychain no longer has the token. */
   hasToken: boolean;
+  /** F059: set for an FTP host. */
+  ftp?: FtpSettings | null;
 }
 
 export interface HostStatus {
@@ -76,11 +95,16 @@ export type Listen = <T>(event: string, handler: (payload: T) => void) => Promis
 
 export interface HostsApi {
   status(): Promise<HostStatus>;
-  checkToken(host: HostKind, token: string): Promise<HostAccount[]>;
-  connect(host: HostKind, token: string, account: HostAccount, name: string): Promise<HostConnection>;
+  checkToken(host: TokenHost, token: string): Promise<HostAccount[]>;
+  connect(host: TokenHost, token: string, account: HostAccount, name: string): Promise<HostConnection>;
+  /** F059: signs in, checks the folder can be written, then keeps the connection. */
+  connectFtp(settings: FtpSettings, password: string, url: string): Promise<HostConnection>;
+  /** The new token (or, for FTP, password). */
   replaceToken(token: string): Promise<HostConnection>;
+  /** F059: forget what was sent, so the next publish sends every file. */
+  resendAll(): Promise<void>;
   disconnect(): Promise<void>;
-  openTokenPage(host: HostKind): Promise<void>;
+  openTokenPage(host: TokenHost): Promise<void>;
   /** Opens the live site in the browser. */
   openSite(): Promise<void>;
   /** Builds the site with every check on, then uploads it. */
@@ -100,7 +124,9 @@ export function hostsApi(invoke: Invoke, listen: Listen, build: (hostUrl?: strin
     status: () => call<HostStatus>("host_status"),
     checkToken: (host, token) => call<HostAccount[]>("host_check_token", { host, token }),
     connect: (host, token, account, name) => call<HostConnection>("host_connect", { host, token, account, name }),
+    connectFtp: (settings, password, url) => call<HostConnection>("host_connect_ftp", { settings, password, url }),
     replaceToken: (token) => call<HostConnection>("host_replace_token", { token }),
+    resendAll: () => call<void>("host_resend_all"),
     disconnect: () => call<void>("host_disconnect"),
     openTokenPage: (host) => call<void>("host_open_token_page", { host }),
     openSite: () => call<void>("host_open_site"),
@@ -135,7 +161,7 @@ export function setDesktopHosts(api: HostsApi | null) {
 
 // ------------------------------------------------------------------ words
 
-export const HOSTS: Record<HostKind, { name: string; product: string; domain: string; maxName: number; steps: string[]; permission?: string }> = {
+export const HOSTS: Record<TokenHost, { name: string; product: string; domain: string; maxName: number; steps: string[]; permission?: string }> = {
   cloudflare: {
     name: "Cloudflare",
     product: "Cloudflare Pages",
@@ -164,7 +190,7 @@ export const HOSTS: Record<HostKind, { name: string; product: string; domain: st
 };
 
 /** What's wrong with an address, in words for under the field; null if fine. */
-export function addressProblem(host: HostKind, name: string): string | null {
+export function addressProblem(host: TokenHost, name: string): string | null {
   const max = HOSTS[host].maxName;
   if (!name) return "Type an address.";
   if (name.length > max) return `Use a shorter address (at most ${max} characters).`;
@@ -198,4 +224,35 @@ export function describeProgress(p: HostProgress | null): string {
   if (p.total === 0) return "Nothing new to upload. Finishing…";
   if (p.done >= p.total) return "Finishing…";
   return `Uploading ${p.done} of ${p.total} ${p.total === 1 ? "file" : "files"}…`;
+}
+
+// ------------------------------------------------------------------ F059
+
+export const FTP_PROTOCOLS: Record<FtpProtocol, { name: string; port: number; label: string; help: string }> = {
+  sftp: { name: "SFTP", port: 22, label: "SFTP (recommended)", help: "Encrypted. Most hosts offer it; often the same login as SSH." },
+  ftps: { name: "FTPS", port: 21, label: "FTPS", help: "Encrypted FTP. The server name must match its security certificate." },
+  ftp: { name: "FTP", port: 21, label: "FTP (not encrypted)", help: "Only if your host offers nothing else." },
+};
+
+export const PLAIN_FTP_WARNING =
+  "Plain FTP sends your password and files unencrypted, so anyone on the same network (a café's Wi-Fi, say) could read them. Use SFTP or FTPS if your host offers either.";
+
+/** The card's name for where the site goes: "Cloudflare Pages", "SFTP"… */
+export const productName = (c: HostConnection) => (c.host === "ftp" ? FTP_PROTOCOLS[c.ftp?.protocol ?? "ftp"].name : HOSTS[c.host].product);
+
+/** What's wrong with the FTP form, field by field (empty: fine to send). */
+export function ftpProblems(s: FtpSettings, password: string, url: string, needPassword = true): Partial<Record<"server" | "port" | "username" | "password" | "folder" | "url", string>> {
+  const out: Partial<Record<"server" | "port" | "username" | "password" | "folder" | "url", string>> = {};
+  const server = s.server.trim().replace(/^s?ftps?:\/\//, "");
+  if (!server) out.server = "Type the server's name, like ftp.example.com.";
+  else if (!/^[A-Za-z0-9.:\[\]-]+$/.test(server)) out.server = "Type only the server's name, like ftp.example.com, without a folder.";
+  if (!Number.isInteger(s.port) || s.port < 1 || s.port > 65535) out.port = "Use a port number from 1 to 65535.";
+  if (!s.username.trim()) out.username = "Type the username your host gave you.";
+  if (needPassword && !password) out.password = "Type the password.";
+  if (s.folder.split("/").includes("..") || s.folder.includes("\\")) out.folder = "Type the folder's name, like public_html, without “..”.";
+  const address = url.trim().replace(/\/+$/, "");
+  const full = /^[a-z]+:\/\//i.test(address) ? address : `https://${address}`;
+  if (!address) out.url = "Type the site's address, like https://example.com.";
+  else if (!/^https?:\/\/[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+(:\d+)?$/.test(full)) out.url = "Type the site's address, like https://example.com, with nothing after the domain.";
+  return out;
 }
