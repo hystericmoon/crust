@@ -211,6 +211,69 @@ Features Claude suggests. They are not work until the owner adds them to
   proposal above), and anything for other users (that's M6).
 
 
+## 2026-11-01 — F069 Review fixes (Claude, reversible)
+
+- **Blocks outside a Section (fixes 3 and 10, F032).** Two parts. (a)
+  The renderer puts page-level blocks that aren't Sections (a post's
+  body text, a block dropped between sections) inside the page column
+  (`cr-container cr-page-column`); neighbours share one column. Pages
+  made only of Sections render exactly as before, and the page JSON is
+  unchanged. The canvas gets the same left/right space with CSS. (b) A
+  block added from the block list with nothing selected now joins the
+  end of the page's last Section instead of landing after it. Chosen as
+  the least surprising: it appears where "the end of the page" looks to
+  be, picks up that section's style, and Alt+← still moves it out. A
+  Section, or a page that doesn't end with one, still goes at the end.
+- **Section toolbar (fix 5).** Instead of a "More" menu, the selected
+  block's action bar is capped to the room it has (`fitActionBars`, from
+  its right edge and Puck's zoom) and wraps onto a second row
+  (Save as layout, Make linked). If anything still scrolls the canvas
+  sideways, it's put back. Measured in the built builder: no sideways
+  scroll at desktop, tablet or phone, with every popover open.
+- **Focus after dialogs (fix 2).** The shared `Dialog` remembers what had
+  focus when it opened and returns focus there when it closes, unless
+  the screen already moved focus on purpose (the Pages heading after a
+  rename). After "Undo preset", focus goes to the preset that's current
+  again, or the Presets heading.
+- **Save and publish errors (fix 6).** One `SaveStatus` for the page,
+  post and linked-section builders: success is still a 10-second toast;
+  a failure (GitHub refused or unreachable, or a post that isn't ready)
+  stays, in warning colours, as an alert with "Try again" and "Dismiss".
+  "Isn't switched on yet" isn't a failure. A failed publish run shows a
+  plain next step with "Try again" (not an alert on page load: the
+  status line already announces it).
+- **Contact form (fix 7).** With JavaScript (which Turnstile needs
+  anyway) the form sends with `fetch` and the Worker answers JSON
+  (`{ ok, problem, field }`, readable only by the site's origin); the
+  page doesn't reload, so the words stay, and focus goes to the field
+  to fix (`aria-invalid`, described by the message). Without JavaScript
+  the form posts and comes back as before, now to `#<form>-error-<problem>`
+  with a message per problem (name, email, extra field, message, spam
+  check, sending), named by the field's own label, plus a hint that the
+  Back button usually brings the words back. The old `#<form>-error`
+  message stays for old links.
+- **Rename (fix 8).** The same commit also updates the header menu,
+  header button and footer columns in `site.json` (only links site.json
+  spells out; an automatic menu follows by itself), and links in blog
+  posts. The rename dialog lists them ("Site header and footer"), and
+  the message ends "It also updated 3 links to the new address: …".
+- **Alt text (fix 9).** With no earlier version of the block (just added
+  or just opened), a library photo fills the alt text only when it's
+  empty, so an owner's own words are never replaced.
+- **Polish (fix 10).** Template preview heights: 800 (desktop), 1024
+  (tablet), 812 (phone), scrolling inside. Sign out moved to the end of
+  each bar after a divider. The Site header/footer label is a thin strip
+  above the part instead of a badge on it. Click-to-colour treats header
+  and footer links as Text and the copyright as Muted. Puck's own field
+  labels take Crust's label style through Puck's CSS variables; its
+  dropdowns stay (turning them into picture cards is bigger than polish).
+  "1 layout"/"3 layouts" instead of "1 of your layout". The phone picker
+  says "For: Photo, Gallery, block 6". Theme import doesn't repeat a
+  section style's contrast problem when the same background already
+  failed above. "To replace" visits columns in reading order (the
+  builder can keep column4 … column1). Not done here: the "+" between
+  sections still overlaps the Section toolbar a little (separate polish).
+
 ## 2026-11-01 — Review fixes and F053 directions (owner)
 
 - Owner, after the review page: "go with all your recommendations".

@@ -736,7 +736,7 @@
       "description": "Fixes 1–10 from Claude's review of 48 features (DECISIONS.md, Proposals, 'From the review'; page https://claude.ai/artifact/53YM8oVKV9XrECZJSNHo1J): 1 'Blocks / Outline' reachable by keyboard and a 'Skip to page' link (F005); 2 focus returns after dialogs and 'Undo preset' (F022, F015, F013); 3 blog post body inside the page column (F035); 4 template preview with a real screen height (F048); 5 no sideways canvas jump from the Section toolbar, 'Make linked' and 'Save as layout' (F025, F027, F043); 6 failed save or publish shows a lasting error with 'Try again', no stale 'Publishing started' (F006, F008); 7 contact form keeps the visitor's message on a failed send and names the wrong field (F037); 8 renaming a page also updates header, footer and post links and says how many (F018); 9 a library photo's description fills a new Image block's alt (F034); 10 the small polish items listed there. Fixes 11 (template check sees layout) and 12 (Harbour polish) ride with the next template work. Approved by the owner (2026-11-01: 'go with all your recommendations', option A).",
       "depends_on": ["F054"],
       "done_check": "npm test -- review-fixes && npm run typecheck && npm run build && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     }

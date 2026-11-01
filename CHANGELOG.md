@@ -4,6 +4,43 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Fixes from the review (F069):**
+  - *Keyboard:* the "Blocks / Outline" switch on the left of the builder
+    works with Tab and Enter, and a "Skip to page" link (first Tab
+    press) jumps straight to the first block. After closing a question
+    (Publish, Rename, Delete) or pressing "Undo preset", the keyboard
+    lands back where you were instead of at the top of the screen.
+  - *Blog posts* keep their text inside the page's margins, like pages,
+    in every template. A block added from the block list with nothing
+    selected now goes into the last section instead of below it.
+  - *Template previews* show a real screen's height and scroll inside,
+    so Harbour's opening photo and headline are visible at once.
+  - *No more sideways jump:* the Section toolbar wraps onto two rows
+    inside the page preview, and "Make linked" / "Save as layout" open
+    inside it.
+  - *When something fails:* a save that didn't reach GitHub stays on
+    screen in red with "Try again" (it used to look like a success and
+    vanish). "Publishing started…" goes away once the publish finishes,
+    and a failed publish offers "Try again".
+  - *Contact form:* if a message can't be sent, what the visitor typed
+    stays in the form and the message says what to fix (for example
+    "“Email” doesn't look like a complete email address"), with the
+    cursor in that field. Still works without JavaScript.
+  - *Renaming a page* also updates its links in the site header menu,
+    footer and blog posts, and the message says how many links changed.
+  - *Photos:* picking a library photo for a newly added Image block
+    fills in its description.
+  - *Smaller things:* page addresses no longer break mid-word; a page
+    isn't counted twice in "Publish N changes"; the purple "Site header"
+    label no longer covers the menu; clicking the header links or
+    copyright in the Site settings preview picks the right colour;
+    search results and post titles use your site's link style and
+    search moves focus to the results; Sign out sits at the far end of
+    the top bar; the rich text box isn't cut off at the right; "To
+    replace" follows page order and its tags don't cover the words;
+    theme import lists each contrast problem once; "1 layout"; setting
+    labels look the same; the phone photo picker names the block.
+
 - **Groundwork for the Crust app (F054):** the builder can now keep a
   site in a folder on a computer, with every save kept, instead of on
   GitHub. Nothing changes in the web admin; the desktop app (F055) is the
