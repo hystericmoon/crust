@@ -5,6 +5,16 @@ to "Log".
 
 ## Current
 
+- **F053 Signal and Corner with real photos: built, passes** (branch
+  `f053-signal-corner-photos`, PR #45, not merged). Snapshot with both
+  directions per template: https://claude.ai/artifact/B3dfAGM3m15EcN1n83oooB
+  (A built for both, as pre-approved). **To try:** on PR #45's preview
+  link (https://f053-signal-corner-photos.crust-admin.pages.dev) press
+  **Start from a template**, open **Signal** and **Corner**, and flip
+  through Home, Work, About, Contact and the journal post at desktop and
+  phone widths. Say "B for Signal" or "B for Corner" to switch either
+  before merging. Also fixed on the way: card photos from the library no
+  longer stretch tall.
 - **Milestone:** 1 complete. F001–F025 merged; first real publish live at
   https://crust-site.pages.dev (2026-10-29).
 - **Merged to main (2026-10-30, owner: "Both"):** Milestone 2, F026–F033
@@ -551,4 +561,10 @@ to "Log".
   and #44 in order"); main CI, preview and contact Worker deploy green.
   F053 photo shortlists saved to design/f053/; the delegated review's
   full notes to design/review-2026-10-31/.
-
+- 2026-11-01 — F053 built: Signal ("Night stage": dark stage opening,
+  photo tiles, stair band) and Corner ("Shop counter": split opening,
+  product cards with photos, workshop band, shop front on Contact), 10
+  and 11 CC0 photos from Commons credited in photos/CREDITS.md. Card
+  photo height bug fixed (`.cr-card-media`). done_check exit 0 (all three
+  templates pass contrast, headings, axe at three widths, Lighthouse:
+  Corner 100). 865 JS tests pass.

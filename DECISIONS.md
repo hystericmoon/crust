@@ -238,6 +238,16 @@ Features Claude suggests. They are not work until the owner adds them to
   `layout` names its Home and Work pages, About photo, optional Contact
   photo and post cover (Harbour's output is unchanged). The stand-in
   images stay in the code but no starter uses them now.
+- **Card photos keep their shape (fix found while building):** a card
+  with a library photo grew as tall as the photo file, because the
+  photo's own height (added in F034 to stop layout jumps) beat the
+  card's 16:9 shape. `.cr-card-media` now has `height: auto`. Affects
+  every site's cards with library photos, only for the better.
+- **Corner's opening photo is 4:3, not square:** square scored 94 on
+  Lighthouse (95 needed) because the big photo was the last thing to
+  appear on a slow phone; 4:3 is lighter and shorter on phones, and the
+  home page now scores 100.
+- Snapshot published: https://claude.ai/artifact/B3dfAGM3m15EcN1n83oooB
 
 ## 2026-11-01 — F069 Review fixes (Claude, reversible)
 

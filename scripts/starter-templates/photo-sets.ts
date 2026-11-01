@@ -50,10 +50,10 @@ export const signalPhotos: Photo[] = inDir("signal", [
 
 /** Corner's photos (F053): bread, coffee, flowers and hands at work. */
 export const cornerPhotos: Photo[] = inDir("corner", [
-  { file: "bread-hands.jpg", alt: "Two hands holding a round loaf of bread in a linen cloth", width: 1280, height: 1280 },
+  { file: "bread-hands.jpg", alt: "Two hands holding a round loaf of bread in a linen cloth", width: 1280, height: 960 },
   { file: "moka-breakfast.jpg", alt: "A moka pot, croissants and a bag of coffee on a wooden table, seen from above", ...HERO },
   { file: "loaves.jpg", alt: "Dark-crusted sourdough loaves beside a vase of yellow flowers", ...HERO },
-  { file: "pottery-wheel.jpg", alt: "Hands shaping a clay bowl on a turning pottery wheel, seen from above", ...HERO },
+  { file: "pottery-wheel.jpg", alt: "Hands shaping wet clay on a turning pottery wheel, seen from above", ...HERO },
   { file: "tool-wall.jpg", alt: "A workshop wall of chisels, saws and hand planes in neat rows", ...HERO },
   { file: "pouring-coffee.jpg", alt: "Coffee poured from a small jug into a white cup on a worn wooden counter", ...TALL },
   { file: "carnations.jpg", alt: "Pink and orange carnations wrapped in brown paper on white linen", ...TALL },

@@ -100,9 +100,8 @@ export const signal: StarterSpec = {
   },
   heroStyle: "dark",
   imageColors: ["#FDE7D6", "#FDBA74", "#C2410C"],
-  // F053: switched on once every photo is in photos/signal/.
-  // photos: signalPhotos,
-  // layout: { home: signalHome, work: signalWork, about: "studio-lounge.jpg", postCover: "spiral-amber.jpg" },
+  photos: signalPhotos,
+  layout: { home: signalHome, work: signalWork, about: "studio-lounge.jpg", postCover: "spiral-amber.jpg" },
 };
 
 export const corner: StarterSpec = {
@@ -120,9 +119,8 @@ export const corner: StarterSpec = {
   },
   heroStyle: "surface",
   imageColors: ["#E3EAFB", "#BFD0F5", "#1E3A8A"],
-  // F053: switched on once every photo is in photos/corner/.
-  // photos: cornerPhotos,
-  // layout: { home: cornerHome, work: cornerWork, about: "pottery-wheel.jpg", contact: "flower-shop.jpg", postCover: "moka-pour.jpg" },
+  photos: cornerPhotos,
+  layout: { home: cornerHome, work: cornerWork, about: "pottery-wheel.jpg", contact: "flower-shop.jpg", postCover: "moka-pour.jpg" },
 };
 
 export const starters: StarterSpec[] = [harbour, signal, corner];

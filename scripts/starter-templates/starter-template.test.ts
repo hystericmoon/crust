@@ -104,7 +104,7 @@ describe.each(starters)("starter template $name (F049–F051)", (spec) => {
     expect(allBlocks(home).filter((b) => b.type === "Button")).toHaveLength(0);
   });
 
-  it.runIf(spec === signal && !!spec.photos)("opens dark on a stage photo and shows the work as named photo tiles (F053)", () => {
+  it.runIf(spec === signal)("opens dark on a stage photo and shows the work as named photo tiles (F053)", () => {
     const home = template.pages[0]!.puck.content as Block[];
     expect(home[0]!.props).toMatchObject({ background: "dark", imageSrc: "/media/stage-crowd.jpg", height: "large", valign: "bottom" });
     const tiles = allBlocks(home).filter((b) => b.type === "ImageOverlay");
@@ -118,7 +118,7 @@ describe.each(starters)("starter template $name (F049–F051)", (spec) => {
     expect(template.posts[0]!.coverAlt.length).toBeGreaterThan(20);
   });
 
-  it.runIf(spec === corner && !!spec.photos)("opens split (words on yellow, photo beside) and shows products as cards with photos (F053)", () => {
+  it.runIf(spec === corner)("opens split (words on yellow, photo beside) and shows products as cards with photos (F053)", () => {
     const home = template.pages[0]!.puck.content as Block[];
     expect(home[0]!.props).toMatchObject({ background: "surface", imageSrc: "" });
     const split = (home[0]!.props.content as Block[])[0]!;
@@ -156,5 +156,14 @@ describe("stand-in images", () => {
     expect([...a.slice(0, 8)]).toEqual([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
     expect(Buffer.from(a).equals(Buffer.from(standIn("arches", ["#ffffff", "#888888", "#000000"], 60, 40)))).toBe(true);
     expect(png(2, 1, () => [255, 0, 0]).length).toBeGreaterThan(40);
+  });
+});
+
+describe("card photos (F053)", () => {
+  it("keep their 16:9 shape even with a library photo's width and height attributes", async () => {
+    const css = await readFile(join(root, "packages/blocks/src/styles.css"), "utf8");
+    const rule = css.match(/\.cr-card-media \{([^}]*)\}/)![1]!;
+    expect(rule).toContain("aspect-ratio: 16 / 9");
+    expect(rule).toContain("height: auto");
   });
 });
