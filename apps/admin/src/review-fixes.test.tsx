@@ -7,7 +7,7 @@ import { readFileSync } from "node:fs";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PendingChanges } from "./api-client";
-import { KeyboardCanvas, KeyboardRoot, skipToPage } from "./keyboard/KeyboardEditing";
+import { fitActionBars, KeyboardCanvas, KeyboardRoot, skipToPage } from "./keyboard/KeyboardEditing";
 import { planInsert, ROOT_ZONE } from "./keyboard/moves";
 import { fixPuckChrome, installPuckChromeFixes } from "./keyboard/puck-chrome";
 import { Dialog } from "./pages/PageActions";
@@ -160,6 +160,34 @@ describe("review-fixes 2: focus returns when a dialog closes (F022, F015, F013)"
     const undo = source.slice(source.indexOf("Undid ${beforePreset.name}"), source.indexOf("Undo preset ({beforePreset.name})"));
     expect(undo).toContain(`#presets .st-preset[aria-pressed='true']`);
     expect(undo).toContain(`document.getElementById("presets-h")`);
+  });
+});
+
+describe("review-fixes 5: no sideways canvas jump (F025, F027, F043)", () => {
+  it("caps the action bar at the room left of its right edge, in unscaled pixels", () => {
+    document.body.innerHTML = `<div class="_DraggableComponent-actions_1627v_89" style="transform: scale(1.75); right: 0px"><div class="_ActionBar_5vdfr_1"></div></div>`;
+    const bar = document.querySelector<HTMLElement>("[class*='_DraggableComponent-actions_']")!;
+    bar.getBoundingClientRect = () => ({ right: 1184, left: -237 }) as DOMRect;
+    Object.defineProperty(document.documentElement, "clientWidth", { configurable: true, value: 1280 });
+    fitActionBars(document);
+    // (1184 - 8) / 1.75 = 672
+    expect(bar.style.maxWidth).toBe("672px");
+  });
+
+  it("puts a canvas that was scrolled sideways back", () => {
+    const scrollTo = vi.fn();
+    Object.defineProperty(window, "scrollX", { configurable: true, value: 950 });
+    vi.stubGlobal("scrollTo", scrollTo);
+    window.scrollTo = scrollTo;
+    fitActionBars(document);
+    expect(scrollTo).toHaveBeenCalledWith({ left: 0, top: window.scrollY });
+    Object.defineProperty(window, "scrollX", { configurable: true, value: 0 });
+  });
+
+  it("lets the action bar wrap onto more rows", () => {
+    const css = readFileSync("apps/admin/src/sections/sections.css", "utf8");
+    expect(css).toContain(`[class*="_DraggableComponent-actions_"] > [class*="_ActionBar_"] { flex-wrap: wrap;`);
+    expect(css).toContain(`[class*="_DraggableComponent-actions_"] [class*="_ActionBar-group_"] { height: auto;`);
   });
 });
 
