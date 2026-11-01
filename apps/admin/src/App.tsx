@@ -65,6 +65,8 @@ import { loadSavedTokens, sameTokens, saveTokens } from "./tokens-store";
 import { loadSavedAddress, loadSavedChrome, sameChrome, saveAddress, saveChrome, siteToSave } from "./chrome-store";
 import { SiteChromeContext, withSiteChrome } from "./chrome-canvas";
 import { desktopContent } from "./desktop/content";
+import { sitesApi, sitesInvoke } from "./sites/sites";
+import { SitesScreen } from "./sites/SitesScreen";
 import { withMediaFields } from "./media/fields";
 import { MediaPicker } from "./media/MediaPicker";
 import { BlogContext, withPostEditing } from "./posts/editing";
@@ -139,11 +141,14 @@ export type Route =
   /** F043: a linked section's own editor; `from` is where Back goes. */
   | { name: "section"; id: string; from: string }
   /** F048: Start from a template. */
-  | { name: "templates" };
+  | { name: "templates" }
+  /** F057: the desktop app's Sites screen. */
+  | { name: "sites" };
 
 export function parseRoute(hash: string): Route {
   if (hash.startsWith("#/settings")) return { name: "settings" };
   if (hash.startsWith("#/templates")) return { name: "templates" };
+  if (hash.startsWith("#/sites")) return { name: "sites" };
   if (hash.startsWith("#/posts")) return { name: "posts" };
   if (hash.startsWith("#/post?")) {
     const slug = new URLSearchParams(hash.split("?")[1] ?? "").get("slug");
@@ -295,6 +300,12 @@ export function App() {
         <MediaPicker />
       </MyLayoutsProvider>
     );
+  }
+
+  if (route.name === "sites") {
+    const invoke = sitesInvoke();
+    // Only the desktop app keeps several sites; the web admin is one site.
+    if (invoke) return <SitesScreen api={sitesApi(invoke)} openName={site.name} />;
   }
 
   if (route.name === "templates") {
@@ -471,6 +482,7 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
   return (
     <PageList
       siteName={site.name}
+      allSites={desktopContent() !== null}
       rows={rows && markUnpublished(rows, changes)}
       loadError={error}
       onRetry={reload}

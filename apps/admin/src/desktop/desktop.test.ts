@@ -41,7 +41,7 @@ function fakeApp(folder = memoryFolder()) {
       case "site_list":
         return folder.list(a.dir!);
       case "site_info":
-        return { folder: "/Users/hosni/Documents/Crust/My site" };
+        return { folder: "/Users/hosni/Documents/Crust/My site", id: "My site" };
       default:
         throw `unknown command ${cmd}`;
     }
@@ -284,7 +284,7 @@ describe("starting the app (F055)", () => {
 
 describe("words in the app (F055)", () => {
   afterEach(() => setDesktopContent(null));
-  const content = { site: JSON.parse(newSiteFiles()[0]!.content), pages: [], posts: [], folder: "/x" };
+  const content = { site: JSON.parse(newSiteFiles()[0]!.content), pages: [], posts: [], folder: "/x", siteId: "x" };
 
   it("has no Sign out: the app is the person's own", async () => {
     const { renderToStaticMarkup } = await import("react-dom/server");

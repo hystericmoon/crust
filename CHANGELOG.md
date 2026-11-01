@@ -4,6 +4,16 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Several sites in the app (F057).** Keep one site per client. The
+  Pages screen has an **All sites** link that opens **Your sites**: every
+  site with its page count and when it was last edited, the open one
+  marked "Open". From there: **New site** (name it, and it opens with a
+  Home page), **Rename**, **Duplicate** (same pages, photos and history,
+  but no site address or publish settings, so it never publishes over
+  the original) and **Delete**. A deleted site waits in **Recently
+  deleted** for 30 days and can be restored; your live website is never
+  touched. Each site is its own folder in Documents → Crust, and the app
+  opens the one you used last.
 - **Publish on your computer (F056).** In the app, the Publish card on
   the Pages screen has two buttons. **Preview in browser** builds your
   whole site (pages, blog, photos in every size, site search) and opens

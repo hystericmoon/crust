@@ -9,6 +9,7 @@ import { setDesktopContent, type DesktopContent } from "./content";
 import { localApi, routedFetch } from "./local-api";
 import { localPublisher, setDesktopPublisher } from "./local-publish";
 import { tauriFolder, type Invoke } from "./tauri-folder";
+import { setSitesInvoke } from "../sites/sites";
 
 /** True when the builder runs in the desktop app's window. */
 export const isDesktop = (): boolean => typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
@@ -63,10 +64,10 @@ const parse = <T>(text: string | null): T | null => {
  * a site that came without one (copied in). Returns what the builder
  * starts from.
  */
-export async function openSite(store: LocalStore): Promise<Omit<DesktopContent, "folder">> {
+export async function openSite(store: LocalStore, name = "My site"): Promise<Omit<DesktopContent, "folder" | "siteId">> {
   let site = parse<Site>(await store.readFile("content/site.json"));
   if (!site) {
-    await store.commitFiles(newSiteFiles(), "Start a new site");
+    await store.commitFiles(newSiteFiles(name), "Start a new site");
     site = parse<Site>(await store.readFile("content/site.json"))!;
   } else {
     await store.init();
@@ -90,10 +91,12 @@ export async function openSite(store: LocalStore): Promise<Omit<DesktopContent, 
 export async function startDesktop(invoke?: Invoke): Promise<DesktopContent> {
   const call: Invoke = invoke ?? ((await import("@tauri-apps/api/core")).invoke as Invoke);
   const store = new LocalStore(tauriFolder(call));
-  const opened = await openSite(store);
-  const { folder } = (await call("site_info")) as { folder: string };
-  const content = { ...opened, folder };
+  // F057: several sites; a new one starts with its folder's name.
+  const { folder, id } = (await call("site_info")) as { folder: string; id?: string };
+  const opened = await openSite(store, id || "My site");
+  const content = { ...opened, folder, siteId: id ?? "" };
   setDesktopContent(content);
+  setSitesInvoke(call);
   // F056: publishing happens on the computer.
   setDesktopPublisher(localPublisher(store, call));
   window.fetch = routedFetch(window.fetch.bind(window), localApi({ store, localUser: "you" }), window.location.href);
