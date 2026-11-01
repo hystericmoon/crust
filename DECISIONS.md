@@ -2138,3 +2138,45 @@ Workers (100k requests/day), R2 (10 GB). Only optional cost: a custom domain.
   (the installers workflow builds Mac and Windows only). Never tried
   end to end with a real release (needs the key and a ~150-minute
   installers run; the owner's call).
+
+## 2026-11-02 — F062 Premium templates in the gallery (owner + Claude)
+
+- **Direction A of the snapshot**, owner's pick ("I will go with your
+  recommendation, which is A", 2026-11-02;
+  https://claude.ai/artifact/B53eSPBXNaCJmAL6DNUeQs,
+  `design/f062-premium-templates-v1.html`): the gallery shows **Free**
+  first, then **Premium**, each a labelled group. The price is on every
+  premium card. Why: the cost is known before a click (no surprise at
+  the last step), and the free starters stay the gallery's main job.
+- **Same preview screen.** A premium card opens the same layout as a free
+  one (pages on the left, Desktop / Tablet / Phone on top), showing the
+  store's pictures instead of the live template (the file isn't on the
+  computer until bought). A page without a picture at a width says so.
+  Long pictures scroll inside a box that takes keyboard focus.
+- **Buying happens in the browser.** "Get this template · US$49" is a
+  link (new tab on the web); in the app it goes through a new command,
+  `open_link`, which opens only `https://` addresses. Screen readers hear
+  "(opens in your browser)". "Already bought it? Open the file" in the
+  preview opens a .crust file like "Open a template file…".
+- **The catalogue** (`apps/admin/src/templates/catalogue.ts`, format in
+  docs/spec.md) is read strictly: unknown fields dropped, secure links
+  only (or the catalogue's own site), at most 60 templates and 12 pages
+  each, a picture without a description isn't shown, a template with
+  nothing to show is left out. Loaded each time the gallery opens, no
+  cookies, 8-second limit. Offline: "Premium templates show here when
+  you're online."
+- **No store address yet.** `STORE_CATALOGUE_URL` is empty until the
+  store exists (F063 sets it): an address nobody owns yet could serve
+  anything. So today nothing extra shows. **Examples**:
+  `#/templates?examples` loads a bundled example catalogue
+  (`apps/admin/public/sample-catalogue/`, 480 KB, made by
+  `scripts/sample-catalogue.mjs` from Harbour and Corner), marked
+  "Examples: the Crust store isn't open yet", so the owner can try it.
+  Its "Get this template" opens a page saying the store isn't open.
+- **Premium cards are read out as "Olive, premium, US$49."** with the
+  visible name first (axe: label-in-name, WCAG 2.5.3); the price chip is
+  hidden from screen readers so it isn't read twice.
+- **First run stays free.** The welcome screen gets one line: "More
+  templates, including premium ones, are in Pages → Start from a
+  template."
+- Same gallery on the web admin and in the app.

@@ -145,6 +145,8 @@ export function FirstRun({ context, sources: given, onDone = landInBuilder }: Fi
                 </label>
               </li>
             </ul>
+            {/* F062: the welcome screen doesn't sell; one line points to the rest. */}
+            <p className="fr-hint">More templates, including premium ones, are in Pages → Start from a template.</p>
           </fieldset>
           <div className="fr-name">
             <label className="fr-legend" htmlFor={`${ids}-name`}>

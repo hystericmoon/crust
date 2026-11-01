@@ -4,6 +4,18 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Premium templates in the template gallery (F062).** Pages → Start
+  from a template now has two groups: **Free** (the starters, as
+  before) and **Premium**, templates from the Crust store with the price
+  on each card. A premium template opens the same preview as a free one,
+  with pictures of its pages at desktop, tablet and phone width, and a
+  **Get this template** button that opens the store in your browser.
+  Already bought one? **Open the file** right there. Without internet,
+  the gallery shows the free templates and one line saying premium ones
+  show when you're online. The store isn't open yet, so for now you can
+  see it with examples: add `?examples` to the gallery's address
+  (`#/templates?examples`).
+
 - **The app keeps itself up to date (F061).** Crust checks for a new
   version a little after it opens (at most once a day), downloads it in
   the background, and installs it the next time you open Crust, so an

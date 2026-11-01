@@ -47,6 +47,10 @@ const screens = [
   ["app change or disconnect, SFTP", "/#/", null, null, ['button:has-text("Change or disconnect")', "dialog[open]"], { app: "ftp", wait: ".hp-where" }],
   // F060: a brand new Crust opens on the welcome screen.
   ["app welcome screen (first run)", "/", null, null, [], { app: "none", firstRun: true, wait: ".fr-card iframe" }],
+  // F062: premium templates (the example catalogue): the gallery's groups and a premium preview.
+  ["template gallery with premium", "/#/templates?examples", null, null, [], { wait: ".tp-premium img" }],
+  ["premium template preview", "/#/templates?examples", null, null, [".tp-premium .tp-card"], { wait: ".tp-premium img" }],
+  ["premium template preview, phone width", "/#/templates?examples", null, null, [".tp-premium .tp-card", 'button:has-text("Phone")'], { wait: ".tp-premium img" }],
   // F061: an update found from the Sites screen: the banner, the Crust card, and What's new.
   ["app Sites screen, update ready", "/#/sites", null, null, ['button:has-text("Check for updates")'], { app: "none", update: "available", wait: ".up-about" }],
   ["app What's new dialog", "/#/sites", null, null, ['button:has-text("Check for updates")', '.up-banner button:has-text("What\'s new")', "dialog[open]"], { app: "none", update: "available", wait: ".up-about" }],
