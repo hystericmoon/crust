@@ -1,4 +1,11 @@
-/** Minimal GitHub contents API client for saving content files. */
+/**
+ * Minimal GitHub contents API client for saving content files. The content
+ * operations also accept a ContentStore (F054) and hand the work to it, so
+ * the server code runs unchanged against a local folder.
+ */
+import { isStore, type ChangedFile, type CommitSummary, type FileChange, type Repo, type RepoFile } from "./store";
+
+export type { ChangedFile, CommitSummary, FileChange, Repo, RepoFile } from "./store";
 
 export interface GitHubConfig {
   token: string;
@@ -61,12 +68,14 @@ export async function getFileSha(cfg: GitHubConfig, path: string, fetchFn: typeo
 
 /** Creates or updates one file in a single commit. Returns the commit sha. */
 export async function putFile(
-  cfg: GitHubConfig,
+  cfg: Repo,
+
   path: string,
   content: string,
   message: string,
   fetchFn: typeof fetch = fetch,
 ): Promise<{ commit: string; url: string }> {
+  if (isStore(cfg)) return cfg.commitFiles([{ path, content }], message);
   const sha = await getFileSha(cfg, path, fetchFn);
   const res = await fetchFn(`${api}/repos/${cfg.repo}/contents/${encodePath(path)}`, {
     method: "PUT",
@@ -78,14 +87,9 @@ export async function putFile(
   return { commit: body.commit.sha, url: body.commit.html_url };
 }
 
-export interface RepoFile {
-  name: string;
-  path: string;
-  sha: string;
-}
-
 /** Lists the files in a folder (one level). Empty if the folder doesn't exist. */
-export async function listFolder(cfg: GitHubConfig, path: string, fetchFn: typeof fetch = fetch): Promise<RepoFile[]> {
+export async function listFolder(cfg: Repo, path: string, fetchFn: typeof fetch = fetch): Promise<RepoFile[]> {
+  if (isStore(cfg)) return cfg.listFolder(path);
   const res = await fetchFn(`${api}/repos/${cfg.repo}/contents/${encodePath(path)}?ref=${encodeURIComponent(cfg.branch)}`, {
     headers: headers(cfg.token),
   });
@@ -96,7 +100,9 @@ export async function listFolder(cfg: GitHubConfig, path: string, fetchFn: typeo
 }
 
 /** Reads a text file (on the branch, or at a commit given as `ref`); null if missing. */
-export async function readFile(cfg: GitHubConfig, path: string, fetchFn: typeof fetch = fetch, ref = cfg.branch): Promise<string | null> {
+export async function readFile(cfg: Repo, path: string, fetchFn: typeof fetch = fetch, ref?: string): Promise<string | null> {
+  if (isStore(cfg)) return cfg.readFile(path, ref);
+  ref ??= cfg.branch;
   const res = await fetchFn(`${api}/repos/${cfg.repo}/contents/${encodePath(path)}?ref=${encodeURIComponent(ref)}`, {
     headers: headers(cfg.token),
   });
@@ -107,7 +113,8 @@ export async function readFile(cfg: GitHubConfig, path: string, fetchFn: typeof 
 }
 
 /** Reads a file's raw bytes (any size up to 100 MB); null if missing (F034 photos). */
-export async function readRaw(cfg: GitHubConfig, path: string, fetchFn: typeof fetch = fetch): Promise<ArrayBuffer | null> {
+export async function readRaw(cfg: Repo, path: string, fetchFn: typeof fetch = fetch): Promise<ArrayBuffer | null> {
+  if (isStore(cfg)) return cfg.readRaw(path);
   const res = await fetchFn(`${api}/repos/${cfg.repo}/contents/${encodePath(path)}?ref=${encodeURIComponent(cfg.branch)}`, {
     headers: { ...headers(cfg.token), Accept: "application/vnd.github.raw+json" },
   });
@@ -117,7 +124,8 @@ export async function readRaw(cfg: GitHubConfig, path: string, fetchFn: typeof f
 }
 
 /** When a file last changed (latest commit touching it), as an ISO date. */
-export async function lastCommitDate(cfg: GitHubConfig, path: string, fetchFn: typeof fetch = fetch): Promise<string | null> {
+export async function lastCommitDate(cfg: Repo, path: string, fetchFn: typeof fetch = fetch): Promise<string | null> {
+  if (isStore(cfg)) return cfg.lastCommitDate(path);
   const res = await fetchFn(
     `${api}/repos/${cfg.repo}/commits?path=${encodeURIComponent(path)}&sha=${encodeURIComponent(cfg.branch)}&per_page=1`,
     { headers: headers(cfg.token) },
@@ -163,29 +171,18 @@ export async function latestRuns(cfg: GitHubConfig, workflow: string, fetchFn: t
 }
 
 /**
- * One file in a multi-file commit: new text, or null to delete it. `base64`
- * is for binary files (F034 photos); `sha` puts back a file's earlier
- * version that Git already has (F048 undo).
- */
-export interface FileChange {
-  path: string;
-  content: string | null;
-  base64?: string;
-  sha?: string;
-}
-
-/**
  * Commits several file changes at once (F015: a rename moves the page file
  * and updates redirects.json in one step, so history never shows half of it).
  * Uses the Git data API: new tree on top of the branch head, then a commit,
  * then a fast-forward of the branch.
  */
 export async function commitFiles(
-  cfg: GitHubConfig,
+  cfg: Repo,
   changes: FileChange[],
   message: string,
   fetchFn: typeof fetch = fetch,
 ): Promise<{ commit: string; url: string }> {
+  if (isStore(cfg)) return cfg.commitFiles(changes, message);
   const repo = `${api}/repos/${cfg.repo}/git`;
   const send = async <T>(url: string, method: string, body?: unknown): Promise<T> => {
     const res = await fetchFn(url, {
@@ -235,7 +232,11 @@ export interface PublishedRun {
 }
 
 /** The latest successful run of a workflow, or null if it never succeeded (F016). */
-export async function lastSuccessfulRun(cfg: GitHubConfig, workflow: string, fetchFn: typeof fetch = fetch): Promise<PublishedRun | null> {
+export async function lastSuccessfulRun(cfg: Repo, workflow: string, fetchFn: typeof fetch = fetch): Promise<PublishedRun | null> {
+  if (isStore(cfg)) {
+    const last = await cfg.lastPublished();
+    return last ? { id: 0, sha: last.sha, createdAt: last.at, url: "" } : null;
+  }
   const res = await fetchFn(
     `${api}/repos/${cfg.repo}/actions/workflows/${encodeURIComponent(workflow)}/runs?branch=${encodeURIComponent(cfg.branch)}&status=success&per_page=1`,
     { headers: headers(cfg.token) },
@@ -247,13 +248,9 @@ export async function lastSuccessfulRun(cfg: GitHubConfig, workflow: string, fet
   return run ? { id: run.id, sha: run.head_sha, createdAt: run.created_at, url: run.html_url } : null;
 }
 
-export interface ChangedFile {
-  path: string;
-  status: "added" | "modified" | "removed";
-}
-
 /** Files that differ between a commit and the branch head (F016). Renames count as removed + added. */
-export async function changedFiles(cfg: GitHubConfig, since: string, fetchFn: typeof fetch = fetch): Promise<ChangedFile[]> {
+export async function changedFiles(cfg: Repo, since: string, fetchFn: typeof fetch = fetch): Promise<ChangedFile[]> {
+  if (isStore(cfg)) return cfg.changedFiles(since);
   const res = await fetchFn(
     `${api}/repos/${cfg.repo}/compare/${encodeURIComponent(since)}...${encodeURIComponent(cfg.branch)}`,
     { headers: headers(cfg.token) },
@@ -302,15 +299,9 @@ export async function liveAddress(cfg: GitHubConfig, runId: number, fetchFn: typ
   return found;
 }
 
-export interface CommitSummary {
-  sha: string;
-  parent: string | null;
-  message: string;
-  date: string;
-}
-
 /** Recent commits on the branch that touched a folder, newest first (F019). */
-export async function recentCommits(cfg: GitHubConfig, path: string, fetchFn: typeof fetch = fetch, perPage = 50): Promise<CommitSummary[]> {
+export async function recentCommits(cfg: Repo, path: string, fetchFn: typeof fetch = fetch, perPage = 50): Promise<CommitSummary[]> {
+  if (isStore(cfg)) return cfg.recentCommits(path, perPage);
   const res = await fetchFn(
     `${api}/repos/${cfg.repo}/commits?path=${encodeURIComponent(path)}&sha=${encodeURIComponent(cfg.branch)}&per_page=${perPage}`,
     { headers: headers(cfg.token) },
@@ -322,10 +313,11 @@ export async function recentCommits(cfg: GitHubConfig, path: string, fetchFn: ty
 
 /** The files one commit changed, and its first parent (F048). */
 export async function commitChanges(
-  cfg: GitHubConfig,
+  cfg: Repo,
   sha: string,
   fetchFn: typeof fetch = fetch,
 ): Promise<{ parent: string | null; files: { path: string; status: string }[] }> {
+  if (isStore(cfg)) return cfg.commitChanges(sha);
   const res = await fetchFn(`${api}/repos/${cfg.repo}/commits/${encodeURIComponent(sha)}`, { headers: headers(cfg.token) });
   if (!res.ok) throw new GitHubError(explain(res.status), res.status);
   const body = (await res.json()) as { parents?: { sha: string }[]; files?: { filename: string; status: string }[] };
@@ -333,7 +325,8 @@ export async function commitChanges(
 }
 
 /** Every file under `folder` as it was at a commit: path → blob sha (F048). */
-export async function filesAt(cfg: GitHubConfig, commit: string, folder: string, fetchFn: typeof fetch = fetch): Promise<Map<string, string>> {
+export async function filesAt(cfg: Repo, commit: string, folder: string, fetchFn: typeof fetch = fetch): Promise<Map<string, string>> {
+  if (isStore(cfg)) return cfg.filesAt(commit, folder);
   const res = await fetchFn(`${api}/repos/${cfg.repo}/git/trees/${encodeURIComponent(commit)}?recursive=1`, { headers: headers(cfg.token) });
   if (!res.ok) throw new GitHubError(explain(res.status), res.status);
   const body = (await res.json()) as { tree: { path: string; type: string; sha: string }[] };

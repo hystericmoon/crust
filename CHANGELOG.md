@@ -4,6 +4,11 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Groundwork for the Crust app (F054):** the builder can now keep a
+  site in a folder on a computer, with every save kept, instead of on
+  GitHub. Nothing changes in the web admin; the desktop app (F055) is the
+  first thing to use it.
+
 - **Harbour, reworked (F052):** the first starter template now opens
   with a full-width photo behind the headline, shows recent work as a
   tall photo beside two wide ones, puts short statement lines between

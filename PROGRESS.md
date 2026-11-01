@@ -532,3 +532,11 @@ to "Log".
   axe at 3 widths, contrast, headings, Lighthouse). 783 JS tests.
   **Owner to test:** Start from a template → Harbour on the PR preview
   link; needs `reviewed: true` after.
+- 2026-10-31 (night, Jakarta) — Live-site publish checked (run 3 OK).
+  Milestones 6 and 7 written (docs/milestone-6.md, -7.md, F054–F068,
+  launch-only owner tasks in BLOCKED.md). F054 Content store done on
+  branch `f054-content-store` (stacked on PR #42): the admin's server code
+  runs on a local folder with its own history (`.crust/`); no visible
+  change. Nothing for the owner to test yet. F053 photo picks and the
+  delegated review are in progress.
+

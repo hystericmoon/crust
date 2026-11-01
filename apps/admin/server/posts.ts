@@ -17,7 +17,7 @@ import {
   type BlogSettings,
   type Post,
 } from "@crust/blocks/posts";
-import { fail, gate, githubConfig, githubFailure, json, type Env } from "./api";
+import { fail, gate, keptIn, githubFailure, repoFor, json, type Env } from "./api";
 import { MAX_BYTES } from "./content";
 import { commitFiles, listFolder, readFile } from "./github";
 
@@ -34,7 +34,7 @@ export async function handlePosts(request: Request, env: Env, fetchFn: typeof fe
   const write = request.method === "POST";
   const user = await gate(request, env, fetchFn, write);
   if (user instanceof Response) return user;
-  const cfg = githubConfig(env);
+  const cfg = repoFor(env);
 
   try {
     if (!write) {
@@ -42,7 +42,7 @@ export async function handlePosts(request: Request, env: Env, fetchFn: typeof fe
       if (slug !== null) {
         if (!isValidSlug(slug)) return fail(400, "That isn't a post address.");
         const post = parsePost(await readFile(cfg, postFileFor(slug), fetchFn));
-        return post ? json(200, { ok: true, post }) : fail(404, "That post isn't on GitHub. It may have been deleted.");
+        return post ? json(200, { ok: true, post }) : fail(404, `That post isn't ${keptIn(env)}. It may have been deleted.`);
       }
       const files = (await listFolder(cfg, POSTS_FOLDER, fetchFn)).filter((f) => slugForFile(f.path));
       const [posts, blogText] = await Promise.all([
@@ -75,7 +75,7 @@ export async function handlePosts(request: Request, env: Env, fetchFn: typeof fe
     if (body.action === "delete") {
       if (!isValidSlug(body.slug)) return fail(400, "That isn't a post address.");
       const current = parsePost(await readFile(cfg, postFileFor(body.slug), fetchFn));
-      if (!current) return fail(404, "That post isn't on GitHub any more.");
+      if (!current) return fail(404, `That post isn't ${keptIn(env)} any more.`);
       const result = await commitFiles(cfg, [{ path: postFileFor(body.slug), content: null }], `Delete post "${current.title}" from the builder\n\nDeleted by ${user.email}`, fetchFn);
       return json(200, { ok: true, commit: result.commit });
     }

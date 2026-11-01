@@ -116,8 +116,11 @@ The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
    `photos` per spec; Harbour's `homeWithPhotos`/`workWithPhotos` are
    Harbour-shaped), `npm run build:starters`, done_check.
 2. ~~Write Milestones 6 and 7~~ done 2026-10-31 (F054–F068; F054 depends
-   on F048 so M6 can start while F053 waits for the owner). Next feature
-   after F053's approval wait: **F054 Content store**.
+   on F048 so M6 can start while F053 waits for the owner).
+   **F054 Content store done** (branch `f054-content-store`, PR #43,
+   stacked on #42). Next: **F055 Desktop app shell** (Tauri 2; the app
+   gives LocalStore a Folder backed by Tauri file commands; see
+   `apps/admin/server/local-store.ts` and DECISIONS "F054").
 3. ~~Review the 48 `needs_review` features~~ done 2026-10-31: all have
    `reviewed: true` + `review_note`; 12 fixes in DECISIONS.md
    Proposals "From the review"; page for the owner

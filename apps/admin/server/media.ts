@@ -16,8 +16,8 @@ import {
   sniffImage,
   type MediaItem,
 } from "@crust/blocks/media";
-import { fail, gate, githubConfig, githubFailure, json, readPages, type Env } from "./api";
-import { commitFiles, readFile, readRaw, type GitHubConfig } from "./github";
+import { fail, gate, githubFailure, repoFor, json, readPages, type Env } from "./api";
+import { commitFiles, readFile, readRaw, type Repo } from "./github";
 
 /** Base64 grows a file by a third; leave room for the rest of the request. */
 const MAX_UPLOAD_REQUEST = Math.ceil((mediaLimits.uploadBytes * 4) / 3) + 64 * 1024;
@@ -31,7 +31,7 @@ export interface MediaUse {
 }
 
 /** Where each photo is used: pages and the site header. */
-async function usage(cfg: GitHubConfig, fetchFn: typeof fetch): Promise<Record<string, MediaUse[]>> {
+async function usage(cfg: Repo, fetchFn: typeof fetch): Promise<Record<string, MediaUse[]>> {
   const [pages, siteText] = await Promise.all([readPages(cfg, fetchFn), readFile(cfg, "content/site.json", fetchFn)]);
   const out: Record<string, MediaUse[]> = {};
   const add = (files: Set<string>, use: MediaUse) => {
@@ -77,7 +77,7 @@ export async function handleMedia(request: Request, env: Env, fetchFn: typeof fe
   const write = request.method === "POST";
   const user = await gate(request, env, fetchFn, write);
   if (user instanceof Response) return user;
-  const cfg = githubConfig(env);
+  const cfg = repoFor(env);
 
   if (!write) {
     try {
@@ -179,7 +179,7 @@ export async function handleMediaFile(request: Request, env: Env, file: string, 
   if (user instanceof Response) return user;
   if (!isMediaFile(file)) return new Response("Not found", { status: 404 });
   try {
-    const bytes = await readRaw(githubConfig(env), `${MEDIA_FOLDER}/${file}`, fetchFn);
+    const bytes = await readRaw(repoFor(env), `${MEDIA_FOLDER}/${file}`, fetchFn);
     if (!bytes) return new Response("Not found", { status: 404 });
     const ext = file.slice(file.lastIndexOf(".") + 1) as keyof typeof mediaTypes;
     return new Response(bytes, {
