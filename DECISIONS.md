@@ -8,7 +8,7 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
-- **Premium design layer (owner feedback 2026-11-02).** The owner
+- **Premium design layer (owner feedback 2026-11-02). Owner chose B (2026-11-02: "Let's go B, let's go all in in this. Compare yootheme features against us and tell me the gap. We should focus on that").** Next: a YOOtheme gap page and a milestone draft for approval; the milestone goes before the premium templates track. The owner
   compared our templates with eliras/zorven/labzzy.webflow.io and found
   ours not premium. Agreed, side by side:
   https://claude.ai/artifact/FMb9QuLomsLCvQC9aZscf3
