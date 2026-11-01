@@ -2062,6 +2062,11 @@ Workers (100k requests/day), R2 (10 GB). Only optional cost: a custom domain.
   on the new site. Tried once by hand with Harbour in the real window:
   photos added, builder on Home, "To replace" open with focus on its
   heading.
+- **CI's self-check gets a Crust folder of its own.** CI pointed the app
+  at `$RUNNER_TEMP/crust-site`, so its "Crust folder" was the runner's
+  temp folder, full of other folders that count as sites; the welcome
+  screen rightly stayed away and the check failed. Now
+  `$RUNNER_TEMP/crust-home/crust-site` (reproduced and checked locally).
 - **Leftover:** the "Adding photos (3 of 10)" line can pause for a
   moment while large photos are prepared (the same as Start from a
   template).
