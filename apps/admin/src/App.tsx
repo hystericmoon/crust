@@ -39,6 +39,8 @@ import {
 } from "./pages/store";
 import { markUnpublished } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
+import { DesktopPublishPanel } from "./publish/DesktopPublishPanel";
+import { desktopPublisher } from "./desktop/local-publish";
 import { PublishShortcut, usePendingCount } from "./publish/shortcut";
 import { SignOutLink } from "./sign-out";
 import { SaveStatus, useSaveStatus } from "./save-status";
@@ -493,6 +495,10 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
       }}
       notice={<TemplateBanner githubOn={githubOn} />}
     >
+      {desktopPublisher() ? (
+        // F056: in the desktop app the site is built on the computer.
+        <DesktopPublishPanel publisher={desktopPublisher()!} siteUrl={loadSavedAddress(site.baseUrl)} />
+      ) : (
       <PublishPanel
         githubOn={githubOn === true}
         siteUrl={loadSavedAddress(site.baseUrl)}
@@ -503,6 +509,7 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
         onSaveDrafts={saveAllDrafts}
         onFinished={reload}
       />
+      )}
     </PageList>
   );
 }

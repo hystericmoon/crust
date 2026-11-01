@@ -7,6 +7,7 @@ import { defaultTokens, parsePost, type Page, type Post, type Site } from "@crus
 import { LocalStore } from "../../server/local-store";
 import { setDesktopContent, type DesktopContent } from "./content";
 import { localApi, routedFetch } from "./local-api";
+import { localPublisher, setDesktopPublisher } from "./local-publish";
 import { tauriFolder, type Invoke } from "./tauri-folder";
 
 /** True when the builder runs in the desktop app's window. */
@@ -93,6 +94,8 @@ export async function startDesktop(invoke?: Invoke): Promise<DesktopContent> {
   const { folder } = (await call("site_info")) as { folder: string };
   const content = { ...opened, folder };
   setDesktopContent(content);
+  // F056: publishing happens on the computer.
+  setDesktopPublisher(localPublisher(store, call));
   window.fetch = routedFetch(window.fetch.bind(window), localApi({ store, localUser: "you" }), window.location.href);
   document.title = `${content.site.name} · Crust`;
   return content;

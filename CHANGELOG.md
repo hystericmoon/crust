@@ -4,6 +4,16 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Publish on your computer (F056).** In the app, the Publish card on
+  the Pages screen has two buttons. **Preview in browser** builds your
+  whole site (pages, blog, photos in every size, site search) and opens
+  it in Safari or Chrome, exactly as visitors will see it; anything that
+  would stop a publish is listed underneath, but you still see the site.
+  **Export site folder** asks where to put it and writes a finished
+  website folder ("Harbour Studio website") that you can upload to any
+  web host. Exporting again asks before replacing the earlier export.
+  It's the same result as publishing from crust-admin. Publishing
+  straight to a host comes next (F058, F059).
 - **Crust as an app for Mac and Windows (F055, first step).** The builder
   can now run in its own window instead of a browser. Your site is kept
   in a folder on your computer (Documents → Crust → My site), and every

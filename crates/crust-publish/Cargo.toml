@@ -13,6 +13,14 @@ image = { version = "0.25", default-features = false, features = ["jpeg", "png",
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 walkdir = "2.5"
+# F056: the search index inside the desktop app (the pipeline runs the
+# Pagefind command instead). Same version as package.json's pagefind.
+pagefind = { version = "=1.5.2", default-features = false, optional = true }
+# io-util: Pagefind needs it but only asks for it through its (unused) server.
+tokio = { version = "1", features = ["rt-multi-thread", "io-util"], optional = true }
+
+[features]
+search = ["dep:pagefind", "dep:tokio"]
 
 [dev-dependencies]
 tempfile = "3.27"

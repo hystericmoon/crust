@@ -6,18 +6,29 @@
 //! through a local content store (F054) whose files go through the four
 //! commands below. Photos (`/media/<file>`) are served straight from the
 //! site folder, so the builder shows them as it does on the web.
+//!
+//! F056: the builder renders the site and the commands below finish it
+//! (checks, sitemap, photos, search index), export it to a folder, or
+//! show it in the person's browser.
 
+pub mod preview;
+pub mod publish;
 pub mod site;
 
 use std::borrow::Cow;
 use std::path::PathBuf;
-use std::sync::{Arc, OnceLock};
+use std::sync::{Arc, Mutex, OnceLock};
 
+use crust_publish::Checks;
 use serde::Serialize;
 use tauri::ipc::{InvokeBody, Request, Response};
 use tauri::utils::assets::{AssetKey, AssetsIter, CspHash};
 use tauri::{Manager, Runtime, State};
+use tauri_plugin_dialog::DialogExt;
+use tauri_plugin_opener::OpenerExt;
 
+pub use preview::PreviewServer;
+pub use publish::{BuildReport, Exported, RenderedFile, build_site, export_folder, export_site};
 pub use site::{SiteError, SiteFolder, default_site_folder, media_path};
 
 /// What the builder is told when a file isn't there (it reads as `null`).
@@ -72,6 +83,115 @@ fn site_remove(site: State<'_, Site>, path: String) -> Result<(), String> {
 #[tauri::command]
 fn site_list(site: State<'_, Site>, dir: String) -> Result<Vec<String>, String> {
     site.0.list(&dir).map_err(|e| e.to_string())
+}
+
+/// F056: where the finished site is built, and what's been done with it.
+pub struct Builds {
+    /// The latest finished site (in the app's cache, not the site folder).
+    dir: PathBuf,
+    /// One build at a time.
+    building: Arc<Mutex<()>>,
+    server: Mutex<Option<PreviewServer>>,
+    /// An export waiting for "Replace" (the folder was already there).
+    pending_export: Mutex<Option<PathBuf>>,
+    last_export: Mutex<Option<PathBuf>>,
+}
+
+impl Builds {
+    pub fn new(dir: PathBuf) -> Self {
+        Self { dir, building: Arc::default(), server: Mutex::default(), pending_export: Mutex::default(), last_export: Mutex::default() }
+    }
+}
+
+/// Finishes the rendered site. `preview`: problems are listed, not stopping it.
+#[tauri::command]
+async fn site_build(site: State<'_, Site>, builds: State<'_, Builds>, files: Vec<RenderedFile>, base_url: String, preview: bool) -> Result<BuildReport, String> {
+    let (site, out, lock) = (site.0.clone(), builds.dir.clone(), builds.building.clone());
+    let checks = if preview { Checks::Report } else { Checks::Stop };
+    tauri::async_runtime::spawn_blocking(move || {
+        let _one_at_a_time = lock.lock().unwrap_or_else(|e| e.into_inner());
+        build_site(&site, &files, &base_url, checks, &out)
+    })
+    .await
+    .map_err(|e| format!("Building the site stopped unexpectedly: {e}"))?
+}
+
+/// Shows the latest build in the person's browser; returns its address.
+#[tauri::command]
+fn site_preview<R: Runtime>(app: tauri::AppHandle<R>, builds: State<'_, Builds>, open: bool) -> Result<String, String> {
+    if !publish::looks_like_export(&builds.dir) {
+        return Err("There's no finished site to show yet. Try again.".into());
+    }
+    let mut server = builds.server.lock().unwrap_or_else(|e| e.into_inner());
+    if server.is_none() {
+        *server = Some(PreviewServer::start(builds.dir.clone()).map_err(|e| format!("Couldn't start the preview: {e}"))?);
+    }
+    let url = server.as_ref().map(PreviewServer::url).unwrap_or_default();
+    if open {
+        app.opener().open_url(&url, None::<&str>).map_err(|e| format!("Couldn't open your browser: {e}"))?;
+    }
+    Ok(url)
+}
+
+#[derive(Serialize, Debug, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct ExportResult {
+    /// "done", "exists" (ask before replacing) or "cancelled".
+    pub status: &'static str,
+    pub folder: String,
+}
+
+fn export_result(builds: &Builds, outcome: Exported) -> ExportResult {
+    let lock = |m: &Mutex<Option<PathBuf>>| *m.lock().unwrap_or_else(|e| e.into_inner()) = None;
+    match outcome {
+        Exported::Done(folder) => {
+            lock(&builds.pending_export);
+            *builds.last_export.lock().unwrap_or_else(|e| e.into_inner()) = Some(folder.clone());
+            ExportResult { status: "done", folder: folder.display().to_string() }
+        }
+        Exported::Exists(folder) => {
+            *builds.pending_export.lock().unwrap_or_else(|e| e.into_inner()) = Some(folder.clone());
+            ExportResult { status: "exists", folder: folder.display().to_string() }
+        }
+    }
+}
+
+/// Asks where to put the site (a folder picker), then copies the latest
+/// build there as "<Site name> website". `CRUST_EXPORT_FOLDER` skips the
+/// picker (tests).
+#[tauri::command]
+async fn site_export<R: Runtime>(app: tauri::AppHandle<R>, builds: State<'_, Builds>, name: String) -> Result<ExportResult, String> {
+    let chosen = match std::env::var_os("CRUST_EXPORT_FOLDER").filter(|f| !f.is_empty()) {
+        Some(folder) => Some(PathBuf::from(folder)),
+        None => {
+            let dialog = app.dialog().clone();
+            tauri::async_runtime::spawn_blocking(move || dialog.file().set_title("Choose where to put your site").blocking_pick_folder())
+                .await
+                .map_err(|e| e.to_string())?
+                .and_then(|picked| picked.into_path().ok())
+        }
+    };
+    let Some(parent) = chosen else {
+        return Ok(ExportResult { status: "cancelled", folder: String::new() });
+    };
+    let target = export_folder(&parent, &name);
+    let outcome = export_site(&builds.dir, &target, false)?;
+    Ok(export_result(&builds, outcome))
+}
+
+/// "Replace": finishes the export that found its folder already there.
+#[tauri::command]
+fn site_export_replace(builds: State<'_, Builds>) -> Result<ExportResult, String> {
+    let target = builds.pending_export.lock().unwrap_or_else(|e| e.into_inner()).clone().ok_or("There's no export waiting. Export again.")?;
+    let outcome = export_site(&builds.dir, &target, true)?;
+    Ok(export_result(&builds, outcome))
+}
+
+/// Shows the last exported folder in Finder or File Explorer.
+#[tauri::command]
+fn site_show_export<R: Runtime>(app: tauri::AppHandle<R>, builds: State<'_, Builds>) -> Result<(), String> {
+    let folder = builds.last_export.lock().unwrap_or_else(|e| e.into_inner()).clone().ok_or("Nothing has been exported yet.")?;
+    app.opener().reveal_item_in_dir(folder.join("index.html")).map_err(|e| format!("Couldn't show the folder: {e}"))
 }
 
 /// Decodes `%XX` escapes (what the builder's `encodeURIComponent` makes).
@@ -181,11 +301,15 @@ pub fn run() {
     context.set_assets(Box::new(SiteAssets::new(builder_assets, slot.clone())));
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_opener::init())
         .setup(move |app| {
             let site = Arc::new(SiteFolder::new(choose_site_folder(app)));
             std::fs::create_dir_all(site.root())?;
             let _ = slot.set(site.clone());
             app.manage(Site(site));
+            let cache = app.path().app_cache_dir().unwrap_or_else(|_| std::env::temp_dir().join("crust"));
+            app.manage(Builds::new(cache.join("site-build")));
             Ok(())
         })
         .on_page_load(|webview, payload| {
@@ -193,7 +317,7 @@ pub fn run() {
                 let _ = webview.eval(SELF_CHECK);
             }
         })
-        .invoke_handler(tauri::generate_handler![site_info, site_read, site_write, site_remove, site_list, self_check_report])
+        .invoke_handler(tauri::generate_handler![site_info, site_read, site_write, site_remove, site_list, site_build, site_preview, site_export, site_export_replace, site_show_export, self_check_report])
         .run(context)
         .expect("Crust couldn't start");
 }

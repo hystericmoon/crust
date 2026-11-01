@@ -59,7 +59,7 @@ jobs:
       - name: Desktop app self-check
         run: |
           cargo build -p crust-desktop --features tauri/custom-protocol
-          CRUST_SITE_FOLDER="$RUNNER_TEMP/crust-site" CRUST_SELF_CHECK=1 timeout 180 xvfb-run -a target/debug/crust
+          CRUST_SITE_FOLDER="$RUNNER_TEMP/crust-site" CRUST_EXPORT_FOLDER="$RUNNER_TEMP/crust-export" CRUST_SELF_CHECK=1 timeout 180 xvfb-run -a target/debug/crust
 
       - name: Publish sample site
         run: npm run publish:local
