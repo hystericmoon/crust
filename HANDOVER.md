@@ -5,9 +5,10 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-10-31, F052 built and passing, waiting for the
-owner's review (session "F052 Harbour rework", branch
-`claude/peaceful-shannon-x32vlp`, stacked on PR #40).
+Last updated: 2026-10-31 night (Jakarta): live-site publish checked (run 3
+succeeded); M6/M7 written (docs/milestone-6.md, -7.md, F054–F068); F053
+photo hunts and the delegated review running. Branch
+`claude/peaceful-shannon-x32vlp`, PR #42.
 
 ## How sessions work (owner's rule, 2026-10-30)
 
@@ -70,8 +71,8 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 
 ## Where things stand
 
-- **Live site** https://crust-site.pages.dev: last published at
-  Milestone 1. Only the owner decides when to publish.
+- **Live site** https://crust-site.pages.dev: published 2026-10-31
+  (Milestones 1–5). Only the owner decides when to publish.
 - **Admin** https://crust-admin.pages.dev: main, Milestones 1–5
   (F001–F051) merged (Milestone 5: PRs #33–#39, 2026-10-31).
 - **Milestone 5 "Templates"** (docs/milestone-5.md), F045–F049:
@@ -102,26 +103,29 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 
 ## Next
 
-1. On start: archive the previous session (archive_session; it's named in
-   the handover prompt). PR #40 is notes only; merge it only when the
-   owner says so. The F052 branch `claude/peaceful-shannon-x32vlp` is
-   stacked on it (its PR targets `m5-merged-notes`).
-2. **F052 is built and passes** (branch `claude/peaceful-shannon-x32vlp`,
-   PR #41, stacked on #40). Waiting for the owner's review on the
-   preview link (`needs_review`), and his word to merge #40 then #41.
-   Design: DECISIONS.md "F052 photos and snapshot"; photos and credits:
-   `scripts/starter-templates/photos/`.
-3. **F053 Signal and Corner with real photos** (owner said yes,
-   2026-10-31). Same process as F052: CC0 photo picks (sources and rules
-   in DECISIONS.md "F052 photos and snapshot"; Skitterphoto full size
-   comes from its download form, StockSnap/Pexels are blocked here),
-   then a design snapshot with directions per template, owner approves,
-   then build in starter.ts (generalise `photos` per spec). A resume is
-   scheduled for 2026-10-31 23:00 Jakarta.
-4. **Roadmap** (updated 2026-10-31): https://claude.ai/artifact/4eHUDzJ3tDeeaNPBf4T4ii.
-   M6/M7 are proposals gated on the owner's three decisions there.
-5. Proposals waiting for the owner: header over hero photo, latest posts
-   block, highlight-link fix (DECISIONS.md → Proposals).
+The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
+"Free Crust, desktop app, M6 and M7 approved". In order:
+
+1. **F053 Signal and Corner with real photos** (features.json). Same
+   process as F052 (DECISIONS.md "F052 photos and snapshot"): CC0 photo
+   picks (Wikimedia Commons API, NegativeSpace category pages,
+   Skitterphoto: full size via its download form with the page's
+   _token; StockSnap/Pexels refuse automated requests here), comparison
+   page, design snapshot with directions per template, owner approves,
+   build in `scripts/starter-templates/starter.ts` (generalise
+   `photos` per spec; Harbour's `homeWithPhotos`/`workWithPhotos` are
+   Harbour-shaped), `npm run build:starters`, done_check.
+2. ~~Write Milestones 6 and 7~~ done 2026-10-31 (F054–F068; F054 depends
+   on F048 so M6 can start while F053 waits for the owner). Next feature
+   after F053's approval wait: **F054 Content store**.
+3. ~~Review the 48 `needs_review` features~~ done 2026-10-31: all have
+   `reviewed: true` + `review_note`; 12 fixes in DECISIONS.md
+   Proposals "From the review"; page for the owner
+   https://claude.ai/artifact/53YM8oVKV9XrECZJSNHo1J
+   (`design/review-2026-10-31.html`). **Waiting for the owner: A (one
+   fix batch 1–10 now, recommended), B (1–5 only) or C (later).** Only
+   he adds the rework item to features.json.
+4. ~~Live site publish~~ checked: run 3 succeeded, site up.
 
 ## Where to find things
 

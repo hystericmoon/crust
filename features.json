@@ -20,7 +20,8 @@
       "done_check": "npm run lint:workflows && npm run build, plus a green 'Preview deploy' run on GitHub that deployed and loaded the preview (needs the Cloudflare secrets)",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. every push deploys the builder and the link appears in the PR and in the run summary, as described. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F002",
@@ -40,7 +41,8 @@
       "done_check": "npm test -- tokens settings && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. colours, fonts, spacing, corner radius and page width can all be edited, the preview updates live, and a contrast failure shows up both on the field (linked with aria-describedby) and in a summary with a one-click fix, so this does what it says. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F004",
@@ -50,7 +52,8 @@
       "done_check": "npm test -- blocks && npm run publish:local",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. Columns and Card render correctly and stack on phones, and the editor has all three device widths. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F005",
@@ -60,7 +63,8 @@
       "done_check": "npm test -- keyboard && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): problem. moving blocks by keyboard works well and is clearly announced, but the left rail's \"Blocks / Outline\" switch can't be reached with the keyboard at all, so the Outline view is mouse-only. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F006",
@@ -70,7 +74,8 @@
       "done_check": "npm test -- save-api && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. saving works and gives clear feedback both ways, but an error looks the same as a success and disappears on its own after 10 seconds. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F007",
@@ -80,7 +85,8 @@
       "done_check": "npm test -- pages && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. this works as described: title, status, address and last edited are shown, the address is checked as you type, and the new page opens straight in the builder. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F008",
@@ -90,7 +96,8 @@
       "done_check": "npm test -- publish && npm run publish:local",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. publishing starts, shows progress, refreshes by itself and reports Live or Failed. One message goes stale, though. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F009",
@@ -120,7 +127,8 @@
       "done_check": "npm test -- blocks && npm run publish:local",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass. does exactly what it says. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F013",
@@ -130,7 +138,8 @@
       "done_check": "npm test -- presets settings && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. presets apply in one click and undo in one step, but after Undo the keyboard focus is lost. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F014",
@@ -140,7 +149,8 @@
       "done_check": "npm test -- settings && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. it works, but two parts of the page point to the wrong colour. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F015",
@@ -150,7 +160,8 @@
       "done_check": "npm test -- page-actions save-api && cargo test -p crust-publish && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. renaming and deleting are safe, clear and keyboard-friendly. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F016",
@@ -160,7 +171,8 @@
       "done_check": "npm test -- changes save-api && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. it's always clear what is waiting to go live. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F017",
@@ -170,7 +182,8 @@
       "done_check": "npm test -- live-link save-api publish-workflow && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass. does what it says. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F018",
@@ -180,7 +193,8 @@
       "done_check": "npm test -- relink page-actions save-api && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. links inside pages are updated as promised, but the header menu, footer links and blog posts are not. They keep the old address and rely on the redirect. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F019",
@@ -190,7 +204,8 @@
       "done_check": "npm test -- restore save-api && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. deleted pages come back in one click. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F020",
@@ -200,7 +215,8 @@
       "done_check": "npm test -- save-draft && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass. works, with good wording in both cases. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F021",
@@ -210,7 +226,8 @@
       "done_check": "npm test -- page-status && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. Each page now has one clear status, with an icon shape as well as a word. On phones the table turns into readable cards. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F022",
@@ -220,7 +237,8 @@
       "done_check": "npm test -- publish-drafts && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. The question does what it says and the wording is clear. One accessibility problem: after the question closes, keyboard focus is lost and lands on the top of the page. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F023",
@@ -230,7 +248,8 @@
       "done_check": "npm test -- find-sort && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass. Works as described. Feedback is clear and there is an easy way back from an empty result. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F024",
@@ -240,7 +259,8 @@
       "done_check": "npm test -- publish-shortcut && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass. Works as described, from the keyboard too, and the count matches the page list. That page list count has the double-counting noted under F022. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F025",
@@ -250,7 +270,8 @@
       "done_check": "npm test -- section-styles && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. The published sections look right and stay readable on photos. One builder problem: the section toolbar is wider than the canvas, so it hangs off the right edge. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F026",
@@ -260,7 +281,8 @@
       "done_check": "npm test -- layout-library && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. Easy to use from the keyboard. Every layout passes the checks and matches the site style. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F027",
@@ -270,7 +292,8 @@
       "done_check": "npm test -- my-layouts && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. Works as described, and it is clear that layouts are copies. One small wording mistake. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F028",
@@ -280,7 +303,8 @@
       "done_check": "npm test -- tokens presets customizer && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. Full and well explained. The live preview makes choices easy to judge. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F029",
@@ -290,7 +314,8 @@
       "done_check": "npm test -- responsive && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. Works in the published site without JavaScript, as promised. One problem in the phone preview of the builder. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F030",
@@ -300,7 +325,8 @@
       "done_check": "npm test -- settings-tabs && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. Clear split, and simple edits stay simple. Two details are inconsistent. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F031",
@@ -310,7 +336,8 @@
       "done_check": "npm test -- header footer && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass. Works without JavaScript and from the keyboard. The automatic menu takes the first 6 pages, which is sensible. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F032",
@@ -320,7 +347,8 @@
       "done_check": "npm test -- blocks && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. All 7 blocks work without JavaScript and are keyboard-friendly. One layout trap: a block added with nothing selected lands at the very end of the page, outside any section. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F033",
@@ -330,7 +358,8 @@
       "done_check": "npm test -- theme-pack && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. Safe and clear. Nothing changes until you confirm. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F034",
@@ -340,7 +369,8 @@
       "done_check": "npm test -- media && npm run build && cargo test && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. Works well, with one bug. On a block you have just added, picking a library photo does not copy its description into the alt field. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F035",
@@ -350,7 +380,8 @@
       "done_check": "npm test -- posts && npm run build && cargo test && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. The published blog and feed work well. The admin list is plainer than the page list, and its links look like default browser links. Found later while checking the templates: post body text sits against the screen edge (proposal 3). Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F036",
@@ -360,7 +391,8 @@
       "done_check": "npm test -- seo && npm run build && cargo test",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass. Works as described, and the share preview is a nice touch. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F037",
@@ -370,7 +402,8 @@
       "done_check": "npm test -- contact-form && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. The form is well built (real labels, autocomplete, honeypot, origin check, a thank-you and an error message that work without script). But when sending fails, the visitor is sent back to an empty form and loses what they typed. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F038",
@@ -380,7 +413,8 @@
       "done_check": "npm test -- quick-edit && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. It does what it says: one calm form per block, a sticky Save button, clear \"saved in this browser\" feedback. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F039",
@@ -390,7 +424,8 @@
       "done_check": "npm test -- search && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. Search works and reads well: a labelled field, a results count in a live region, the tab title updates, and there is a no-script message. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F040",
@@ -400,7 +435,8 @@
       "done_check": "npm test -- tidy-up && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. All four Puck accessibility issues are gone. Sign out is easy to find, a little too easy. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F041",
@@ -410,7 +446,8 @@
       "done_check": "npm test -- layouts && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. All the promised layouts are there with plain names and one-line descriptions. The Gallery and Logo thumbnails are hard to judge because they show empty grey boxes. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F042",
@@ -420,7 +457,8 @@
       "done_check": "npm test -- rich-text && npm run typecheck && npm run build && cargo test && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. Formatting, links, lists and shortcuts all work. A bad link is refused with a clear message, and focus stays in the field (`aria-invalid` is set). Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F043",
@@ -430,7 +468,8 @@
       "done_check": "npm test -- linked-sections && npm run typecheck && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. The idea is clear and the wording is good (\"Edit opens it on its own… Unlink makes this page's copy a normal section\"). But naming a new linked section makes the page jump sideways and stay there. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F044",
@@ -440,7 +479,8 @@
       "done_check": "npm test -- custom-domain && npm run build && cargo test",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. A very clear screen: the `https://` prefix is built in, there is a live example of the result, the steps are numbered, and it lists where the address is used. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F045",
@@ -450,7 +490,8 @@
       "done_check": "npm test -- template-file && npm run typecheck && npm run build",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. Works end to end, with good wording. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F046",
@@ -460,7 +501,8 @@
       "done_check": "npm test -- placeholders && npm run build && cargo test",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. Clear and reassuring (\"Publishing waits until each is replaced… or kept on purpose\"). Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F047",
@@ -470,7 +512,8 @@
       "done_check": "npm test -- template-check && npm run check:template",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. The check does its job and the report is easy to read. But it is blind to layout bugs: it passed all three templates with a visibly broken post page and the oversized preview hero (F048). Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F048",
@@ -480,7 +523,8 @@
       "done_check": "npm test -- start-from-template && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): problem. The flow and wording are excellent (a \"Replaced / Kept\" list, a safe default, a way back). But the live preview of Harbour, the flagship, shows only a blank sky: its opening section grows to 2244 px tall in the desktop preview and 5185 px in the phone preview. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F049",
@@ -490,7 +534,8 @@
       "done_check": "npm test -- starter-template && npm run check:template",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. The page set and linked contact strip work as the brief asked. The visual judgement is under F052, which reworked this template. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F050",
@@ -500,7 +545,8 @@
       "done_check": "npm test -- starter-template && npm run check:template",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. It has a confident voice: the tight, heavy sans, black opening and single burnt-orange accent are consistent, and the pill buttons and shadow cards match direction B. It is held back by its pictures and an empty hero. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F051",
@@ -510,7 +556,8 @@
       "done_check": "npm test -- starter-template && npm run check:template",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. It feels warm and local (serif and navy on butter). The \"highlighter\" links don't read as highlighter: they show as dull grey-beige blocks behind the text, which look like a selection or a disabled state. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F052",
@@ -520,7 +567,8 @@
       "done_check": "npm test -- starter-template && npm run check:template",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Reviewed by Claude at the owner's request (2026-10-31): pass with notes. By far the strongest of the three, and close to the Fuse bar in restraint. The Work page (mirrored mosaics around a statement band, then a full-width photo) is genuinely good. Fixes: DECISIONS.md, Proposals, 'From the review'."
     },
     {
       "id": "F053",
@@ -528,6 +576,156 @@
       "description": "The F052 treatment for the other two starter templates, at the owner's request (2026-10-31: 'yes, do Signal and Corner with real photos'). Each gets curated CC0 photos (credited in scripts/starter-templates/photos/CREDITS.md, same sources and rules as Harbour) instead of the stand-in shapes, and a photo-led layout that suits its own look (Signal bold and dark, Corner warm and local) rather than a copy of Harbour's. Sample content still marked Replace me. Photo picks and a design snapshot first; the owner approves before building. Added by the owner.",
       "depends_on": ["F052"],
       "done_check": "npm test -- starter-template && npm run check:template",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F054",
+      "title": "Content store",
+      "description": "The admin's server code (apps/admin/server) reads and writes content through a content store with two versions: GitHub (the web admin, unchanged) and a local folder with its own Git history (for the desktop app). Every existing API test runs against both. No visible change. Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
+      "depends_on": ["F048"],
+      "done_check": "npm test -- content-store && npm run typecheck && npm run build",
+      "passes": false,
+      "needs_review": false,
+      "reviewed": false
+    },
+    {
+      "id": "F055",
+      "title": "Desktop app shell",
+      "description": "A Tauri 2 app (crates/crust-desktop) that opens the builder in a native window for Mac and Windows, keeps sites in a folder on the computer (one Git repository per site, managed by the app with gitoxide, invisible to people) and uses the local content store. Linux build and tests in CI; Mac and Windows installers only from a release workflow started by hand (private-repo runner minutes). Unsigned until the owner sets up signing (BLOCKED.md). Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
+      "depends_on": ["F054"],
+      "done_check": "cargo test -p crust-desktop && npm test -- desktop && cargo clippy -- -D warnings",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F056",
+      "title": "Publish on your computer",
+      "description": "The app renders, checks (crust-publish as a library) and builds the search index (Pagefind library) itself, with no Node or server. 'Export site folder' writes the finished static site; 'Preview in browser' opens it. Same output as the GitHub publish pipeline (tested on the same content). Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
+      "depends_on": ["F055"],
+      "done_check": "cargo test -p crust-desktop && cargo test -p crust-publish && npm test -- local-publish",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F057",
+      "title": "Several sites",
+      "description": "Design snapshot first. A site switcher in the app: new site, rename, duplicate, delete (moved to a 'Recently deleted' list for 30 days, so it can be undone). Each site keeps its own content, history and publish settings. Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
+      "depends_on": ["F055"],
+      "done_check": "cargo test -p crust-desktop && npm test -- sites && npm run check:builder",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F058",
+      "title": "Publish to Cloudflare Pages or Netlify",
+      "description": "Design snapshot first. Connect a site to Cloudflare Pages or Netlify with the person's own token (step-by-step guide in the app), then Publish uploads the exported site through the host's API. Tokens are kept in the computer's keychain, never in the site folder. Clear messages for wrong or expired tokens. Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
+      "depends_on": ["F056", "F057"],
+      "done_check": "cargo test -p crust-desktop && npm test -- hosts && npm run check:builder",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F059",
+      "title": "Publish by FTP or SFTP",
+      "description": "Publish to any host with FTP, FTPS or SFTP. Only changed files are sent (remembered per site); plain FTP works but warns that passwords travel unencrypted. Passwords kept in the keychain. Tested against a local test server in CI. Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
+      "depends_on": ["F058"],
+      "done_check": "cargo test -p crust-desktop && npm test -- hosts",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F060",
+      "title": "First run",
+      "description": "Design snapshot first. The first time the app opens: a short welcome, pick one of the free starter templates (or start blank), name the site, land in the builder with the 'To replace' list open. Fully keyboard-usable; no account or sign-up. Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
+      "depends_on": ["F057"],
+      "done_check": "npm test -- first-run && npm run check:builder",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F061",
+      "title": "Updates built in",
+      "description": "The app checks for updates (Tauri updater), shows what's new in plain words, and installs on restart. Installers and update notes are hosted on a free Cloudflare Pages site, because a private repository's releases can't be downloaded publicly. Updates are signed with a Tauri update key (the owner stores it as a secret, BLOCKED.md). Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
+      "depends_on": ["F055"],
+      "done_check": "cargo test -p crust-desktop && npm test -- updates",
+      "passes": false,
+      "needs_review": false,
+      "reviewed": false
+    },
+    {
+      "id": "F062",
+      "title": "Premium templates in the gallery",
+      "description": "Design snapshot first. Start from a template also lists premium templates from the store's catalogue file: preview at three widths, price, and a 'Get this template' link that opens the store in the browser. Without internet it shows the free starters only. Bought template files open with 'Open a file' (F048). Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
+      "depends_on": ["F060"],
+      "done_check": "npm test -- catalogue && npm run check:builder",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F063",
+      "title": "Store site",
+      "description": "Design snapshot first. The template store, built with Crust from its own content folder and published to its own Cloudflare Pages project: home, all templates, a page per template (live demo, price, what's included, licence), a download page for the free app, help. Publishing also writes the catalogue file the app reads (F062). Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
+      "depends_on": ["F062"],
+      "done_check": "npm test -- store && npm run check:a11y && npm run check:perf",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F064",
+      "title": "Live demos",
+      "description": "Each template in the store is published as a full live demo under the store's address, with a slim, accessible 'Get this template' bar that stays out of the template's own design. Demos are rebuilt whenever the template changes. Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
+      "depends_on": ["F063"],
+      "done_check": "npm test -- demos && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F065",
+      "title": "Template versions",
+      "description": "Template files carry an id and a version (format change: migration, spec and DECISIONS entry; older files still open). A site remembers which template and version it started from; the app shows a quiet note when the catalogue has a newer version, with what changed. Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
+      "depends_on": ["F063"],
+      "done_check": "npm test -- template-versions && npm test -- template-file && npm run typecheck",
+      "passes": false,
+      "needs_review": false,
+      "reviewed": false
+    },
+    {
+      "id": "F066",
+      "title": "Checkout",
+      "description": "Buy buttons on the store open the payment provider's hosted checkout (a merchant of record that handles sales tax). Test mode first; live only after the owner's go-ahead. The provider and its account are the owner's (BLOCKED.md); Claude compares the options when this starts. Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
+      "depends_on": ["F063"],
+      "done_check": "npm test -- checkout",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F067",
+      "title": "Delivery and updates",
+      "description": "A Cloudflare Worker (free plan) checks the provider's signed 'order paid' message, emails the buyer a personal download page (Resend), and serves the template file from Workers KV. The page always offers the newest version, so updates are free re-downloads. No buyer accounts, no database. Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
+      "depends_on": ["F065", "F066"],
+      "done_check": "npm test -- delivery",
+      "passes": false,
+      "needs_review": false,
+      "reviewed": false
+    },
+    {
+      "id": "F068",
+      "title": "Licence, terms and refunds",
+      "description": "Plain-language licence (for example one site, or unlimited sites for agencies), terms and refund pages on the store, linked from checkout and every template page. Claude drafts with options; the owner decides the wording and prices (BLOCKED.md). Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
+      "depends_on": ["F063"],
+      "done_check": "npm test -- store-legal && npm run check:a11y",
       "passes": false,
       "needs_review": true,
       "reviewed": false

@@ -8,6 +8,54 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
+- **From the review (2026-10-31).** Claude reviewed the 48 features
+  waiting for review, at the owner's request (verdicts in features.json,
+  `review_note`: 46 work as described, most with small notes; F005 and
+  F048 have a real problem, and checking the templates found one more
+  in F035, blog post margins). Fixes, most important first (S small, M medium):
+  1. *Keyboard gap in the builder (F005, WCAG 2.1.1/2.4.1):* the
+     "Blocks / Outline" switch can't be reached with the keyboard; add a
+     "Skip to page" link too (33 Tab presses to the first block). S
+  2. *Focus lost after dialogs (F022, F015, F013, WCAG 2.4.3):* closing
+     the publish question, rename/delete dialogs or "Undo preset" drops
+     keyboard focus to the top of the page; return it to the button. S
+  3. *Blog posts touch the screen edge (F035, every template and the
+     owner's own posts):* post body blocks aren't inside the page
+     column. S
+  4. *Template preview shows only sky (F048):* tall opening sections
+     stretch the preview frame (Harbour: 2244 px desktop, 5185 px
+     phone); give the preview a fixed viewport height. S
+  5. *Canvas jumps sideways (F025, F027, F043):* the Section toolbar is
+     wider than the canvas, and the "Make linked" / "Save as layout" name
+     box opens past its right edge; the page stays scrolled. S–M
+  6. *Failed saves and publishes (F006, F008):* a failed save looks like
+     a success and vanishes after 10 s; "Publishing started…" stays under
+     "Failed". Persistent error with "Try again". S
+  7. *Contact form loses the message on a failed send (F037):* keep what
+     the visitor typed and name the field that's wrong. M
+  8. *Rename misses header, footer and post links (F018):* they rely on
+     the redirect; update them too and say how many links changed. M
+  9. *New Image block doesn't get the photo's description (F034):*
+     picking a library photo on a just-added block leaves alt empty. S
+  10. *Smaller polish:* page list breaks addresses mid-word (F007/F021);
+      one page counted twice in "Publish N changes" (F022); a block added
+      with nothing selected lands outside any section (F032); the "Site
+      header" badge covers the Home link and the phone Menu button
+      (F029); click-to-colour points header links and copyright at the
+      wrong colour (F014); search results and the posts list use default
+      blue links, focus doesn't move to results (F035, F039); Sign out
+      sits next to Save draft (F040); the rich text field's right edge
+      is cut off (F042); "To replace" isn't in page order and the tags
+      cover the words (F046); duplicate contrast messages on theme
+      import (F033); "1 of your layout" (F027); mixed label styles
+      (F030); "For: Photo, part 6" on phones (F034). All S.
+  11. *Template check sees layout (F047):* add a page-margin check and
+      preview screenshots, so problems like 3 and 4 are caught. M
+  12. *Harbour polish (F052):* a stronger opening photo (too pale; the
+      phone crop loses the stair), roomier "What we do" headings, less
+      space after each page's opening block. Signal's stand-in pictures
+      and Corner's grey highlighter links are covered by F053. S–M
+
 - **Header over the hero photo (from F052).** An option for the site
   header to sit transparently on top of the first section's photo, with
   light text, as premium templates do. Small.
@@ -162,6 +210,46 @@ Features Claude suggests. They are not work until the owner adds them to
   similar to Milestone 3. Left out on purpose: gallery lightbox (still a
   proposal above), and anything for other users (that's M6).
 
+
+## 2026-10-31 — Milestones 6 and 7 written up (Claude, reversible)
+
+- docs/milestone-6.md (F054–F062) and docs/milestone-7.md (F063–F068),
+  from the approved roadmap. Technical choices, all reversible until
+  built: Tauri 2 for the app; a content store in front of the existing
+  server code (GitHub or local folder) instead of a second backend; one
+  hidden Git repository per site (gitoxide) so history and "Bring back"
+  work offline; render, crust-publish and Pagefind run inside the app;
+  host tokens in the OS keychain; installers and updates on a free
+  Cloudflare Pages site (private-repo releases aren't public); delivery
+  through a Worker and Workers KV (R2 needs a card on file, KV doesn't).
+- F054 depends on F048, not F053, so M6 can start while the F053 photos
+  wait for the owner.
+- Mac/Windows installers only from a hand-started release workflow:
+  private-repo minutes count 10× (Mac) and 2× (Windows).
+- Launch-only owner tasks (signing, update key, payment provider, terms)
+  are in BLOCKED.md labelled "Launch:", so they don't stop the features
+  from being built.
+- Premium templates are not features yet: the owner adds each one.
+
+## 2026-10-31 — Free Crust, desktop app, M6 and M7 approved (owner)
+
+- Owner, answering the roadmap (https://claude.ai/artifact/4eHUDzJ3tDeeaNPBf4T4ii):
+  "i agree" to (1) Crust is free, people buy templates from us;
+  (2) people run Crust as a desktop app for Mac and Windows (Tauri);
+  (3) free but not open source, for now. "M6: go ahead", "m7: yes go
+  ahead": Milestone 6 (the free Crust app) and Milestone 7 (the template
+  store) are approved as drafted on the roadmap page. The next session
+  writes docs/milestone-6.md and docs/milestone-7.md and adds their
+  features to features.json (owner-approved scope).
+- Owner, about the "waiting on you" list: "you do it all for me".
+  Done by Claude the same day: merged #40 and #41 (CI green), started
+  Publish on the live site. Delegated to Claude: the review of the 48
+  features with `needs_review` (Claude reviews each on the preview, sets
+  `reviewed: true` with a note "reviewed by Claude at the owner's request",
+  and lists anything worth fixing as proposals). Still the owner's (they
+  need his accounts, logins or money): contact-form email setup (F037),
+  buying a domain (F044), app signing (Apple developer fee, Windows
+  certificate), the payment provider account, terms and refunds.
 ## 2026-10-30 — Sessions hand over through HANDOVER.md (owner)
 
 - The owner asked for everything a session needs in one written place,
