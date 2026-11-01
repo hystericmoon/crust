@@ -7,6 +7,9 @@ import { readFileSync } from "node:fs";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PendingChanges } from "./api-client";
+import { fillAltText, withMediaFields } from "./media/fields";
+import { resetMediaStore } from "./media/store";
+import { QuickEdit } from "./quick/QuickEdit";
 import { fitActionBars, KeyboardCanvas, KeyboardRoot, skipToPage } from "./keyboard/KeyboardEditing";
 import { planInsert, ROOT_ZONE } from "./keyboard/moves";
 import { fixPuckChrome, installPuckChromeFixes } from "./keyboard/puck-chrome";
@@ -287,6 +290,42 @@ describe("review-fixes 6: failed saves and publishes (F006, F008)", () => {
     const alert = screen.getByRole("alert");
     expect(alert.textContent).toContain("GitHub is down.");
     expect(within(alert).getByRole("button", { name: "Try again" })).toBeTruthy();
+  });
+});
+
+describe("review-fixes 9: a library photo's description on a new Image block (F034)", () => {
+  const library = [{ file: "mugs.jpg", alt: "Clay mugs on a shelf", width: 2400, height: 1600, bytes: 1, uploadedAt: "2026-10-30T00:00:00Z" }];
+  const pairs: [string, string][] = [["src", "alt"]];
+
+  it("fills an empty alt text even when Puck has no earlier version of the block", () => {
+    resetMediaStore({ status: "ready", items: library });
+    expect(fillAltText({ src: "/media/mugs.jpg", alt: "" }, null, pairs)).toEqual({ src: "/media/mugs.jpg", alt: "Clay mugs on a shelf" });
+    // The owner's own words stay; so does a block with no photo yet.
+    const mine = { src: "/media/mugs.jpg", alt: "Our mugs" };
+    expect(fillAltText(mine, null, pairs)).toBe(mine);
+    const empty = { src: "", alt: "" };
+    expect(fillAltText(empty, null, pairs)).toBe(empty);
+  });
+
+  it("works through the Image block's resolveData on its first pick", async () => {
+    resetMediaStore({ status: "ready", items: library });
+    const cfg = withMediaFields(config as never) as unknown as Config;
+    const resolve = cfg.components.Image!.resolveData as unknown as (d: unknown, p: unknown) => Promise<{ props: Record<string, unknown> }>;
+    const out = await resolve({ props: { id: "Image-new", src: "/media/mugs.jpg", alt: "" } }, { lastData: null, changed: { src: true } });
+    expect(out.props.alt).toBe("Clay mugs on a shelf");
+  });
+
+  it("names the block in the phone picker, not 'part 6'", () => {
+    resetMediaStore({ status: "ready", items: library });
+    const page = {
+      path: "/",
+      title: "Home",
+      description: "Welcome",
+      puck: { root: { props: {} }, content: [{ type: "Image", props: { id: "i1", src: "/media/mugs.jpg", alt: "Mugs", caption: "" } }] },
+    };
+    render(<QuickEdit page={page as never} githubOn={false} saveMessage={() => ""} />);
+    expect(document.body.textContent).toContain(", Image, block 1");
+    expect(document.body.textContent).not.toContain("part 1");
   });
 });
 
