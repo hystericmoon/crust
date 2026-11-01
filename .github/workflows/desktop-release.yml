@@ -1,0 +1,86 @@
+# F055: Mac and Windows installers for the desktop app, built only when
+# started by hand (Actions → Desktop installers → Run workflow). The
+# repository is private, so Mac minutes count 10× and Windows 2× against
+# the free monthly minutes; one run is roughly 150 counted minutes. Builds
+# are unsigned until the owner sets up signing (BLOCKED.md).
+name: Desktop installers
+
+on:
+  workflow_dispatch:
+    inputs:
+      platforms:
+        description: "Which installers to build"
+        type: choice
+        default: both
+        options: [both, mac, windows]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: mac
+            os: macos-latest
+            target: universal-apple-darwin
+            rust-targets: aarch64-apple-darwin,x86_64-apple-darwin
+          - name: windows
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+            rust-targets: x86_64-pc-windows-msvc
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - name: Skip if not asked for
+        id: wanted
+        shell: bash
+        run: |
+          if [ "${{ inputs.platforms }}" = "both" ] || [ "${{ inputs.platforms }}" = "${{ matrix.name }}" ]; then
+            echo "build=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "build=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.wanted.outputs.build == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.wanted.outputs.build == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        if: steps.wanted.outputs.build == 'true'
+        with:
+          targets: ${{ matrix.rust-targets }}
+
+      - uses: Swatinem/rust-cache@v2
+        if: steps.wanted.outputs.build == 'true'
+
+      - name: Install
+        if: steps.wanted.outputs.build == 'true'
+        run: npm ci
+
+      - name: Build the installer
+        if: steps.wanted.outputs.build == 'true'
+        run: npm run desktop:build -- --target ${{ matrix.target }}
+
+      - name: Keep the installer
+        if: steps.wanted.outputs.build == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: crust-${{ matrix.name }}
+          path: |
+            target/${{ matrix.target }}/release/bundle/dmg/*.dmg
+            target/${{ matrix.target }}/release/bundle/nsis/*.exe
+          if-no-files-found: error
+          retention-days: 30

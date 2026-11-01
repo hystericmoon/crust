@@ -6,6 +6,7 @@
  */
 import { config, defaultBlog, migrateChrome, readTemplate, type Site, type Template, type TemplateCheck } from "@crust/blocks";
 import siteJson from "../../../../content/site.json";
+import { desktopContent } from "../desktop/content";
 import { contentPages } from "../pages/store";
 import { collectTemplate } from "./collect";
 
@@ -24,7 +25,7 @@ export const SAMPLE_ID = "sample-site";
 
 /** The site that ships with the builder, as a template. */
 async function sampleSite(): Promise<TemplateCheck> {
-  const site = siteJson as Site;
+  const site = (desktopContent()?.site ?? siteJson) as Site;
   const pages = contentPages();
   const result = await collectTemplate(
     { name: "Sample site", description: "The site Crust ships with: a simple start to shape into your own." },

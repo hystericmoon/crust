@@ -7,6 +7,7 @@
 import { countPlaceholders, migrateRichText, type Page } from "@crust/blocks";
 import type { Data } from "@puckeditor/core";
 import { seoFromRoot, seoToRoot } from "../seo/fields";
+import { desktopContent } from "../desktop/content";
 import { templateBase } from "../templates/local-site";
 
 export interface LocalDraft {
@@ -35,14 +36,16 @@ export interface PageRow {
 const PREFIX = "crust:page:";
 const LEGACY_HOME_DRAFT = "crust:draft:index";
 
-const bundled: Page[] = Object.values(
+const built: Page[] = Object.values(
   import.meta.glob<Page>("../../../../content/pages/*.json", { eager: true, import: "default" }),
 );
+/** The pages built into the web admin, or the desktop app's site folder (F055). */
+const bundled = (): Page[] => desktopContent()?.pages ?? built;
 
 /** F048: after "Start from a template" without GitHub, the template's pages stand in for the bundled ones. */
-export const bundledPages = (): Page[] => templateBase()?.pages ?? bundled;
+export const bundledPages = (): Page[] => templateBase()?.pages ?? bundled();
 /** The site that ships with the builder, whatever was applied since (the "Sample site" template). */
-export const contentPages = (): Page[] => bundled;
+export const contentPages = (): Page[] => bundled();
 
 function safeGet(key: string): string | null {
   try {
@@ -57,7 +60,7 @@ function migrateLegacyHomeDraft() {
   const raw = safeGet(LEGACY_HOME_DRAFT);
   if (!raw || safeGet(PREFIX + "/")) return;
   try {
-    const home = bundled.find((p) => p.path === "/");
+    const home = bundled().find((p) => p.path === "/");
     if (home) {
       const draft: LocalDraft = { page: { ...home, puck: JSON.parse(raw) as Data }, updatedAt: new Date().toISOString(), savedToGitHub: false };
       localStorage.setItem(PREFIX + "/", JSON.stringify(draft));
