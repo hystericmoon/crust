@@ -7,7 +7,7 @@ below; this file says where to look and what to do.
 
 Last updated: 2026-11-01 (Jakarta): F056 Publish on your computer built
 and passing on branch `f056-publish-on-computer` (stacked on
-`f055-desktop-shell` / PR #46), PR #47 (base `f055-desktop-shell`). F055
+`f055-desktop-shell` / PR #46), PR #47 (base `f055-desktop-shell`, CI green, not merged). F055
 is PR #46, F053 is PR #45 (both CI green, not merged; the owner merges).
 Next: F057 Several sites (design snapshot first).
 
@@ -89,7 +89,7 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | F051 Third starter template: Corner | built, passes | `f051-corner-template` (stacked on F050) |
 | F053 Signal and Corner with real photos | built, passes, CI green | `f053-signal-corner-photos`, PR #45 |
 | F055 Desktop app shell (M6) | built, passes, CI green | `f055-desktop-shell`, PR #46 (base main) |
-| F056 Publish on your computer | built, passes | `f056-publish-on-computer`, PR #47 (stacked on #46) |
+| F056 Publish on your computer | built, passes, CI green | `f056-publish-on-computer`, PR #47 (stacked on #46) |
 
 - **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in
