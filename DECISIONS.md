@@ -8,6 +8,26 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
+- **Premium design layer (owner feedback 2026-11-02).** The owner
+  compared our templates with eliras/zorven/labzzy.webflow.io and found
+  ours not premium. Agreed, side by side:
+  https://claude.ai/artifact/FMb9QuLomsLCvQC9aZscf3
+  (`design/premium-gap-v1.html`). About 60% of the gap is the system
+  (system fonts only; display sizes/tracking stop short; no mono labels
+  or chips; one hero arrangement; no stats, numbered list, image strip,
+  pricing blocks; no motion), 40% the templates (3 of about 7–19
+  sections, filler copy, mismatched crops, an empty card in Signal).
+  Options: A polish templates only; **B (recommended)** upgrade the
+  design layer (bundled open-licence fonts served from the site, type
+  and detail options, three hero layouts, four new blocks, CSS-only
+  motion that respects Reduce motion, stricter template check), then
+  rebuild Harbour, Signal, Corner; C B plus a freeform canvas (not
+  recommended: reading order and phone layouts break). Learn principles
+  from the references, never copy their layouts, copy or photos. If the
+  owner approves B, write it up as a milestone before the premium
+  templates track. F063 (store) continues meanwhile; it doesn't depend
+  on this.
+
 - **Browser copies in the app (found with F060, 2026-11-01).** The
   builder keeps working copies in the window's storage (unsaved
   colours, header and footer, page and post drafts, "Bring back my
