@@ -231,6 +231,44 @@ Features Claude suggests. They are not work until the owner adds them to
   the redirects and Crust's 404 page. Small (M). Only helps Apache hosts
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
+## 2026-11-01 — F053 Signal and Corner with real photos (Claude, reversible)
+
+- **Directions (snapshot `design/f053-signal-corner-v1.html`):** Signal
+  A "Night stage" and Corner A "Shop counter", built as the owner
+  pre-approved ("go with all your recommendations"); B for each is drawn
+  on the same page and can still be picked before the PR merges.
+- **Signal:** dark full-bleed opening (stage crowd) at the bottom of a
+  tall section; work as four Image overlay tiles with the project name
+  on the photo and one "All projects" link below (four identical links
+  would read badly in a screen reader's links list, WCAG 2.4.4); a dark
+  photo band with one statement; journal teaser with a photo. Work page:
+  tall beside two wide, a dark line, mirrored.
+- **Corner:** split opening (words on butter yellow, photo beside, no
+  text on the photo) so the brand colour stays visible; products as a
+  card grid with photo, name and a price line, because local-shop
+  visitors come for "what do you sell"; a tall photo beside one
+  statement; a pale workshop band at Strong tint. Contact gets the shop
+  front photo; the post gets a cover.
+- **Photos:** 10 for Signal, 11 for Corner, all CC0 on Commons (licence
+  re-read per file from the Commons API when downloading). Stored in
+  `photos/signal/` and `photos/corner/`; file names are unique across
+  templates because the template file keeps only the base name. Cropped
+  to 16:10, 3:2, 4:5 or square, at most 1920 px, under 380 KB.
+- **Code:** `StarterSpec.photos` is now each template's own list and
+  `layout` names its Home and Work pages, About photo, optional Contact
+  photo and post cover (Harbour's output is unchanged). The stand-in
+  images stay in the code but no starter uses them now.
+- **Card photos keep their shape (fix found while building):** a card
+  with a library photo grew as tall as the photo file, because the
+  photo's own height (added in F034 to stop layout jumps) beat the
+  card's 16:9 shape. `.cr-card-media` now has `height: auto`. Affects
+  every site's cards with library photos, only for the better.
+- **Corner's opening photo is 4:3, not square:** square scored 94 on
+  Lighthouse (95 needed) because the big photo was the last thing to
+  appear on a slow phone; 4:3 is lighter and shorter on phones, and the
+  home page now scores 100.
+- Snapshot published: https://claude.ai/artifact/B3dfAGM3m15EcN1n83oooB
+
 ## 2026-11-01 — F069 Review fixes (Claude, reversible)
 
 - **Blocks outside a Section (fixes 3 and 10, F032).** Two parts. (a)

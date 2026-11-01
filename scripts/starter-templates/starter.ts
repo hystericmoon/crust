@@ -27,6 +27,7 @@ import {
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { cornerPhotos, harbourPhotos, signalPhotos, type Photo } from "./photo-sets";
 import { standIn, toBase64, type Composition } from "./standins";
 
 type Block = Page["puck"]["content"][number];
@@ -43,8 +44,24 @@ export interface StarterSpec {
   heroStyle: "background" | "surface" | "dark";
   /** Three colours for the stand-in images: ground, shape, accent. */
   imageColors: [string, string, string];
-  /** F052: real photos (photos/) and the photo-led layout instead of stand-ins. */
-  photos?: true;
+  /**
+   * F052/F053: real photos (in `photos/`, credited in photos/CREDITS.md) and
+   * a photo-led layout of the template's own instead of stand-ins.
+   */
+  photos?: Photo[];
+  layout?: PhotoLayout;
+}
+
+/** The pages and photos that differ per photo-led template. */
+interface PhotoLayout {
+  home: (s: StarterSpec) => Page;
+  work: (s: StarterSpec) => Page;
+  /** The About page's photo. */
+  about: string;
+  /** A photo under the address on the Contact page (F053). */
+  contact?: string;
+  /** The first post's cover (F053). */
+  postCover?: string;
 }
 
 const font = (id: string) => fontStacks.find((f) => f.id === id)!.stack;
@@ -64,7 +81,8 @@ export const harbour: StarterSpec = {
   },
   heroStyle: "background",
   imageColors: ["#D9E0D3", "#8FA58F", "#1F5135"],
-  photos: true,
+  photos: harbourPhotos,
+  layout: { home: homeWithPhotos, work: workWithPhotos, about: "home-office.jpg" },
 };
 
 export const signal: StarterSpec = {
@@ -82,6 +100,8 @@ export const signal: StarterSpec = {
   },
   heroStyle: "dark",
   imageColors: ["#FDE7D6", "#FDBA74", "#C2410C"],
+  photos: signalPhotos,
+  layout: { home: signalHome, work: signalWork, about: "studio-lounge.jpg", postCover: "spiral-amber.jpg" },
 };
 
 export const corner: StarterSpec = {
@@ -99,6 +119,8 @@ export const corner: StarterSpec = {
   },
   heroStyle: "surface",
   imageColors: ["#E3EAFB", "#BFD0F5", "#1E3A8A"],
+  photos: cornerPhotos,
+  layout: { home: cornerHome, work: cornerWork, about: "pottery-wheel.jpg", contact: "flower-shop.jpg", postCover: "moka-pour.jpg" },
 };
 
 export const starters: StarterSpec[] = [harbour, signal, corner];
@@ -123,26 +145,11 @@ export const images: { file: string; kind: Composition; alt: string }[] = [
   { file: "project-5.png", kind: "dunes", alt: `${STANDIN}: replace with a photo of a finished project` },
   { file: "project-6.png", kind: "window", alt: `${STANDIN}: replace with a photo of a finished project` },
 ];
-/**
- * Harbour's photos (F052): CC0, credited in photos/CREDITS.md. The
- * descriptions are real; every use is still marked Replace me.
- */
-export const photos: { file: string; alt: string; width: number; height: number }[] = [
-  { file: "terraces.jpg", alt: "White concrete terraces and an open stair under a blue sky, one small figure on the walkway", width: 1920, height: 1280 },
-  { file: "balconies.jpg", alt: "White apartment tower with curving balconies, seen from below", width: 1280, height: 1600 },
-  { file: "angles.jpg", alt: "White angled ceiling beams receding into daylight", width: 1920, height: 1200 },
-  { file: "wood-spiral.jpg", alt: "Wooden spiral staircase seen from above", width: 1920, height: 1200 },
-  { file: "white-stair.jpg", alt: "A thin stair climbing a tall white ribbed wall", width: 1280, height: 1600 },
-  { file: "pool-house.jpg", alt: "Terrace of a modern house with an infinity pool above a wooded valley", width: 1920, height: 1200 },
-  { file: "window-tree.jpg", alt: "Young tree in front of a white wall with a tall window", width: 1920, height: 1200 },
-  { file: "grid.jpg", alt: "White grid facade against a blue sky", width: 1920, height: 1200 },
-  { file: "home-office.jpg", alt: "Bright white studio with a desk, a lamp, a plant and a leather chair", width: 1920, height: 1279 },
-  { file: "shadows.jpg", alt: "Shadow of a window frame and plants on a linen curtain", width: 1600, height: 1033 },
-];
+
 const photoDir = join(dirname(fileURLToPath(import.meta.url)), "photos");
 
 const img = (file: string) => `/media/${file}`;
-const altOf = (file: string) => [...images, ...photos].find((i) => i.file === file)!.alt;
+const altOf = (file: string) => [...images, ...harbourPhotos, ...signalPhotos, ...cornerPhotos].find((i) => i.file === file)!.alt;
 
 const SERVICE_LINE = "A short line on this service: what the client gets, how long it takes, and a starting price.";
 const PROJECT_CAPTION = "Project name, the client, the year";
@@ -198,7 +205,7 @@ const gallery = (id: (k: string) => string, files: string[], columns: "2" | "3")
 // --- Pages ----------------------------------------------------------------------------------
 
 function home(s: StarterSpec): Page {
-  if (s.photos) return homeWithPhotos(s);
+  if (s.layout) return s.layout.home(s);
   const id = ids("home");
   return {
     path: "/",
@@ -241,7 +248,7 @@ function home(s: StarterSpec): Page {
 
 function about(s: StarterSpec): Page {
   const id = ids("about");
-  const studio = s.photos ? photo(id, "home-office.jpg") : null;
+  const studio = s.layout ? photo(id, s.layout.about) : null;
   return {
     path: "/about",
     title: "About",
@@ -331,7 +338,7 @@ function services(s: StarterSpec): Page {
 }
 
 function work(s: StarterSpec): Page {
-  if (s.photos) return workWithPhotos(s);
+  if (s.layout) return s.layout.work(s);
   const id = ids("work");
   return {
     path: "/work",
@@ -431,6 +438,183 @@ function workWithPhotos(s: StarterSpec): Page {
   };
 }
 
+// --- F053: Signal and Corner ------------------------------------------------------------------
+// Snapshot: design/f053-signal-corner-v1.html (direction A for both).
+
+type Props = Block & { props: Record<string, unknown> };
+
+/** A section with a photo behind it; the photo is marked Replace me. */
+function photoSection(id: (k: string) => string, background: string, file: string, content: Block[], extra: Record<string, unknown> = {}): Block {
+  const section = sectionOf(id, background, content) as Props;
+  Object.assign(section.props, { imageSrc: img(file), tint: "medium", placeholder: ["imageSrc"], ...extra });
+  return section;
+}
+
+/** Signal's work tiles (F053): the project name on its photo, under the dark style's tint. */
+const tile = (id: (k: string) => string, file: string): Block =>
+  ({
+    type: "ImageOverlay",
+    props: {
+      id: id("overlay"),
+      imageSrc: img(file),
+      imageAlt: altOf(file),
+      title: "Project name",
+      titleLevel: "h3",
+      text: "The client, the year",
+      linkLabel: "",
+      linkHref: "",
+      background: "dark",
+      tint: "medium",
+      position: "bottom-left",
+      height: "medium",
+      placeholder: ["imageSrc", "title", "text"],
+    },
+  }) as Block;
+
+/** Signal's home page (F053, direction A "Night stage"): dark photo opening, statement, work tiles, stair band, journal. */
+function signalHome(s: StarterSpec): Page {
+  const id = ids("home");
+  return {
+    path: "/",
+    title: "Home",
+    description: `${s.siteName}: what the studio does, recent work and how to get in touch.`,
+    puck: {
+      root: { props: {} },
+      content: [
+        photoSection(
+          id,
+          "dark",
+          "stage-crowd.jpg",
+          [heading(id, s.tagline, "h1"), text(id, "Identity, campaigns and launch events for teams that want to be noticed."), button(id, "See the work", "/work")],
+          { height: "large", valign: "bottom" },
+        ),
+        sectionOf(id, "dark", [heading(id, "Small senior team. Every project has a strategist, a designer and a producer from day one.", "h2")]),
+        sectionOf(id, "background", [
+          heading(id, "Selected work", "h2", false),
+          columns(id, "equal", [tile(id, "copper-stair.jpg"), tile(id, "red-stage.jpg")], [tile(id, "guitarist.jpg"), tile(id, "atrium.jpg")]),
+          link(id, "All projects", "/work"),
+        ]),
+        photoSection(id, "dark", "stair-lights.jpg", [heading(id, "Brief on Monday. First ideas on Friday.", "h2")]),
+        sectionOf(id, "background", [
+          columns(
+            id,
+            "equal",
+            [photo(id, "dark-desk.jpg")],
+            [muted(id, "From the journal"), heading(id, "News from the studio", "h2"), link(id, "Read the post", "/blog/studio-news")],
+          ),
+        ]),
+        linked(id),
+      ],
+    },
+  };
+}
+
+/** Signal's Work page (F053): a tall beside two wide, a dark line, then mirrored. */
+function signalWork(s: StarterSpec): Page {
+  const id = ids("work");
+  return {
+    path: "/work",
+    title: "Work",
+    description: `Recent projects by ${s.siteName}.`,
+    puck: {
+      root: { props: {} },
+      content: [
+        sectionOf(id, s.heroStyle, [
+          heading(id, "Work", "h1", false),
+          text(id, "A line about the projects below: who they were for and what they have in common."),
+        ]),
+        sectionOf(id, "background", [
+          columns(id, "equal", project(id, "concrete-tower.jpg"), [...project(id, "copper-stair.jpg"), ...project(id, "guitarist.jpg")]),
+        ]),
+        sectionOf(id, "dark", [heading(id, "We say no to most briefs, so we can say yes properly.", "h2")]),
+        sectionOf(id, "background", [
+          columns(id, "equal", [...project(id, "red-stage.jpg"), ...project(id, "studio-lounge.jpg")], project(id, "atrium.jpg")),
+        ]),
+        linked(id),
+      ],
+    },
+  };
+}
+
+/** Corner's product cards (F053): a photo, a name and a line with the price. */
+const products = (id: (k: string) => string, files: string[]): Block =>
+  ({
+    type: "Grid",
+    props: {
+      id: id("grid"),
+      columns: "3",
+      titleLevel: "h3",
+      background: "surface",
+      items: files.map((f) => ({ title: "Product name", text: "One line about it, and the price.", imageSrc: img(f), imageAlt: altOf(f), linkLabel: "", linkHref: "" })),
+      placeholder: ["items"],
+    },
+  }) as Block;
+
+/** Corner's home page (F053, direction A "Shop counter"): split opening, products, a story, a workshop band. */
+function cornerHome(s: StarterSpec): Page {
+  const id = ids("home");
+  return {
+    path: "/",
+    title: "Home",
+    description: `${s.siteName}: what the shop makes, when it's open and how to find it.`,
+    puck: {
+      root: { props: {} },
+      content: [
+        sectionOf(id, s.heroStyle, [
+          columns(
+            id,
+            "equal",
+            [
+              heading(id, s.tagline, "h1"),
+              text(id, "Bread, coffee and small things made in the back room. Open six days a week."),
+              button(id, "Visit the shop", "/contact"),
+            ],
+            [photo(id, "bread-hands.jpg")],
+          ),
+        ]),
+        sectionOf(id, "background", [heading(id, "This week at the counter", "h2", false), products(id, ["loaves.jpg", "moka-breakfast.jpg", "lemon-loaf.jpg"])]),
+        sectionOf(id, "surface", [
+          columns(
+            id,
+            "one-two",
+            [photo(id, "pouring-coffee.jpg")],
+            [heading(id, "Everything is made here, in small batches, by the people who serve you.", "h2"), link(id, "More about us", "/about")],
+          ),
+        ]),
+        photoSection(id, "background", "tool-wall.jpg", [heading(id, "Workshops on Saturday mornings. Bring nothing but your hands.", "h2")], { tint: "strong" }),
+        linked(id),
+      ],
+    },
+  };
+}
+
+/** Corner's Work page (F053): what the shop makes, as a tall beside two wide, mirrored. */
+function cornerWork(s: StarterSpec): Page {
+  const id = ids("work");
+  return {
+    path: "/work",
+    title: "Work",
+    description: `What ${s.siteName} makes.`,
+    puck: {
+      root: { props: {} },
+      content: [
+        sectionOf(id, s.heroStyle, [
+          heading(id, "Work", "h1", false),
+          text(id, "A line about what you make: what it's made of, and who it's for."),
+        ]),
+        sectionOf(id, "background", [
+          columns(id, "equal", project(id, "carnations.jpg"), [...project(id, "ceramic-bottles.jpg"), ...project(id, "loaves.jpg")]),
+        ]),
+        sectionOf(id, "surface", [heading(id, "Made in small batches. When it's gone, it's gone.", "h2")]),
+        sectionOf(id, "background", [
+          columns(id, "equal", [...project(id, "moka-breakfast.jpg"), ...project(id, "lemon-loaf.jpg")], project(id, "pouring-coffee.jpg")),
+        ]),
+        linked(id),
+      ],
+    },
+  };
+}
+
 function contact(s: StarterSpec): Page {
   const id = ids("contact");
   return {
@@ -450,6 +634,7 @@ function contact(s: StarterSpec): Page {
               gap: "lg",
               column1: [
                 text(id, "Your address, on one or two lines.", "Your phone number and email address.", "When you're open, or when you answer messages."),
+                ...(s.layout?.contact ? [photo(id, s.layout.contact)] : []),
               ],
               column2: [
                 {
@@ -488,8 +673,8 @@ function post(s: StarterSpec): Post {
     title: "News from the studio",
     description: "A first post: what's new, and what the journal will be about.",
     date: "2026-10-31",
-    cover: "",
-    coverAlt: "",
+    cover: s.layout?.postCover ? img(s.layout.postCover) : "",
+    coverAlt: s.layout?.postCover ? altOf(s.layout.postCover) : "",
     puck: {
       root: { props: {} },
       content: [
@@ -544,7 +729,7 @@ export function starterSource(s: StarterSpec): TemplateSource {
     blog: { title: "Journal", intro: "News from the studio and notes on recent work." },
     posts: [post(s)],
     media: s.photos
-      ? photos.map(({ file, alt, width, height }) => ({ file, alt, width, height }))
+      ? s.photos.map(({ file, alt, width, height }) => ({ file, alt, width, height }))
       : images.map((i) => ({ file: i.file, alt: i.alt, width: 1200, height: 800 })),
   };
 }
@@ -553,7 +738,10 @@ export function starterSource(s: StarterSpec): TemplateSource {
 export async function buildStarter(s: StarterSpec): Promise<Template> {
   const byFile = new Map(images.map((i) => [i.file, i]));
   const { template, missing } = await makeTemplate({ name: s.name, description: s.description }, starterSource(s), async (file) => {
-    if (s.photos) return photos.some((p) => p.file === file) ? toBase64(await readFile(join(photoDir, file))) : null;
+    if (s.photos) {
+      const p = s.photos.find((p) => p.file === file);
+      return p ? toBase64(await readFile(join(photoDir, p.path))) : null;
+    }
     const i = byFile.get(file);
     return i ? toBase64(standIn(i.kind, s.imageColors)) : null;
   }, new Date("2026-10-31T00:00:00Z"));

@@ -5,6 +5,16 @@ to "Log".
 
 ## Current
 
+- **F053 Signal and Corner with real photos: built, passes** (branch
+  `f053-signal-corner-photos`, PR #45, not merged). Snapshot with both
+  directions per template: https://claude.ai/artifact/B3dfAGM3m15EcN1n83oooB
+  (A built for both, as pre-approved). **To try:** on PR #45's preview
+  link (https://f053-signal-corner-photos.crust-admin.pages.dev) press
+  **Start from a template**, open **Signal** and **Corner**, and flip
+  through Home, Work, About, Contact and the journal post at desktop and
+  phone widths. Say "B for Signal" or "B for Corner" to switch either
+  before merging. Also fixed on the way: card photos from the library no
+  longer stretch tall.
 - **Milestone:** 1 complete. F001–F025 merged; first real publish live at
   https://crust-site.pages.dev (2026-10-29).
 - **Merged to main (2026-10-30, owner: "Both"):** Milestone 2, F026–F033
@@ -547,6 +557,18 @@ to "Log".
   a blog post (text in the column); Start from a template → Harbour (the
   headline is visible); select a Section and use "Make linked" (no
   sideways jump); rename a page that's in the menu (menu link follows).
+- 2026-11-01 — Owner merged #42, #43, #44 (asked Claude: "merge #42, #43
+  and #44 in order"); main CI, preview and contact Worker deploy green.
+  F053 photo shortlists saved to design/f053/; the delegated review's
+  full notes to design/review-2026-10-31/.
+- 2026-11-01 — F053 built: Signal ("Night stage": dark stage opening,
+  photo tiles, stair band) and Corner ("Shop counter": split opening,
+  product cards with photos, workshop band, shop front on Contact), 10
+  and 11 CC0 photos from Commons credited in photos/CREDITS.md. Card
+  photo height bug fixed (`.cr-card-media`). done_check exit 0 (all three
+  templates pass contrast, headings, axe at three widths, Lighthouse:
+  Corner 100). 865 JS tests pass.
+
 
 - 2026-11-01 — F055 Desktop app shell built (branch `f055-desktop-shell`,
   from main). `crates/crust-desktop` (Tauri 2) opens the builder in a
@@ -674,3 +696,9 @@ to "Log".
   open the preview link's `#/templates?examples`, open "Example:
   Studio", switch widths, press Get this template. Needs
   `reviewed: true` from you.
+
+- 2026-11-02 — Owner: "You can merge and whatever you need" (before
+  clearing the session). Merged in order: PRs #46–#52 (F055–F061), then
+  #53 (F062) and #45 (F053, notes conflicts resolved by keeping both
+  sides) once their CI was green. Main now has Milestones 1–6. Next:
+  F063 Store site, from main.

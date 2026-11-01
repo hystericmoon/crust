@@ -91,6 +91,16 @@ User-visible changes, newest first, in plain language.
   site with a Home page. Publishing from the app comes next (F056).
   Installers are made by hand for testing and are not signed yet, so
   your Mac will ask you to confirm the first time (right-click → Open).
+
+- **Signal and Corner have real photos (F053).** Signal opens dark on a
+  full-width concert photo, shows work as photo tiles with the project
+  name on each, and has a full-width photo band with one big line.
+  Corner opens with the headline on butter yellow and a photo beside it,
+  then three product cards with photos, a workshop band and the shop
+  front on the Contact page. Both journals' first post has a cover
+  photo. Every photo and sample line is still marked "Replace me".
+- **Card photos keep their shape.** A card using a photo from the
+  library no longer stretches as tall as the photo; it stays 16:9.
 - **Fixes from the review (F069):**
   - *Keyboard:* the "Blocks / Outline" switch on the left of the builder
     works with Tab and Enter, and a "Skip to page" link (first Tab

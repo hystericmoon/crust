@@ -5,18 +5,13 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 (Jakarta): F062 Premium templates in the
-gallery built and passing on branch `f062-premium-templates` (stacked
-on `f061-updates` / PR #52), PR #53. Milestone 6 is complete (F055–F062).
-F061 is PR #52 (on #51), F060 PR #51 (on #50), F059 PR #50 (on #49),
-F058 PR #49 (on #48), F057 PR #48 (on #47), F056 PR #47 (on #46), F055
-PR #46, F053 PR #45 (none merged; the owner merges). Next: F063 Store
-site (Milestone 7, design snapshot first).
-**The F061/F062 session was at the session-chain limit (depth 8)**, so
-it couldn't start the next session: the owner starts a fresh one with
-"Read HANDOVER.md on branch f062-premium-templates and continue." That
-resets the chain. The new session archives the F061/F062 session once
-it's idle and subscribes to PRs #45–#53.
+Last updated: 2026-11-02 (Jakarta). **Everything is merged to main**
+(owner, 2026-11-02: "You can merge and whatever you need"): F053 (PR
+#45) and Milestone 6, F055–F062 (PRs #46–#53). No open PRs. The F061/F062
+session ended here; the owner cleared it.
+**Next: F063 Store site** (Milestone 7, docs/milestone-7.md; design
+snapshot first). Start a new session from **main** with: "Read
+HANDOVER.md on branch main and continue." Branch F063 from main.
 
 ## How sessions work (owner's rule, 2026-10-30)
 
@@ -80,34 +75,20 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 ## Where things stand
 
 - **Live site** https://crust-site.pages.dev: published 2026-10-31
-  (Milestones 1–5). Only the owner decides when to publish.
-- **Admin** https://crust-admin.pages.dev: main, Milestones 1–5
-  (F001–F051) merged (Milestone 5: PRs #33–#39, 2026-10-31).
-- **Milestone 5 "Templates"** (docs/milestone-5.md), F045–F049:
+  (Milestones 1–5). Only the owner decides when to publish. Main now
+  also has F053 (Signal and Corner photos), which shows on the live
+  site only after the next Publish.
+- **Admin** https://crust-admin.pages.dev: main, Milestones 1–6 merged
+  (M5: PRs #33–#39; F054 #43, F069 #44; F053 #45; M6: #46–#53,
+  2026-11-02).
+- **Desktop app** (M6, F055–F062): built and tested in CI, never
+  installed by the owner yet. Installers: Actions → "Desktop installers"
+  (by hand, ~150 counted minutes, ask first). Updates need the update
+  key (BLOCKED.md, docs/setup-updates.md).
+- **Needs `reviewed: true` from the owner:** F062 (try
+  https://crust-admin.pages.dev/#/templates?examples), plus the older
+  ones listed in PROGRESS.md "Waiting on the owner".
 
-| Feature | Status | Branch / PR |
-|---|---|---|
-| F045 Save a site as a template | built, passes, CI green | `f045-template-file`, draft PR #33 (base main) |
-| F046 Placeholder content | built, passes, CI green | `f046-placeholders`, draft PR #34 (stacked on #33) |
-| F047 Template quality check | built, passes, CI green | `f047-template-check`, draft PR #35 (stacked on #34) |
-| F048 Start from a template | built, passes | `f048-start-from-template`, draft PR #36 (stacked on #35) |
-| F049 First starter template: Harbour | built, passes | `f049-starter-template`, draft PR #37 (stacked on #36) |
-| F050 Second starter template: Signal | built, passes | `f050-signal-template` (stacked on #37) |
-| F051 Third starter template: Corner | built, passes | `f051-corner-template` (stacked on F050) |
-| F053 Signal and Corner with real photos | built, passes, CI green | `f053-signal-corner-photos`, PR #45 |
-| F055 Desktop app shell (M6) | built, passes, CI green | `f055-desktop-shell`, PR #46 (base main) |
-| F056 Publish on your computer | built, passes, CI green | `f056-publish-on-computer`, PR #47 (stacked on #46) |
-| F057 Several sites | built, passes, CI green | `f057-several-sites`, PR #48 (stacked on #47) |
-| F058 Publish to Cloudflare Pages or Netlify | built, passes, CI green | `f058-publish-to-host`, PR #49 (stacked on #48) |
-| F059 Publish by FTP or SFTP | built, passes, CI green | `f059-ftp-sftp`, PR #50 (stacked on #49) |
-| F060 First run | built, passes, CI green | `f060-first-run`, PR #51 (stacked on #50) |
-| F061 Updates built in | built, passes, CI green | `f061-updates`, PR #52 (stacked on #51) |
-| F062 Premium templates in the gallery | built, passes, needs owner review | `f062-premium-templates`, PR #53 (stacked on #52) |
-
-- **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
-  retargets each to main as the one below merges), then the rest in
-  feature order. Each later PR is stacked
-  on the one before it.
 - **Waiting on the owner:** see PROGRESS.md "Waiting on the owner"
   (preview links to try, F034–F046 still need `reviewed: true`), and
   BLOCKED.md (F037 contact form email setup, F044 buying a domain).

@@ -141,7 +141,8 @@
   overflow: hidden;
 }
 .cr-card.cr-bg-background { border: 1px solid color-mix(in srgb, var(--cr-color-muted) 35%, transparent); }
-.cr-card-media { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+/* height: auto, or a library photo's height attribute (F034) wins over the 16:9 shape (F053). */
+.cr-card-media { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
 .cr-card-body { display: flex; flex-direction: column; flex-grow: 1; padding: calc(var(--cr-space-sm) * 1.5); }
 .cr-card-title { font-size: 1.25rem; margin-bottom: var(--cr-space-xs); }
 .cr-card .cr-text p:last-child { margin-bottom: 0; }
