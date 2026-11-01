@@ -7,7 +7,7 @@ below; this file says where to look and what to do.
 
 Last updated: 2026-11-01 (Jakarta): F059 Publish by FTP or SFTP built
 and passing on branch `f059-ftp-sftp` (stacked on `f058-publish-to-host`
-/ PR #49), PR #50 (CI pending, not merged). F058 is PR #49 (on #48),
+/ PR #49), PR #50 (CI green, not merged). F058 is PR #49 (on #48),
 F057 PR #48 (on #47), F056 PR #47 (on #46), F055 PR #46, F053 PR #45
 (all CI green, not merged; the owner merges). Next: F060 First run
 (design snapshot first).
@@ -93,7 +93,7 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | F056 Publish on your computer | built, passes, CI green | `f056-publish-on-computer`, PR #47 (stacked on #46) |
 | F057 Several sites | built, passes, CI green | `f057-several-sites`, PR #48 (stacked on #47) |
 | F058 Publish to Cloudflare Pages or Netlify | built, passes, CI green | `f058-publish-to-host`, PR #49 (stacked on #48) |
-| F059 Publish by FTP or SFTP | built, passes | `f059-ftp-sftp`, PR #50 (stacked on #49) |
+| F059 Publish by FTP or SFTP | built, passes, CI green | `f059-ftp-sftp`, PR #50 (stacked on #49) |
 
 - **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in
@@ -202,7 +202,8 @@ The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
    `PasswordDialog` in `HostPublish.tsx`. Tests start real FTP/FTPS
    (libunftp) and SFTP (russh server) servers in `ftp/tests.rs`.
    `scripts/fake-tauri.js` takes host "ftp" / "ftp-plain". Screenshots
-   design/f059-*.png (made with Playwright + fake-tauri).
+   design/f059-*.png (made with Playwright + fake-tauri). CI `check`
+   took 28 of its 45 minutes on #50 (FTP/SFTP crates added ~5 min).
    **Next: F060 First run** (design snapshot first: welcome, pick a
    starter or blank, name the site, land in the builder with "To
    replace" open; keyboard-usable; done_check `npm test -- first-run &&
