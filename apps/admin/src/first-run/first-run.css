@@ -1,0 +1,35 @@
+/* F060: the welcome screen. Builds on the .st admin variables (settings.css),
+   .pg (pages.css) and the template thumbnails (templates.css). */
+.fr-main { max-width: 1040px; padding-block: 48px 64px; }
+.fr-title { font-size: 2rem; }
+.fr-title:focus { outline: none; }
+.fr-lede { max-width: 60ch; font-size: 1.0625rem; }
+.fr-form { display: grid; gap: 28px; }
+.fr-starts { border: 0; margin: 0; padding: 0; min-width: 0; }
+.fr-legend { display: block; padding: 0; margin: 0 0 12px; font-weight: 600; font-size: 1.0625rem; }
+.fr-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.fr-grid > li { display: grid; }
+.fr-card {
+  display: grid; align-content: start; overflow: hidden; cursor: pointer;
+  border: 1px solid var(--st-border); border-radius: 12px; background: var(--st-panel); color: var(--st-text);
+}
+.fr-card:hover { border-color: var(--st-text); }
+/* Selected: a thicker border and the filled radio dot, never colour alone. */
+.fr-card.fr-on { border-color: var(--st-action); box-shadow: 0 0 0 2px var(--st-action); }
+.fr-card:has(input:focus-visible) { outline: 3px solid var(--st-focus); outline-offset: 3px; }
+.fr-card:has(input:disabled) { cursor: progress; }
+.fr-meta { display: grid; gap: 4px; padding: 12px 16px 16px; }
+.fr-pick { display: flex; align-items: center; gap: 10px; min-height: 24px; font-size: 1.0625rem; }
+.fr-pick input { width: 20px; height: 20px; margin: 0; accent-color: var(--st-action); flex: none; }
+.fr-pick input:focus-visible { outline: none; }
+.fr-desc { color: var(--st-muted); font-size: 0.9375rem; }
+.fr-facts { color: var(--st-muted); font-size: 0.875rem; }
+.fr-blank { background: repeating-linear-gradient(45deg, transparent 0 10px, var(--st-divider) 10px 11px), var(--st-bg); }
+.fr-thumb-wait { background: var(--st-bg); }
+.fr-name { display: grid; max-width: 640px; }
+.fr-row { display: flex; flex-wrap: wrap; gap: 12px; }
+.fr-input { flex: 1 1 260px; min-height: 48px; font-size: 1.0625rem; }
+.fr-make { min-height: 48px; padding-inline: 24px; font-size: 1.0625rem; }
+.fr-hint { margin: 8px 0 0; color: var(--st-muted); font-size: 0.875rem; overflow-wrap: anywhere; }
+.fr-status { margin: 0; min-height: 1.5em; font-weight: 500; }
+.fr-error { font-size: 1rem; }

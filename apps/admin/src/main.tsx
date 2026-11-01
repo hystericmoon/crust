@@ -20,7 +20,8 @@ import "./seo/seo.css";
 import "./quick/quick.css";
 import "./chrome-canvas.css";
 import "./pages/pages.css";
-import { isDesktop, startDesktop } from "./desktop/desktop";
+import { isDesktop, launchDesktop } from "./desktop/desktop";
+import type { FirstRunContext } from "./first-run/first-run";
 
 const root = document.getElementById("root");
 if (!root) throw new Error("Missing #root element");
@@ -31,9 +32,12 @@ if (!root) throw new Error("Missing #root element");
  * built into the web admin.
  */
 async function start(el: HTMLElement) {
+  let firstRun: FirstRunContext | null = null;
   if (isDesktop()) {
     try {
-      await startDesktop();
+      const launched = await launchDesktop();
+      // F060: a brand new Crust starts on the welcome screen.
+      if ("firstRun" in launched) firstRun = launched.firstRun;
     } catch (e) {
       el.innerHTML = "";
       const message = document.createElement("p");
@@ -43,6 +47,15 @@ async function start(el: HTMLElement) {
       el.append(message);
       return;
     }
+  }
+  if (firstRun) {
+    const { FirstRun } = await import("./first-run/FirstRun");
+    createRoot(el).render(
+      <StrictMode>
+        <FirstRun context={firstRun} />
+      </StrictMode>,
+    );
+    return;
   }
   const { App } = await import("./App");
   createRoot(el).render(

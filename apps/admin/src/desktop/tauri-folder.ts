@@ -3,7 +3,7 @@
  * (crates/crust-desktop/src/lib.rs). The app's Rust side decides which
  * folder that is and refuses anything outside it.
  */
-import type { Folder } from "../../server/local-store";
+import { StoreError, type Folder } from "../../server/local-store";
 
 /** Tauri's invoke: a command name, its arguments, and request headers. */
 export type Invoke = (cmd: string, args?: Record<string, unknown> | Uint8Array, options?: { headers: Record<string, string> }) => Promise<unknown>;
@@ -15,7 +15,11 @@ export const PATH_HEADER = "x-crust-path";
 /** F057: the header naming another site to write to (crust_desktop::SITE_HEADER). */
 export const SITE_HEADER = "x-crust-site";
 
-const asError = (e: unknown) => (e instanceof Error ? e : new Error(String(e)));
+/**
+ * F060: the app's refusal ("The disk is full.") as a store error, so the
+ * builder shows the app's own words instead of "Couldn't reach GitHub".
+ */
+const asError = (e: unknown) => (e instanceof Error ? e : new StoreError(String(e), 500));
 
 /**
  * The open site's folder, or (F057) another site's, by its id (the folder's

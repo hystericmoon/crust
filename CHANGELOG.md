@@ -4,6 +4,16 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **A welcome screen the first time the app opens (F060).** A brand new
+  Crust greets you with one screen: pick a start (Harbour, Signal,
+  Corner, or Blank), check the site's name (it suggests one), and press
+  **Make my site**. You land in the builder on the Home page with the
+  **To replace** list already open, showing the sample words and photos
+  to swap for your own. No account, nothing to connect. It shows only
+  once; after that the app opens straight into your site. Everything
+  works with the keyboard (arrow keys move between the starts, Enter
+  makes the site).
+
 - **Publish to your own web host by FTP or SFTP (F059).** In the app,
   the Publish card has a third choice, **Your own web host**, for the
   hosting you already pay for. Fill in the details from your host's
