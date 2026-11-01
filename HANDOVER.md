@@ -7,7 +7,7 @@ below; this file says where to look and what to do.
 
 Last updated: 2026-11-01 (Jakarta): F058 Publish to Cloudflare Pages or
 Netlify built and passing on branch `f058-publish-to-host` (stacked on
-`f057-several-sites` / PR #48), PR #49 (CI pending, not merged). F057 is
+`f057-several-sites` / PR #48), PR #49 (CI green, not merged). F057 is
 PR #48 (stacked on #47), F056 PR #47 (on #46), F055 PR #46, F053 PR #45
 (all CI green, not merged; the owner merges). Next: F059 Publish by FTP
 or SFTP.
@@ -92,7 +92,7 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | F055 Desktop app shell (M6) | built, passes, CI green | `f055-desktop-shell`, PR #46 (base main) |
 | F056 Publish on your computer | built, passes, CI green | `f056-publish-on-computer`, PR #47 (stacked on #46) |
 | F057 Several sites | built, passes, CI green | `f057-several-sites`, PR #48 (stacked on #47) |
-| F058 Publish to Cloudflare Pages or Netlify | built, passes | `f058-publish-to-host`, PR #49 (stacked on #48) |
+| F058 Publish to Cloudflare Pages or Netlify | built, passes, CI green | `f058-publish-to-host`, PR #49 (stacked on #48) |
 
 - **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in
@@ -186,8 +186,8 @@ The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
    `HostPublish.tsx`, inside `DesktopPublishPanel`. Tests use a fake
    host server on 127.0.0.1 (`src/hosts/tests.rs`). `scripts/fake-tauri.js`
    runs app-only screens in a plain browser (check:builder uses it; also
-   handy for screenshots). CI `check` limit raised to 45 minutes; watch
-   the time on #49. Never tried against a real host (no account here):
+   handy for screenshots). CI `check` limit raised to 45 minutes; on #49
+   it took 21 minutes (with a fresh Rust cache). Never tried against a real host (no account here):
    if the owner's first real publish fails, expect a small API detail.
    **Next: F059 Publish by FTP or SFTP** (F059 needs no snapshot by its
    description; passwords in the keychain via the same `Keychain`; the
