@@ -696,3 +696,9 @@ to "Log".
   open the preview link's `#/templates?examples`, open "Example:
   Studio", switch widths, press Get this template. Needs
   `reviewed: true` from you.
+
+- 2026-11-02 — Owner: "You can merge and whatever you need" (before
+  clearing the session). Merged in order: PRs #46–#52 (F055–F061), then
+  #53 (F062) and #45 (F053, notes conflicts resolved by keeping both
+  sides) once their CI was green. Main now has Milestones 1–6. Next:
+  F063 Store site, from main.
