@@ -171,7 +171,7 @@ export interface PlannedInsert {
 /**
  * Keyboard alternative to dragging a block in from the block list: adds it
  * right after the selected block (or after its container, if it can't go
- * there), or at the end of the page when nothing is selected.
+ * there), or at the end of the page's last Section (F069) when nothing is selected.
  */
 export function planInsert(
   data: Data,
@@ -191,6 +191,17 @@ export function planInsert(
   while (at) {
     if (zoneAccepts(config, data, at.zone, type)) return make(at.zone, at.index + 1, at.siblings.length + 1);
     at = at.parent ? findById(data, at.parent.item.props.id as string) : null;
+  }
+  // F069: with nothing selected, a block joins the end of the page's last
+  // Section, so it picks up that section's style and the page column,
+  // instead of landing outside every section.
+  const last = data.content.at(-1);
+  if (!selectedId && last?.type === "Section" && type !== "Section" && type !== "LinkedSection") {
+    const slot = visibleSlots(config, last).find(([, field]) => accepts(field, type));
+    if (slot) {
+      const children = (last.props[slot[0]] ?? []) as ComponentData[];
+      return make(`${last.props.id}:${slot[0]}`, children.length, children.length + 1);
+    }
   }
   return make(ROOT_ZONE, data.content.length, data.content.length + 1);
 }

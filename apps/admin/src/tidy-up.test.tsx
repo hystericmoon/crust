@@ -34,13 +34,14 @@ describe("tidy-up: Sign out (F040)", () => {
     expect(link.getAttribute("href")).toBe(SIGN_OUT_URL);
   });
 
-  it("is on the Pages screen, before New page", async () => {
+  // F069 moved it after New page, past a divider, so a slip doesn't sign out.
+  it("is on the Pages screen, after New page", async () => {
     location.hash = "#/";
     render(<App />);
     const link = await screen.findByRole("link", { name: "Sign out" }, { timeout: 5000 });
     expect(link.getAttribute("href")).toBe(SIGN_OUT_URL);
     const newPage = screen.getByRole("button", { name: "New page" });
-    expect(link.compareDocumentPosition(newPage) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(link.compareDocumentPosition(newPage) & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
   });
 
   it("is in the post builder's top bar too", () => {

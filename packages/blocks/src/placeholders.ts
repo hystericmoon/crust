@@ -99,6 +99,8 @@ function previewOf(props: Record<string, unknown>, fields: MarkableField[]): str
   return "";
 }
 
+const byReadingOrder = (a: string, b: string) => a.localeCompare(b, "en", { numeric: true });
+
 /** The marked blocks in a list of blocks, in page order, including blocks inside sections and columns. */
 export function findPlaceholders(blocks: unknown): Placeholder[] {
   const out: Placeholder[] = [];
@@ -111,7 +113,13 @@ export function findPlaceholders(blocks: unknown): Placeholder[] {
         const fields = markableFields[b.type]!.filter((f) => marked.includes(f.field));
         out.push({ id: typeof b.props.id === "string" ? b.props.id : "", type: b.type, fields, preview: previewOf(b.props, fields) });
       }
-      for (const child of Object.values(b.props)) if (isBlockList(child)) visit(child);
+      // F069: slots in reading order (column1, column2, …). The builder's
+      // copy of a page can hold them in another order, which listed a row of
+      // columns backwards.
+      for (const key of Object.keys(b.props).sort(byReadingOrder)) {
+        const child = b.props[key];
+        if (isBlockList(child)) visit(child);
+      }
     }
   };
   visit(blocks);

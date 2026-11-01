@@ -9,6 +9,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { MyLayoutsProvider } from "../layouts/mine";
 import { SectionEditorContext, useLinkedSections } from "./store";
 import { PlaceholderChecklist } from "../placeholders/Checklist";
+import { SaveStatus, useSaveStatus } from "../save-status";
 
 interface Props {
   id: string;
@@ -34,19 +35,13 @@ export function SectionEditor({ id, back, githubOn, config, overrides }: Props) 
   const linked = useLinkedSections();
   const section = linked.get(id);
   const used = linked.usage[id] ?? [];
-  const [status, setStatus] = useState("");
+  const status = useSaveStatus();
   const dirty = useRef(false);
   const [warned, setWarned] = useState(false);
 
   // The section's own config: no page title or description to edit here.
   const sectionConfig = useMemo(() => (config ? { ...config, root: { ...config.root, fields: {} } } : undefined), [config]);
   const data = useMemo<Data | null>(() => (section ? { root: { props: {} }, content: migrateRichTextBlocks(section.content) } : null), [section?.id]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (!status || status === "Saving…") return;
-    const t = setTimeout(() => setStatus(""), 10_000);
-    return () => clearTimeout(t);
-  }, [status]);
 
   if (linked.sections === null) return <p className="ls-note" style={{ padding: 24 }}>Loading the linked section…</p>;
   if (!section || !data || !sectionConfig) {
@@ -64,16 +59,17 @@ export function SectionEditor({ id, back, githubOn, config, overrides }: Props) 
 
   const where = used.length ? `on ${pagesLabel(used.length)}` : "not on any page yet";
   const save = async (next: Data) => {
-    setStatus("Saving…");
+    status.saving();
     const res = await linked.update(id, next.content);
     if (typeof res === "string") {
-      setStatus(res);
+      // F069: a failed save stays on screen with "Try again".
+      status.show(res, true, () => void save(next));
       return;
     }
     dirty.current = false;
     setWarned(false);
     const n = linked.usage[id]?.length ?? used.length;
-    setStatus(
+    status.show(
       `“${res.name}” saved to ${linked.where}${n > 1 ? `, so all ${pagesLabel(n)} show the change` : n === 1 ? ", so its page shows the change" : ""}.${githubOn ? " Visitors see it after you publish." : ""}`,
     );
   };
@@ -98,7 +94,7 @@ export function SectionEditor({ id, back, githubOn, config, overrides }: Props) 
                     if (dirty.current && !warned) {
                       e.preventDefault();
                       setWarned(true);
-                      setStatus(`You have changes that aren't saved. Save them, or press Back again to leave without saving.`);
+                      status.show(`You have changes that aren't saved. Save them, or press Back again to leave without saving.`);
                     }
                   }}
                 >
@@ -114,9 +110,7 @@ export function SectionEditor({ id, back, githubOn, config, overrides }: Props) 
             dirty.current = true;
           }}
         />
-        <div role="status" aria-live="polite" className="crust-status">
-          {status}
-        </div>
+        <SaveStatus note={status.note} onDismiss={status.clear} />
       </MyLayoutsProvider>
     </SectionEditorContext.Provider>
   );

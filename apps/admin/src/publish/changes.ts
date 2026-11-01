@@ -12,6 +12,15 @@ export function markUnpublished(rows: PageRow[], changes: PendingChanges | null)
   });
 }
 
+/**
+ * F069: a page with a browser draft is already listed as "changes in this
+ * browser", so its saved-but-not-live line would count it twice.
+ */
+export function withoutDraftPages(changes: PendingChanges, draftPaths: Iterable<string>): PendingChanges {
+  const drafts = new Set(draftPaths);
+  return drafts.size ? { ...changes, pages: changes.pages.filter((p) => !drafts.has(p.path)) } : changes;
+}
+
 /** One line per thing the next publish changes, plus a short summary. */
 export function describeChanges(changes: PendingChanges, titles: Map<string, string>): { summary: string; items: string[] } {
   if (!changes.lastPublish) {

@@ -12,10 +12,15 @@ import { gallerySources, readTemplateText, type GallerySource, type Template } f
 import { applyLocally, applyOnGitHub, previewHtml, replacePlan, templateFacts, type ApplyStep, type CurrentSite, type PreviewTarget, type ReplacePlan } from "./start";
 import "./templates.css";
 
+/**
+ * F069: each preview has a real screen height too, and the page scrolls
+ * inside it. Sized to its content, a full-height opening section (vh units)
+ * grew with the frame: Harbour's was 2244 px on desktop, 5185 px on a phone.
+ */
 const widths = [
-  { id: "desktop", label: "Desktop", width: 1280 },
-  { id: "tablet", label: "Tablet", width: 768 },
-  { id: "phone", label: "Phone", width: 375 },
+  { id: "desktop", label: "Desktop", width: 1280, height: 800 },
+  { id: "tablet", label: "Tablet", width: 768, height: 1024 },
+  { id: "phone", label: "Phone", width: 375, height: 812 },
 ] as const;
 type WidthId = (typeof widths)[number]["id"];
 
@@ -266,9 +271,9 @@ function TemplateDetail({
                 </button>
               ))}
             </div>
-            <p className="tp-legend">Dashed outlines: sample content to replace.</p>
+            <p className="tp-legend">Scroll inside the preview to see the whole page. Dashed outlines: sample content to replace.</p>
           </div>
-          <TemplatePreview template={t} target={target} width={width.width} title={`${t.name}: ${label}, ${width.label.toLowerCase()} width`} />
+          <TemplatePreview template={t} target={target} width={width.width} height={width.height} title={`${t.name}: ${label}, ${width.label.toLowerCase()} width`} />
         </section>
       </main>
       {asking ? (
@@ -288,12 +293,10 @@ function TemplateDetail({
 }
 
 /** Rendered as publishing renders it, scaled to fit, in a frame where no scripts run. */
-function TemplatePreview({ template, target, width, title }: { template: Template; target: PreviewTarget; width: number; title: string }) {
+function TemplatePreview({ template, target, width, height, title }: { template: Template; target: PreviewTarget; width: number; height: number; title: string }) {
   const html = useMemo(() => previewHtml(template, target, baseCss), [template, target]);
   const paneRef = useRef<HTMLDivElement>(null);
-  const frameRef = useRef<HTMLIFrameElement>(null);
   const [paneWidth, setPaneWidth] = useState(0);
-  const [height, setHeight] = useState(800);
 
   useEffect(() => {
     const pane = paneRef.current;
@@ -302,14 +305,6 @@ function TemplatePreview({ template, target, width, title }: { template: Templat
     observer.observe(pane);
     return () => observer.disconnect();
   }, []);
-  const measure = () => {
-    const doc = frameRef.current?.contentDocument;
-    if (doc?.body) setHeight(Math.max(300, Math.ceil(doc.body.getBoundingClientRect().height)));
-  };
-  useEffect(() => {
-    const id = requestAnimationFrame(measure);
-    return () => cancelAnimationFrame(id);
-  }, [width, html]);
 
   const scale = paneWidth > 0 ? Math.min(1, paneWidth / width) : 1;
   return (
@@ -318,7 +313,7 @@ function TemplatePreview({ template, target, width, title }: { template: Templat
         <p className="st-error">This page can't be shown.</p>
       ) : (
         <div className="tp-frame" style={{ width: width * scale, height: height * scale }}>
-          <iframe ref={frameRef} title={title} sandbox="allow-same-origin" srcDoc={html} onLoad={measure} style={{ width, height, transform: `scale(${scale})` }} />
+          <iframe title={title} sandbox="allow-same-origin" srcDoc={html} style={{ width, height, transform: `scale(${scale})` }} />
         </div>
       )}
     </div>

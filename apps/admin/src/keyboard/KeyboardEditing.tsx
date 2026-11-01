@@ -56,7 +56,7 @@ const shortcuts: [string, string][] = [
   ["Alt + ←", "Move the block out of its section or column"],
   ["Alt + →", "Move the block into the section or columns above it"],
   ["Alt + Shift + ← / →", "Move the block to the previous or next column"],
-  ["Enter", "In the block list: add that block after the selected one (or at the end of the page)"],
+  ["Enter", "In the block list: add that block after the selected one (or at the end of the last section)"],
   ["Layouts", "Top-bar button: add a designed section or a whole page after the selected section (or at the end)"],
   ["Escape", "Deselect"],
   ["?", "Show these shortcuts"],
@@ -110,6 +110,23 @@ export function focusBlock(id: string) {
       el?.scrollIntoView({ block: "nearest" });
     }),
   );
+}
+
+/**
+ * "Skip to page" (F069, WCAG 2.4.1): straight to the first block on the
+ * canvas, past the top bar and the block list (33 Tab presses before).
+ * An empty page focuses the canvas itself.
+ */
+export function skipToPage(): boolean {
+  const first = canvasDoc?.querySelector<HTMLElement>("[data-puck-component]");
+  if (first) {
+    first.focus();
+    first.scrollIntoView({ block: "nearest" });
+    return true;
+  }
+  const frame = document.querySelector<HTMLIFrameElement>("iframe#preview-frame");
+  frame?.focus();
+  return !!frame;
 }
 
 /** Takes the getter, not a snapshot: right after a move the snapshot's positions are stale. */
@@ -275,6 +292,16 @@ export function KeyboardRoot({ children }: { children: ReactNode }) {
   }, [getPuck]);
   return (
     <>
+      <a
+        className="kb-skip"
+        href="#preview-frame"
+        onClick={(e) => {
+          e.preventDefault();
+          skipToPage();
+        }}
+      >
+        Skip to page
+      </a>
       {children}
       <div className="kb-live" role="status" aria-live="polite">
         {live}
@@ -282,6 +309,26 @@ export function KeyboardRoot({ children }: { children: ReactNode }) {
       <KeyboardHelp />
     </>
   );
+}
+
+/**
+ * F069: Puck right-aligns the selected block's action bar and scales it up
+ * by 1/zoom, so the Section toolbar (style, Height, Image, Save as layout,
+ * Make linked) came out wider than the canvas and hung off its left edge;
+ * opening a name box then scrolled the whole canvas sideways. Cap each bar
+ * at the room it has (its right edge, less a margin, in unscaled pixels) so
+ * it wraps onto a second row instead, and put the canvas scroll back when
+ * something pushed it sideways.
+ */
+export function fitActionBars(doc: Document): void {
+  for (const bar of doc.querySelectorAll<HTMLElement>("[class*='_DraggableComponent-actions_']")) {
+    const scale = Number(/scale\(([\d.]+)/.exec(bar.style.transform)?.[1] ?? 1) || 1;
+    const right = bar.getBoundingClientRect().right + (doc.defaultView?.scrollX ?? 0);
+    const room = Math.max(160, Math.floor((Math.min(right, doc.documentElement.clientWidth) - 8) / scale));
+    if (bar.style.maxWidth !== `${room}px`) bar.style.maxWidth = `${room}px`;
+  }
+  const view = doc.defaultView;
+  if (view && view.scrollX !== 0) view.scrollTo({ left: 0, top: view.scrollY });
 }
 
 /** overrides.iframe: the canvas lives in its own document. */
@@ -296,13 +343,22 @@ export function KeyboardCanvas({ children, document: doc }: { children: ReactNod
     let frame = 0;
     const relabel = () => {
       cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => labelBlocks(doc, getPuck()));
+      frame = requestAnimationFrame(() => {
+        labelBlocks(doc, getPuck());
+        fitActionBars(doc);
+      });
     };
+    // A name box's field taking focus can scroll the canvas sideways; undo that.
+    const onScroll = () => {
+      if (doc.defaultView && doc.defaultView.scrollX !== 0) relabel();
+    };
+    doc.defaultView?.addEventListener("scroll", onScroll);
     const observer = new MutationObserver(relabel);
     observer.observe(doc.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["aria-roledescription", "aria-describedby"] });
     relabel();
     return () => {
       doc.removeEventListener("keydown", onKey, true);
+      doc.defaultView?.removeEventListener("scroll", onScroll);
       removeTooltips();
       observer.disconnect();
       cancelAnimationFrame(frame);

@@ -415,6 +415,14 @@ main[tabindex="-1"]:focus { outline: none; }
 .cr-post-item p { margin: 0; }
 .cr-post-thumb { order: -1; display: block; width: 100%; aspect-ratio: 16 / 10; height: auto; object-fit: cover; border-radius: var(--cr-radius); }
 .cr-post-date { order: 0; font-size: 0.875rem; color: var(--cr-sec-muted, var(--cr-color-muted)); }
+/* F069: post titles in the list and search results follow the site's link style (F028). */
+.cr-post-item h2 a, .cr-search-results a {
+  text-decoration: underline; text-underline-offset: 0.2em;
+  text-decoration-thickness: var(--cr-link-thickness, auto);
+  background: var(--cr-link-bg, none); border-radius: 2px;
+}
+.cr-search-results a { color: var(--cr-sec-accent, var(--cr-color-primary)); }
+.cr-post-item h2 a:focus-visible, .cr-search-results a:focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }
 
 /* Contact form (F037). Works without JavaScript; messages show with :target. */
 .cr-form-wrap { max-width: 40rem; }
@@ -438,6 +446,8 @@ main[tabindex="-1"]:focus { outline: none; }
 .cr-form-done p, .cr-form-failed p { margin: 0; }
 .cr-form-done:target, .cr-form-failed:target { display: block; }
 .cr-form-done:target ~ .cr-form { display: none; }
+/* F069: with the script the page doesn't reload, so the Back-button hint isn't needed. */
+.cr-form-js .cr-form-back { display: none; }
 
 /* Site search (F039): the /search/ page. Results come from Pagefind. */
 .cr-search-form { display: grid; gap: 6px; max-width: 40rem; margin-bottom: var(--cr-space-sm); }

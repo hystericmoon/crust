@@ -3,11 +3,12 @@
 /* On the canvas: a dashed outline and a "Replace me" label. The wrapper is display: contents when published. */
 /* A white halo inside the amber dashes keeps the outline visible on dark and primary sections too. */
 .cr-show[data-replace] { display: block; position: relative; outline: 2px dashed #b45309; outline-offset: 2px; box-shadow: 0 0 0 2px #fff; }
+/* F069: the tag sits on top of the outline, like a tab, not over the words it marks. */
 .cr-show[data-replace]::after {
   content: attr(data-replace);
-  position: absolute; top: 0; left: 0; z-index: 2; max-width: 100%;
-  padding: 2px 8px; border-radius: 0 0 6px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  background: #b45309; color: #fff; font: 600 12px/1.5 system-ui, sans-serif; letter-spacing: 0;
+  position: absolute; bottom: calc(100% + 2px); left: -4px; z-index: 2; max-width: 100%;
+  padding: 1px 6px; border-radius: 4px 4px 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  background: #b45309; color: #fff; font: 600 11px/1.4 system-ui, sans-serif; letter-spacing: 0;
   pointer-events: none;
 }
 
@@ -35,7 +36,7 @@
 
 /* The field in the Advanced tab */
 .ph-field { margin: 0; padding: 0; border: 0; }
-.ph-label { padding: 0; margin-bottom: 6px; font-size: 0.875rem; font-weight: 600; }
+.ph-label { padding: 0; margin-bottom: 6px; font-size: 0.875rem; font-weight: 600; color: #18181b; }
 .ph-check { display: flex; align-items: center; gap: 8px; min-height: 32px; font-size: 0.875rem; }
 .ph-check input { width: 18px; height: 18px; margin: 0; }
 @media (max-width: 639.98px) { .ph-panel { top: auto; bottom: 16px; } }

@@ -7,7 +7,7 @@
  */
 import { richTextProblems } from "./rich-text";
 import { checkContrast, formatRatio } from "./contrast";
-import { sectionStyleIds, sectionStyleNames, sectionStyleWarnings, type SectionStyleId } from "./section-styles";
+import { sectionStyleIds, sectionStyleNames, sectionStyleWarnings, resolveSectionStyle, type SectionStyleId } from "./section-styles";
 import { colorRoles, spacingSteps, validateTokens, type SiteTokens } from "./tokens";
 
 export const PACK_FORMAT = "crust-theme-pack";
@@ -244,11 +244,15 @@ export function readThemePack(text: string, blocks: BlockSpecs): PackCheck {
       problems.push(...format);
       if (!format.length) {
         // A style that's hard to read is left out; the rest of the pack can still be used.
+        const failing = checkContrast(tokens.colors).filter((r) => !r.passes);
+        // F069: one line per problem. A section style on a background whose text
+        // already failed above (Page sections = "text on the page") isn't repeated.
+        const saidBg = new Set(failing.filter((r) => r.fg === "text" || r.fg === "onPrimary").map((r) => tokens.colors[r.bg].toLowerCase()));
         const contrast = [
-          ...checkContrast(tokens.colors)
-            .filter((r) => !r.passes)
-            .map((r) => `Contrast: ${r.label.toLowerCase()} is ${formatRatio(r.ratio)}, below the 4.5:1 minimum.`),
-          ...sectionStyleWarnings(tokens).map((w) => `Contrast: ${w.message}`),
+          ...failing.map((r) => `Contrast: ${r.label.toLowerCase()} is ${formatRatio(r.ratio)}, below the 4.5:1 minimum.`),
+          ...sectionStyleWarnings(tokens)
+            .filter((w) => !saidBg.has(resolveSectionStyle(tokens, w.id).bg.toLowerCase()))
+            .map((w) => `Contrast: ${w.message}`),
         ];
         if (contrast.length) warnings.push(...contrast);
         else pack.tokens = tokens;

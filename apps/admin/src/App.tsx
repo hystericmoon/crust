@@ -1,7 +1,7 @@
 import { checkPost, config, countPlaceholders, defaultBlog, migrateChrome, tokensToCss, type BlogSettings, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
 import { relinkPage } from "@crust/blocks/links";
 import { Puck, useGetPuck, type Data } from "@puckeditor/core";
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import siteJson from "../../../content/site.json";
 import {
   deletePage,
@@ -24,6 +24,7 @@ import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot, openKeyboardHelp } fro
 import { LayoutGallery, LayoutInserters, LayoutsButton } from "./layouts/LayoutGallery";
 import { MyLayoutsProvider } from "./layouts/mine";
 import { PageList, editHref } from "./pages/PageList";
+import type { LinkingPage } from "./pages/PageActions";
 import {
   bundledPages,
   fromPuckData,
@@ -40,6 +41,7 @@ import { markUnpublished } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
 import { PublishShortcut, usePendingCount } from "./publish/shortcut";
 import { SignOutLink } from "./sign-out";
+import { SaveStatus, useSaveStatus } from "./save-status";
 import { withRichText } from "./rich-text/field";
 import { withLinkedSectionFields } from "./linked/fields";
 import { LinkedSectionsProvider } from "./linked/store";
@@ -107,6 +109,9 @@ function SaveDraftButton({ onSave }: { onSave: (data: Data) => void }) {
     </button>
   );
 }
+
+/** F069: GitHub refused or couldn't be reached (not "isn't switched on yet", which is expected). */
+export const saveFailed = (result: ApiResult<unknown>) => !result.ok && !result.notConfigured;
 
 /** What to tell the owner after a save: GitHub first, the browser copy as the safety net. */
 export function saveMessage(result: ApiResult<unknown>, savedLocally: boolean, what: string): string {
@@ -400,10 +405,13 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
   }, [focusPublish, rows === null]);
 
   // Rename and delete (F015): through GitHub for pages there, in this browser otherwise.
-  const rename = async (row: PageRow, to: string): Promise<string | null> => {
+  const rename = async (row: PageRow, to: string): Promise<string | { relinked: LinkingPage[] }> => {
+    let relinked: LinkingPage[] = [];
     if (row.inRepo) {
       const res = await renamePage(row.path, to);
       if (!res.ok) return `Not renamed: ${res.error}`;
+      // F069: said in the message ("It also updated 3 links…").
+      relinked = res.relinked ?? [];
     }
     if (!moveLocalDraft(row.path, to)) return "This browser wouldn't store the change. Try again.";
     // F018: drafts in this browser follow too, so saving one later doesn't bring the old links back.
@@ -412,7 +420,7 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
       if (count) saveLocalDraft({ ...draft.page, puck }, draft.savedToGitHub);
     }
     reload();
-    return null;
+    return { relinked };
   };
   const restore = async (page: DeletedPage): Promise<string | null> => {
     const res = await restorePage(page);
@@ -518,30 +526,27 @@ function BuilderCanvas({ children, document }: { children: ReactNode; document?:
 
 function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean; shortcut?: ReactNode }) {
   const [page, setPage] = useState<Page | null | undefined>(undefined);
-  const [status, setStatus] = useState<string>("");
+  const status = useSaveStatus();
 
   useEffect(() => {
     void loadPage(path, githubOn).then(setPage);
   }, [path, githubOn]);
 
-  // Let the toast go after a while; screen readers have already heard it.
-  useEffect(() => {
-    if (!status || status === "Saving…") return;
-    const t = setTimeout(() => setStatus(""), 10_000);
-    return () => clearTimeout(t);
-  }, [status]);
 
+  const saveDraftRef = useRef<(data: Data) => Promise<void>>(async () => {});
   const saveDraft = useCallback(
     async (data: Data) => {
       const next = fromPuckData(path, data);
       const local = saveLocalDraft(next, false);
-      setStatus("Saving…");
+      status.saving();
       const result = await saveContent({ kind: "page", page: next });
       if (result.ok) saveLocalDraft(next, true);
-      setStatus(saveMessage(result, local, "Page"));
+      // F069: a failed save stays on screen with "Try again".
+      status.show(saveMessage(result, local, "Page"), saveFailed(result), () => void saveDraftRef.current(data));
     },
-    [path],
+    [path, status.saving, status.show],
   );
+  saveDraftRef.current = saveDraft;
 
   if (page === undefined) return <Loading />;
   if (page === null) {
@@ -583,9 +588,10 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
                 <a className="crust-header-link" href="#/settings">
                   Site settings
                 </a>
-                <SignOutLink />
                 {shortcut}
                 <SaveDraftButton onSave={saveDraft} />
+                {/* F069: at the far end, after a divider, away from Save draft. */}
+                <SignOutLink />
               </>
             ),
             puck: BuilderRoot,
@@ -596,9 +602,7 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
           // Keep every edit in this browser, so leaving the page never loses work.
           onChange={(data) => saveLocalDraft(fromPuckData(path, data), false)}
         />
-        <div role="status" aria-live="polite" className="crust-status">
-          {status}
-        </div>
+        <SaveStatus note={status.note} onDismiss={status.clear} />
       </MyLayoutsProvider>
       </LinkedSectionsProvider>
     </SeoSiteProvider>
@@ -609,35 +613,32 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
 function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boolean; shortcut?: ReactNode }) {
   const [post, setPost] = useState<Post | null | undefined>(undefined);
   const [blog, setBlog] = useState<BlogSettings>(defaultBlog);
-  const [status, setStatus] = useState<string>("");
+  const status = useSaveStatus();
 
   useEffect(() => {
     void loadPost(slug, githubOn).then(setPost);
     if (githubOn) void listPosts().then((res) => res.ok && setBlog(res.blog));
   }, [slug, githubOn]);
 
-  useEffect(() => {
-    if (!status || status === "Saving…") return;
-    const t = setTimeout(() => setStatus(""), 10_000);
-    return () => clearTimeout(t);
-  }, [status]);
 
+  const saveDraftRef = useRef<(data: Data) => Promise<void>>(async () => {});
   const saveDraft = useCallback(
     async (data: Data) => {
       const next = postFromPuckData(slug, data);
       const problems = checkPost(next);
       const local = saveLocalPost(next, false);
       if (problems.length) {
-        setStatus(`Kept in this browser, not saved to GitHub yet: ${problems.join(" ")}`);
+        status.show(`Kept in this browser, not saved to GitHub yet: ${problems.join(" ")}`, true);
         return;
       }
-      setStatus("Saving…");
+      status.saving();
       const result = await savePost(next);
       if (result.ok) saveLocalPost(next, true);
-      setStatus(saveMessage(result, local, "Post"));
+      status.show(saveMessage(result, local, "Post"), saveFailed(result), () => void saveDraftRef.current(data));
     },
-    [slug],
+    [slug, status.saving, status.show],
   );
+  saveDraftRef.current = saveDraft;
 
   if (post === undefined) return <Loading />;
   if (post === null) {
@@ -673,9 +674,10 @@ function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boo
                 <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
                   Keyboard
                 </button>
-                <SignOutLink />
                 {shortcut}
                 <SaveDraftButton onSave={saveDraft} />
+                {/* F069: at the far end, after a divider, away from Save draft. */}
+                <SignOutLink />
               </>
             ),
             puck: BuilderRoot,
@@ -685,9 +687,7 @@ function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boo
           onPublish={saveDraft}
           onChange={(data) => saveLocalPost(postFromPuckData(slug, data), false)}
         />
-        <div role="status" aria-live="polite" className="crust-status">
-          {status}
-        </div>
+        <SaveStatus note={status.note} onDismiss={status.clear} />
       </MyLayoutsProvider>
       </LinkedSectionsProvider>
     </BlogContext.Provider>

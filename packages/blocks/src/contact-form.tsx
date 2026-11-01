@@ -7,6 +7,11 @@
  *
  * Where the form posts and the Turnstile site key come from the publish
  * step (FormsContext). Without them the form shows, but can't be sent.
+ *
+ * F069: a failed send names what went wrong ("#<form>-error-email" and so
+ * on, one message each). Where JavaScript runs (Turnstile needs it anyway),
+ * a small script (CONTACT_FORM_SCRIPT) sends the form in place, so what the
+ * visitor typed stays, and puts focus on the field to fix.
  */
 import type { ComponentConfig } from "@puckeditor/core";
 import { createContext, useContext } from "react";
@@ -113,6 +118,15 @@ export const ContactForm: ComponentConfig<ContactFormProps> = {
         <div id={`${form}-error`} className="cr-form-failed" tabIndex={-1}>
           <p>Sorry, your message couldn't be sent. Please check the form and try again; if it keeps happening, email us instead.</p>
         </div>
+        {/* F069: one message per problem, so the visitor knows what to fix. */}
+        {contactProblems({ name: nameLabel || "Name", email: emailLabel || "Email", message: messageLabel || "Message" }).map(([problem, text]) => (
+          <div key={problem} id={`${form}-error-${problem}`} className="cr-form-failed" tabIndex={-1}>
+            <p>
+              Sorry, your message wasn't sent. {text}
+              <span className="cr-form-back"> Your browser's Back button usually brings back what you typed.</span>
+            </p>
+          </div>
+        ))}
         <form
           className="cr-form"
           id={form}
@@ -158,6 +172,61 @@ export const ContactForm: ComponentConfig<ContactFormProps> = {
     );
   },
 };
+
+/** F069: what a failed send says, per problem the Worker reports (packages/contact). */
+export function contactProblems(labels: { name: string; email: string; message: string }): [string, string][] {
+  return [
+    ["name", `Please fill in “${labels.name}”.`],
+    ["email", `“${labels.email}” doesn't look like a complete email address. It needs an @ and a domain, like name@example.com.`],
+    ["extra", "One of the fields is too long. Please shorten it and send again."],
+    ["message", `Please write your message in “${labels.message}”.`],
+    ["check", "The spam check hadn't finished. Please wait a moment until it's done, then send again."],
+    ["send", "It couldn't be sent just now. Please try again in a few minutes, or email us instead."],
+  ];
+}
+
+/**
+ * F069: sends the form in place (the Worker answers with JSON), so the
+ * visitor's words stay and focus goes to the field to fix. Plain
+ * JavaScript; added by the renderer to pages with a connected form.
+ * Without it, the form posts and comes back as before.
+ */
+export const CONTACT_FORM_SCRIPT = `
+for (const form of document.querySelectorAll("form.cr-form[action]")) {
+  form.closest(".cr-form-wrap")?.classList.add("cr-form-js");
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (form.getAttribute("aria-busy") === "true") return;
+    form.setAttribute("aria-busy", "true");
+    for (const el of form.querySelectorAll("[aria-invalid]")) {
+      el.removeAttribute("aria-invalid");
+      el.removeAttribute("aria-describedby");
+    }
+    let out = { ok: false, problem: "send" };
+    try {
+      const res = await fetch(form.action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } });
+      if (res.ok) out = await res.json();
+    } catch {}
+    form.removeAttribute("aria-busy");
+    if (out.ok) {
+      form.reset();
+      location.hash = form.id + "-sent";
+      document.getElementById(form.id + "-sent")?.focus();
+      return;
+    }
+    const box = document.getElementById(form.id + "-error-" + out.problem) || document.getElementById(form.id + "-error");
+    // Shows the message (CSS :target); the page doesn't reload, so what was typed stays.
+    location.hash = box.id;
+    const field = out.field ? form.elements.namedItem(out.field) : null;
+    if (field && typeof field.focus === "function") {
+      field.setAttribute("aria-invalid", "true");
+      field.setAttribute("aria-describedby", box.id);
+      field.focus();
+    } else box.focus();
+    if (window.turnstile) window.turnstile.reset();
+  });
+}
+`;
 
 /** True when a page has a contact form (it then loads the Turnstile script). */
 export function hasContactForm(value: unknown): boolean {

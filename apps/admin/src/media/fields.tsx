@@ -29,11 +29,17 @@ const altKeyFor = (key: string, fields: Record<string, unknown>) => {
  * goes into the block's alt field (an old description would be wrong).
  */
 export function fillAltText(props: Props, lastProps: Props | null, pairs: [string, string][]): Props {
-  if (!lastProps) return props;
   let next = props;
   for (const [srcKey, altKey] of pairs) {
     const src = props[srcKey];
-    if (typeof src !== "string" || src === lastProps[srcKey]) continue;
+    if (typeof src !== "string" || !src) continue;
+    if (lastProps) {
+      if (src === lastProps[srcKey]) continue;
+    } else if (typeof props[altKey] === "string" && (props[altKey] as string).trim()) {
+      // F069: no earlier version (a block just added, or the page just
+      // opened): fill an empty alt text, but never replace the owner's words.
+      continue;
+    }
     const item = findMedia(mediaFileOf(src));
     if (item?.alt) next = { ...next, [altKey]: item.alt };
   }

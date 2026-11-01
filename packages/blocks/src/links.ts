@@ -86,3 +86,43 @@ export function relinkPage(puck: Data, from: string, to: string): { puck: Data; 
 
 /** How many links in a page point at `path`. */
 export const countLinks = (puck: Data, path: string) => relinkPage(puck, path, path).count;
+
+type Link = { label?: unknown; href?: unknown };
+const relinkList = (list: unknown, from: string, to: string, counter: { n: number }): unknown =>
+  Array.isArray(list)
+    ? list.map((link: Link) => {
+        if (typeof link?.href !== "string") return link;
+        const next = relinkHref(link.href, from, to);
+        if (next === null) return link;
+        counter.n++;
+        return { ...link, href: next };
+      })
+    : list;
+
+/**
+ * F069: the site header's menu and button and the footer's link columns
+ * (site.json, F031) with links to `from` pointing at `to`. Only what
+ * site.json spells out: a menu made from the pages follows by itself.
+ * Unknown fields are kept as they are.
+ */
+export function relinkChrome<S extends { header?: unknown; footer?: unknown }>(site: S, from: string, to: string): { site: S; count: number } {
+  const counter = { n: 0 };
+  const header = site.header as { menu?: unknown; cta?: Link } | undefined;
+  const footer = site.footer as { columns?: unknown } | undefined;
+  let nextHeader = header;
+  if (header && typeof header === "object") {
+    const menu = relinkList(header.menu, from, to, counter);
+    const cta = relinkList(header.cta ? [header.cta] : [], from, to, counter) as Link[];
+    nextHeader = { ...header, ...(header.menu !== undefined ? { menu } : {}), ...(header.cta ? { cta: cta[0] } : {}) };
+  }
+  let nextFooter = footer;
+  if (footer && typeof footer === "object" && Array.isArray(footer.columns)) {
+    const columns = footer.columns.map((c: { links?: unknown } | null) => (c && typeof c === "object" ? { ...c, links: relinkList(c.links, from, to, counter) } : c));
+    nextFooter = { ...footer, columns };
+  }
+  if (counter.n === 0) return { site, count: 0 };
+  return { site: { ...site, ...(nextHeader ? { header: nextHeader } : {}), ...(nextFooter ? { footer: nextFooter } : {}) }, count: counter.n };
+}
+
+/** How many header and footer links point at `path`. */
+export const countChromeLinks = (site: { header?: unknown; footer?: unknown }, path: string) => relinkChrome(site, path, path).count;
