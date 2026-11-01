@@ -5,13 +5,21 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 (Jakarta). **Everything is merged to main**
-(owner, 2026-11-02: "You can merge and whatever you need"): F053 (PR
-#45) and Milestone 6, F055–F062 (PRs #46–#53). No open PRs. The F061/F062
-session ended here; the owner cleared it.
-**Next: F063 Store site** (Milestone 7, docs/milestone-7.md; design
-snapshot first). Start a new session from **main** with: "Read
-HANDOVER.md on branch main and continue." Branch F063 from main.
+Last updated: 2026-11-02 (Jakarta). PRs #53 (F062) and #45 (F053)
+**merged to main** (owner had said to merge). Then the owner said our
+templates aren't premium next to eliras/zorven/labzzy.webflow.io and
+chose **B: upgrade the design layer, "all in"**, and asked for a
+YOOtheme comparison. Gap page:
+https://claude.ai/artifact/ULmnd4JZEKpGvyUHFg1Kpo
+(`design/yootheme-gap-v1.html`); first comparison
+https://claude.ai/artifact/FMb9QuLomsLCvQC9aZscf3. See DECISIONS
+Proposals "Premium design layer".
+**Next: wait for the owner to approve Milestone 8** (A all in, 15
+features F070–F084, recommended; or B core 9). On approval: write
+`docs/milestone-8.md`, add the features to features.json (owner-approved
+scope), start F070 Fonts with a design snapshot. **F063 Store is
+paused** until M8 is done; branch `f063-store-site` (PR #54) holds only
+these notes and design pages, no store code yet.
 
 ## How sessions work (owner's rule, 2026-10-30)
 
