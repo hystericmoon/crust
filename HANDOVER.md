@@ -5,12 +5,13 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-01 (Jakarta): F059 Publish by FTP or SFTP built
-and passing on branch `f059-ftp-sftp` (stacked on `f058-publish-to-host`
-/ PR #49), PR #50 (CI green, not merged). F058 is PR #49 (on #48),
-F057 PR #48 (on #47), F056 PR #47 (on #46), F055 PR #46, F053 PR #45
-(all CI green, not merged; the owner merges). Next: F060 First run
-(design snapshot first).
+Last updated: 2026-11-02 (Jakarta): F060 First run built, passing and
+CI green on branch `f060-first-run` (stacked on `f059-ftp-sftp` / PR
+#50), PR #51.
+F059 is PR #50 (on #49), F058 PR #49 (on #48), F057 PR #48 (on #47),
+F056 PR #47 (on #46), F055 PR #46, F053 PR #45 (none merged; the owner
+merges). Next: F061 Updates built in (no snapshot needed; the update
+key is BLOCKED, build and test without it).
 
 ## How sessions work (owner's rule, 2026-10-30)
 
@@ -94,6 +95,7 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | F057 Several sites | built, passes, CI green | `f057-several-sites`, PR #48 (stacked on #47) |
 | F058 Publish to Cloudflare Pages or Netlify | built, passes, CI green | `f058-publish-to-host`, PR #49 (stacked on #48) |
 | F059 Publish by FTP or SFTP | built, passes, CI green | `f059-ftp-sftp`, PR #50 (stacked on #49) |
+| F060 First run | built, passes, CI green | `f060-first-run`, PR #51 (stacked on #50) |
 
 - **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in
@@ -112,7 +114,8 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
   https://claude.ai/artifact/JdsQXqRu8kTu5KwQQ8qcb9 (A built), F057
   https://claude.ai/artifact/7nKCuGhkAuhTJ5gMEXxfw3 (A built), F058
   https://claude.ai/artifact/DMXMZc8NdDTNRXSFEBBuah (A built). F059: no
-  snapshot (screenshots design/f059-*.png).
+  snapshot (screenshots design/f059-*.png). F060
+  https://claude.ai/artifact/Lx5SeC9B1GmSN3ztFebA3t (A built).
 
 ## Next
 
@@ -204,15 +207,38 @@ The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
    `scripts/fake-tauri.js` takes host "ftp" / "ftp-plain". Screenshots
    design/f059-*.png (made with Playwright + fake-tauri). CI `check`
    took 28 of its 45 minutes on #50 (FTP/SFTP crates added ~5 min).
-   **Next: F060 First run** (design snapshot first: welcome, pick a
-   starter or blank, name the site, land in the builder with "To
-   replace" open; keyboard-usable; done_check `npm test -- first-run &&
-   npm run check:builder`). Branch from `f059-ftp-sftp` until #46–#50
-   merge. The "App wording" proposal (DECISIONS) is still open; it fits
-   well with F060. New proposal: `.htaccess` redirects for FTP hosts.
-   Owner-facing note still open: Pagefind brings minicbor
-   (BlueOak-1.0.0) and Tauri brought MPL-2.0 packages; both in
-   DECISIONS "F056", owner told, no answer yet.
+   ~~F060 First run~~ **built, passes** (PR #51, branch
+   `f060-first-run`, stacked on #50). See DECISIONS "F060". How it
+   fits: `apps/admin/src/first-run/` (`first-run.ts`: `isFirstRun`,
+   `makeFirstSite`, `landInBuilder`; `FirstRun.tsx` the screen;
+   `arrival.ts` the one-time "open To replace" flag read by
+   `placeholders/Checklist.tsx`); `desktop.ts` `launchDesktop` decides
+   welcome screen or site, `main.tsx` renders one or the other. The
+   fake app for tests moved to `sites/fake-app.ts`. `fake-tauri.js` takes
+   `firstRun: true`. The window self-check (`self_check.js`) goes
+   through the welcome screen first (Blank), so CI covers it; CI gives
+   it its own Crust folder (`$RUNNER_TEMP/crust-home/crust-site`),
+   because other folders beside the site count as sites.
+   **CI time warning:** on #51 the `check` job took 41 of its 45
+   minutes (a cold Rust cache after the FTPS fix; #50 took ~5 with a
+   warm one). If F061 adds Rust (tauri-plugin-updater), expect it to
+   cross 45: improve the `target/` cache or raise the limit, log it in
+   DECISIONS and mention it to the owner (free minutes).
+   **F059 CI fix (on #50):** FTPS connections that break off are tried
+   up to three times (libunftp switches to TLS late); see DECISIONS
+   F059, last bullet.
+   **Next: F061 Updates built in** (Tauri updater; update notes on a
+   free Cloudflare Pages site; the signing key is BLOCKED.md, so build
+   and test with a test key; done_check `cargo test -p crust-desktop &&
+   npm test -- updates`). Then F062 Premium templates (snapshot first;
+   it adds to the same gallery F060 shows). Open proposals worth
+   raising: "App wording", "Browser copies in the app" (found with
+   F060: unsaved colours/drafts are shared between sites in the app),
+   `.htaccess` redirects for FTP hosts.
+   Owner-facing notes still open: Pagefind brings minicbor
+   (BlueOak-1.0.0) and Tauri brought MPL-2.0 packages (DECISIONS
+   "F056"), owner told, no answer yet. F058/F059 never tried against a
+   real host account.
 2. ~~Write Milestones 6 and 7~~ done 2026-10-31 (F054–F068; F054 depends
    on F048 so M6 can start while F053 waits for the owner).
    **F054 Content store done and merged** (PR #43). After F053:

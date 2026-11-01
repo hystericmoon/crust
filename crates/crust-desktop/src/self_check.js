@@ -12,6 +12,22 @@
     // The builder appears (it waits for the site folder first).
     const start = Date.now();
     while (!document.querySelector("#root > *") && Date.now() - start < 30000) await new Promise((r) => setTimeout(r, 200));
+    // F060: a fresh site folder (as in CI) opens on the welcome screen. Start
+    // blank under a new name; the window reloads into the builder and this
+    // check runs again from the top.
+    if (document.querySelector(".fr")) {
+      const blank = document.querySelector('input[type="radio"][value="blank"]');
+      const starters = document.querySelectorAll('.fr input[type="radio"]').length;
+      if (!blank || starters < 4) throw new Error(`The welcome screen has ${starters} starts, expected the three starters and Blank.`);
+      blank.click();
+      const name = document.querySelector(".fr-input");
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set.call(name, "Self check site");
+      name.dispatchEvent(new Event("input", { bubbles: true }));
+      sessionStorage.setItem("crust:self-check-first-run", "1");
+      document.querySelector(".fr-make").click();
+      return;
+    }
+    check("first run made the site", sessionStorage.getItem("crust:self-check-first-run") === "1" && (await invoke("site_info")).id === "Self check site", (await invoke("site_info")).id);
     check("builder shows", !!document.querySelector("#root > *"), document.body.innerText.slice(0, 200));
     check("window is named after the site", / · Crust$/.test(document.title), document.title);
 

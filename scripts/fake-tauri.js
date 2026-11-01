@@ -2,10 +2,12 @@
 // screens (Publish card, connect dialog) can be checked and photographed
 // from apps/admin/dist. Files live in memory; host commands answer as a
 // connected or unconnected site. Set window.__FAKE_TAURI__ before this
-// runs: { host: "none" | "connected" | "ftp" | "ftp-plain" } (F059: an FTP host).
+// runs: { host: "none" | "connected" | "ftp" | "ftp-plain" } (F059: an FTP host),
+// firstRun: true for a brand new Crust (F060: the welcome screen).
 (() => {
   const opts = window.__FAKE_TAURI__ || {};
   const files = new Map();
+  let siteId = opts.firstRun ? "My site" : "Harbour Studio";
   const callbacks = new Map();
   let nextId = 1;
   const decode = (s) => decodeURIComponent(s);
@@ -28,7 +30,7 @@
           ? ftp("ftp")
           : null;
   const commands = {
-    site_info: () => ({ folder: "/Users/hosni/Documents/Crust/Harbour Studio", id: "Harbour Studio" }),
+    site_info: () => ({ folder: `/Users/hosni/Documents/Crust/${siteId}`, id: siteId }),
     site_read: ({ path }) => {
       if (!files.has(path)) throw "crust:not-found";
       return files.get(path);
@@ -45,7 +47,11 @@
       const prefix = dir ? `${dir}/` : "";
       return [...files.keys()].filter((p) => p.startsWith(prefix) && !p.slice(prefix.length).includes("/")).map((p) => p.slice(prefix.length)).sort();
     },
-    sites_list: () => [{ id: "Harbour Studio", name: "Harbour Studio", pages: 1, edited: Date.now(), open: true }],
+    sites_list: () => [{ id: siteId, name: siteId, pages: opts.firstRun && !files.has("content/site.json") ? 0 : 1, edited: Date.now(), open: true }],
+    sites_rename: ({ name }) => {
+      siteId = name;
+      return name;
+    },
     sites_deleted: () => [],
     host_status: () => ({ connection, suggestedName: "harbour-studio" }),
     host_check_token: () => [{ id: "acc1", name: "Hosni" }],

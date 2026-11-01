@@ -627,3 +627,19 @@ to "Log".
   (no issues). **Owner can try:** only in the app, with your own web
   host's FTP or SFTP details (any shared hosting). Never tried against a
   real host here; if it fails, the message says what the server said.
+
+- 2026-11-01 — F060 First run built (branch `f060-first-run`, stacked
+  on F059 / PR #50). A brand new Crust app opens on a welcome screen:
+  pick Harbour, Signal, Corner or Blank, name the site (suggested from
+  the template), **Make my site**, and land in the builder on Home with
+  **To replace** open and focus on its heading. Shown only when there is
+  one empty site and nothing was ever deleted. Design snapshot
+  https://claude.ai/artifact/Lx5SeC9B1GmSN3ztFebA3t (direction A built);
+  screenshots design/f060-*.png. done_check exit 0. The app's window
+  self-check in CI now goes through the welcome screen; tried by hand in
+  the real window with Harbour too. Side fix: the app's own error words
+  (e.g. "The disk is full.") now show instead of "Couldn't reach
+  GitHub". Found, not fixed: unsaved colours and drafts are shared
+  between sites in the app (DECISIONS Proposals, "Browser copies in the
+  app"). **Owner can try:** only in the app, on a computer that never
+  had Crust (or after moving the Documents/Crust folder away).

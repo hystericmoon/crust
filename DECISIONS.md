@@ -8,6 +8,14 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
+- **Browser copies in the app (found with F060, 2026-11-01).** The
+  builder keeps working copies in the window's storage (unsaved
+  colours, header and footer, page and post drafts, "Bring back my
+  previous site"). In the desktop app every site shares that storage,
+  so after switching sites, an unsaved colour change or draft from one
+  site can show in another. Suggest keeping those copies per site
+  (prefix the keys with the site's id), or clearing them on switch.
+  Size S–M. F060 already avoids adding to it.
 - **App wording (from F055, 2026-11-01).** In the desktop app about 70
   messages still say "GitHub" or "this browser" (Publish card, page
   status, Template banner, Site settings). Suggest one pass that gives
@@ -2012,3 +2020,53 @@ Workers (100k requests/day), R2 (10 GB). Only optional cost: a custom domain.
   three times (not a refused certificate, which still stops at once),
   and no longer calls that a certificate problem. 0 failures in 100
   local runs (8 in 40 before).
+
+## 2026-11-01 — F060 First run (Claude, reversible)
+
+- **Direction A of the snapshot** (https://claude.ai/artifact/Lx5SeC9B1GmSN3ztFebA3t,
+  `design/f060-first-run-v1.html`): one welcome screen with both choices
+  (start from, name) and one button, "Make my site". Not a wizard: two
+  decisions don't need Back/Next, and seeing both at once is recognition
+  over recall. Not the empty Sites screen: it opens on a list with
+  nothing in it.
+- **When it shows.** Only for a brand new Crust: the open site has no
+  settings, it's the only site, it has no pages, and nothing was ever
+  deleted (`isFirstRun`). Deleting every site still gives an empty "My
+  site" that starts blank, as before. If the app can't list its sites,
+  it starts blank too (no welcome screen rather than a wrong one).
+  Quitting halfway shows the welcome screen again next time, because
+  nothing was written yet.
+- **What "Make my site" does:** writes the blank site (settings + Home)
+  under the chosen name, renames the folder to match (`sites_rename`),
+  then applies the template through the same API steps as Pages → Start
+  from a template (photos, then pages). Then the window reloads into the
+  builder on Home with "To replace" open and focus on its heading (a
+  one-time flag in sessionStorage, `first-run/arrival.ts`). A blank
+  start lands on Home with no list. Running it again after a failure is
+  safe.
+- **Name field** suggests the template's own site name ("Harbour
+  Studio") or "My site", so Enter alone works; once the person types,
+  picking another start keeps their name.
+- **Starters only** (Harbour, Signal, Corner in that order), not the
+  builder's sample site, plus Blank. No page-by-page preview here; it's
+  in Start from a template any time later.
+- **The app's own error words.** The site folder's errors (from the Rust
+  side, e.g. "The disk is full.") now reach the builder as they are;
+  before, they showed as "Couldn't reach GitHub" (`tauri-folder.ts`).
+- **Template look not kept in the window.** After a template first run,
+  the window's working copy of colours and header/footer is cleared:
+  the look is in the site's settings already, and that copy is shared by
+  every site in the app (see the proposal "Browser copies in the app").
+- **The window self-check** (CI) now goes through the welcome screen
+  first: Blank, a new name, Make my site, and checks the builder opens
+  on the new site. Tried once by hand with Harbour in the real window:
+  photos added, builder on Home, "To replace" open with focus on its
+  heading.
+- **CI's self-check gets a Crust folder of its own.** CI pointed the app
+  at `$RUNNER_TEMP/crust-site`, so its "Crust folder" was the runner's
+  temp folder, full of other folders that count as sites; the welcome
+  screen rightly stayed away and the check failed. Now
+  `$RUNNER_TEMP/crust-home/crust-site` (reproduced and checked locally).
+- **Leftover:** the "Adding photos (3 of 10)" line can pause for a
+  moment while large photos are prepared (the same as Start from a
+  template).

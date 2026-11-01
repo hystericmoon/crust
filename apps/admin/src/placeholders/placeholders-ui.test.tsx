@@ -127,6 +127,35 @@ describe("placeholders: the To replace list", () => {
   });
 });
 
+describe("placeholders: arriving from the first run (F060)", () => {
+  afterEach(() => {
+    sessionStorage.clear();
+    vi.useRealTimers();
+  });
+
+  it("starts open once, with focus on the list's heading", () => {
+    vi.useFakeTimers();
+    sessionStorage.setItem("crust:open-to-replace", "1");
+    render(<PlaceholderChecklist />);
+    expect(screen.getByRole("button", { name: "To replace 3" }).getAttribute("aria-expanded")).toBe("true");
+    act(() => {
+      vi.advanceTimersByTime(400);
+    });
+    expect(document.activeElement).toBe(screen.getByRole("heading", { name: "3 things to replace" }));
+    expect(sessionStorage.getItem("crust:open-to-replace")).toBeNull();
+    cleanup();
+    render(<PlaceholderChecklist />);
+    expect(screen.getByRole("button", { name: "To replace 3" }).getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("stays closed on a page with nothing to replace", () => {
+    sessionStorage.setItem("crust:open-to-replace", "1");
+    data = { ...data, content: [block("Heading", "h", { text: "Bakery", level: "h1" })] };
+    render(<PlaceholderChecklist />);
+    expect(screen.queryByRole("button")).toBeNull();
+  });
+});
+
 describe("placeholders: replacing clears the mark", () => {
   it("drops the mark of a heading once its words change", () => {
     const { rerender } = render(<PlaceholderWatcher />);

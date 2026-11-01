@@ -646,7 +646,7 @@
       "description": "Design snapshot first. The first time the app opens: a short welcome, pick one of the free starter templates (or start blank), name the site, land in the builder with the 'To replace' list open. Fully keyboard-usable; no account or sign-up. Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F057"],
       "done_check": "npm test -- first-run && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

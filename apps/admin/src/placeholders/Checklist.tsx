@@ -6,6 +6,7 @@ import { blockName, clearEditedPlaceholders, findPlaceholders, placeholderSummar
 import { createUsePuck, useGetPuck, type Data } from "@puckeditor/core";
 import { useEffect, useId, useRef, useState } from "react";
 import { focusBlock, select } from "../keyboard/KeyboardEditing";
+import { takeOpenToReplace, wantsOpenToReplace } from "../first-run/arrival";
 
 const usePuckSelector = createUsePuck();
 const useContent = () => usePuckSelector((s) => s.appState.data.content);
@@ -39,12 +40,25 @@ export function PlaceholderChecklist() {
   const getPuck = useGetPuck();
   const items = findPlaceholders(content);
   const count = items.reduce((n, p) => n + p.fields.length, 0);
-  const [open, setOpen] = useState(false);
+  // F060: arriving from the welcome screen, the list starts open.
+  const [open, setOpen] = useState(() => count > 0 && wantsOpenToReplace());
+  const arrived = useRef(open);
   const [done, setDone] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const id = useId();
   const hadItems = useRef(count > 0);
+
+  // …with focus on its heading, so the next step is announced.
+  useEffect(() => {
+    if (!arrived.current) return;
+    const timer = setTimeout(() => {
+      arrived.current = false;
+      takeOpenToReplace();
+      document.getElementById(`${id}-h`)?.focus();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [id]);
 
   useEffect(() => {
     if (count > 0) hadItems.current = true;

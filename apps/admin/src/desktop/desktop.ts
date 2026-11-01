@@ -11,6 +11,7 @@ import { localPublisher, setDesktopPublisher } from "./local-publish";
 import { hostsApi, setDesktopHosts, type Listen } from "../publish/hosts";
 import { tauriFolder, type Invoke } from "./tauri-folder";
 import { setSitesInvoke } from "../sites/sites";
+import { checkFirstRun, setFirstRunContext, type FirstRunContext } from "../first-run/first-run";
 
 /** True when the builder runs in the desktop app's window. */
 export const isDesktop = (): boolean => typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
@@ -107,4 +108,23 @@ export async function startDesktop(invoke?: Invoke, listen?: Listen): Promise<De
   window.fetch = routedFetch(window.fetch.bind(window), localApi({ store, localUser: "you" }), window.location.href);
   document.title = `${content.site.name} · Crust`;
   return content;
+}
+
+/**
+ * F060: how the app starts. A brand new Crust shows the welcome screen
+ * (the builder's requests already answered, so a template can be applied);
+ * otherwise the site opens as before.
+ */
+export async function launchDesktop(invoke?: Invoke, listen?: Listen): Promise<{ firstRun: FirstRunContext } | { content: DesktopContent }> {
+  const call: Invoke = invoke ?? ((await import("@tauri-apps/api/core")).invoke as Invoke);
+  const store = new LocalStore(tauriFolder(call));
+  const { folder, id } = (await call("site_info")) as { folder: string; id?: string };
+  if (await checkFirstRun(store, call, id ?? "")) {
+    const firstRun: FirstRunContext = { invoke: call, store, id: id ?? "", folder };
+    setFirstRunContext(firstRun);
+    setSitesInvoke(call);
+    window.fetch = routedFetch(window.fetch.bind(window), localApi({ store, localUser: "you" }), window.location.href);
+    return { firstRun };
+  }
+  return { content: await startDesktop(call, listen) };
 }

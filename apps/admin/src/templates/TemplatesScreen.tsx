@@ -166,7 +166,7 @@ export function TemplatesScreen({ siteName, githubOn, currentSite, sources: give
 }
 
 /** The template's Home page, small. Decorative: the card's text says what it is. */
-function Thumbnail({ template }: { template: Template }) {
+export function Thumbnail({ template }: { template: Template }) {
   const html = useMemo(() => previewHtml(template, { kind: "page", path: "/" }, baseCss), [template]);
   const boxRef = useRef<HTMLSpanElement>(null);
   const [scale, setScale] = useState(0.2);
