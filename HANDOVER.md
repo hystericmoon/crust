@@ -5,7 +5,7 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-10-31 night (Jakarta): live-site publish checked (run 3
+Last updated: 2026-11-01 (Jakarta): F069 built; F053 photo picks in progress. Before that, 2026-10-31 night: live-site publish checked (run 3
 succeeded); M6/M7 written (docs/milestone-6.md, -7.md, F054–F068); F053
 photo hunts and the delegated review running. Branch
 `claude/peaceful-shannon-x32vlp`, PR #42.
@@ -125,9 +125,11 @@ The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
    `reviewed: true` + `review_note`; 12 fixes in DECISIONS.md
    Proposals "From the review"; page for the owner
    https://claude.ai/artifact/53YM8oVKV9XrECZJSNHo1J
-   (`design/review-2026-10-31.html`). **Waiting for the owner: A (one
-   fix batch 1–10 now, recommended), B (1–5 only) or C (later).** Only
-   he adds the rework item to features.json.
+   (`design/review-2026-10-31.html`). Owner chose A (2026-11-01, "go
+   with all your recommendations"): **F069 Review fixes built**, branch
+   `f069-review-fixes` (stacked on F054), done_check exit 0. Fixes 11–12
+   ride with the next template work. Leftover: the "+" between sections
+   overlaps the Section toolbar slightly (DECISIONS F069).
 4. ~~Live site publish~~ checked: run 3 succeeded, site up.
 
 ## Where to find things

@@ -539,4 +539,12 @@ to "Log".
   runs on a local folder with its own history (`.crust/`); no visible
   change. Nothing for the owner to test yet. F053 photo picks and the
   delegated review are in progress.
+- 2026-11-01 — Owner: "go with all your recommendations" (review option
+  A). F069 Review fixes built (branch `f069-review-fixes`, stacked on
+  F054): fixes 1–10 from the review, done_check exit 0. **Owner can try
+  on the preview link:** Tab once in the builder ("Skip to page"); open
+  and close Publish/Rename/Delete with the keyboard (focus comes back);
+  a blog post (text in the column); Start from a template → Harbour (the
+  headline is visible); select a Section and use "Make linked" (no
+  sideways jump); rename a page that's in the menu (menu link follows).
 
