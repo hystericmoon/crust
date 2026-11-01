@@ -561,3 +561,17 @@ to "Log".
   (it uses about 150 of the 2,000 free minutes); open it with
   right-click → Open the first time. Window screenshot:
   design/f055-app-window.png. Next: F056 Publish on your computer.
+
+- 2026-11-01 — F056 Publish on your computer built (branch
+  `f056-publish-on-computer`, stacked on F055 / PR #46). In the app, the
+  Publish card offers **Export site folder** and **Preview in browser**
+  (design snapshot https://claude.ai/artifact/JdsQXqRu8kTu5KwQQ8qcb9,
+  direction A built; screenshot design/f056-app-publish-card.png). The
+  builder renders with the same code as the publish pipeline (byte-for-
+  byte the same files on Harbour, Signal and Corner); the app checks,
+  resizes photos and builds search with crust-publish and Pagefind as
+  libraries. done_check exit 0; 898 JS + 24 desktop + 23 publish Rust
+  tests; the window self-check (11 checks) now also builds, previews and
+  exports. **Owner can try:** only in the app (Mac installer by hand,
+  ~150 counted minutes; ask Claude). The web admin is unchanged.
+

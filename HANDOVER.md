@@ -5,10 +5,11 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-01 (Jakarta): F055 Desktop app shell built and
-passing on branch `f055-desktop-shell`, PR #46 (CI green, not merged;
-the owner merges). F053 is PR #45 (CI green, not merged). Next: F056
-Publish on your computer.
+Last updated: 2026-11-01 (Jakarta): F056 Publish on your computer built
+and passing on branch `f056-publish-on-computer` (stacked on
+`f055-desktop-shell` / PR #46), PR #47 (base `f055-desktop-shell`). F055
+is PR #46, F053 is PR #45 (both CI green, not merged; the owner merges).
+Next: F057 Several sites (design snapshot first).
 
 ## How sessions work (owner's rule, 2026-10-30)
 
@@ -88,6 +89,7 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | F051 Third starter template: Corner | built, passes | `f051-corner-template` (stacked on F050) |
 | F053 Signal and Corner with real photos | built, passes, CI green | `f053-signal-corner-photos`, PR #45 |
 | F055 Desktop app shell (M6) | built, passes, CI green | `f055-desktop-shell`, PR #46 (base main) |
+| F056 Publish on your computer | built, passes | `f056-publish-on-computer`, PR #47 (stacked on #46) |
 
 - **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in
@@ -133,10 +135,25 @@ The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
    `apt-get install` line as ci.yml). CI's `check` job now takes ~23 of
    its 35 minutes. Installers: Actions → "Desktop installers" (by hand
    only, ~150 counted minutes; ask the owner first).
-   **Next: F056 Publish on your computer** (render + crust-publish as a
-   library + Pagefind inside the app; "Export site folder", "Preview in
-   browser"). Branch from `f055-desktop-shell` (stacked on #46) until
-   #46 merges. Consider the "App wording" proposal (DECISIONS) with it.
+   ~~F056 Publish on your computer~~ **built, passes** (PR #47, branch
+   `f056-publish-on-computer`, stacked on #46). See DECISIONS "F056".
+   How it fits: `packages/render/src/site.ts` is the one render step
+   (pipeline's cli.ts and the app both call it);
+   `apps/admin/src/desktop/local-publish.ts` renders from the site
+   folder and calls the app; `crates/crust-desktop/src/publish.rs`
+   (finish with crust-publish, Pagefind via crust-publish's `search`
+   feature, export) and `preview.rs` (127.0.0.1 server); card:
+   `apps/admin/src/publish/DesktopPublishPanel.tsx`. Snapshot
+   https://claude.ai/artifact/JdsQXqRu8kTu5KwQQ8qcb9 (A built).
+   Building crust-desktop locally: `npm run build`, the ci.yml
+   `apt-get` line, then `cargo build -p crust-desktop --features
+   tauri/custom-protocol`; screenshot with `xvfb-run` + `import -window
+   root` (how design/f056-app-publish-card.png was made).
+   **Next: F057 Several sites** (design snapshot first; site switcher,
+   new/rename/duplicate/delete with 30-day "Recently deleted"). Branch
+   from `f056-publish-on-computer` until #46/#47 merge. The "App
+   wording" proposal (DECISIONS) is still open; it fits well with F057
+   or F060.
 2. ~~Write Milestones 6 and 7~~ done 2026-10-31 (F054–F068; F054 depends
    on F048 so M6 can start while F053 waits for the owner).
    **F054 Content store done and merged** (PR #43). After F053:

@@ -606,7 +606,7 @@
       "description": "The app renders, checks (crust-publish as a library) and builds the search index (Pagefind library) itself, with no Node or server. 'Export site folder' writes the finished static site; 'Preview in browser' opens it. Same output as the GitHub publish pipeline (tested on the same content). Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F055"],
       "done_check": "cargo test -p crust-desktop && cargo test -p crust-publish && npm test -- local-publish",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

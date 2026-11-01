@@ -288,6 +288,49 @@ Features Claude suggests. They are not work until the owner adds them to
   snapshot are still shown to the owner first, and he can switch
   direction before the build is merged.
 
+## 2026-11-01 — F056 Publish on your computer (Claude, reversible)
+
+- **One renderer, two callers.** `packages/render/src/site.ts`
+  (`readSiteContent` + `renderSite`) is the whole render step, reading
+  through a small `ContentSource`. The pipeline's `cli.ts` reads
+  `content/` from disk with it; the app reads the site folder's content
+  store (saved content, i.e. what's in its history). The output of
+  `cli.ts` didn't change (checked by diff). A test renders all three
+  starter templates both ways and compares every file.
+- **Finishing runs in Rust, with the pipeline's own code.**
+  crust-publish's new `finish()` (with `Checks::Stop` or `Checks::Report`)
+  is what `publish_with_redirects` now calls; Pagefind 1.5.2 (pinned,
+  same as the npm package) is a library behind crust-publish's `search`
+  feature, so the publish workflow's `cargo run` doesn't compile it.
+  Checked once by hand on Harbour: the app's finished folder is identical
+  to `crust-publish` + `npx pagefind`, except the gzip header bytes of
+  the two Pagefind `.wasm` files (same contents unzipped).
+- **Preview never stops; export does.** A preview shows the site and
+  lists what would stop a publish; Export, the "finished" step, stops on
+  them like publishing. (Recognition and exploration before commitment.)
+- **Builds live in the app's cache folder**, never in the site folder;
+  a new build replaces the old one only when complete, so a failed build
+  keeps the last good one.
+- **Export** writes "<Site name> website" inside the folder picked in
+  the system's folder picker (tauri-plugin-dialog). If that folder has
+  files, the card asks before replacing it, and only a folder with
+  `index.html` and `sitemap.xml` (an earlier export) is ever replaced;
+  anything else is refused with "choose another place".
+- **Preview in browser** serves the build on 127.0.0.1 at a free port
+  (a small server in `preview.rs`, std only) and opens the default
+  browser (tauri-plugin-opener). Addresses work as on hosts (`/about/`,
+  404 page, search); redirects aren't applied in the preview.
+- **Exporting doesn't count as publishing**: "Saved, not live yet" stays
+  until F058/F059 put the site on a host.
+- **Licences.** Pagefind brings `minicbor` (BlueOak-1.0.0, a permissive
+  OSI licence like MIT); the Pagefind program the pipeline already runs
+  has it compiled in. Tauri (F055) already brought MPL-2.0 packages
+  (`cssparser`, `selectors`, `option-ext`; file-level copyleft, no
+  effect on Crust's own code). Both free and open source; listed here
+  because CLAUDE.md names only MIT/Apache/BSD/ISC.
+- The "App wording" proposal (GitHub/browser messages in the app) did
+  not ride along; still in Proposals.
+
 ## 2026-11-01 — F055 Desktop app shell (Claude, reversible)
 
 - **The builder's server runs inside the window.** The app has no
