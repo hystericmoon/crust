@@ -24,6 +24,7 @@ import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot, openKeyboardHelp } fro
 import { LayoutGallery, LayoutInserters, LayoutsButton } from "./layouts/LayoutGallery";
 import { MyLayoutsProvider } from "./layouts/mine";
 import { PageList, editHref } from "./pages/PageList";
+import type { LinkingPage } from "./pages/PageActions";
 import {
   bundledPages,
   fromPuckData,
@@ -404,10 +405,13 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
   }, [focusPublish, rows === null]);
 
   // Rename and delete (F015): through GitHub for pages there, in this browser otherwise.
-  const rename = async (row: PageRow, to: string): Promise<string | null> => {
+  const rename = async (row: PageRow, to: string): Promise<string | { relinked: LinkingPage[] }> => {
+    let relinked: LinkingPage[] = [];
     if (row.inRepo) {
       const res = await renamePage(row.path, to);
       if (!res.ok) return `Not renamed: ${res.error}`;
+      // F069: said in the message ("It also updated 3 links…").
+      relinked = res.relinked ?? [];
     }
     if (!moveLocalDraft(row.path, to)) return "This browser wouldn't store the change. Try again.";
     // F018: drafts in this browser follow too, so saving one later doesn't bring the old links back.
@@ -416,7 +420,7 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
       if (count) saveLocalDraft({ ...draft.page, puck }, draft.savedToGitHub);
     }
     reload();
-    return null;
+    return { relinked };
   };
   const restore = async (page: DeletedPage): Promise<string | null> => {
     const res = await restorePage(page);

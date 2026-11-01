@@ -7,6 +7,14 @@ import { FIND_FROM, loadSort, matchesQuery, pageStatus, saveSort, SORT_LABELS, s
 import { focusAfterDialog, PageActions, type LinkingPage, type PageAction } from "./PageActions";
 import type { PageRow } from "./store";
 
+/** F069: " It also updated 3 links to the new address: Menu (2), Site header and footer (1)." */
+export function relinkedNote(relinked: LinkingPage[]): string {
+  const total = relinked.reduce((n, r) => n + r.count, 0);
+  if (!total) return "";
+  const where = relinked.map((r) => `${r.title} (${r.count})`).join(", ");
+  return ` It also updated ${total === 1 ? "1 link" : `${total} links`} to the new address: ${where}.`;
+}
+
 export interface PageListProps {
   siteName: string;
   /** null while loading. */
@@ -22,7 +30,8 @@ export interface PageListProps {
    * on (githubOn); pages only in this browser can always be changed.
    */
   githubOn?: boolean;
-  onRename?: (row: PageRow, to: string) => PageAction;
+  /** Resolves to a problem, or (F069) to the links that were updated with it. */
+  onRename?: (row: PageRow, to: string) => Promise<string | null | { relinked: LinkingPage[] }>;
   onDelete?: (row: PageRow) => PageAction;
   /** Other pages linking to a page, shown in the rename dialog (F018). */
   findLinks?: (row: PageRow) => Promise<LinkingPage[] | null>;
@@ -80,22 +89,31 @@ export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCre
   };
 
   // After a change the row may be gone, so focus goes to the list heading and the result is announced.
-  const after = (action: PageAction, message: string): PageAction =>
+  const after = (action: PageAction, message: string | (() => string)): PageAction =>
     action.then((failed) => {
       if (!failed) {
-        setDone(message);
+        setDone(typeof message === "string" ? message : message());
         focusAfterDialog(() => headingRef.current);
       }
       return failed;
     });
 
-  const rename = (row: PageRow, to: string) =>
-    after(
-      onRename!(row, to),
-      row.inRepo
+  const rename = (row: PageRow, to: string) => {
+    // F069: the server says which links followed the page; the message counts them.
+    let relinked: LinkingPage[] = [];
+    const action = onRename!(row, to).then((r) => {
+      if (r && typeof r === "object") {
+        relinked = r.relinked;
+        return null;
+      }
+      return r;
+    });
+    return after(action, () =>
+      (row.inRepo
         ? `Changed the address of “${row.title}” to ${to}. Once you publish, ${row.path} sends visitors there.`
-        : `Changed the address of “${row.title}” to ${to}.`,
+        : `Changed the address of “${row.title}” to ${to}.`) + relinkedNote(relinked),
     );
+  };
   const remove = (row: PageRow) =>
     after(onDelete!(row), row.inRepo ? `Deleted “${row.title}”. It leaves the live site the next time you publish.` : `Deleted “${row.title}”.`);
   return (

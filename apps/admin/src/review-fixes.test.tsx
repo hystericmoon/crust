@@ -14,6 +14,7 @@ import { fitActionBars, KeyboardCanvas, KeyboardRoot, skipToPage } from "./keybo
 import { planInsert, ROOT_ZONE } from "./keyboard/moves";
 import { fixPuckChrome, installPuckChromeFixes } from "./keyboard/puck-chrome";
 import { Dialog } from "./pages/PageActions";
+import { PageList, relinkedNote } from "./pages/PageList";
 import { withoutDraftPages } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
 import { SaveStatus, useSaveStatus } from "./save-status";
@@ -290,6 +291,36 @@ describe("review-fixes 6: failed saves and publishes (F006, F008)", () => {
     const alert = screen.getByRole("alert");
     expect(alert.textContent).toContain("GitHub is down.");
     expect(within(alert).getByRole("button", { name: "Try again" })).toBeTruthy();
+  });
+});
+
+describe("review-fixes 8: the rename message says how many links changed (F018)", () => {
+  it("counts the links and names where they were", () => {
+    expect(relinkedNote([])).toBe("");
+    expect(relinkedNote([{ path: "/", title: "Home", count: 1 }])).toBe(" It also updated 1 link to the new address: Home (1).");
+    expect(
+      relinkedNote([
+        { path: "/", title: "Home", count: 2 },
+        { path: "content/site.json", title: "Site header and footer", count: 1 },
+      ]),
+    ).toBe(" It also updated 3 links to the new address: Home (2), Site header and footer (1).");
+  });
+
+  it("shows it after a rename", async () => {
+    const rows = [
+      { path: "/", title: "Home", lastEdited: null, localChanges: false, inRepo: true },
+      { path: "/menu", title: "Menu", lastEdited: null, localChanges: false, inRepo: true },
+    ];
+    const onRename = vi.fn(async () => ({ relinked: [{ path: "content/site.json", title: "Site header and footer", count: 2 }] }));
+    render(<PageList siteName="Bakery" rows={rows} githubOn onRename={onRename} onDelete={vi.fn(async () => null)} sourceNote="" onCreate={vi.fn()} />);
+    await act(async () => screen.getByRole("button", { name: "Rename Menu" }).click());
+    const dialog = screen.getByRole("dialog");
+    fireEvent.change(within(dialog).getByLabelText("New address"), { target: { value: "food" } });
+    await act(async () => within(dialog).getByRole("button", { name: "Change address" }).click());
+    expect(onRename).toHaveBeenCalledWith(rows[1], "/food");
+    expect(document.body.textContent).toContain(
+      "Changed the address of “Menu” to /food. Once you publish, /menu sends visitors there. It also updated 2 links to the new address: Site header and footer (2).",
+    );
   });
 });
 

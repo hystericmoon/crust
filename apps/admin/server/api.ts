@@ -5,8 +5,8 @@
  *  3. refuses unless the request carries a valid Access sign-in.
  */
 import type { Page, SavedLayout, Site } from "@crust/blocks/content";
-import { countLinks, relinkPage } from "@crust/blocks/links";
-import { isBlogPath, isSearchPath } from "@crust/blocks/posts";
+import { countChromeLinks, countLinks, relinkChrome, relinkPage } from "@crust/blocks/links";
+import { isBlogPath, isSearchPath, parsePost, postPath, POSTS_FOLDER, slugForFile, type Post } from "@crust/blocks/posts";
 import { parseLinkedSection, sectionFileFor, sectionIdForFile } from "@crust/blocks/linked-sections";
 import { countPlaceholders } from "@crust/blocks/placeholders";
 import { AccessError, verifyAccessJwt, type AccessUser } from "./access";
@@ -236,6 +236,32 @@ export async function readPages(cfg: Repo, fetchFn: typeof fetch): Promise<{ fil
   return pages.filter((p): p is { file: string; page: Page } => p !== null && Array.isArray(p.page.puck?.content));
 }
 
+const SITE_FILE = "content/site.json";
+/** F069: what the site header and footer are called in the owner's messages. */
+export const CHROME_LINKS_TITLE = "Site header and footer";
+
+/** Every blog post with its file (F035); damaged files are left out. */
+async function readPosts(cfg: Repo, fetchFn: typeof fetch): Promise<{ file: string; post: Post }[]> {
+  const files = (await listFolder(cfg, POSTS_FOLDER, fetchFn)).filter((f) => slugForFile(f.path));
+  const posts = await Promise.all(
+    files.map(async (f) => {
+      const post = parsePost(await readFile(cfg, f.path, fetchFn));
+      return post ? { file: f.path, post } : null;
+    }),
+  );
+  return posts.filter((p): p is { file: string; post: Post } => p !== null);
+}
+
+/** site.json as an object, or null when it's missing or damaged. */
+const parseSite = (text: string | null): Record<string, unknown> | null => {
+  try {
+    const v = text ? (JSON.parse(text) as unknown) : null;
+    return v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : null;
+  } catch {
+    return null;
+  }
+};
+
 /** GET /api/links?path=/about: which other pages link to a page, for the rename dialog (F018). */
 export async function handleLinks(request: Request, env: Env, fetchFn: typeof fetch = fetch): Promise<Response> {
   const user = await gate(request, env, fetchFn, false);
@@ -243,12 +269,21 @@ export async function handleLinks(request: Request, env: Env, fetchFn: typeof fe
   const path = new URL(request.url).searchParams.get("path");
   if (!isValidPagePath(path)) return fail(400, "That isn't a valid page address.");
   try {
-    const pages = (await readPages(repoFor(env), fetchFn))
+    const cfg = repoFor(env);
+    const [all, siteText, posts] = await Promise.all([readPages(cfg, fetchFn), readFile(cfg, SITE_FILE, fetchFn), readPosts(cfg, fetchFn)]);
+    const pages = all
       .filter((p) => p.page.path !== path)
       .map((p) => ({ path: p.page.path, title: p.page.title, count: countLinks(p.page.puck, path) }))
       .filter((p) => p.count > 0)
       .sort((a, b) => a.path.localeCompare(b.path));
-    return json(200, { ok: true, pages });
+    // F069: the header, footer and blog posts are updated on rename too, so they're listed.
+    const site = parseSite(siteText);
+    const chrome = site ? countChromeLinks(site, path) : 0;
+    const inPosts = posts
+      .map(({ post }) => ({ path: postPath(post.slug), title: post.title, count: countLinks(post.puck, path) }))
+      .filter((p) => p.count > 0)
+      .sort((a, b) => a.path.localeCompare(b.path));
+    return json(200, { ok: true, pages: [...(chrome ? [{ path: SITE_FILE, title: CHROME_LINKS_TITLE, count: chrome }] : []), ...pages, ...inPosts] });
   } catch (e) {
     return githubFailure(e);
   }
@@ -335,6 +370,22 @@ export async function handleRename(request: Request, env: Env, fetchFn: typeof f
       if (!count) continue;
       relinkChanges.push({ path: sectionFileFor(section.id), content: `${JSON.stringify({ ...section, content: puck.content }, null, 2)}\n` });
       relinked.push({ path: `linked section: ${section.name}`, title: section.name, count });
+    }
+    // F069: the site header and footer (site.json) and blog posts too.
+    const [siteText, posts] = await Promise.all([readFile(cfg, SITE_FILE, fetchFn), readPosts(cfg, fetchFn)]);
+    const site = parseSite(siteText);
+    if (site) {
+      const chrome = relinkChrome(site, from, to);
+      if (chrome.count) {
+        relinkChanges.push({ path: SITE_FILE, content: serialize(chrome.site as unknown as Site) });
+        relinked.push({ path: SITE_FILE, title: CHROME_LINKS_TITLE, count: chrome.count });
+      }
+    }
+    for (const { file, post } of posts) {
+      const { puck, count } = relinkPage(post.puck as Page["puck"], from, to);
+      if (!count) continue;
+      relinkChanges.push({ path: file, content: `${JSON.stringify({ ...post, puck }, null, 2)}\n` });
+      relinked.push({ path: postPath(post.slug), title: post.title, count });
     }
     const links = relinked.reduce((n, r) => n + r.count, 0);
     const result = await commitFiles(

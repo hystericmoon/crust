@@ -70,7 +70,7 @@ describe("relink: rename dialog", () => {
     render(<PageList siteName="Demo" rows={rows} sourceNote="" githubOn onCreate={() => {}} onRename={vi.fn()} onDelete={vi.fn()} findLinks={findLinks} />);
     await act(async () => screen.getByRole("button", { name: "Rename About" }).click());
     const dialog = screen.getByRole("dialog");
-    expect(dialog.textContent).toContain("Links on other pages are updated to the new address too: Home (2 links), Contact (1 link).");
+    expect(dialog.textContent).toContain("Links elsewhere on your site are updated to the new address too: Home (2 links), Contact (1 link).");
     expect(within(dialog).getByLabelText("New address").getAttribute("aria-describedby")).toMatch(/-links/);
     expect(findLinks).toHaveBeenCalledTimes(1);
   });

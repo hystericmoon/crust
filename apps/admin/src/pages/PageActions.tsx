@@ -209,7 +209,7 @@ function RenameDialog({
           </p>
           {links?.length ? (
             <p className="st-help" id={`${id}-links`}>
-              Links on other pages are updated to the new address too:{" "}
+              Links elsewhere on your site are updated to the new address too:{" "}
               {links.map((l) => `${l.title} (${l.count === 1 ? "1 link" : `${l.count} links`})`).join(", ")}.
             </p>
           ) : null}
