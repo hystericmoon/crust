@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { getChanges } from "../api-client";
 import { localDrafts } from "../pages/store";
-import { describeChanges } from "./changes";
+import { describeChanges, withoutDraftPages } from "./changes";
 
 /** Where the link goes: the page list, with focus on the Publish panel. */
 export const PUBLISH_HREF = "#/?focus=publish";
@@ -15,8 +15,10 @@ export function usePendingCount(githubOn: boolean | null, refreshKey?: string): 
     let live = true;
     void getChanges().then((res) => {
       if (!live || !res.ok || !res.lastPublish) return;
-      const drafts = localDrafts().filter((d) => !d.savedToGitHub).length;
-      setCount(describeChanges(res, new Map()).items.length + drafts);
+      const drafts = localDrafts()
+        .filter((d) => !d.savedToGitHub)
+        .map((d) => d.page.path);
+      setCount(describeChanges(withoutDraftPages(res, drafts), new Map()).items.length + drafts.length);
     });
     return () => {
       live = false;

@@ -6,9 +6,14 @@ export const SIGN_OUT_URL = "/cdn-cgi/access/logout";
  * kept in this browser as you type.
  */
 export function SignOutLink({ className = "crust-header-link" }: { className?: string }) {
+  // F069: placed last in each bar, after a divider, so a slip aimed at
+  // Save draft or New page doesn't sign the owner out.
   return (
-    <a className={className} href={SIGN_OUT_URL}>
-      Sign out
-    </a>
+    <>
+      <span className="crust-signout-divider" aria-hidden="true" />
+      <a className={`${className} crust-signout`} href={SIGN_OUT_URL}>
+        Sign out
+      </a>
+    </>
   );
 }

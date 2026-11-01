@@ -83,11 +83,24 @@ export function Dialog({
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  // F069 (WCAG 2.4.3): the button that opened the dialog, read while rendering,
+  // before anything inside the dialog takes focus.
+  const [opener] = useState(() => (typeof document === "undefined" ? null : document.activeElement));
   useEffect(() => {
     const dialog = ref.current;
     if (dialog && !dialog.open) dialog.showModal?.();
-    return () => dialog?.close?.();
-  }, []);
+    return () => {
+      dialog?.close?.();
+      // React removes the dialog before the browser can hand focus back, so it
+      // would land on <body>. Return it to the opener, unless the screen has
+      // already moved focus somewhere on purpose (a heading after a rename).
+      focusAfterDialog(() => {
+        const now = document.activeElement;
+        const lost = !now || now === document.body;
+        return lost && opener instanceof HTMLElement && opener.isConnected ? opener : null;
+      });
+    };
+  }, [opener]);
   return (
     <dialog
       ref={ref}

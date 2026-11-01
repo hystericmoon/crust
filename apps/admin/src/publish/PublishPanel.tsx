@@ -1,9 +1,9 @@
 import { placeholderSummary } from "@crust/blocks";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { publishRuns, startPublish, type PendingChanges, type PublishRun } from "../api-client";
-import { Dialog } from "../pages/PageActions";
+import { Dialog, focusAfterDialog } from "../pages/PageActions";
 import { editHref } from "../pages/PageList";
-import { describeChanges } from "./changes";
+import { describeChanges, withoutDraftPages } from "./changes";
 import { addressNote, chooseLiveUrl } from "./live-url";
 
 export interface PublishPanelProps {
@@ -68,6 +68,7 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
   const [notConnected, setNotConnected] = useState<string | null>(null);
   // The run seen in progress, so its finish can refresh what's waiting.
   const watching = useRef<number | null>(null);
+  const publishRef = useRef<HTMLButtonElement>(null);
   const finished = useRef(onFinished);
   finished.current = onFinished;
 
@@ -81,6 +82,8 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
     if (latest && latest.status !== "completed") watching.current = latest.id;
     else if (latest && watching.current === latest.id) {
       watching.current = null;
+      // F069: "Publishing started…" is old news once the run says Live or Failed.
+      setMessage("");
       finished.current?.();
     }
   }, []);
@@ -131,7 +134,7 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
   };
 
   const state = describeRun(latest);
-  const pending = changes ? describeChanges(changes, titles) : null;
+  const pending = changes ? describeChanges(withoutDraftPages(changes, drafts.map((d) => d.path)), titles) : null;
   const liveUrl = chooseLiveUrl(reportedUrl, siteUrl);
   const note = addressNote(reportedUrl, siteUrl, notConnected);
   // The button says how much it will change; with nothing waiting it steps back to a secondary "Publish again".
@@ -199,6 +202,7 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
           {placeholders.length ? <SampleContent pages={placeholders} /> : null}
           <div className="pg-form-actions">
             <button
+              ref={publishRef}
               type="button"
               className={`st-button${nothingNew && !busy ? "" : " st-button-primary"}`}
               onClick={requestPublish}
@@ -224,10 +228,17 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
           <p className="st-status-inline" role="status">
             {message}
           </p>
-          {failure ? (
-            <p className="st-warning" role="alert">
-              {failure}
-            </p>
+          {failure || (!busy && state.tone === "error") ? (
+            // F069: a plain next step instead of only "Details on GitHub".
+            <div className="st-warning pg-publish-failed" role={failure ? "alert" : undefined}>
+              <p>
+                {failure ||
+                  "The last publish didn't finish, so the live site still shows the version before it. Usually trying again is enough. If it fails twice, send Claude the “Details on GitHub” link."}
+              </p>
+              <button type="button" className="st-button" onClick={requestPublish}>
+                Try again
+              </button>
+            </div>
           ) : null}
           {asking && onSaveDrafts ? (
             <SaveDraftsDialog
@@ -235,9 +246,14 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
               onSave={onSaveDrafts}
               onPublish={() => {
                 setAsking(false);
+                // F069 (WCAG 2.4.3): back on the Publish button, which now says "Publishing…".
+                focusAfterDialog(() => publishRef.current);
                 void publish();
               }}
-              onClose={() => setAsking(false)}
+              onClose={() => {
+                setAsking(false);
+                focusAfterDialog(() => publishRef.current);
+              }}
             />
           ) : null}
         </>

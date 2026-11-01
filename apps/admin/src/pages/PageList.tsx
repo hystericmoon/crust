@@ -112,7 +112,6 @@ export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCre
           <a className="st-button st-link-button" href="#/templates">
             Start from a template
           </a>
-          <SignOutLink className="st-button st-link-button" />
           <button
             ref={newPageRef}
             type="button"
@@ -123,6 +122,8 @@ export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCre
           >
             New page
           </button>
+          {/* F069: last, after a divider, away from New page. */}
+          <SignOutLink className="st-button st-link-button" />
         </div>
       </header>
 

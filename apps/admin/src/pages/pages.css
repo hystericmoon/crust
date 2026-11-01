@@ -21,6 +21,9 @@
 .pg-run { margin: 0 0 12px; }
 .pg-run.is-ok strong { color: var(--st-ok); }
 .pg-run.is-error strong { color: var(--st-danger); }
+/* F069: a failed publish says what to do next. */
+.pg-publish-failed p { margin: 0 0 8px; }
+.pg-publish-failed .st-button { color: var(--st-text); }
 .st-status-inline:empty { display: none; }
 .st-status-inline { margin: 12px 0 0; }
 .st-button[aria-disabled="true"] { opacity: 0.7; cursor: progress; }

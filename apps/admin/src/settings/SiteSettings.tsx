@@ -297,6 +297,11 @@ export function SiteSettings({
                   onChange({ ...draft, colors: before.colors, fonts: before.fonts, style: before.style, sectionStyles: before.sectionStyles });
                   setStatus(`Undid ${beforePreset.name}. The look is back to what it was.`);
                   setBeforePreset(null);
+                  // F069 (WCAG 2.4.3): this button goes away; focus the preset that is current again, or the heading.
+                  setTimeout(() => {
+                    const back = document.querySelector<HTMLElement>("#presets .st-preset[aria-pressed='true']") ?? document.getElementById("presets-h");
+                    back?.focus();
+                  }, 0);
                 }}
               >
                 Undo preset ({beforePreset.name})

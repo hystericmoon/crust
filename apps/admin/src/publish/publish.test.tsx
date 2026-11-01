@@ -81,7 +81,8 @@ describe("publish panel", () => {
     });
     await act(async () => {});
     // A failure to start is an alert, not a quiet status line.
-    expect(screen.getByRole("alert").textContent).toBe(
+    // F069: with a "Try again" button inside it.
+    expect(screen.getByRole("alert").querySelector("p")!.textContent).toBe(
       "Couldn't start publishing: The GitHub token isn't allowed to change this repository's contents. Nothing changed on the live site; try again in a minute.",
     );
   });

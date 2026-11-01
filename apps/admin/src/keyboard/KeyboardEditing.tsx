@@ -112,6 +112,23 @@ export function focusBlock(id: string) {
   );
 }
 
+/**
+ * "Skip to page" (F069, WCAG 2.4.1): straight to the first block on the
+ * canvas, past the top bar and the block list (33 Tab presses before).
+ * An empty page focuses the canvas itself.
+ */
+export function skipToPage(): boolean {
+  const first = canvasDoc?.querySelector<HTMLElement>("[data-puck-component]");
+  if (first) {
+    first.focus();
+    first.scrollIntoView({ block: "nearest" });
+    return true;
+  }
+  const frame = document.querySelector<HTMLIFrameElement>("iframe#preview-frame");
+  frame?.focus();
+  return !!frame;
+}
+
 /** Takes the getter, not a snapshot: right after a move the snapshot's positions are stale. */
 export function select(getPuck: () => PuckApi, id: string | null) {
   const puck = getPuck();
@@ -275,6 +292,16 @@ export function KeyboardRoot({ children }: { children: ReactNode }) {
   }, [getPuck]);
   return (
     <>
+      <a
+        className="kb-skip"
+        href="#preview-frame"
+        onClick={(e) => {
+          e.preventDefault();
+          skipToPage();
+        }}
+      >
+        Skip to page
+      </a>
       {children}
       <div className="kb-live" role="status" aria-live="polite">
         {live}
