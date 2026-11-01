@@ -5,10 +5,10 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-01 (Jakarta): F069 built; F053 photo picks in progress. Before that, 2026-10-31 night: live-site publish checked (run 3
-succeeded); M6/M7 written (docs/milestone-6.md, -7.md, F054–F068); F053
-photo hunts and the delegated review running. Branch
-`claude/peaceful-shannon-x32vlp`, PR #42.
+Last updated: 2026-11-01 (Jakarta): F055 Desktop app shell built and
+passing on branch `f055-desktop-shell`, PR #46 (CI green, not merged;
+the owner merges). F053 is PR #45 (CI green, not merged). Next: F056
+Publish on your computer.
 
 ## How sessions work (owner's rule, 2026-10-30)
 
@@ -86,6 +86,8 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | F049 First starter template: Harbour | built, passes | `f049-starter-template`, draft PR #37 (stacked on #36) |
 | F050 Second starter template: Signal | built, passes | `f050-signal-template` (stacked on #37) |
 | F051 Third starter template: Corner | built, passes | `f051-corner-template` (stacked on F050) |
+| F053 Signal and Corner with real photos | built, passes, CI green | `f053-signal-corner-photos`, PR #45 |
+| F055 Desktop app shell (M6) | built, passes, CI green | `f055-desktop-shell`, PR #46 (base main) |
 
 - **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in
@@ -99,26 +101,46 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
   https://claude.ai/artifact/1d1Ujx7ENSrGCef6CWfg9Z, F043
   https://claude.ai/artifact/DSXzme9pbKie3guoRpSizj (A built for both), F048
   https://claude.ai/artifact/JQoY8bbRJ9U58jZawRx2kV (A built), F052
-  https://claude.ai/artifact/FksfsnM6msMtjBu4v5YHDm (waiting).
+  https://claude.ai/artifact/FksfsnM6msMtjBu4v5YHDm (waiting), F053
+  https://claude.ai/artifact/B3dfAGM3m15EcN1n83oooB (A built for both).
 
 ## Next
 
 The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
 "Free Crust, desktop app, M6 and M7 approved". In order:
 
-1. **F053 Signal and Corner with real photos** (features.json). Same
-   process as F052 (DECISIONS.md "F052 photos and snapshot"): CC0 photo
-   picks (Wikimedia Commons API, NegativeSpace category pages,
-   Skitterphoto: full size via its download form with the page's
-   _token; StockSnap/Pexels refuse automated requests here), comparison
-   page, design snapshot with directions per template, owner approves,
-   build in `scripts/starter-templates/starter.ts` (generalise
-   `photos` per spec; Harbour's `homeWithPhotos`/`workWithPhotos` are
-   Harbour-shaped), `npm run build:starters`, done_check.
+1. ~~F053 Signal and Corner with real photos~~ **built, passes**
+   (PR #45, branch `f053-signal-corner-photos`). Snapshot
+   https://claude.ai/artifact/B3dfAGM3m15EcN1n83oooB
+   (`design/f053-signal-corner-v1.html`); A built for both. If the owner
+   says "B for Signal/Corner", rework on the same branch before merge.
+   Photos live in `scripts/starter-templates/photos/{signal,corner}/`,
+   layouts in `starter.ts` (`signalHome`, `cornerHome`, …), photo lists
+   in `photo-sets.ts`. Commons rate-limits hard from here (429 for
+   ~20 min): one request every ~30 s, back off to 5 min, never write a
+   file before the download succeeds. Fixes 11 (template check sees
+   layout, M) and 12 (Harbour polish, needs new photo hunt) did NOT ride
+   along; still in DECISIONS Proposals.
+   ~~F055 Desktop app shell~~ **built, passes, CI green** (PR #46,
+   branch `f055-desktop-shell`, from main). See DECISIONS "F055". How it
+   fits: `crates/crust-desktop` (Rust: four file commands fenced to the
+   site folder, photos at /media via `set_assets`, `CRUST_SELF_CHECK=1`
+   window self-check run in CI under xvfb); `apps/admin/src/desktop/`
+   (opens the folder, routes /api to the server handlers in the window,
+   `desktopContent()` replaces the built-in site.json/pages/posts).
+   Building the crate needs `apps/admin/dist` (`npm run build` first)
+   and the GTK/WebKit libraries (CI installs them; locally the same
+   `apt-get install` line as ci.yml). CI's `check` job now takes ~23 of
+   its 35 minutes. Installers: Actions → "Desktop installers" (by hand
+   only, ~150 counted minutes; ask the owner first).
+   **Next: F056 Publish on your computer** (render + crust-publish as a
+   library + Pagefind inside the app; "Export site folder", "Preview in
+   browser"). Branch from `f055-desktop-shell` (stacked on #46) until
+   #46 merges. Consider the "App wording" proposal (DECISIONS) with it.
 2. ~~Write Milestones 6 and 7~~ done 2026-10-31 (F054–F068; F054 depends
    on F048 so M6 can start while F053 waits for the owner).
-   **F054 Content store done** (branch `f054-content-store`, PR #43,
-   stacked on #42). Next: **F055 Desktop app shell** (Tauri 2; the app
+   **F054 Content store done and merged** (PR #43). After F053:
+   **F055 Desktop app shell** (Tauri 2; the app
    gives LocalStore a Folder backed by Tauri file commands; see
    `apps/admin/server/local-store.ts` and DECISIONS "F054").
 3. ~~Review the 48 `needs_review` features~~ done 2026-10-31: all have
@@ -126,8 +148,8 @@ The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
    Proposals "From the review"; page for the owner
    https://claude.ai/artifact/53YM8oVKV9XrECZJSNHo1J
    (`design/review-2026-10-31.html`). Owner chose A (2026-11-01, "go
-   with all your recommendations"): **F069 Review fixes built**, branch
-   `f069-review-fixes` (stacked on F054), done_check exit 0. Fixes 11–12
+   with all your recommendations"): **F069 Review fixes built and
+   merged** (PR #44), done_check exit 0. Fixes 11–12
    ride with the next template work. Leftover: the "+" between sections
    overlaps the Section toolbar slightly (DECISIONS F069).
 4. ~~Live site publish~~ checked: run 3 succeeded, site up.
