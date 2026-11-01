@@ -7,6 +7,14 @@ import { FIND_FROM, loadSort, matchesQuery, pageStatus, saveSort, SORT_LABELS, s
 import { focusAfterDialog, PageActions, type LinkingPage, type PageAction } from "./PageActions";
 import type { PageRow } from "./store";
 
+/**
+ * F069: an address may wrap after a "/" or "-", never mid-word
+ * ("/contac" + "t" in a narrow column).
+ */
+export function breakablePath(path: string): ReactNode[] {
+  return path.split(/(?<=[/-])/).flatMap((part, i) => (i ? [<wbr key={i} />, part] : [part]));
+}
+
 /** F069: " It also updated 3 links to the new address: Menu (2), Site header and footer (1)." */
 export function relinkedNote(relinked: LinkingPage[]): string {
   const total = relinked.reduce((n, r) => n + r.count, 0);
@@ -266,8 +274,8 @@ export function PageList({ siteName, rows, sourceNote, loadError, onRetry, onCre
                       </span>
                       {row.placeholders ? <span className="pg-replace">{placeholderSummary(row.placeholders)}</span> : null}
                     </td>
-                    <td className="pg-path" data-label="Address">
-                      {row.path}
+                    <td className="pg-path pg-path-cell" data-label="Address">
+                      {breakablePath(row.path)}
                     </td>
                     <td className="pg-date" data-label="Last edited">
                       {formatDate(row.lastEdited)}

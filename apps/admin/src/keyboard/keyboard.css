@@ -32,6 +32,19 @@
   .crust-header-link, .crust-save { white-space: nowrap; }
 }
 
+/* F069: Puck's own field labels ("Background", "Title level") look like
+   Crust's (.mf-label): dark, semibold, no type icon. */
+.Puck {
+  --puck-field-label-color-text: #18181b;
+  --puck-field-label-font-size: 0.875rem;
+  --puck-field-label-font-weight: 600;
+}
+.Puck [class*="_Input-labelIcon_"] { display: none; }
+
+/* F069: the side panels keep room for their scrollbar, so fields don't
+   shift and lose their right edge when one appears (the rich text field). */
+.Puck [class*="_Sidebar_"] { scrollbar-gutter: stable; }
+
 /* F040: the "Layout"/"Content" headings in Puck's block list are #767676 on
    a light grey (under 4.5:1). Same muted grey as the rest of the admin
    (--st-muted, 7.7:1 on white). */

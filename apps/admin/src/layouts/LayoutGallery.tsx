@@ -476,7 +476,8 @@ export function LayoutGallery() {
                 {items.length === 0
                   ? ""
                   : kind === "mine"
-                    ? `${items.length} of your layout${items.length === 1 ? "" : "s"}`
+                    ? // F069: "1 of your layout" read wrong; the tab already says whose.
+                      `${items.length === 1 ? "1 layout" : `${items.length} layouts`}`
                     : kind === "linked"
                       ? `${items.length} linked section${items.length === 1 ? "" : "s"}`
                     : `${items.length} ${kind === "page" ? "page layout" : "section"}${items.length === 1 ? "" : "s"}${

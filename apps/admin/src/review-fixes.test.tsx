@@ -14,7 +14,8 @@ import { fitActionBars, KeyboardCanvas, KeyboardRoot, skipToPage } from "./keybo
 import { planInsert, ROOT_ZONE } from "./keyboard/moves";
 import { fixPuckChrome, installPuckChromeFixes } from "./keyboard/puck-chrome";
 import { Dialog } from "./pages/PageActions";
-import { PageList, relinkedNote } from "./pages/PageList";
+import { breakablePath, PageList, relinkedNote } from "./pages/PageList";
+import { roleForElement } from "./settings/pick";
 import { withoutDraftPages } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
 import { SaveStatus, useSaveStatus } from "./save-status";
@@ -413,5 +414,70 @@ describe("review-fixes 10: polish", () => {
     }
     const signOut = readFileSync("apps/admin/src/sign-out.tsx", "utf8");
     expect(signOut).toContain(`className="crust-signout-divider" aria-hidden="true"`);
+  });
+
+  it("breaks addresses in the page list only after a / or - (F007, F021)", () => {
+    const rows = [
+      { path: "/", title: "Home", lastEdited: null, localChanges: false, inRepo: true },
+      { path: "/opening-hours", title: "Hours", lastEdited: null, localChanges: false, inRepo: true },
+    ];
+    render(<PageList siteName="Bakery" rows={rows} sourceNote="" onCreate={vi.fn()} />);
+    const cell = document.querySelectorAll("td.pg-path-cell")[1]!;
+    expect(cell.textContent).toBe("/opening-hours");
+    expect(cell.innerHTML).toBe("/<wbr>opening-<wbr>hours");
+    render(<p data-testid="p">{breakablePath("/a")}</p>);
+    expect(screen.getByTestId("p").innerHTML).toBe("/<wbr>a");
+    const css = readFileSync("apps/admin/src/pages/pages.css", "utf8");
+    expect(css).toContain(".pg-table .pg-path-cell { overflow-wrap: normal; word-break: normal; }");
+  });
+
+  it("the Site header label sits above the header, not on its links (F029, F004)", () => {
+    const css = readFileSync("apps/admin/src/chrome-canvas.css", "utf8");
+    expect(css).toMatch(/\.cc-chrome::before \{\s*content: attr\(data-part\); display: block;/);
+    expect(css).not.toContain("position: absolute; right: 8px; top: 8px");
+  });
+
+  it("click-to-colour: header links and footer links are Text, the copyright is Muted (F014)", () => {
+    document.body.innerHTML = `
+      <header class="cr-site-header cr-style-background"><a class="cr-logo" href="/">Bakery</a><nav><ul class="cr-menu"><li><a id="m" href="/menu">Menu</a></li></ul><a class="cr-header-search" href="/search/">Search</a><a class="cr-button cr-header-cta" href="/order">Order</a></nav></header>
+      <section class="cr-section cr-bg-background"><p>Hi <a id="link" href="/x">there</a></p></section>
+      <footer class="cr-site-footer cr-style-surface"><ul class="cr-menu"><li><a id="f" href="/menu">Menu</a></li></ul><p class="cr-footer-copy">© 2026</p></footer>
+      <header class="cr-site-header cr-style-primary" id="hp"><a class="cr-logo" href="/">Bakery</a></header>`;
+    const pick = (sel: string) => roleForElement(document.querySelector(sel)!);
+    expect(pick(".cr-logo")).toBe("text");
+    expect(pick("#m")).toBe("text");
+    expect(pick(".cr-header-search")).toBe("text");
+    expect(pick("#f")).toBe("text");
+    expect(pick(".cr-footer-copy")).toBe("muted");
+    expect(pick("#hp .cr-logo")).toBe("onPrimary");
+    // Unchanged: buttons and links in the page.
+    expect(pick(".cr-header-cta")).toBe("primary");
+    expect(pick("#link")).toBe("primary");
+  });
+
+  it("the rich text field fits the side panel, with its focus ring inside it (F042)", () => {
+    const css = readFileSync("apps/admin/src/rich-text/rich-text.css", "utf8");
+    expect(css).toContain(".rt-field:focus-within { outline: 3px solid #18181b; outline-offset: -1px; }");
+    expect(css).toContain(".rt-field, .rt-link { min-width: 0; max-width: 100%; box-sizing: border-box; }");
+    expect(readFileSync("apps/admin/src/keyboard/keyboard.css", "utf8")).toContain('.Puck [class*="_Sidebar_"] { scrollbar-gutter: stable; }');
+  });
+
+  it("Replace me tags sit above the outline, not over the words (F046)", () => {
+    const css = readFileSync("apps/admin/src/placeholders/placeholders.css", "utf8");
+    const tag = css.slice(css.indexOf(".cr-show[data-replace]::after {"));
+    expect(tag).toMatch(/^\.cr-show\[data-replace\]::after \{[^}]*bottom: calc\(100% \+ 2px\);/);
+  });
+
+  it("says '1 layout', not '1 of your layout' (F027)", () => {
+    const src = readFileSync("apps/admin/src/layouts/LayoutGallery.tsx", "utf8");
+    expect(src).not.toContain("of your layout${");
+    expect(src).toContain('`${items.length === 1 ? "1 layout" : `${items.length} layouts`}`');
+  });
+
+  it("Puck's field labels look like Crust's (F030)", () => {
+    const css = readFileSync("apps/admin/src/keyboard/keyboard.css", "utf8");
+    expect(css).toContain("--puck-field-label-color-text: #18181b;");
+    expect(css).toContain("--puck-field-label-font-weight: 600;");
+    expect(css).toContain('.Puck [class*="_Input-labelIcon_"] { display: none; }');
   });
 });

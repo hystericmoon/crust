@@ -9,6 +9,8 @@
 .pg-table tbody th { font-weight: 600; }
 .pg-table tbody th a { display: inline-flex; align-items: center; min-height: 24px; color: var(--st-text); text-underline-offset: 0.2em; }
 .pg-path { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.9375rem; overflow-wrap: anywhere; }
+/* F069: in the list, addresses wrap only after "/" or "-" (see breakablePath). */
+.pg-table .pg-path-cell { overflow-wrap: normal; word-break: normal; }
 .pg-form { display: grid; gap: 16px; }
 .pg-field { display: grid; gap: 4px; }
 .pg-field .st-help, .pg-field .st-error { margin: 0; }
