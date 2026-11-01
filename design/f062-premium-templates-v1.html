@@ -1,0 +1,240 @@
+<title>Crust Premium Gallery</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: same language as the earlier Crust snapshots. Three ways to show premium templates in the gallery, drawn as app screens, then the states of the recommended one. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6; --field:#85858f;
+  --accent:#4338ca; --accent-ink:#ffffff; --accent-soft:#e7e6fb; --ok:#127a4b; --ok-soft:#e3f4ea; --warn:#8a5a00; --warn-soft:#fdf3dc; --bad:#b42318; --bad-soft:#fdecea;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --ok-soft:#173326; --warn:#f2c35b; --warn-soft:#352a12; --bad:#ff8a7d; --bad-soft:#3a1d1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --ok-soft:#173326; --warn:#f2c35b; --warn-soft:#352a12; --bad:#ff8a7d; --bad-soft:#3a1d1b; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:40px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,5vw,44px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:24px;font-weight:600}
+h3{font-size:18px;font-weight:600}
+p{margin:0;max-width:65ch}
+ul{margin:0;padding-left:20px}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.intro,section{display:grid;gap:16px}
+.lead{color:var(--soft);font-size:18px}
+.soft{color:var(--soft)}
+.dirs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;align-items:start}
+.dir{display:grid;gap:12px;min-width:0}
+.dir header{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.pick{font:500 11px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-radius:999px;background:var(--accent);color:var(--accent-ink)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:12px}
+.dir.rec .card{border:2px solid var(--accent)}
+.card h4{font:600 20px/1.2 var(--f-display);margin:0}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:600 15px/1 var(--f-body);padding:12px 16px;min-height:44px;border-radius:8px;border:1px solid var(--field);background:var(--panel);color:var(--ink)}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:var(--panel)}
+.btn.split{border-top-right-radius:0;border-bottom-right-radius:0}
+.btn.caret{border-top-left-radius:0;border-bottom-left-radius:0;margin-left:-9px;padding-inline:12px}
+.menu{border:1px solid var(--line);border-radius:8px;padding:6px;display:grid;gap:2px;width:max-content;max-width:100%;box-shadow:0 8px 24px rgb(0 0 0/.12);background:var(--panel)}
+.menu span{padding:8px 10px;border-radius:6px}
+.menu span:first-child{background:var(--accent-soft)}
+.steps{list-style:none;padding:0;display:grid;gap:8px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;counter-increment:s;padding:8px 0;border-top:1px solid var(--line)}
+.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);font:600 13px/1 var(--f-mono)}
+.steps .btn{padding:8px 12px;min-height:36px;font-size:14px}
+.status{font-size:15px}
+.status b{color:var(--ok)}
+.help{font-size:14px;color:var(--soft)}
+.path{font:500 13px/1.4 var(--f-mono);overflow-wrap:anywhere}
+.box{border-radius:8px;padding:12px 14px;display:grid;gap:8px;font-size:15px}
+.box.warn{background:var(--warn-soft);border:1px solid var(--warn)}
+.box.bad{background:var(--bad-soft);border:1px solid var(--bad)}
+.box.ok{background:var(--ok-soft);border:1px solid var(--ok)}
+.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.why div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:8px;align-content:start}
+.states{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;align-items:start}
+.state{display:grid;gap:8px;min-width:0}
+.dialog{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:20px;display:grid;gap:12px;box-shadow:0 12px 40px rgb(0 0 0/.18)}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--ink);border-radius:50%;vertical-align:-2px;margin-right:6px}
+@media (prefers-reduced-motion: no-preference){.spin{animation:r 1s linear infinite}@keyframes r{to{transform:rotate(360deg)}}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+.win{background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid;min-width:0}
+.bar{background:var(--panel);border-bottom:1px solid var(--line);padding:10px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--soft)}
+.bar .t{font:600 15px/1.2 var(--f-body);color:var(--ink);margin-right:auto}
+.bar .btn{min-height:0;padding:7px 10px;font-size:13px}
+.body{padding:16px;display:grid;gap:12px;min-width:0}
+.lab{font:600 14px/1.2 var(--f-body)}
+.sec{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.sec .note{flex-basis:100%}
+.note{font-size:13px;color:var(--soft)}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px}
+.tc{border:1px solid var(--field);border-radius:10px;background:var(--panel);padding:8px;display:grid;gap:5px;font-size:13px;min-width:0;align-content:start}
+.tc b{font-size:14px}
+.tc .f{color:var(--soft);font-size:12px}
+.th{aspect-ratio:16/10;border-radius:6px;max-width:100%;display:grid;align-content:end;padding:6px;gap:3px}
+.th i{display:block;height:5px;border-radius:2px;background:rgb(255 255 255/.85)}
+.th i:nth-child(2){width:60%}
+.harbour{background:linear-gradient(160deg,#4d6b7a,#a9bcc4 70%,#e8e1d4)}
+.signal{background:linear-gradient(135deg,#191a2e 55%,#ff5a36 55%)}
+.corner{background:linear-gradient(180deg,#f7ebc6,#c9a24a)}
+.olive{background:linear-gradient(170deg,#2f3a24,#7d8b55 65%,#e7e0c9)}
+.atelier{background:linear-gradient(120deg,#e9e6e1 50%,#1d1d1d 50%)}
+.clinic{background:linear-gradient(180deg,#d8ecef,#3f8fa0)}
+.lens{background:linear-gradient(200deg,#0e0e10,#55525a 70%,#b8b2a8)}
+.price{font:600 12px/1 var(--f-body);padding:5px 8px;border-radius:999px;border:1px solid var(--ink);width:max-content}
+.price.free{border-color:var(--ok);color:var(--ok)}
+.ext::after{content:" ↗";font-weight:500}
+.offline{border:1px dashed var(--field);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--soft)}
+.prev{display:grid;grid-template-columns:150px 1fr;min-height:250px}
+.side{background:var(--panel);border-right:1px solid var(--line);padding:12px;display:grid;gap:8px;align-content:start;font-size:13px}
+.side ul{list-style:none;padding:0;margin:0;display:grid;gap:2px}
+.side li{padding:6px 8px;border-radius:6px}
+.side li.on{background:var(--bg);font-weight:600;box-shadow:inset 3px 0 0 var(--ink)}
+.stage{padding:12px;display:grid;gap:10px;align-content:start;min-width:0}
+.seg{display:inline-flex;border:1px solid var(--field);border-radius:8px;overflow:hidden;font-size:12px;width:max-content;max-width:100%}
+.seg span{padding:6px 10px}
+.seg span.on{background:var(--ink);color:var(--panel)}
+.shot{border:1px solid var(--line);border-radius:8px;aspect-ratio:16/9;max-width:100%;display:grid;align-content:end;padding:14px;gap:6px}
+.shot i{display:block;height:9px;border-radius:3px;background:rgb(255 255 255/.85);width:70%}
+.shot i+i{width:45%;height:6px}
+.shot b{color:#fff;font:700 16px/1.1 var(--f-display)}
+.cta{display:grid;gap:6px;justify-items:end}
+.strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.strip .tc{flex:0 0 120px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips span{font-size:12px;padding:5px 9px;border-radius:999px;border:1px solid var(--line);color:var(--soft)}
+.chips span.on{border-color:var(--ink);color:var(--ink);font-weight:600;background:var(--panel)}
+@media (max-width:560px){.prev{grid-template-columns:1fr}.side{border-right:0;border-bottom:1px solid var(--line)}.cta{justify-items:start}}
+</style>
+
+<div class="wrap">
+  <div class="intro">
+    <p class="eyebrow">F062 · Milestone 6 · design snapshot</p>
+    <h1>Premium templates in the gallery</h1>
+    <p class="lead">Start from a template shows the free starters today. With F062 it also shows the premium templates from the Crust store: a preview at desktop, tablet and phone width, the price, and a “Get this template” button that opens the store in the browser. Without internet, only the free starters show.</p>
+    <p class="soft">The premium files aren't on the computer until someone buys one, so their preview is made of pictures from the store's catalogue, not the live template. A bought file opens with “Open a template file…”, as any .crust file does today. Template names and prices below are examples: the real ones come with Milestone 7.</p>
+  </div>
+
+  <section aria-labelledby="dirs-h">
+    <h2 id="dirs-h">Three directions</h2>
+    <div class="dirs">
+      <div class="dir rec">
+        <header><h3>A · Free first, then Premium</h3><span class="pick">Recommended</span></header>
+        <div class="win" aria-label="Direction A">
+          <div class="bar"><span class="t">Start from a template</span></div>
+          <div class="body">
+            <div class="sec"><span class="lab">Free</span><span class="note">Use any of these right away.</span></div>
+            <div class="tgrid"><div class="tc"><span class="th corner"><i></i><i></i></span><b>Corner</b><span class="f">Shops, cafés</span></div><div class="tc"><span class="th harbour"><i></i><i></i></span><b>Harbour</b><span class="f">Studios</span></div><div class="tc"><span class="th signal"><i></i><i></i></span><b>Signal</b><span class="f">Agencies</span></div></div>
+            <div class="sec"><span class="lab">Premium</span><span class="note">Bought in the Crust store (opens in your browser). Then open the file here.</span></div>
+            <div class="tgrid"><div class="tc"><span class="th olive"><i></i><i></i></span><b>Olive</b><span class="f">Restaurant</span><span class="price">US$49</span></div><div class="tc"><span class="th atelier"><i></i><i></i></span><b>Atelier</b><span class="f">Architect</span><span class="price">US$59</span></div><div class="tc"><span class="th lens"><i></i><i></i></span><b>Lens</b><span class="f">Photographer</span><span class="price">US$49</span></div><div class="tc"><span class="th clinic"><i></i><i></i></span><b>Clinic</b><span class="f">Health practice</span><span class="price">US$59</span></div></div>
+          </div>
+        </div>
+        <p class="soft">Two labelled groups. Nobody wonders which ones cost money, and the price is on every premium card.</p>
+      </div>
+      <div class="dir">
+        <header><h3>B · One mixed gallery</h3></header>
+        <div class="win" aria-label="Direction B">
+          <div class="bar"><span class="t">Start from a template</span></div>
+          <div class="body">
+            <div class="chips"><span class="on">All</span><span>Free</span><span>Premium</span></div>
+            <div class="tgrid"><div class="tc"><span class="th corner"><i></i><i></i></span><b>Corner</b><span class="f">Shops, cafés</span><span class="price free">Free</span></div><div class="tc"><span class="th olive"><i></i><i></i></span><b>Olive</b><span class="f">Restaurant</span><span class="price">US$49</span></div><div class="tc"><span class="th harbour"><i></i><i></i></span><b>Harbour</b><span class="f">Studios</span><span class="price free">Free</span></div><div class="tc"><span class="th atelier"><i></i><i></i></span><b>Atelier</b><span class="f">Architect</span><span class="price">US$59</span></div><div class="tc"><span class="th signal"><i></i><i></i></span><b>Signal</b><span class="f">Agencies</span><span class="price free">Free</span></div><div class="tc"><span class="th lens"><i></i><i></i></span><b>Lens</b><span class="f">Photographer</span><span class="price">US$49</span></div></div>
+          </div>
+        </div>
+        <p class="soft">Looks like a shop: free and paid side by side with a filter. Easy to open a template expecting to use it and meet a price.</p>
+      </div>
+      <div class="dir">
+        <header><h3>C · A row at the end</h3></header>
+        <div class="win" aria-label="Direction C">
+          <div class="bar"><span class="t">Start from a template</span></div>
+          <div class="body">
+            <div class="tgrid"><div class="tc"><span class="th corner"><i></i><i></i></span><b>Corner</b><span class="f">Shops, cafés</span></div><div class="tc"><span class="th harbour"><i></i><i></i></span><b>Harbour</b><span class="f">Studios</span></div><div class="tc"><span class="th signal"><i></i><i></i></span><b>Signal</b><span class="f">Agencies</span></div></div>
+            <div class="sec"><span class="lab">More in the Crust store</span><span class="btn ext" style="min-height:0;padding:6px 10px;font-size:13px">See all</span></div>
+            <div class="strip"><div class="tc"><span class="th olive"><i></i><i></i></span><b>Olive</b><span class="f">US$49</span></div><div class="tc"><span class="th atelier"><i></i><i></i></span><b>Atelier</b><span class="f">US$59</span></div><div class="tc"><span class="th lens"><i></i><i></i></span><b>Lens</b><span class="f">US$49</span></div><div class="tc"><span class="th clinic"><i></i><i></i></span><b>Clinic</b><span class="f">US$59</span></div></div>
+          </div>
+        </div>
+        <p class="soft">Quietest: a sideways row and a link out. Premium templates are easy to miss, and a sideways row hides most of them.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="why-h">
+    <h2 id="why-h">Why A</h2>
+    <div class="why">
+      <div><h3>No surprise prices</h3><p class="soft">Free and paid are separate groups with plain labels, so the cost is known before a click. Surprises at the last step feel like a trap and cost trust (Nielsen: match with the real world, error prevention).</p></div>
+      <div><h3>The same preview as today</h3><p class="soft">A premium card opens the same screen as a free one: page list on the left, Desktop / Tablet / Phone on top. People learn it once (consistency). Only the button differs.</p></div>
+      <div><h3>Free comes first</h3><p class="soft">The gallery's main job is still starting a site now. The free starters stay at the top; premium is a clear second group, not an advert in the way.</p></div>
+      <div><h3>Leaving the app is announced</h3><p class="soft">“Get this template” says it opens the store in your browser, and the arrow shows it. Opening another app shouldn't happen unannounced (WCAG 3.2.2, change on request).</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="states-h">
+    <h2 id="states-h">Direction A in detail</h2>
+    <div class="states">
+      <div class="state">
+        <h3>A premium template's preview</h3>
+        <div class="win">
+          <div class="bar"><span>← All templates</span><span class="t">Olive</span><span class="btn primary ext">Get this template · US$49</span></div>
+          <div class="prev">
+            <div class="side"><span class="soft">Warm and generous: big food photos, an easy menu and booking.</span><span class="lab">6 pages</span><ul><li class="on">Home</li><li>Menu</li><li>About</li><li>Private dining</li><li>Journal</li><li>Contact</li></ul></div>
+            <div class="stage">
+              <div class="seg"><span class="on">Desktop</span><span>Tablet</span><span>Phone</span></div>
+              <div class="shot olive"><b>Seasonal food, cooked slowly</b><i></i><i></i></div>
+              <p class="note">Pictures of the template from the Crust store. Already bought it? <u>Open the file</u>.</p>
+            </div>
+          </div>
+        </div>
+        <p class="soft">Same layout as a free template. The top button says the price and opens the store's page for this template. “Open the file” is the same as “Open a template file…”.</p>
+      </div>
+      <div class="state">
+        <h3>Without internet</h3>
+        <div class="win">
+          <div class="bar"><span class="t">Start from a template</span></div>
+          <div class="body">
+            <div class="sec"><span class="lab">Free</span></div>
+            <div class="tgrid"><div class="tc"><span class="th corner"><i></i><i></i></span><b>Corner</b><span class="f">Shops, cafés</span></div><div class="tc"><span class="th harbour"><i></i><i></i></span><b>Harbour</b><span class="f">Studios</span></div><div class="tc"><span class="th signal"><i></i><i></i></span><b>Signal</b><span class="f">Agencies</span></div></div>
+            <div class="offline">Premium templates show here when you're online.</div>
+          </div>
+        </div>
+        <p class="soft">One quiet line, no error. The free starters work as always. The catalogue is looked up each time the gallery opens; nothing to retry by hand.</p>
+      </div>
+      <div class="state">
+        <h3>First run stays free</h3>
+        <div class="win">
+          <div class="bar"><span class="t">Welcome to Crust</span></div>
+          <div class="body">
+            <span class="lab">1 · Start from</span>
+            <div class="tgrid"><div class="tc"><span class="th corner"><i></i><i></i></span><b>Corner</b><span class="f">Shops, cafés</span></div><div class="tc"><span class="th harbour"><i></i><i></i></span><b>Harbour</b><span class="f">Studios</span></div><div class="tc"><span class="th signal"><i></i><i></i></span><b>Signal</b><span class="f">Agencies</span></div><div class="tc"><span class="th" style="background:repeating-linear-gradient(45deg,transparent 0 6px,var(--line) 6px 7px);border:1px dashed var(--field)"></span><b>Blank</b><span class="f">One empty page</span></div></div>
+            <p class="note">More templates, including premium ones, in Pages → Start from a template.</p>
+          </div>
+        </div>
+        <p class="soft">The welcome screen's job is a site in under a minute, so it doesn't sell. One line points to the rest.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="a11y-h">
+    <h2 id="a11y-h">Keyboard and screen readers</h2>
+    <ul class="soft">
+      <li>Each group is a labelled region (“Free templates”, “Premium templates”); cards keep today's tab order, free first.</li>
+      <li>The price is text in the card's name for screen readers: “Olive, premium, US$49”. Never shown by colour alone.</li>
+      <li>“Get this template · US$49” carries “(opens in your browser)” for screen readers; the arrow is hidden from them.</li>
+      <li>Each preview picture has a description from the catalogue (“Olive home page at desktop width”); a picture without one isn't shown.</li>
+      <li>Price chips: dark text on white, 4.5:1 or more in both themes; buttons stay 44 px tall.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="out-h">
+    <h2 id="out-h">Left out on purpose</h2>
+    <ul class="soft">
+      <li>Buying inside the app. The store does that (Milestone 7); the app only opens its page.</li>
+      <li>Remembering what you bought. A bought template is a file; open it like any other.</li>
+      <li>Premium on the web admin's gallery too? Yes, same gallery code; it simply shows what the catalogue lists. Until the store exists (F063), no catalogue, so nothing extra shows anywhere.</li>
+    </ul>
+  </section>
+</div>

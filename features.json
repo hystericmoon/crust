@@ -596,7 +596,7 @@
       "description": "A Tauri 2 app (crates/crust-desktop) that opens the builder in a native window for Mac and Windows, keeps sites in a folder on the computer (with its own history, F054, invisible to people) and uses the local content store. Linux build and tests in CI; Mac and Windows installers only from a release workflow started by hand (private-repo runner minutes). Unsigned until the owner sets up signing (BLOCKED.md). Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F054"],
       "done_check": "cargo test -p crust-desktop && npm test -- desktop && cargo clippy -- -D warnings",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -606,7 +606,7 @@
       "description": "The app renders, checks (crust-publish as a library) and builds the search index (Pagefind library) itself, with no Node or server. 'Export site folder' writes the finished static site; 'Preview in browser' opens it. Same output as the GitHub publish pipeline (tested on the same content). Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F055"],
       "done_check": "cargo test -p crust-desktop && cargo test -p crust-publish && npm test -- local-publish",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -616,7 +616,7 @@
       "description": "Design snapshot first. A site switcher in the app: new site, rename, duplicate, delete (moved to a 'Recently deleted' list for 30 days, so it can be undone). Each site keeps its own content, history and publish settings. Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F055"],
       "done_check": "cargo test -p crust-desktop && npm test -- sites && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -626,7 +626,7 @@
       "description": "Design snapshot first. Connect a site to Cloudflare Pages or Netlify with the person's own token (step-by-step guide in the app), then Publish uploads the exported site through the host's API. Tokens are kept in the computer's keychain, never in the site folder. Clear messages for wrong or expired tokens. Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F056", "F057"],
       "done_check": "cargo test -p crust-desktop && npm test -- hosts && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -636,7 +636,7 @@
       "description": "Publish to any host with FTP, FTPS or SFTP. Only changed files are sent (remembered per site); plain FTP works but warns that passwords travel unencrypted. Passwords kept in the keychain. Tested against a local test server in CI. Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F058"],
       "done_check": "cargo test -p crust-desktop && npm test -- hosts",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -646,7 +646,7 @@
       "description": "Design snapshot first. The first time the app opens: a short welcome, pick one of the free starter templates (or start blank), name the site, land in the builder with the 'To replace' list open. Fully keyboard-usable; no account or sign-up. Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F057"],
       "done_check": "npm test -- first-run && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -656,7 +656,7 @@
       "description": "The app checks for updates (Tauri updater), shows what's new in plain words, and installs on restart. Installers and update notes are hosted on a free Cloudflare Pages site, because a private repository's releases can't be downloaded publicly. Updates are signed with a Tauri update key (the owner stores it as a secret, BLOCKED.md). Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F055"],
       "done_check": "cargo test -p crust-desktop && npm test -- updates",
-      "passes": false,
+      "passes": true,
       "needs_review": false,
       "reviewed": false
     },
@@ -666,7 +666,7 @@
       "description": "Design snapshot first. Start from a template also lists premium templates from the store's catalogue file: preview at three widths, price, and a 'Get this template' link that opens the store in the browser. Without internet it shows the free starters only. Bought template files open with 'Open a file' (F048). Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F060"],
       "done_check": "npm test -- catalogue && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

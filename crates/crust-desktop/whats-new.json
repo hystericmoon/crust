@@ -1,0 +1,11 @@
+[
+  {
+    "version": "0.1.0",
+    "date": "2026-11-02",
+    "notes": [
+      "The first version of the Crust app for Mac and Windows.",
+      "Keep several sites on your computer and publish them to Cloudflare Pages, Netlify or your own host.",
+      "Crust now updates itself: new versions download in the background and install the next time you open it."
+    ]
+  }
+]

@@ -1,0 +1,110 @@
+{
+  "format": "crust-catalogue",
+  "version": 1,
+  "templates": [
+    {
+      "id": "example-studio",
+      "name": "Example: Studio",
+      "description": "Calm and editorial. An example of how a premium template shows here.",
+      "kind": "Architect or designer",
+      "price": "US$49",
+      "url": "store.html",
+      "pages": [
+        {
+          "title": "Home",
+          "path": "/",
+          "pictures": [
+            {
+              "width": "desktop",
+              "src": "example-studio-home-desktop.jpg",
+              "alt": "Example: Studio, Home page at desktop width"
+            },
+            {
+              "width": "tablet",
+              "src": "example-studio-home-tablet.jpg",
+              "alt": "Example: Studio, Home page at tablet width"
+            },
+            {
+              "width": "phone",
+              "src": "example-studio-home-phone.jpg",
+              "alt": "Example: Studio, Home page at phone width"
+            }
+          ]
+        },
+        {
+          "title": "About",
+          "path": "/about",
+          "pictures": [
+            {
+              "width": "desktop",
+              "src": "example-studio-about-desktop.jpg",
+              "alt": "Example: Studio, About page at desktop width"
+            },
+            {
+              "width": "tablet",
+              "src": "example-studio-about-tablet.jpg",
+              "alt": "Example: Studio, About page at tablet width"
+            },
+            {
+              "width": "phone",
+              "src": "example-studio-about-phone.jpg",
+              "alt": "Example: Studio, About page at phone width"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "example-shop",
+      "name": "Example: Shop",
+      "description": "Warm and local. An example of how a premium template shows here.",
+      "kind": "Shop or café",
+      "price": "US$39",
+      "url": "store.html",
+      "pages": [
+        {
+          "title": "Home",
+          "path": "/",
+          "pictures": [
+            {
+              "width": "desktop",
+              "src": "example-shop-home-desktop.jpg",
+              "alt": "Example: Shop, Home page at desktop width"
+            },
+            {
+              "width": "tablet",
+              "src": "example-shop-home-tablet.jpg",
+              "alt": "Example: Shop, Home page at tablet width"
+            },
+            {
+              "width": "phone",
+              "src": "example-shop-home-phone.jpg",
+              "alt": "Example: Shop, Home page at phone width"
+            }
+          ]
+        },
+        {
+          "title": "Services",
+          "path": "/services",
+          "pictures": [
+            {
+              "width": "desktop",
+              "src": "example-shop-services-desktop.jpg",
+              "alt": "Example: Shop, Services page at desktop width"
+            },
+            {
+              "width": "tablet",
+              "src": "example-shop-services-tablet.jpg",
+              "alt": "Example: Shop, Services page at tablet width"
+            },
+            {
+              "width": "phone",
+              "src": "example-shop-services-phone.jpg",
+              "alt": "Example: Shop, Services page at phone width"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

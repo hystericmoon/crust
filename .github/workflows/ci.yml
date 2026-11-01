@@ -15,9 +15,17 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # F058 raised this from 35: the job took ~30 minutes before the HTTPS
+    # client (rustls) arrived. It's a ceiling, not a cost (DECISIONS F058).
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+
+      # F055: the desktop app (Tauri) needs the Linux window libraries to build.
+      - name: Install the desktop app's Linux libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libsoup-3.0-dev libjavascriptcoregtk-4.1-dev librsvg2-dev libayatana-appindicator3-dev libxdo-dev xvfb
 
       - uses: actions/setup-node@v4
         with:
@@ -47,6 +55,13 @@ jobs:
 
       - name: Rust lint
         run: cargo clippy -- -D warnings
+
+      # F055: opens the real app window on a virtual screen and checks the
+      # builder, saving to the site folder and photos work together.
+      - name: Desktop app self-check
+        run: |
+          cargo build -p crust-desktop --features tauri/custom-protocol
+          CRUST_SITE_FOLDER="$RUNNER_TEMP/crust-home/crust-site" CRUST_EXPORT_FOLDER="$RUNNER_TEMP/crust-export" CRUST_SELF_CHECK=1 timeout 180 xvfb-run -a target/debug/crust
 
       - name: Publish sample site
         run: npm run publish:local

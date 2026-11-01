@@ -1,0 +1,8 @@
+/* F061: the update banner and the Sites screen's Crust card. */
+.up-banner { border-color: var(--st-text); }
+.up-banner .up-title { margin: 0 0 4px; font-size: 1.125rem; }
+.up-banner .st-help, .up-about .up-line { margin: 0; }
+.up-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.up-warning { flex-basis: 100%; margin: 4px 0 0; }
+.up-progress { display: block; width: 100%; max-width: 24rem; height: 8px; margin-top: 8px; accent-color: var(--st-action); }
+.up-notes { margin: 0; padding-left: 1.25rem; display: grid; gap: 4px; }

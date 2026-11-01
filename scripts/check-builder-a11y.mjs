@@ -27,7 +27,9 @@ const samplePost = {
   coverAlt: "",
   puck: { root: { props: {} }, content: [{ type: "Text", props: { id: "t1", text: "Come and say hello." } }] },
 };
-// [label, address, post to seed, block to select first (F042: the rich text editor), buttons to press (F048)]
+// [label, address, post to seed, block to select first (F042: the rich text editor), buttons to press (F048),
+//  F058: { app: run as the desktop app (scripts/fake-tauri.js) with this host state, wait: what to wait for instead of the canvas,
+//  F060: firstRun: a brand new Crust (the welcome screen), F061: update: "available" }]
 const screens = [
   ["page builder", "/#/edit?path=/", null, null],
   ["page builder, Text block selected", "/#/edit?path=/", null, '[data-puck-component^="Text"]'],
@@ -35,22 +37,43 @@ const screens = [
   ["template gallery", "/#/templates", null, null],
   ["template preview", "/#/templates", null, null, [".tp-card[id]"]],
   ["template confirm question", "/#/templates", null, null, [".tp-card[id]", 'button:has-text("Use this template")', "dialog[open]"]],
+  ["app Publish card, no host yet", "/#/", null, null, [], { app: "none", wait: ".hp-host" }],
+  ["app connect dialog, token step", "/#/", null, null, [".hp-host", "dialog[open]"], { app: "none", wait: ".hp-host" }],
+  ["app Publish card, connected", "/#/", null, null, [], { app: "connected", wait: ".hp-where" }],
+  ["app change or disconnect", "/#/", null, null, ['button:has-text("Change or disconnect")', "dialog[open]"], { app: "connected", wait: ".hp-where" }],
+  ["app FTP connect dialog", "/#/", null, null, ['button:has-text("Your own web host")', "dialog[open]"], { app: "none", wait: ".hp-host" }],
+  ["app FTP dialog, plain FTP warning", "/#/", null, null, ['button:has-text("Your own web host")', 'label:has-text("FTP (not encrypted)")', "dialog[open]"], { app: "none", wait: ".hp-host" }],
+  ["app Publish card, plain FTP", "/#/", null, null, [], { app: "ftp-plain", wait: ".hp-plain" }],
+  ["app change or disconnect, SFTP", "/#/", null, null, ['button:has-text("Change or disconnect")', "dialog[open]"], { app: "ftp", wait: ".hp-where" }],
+  // F060: a brand new Crust opens on the welcome screen.
+  ["app welcome screen (first run)", "/", null, null, [], { app: "none", firstRun: true, wait: ".fr-card iframe" }],
+  // F062: premium templates (the example catalogue): the gallery's groups and a premium preview.
+  ["template gallery with premium", "/#/templates?examples", null, null, [], { wait: ".tp-premium img" }],
+  ["premium template preview", "/#/templates?examples", null, null, [".tp-premium .tp-card"], { wait: ".tp-premium img" }],
+  ["premium template preview, phone width", "/#/templates?examples", null, null, [".tp-premium .tp-card", 'button:has-text("Phone")'], { wait: ".tp-premium img" }],
+  // F061: an update found from the Sites screen: the banner, the Crust card, and What's new.
+  ["app Sites screen, update ready", "/#/sites", null, null, ['button:has-text("Check for updates")'], { app: "none", update: "available", wait: ".up-about" }],
+  ["app What's new dialog", "/#/sites", null, null, ['button:has-text("Check for updates")', '.up-banner button:has-text("What\'s new")', "dialog[open]"], { app: "none", update: "available", wait: ".up-about" }],
+  ["app Pages screen, update ready", "/#/sites", null, null, ['button:has-text("Check for updates")', ".st-back"], { app: "none", update: "available", wait: ".up-about" }],
+  ["app welcome screen, Blank picked", "/", null, null, ['label:has-text("Blank")'], { app: "none", firstRun: true, wait: ".fr-card iframe" }],
 ];
+const fakeApp = await readFile(new URL("./fake-tauri.js", import.meta.url), "utf8");
 
 const server = await serve(distDir);
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 let failures = 0;
 try {
-  for (const [label, hash, post, select, clicks = []] of screens) {
+  for (const [label, hash, post, select, clicks = [], { app, wait, firstRun, update } = {}] of screens) {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    if (app) await page.addInitScript(`window.__FAKE_TAURI__ = ${JSON.stringify({ host: app, firstRun, update })};\n${fakeApp}`);
     if (post) {
       await page.addInitScript((p) => {
         localStorage.setItem(`crust:post:${p.slug}`, JSON.stringify({ post: p, updatedAt: new Date().toISOString(), savedToGitHub: false }));
       }, post);
     }
     await page.goto(server.url + hash, { waitUntil: "load" });
-    // Wait for Puck's canvas and the blocks inside it.
-    await page.waitForSelector("iframe", { timeout: 20_000 });
+    // Wait for Puck's canvas and the blocks inside it (or the screen's own landmark).
+    await page.waitForSelector(wait ?? "iframe", { timeout: 20_000 });
     await page.waitForTimeout(1500);
     // Buttons to press in order; a last "dialog[open]" only waits for the dialog to be there.
     for (const button of clicks) {

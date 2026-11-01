@@ -129,3 +129,70 @@
 .pg-placeholders ul { margin: 6px 0; padding-left: 20px; }
 .pg-placeholders li { margin: 2px 0; overflow-wrap: anywhere; }
 .pg-placeholders a { color: var(--st-text); text-underline-offset: 0.2em; }
+
+/* F056: the Publish card in the desktop app. */
+.dp-help { margin: 8px 0 0; }
+.dp-status:empty { display: none; }
+.dp-status { margin: 12px 0 0; display: grid; gap: 8px; }
+.dp-status p { margin: 0; }
+.dp-ok { color: var(--st-ok); }
+.dp-box { margin: 12px 0 0; padding: 12px 14px; border-radius: 8px; display: grid; gap: 6px; }
+.dp-status .dp-box { margin: 0; }
+.dp-box p { margin: 0; }
+.dp-box ul { margin: 0; padding-left: 20px; }
+.dp-box li { overflow-wrap: anywhere; }
+.dp-warn { border: 2px dashed var(--st-border); }
+.dp-done { border: 1px solid var(--st-ok); }
+.dp-failed { border: 1px solid var(--st-danger); background: var(--st-danger-bg); color: var(--st-danger); }
+.dp-path { overflow-wrap: anywhere; }
+.dp-spin { display: inline-block; width: 14px; height: 14px; margin-right: 8px; vertical-align: -2px; border: 2px solid var(--st-border); border-top-color: var(--st-text); border-radius: 50%; }
+@media (prefers-reduced-motion: no-preference) {
+  .dp-spin { animation: dp-spin 1s linear infinite; }
+  @keyframes dp-spin { to { transform: rotate(360deg); } }
+}
+.dp-help a { color: var(--st-text); text-underline-offset: 0.2em; }
+
+/* F057: the desktop app's Sites screen, built from the Pages screen's parts. */
+.pg-table th.sites-name { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.sites-meta { flex-basis: 100%; }
+.sites-open {
+  min-height: 24px; padding: 0; border: 0; background: none; font: inherit; font-weight: 600;
+  color: var(--st-text); text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; text-align: left;
+}
+.sites-open:focus-visible { outline: 2px solid var(--st-focus); outline-offset: 2px; }
+.sites-open[aria-disabled="true"] { cursor: progress; }
+.sites-here {
+  font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+  border: 1px solid var(--st-border); color: var(--st-text);
+}
+.pg-table .sites-meta { font-weight: 400; }
+
+/* F058: publish to Cloudflare Pages or Netlify (design/f058-publish-to-host-v1.html, A). */
+.hp { display: grid; gap: 12px; margin: 0 0 8px; }
+.hp p { margin: 0; }
+.hp-hosts { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 10px; }
+.hp-host { display: grid; gap: 4px; text-align: left; min-height: 44px; padding: 12px 14px; border: 1px solid var(--st-border); border-radius: 10px; background: var(--st-panel); color: var(--st-text); font: inherit; cursor: pointer; }
+.hp-host span { color: var(--st-muted); font-size: 0.875rem; }
+.hp-host:hover { border-color: var(--st-text); }
+.hp-where { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.hp-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--st-ok); margin-right: -6px; }
+.hp-account { color: var(--st-muted); }
+.hp-link { background: none; border: 0; padding: 0; font: inherit; color: var(--st-text); text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; min-height: 24px; }
+.hp-progress { width: 100%; max-width: 28rem; height: 8px; accent-color: var(--st-text); }
+.hp-sub { font-size: 1rem; margin: 20px 0 8px; padding-top: 16px; border-top: 1px solid var(--st-divider); }
+.hp-how { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+.hp-token { font-family: ui-monospace, Menlo, Consolas, monospace; }
+.hp-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.8125rem; }
+.hp-steps li { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--st-border); color: var(--st-muted); }
+.hp-steps li.hp-on { border-color: var(--st-text); color: var(--st-text); font-weight: 600; }
+.hp-steps li.hp-done { color: var(--st-ok); }
+.hp-accounts { border: 0; margin: 0; padding: 0; display: grid; gap: 6px; }
+.hp-account-choice { display: flex; align-items: center; gap: 8px; min-height: 32px; }
+.hp-change { flex-wrap: wrap; }
+/* F059: your own web host (FTP or SFTP). */
+.hp-ftp .hp-account-choice { flex-wrap: wrap; align-items: baseline; }
+.hp-choice-help { flex-basis: 100%; padding-left: 24px; margin-top: -2px; font-size: 0.8125rem; }
+.hp-row { display: grid; grid-template-columns: minmax(0, 1fr) 6.5rem; gap: 12px; align-items: start; }
+.hp-port { width: 100%; }
+.hp-plain { color: var(--st-text); }
+@media (max-width: 30rem) { .hp-row { grid-template-columns: 1fr; } }

@@ -8,6 +8,19 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
+- **Browser copies in the app (found with F060, 2026-11-01).** The
+  builder keeps working copies in the window's storage (unsaved
+  colours, header and footer, page and post drafts, "Bring back my
+  previous site"). In the desktop app every site shares that storage,
+  so after switching sites, an unsaved colour change or draft from one
+  site can show in another. Suggest keeping those copies per site
+  (prefix the keys with the site's id), or clearing them on switch.
+  Size S–M. F060 already avoids adding to it.
+- **App wording (from F055, 2026-11-01).** In the desktop app about 70
+  messages still say "GitHub" or "this browser" (Publish card, page
+  status, Template banner, Site settings). Suggest one pass that gives
+  each a desktop wording ("in this site", "on your computer"), best done
+  with F056 when Publish works in the app. Size S–M.
 - **From the review (2026-10-31).** Claude reviewed the 48 features
   waiting for review, at the owner's request (verdicts in features.json,
   `review_note`: 46 work as described, most with small notes; F005 and
@@ -211,6 +224,13 @@ Features Claude suggests. They are not work until the owner adds them to
   proposal above), and anything for other users (that's M6).
 
 
+- **Redirects and "page not found" on FTP hosts (from F059).** Cloudflare
+  reads `_redirects`; most FTP hosts (Apache) read `.htaccess` instead,
+  so after F059 a renamed page's old address gives the host's own "not
+  found" page there. Publishing by FTP could write an `.htaccess` with
+  the redirects and Crust's 404 page. Small (M). Only helps Apache hosts
+  (most shared hosting); Nginx hosts ignore it, harmlessly.
+
 ## 2026-11-01 — F053 Signal and Corner with real photos (Claude, reversible)
 
 - **Directions (snapshot `design/f053-signal-corner-v1.html`):** Signal
@@ -320,6 +340,91 @@ Features Claude suggests. They are not work until the owner adds them to
   recommended direction for Signal and Corner; the photo picks and
   snapshot are still shown to the owner first, and he can switch
   direction before the build is merged.
+
+## 2026-11-01 — F056 Publish on your computer (Claude, reversible)
+
+- **One renderer, two callers.** `packages/render/src/site.ts`
+  (`readSiteContent` + `renderSite`) is the whole render step, reading
+  through a small `ContentSource`. The pipeline's `cli.ts` reads
+  `content/` from disk with it; the app reads the site folder's content
+  store (saved content, i.e. what's in its history). The output of
+  `cli.ts` didn't change (checked by diff). A test renders all three
+  starter templates both ways and compares every file.
+- **Finishing runs in Rust, with the pipeline's own code.**
+  crust-publish's new `finish()` (with `Checks::Stop` or `Checks::Report`)
+  is what `publish_with_redirects` now calls; Pagefind 1.5.2 (pinned,
+  same as the npm package) is a library behind crust-publish's `search`
+  feature, so the publish workflow's `cargo run` doesn't compile it.
+  Checked once by hand on Harbour: the app's finished folder is identical
+  to `crust-publish` + `npx pagefind`, except the gzip header bytes of
+  the two Pagefind `.wasm` files (same contents unzipped).
+- **Preview never stops; export does.** A preview shows the site and
+  lists what would stop a publish; Export, the "finished" step, stops on
+  them like publishing. (Recognition and exploration before commitment.)
+- **Builds live in the app's cache folder**, never in the site folder;
+  a new build replaces the old one only when complete, so a failed build
+  keeps the last good one.
+- **Export** writes "<Site name> website" inside the folder picked in
+  the system's folder picker (tauri-plugin-dialog). If that folder has
+  files, the card asks before replacing it, and only a folder with
+  `index.html` and `sitemap.xml` (an earlier export) is ever replaced;
+  anything else is refused with "choose another place".
+- **Preview in browser** serves the build on 127.0.0.1 at a free port
+  (a small server in `preview.rs`, std only) and opens the default
+  browser (tauri-plugin-opener). Addresses work as on hosts (`/about/`,
+  404 page, search); redirects aren't applied in the preview.
+- **Exporting doesn't count as publishing**: "Saved, not live yet" stays
+  until F058/F059 put the site on a host.
+- **Licences.** Pagefind brings `minicbor` (BlueOak-1.0.0, a permissive
+  OSI licence like MIT); the Pagefind program the pipeline already runs
+  has it compiled in. Tauri (F055) already brought MPL-2.0 packages
+  (`cssparser`, `selectors`, `option-ext`; file-level copyleft, no
+  effect on Crust's own code). Both free and open source; listed here
+  because CLAUDE.md names only MIT/Apache/BSD/ISC.
+- The "App wording" proposal (GitHub/browser messages in the app) did
+  not ride along; still in Proposals.
+
+## 2026-11-01 — F055 Desktop app shell (Claude, reversible)
+
+- **The builder's server runs inside the window.** The app has no
+  server: a small router (`apps/admin/src/desktop/local-api.ts`) answers
+  the builder's `/api/…` and `/media/…` requests with the same handlers
+  the web admin's Pages Functions call, with the site folder's
+  LocalStore (F054) as `env.store`. A test checks the router has every
+  address and method in `apps/admin/functions/api`. Chosen over a local
+  HTTP server in Rust: no second backend, no open port.
+- **Rust only touches files.** Four commands (read, write, remove, list)
+  scoped to the site folder; anything with `..`, a leading `/`, a drive
+  letter or a backslash is refused. Writes go to a temporary file first,
+  then move into place, so a crash never leaves half a page. Photos are
+  sent as raw bytes, not JSON.
+- **Photos at `/media/<file>`** are served by wrapping Tauri's built-in
+  files (`Context::set_assets`), so `<img src="/media/…">` works in the
+  canvas exactly as on the web, with no custom address scheme.
+- **The site comes from the folder, not the build.** The web admin ships
+  with `content/site.json`, pages and posts built in (it's rebuilt on
+  every change). In the app, `main.tsx` opens the folder first, then
+  loads the builder, which reads them from `desktopContent()`. The web
+  admin is unchanged (null there).
+- **Where sites live:** `Documents/Crust/My site` (F057 adds more sites).
+  An empty folder gets a new site: settings plus a Home page with an h1
+  (commit "Start a new site"). A folder copied in without history gets
+  one (commit "Start the site's history"). `CRUST_SITE_FOLDER` overrides
+  the folder (tests).
+- **Self-check in CI:** `CRUST_SELF_CHECK=1` opens the real window on a
+  virtual screen (xvfb) and checks the builder shows, saving lands in the
+  folder with history, photos show, and outside files are refused. CI
+  runs it on every push (Linux only, normal minutes).
+- **Installers:** `.github/workflows/desktop-release.yml`, started by
+  hand, Mac (Intel + Apple silicon in one) and/or Windows; installers are
+  kept 30 days as workflow downloads. Unsigned (BLOCKED.md). App id
+  `app.crust.desktop`, a placeholder until the owner names the company
+  that signs it. The icon is a placeholder (green tile, white "C", crust
+  line) until there's a brand.
+- **Words:** "Sign out" is hidden in the app and saves say "Page saved"
+  instead of "saved to GitHub". Other screens still mention GitHub or
+  "this browser" (about 70 places); see Proposals → "App wording".
+  Publishing in the app answers "not available yet" until F056.
 
 ## 2026-10-31 — F054 Content store (Claude, reversible)
 
@@ -1778,3 +1883,338 @@ Workers (100k requests/day), R2 (10 GB). Only optional cost: a custom domain.
 - cPanel as the main platform — shared hosting can't reliably run Rust; it can
   be a publish target via FTP later.
 - Hosted multi-user version (SaaS) — would bring back server cost and risk.
+
+## 2026-11-01 — F057 Several sites (Claude, reversible)
+
+- **Direction A of the snapshot** (https://claude.ai/artifact/7nKCuGhkAuhTJ5gMEXxfw3,
+  `design/f057-several-sites-v1.html`): a Sites screen built from the
+  Pages screen's parts, reached by "All sites" at the start of the Pages
+  header. Switching is rare compared with editing, so it costs one click
+  instead of space on every screen. Wording follows the Pages screen:
+  "Restore" (not "Bring back"), "Keep site / Delete site".
+- **A site is a folder; its id is the folder's name.** The Crust folder
+  is `Documents/Crust` (F055's "My site" stays the first site, so
+  existing setups keep working). Folder names are made safe for Mac and
+  Windows (no `/\:*?"<>|`, no leading dot, no trailing dot or space, no
+  CON/PRN/…), and case-insensitively unique ("Bakery 2"). The open site
+  is remembered in `Crust/.sites.json`. `CRUST_SITE_FOLDER` still opens
+  one folder; its neighbours become the other sites.
+- **Names change through each site's history.** Rename and Duplicate
+  write `content/site.json` with a commit in that site's own `.crust`
+  history (the file commands take an optional `site`), then Rust moves
+  the folder. Renaming or deleting the open site reloads the builder,
+  because the site's name is read once at start.
+- **Duplicate copies everything but publish settings**: the whole
+  folder including history, minus `.crust/published` (and the future
+  `.crust/hosts.json` of F058); the copy's `baseUrl` is reset to the
+  placeholder so it can't publish over the original's domain. Per-site
+  publish settings for F058/F059 belong in the site's `.crust` folder.
+- **Recently deleted** is `Crust/.Recently deleted/<folder>`, with
+  `.crust/deleted.json` (name, time) inside. Folders older than 30 days
+  are removed when the list is read; folders without that note (put
+  there by hand) are never removed. Deleting the open site opens the most
+  recently edited other one, or a new empty "My site". No "delete now"
+  button: nothing is removed before its 30 days (can be added if asked).
+- **Duplicate site names are refused** in the dialogs (case-insensitive),
+  so two rows never look the same; folder numbering is the backstop.
+
+## 2026-11-01 — F058 Publish to Cloudflare Pages or Netlify (Claude, reversible)
+
+- **Direction A of the snapshot** (https://claude.ai/artifact/DMXMZc8NdDTNRXSFEBBuah,
+  `design/f058-publish-to-host-v1.html`): connect inside the Publish
+  card. The two hosts are visible before anything is set up
+  (recognition over recall); connecting happens where publishing does;
+  a guided two-step dialog (token, then address) beats a bare settings
+  form, and checks the token at step 1 so mistakes show early. Once
+  connected, Publish is the primary button; Export and Preview move
+  under "Or keep it on this computer".
+- **Where things are kept.** `.crust/hosts.json` in the site folder
+  holds host, account, project, address, last published, and the *name*
+  of a keychain entry; the token itself is in the system keychain
+  (service "Crust"). F057 already leaves `hosts.json` out of duplicates.
+  Reconnecting or disconnecting deletes the old token from the keychain.
+  Deleting a site leaves its token in the keychain (the site can be
+  restored for 30 days).
+- **Libraries** (all MIT/Apache/BSD/ISC): `ureq` 3 (HTTPS client) with
+  `rustls` + `ring` and the computer's own certificate store
+  (`rustls-platform-verifier`, so no bundled certificate list; the
+  bundled one, webpki-roots, is CDLA-Permissive and was left out);
+  `keyring` 3 (Mac Keychain, Windows Credential Manager; on Linux the
+  kernel keyring, which forgets on restart, fine since Linux isn't an
+  installer target); `blake3` (pure Rust) and `sha1_smol` for the hosts'
+  file hashes; `base64`. `ring` is "Apache-2.0 AND ISC".
+- **How uploads work.** Cloudflare Pages: the same direct-upload API its
+  own tool (wrangler) uses: upload token, ask which file hashes are
+  missing, upload only those (≤ 500 files / ~30 MB per request), then a
+  deployment with the manifest plus `_redirects`/`_headers`. Netlify:
+  file-digest deploy (SHA-1 per file), upload only the files it asks
+  for, then wait until the deploy is "ready". Both mean re-publishing
+  sends only changed files. Production branch "main" for new Cloudflare
+  projects. A connect with an existing project name in the person's own
+  account publishes into it.
+- **Cloudflare needs only the token**: the account comes from the token
+  (`GET /accounts`); with several accounts the dialog asks which one.
+  Token steps ask for Account · Cloudflare Pages · Edit; Netlify uses a
+  personal access token.
+- **Site address.** If the site's own address isn't set, publishing to a
+  host uses the host's address for canonical links and the sitemap, and
+  the card says so. A set address (own domain) always wins.
+- **Error kinds** shown by the card: token (wrong or expired: "Paste a
+  new token"), taken (offers name-2), name, gone (project deleted on the
+  host: "Connect again"), offline ("Nothing on the live site changed"),
+  problems (the same page checks as Export), other (the host's own
+  words and code).
+- **Tests** never touch a real host: a fake Cloudflare/Netlify server on
+  127.0.0.1 in `crates/crust-desktop/src/hosts/tests.rs`. The builder
+  accessibility check now also runs the app's Publish card and dialogs
+  in a browser with `scripts/fake-tauri.js` standing in for the app.
+- **CI time limit 35 → 45 minutes.** The `check` job took ~30 of 35
+  minutes on #48 and F058 adds rustls/ring to compile. The limit is a
+  ceiling; it costs nothing unless a run actually takes longer (Linux
+  minutes count 1×). If runs creep past ~35, better `target/` caching is
+  the next step.
+- **Not tested against the real hosts** from here (no account, and
+  tokens are the owner's). The API calls follow the hosts' public docs
+  and wrangler's upload format; the owner's first real publish is the
+  real test. Logged so a failure there is expected to be small (a field
+  name), not a design problem.
+
+## 2026-11-01 — F059 Publish by FTP or SFTP (Claude, reversible)
+
+- **Where it lives.** A third button in the app's Publish card, "Your
+  own web host · FTP or SFTP", next to Cloudflare Pages and Netlify.
+  No design snapshot (the feature doesn't ask for one); it follows
+  F058's direction A. One form, not steps: hosts hand out these details
+  together (welcome email or control panel), so splitting them adds
+  clicks without lowering the load. Order follows that email: how to
+  send files, server and port, username, password, folder, site address.
+- **SFTP first and recommended, then FTPS, then FTP.** Plain FTP works
+  but the dialog shows a warning box when it's chosen, and the card
+  keeps a one-line "⚠ Plain FTP: your password and files travel
+  unencrypted" while connected (F059: "warns"). No extra "I understand"
+  checkbox: the warning is visible at the moment of choosing and stays
+  visible after, which informs without adding a step.
+- **Only changed files.** `.crust/ftp-sent.json` remembers each file's
+  hash for one server + username + folder ("target"). Publishing sends
+  new or changed files, makes missing folders first, sends photos and
+  other files before pages (a page never points at a photo that isn't
+  there yet), then removes files Crust sent before that the site no
+  longer has. Files Crust never sent (a host's own files, a
+  verification file) are never touched. The memory is saved after a
+  failed publish too, so publishing again carries on. Another server or
+  folder starts over (sends everything, removes nothing). "Send every
+  file next time" (Change dialog) clears it, for when files were
+  changed on the server by hand. Left out of duplicates (F057) and
+  cleared on disconnect.
+- **Checks when connecting.** Crust signs in, writes a small
+  `.crust-check` file in the folder and removes it, so a wrong folder or
+  missing permission shows at once under the Folder field. Errors land
+  under the field they're about (server/port unreachable → Server;
+  login refused → Password; folder → Folder).
+- **SFTP server key.** The key's SHA-256 fingerprint is remembered when
+  connecting (trust on first use, like FTP apps do) and shown in the
+  Change dialog. If it changes, publishing stops before anything is
+  sent and says why (host moved servers, or someone pretending); "Check
+  the server details" re-connects and trusts the new key. SFTP signs in
+  by password, and by keyboard-interactive with the same password
+  (many hosts only offer that). SSH key files aren't supported yet.
+- **FTPS** is explicit TLS on the usual port (AUTH TLS), checked against
+  the computer's own certificate store; a certificate for another name
+  is refused with a hint to use the host's FTPS server name or SFTP.
+  Implicit FTPS (port 990) is left out (deprecated, rare).
+- **Site address** is typed in the form (https:// added if missing,
+  nothing after the domain, http:// allowed for hosts without HTTPS).
+  It's used like F058's host address: canonical links and the sitemap
+  use it unless Site settings has its own address.
+- **`_redirects` and `_headers` aren't uploaded** (only Cloudflare reads
+  them). Redirects on FTP hosts are a proposal (`.htaccess`).
+- **Libraries** (all permissive): `suppaftp` 12 (MIT OR Apache-2.0,
+  rustls + ring like ureq), `russh` 0.65 + `russh-sftp` 3 (Apache-2.0,
+  ring, pure Rust: no OpenSSL/libssh2 to build on Mac/Windows),
+  `rustls` + `rustls-platform-verifier` (already in via ureq), `tokio`
+  (already in via Tauri). russh's `rsa` feature stays on so servers
+  with RSA keys work; the `rsa` crate's known timing issue
+  (RUSTSEC-2023-0071) is about using an RSA private key, which Crust
+  never does (it only checks a server's signature). Test-only:
+  `libunftp` + `unftp-sbe-fs` + `unftp-core` (Apache-2.0, a real FTP/FTPS
+  server inside the tests), `rcgen` (test certificates), `async-trait`.
+  137 new packages in Cargo.lock, all MIT/Apache/BSD/ISC (`ring` is
+  "Apache-2.0 AND ISC", `winx` test-only "Apache-2.0 WITH
+  LLVM-exception").
+- **Tests against real servers in CI** (F059: "tested against a local
+  test server"): `cargo test` starts an FTP server (libunftp), an FTPS
+  one (with a test certificate authority) and an SFTP server (russh's
+  server side with a small file handler) on 127.0.0.1, so CI needs no
+  service containers. Never tried against a real host here.
+- **Also fixed** in the shared Change dialog: its text was split into
+  fragments on separate lines (a grid around mixed text); now two
+  sentences. Affects F058's version too.
+- **FTPS that breaks off is tried again (CI fix, 2026-11-01).** CI's
+  FTPS test failed about one run in five: the test server (libunftp)
+  answers "234" to AUTH TLS and switches to TLS a moment later, so a
+  quick client's first TLS bytes can be read as a command and answered
+  in plain text ("InvalidContentType"). Real hosts using libunftp can
+  do the same. Crust now tries a secure connection that broke off up to
+  three times (not a refused certificate, which still stops at once),
+  and no longer calls that a certificate problem. 0 failures in 100
+  local runs (8 in 40 before).
+
+## 2026-11-01 — F060 First run (Claude, reversible)
+
+- **Direction A of the snapshot** (https://claude.ai/artifact/Lx5SeC9B1GmSN3ztFebA3t,
+  `design/f060-first-run-v1.html`): one welcome screen with both choices
+  (start from, name) and one button, "Make my site". Not a wizard: two
+  decisions don't need Back/Next, and seeing both at once is recognition
+  over recall. Not the empty Sites screen: it opens on a list with
+  nothing in it.
+- **When it shows.** Only for a brand new Crust: the open site has no
+  settings, it's the only site, it has no pages, and nothing was ever
+  deleted (`isFirstRun`). Deleting every site still gives an empty "My
+  site" that starts blank, as before. If the app can't list its sites,
+  it starts blank too (no welcome screen rather than a wrong one).
+  Quitting halfway shows the welcome screen again next time, because
+  nothing was written yet.
+- **What "Make my site" does:** writes the blank site (settings + Home)
+  under the chosen name, renames the folder to match (`sites_rename`),
+  then applies the template through the same API steps as Pages → Start
+  from a template (photos, then pages). Then the window reloads into the
+  builder on Home with "To replace" open and focus on its heading (a
+  one-time flag in sessionStorage, `first-run/arrival.ts`). A blank
+  start lands on Home with no list. Running it again after a failure is
+  safe.
+- **Name field** suggests the template's own site name ("Harbour
+  Studio") or "My site", so Enter alone works; once the person types,
+  picking another start keeps their name.
+- **Starters only** (Harbour, Signal, Corner in that order), not the
+  builder's sample site, plus Blank. No page-by-page preview here; it's
+  in Start from a template any time later.
+- **The app's own error words.** The site folder's errors (from the Rust
+  side, e.g. "The disk is full.") now reach the builder as they are;
+  before, they showed as "Couldn't reach GitHub" (`tauri-folder.ts`).
+- **Template look not kept in the window.** After a template first run,
+  the window's working copy of colours and header/footer is cleared:
+  the look is in the site's settings already, and that copy is shared by
+  every site in the app (see the proposal "Browser copies in the app").
+- **The window self-check** (CI) now goes through the welcome screen
+  first: Blank, a new name, Make my site, and checks the builder opens
+  on the new site. Tried once by hand with Harbour in the real window:
+  photos added, builder on Home, "To replace" open with focus on its
+  heading.
+- **CI's self-check gets a Crust folder of its own.** CI pointed the app
+  at `$RUNNER_TEMP/crust-site`, so its "Crust folder" was the runner's
+  temp folder, full of other folders that count as sites; the welcome
+  screen rightly stayed away and the check failed. Now
+  `$RUNNER_TEMP/crust-home/crust-site` (reproduced and checked locally).
+- **Leftover:** the "Adding photos (3 of 10)" line can pause for a
+  moment while large photos are prepared (the same as Start from a
+  template).
+
+## 2026-11-02 — F061 Updates built in (Claude, reversible)
+
+- **Tauri's updater** (`tauri-plugin-updater`, MIT OR Apache-2.0), driven
+  from our own commands (`update_status`, `update_check`,
+  `update_download`, `update_restart` in `src/updates.rs`). The plugin's
+  own JavaScript commands aren't allowed in the window (no `updater:`
+  permission), so only our code decides when to download and install.
+- **Signed, and strict about it.** Every update is checked against the
+  key's public half before it's kept, and `requireSignedVersion` is on: a
+  signature must name the version the feed announces, so an old release
+  can't be passed off as a new one. Tested with keys made in the tests
+  and with a file signed by the real `tauri signer` (throwaway key; only
+  its public half and the signature are in the test).
+- **No key, no updates.** The public half is built in at release time
+  (repository variable `CRUST_UPDATE_PUBKEY`). A copy built without it
+  never looks ("This copy of Crust doesn't update itself"). Test builds
+  (debug) may point at another feed and key with `CRUST_UPDATE_URL` /
+  `CRUST_UPDATE_PUBKEY` when they start; release builds can't be
+  redirected that way.
+- **When it looks:** 15 seconds after opening, then at most once a day
+  (checked hourly while open; the last look is remembered in the
+  window's storage). By itself it stays quiet when offline or up to date;
+  "Check for updates" (Sites screen → Crust card) shows every outcome.
+- **Download in the background, install on quit.** A found update
+  downloads straight away; it's installed when Crust quits (Tauri's
+  `RunEvent::Exit`), so the next opening is the new version, like
+  browsers do. Why: an update never interrupts work (user control,
+  Nielsen #3), and nothing has to be decided. "Restart now" is only a
+  shortcut. On Windows the installer runs in passive mode (a small
+  progress window). If Site settings has unsaved changes, "Restart now"
+  says so first and turns into "Restart anyway" (it asks the page's own
+  leave warning, so it can't drift from it).
+- **Where it shows:** a banner on the Pages and Sites screens ("Crust
+  0.2.0 is ready", Restart now / What's new / Later) and the Crust card
+  on the Sites screen. Not over the builder: a floating notice there
+  could cover what someone is working on or has focused (WCAG 2.2
+  2.4.11), and it isn't needed because the update installs on quit
+  anyway. "Later" hides it until the next opening; then the Crust card
+  offers the buttons. The card's line is a polite live region (the
+  screen keeps one `status`).
+- **What's new** is plain lines (list marks and headings stripped, at
+  most 20 lines of 300 characters), shown as a list in a dialog with the
+  release date. Written per version in `crates/crust-desktop/whats-new.json`;
+  releasing fails if the version has no entry.
+- **Downloads site:** Cloudflare Pages project `crust-downloads` (free),
+  because a private repository's releases can't be downloaded publicly.
+  `scripts/updates-site.ts` makes `updates/latest.json` (Tauri's static
+  feed format), `<version>/<files>`, a download page, and `_headers`
+  (feed never cached). The "Desktop installers" workflow gained "Put on
+  the downloads site" (off by default, only with both platforms, so
+  every computer finds its update). If Cloudflare gives the project
+  another address, the run stops and says to set `CRUST_UPDATE_FEED`.
+  Cloudflare Pages takes files up to 25 MB; today's installers are well
+  under, but a much bigger app would need another home for them.
+- **The key:** a "Make update key" workflow (by hand, after typing
+  "make a new key") makes it with the same Tauri tool version, masks the
+  password, and hands the secret half over as a download that expires
+  after a day; the owner pastes it into secrets (`docs/setup-updates.md`).
+  The secret half never goes into the repository, the logs or chat.
+- **Builds:** with the key secret set, the installer build adds
+  `createUpdaterArtifacts` (the Mac `.app.tar.gz` and the Windows
+  installer, each with a `.sig`); a secret without the public variable
+  (or the other way round) stops the build with a plain message.
+- **Not done:** the Linux AppImage/deb aren't on the downloads site
+  (the installers workflow builds Mac and Windows only). Never tried
+  end to end with a real release (needs the key and a ~150-minute
+  installers run; the owner's call).
+
+## 2026-11-02 — F062 Premium templates in the gallery (owner + Claude)
+
+- **Direction A of the snapshot**, owner's pick ("I will go with your
+  recommendation, which is A", 2026-11-02;
+  https://claude.ai/artifact/B53eSPBXNaCJmAL6DNUeQs,
+  `design/f062-premium-templates-v1.html`): the gallery shows **Free**
+  first, then **Premium**, each a labelled group. The price is on every
+  premium card. Why: the cost is known before a click (no surprise at
+  the last step), and the free starters stay the gallery's main job.
+- **Same preview screen.** A premium card opens the same layout as a free
+  one (pages on the left, Desktop / Tablet / Phone on top), showing the
+  store's pictures instead of the live template (the file isn't on the
+  computer until bought). A page without a picture at a width says so.
+  Long pictures scroll inside a box that takes keyboard focus.
+- **Buying happens in the browser.** "Get this template · US$49" is a
+  link (new tab on the web); in the app it goes through a new command,
+  `open_link`, which opens only `https://` addresses. Screen readers hear
+  "(opens in your browser)". "Already bought it? Open the file" in the
+  preview opens a .crust file like "Open a template file…".
+- **The catalogue** (`apps/admin/src/templates/catalogue.ts`, format in
+  docs/spec.md) is read strictly: unknown fields dropped, secure links
+  only (or the catalogue's own site), at most 60 templates and 12 pages
+  each, a picture without a description isn't shown, a template with
+  nothing to show is left out. Loaded each time the gallery opens, no
+  cookies, 8-second limit. Offline: "Premium templates show here when
+  you're online."
+- **No store address yet.** `STORE_CATALOGUE_URL` is empty until the
+  store exists (F063 sets it): an address nobody owns yet could serve
+  anything. So today nothing extra shows. **Examples**:
+  `#/templates?examples` loads a bundled example catalogue
+  (`apps/admin/public/sample-catalogue/`, 480 KB, made by
+  `scripts/sample-catalogue.mjs` from Harbour and Corner), marked
+  "Examples: the Crust store isn't open yet", so the owner can try it.
+  Its "Get this template" opens a page saying the store isn't open.
+- **Premium cards are read out as "Olive, premium, US$49."** with the
+  visible name first (axe: label-in-name, WCAG 2.5.3); the price chip is
+  hidden from screen readers so it isn't read twice.
+- **First run stays free.** The welcome screen gets one line: "More
+  templates, including premium ones, are in Pages → Start from a
+  template."
+- Same gallery on the web admin and in the app.

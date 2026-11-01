@@ -1,0 +1,187 @@
+<title>Crust Publish On Your Computer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: same language as the earlier Crust snapshots. The three directions drawn as the Publish card on the app's Pages screen, then the states of the recommended one. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6; --field:#85858f;
+  --accent:#4338ca; --accent-ink:#ffffff; --accent-soft:#e7e6fb; --ok:#127a4b; --ok-soft:#e3f4ea; --warn:#8a5a00; --warn-soft:#fdf3dc; --bad:#b42318; --bad-soft:#fdecea;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --ok-soft:#173326; --warn:#f2c35b; --warn-soft:#352a12; --bad:#ff8a7d; --bad-soft:#3a1d1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --ok-soft:#173326; --warn:#f2c35b; --warn-soft:#352a12; --bad:#ff8a7d; --bad-soft:#3a1d1b; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:40px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,5vw,44px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:24px;font-weight:600}
+h3{font-size:18px;font-weight:600}
+p{margin:0;max-width:65ch}
+ul{margin:0;padding-left:20px}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.intro,section{display:grid;gap:16px}
+.lead{color:var(--soft);font-size:18px}
+.soft{color:var(--soft)}
+.dirs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;align-items:start}
+.dir{display:grid;gap:12px;min-width:0}
+.dir header{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.pick{font:500 11px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-radius:999px;background:var(--accent);color:var(--accent-ink)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:12px}
+.dir.rec .card{border:2px solid var(--accent)}
+.card h4{font:600 20px/1.2 var(--f-display);margin:0}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:600 15px/1 var(--f-body);padding:12px 16px;min-height:44px;border-radius:8px;border:1px solid var(--field);background:var(--panel);color:var(--ink)}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:var(--panel)}
+.btn.split{border-top-right-radius:0;border-bottom-right-radius:0}
+.btn.caret{border-top-left-radius:0;border-bottom-left-radius:0;margin-left:-9px;padding-inline:12px}
+.menu{border:1px solid var(--line);border-radius:8px;padding:6px;display:grid;gap:2px;width:max-content;max-width:100%;box-shadow:0 8px 24px rgb(0 0 0/.12);background:var(--panel)}
+.menu span{padding:8px 10px;border-radius:6px}
+.menu span:first-child{background:var(--accent-soft)}
+.steps{list-style:none;padding:0;display:grid;gap:8px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;counter-increment:s;padding:8px 0;border-top:1px solid var(--line)}
+.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);font:600 13px/1 var(--f-mono)}
+.steps .btn{padding:8px 12px;min-height:36px;font-size:14px}
+.status{font-size:15px}
+.status b{color:var(--ok)}
+.help{font-size:14px;color:var(--soft)}
+.path{font:500 13px/1.4 var(--f-mono);overflow-wrap:anywhere}
+.box{border-radius:8px;padding:12px 14px;display:grid;gap:8px;font-size:15px}
+.box.warn{background:var(--warn-soft);border:1px solid var(--warn)}
+.box.bad{background:var(--bad-soft);border:1px solid var(--bad)}
+.box.ok{background:var(--ok-soft);border:1px solid var(--ok)}
+.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.why div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:8px;align-content:start}
+.states{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;align-items:start}
+.state{display:grid;gap:8px;min-width:0}
+.dialog{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:20px;display:grid;gap:12px;box-shadow:0 12px 40px rgb(0 0 0/.18)}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--ink);border-radius:50%;vertical-align:-2px;margin-right:6px}
+@media (prefers-reduced-motion: no-preference){.spin{animation:r 1s linear infinite}@keyframes r{to{transform:rotate(360deg)}}}
+</style>
+
+<div class="wrap">
+  <div class="intro">
+    <p class="eyebrow">F056 · Milestone 6 · design snapshot</p>
+    <h1>Publish on your computer</h1>
+    <p class="lead">In the app, the Publish card on the Pages screen turns your saved pages into a finished website without GitHub: <b>Preview in browser</b> opens it in Safari or Chrome, <b>Export site folder</b> writes it to a folder you choose. Publishing straight to a host comes with F058 and F059. Three ways to lay out the card; A is recommended and being built.</p>
+  </div>
+
+  <section aria-labelledby="dirs-h">
+    <h2 id="dirs-h">Three directions</h2>
+    <div class="dirs">
+      <div class="dir rec">
+        <header><h3>A · Two buttons, same card</h3><span class="pick">Recommended</span></header>
+        <div class="card" aria-label="Direction A mock">
+          <h4>Publish</h4>
+          <p class="soft">Crust turns your saved pages into a finished website, right here on your computer. Publishing it to a web host comes in a later update.</p>
+          <div class="btns"><span class="btn primary">Export site folder</span><span class="btn">Preview in browser</span></div>
+          <p class="help">Checks every page first: titles, headings, photo descriptions.</p>
+        </div>
+        <p class="soft">Same place and shape as the web Publish card. Both actions always visible.</p>
+      </div>
+
+      <div class="dir">
+        <header><h3>B · Three steps</h3></header>
+        <div class="card" aria-label="Direction B mock">
+          <h4>Publish</h4>
+          <ol class="steps">
+            <li><span>Check your pages</span><span class="btn">Check</span></li>
+            <li><span>Look at it in your browser</span><span class="btn">Preview</span></li>
+            <li><span>Save the finished site</span><span class="btn">Export</span></li>
+          </ol>
+        </div>
+        <p class="soft">Teaches the order, but adds a step nobody needs: preview and export already check.</p>
+      </div>
+
+      <div class="dir">
+        <header><h3>C · One split button</h3></header>
+        <div class="card" aria-label="Direction C mock">
+          <h4>Publish</h4>
+          <div class="btns"><span class="btn primary split">Export site folder</span><span class="btn primary caret" aria-hidden="true">▾</span></div>
+          <div class="menu"><span>Export site folder</span><span>Preview in browser</span></div>
+        </div>
+        <p class="soft">Compact, but hides Preview behind a menu; it's the action you'll use most.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="why-h">
+    <h2 id="why-h">Why A</h2>
+    <div class="why">
+      <div><h3>Consistency</h3><p>Same card, same spot, same heading as on crust-admin.pages.dev (Nielsen #4, Jakob's law). When F058 adds "Publish to Cloudflare Pages", it becomes the primary button and these two step back.</p></div>
+      <div><h3>Recognition over recall</h3><p>Both actions are visible, with their consequence in the label: one opens your browser, one writes files. No menu to remember (C) and no extra "Check" step (B).</p></div>
+      <div><h3>Preview never blocks</h3><p>Preview shows the site even with problems, and lists them. Only Export, the "finished" step, stops on them, like publishing does. Explore freely, fix before it counts.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="states-h">
+    <h2 id="states-h">Direction A, state by state</h2>
+    <div class="states">
+      <div class="state">
+        <h3>Working</h3>
+        <div class="card">
+          <div class="btns"><span class="btn primary" aria-disabled="true">Export site folder</span><span class="btn">Preview in browser</span></div>
+          <p class="status"><span class="spin" aria-hidden="true"></span>Building your site: pages, photos, search…</p>
+        </div>
+        <p class="help">Buttons stay focusable but don't start a second build. A screen reader hears the status line.</p>
+      </div>
+
+      <div class="state">
+        <h3>Preview with problems</h3>
+        <div class="card">
+          <p class="status"><b>Opened in your browser.</b> 8 pages, 10 photos, search on 9 pages.</p>
+          <div class="box warn"><p><strong>2 things to fix before you export:</strong></p><ul><li>Page /about/: an image has no description.</li><li>Page /menu/: heading levels skip from H2 to H4.</li></ul></div>
+          <p class="help">Changed something? Press Preview again and reload the browser tab.</p>
+        </div>
+      </div>
+
+      <div class="state">
+        <h3>Exported</h3>
+        <div class="card">
+          <div class="box ok"><p><strong>Exported.</strong> 8 pages, 10 photos and search are in</p><p class="path">/Users/hosni/Desktop/Harbour website</p><div class="btns"><span class="btn">Show in Finder</span></div></div>
+          <p class="help">Upload everything in that folder to any web host.</p>
+        </div>
+      </div>
+
+      <div class="state">
+        <h3>Folder already there</h3>
+        <div class="dialog" role="presentation">
+          <h4 style="font:600 20px/1.2 var(--f-display);margin:0">Replace “Harbour website”?</h4>
+          <p>There's already a folder with this name from an earlier export. Replacing it puts the newest version of your site there.</p>
+          <div class="btns"><span class="btn primary">Replace</span><span class="btn">Cancel</span></div>
+        </div>
+        <p class="help">Crust only ever replaces a folder that holds a website. Anything else is left alone, and it asks you to pick another place.</p>
+      </div>
+
+      <div class="state">
+        <h3>Export stopped</h3>
+        <div class="card">
+          <div class="box bad" role="presentation"><p><strong>Nothing was exported.</strong> Fix this problem on 1 page and export again:</p><ul><li>Page /about/: an image has no description.</li></ul></div>
+        </div>
+      </div>
+
+      <div class="state">
+        <h3>Site address not set</h3>
+        <div class="card">
+          <p class="help">Your site's address isn't set yet, so links shared from it (and the sitemap) use example.pages.dev. Set it in <u>Site settings → Site address</u>.</p>
+        </div>
+        <p class="help">Shown only while the address is the placeholder.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="a11y-h">
+    <h2 id="a11y-h">Accessibility</h2>
+    <ul>
+      <li>Status changes are announced (role="status"); a stopped export is an alert and lists each problem with its page.</li>
+      <li>"Preview in browser" says it opens another app, for screen readers too. Buttons are 44 px tall (WCAG 2.5.8).</li>
+      <li>The Replace dialog takes focus on Replace, closes with Escape, and returns focus to Export site folder (2.4.3).</li>
+      <li>The spinner stops with reduced motion; the words carry the state, not the spinner.</li>
+    </ul>
+  </section>
+</div>

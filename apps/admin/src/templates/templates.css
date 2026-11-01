@@ -25,7 +25,7 @@
 .tp-back { border: 0; background: none; font: inherit; cursor: pointer; }
 .st-title[tabindex="-1"]:focus { outline: none; }
 .tp-detail { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: calc(100dvh - 61px); }
-.tp-pages { padding: 16px; border-right: 1px solid var(--st-divider); background: var(--st-panel); display: grid; align-content: start; gap: 8px; }
+.tp-pages { min-width: 0; overflow-wrap: anywhere; padding: 16px; border-right: 1px solid var(--st-divider); background: var(--st-panel); display: grid; align-content: start; gap: 8px; }
 .tp-pages ul { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 2px; }
 .tp-pages button {
   display: grid; width: 100%; min-height: 44px; padding: 8px 12px; text-align: left;
@@ -66,3 +66,19 @@
   .tp-pages ul { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
   .tp-stage { padding: 16px; }
 }
+
+/* F062: Free and Premium groups, premium cards and their pictures. */
+.tp-group { margin: 0; font-size: 1.125rem; font-weight: 600; }
+.tp-premium { display: grid; gap: 12px; margin-top: 16px; }
+.tp-group-note { margin: 0; color: var(--st-muted); font-size: 0.875rem; max-width: 65ch; }
+.tp-thumb-picture img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.tp-price { justify-self: start; margin-top: 4px; padding: 4px 10px; border: 1px solid var(--st-text); border-radius: 999px; font-size: 0.875rem; font-weight: 600; }
+.tp-offline { margin: 16px 0 0; padding: 12px 16px; border: 1px dashed var(--st-border); border-radius: 12px; color: var(--st-muted); font-size: 0.875rem; }
+.tp-get { text-decoration: none; display: inline-flex; align-items: center; }
+.tp-bought { display: grid; gap: 6px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--st-divider); font-size: 0.875rem; }
+.tp-bought label { font-weight: 600; }
+.tp-bought input { width: 100%; min-width: 0; font: inherit; }
+.tp-shot:focus-visible { outline: 2px solid var(--st-focus); outline-offset: 2px; }
+.tp-shot { margin: 0 auto; max-height: 70dvh; overflow-y: auto; border: 1px solid var(--st-divider); border-radius: 8px; background: #fff; }
+.tp-shot img { display: block; width: 100%; height: auto; }
+.tp-no-picture { margin: 0; color: var(--st-muted); }

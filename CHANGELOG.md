@@ -4,6 +4,94 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Premium templates in the template gallery (F062).** Pages → Start
+  from a template now has two groups: **Free** (the starters, as
+  before) and **Premium**, templates from the Crust store with the price
+  on each card. A premium template opens the same preview as a free one,
+  with pictures of its pages at desktop, tablet and phone width, and a
+  **Get this template** button that opens the store in your browser.
+  Already bought one? **Open the file** right there. Without internet,
+  the gallery shows the free templates and one line saying premium ones
+  show when you're online. The store isn't open yet, so for now you can
+  see it with examples: add `?examples` to the gallery's address
+  (`#/templates?examples`).
+
+- **The app keeps itself up to date (F061).** Crust checks for a new
+  version a little after it opens (at most once a day), downloads it in
+  the background, and installs it the next time you open Crust, so an
+  update never interrupts your work and never touches your sites. When
+  one is ready, the Pages and Sites screens say so: **Restart now** to
+  get it straight away, **What's new** for the list of changes, or
+  **Later**. The Sites screen has a **Crust** card with the version and
+  **Check for updates**. Updates are signed, and Crust refuses any that
+  aren't. Needs the update key to be set up first
+  (`docs/setup-updates.md`); until then the app says it doesn't update
+  itself.
+
+- **A welcome screen the first time the app opens (F060).** A brand new
+  Crust greets you with one screen: pick a start (Harbour, Signal,
+  Corner, or Blank), check the site's name (it suggests one), and press
+  **Make my site**. You land in the builder on the Home page with the
+  **To replace** list already open, showing the sample words and photos
+  to swap for your own. No account, nothing to connect. It shows only
+  once; after that the app opens straight into your site. Everything
+  works with the keyboard (arrow keys move between the starts, Enter
+  makes the site).
+
+- **Publish to your own web host by FTP or SFTP (F059).** In the app,
+  the Publish card has a third choice, **Your own web host**, for the
+  hosting you already pay for. Fill in the details from your host's
+  welcome email (SFTP, FTPS or FTP; server; username; password; the
+  folder, often public_html; and the site's address) and press **Check
+  and connect**: Crust signs in and checks it can save files there
+  before anything is kept. Then **Publish** sends only the files that
+  changed since last time, and removes pages you deleted (it never
+  touches files it didn't put there). Plain FTP works but warns that the
+  password travels unencrypted. The password stays in your computer's
+  keychain. For SFTP, Crust remembers the server's key and stops if it
+  ever changes. **Send every file next time** (under Change or
+  disconnect) is there for when files were changed on the server by
+  hand.
+- **Publish to Cloudflare Pages or Netlify (F058).** In the app, the
+  Publish card now offers both hosts. Press one, follow the four steps
+  to make a token on the host's website (a button opens the right page),
+  paste it, and pick your address, e.g. harbour-studio.pages.dev. From
+  then on **Publish** puts the site online in one press and shows how far
+  the upload is; only changed files are sent. The token stays in your
+  computer's keychain, never in the site folder, so a duplicated or
+  shared site never carries it. If the token expires, Publish says so
+  and lets you paste a new one. **Change or disconnect** moves the site
+  to another address or host. Export site folder and Preview in browser
+  are still there, under "Or keep it on this computer".
+- **Several sites in the app (F057).** Keep one site per client. The
+  Pages screen has an **All sites** link that opens **Your sites**: every
+  site with its page count and when it was last edited, the open one
+  marked "Open". From there: **New site** (name it, and it opens with a
+  Home page), **Rename**, **Duplicate** (same pages, photos and history,
+  but no site address or publish settings, so it never publishes over
+  the original) and **Delete**. A deleted site waits in **Recently
+  deleted** for 30 days and can be restored; your live website is never
+  touched. Each site is its own folder in Documents → Crust, and the app
+  opens the one you used last.
+- **Publish on your computer (F056).** In the app, the Publish card on
+  the Pages screen has two buttons. **Preview in browser** builds your
+  whole site (pages, blog, photos in every size, site search) and opens
+  it in Safari or Chrome, exactly as visitors will see it; anything that
+  would stop a publish is listed underneath, but you still see the site.
+  **Export site folder** asks where to put it and writes a finished
+  website folder ("Harbour Studio website") that you can upload to any
+  web host. Exporting again asks before replacing the earlier export.
+  It's the same result as publishing from crust-admin. Publishing
+  straight to a host comes next (F058, F059).
+- **Crust as an app for Mac and Windows (F055, first step).** The builder
+  can now run in its own window instead of a browser. Your site is kept
+  in a folder on your computer (Documents → Crust → My site), and every
+  save is kept there too, so going back works as on the web. Nothing
+  needs GitHub or an account. The first time it opens, it starts a new
+  site with a Home page. Publishing from the app comes next (F056).
+  Installers are made by hand for testing and are not signed yet, so
+  your Mac will ask you to confirm the first time (right-click → Open).
+
 - **Signal and Corner have real photos (F053).** Signal opens dark on a
   full-width concert photo, shows work as photo tiles with the project
   name on each, and has a full-width photo band with one big line.

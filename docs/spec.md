@@ -151,6 +151,23 @@ missing Home page, a photo or linked section used but not included) and
 drops unknown fields. The site's address, redirects and history never go
 in.
 
+The store's catalogue (`catalogue.json`, added with F062; the store
+writes it from F063 on) lists premium templates for the gallery:
+```json
+{ "format": "crust-catalogue", "version": 1, "templates": [
+  { "id": "olive", "name": "Olive", "description": "…", "kind": "Restaurant", "price": "US$49",
+    "url": "https://…/olive/",
+    "pages": [{ "title": "Home", "path": "/", "pictures": [
+      { "width": "desktop", "src": "…/olive-home-desktop.jpg", "alt": "…" } ] }] } ] }
+```
+`width` is `desktop`, `tablet` or `phone`. Links are `https://` (or on
+the catalogue's own site, relative to it). Reading it (`readCatalogue`)
+drops unknown fields and leaves out any template with a bad id, name,
+price or link, any picture without `alt`, and templates with no
+picture at all. The app has no catalogue address until the store
+exists (`STORE_CATALOGUE_URL`); `#/templates?examples` shows a bundled
+example catalogue.
+
 `content/media/<file>` and `content/media.json` (optional, added with F034):
 uploaded photos (JPG, PNG, WebP; at most 2400 px) and their details.
 ```json

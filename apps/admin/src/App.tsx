@@ -39,6 +39,9 @@ import {
 } from "./pages/store";
 import { markUnpublished } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
+import { DesktopPublishPanel } from "./publish/DesktopPublishPanel";
+import { desktopHosts } from "./publish/hosts";
+import { desktopPublisher } from "./desktop/local-publish";
 import { PublishShortcut, usePendingCount } from "./publish/shortcut";
 import { SignOutLink } from "./sign-out";
 import { SaveStatus, useSaveStatus } from "./save-status";
@@ -62,6 +65,9 @@ import { TemplatesScreen } from "./templates/TemplatesScreen";
 import { loadSavedTokens, sameTokens, saveTokens } from "./tokens-store";
 import { loadSavedAddress, loadSavedChrome, sameChrome, saveAddress, saveChrome, siteToSave } from "./chrome-store";
 import { SiteChromeContext, withSiteChrome } from "./chrome-canvas";
+import { desktopContent } from "./desktop/content";
+import { sitesApi, sitesInvoke } from "./sites/sites";
+import { SitesScreen } from "./sites/SitesScreen";
 import { withMediaFields } from "./media/fields";
 import { MediaPicker } from "./media/MediaPicker";
 import { BlogContext, withPostEditing } from "./posts/editing";
@@ -71,7 +77,8 @@ import { QuickEdit } from "./quick/QuickEdit";
 import { prefersQuickEdit } from "./quick/quick";
 import { fromPuckData as postFromPuckData, loadPost, saveLocalPost, toPuckData as postToPuckData } from "./posts/store";
 
-const site = siteJson as Site;
+/** The site's settings: built into the web admin, or from the desktop app's site folder (F055). */
+const site = (desktopContent()?.site ?? siteJson) as Site;
 /** The builder's blocks: "Replace me" marks (F046), rich text in Text blocks (F042), image fields with the media library (F034), visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
 const editorConfig = withSiteChrome(withSettingsTabs(withPlaceholderEditing(withResponsiveEditing(withSectionEditing(withItemEditing(withMediaFields(withRichText(withLinkedSectionFields(config)))))))));
 /** Posts (F035): the same blocks, with the post's details and top. */
@@ -115,6 +122,8 @@ export const saveFailed = (result: ApiResult<unknown>) => !result.ok && !result.
 
 /** What to tell the owner after a save: GitHub first, the browser copy as the safety net. */
 export function saveMessage(result: ApiResult<unknown>, savedLocally: boolean, what: string): string {
+  // F055: in the desktop app, saving means the site folder on the computer.
+  if (desktopContent()) return result.ok ? `${what} saved. Visitors see it after you publish.` : `${what} not saved: ${result.error}`;
   if (result.ok) return `${what} saved to GitHub. Visitors see it after you publish.`;
   const local = savedLocally ? " A copy is safe in this browser." : "";
   if (result.notConfigured) return `${what} saved in this browser. Saving to GitHub isn't switched on yet.`;
@@ -133,11 +142,14 @@ export type Route =
   /** F043: a linked section's own editor; `from` is where Back goes. */
   | { name: "section"; id: string; from: string }
   /** F048: Start from a template. */
-  | { name: "templates" };
+  | { name: "templates" }
+  /** F057: the desktop app's Sites screen. */
+  | { name: "sites" };
 
 export function parseRoute(hash: string): Route {
   if (hash.startsWith("#/settings")) return { name: "settings" };
   if (hash.startsWith("#/templates")) return { name: "templates" };
+  if (hash.startsWith("#/sites")) return { name: "sites" };
   if (hash.startsWith("#/posts")) return { name: "posts" };
   if (hash.startsWith("#/post?")) {
     const slug = new URLSearchParams(hash.split("?")[1] ?? "").get("slug");
@@ -289,6 +301,12 @@ export function App() {
         <MediaPicker />
       </MyLayoutsProvider>
     );
+  }
+
+  if (route.name === "sites") {
+    const invoke = sitesInvoke();
+    // Only the desktop app keeps several sites; the web admin is one site.
+    if (invoke) return <SitesScreen api={sitesApi(invoke)} openName={site.name} />;
   }
 
   if (route.name === "templates") {
@@ -465,6 +483,7 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
   return (
     <PageList
       siteName={site.name}
+      allSites={desktopContent() !== null}
       rows={rows && markUnpublished(rows, changes)}
       loadError={error}
       onRetry={reload}
@@ -489,6 +508,10 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
       }}
       notice={<TemplateBanner githubOn={githubOn} />}
     >
+      {desktopPublisher() ? (
+        // F056: in the desktop app the site is built on the computer.
+        <DesktopPublishPanel publisher={desktopPublisher()!} siteUrl={loadSavedAddress(site.baseUrl)} hosts={desktopHosts()} />
+      ) : (
       <PublishPanel
         githubOn={githubOn === true}
         siteUrl={loadSavedAddress(site.baseUrl)}
@@ -499,6 +522,7 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
         onSaveDrafts={saveAllDrafts}
         onFinished={reload}
       />
+      )}
     </PageList>
   );
 }

@@ -568,3 +568,131 @@ to "Log".
   photo height bug fixed (`.cr-card-media`). done_check exit 0 (all three
   templates pass contrast, headings, axe at three widths, Lighthouse:
   Corner 100). 865 JS tests pass.
+
+
+- 2026-11-01 — F055 Desktop app shell built (branch `f055-desktop-shell`,
+  from main). `crates/crust-desktop` (Tauri 2) opens the builder in a
+  window; the site lives in Documents/Crust/My site with its own history
+  (F054); the builder's server handlers run inside the window. CI now
+  opens the real window on a virtual screen and checks saving, history,
+  photos and the folder fence (8 checks, all pass). Mac/Windows
+  installers: Actions → "Desktop installers" → Run (by hand, ~150 counted
+  minutes, unsigned). done_check exit 0; 879 JS + 12 desktop Rust tests.
+  **Owner can try:** nothing in the browser. If you want the app on your
+  Mac now, say "build the Mac installer" and Claude starts the workflow
+  (it uses about 150 of the 2,000 free minutes); open it with
+  right-click → Open the first time. Window screenshot:
+  design/f055-app-window.png. Next: F056 Publish on your computer.
+
+- 2026-11-01 — F056 Publish on your computer built (branch
+  `f056-publish-on-computer`, stacked on F055 / PR #46). In the app, the
+  Publish card offers **Export site folder** and **Preview in browser**
+  (design snapshot https://claude.ai/artifact/JdsQXqRu8kTu5KwQQ8qcb9,
+  direction A built; screenshot design/f056-app-publish-card.png). The
+  builder renders with the same code as the publish pipeline (byte-for-
+  byte the same files on Harbour, Signal and Corner); the app checks,
+  resizes photos and builds search with crust-publish and Pagefind as
+  libraries. done_check exit 0; 898 JS + 24 desktop + 23 publish Rust
+  tests; the window self-check (11 checks) now also builds, previews and
+  exports. **Owner can try:** only in the app (Mac installer by hand,
+  ~150 counted minutes; ask Claude). The web admin is unchanged.
+
+
+- 2026-11-01 — F057 Several sites built (branch `f057-several-sites`,
+  stacked on F056 / PR #47). The app keeps one folder per site in
+  Documents/Crust and opens the one used last. A **Sites screen**
+  (Pages → "All sites") lists them with Open, New site, Rename,
+  Duplicate, Delete, and Recently deleted (30 days, then removed for
+  good). Design snapshot https://claude.ai/artifact/7nKCuGhkAuhTJ5gMEXxfw3
+  (direction A built); screenshot design/f057-sites-screen.png.
+  done_check exit 0; 920 JS + 37 desktop Rust tests; the window
+  self-check (14 checks) now also makes, renames, copies, deletes and
+  restores a site. **Owner can try:** only in the app (Mac installer by
+  hand, ~150 counted minutes; ask Claude). The web admin is unchanged
+  (one site, no Sites screen).
+
+- 2026-11-01 — F058 Publish to Cloudflare Pages or Netlify built (branch
+  `f058-publish-to-host`, stacked on F057 / PR #48). In the app, the
+  Publish card offers **Cloudflare Pages** and **Netlify**: a short
+  dialog shows how to make a token on the host's site (with a button
+  that opens that page), checks the pasted token straight away, then
+  asks for the address (harbour-studio.pages.dev). After that the card
+  has one **Publish** button, says where the site goes and when it last
+  went there, and shows upload progress ("Uploading 14 of 38 files");
+  only changed files are sent. The token is kept in the Mac Keychain
+  (Windows: Credential Manager), never in the site folder. Clear
+  messages for a wrong token, an expired token ("Paste a new token"), a
+  taken address (offers a free one), a project deleted on the host, no
+  internet, and page problems. Design snapshot
+  https://claude.ai/artifact/DMXMZc8NdDTNRXSFEBBuah (direction A built);
+  screenshots design/f058-*.png. done_check exit 0; 948 JS + 70 desktop
+  Rust tests (the hosts are played by a fake server on the computer, so
+  no real account is touched). CI's time limit raised from 35 to 45
+  minutes (DECISIONS F058). **Owner can try:** only in the app (Mac
+  installer by hand, ~150 counted minutes; ask Claude), with your own
+  free Cloudflare or Netlify account. The web admin is unchanged.
+
+- 2026-11-01 — F059 Publish by FTP or SFTP built (branch
+  `f059-ftp-sftp`, stacked on F058 / PR #49). In the app, the Publish
+  card offers a third choice, **Your own web host (FTP or SFTP)**. One
+  form takes the details from the host's welcome email (SFTP
+  recommended, FTPS, or FTP with a visible warning), signs in and
+  checks it can write in the folder before saving anything. **Publish**
+  then sends only new or changed files (photos first, pages last) and
+  removes files it sent before that are gone; files it didn't send are
+  never touched. Password in the keychain. SFTP remembers the server's
+  key and stops if it changes. "Send every file next time" in the
+  Change dialog. No snapshot (the feature doesn't ask for one);
+  screenshots design/f059-*.png. done_check exit 0; 960 JS + 88 desktop
+  Rust tests, 18 of them against real FTP, FTPS and SFTP servers started
+  inside the tests. Builder accessibility check covers four new screens
+  (no issues). **Owner can try:** only in the app, with your own web
+  host's FTP or SFTP details (any shared hosting). Never tried against a
+  real host here; if it fails, the message says what the server said.
+
+- 2026-11-01 — F060 First run built (branch `f060-first-run`, stacked
+  on F059 / PR #50). A brand new Crust app opens on a welcome screen:
+  pick Harbour, Signal, Corner or Blank, name the site (suggested from
+  the template), **Make my site**, and land in the builder on Home with
+  **To replace** open and focus on its heading. Shown only when there is
+  one empty site and nothing was ever deleted. Design snapshot
+  https://claude.ai/artifact/Lx5SeC9B1GmSN3ztFebA3t (direction A built);
+  screenshots design/f060-*.png. done_check exit 0. The app's window
+  self-check in CI now goes through the welcome screen; tried by hand in
+  the real window with Harbour too. Side fix: the app's own error words
+  (e.g. "The disk is full.") now show instead of "Couldn't reach
+  GitHub". Found, not fixed: unsaved colours and drafts are shared
+  between sites in the app (DECISIONS Proposals, "Browser copies in the
+  app"). **Owner can try:** only in the app, on a computer that never
+  had Crust (or after moving the Documents/Crust folder away).
+
+- 2026-11-02 — F061 Updates built in (branch `f061-updates`, stacked on
+  F060 / PR #51). The app checks for a newer Crust 15 s after opening
+  (then at most daily), downloads it in the background, checks its
+  signature, and installs it when Crust quits; a banner on the Pages and
+  Sites screens offers Restart now / What's new / Later, and the Sites
+  screen's Crust card has Check for updates. Releases go to a free
+  Cloudflare Pages site (`crust-downloads`) through the Desktop
+  installers workflow ("Put on the downloads site", off by default).
+  New "Make update key" workflow and owner guide `docs/setup-updates.md`
+  (BLOCKED.md updated). No snapshot (not asked for); screenshots
+  design/f061-*.png. done_check exit 0: 101 desktop Rust tests (11 for
+  updates, against a fake downloads site, including a file signed by
+  the real Tauri tool) and 28 JS tests for updates; builder
+  accessibility check covers three new screens (no issues). **Owner can
+  try:** nothing yet; it needs the update key (docs/setup-updates.md)
+  and a release run, both your call.
+
+- 2026-11-02 — F062 Premium templates in the gallery (branch
+  `f062-premium-templates`, stacked on F061 / PR #52). Owner picked
+  direction A of https://claude.ai/artifact/B53eSPBXNaCJmAL6DNUeQs: Free
+  first, then Premium with prices; premium previews use the store's
+  pictures at three widths; "Get this template" opens the store in the
+  browser; "Already bought it? Open the file". Offline: one quiet line.
+  No store address yet, so a bundled example catalogue shows at
+  `#/templates?examples`. Screenshots design/f062-*.png. done_check
+  exit 0 (18 catalogue tests; builder accessibility check covers three
+  new screens, which caught and fixed two issues). **Owner can try:**
+  open the preview link's `#/templates?examples`, open "Example:
+  Studio", switch widths, press Get this template. Needs
+  `reviewed: true` from you.
