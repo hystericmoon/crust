@@ -5,8 +5,9 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-01 (Jakarta): F060 First run built and passing on
-branch `f060-first-run` (stacked on `f059-ftp-sftp` / PR #50), PR #51.
+Last updated: 2026-11-02 (Jakarta): F060 First run built, passing and
+CI green on branch `f060-first-run` (stacked on `f059-ftp-sftp` / PR
+#50), PR #51.
 F059 is PR #50 (on #49), F058 PR #49 (on #48), F057 PR #48 (on #47),
 F056 PR #47 (on #46), F055 PR #46, F053 PR #45 (none merged; the owner
 merges). Next: F061 Updates built in (no snapshot needed; the update
@@ -94,7 +95,7 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | F057 Several sites | built, passes, CI green | `f057-several-sites`, PR #48 (stacked on #47) |
 | F058 Publish to Cloudflare Pages or Netlify | built, passes, CI green | `f058-publish-to-host`, PR #49 (stacked on #48) |
 | F059 Publish by FTP or SFTP | built, passes, CI green | `f059-ftp-sftp`, PR #50 (stacked on #49) |
-| F060 First run | built, passes | `f060-first-run`, PR #51 (stacked on #50) |
+| F060 First run | built, passes, CI green | `f060-first-run`, PR #51 (stacked on #50) |
 
 - **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in
@@ -215,7 +216,17 @@ The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
    welcome screen or site, `main.tsx` renders one or the other. The
    fake app for tests moved to `sites/fake-app.ts`. `fake-tauri.js` takes
    `firstRun: true`. The window self-check (`self_check.js`) goes
-   through the welcome screen first (Blank), so CI covers it.
+   through the welcome screen first (Blank), so CI covers it; CI gives
+   it its own Crust folder (`$RUNNER_TEMP/crust-home/crust-site`),
+   because other folders beside the site count as sites.
+   **CI time warning:** on #51 the `check` job took 41 of its 45
+   minutes (a cold Rust cache after the FTPS fix; #50 took ~5 with a
+   warm one). If F061 adds Rust (tauri-plugin-updater), expect it to
+   cross 45: improve the `target/` cache or raise the limit, log it in
+   DECISIONS and mention it to the owner (free minutes).
+   **F059 CI fix (on #50):** FTPS connections that break off are tried
+   up to three times (libunftp switches to TLS late); see DECISIONS
+   F059, last bullet.
    **Next: F061 Updates built in** (Tauri updater; update notes on a
    free Cloudflare Pages site; the signing key is BLOCKED.md, so build
    and test with a test key; done_check `cargo test -p crust-desktop &&
