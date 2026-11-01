@@ -129,3 +129,25 @@
 .pg-placeholders ul { margin: 6px 0; padding-left: 20px; }
 .pg-placeholders li { margin: 2px 0; overflow-wrap: anywhere; }
 .pg-placeholders a { color: var(--st-text); text-underline-offset: 0.2em; }
+
+/* F056: the Publish card in the desktop app. */
+.dp-help { margin: 8px 0 0; }
+.dp-status:empty { display: none; }
+.dp-status { margin: 12px 0 0; display: grid; gap: 8px; }
+.dp-status p { margin: 0; }
+.dp-ok { color: var(--st-ok); }
+.dp-box { margin: 12px 0 0; padding: 12px 14px; border-radius: 8px; display: grid; gap: 6px; }
+.dp-status .dp-box { margin: 0; }
+.dp-box p { margin: 0; }
+.dp-box ul { margin: 0; padding-left: 20px; }
+.dp-box li { overflow-wrap: anywhere; }
+.dp-warn { border: 2px dashed var(--st-border); }
+.dp-done { border: 1px solid var(--st-ok); }
+.dp-failed { border: 1px solid var(--st-danger); background: var(--st-danger-bg); color: var(--st-danger); }
+.dp-path { overflow-wrap: anywhere; }
+.dp-spin { display: inline-block; width: 14px; height: 14px; margin-right: 8px; vertical-align: -2px; border: 2px solid var(--st-border); border-top-color: var(--st-text); border-radius: 50%; }
+@media (prefers-reduced-motion: no-preference) {
+  .dp-spin { animation: dp-spin 1s linear infinite; }
+  @keyframes dp-spin { to { transform: rotate(360deg); } }
+}
+.dp-help a { color: var(--st-text); text-underline-offset: 0.2em; }

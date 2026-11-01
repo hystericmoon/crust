@@ -45,6 +45,21 @@
     });
     check("photos show from the site folder", loaded);
 
+    // F056: the site is built in the app (render, checks, search index) and served for a preview.
+    const built = await invoke("site_build", {
+      files: [
+        { path: "index.html", content: '<!doctype html><html lang="en"><head><title>Self check</title><meta name="description" content="Self check."></head><body><main data-pagefind-body><h1>Self check</h1></main></body></html>' },
+        { path: "404.html", content: '<!doctype html><html lang="en"><head><title>Not found</title><meta name="description" content="Not found."></head><body><main><h1>Not found</h1></main></body></html>' },
+      ],
+      baseUrl: "https://example.pages.dev",
+      preview: false,
+    });
+    check("the site is built in the app", built.pages === 1 && built.searchable >= 1, JSON.stringify(built));
+    const url = await invoke("site_preview", { open: false });
+    check("the preview has a local address", /^http:\/\/127\.0\.0\.1:\d+\/$/.test(url), url);
+    const exported = await invoke("site_export", { name: "Self check" });
+    check("the site exports to a folder", exported.status === "done" && exported.folder.endsWith("Self check website"), JSON.stringify(exported));
+
     let refused = false;
     try {
       await invoke("site_read", { path: "../outside.txt" });

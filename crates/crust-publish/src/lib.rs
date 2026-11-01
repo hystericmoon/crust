@@ -2,10 +2,13 @@
 //!
 //! Takes a folder of rendered HTML pages and finishes it into a deployable
 //! static site: validation, `sitemap.xml`, `robots.txt`, resized copies of
-//! library photos (F034), and (in later features) the search index.
+//! library photos (F034), and with the `search` feature the search index
+//! (Pagefind as a library, F056: the desktop app has no Node).
 
 pub mod media;
 pub mod redirects;
+#[cfg(feature = "search")]
+pub mod search;
 pub mod validate;
 
 use anyhow::{Context, Result, bail};
@@ -167,13 +170,28 @@ pub fn publish(site_dir: &Path, base_url: &str) -> Result<Report> {
 
 /// Like [`publish`], also writing `_redirects` for renamed pages (F015).
 pub fn publish_with_redirects(site_dir: &Path, base_url: &str, redirects: &[Redirect]) -> Result<Report> {
+    finish(site_dir, base_url, redirects, Checks::Stop).map(|(report, _)| report)
+}
+
+/// What to do when pages have problems.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Checks {
+    /// Stop with every problem listed: nothing is finished (publishing, exporting).
+    Stop,
+    /// Finish the site anyway and return the problems (a preview, F056).
+    Report,
+}
+
+/// Like [`publish_with_redirects`]; with [`Checks::Report`] the site is
+/// finished even when pages have problems, and they're returned.
+pub fn finish(site_dir: &Path, base_url: &str, redirects: &[Redirect], checks: Checks) -> Result<(Report, Vec<Issue>)> {
     let base_url = normalize_base_url(base_url)?;
     let pages = page_paths(site_dir)?;
     if pages.is_empty() {
         bail!("No pages found in {}. Add at least one page before publishing.", site_dir.display());
     }
     let issues = validate_site(site_dir)?;
-    if !issues.is_empty() {
+    if !issues.is_empty() && checks == Checks::Stop {
         bail!(issues_message(&issues));
     }
     let plan = plan_redirects(redirects, &pages)?;
@@ -184,7 +202,7 @@ pub fn publish_with_redirects(site_dir: &Path, base_url: &str, redirects: &[Redi
     if !plan.file.is_empty() {
         fs::write(site_dir.join("_redirects"), &plan.file).context("Couldn't write _redirects")?;
     }
-    Ok(Report { pages, redirects: plan.active, skipped_redirects: plan.skipped })
+    Ok((Report { pages, redirects: plan.active, skipped_redirects: plan.skipped }, issues))
 }
 
 #[cfg(test)]
@@ -211,6 +229,19 @@ mod tests {
         assert!(xml.contains("<loc>https://a.dev/q&amp;a/</loc>"));
         assert!(xml.starts_with("<?xml"));
         assert!(xml.trim_end().ends_with("</urlset>"));
+    }
+
+    #[test]
+    fn a_preview_is_finished_with_its_problems_listed() {
+        let dir = tempfile::tempdir().unwrap();
+        // No meta description: a problem that stops publishing.
+        fs::write(dir.path().join("index.html"), "<html lang=\"en\"><head><title>Home</title></head><body><main><h1>Hi</h1></main></body></html>").unwrap();
+        assert!(finish(dir.path(), "https://a.dev", &[], Checks::Stop).is_err());
+        assert!(!dir.path().join("sitemap.xml").exists(), "a stopped publish writes nothing");
+        let (report, issues) = finish(dir.path(), "https://a.dev", &[], Checks::Report).unwrap();
+        assert_eq!(report.pages, vec!["/"]);
+        assert!(!issues.is_empty());
+        assert!(dir.path().join("sitemap.xml").is_file());
     }
 
     #[test]
