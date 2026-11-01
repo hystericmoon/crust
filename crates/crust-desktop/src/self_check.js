@@ -101,6 +101,12 @@
     const deleted = await invoke("sites_deleted");
     const restored = await invoke("sites_restore", { id: deleted.find((d) => d.name === "Self check two").id });
     check("sites delete and restore", stillOpen === openId && typeof restored === "string" && (await invoke("site_info")).id === openId, `${stillOpen} ${restored}`);
+
+    // F061: updates. CI builds without the update key, so Crust says it
+    // doesn't look (and never reaches out).
+    const status = await invoke("update_status");
+    const found = await invoke("update_check");
+    check("updates answer", typeof status.current === "string" && status.current.length > 0 && status.enabled === false && found.state === "off", JSON.stringify({ status, found }));
   } catch (e) {
     report.errors.push(String(e && e.stack ? e.stack : e));
   }

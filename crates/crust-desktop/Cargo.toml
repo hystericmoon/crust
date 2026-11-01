@@ -39,8 +39,14 @@ rustls-platform-verifier = "0.7"
 russh = { version = "0.65", default-features = false, features = ["ring", "rsa", "flate2"] }
 russh-sftp = "3"
 tokio = { version = "1", features = ["rt", "net", "io-util", "time"] }
+# F061: updates built in (Tauri's updater, MIT OR Apache-2.0); signatures checked
+# against the update key's public half before anything is installed.
+tauri-plugin-updater = "2"
+url = "2"
 
 [dev-dependencies]
+# F061: a mock app for the updater tests, and a test update key to sign with.
+tauri = { version = "2", features = ["test"] }
 tempfile = "3.27"
 image = { version = "0.25", default-features = false, features = ["png"] }
 # F059: real FTP/FTPS and SFTP servers inside the tests (no outside server needed in CI).
@@ -50,6 +56,7 @@ rcgen = { version = "0.14", default-features = false, features = ["crypto", "rin
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync"] }
 unftp-core = "0.1"
 async-trait = "0.1"
+minisign = "0.10.0"
 
 # F058: host tokens live in the computer's keychain, never in the site folder.
 [target.'cfg(target_os = "macos")'.dependencies]

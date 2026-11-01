@@ -656,7 +656,7 @@
       "description": "The app checks for updates (Tauri updater), shows what's new in plain words, and installs on restart. Installers and update notes are hosted on a free Cloudflare Pages site, because a private repository's releases can't be downloaded publicly. Updates are signed with a Tauri update key (the owner stores it as a secret, BLOCKED.md). Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F055"],
       "done_check": "cargo test -p crust-desktop && npm test -- updates",
-      "passes": false,
+      "passes": true,
       "needs_review": false,
       "reviewed": false
     },

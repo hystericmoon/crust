@@ -7,6 +7,7 @@ import { checkNewPage, createPage, slugify, type NewPageErrors, type NewPageInpu
 import { FIND_FROM, loadSort, matchesQuery, pageStatus, saveSort, SORT_LABELS, sortRows, type SortKey } from "./list-view";
 import { focusAfterDialog, PageActions, type LinkingPage, type PageAction } from "./PageActions";
 import type { PageRow } from "./store";
+import { UpdateBanner } from "../updates/UpdateNotice";
 
 /**
  * F069: an address may wrap after a "/" or "-", never mid-word
@@ -169,6 +170,7 @@ export function PageList({ allSites = false, siteName, rows, sourceNote, loadErr
           onCreate={onCreate}
         />
         {notice}
+        <UpdateBanner />
         {/* What's live and the Publish button come first: it's the screen's main question and action, also on a phone. */}
         {children}
 

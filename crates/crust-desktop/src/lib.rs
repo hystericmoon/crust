@@ -13,6 +13,8 @@
 //!
 //! F058: or upload it to Cloudflare Pages or Netlify (hosts.rs), with the
 //! person's token kept in the computer's keychain.
+//!
+//! F061: and keeps itself up to date (updates.rs).
 
 pub mod ftp;
 pub mod hosts;
@@ -20,6 +22,7 @@ pub mod preview;
 pub mod publish;
 pub mod site;
 pub mod sites;
+pub mod updates;
 
 use std::borrow::Cow;
 use std::path::PathBuf;
@@ -38,6 +41,7 @@ pub use preview::PreviewServer;
 pub use publish::{BuildReport, Exported, RenderedFile, build_site, export_folder, export_site};
 pub use site::{SiteError, SiteFolder, default_site_folder, media_path};
 pub use sites::{DeletedSite, SiteSummary, Sites};
+pub use updates::{UpdateCheck, UpdateFeed, UpdateProgress, Updates};
 
 /// What the builder is told when a file isn't there (it reads as `null`).
 pub const NOT_FOUND: &str = "crust:not-found";
@@ -470,6 +474,43 @@ fn self_check_report<R: Runtime>(app: tauri::AppHandle<R>, report: String) {
     app.exit(if self_check_passed(&report) { 0 } else { 1 });
 }
 
+/// F061: the version running and whether it looks for updates.
+#[derive(Serialize, Debug, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateStatus {
+    pub current: String,
+    pub enabled: bool,
+    /// A downloaded update waiting for a restart.
+    pub ready: Option<String>,
+}
+
+#[tauri::command]
+fn update_status(updates: State<'_, Updates>) -> UpdateStatus {
+    UpdateStatus { current: updates.current().to_string(), enabled: updates.enabled(), ready: updates.ready_version() }
+}
+
+#[tauri::command]
+async fn update_check<R: Runtime>(app: tauri::AppHandle<R>, updates: State<'_, Updates>) -> Result<UpdateCheck, String> {
+    updates.check(&app).await
+}
+
+/// Downloads the update found; progress goes to the window as "update-progress".
+#[tauri::command]
+async fn update_download<R: Runtime>(app: tauri::AppHandle<R>, updates: State<'_, Updates>) -> Result<String, String> {
+    updates
+        .download(|p| {
+            let _ = app.emit("update-progress", p);
+        })
+        .await
+}
+
+/// "Restart now": installs the waiting update and opens Crust again.
+#[tauri::command]
+fn update_restart<R: Runtime>(app: tauri::AppHandle<R>, updates: State<'_, Updates>) -> Result<(), String> {
+    updates.install_ready(true)?;
+    app.restart()
+}
+
 /// Starts the app.
 pub fn run() {
     let mut context = tauri::generate_context!();
@@ -480,7 +521,10 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(move |app| {
+            let version = app.package_info().version.to_string();
+            app.manage(Updates::new(UpdateFeed::for_this_app(), version));
             let sites = Arc::new(choose_sites(app)?);
             let _ = slot.set(sites.clone());
             app.manage(AppSites(sites));
@@ -494,9 +538,18 @@ pub fn run() {
                 let _ = webview.eval(SELF_CHECK);
             }
         })
-        .invoke_handler(tauri::generate_handler![site_info, site_read, site_write, site_remove, site_list, site_build, site_preview, site_export, site_export_replace, site_show_export, sites_list, sites_deleted, sites_create, sites_rename, sites_duplicate, sites_delete, sites_restore, sites_open, host_status, host_check_token, host_connect, host_connect_ftp, host_resend_all, host_replace_token, host_disconnect, host_open_token_page, host_open_site, host_publish, self_check_report])
-        .run(context)
-        .expect("Crust couldn't start");
+        .invoke_handler(tauri::generate_handler![site_info, site_read, site_write, site_remove, site_list, site_build, site_preview, site_export, site_export_replace, site_show_export, sites_list, sites_deleted, sites_create, sites_rename, sites_duplicate, sites_delete, sites_restore, sites_open, host_status, host_check_token, host_connect, host_connect_ftp, host_resend_all, host_replace_token, host_disconnect, host_open_token_page, host_open_site, host_publish, update_status, update_check, update_download, update_restart, self_check_report])
+        .build(context)
+        .expect("Crust couldn't start")
+        .run(|app, event| {
+            // F061: a downloaded update is installed as Crust quits, so the
+            // next time it opens it's the new version.
+            if let tauri::RunEvent::Exit = event
+                && let Err(e) = app.state::<Updates>().install_ready(false)
+            {
+                eprintln!("{e}");
+            }
+        });
 }
 
 /// Stands in for a moment while the builder's files are wrapped.

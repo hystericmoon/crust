@@ -3,7 +3,8 @@
 // from apps/admin/dist. Files live in memory; host commands answer as a
 // connected or unconnected site. Set window.__FAKE_TAURI__ before this
 // runs: { host: "none" | "connected" | "ftp" | "ftp-plain" } (F059: an FTP host),
-// firstRun: true for a brand new Crust (F060: the welcome screen).
+// firstRun: true for a brand new Crust (F060: the welcome screen),
+// update: "available" for a newer Crust on "Check for updates" (F061).
 (() => {
   const opts = window.__FAKE_TAURI__ || {};
   const files = new Map();
@@ -56,6 +57,20 @@
     host_status: () => ({ connection, suggestedName: "harbour-studio" }),
     host_check_token: () => [{ id: "acc1", name: "Hosni" }],
     host_open_token_page: () => null,
+    // F061: updates. "available" offers Crust 0.2.0 when asked.
+    update_status: () => ({ current: "0.1.0", enabled: true, ready: null }),
+    update_check: () =>
+      opts.update === "available"
+        ? {
+            state: "available",
+            current: "0.1.0",
+            version: "0.2.0",
+            date: "2026-11-02",
+            notes: ["Crust now updates itself: new versions install the next time you open it.", "Publishing to your own host is faster.", "Fixed: photos with long names showed twice in the library."],
+          }
+        : { state: "upToDate", current: "0.1.0" },
+    update_download: () => "0.2.0",
+    update_restart: () => null,
     "plugin:event|listen": () => nextId++,
     "plugin:event|unlisten": () => null,
   };

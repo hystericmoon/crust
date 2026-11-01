@@ -5,13 +5,13 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 (Jakarta): F060 First run built, passing and
-CI green on branch `f060-first-run` (stacked on `f059-ftp-sftp` / PR
-#50), PR #51.
-F059 is PR #50 (on #49), F058 PR #49 (on #48), F057 PR #48 (on #47),
-F056 PR #47 (on #46), F055 PR #46, F053 PR #45 (none merged; the owner
-merges). Next: F061 Updates built in (no snapshot needed; the update
-key is BLOCKED, build and test without it).
+Last updated: 2026-11-02 (Jakarta): F061 Updates built in, built and
+passing on branch `f061-updates` (stacked on `f060-first-run` / PR #51),
+PR #52.
+F060 is PR #51 (on #50), F059 PR #50 (on #49), F058 PR #49 (on #48),
+F057 PR #48 (on #47), F056 PR #47 (on #46), F055 PR #46, F053 PR #45
+(none merged; the owner merges). Next: F062 Premium templates in the
+gallery (design snapshot first).
 
 ## How sessions work (owner's rule, 2026-10-30)
 
@@ -96,6 +96,7 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | F058 Publish to Cloudflare Pages or Netlify | built, passes, CI green | `f058-publish-to-host`, PR #49 (stacked on #48) |
 | F059 Publish by FTP or SFTP | built, passes, CI green | `f059-ftp-sftp`, PR #50 (stacked on #49) |
 | F060 First run | built, passes, CI green | `f060-first-run`, PR #51 (stacked on #50) |
+| F061 Updates built in | built, passes | `f061-updates`, PR #52 (stacked on #51) |
 
 - **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in
@@ -115,7 +116,8 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
   https://claude.ai/artifact/7nKCuGhkAuhTJ5gMEXxfw3 (A built), F058
   https://claude.ai/artifact/DMXMZc8NdDTNRXSFEBBuah (A built). F059: no
   snapshot (screenshots design/f059-*.png). F060
-  https://claude.ai/artifact/Lx5SeC9B1GmSN3ztFebA3t (A built).
+  https://claude.ai/artifact/Lx5SeC9B1GmSN3ztFebA3t (A built). F061: no
+  snapshot (screenshots design/f061-*.png).
 
 ## Next
 
@@ -227,18 +229,36 @@ The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
    **F059 CI fix (on #50):** FTPS connections that break off are tried
    up to three times (libunftp switches to TLS late); see DECISIONS
    F059, last bullet.
-   **Next: F061 Updates built in** (Tauri updater; update notes on a
-   free Cloudflare Pages site; the signing key is BLOCKED.md, so build
-   and test with a test key; done_check `cargo test -p crust-desktop &&
-   npm test -- updates`). Then F062 Premium templates (snapshot first;
-   it adds to the same gallery F060 shows). Open proposals worth
+   ~~F061 Updates built in~~ **built, passes** (PR #52, branch
+   `f061-updates`, stacked on #51). See DECISIONS "F061". How it fits:
+   `crates/crust-desktop/src/updates.rs` (`Updates`: check/download/
+   install_ready over tauri-plugin-updater; feed address and public key
+   built in at release, `CRUST_UPDATE_URL`/`CRUST_UPDATE_PUBKEY` at start
+   only in debug builds; installs on `RunEvent::Exit`), tests in
+   `src/updates/tests.rs` (fake downloads site on 127.0.0.1, keys made
+   with the `minisign` crate, plus one file signed by the real `tauri
+   signer`). Window: `apps/admin/src/updates/` (`updates.ts`: API,
+   `Updater` state, once-a-day timing; `UpdateNotice.tsx`: banner on the
+   Pages and Sites screens, Crust card on Sites). Release:
+   `scripts/updates-site.ts` (feed + download page), what's new in
+   `crates/crust-desktop/whats-new.json` (bump with the version in
+   tauri.conf.json), Desktop installers workflow "Put on the downloads
+   site", new "Make update key" workflow, owner guide
+   `docs/setup-updates.md`. `fake-tauri.js` takes `update: "available"`.
+   The window self-check asks `update_status`/`update_check` (CI has no
+   key, so "off"). Tests turn on tauri's `test` feature, so `cargo test`
+   rebuilds the tauri crate once more than `cargo build` (~1 min of CI).
+   **Next: F062 Premium templates in the gallery** (design snapshot
+   first; it adds to the same gallery F060 shows; done_check `npm test --
+   catalogue && npm run check:builder`). Open proposals worth
    raising: "App wording", "Browser copies in the app" (found with
    F060: unsaved colours/drafts are shared between sites in the app),
    `.htaccess` redirects for FTP hosts.
    Owner-facing notes still open: Pagefind brings minicbor
    (BlueOak-1.0.0) and Tauri brought MPL-2.0 packages (DECISIONS
    "F056"), owner told, no answer yet. F058/F059 never tried against a
-   real host account.
+   real host account. F061 never tried with a real release (needs the
+   update key and a ~150-minute installers run; owner's call).
 2. ~~Write Milestones 6 and 7~~ done 2026-10-31 (F054–F068; F054 depends
    on F048 so M6 can start while F053 waits for the owner).
    **F054 Content store done and merged** (PR #43). After F053:

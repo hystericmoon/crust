@@ -20,6 +20,7 @@ import "./seo/seo.css";
 import "./quick/quick.css";
 import "./chrome-canvas.css";
 import "./pages/pages.css";
+import "./updates/updates.css";
 import { isDesktop, launchDesktop } from "./desktop/desktop";
 import type { FirstRunContext } from "./first-run/first-run";
 

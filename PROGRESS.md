@@ -643,3 +643,20 @@ to "Log".
   between sites in the app (DECISIONS Proposals, "Browser copies in the
   app"). **Owner can try:** only in the app, on a computer that never
   had Crust (or after moving the Documents/Crust folder away).
+
+- 2026-11-02 — F061 Updates built in (branch `f061-updates`, stacked on
+  F060 / PR #51). The app checks for a newer Crust 15 s after opening
+  (then at most daily), downloads it in the background, checks its
+  signature, and installs it when Crust quits; a banner on the Pages and
+  Sites screens offers Restart now / What's new / Later, and the Sites
+  screen's Crust card has Check for updates. Releases go to a free
+  Cloudflare Pages site (`crust-downloads`) through the Desktop
+  installers workflow ("Put on the downloads site", off by default).
+  New "Make update key" workflow and owner guide `docs/setup-updates.md`
+  (BLOCKED.md updated). No snapshot (not asked for); screenshots
+  design/f061-*.png. done_check exit 0: 101 desktop Rust tests (11 for
+  updates, against a fake downloads site, including a file signed by
+  the real Tauri tool) and 28 JS tests for updates; builder
+  accessibility check covers three new screens (no issues). **Owner can
+  try:** nothing yet; it needs the update key (docs/setup-updates.md)
+  and a release run, both your call.

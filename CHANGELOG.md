@@ -4,6 +4,18 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **The app keeps itself up to date (F061).** Crust checks for a new
+  version a little after it opens (at most once a day), downloads it in
+  the background, and installs it the next time you open Crust, so an
+  update never interrupts your work and never touches your sites. When
+  one is ready, the Pages and Sites screens say so: **Restart now** to
+  get it straight away, **What's new** for the list of changes, or
+  **Later**. The Sites screen has a **Crust** card with the version and
+  **Check for updates**. Updates are signed, and Crust refuses any that
+  aren't. Needs the update key to be set up first
+  (`docs/setup-updates.md`); until then the app says it doesn't update
+  itself.
+
 - **A welcome screen the first time the app opens (F060).** A brand new
   Crust greets you with one screen: pick a start (Harbour, Signal,
   Corner, or Blank), check the site's name (it suggests one), and press
