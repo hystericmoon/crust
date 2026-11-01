@@ -626,7 +626,7 @@
       "description": "Design snapshot first. Connect a site to Cloudflare Pages or Netlify with the person's own token (step-by-step guide in the app), then Publish uploads the exported site through the host's API. Tokens are kept in the computer's keychain, never in the site folder. Clear messages for wrong or expired tokens. Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F056", "F057"],
       "done_check": "cargo test -p crust-desktop && npm test -- hosts && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

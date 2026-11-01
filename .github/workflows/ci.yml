@@ -15,7 +15,9 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    # F058 raised this from 35: the job took ~30 minutes before the HTTPS
+    # client (rustls) arrived. It's a ceiling, not a cost (DECISIONS F058).
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 

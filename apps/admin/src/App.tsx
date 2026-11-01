@@ -40,6 +40,7 @@ import {
 import { markUnpublished } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
 import { DesktopPublishPanel } from "./publish/DesktopPublishPanel";
+import { desktopHosts } from "./publish/hosts";
 import { desktopPublisher } from "./desktop/local-publish";
 import { PublishShortcut, usePendingCount } from "./publish/shortcut";
 import { SignOutLink } from "./sign-out";
@@ -509,7 +510,7 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
     >
       {desktopPublisher() ? (
         // F056: in the desktop app the site is built on the computer.
-        <DesktopPublishPanel publisher={desktopPublisher()!} siteUrl={loadSavedAddress(site.baseUrl)} />
+        <DesktopPublishPanel publisher={desktopPublisher()!} siteUrl={loadSavedAddress(site.baseUrl)} hosts={desktopHosts()} />
       ) : (
       <PublishPanel
         githubOn={githubOn === true}

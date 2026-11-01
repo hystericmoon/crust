@@ -166,3 +166,26 @@
   border: 1px solid var(--st-border); color: var(--st-text);
 }
 .pg-table .sites-meta { font-weight: 400; }
+
+/* F058: publish to Cloudflare Pages or Netlify (design/f058-publish-to-host-v1.html, A). */
+.hp { display: grid; gap: 12px; margin: 0 0 8px; }
+.hp p { margin: 0; }
+.hp-hosts { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 10px; }
+.hp-host { display: grid; gap: 4px; text-align: left; min-height: 44px; padding: 12px 14px; border: 1px solid var(--st-border); border-radius: 10px; background: var(--st-panel); color: var(--st-text); font: inherit; cursor: pointer; }
+.hp-host span { color: var(--st-muted); font-size: 0.875rem; }
+.hp-host:hover { border-color: var(--st-text); }
+.hp-where { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.hp-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--st-ok); margin-right: -6px; }
+.hp-account { color: var(--st-muted); }
+.hp-link { background: none; border: 0; padding: 0; font: inherit; color: var(--st-text); text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; min-height: 24px; }
+.hp-progress { width: 100%; max-width: 28rem; height: 8px; accent-color: var(--st-text); }
+.hp-sub { font-size: 1rem; margin: 20px 0 8px; padding-top: 16px; border-top: 1px solid var(--st-divider); }
+.hp-how { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+.hp-token { font-family: ui-monospace, Menlo, Consolas, monospace; }
+.hp-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.8125rem; }
+.hp-steps li { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--st-border); color: var(--st-muted); }
+.hp-steps li.hp-on { border-color: var(--st-text); color: var(--st-text); font-weight: 600; }
+.hp-steps li.hp-done { color: var(--st-ok); }
+.hp-accounts { border: 0; margin: 0; padding: 0; display: grid; gap: 6px; }
+.hp-account-choice { display: flex; align-items: center; gap: 8px; min-height: 32px; }
+.hp-change { flex-wrap: wrap; }

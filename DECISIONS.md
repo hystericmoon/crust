@@ -1864,3 +1864,65 @@ Workers (100k requests/day), R2 (10 GB). Only optional cost: a custom domain.
   button: nothing is removed before its 30 days (can be added if asked).
 - **Duplicate site names are refused** in the dialogs (case-insensitive),
   so two rows never look the same; folder numbering is the backstop.
+
+## 2026-11-01 — F058 Publish to Cloudflare Pages or Netlify (Claude, reversible)
+
+- **Direction A of the snapshot** (https://claude.ai/artifact/DMXMZc8NdDTNRXSFEBBuah,
+  `design/f058-publish-to-host-v1.html`): connect inside the Publish
+  card. The two hosts are visible before anything is set up
+  (recognition over recall); connecting happens where publishing does;
+  a guided two-step dialog (token, then address) beats a bare settings
+  form, and checks the token at step 1 so mistakes show early. Once
+  connected, Publish is the primary button; Export and Preview move
+  under "Or keep it on this computer".
+- **Where things are kept.** `.crust/hosts.json` in the site folder
+  holds host, account, project, address, last published, and the *name*
+  of a keychain entry; the token itself is in the system keychain
+  (service "Crust"). F057 already leaves `hosts.json` out of duplicates.
+  Reconnecting or disconnecting deletes the old token from the keychain.
+  Deleting a site leaves its token in the keychain (the site can be
+  restored for 30 days).
+- **Libraries** (all MIT/Apache/BSD/ISC): `ureq` 3 (HTTPS client) with
+  `rustls` + `ring` and the computer's own certificate store
+  (`rustls-platform-verifier`, so no bundled certificate list; the
+  bundled one, webpki-roots, is CDLA-Permissive and was left out);
+  `keyring` 3 (Mac Keychain, Windows Credential Manager; on Linux the
+  kernel keyring, which forgets on restart, fine since Linux isn't an
+  installer target); `blake3` (pure Rust) and `sha1_smol` for the hosts'
+  file hashes; `base64`. `ring` is "Apache-2.0 AND ISC".
+- **How uploads work.** Cloudflare Pages: the same direct-upload API its
+  own tool (wrangler) uses: upload token, ask which file hashes are
+  missing, upload only those (≤ 500 files / ~30 MB per request), then a
+  deployment with the manifest plus `_redirects`/`_headers`. Netlify:
+  file-digest deploy (SHA-1 per file), upload only the files it asks
+  for, then wait until the deploy is "ready". Both mean re-publishing
+  sends only changed files. Production branch "main" for new Cloudflare
+  projects. A connect with an existing project name in the person's own
+  account publishes into it.
+- **Cloudflare needs only the token**: the account comes from the token
+  (`GET /accounts`); with several accounts the dialog asks which one.
+  Token steps ask for Account · Cloudflare Pages · Edit; Netlify uses a
+  personal access token.
+- **Site address.** If the site's own address isn't set, publishing to a
+  host uses the host's address for canonical links and the sitemap, and
+  the card says so. A set address (own domain) always wins.
+- **Error kinds** shown by the card: token (wrong or expired: "Paste a
+  new token"), taken (offers name-2), name, gone (project deleted on the
+  host: "Connect again"), offline ("Nothing on the live site changed"),
+  problems (the same page checks as Export), other (the host's own
+  words and code).
+- **Tests** never touch a real host: a fake Cloudflare/Netlify server on
+  127.0.0.1 in `crates/crust-desktop/src/hosts/tests.rs`. The builder
+  accessibility check now also runs the app's Publish card and dialogs
+  in a browser with `scripts/fake-tauri.js` standing in for the app.
+- **CI time limit 35 → 45 minutes.** The `check` job took ~30 of 35
+  minutes on #48 and F058 adds rustls/ring to compile. The limit is a
+  ceiling; it costs nothing unless a run actually takes longer (Linux
+  minutes count 1×). If runs creep past ~35, better `target/` caching is
+  the next step.
+- **Not tested against the real hosts** from here (no account, and
+  tokens are the owner's). The API calls follow the hosts' public docs
+  and wrangler's upload format; the owner's first real publish is the
+  real test. Logged so a failure there is expected to be small (a field
+  name), not a design problem.
+

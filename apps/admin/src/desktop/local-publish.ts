@@ -7,7 +7,7 @@
  */
 import baseCss from "@crust/blocks/styles.css?raw";
 import { readSiteContent, renderSite, type ContentSource, type RenderedFile } from "@crust/render/src/site";
-import type { Site } from "@crust/blocks";
+import { isPlaceholderAddress, type Site } from "@crust/blocks";
 import type { ContentStore } from "../../server/store";
 import type { Invoke } from "./tauri-folder";
 
@@ -18,8 +18,14 @@ export const storeSource = (store: Pick<ContentStore, "readFile" | "listFolder">
 });
 
 /** Every file of the site, rendered as the publish pipeline renders it. */
-export async function renderLocalSite(store: Pick<ContentStore, "readFile" | "listFolder">, css = baseCss): Promise<{ site: Site; files: RenderedFile[] }> {
+export async function renderLocalSite(
+  store: Pick<ContentStore, "readFile" | "listFolder">,
+  css = baseCss,
+  /** F058: the host's address, used when the site's own address isn't set. */
+  hostUrl?: string,
+): Promise<{ site: Site; files: RenderedFile[] }> {
   const content = await readSiteContent(storeSource(store));
+  if (hostUrl && isPlaceholderAddress(content.site.baseUrl)) content.site = { ...content.site, baseUrl: hostUrl };
   return { site: content.site, files: renderSite(content, css) };
 }
 
@@ -49,6 +55,11 @@ export interface LocalPublisher {
   replaceExport(): Promise<ExportResult>;
   /** Shows the exported folder in Finder or File Explorer. */
   showExport(): Promise<void>;
+  /**
+   * F058: builds the site with every check on (problems stop it), to upload.
+   * `hostUrl` stands in for the site's address while that isn't set.
+   */
+  buildToPublish(hostUrl?: string): Promise<BuildReport>;
 }
 
 const asError = (e: unknown) => (e instanceof Error ? e : new Error(String(e)));
@@ -63,10 +74,10 @@ async function call<T>(invoke: Invoke, cmd: string, args?: Record<string, unknow
 }
 
 export function localPublisher(store: Pick<ContentStore, "readFile" | "listFolder">, invoke: Invoke): LocalPublisher {
-  const build = async (preview: boolean) => {
+  const build = async (preview: boolean, hostUrl?: string) => {
     let rendered: { site: Site; files: RenderedFile[] };
     try {
-      rendered = await renderLocalSite(store);
+      rendered = await renderLocalSite(store, baseCss, hostUrl);
     } catch (e) {
       throw new Error(`Nothing was built. ${asError(e).message}`);
     }
@@ -86,6 +97,7 @@ export function localPublisher(store: Pick<ContentStore, "readFile" | "listFolde
     },
     replaceExport: () => call<ExportResult>(invoke, "site_export_replace"),
     showExport: () => call<void>(invoke, "site_show_export"),
+    buildToPublish: async (hostUrl) => (await build(false, hostUrl)).report,
   };
 }
 
