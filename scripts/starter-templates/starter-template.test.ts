@@ -4,7 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { gallerySources } from "../../apps/admin/src/templates/sources";
-import { buildStarter, photos, starters } from "./starter";
+import { buildStarter, harbour, signal, corner, starters } from "./starter";
 import { png, standIn } from "./standins";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -76,7 +76,7 @@ describe.each(starters)("starter template $name (F049–F051)", (spec) => {
 
   it.runIf(!!spec.photos)("uses only its credited photos, described and marked Replace me wherever they're used (F052)", async () => {
     const credits = await readFile(join(root, "scripts/starter-templates/photos/CREDITS.md"), "utf8");
-    expect(template.media.map((m) => m.file).sort()).toEqual(photos.map((p) => p.file).sort());
+    expect(template.media.map((m) => m.file).sort()).toEqual(spec.photos!.map((p) => p.file).sort());
     for (const m of template.media) {
       expect(credits, `${m.file} credited`).toContain(`| ${m.file} |`);
       expect(m.alt).not.toMatch(/stand-in/i);
@@ -94,7 +94,7 @@ describe.each(starters)("starter template $name (F049–F051)", (spec) => {
     }
   });
 
-  it.runIf(!!spec.photos)("opens with a photo and shows the work as a tall photo beside two wide ones (F052)", () => {
+  it.runIf(spec === harbour)("opens with a photo and shows the work as a tall photo beside two wide ones (F052)", () => {
     const home = template.pages[0]!.puck.content as Block[];
     expect(home[0]!.type).toBe("Section");
     expect(home[0]!.props).toMatchObject({ imageSrc: "/media/terraces.jpg", tint: "light", valign: "bottom" });
@@ -102,6 +102,47 @@ describe.each(starters)("starter template $name (F049–F051)", (spec) => {
     expect((mosaic.props.column1 as Block[]).filter((b) => b.type === "Image")).toHaveLength(1);
     expect((mosaic.props.column2 as Block[]).filter((b) => b.type === "Image")).toHaveLength(2);
     expect(allBlocks(home).filter((b) => b.type === "Button")).toHaveLength(0);
+  });
+
+  it.runIf(spec === signal && !!spec.photos)("opens dark on a stage photo and shows the work as named photo tiles (F053)", () => {
+    const home = template.pages[0]!.puck.content as Block[];
+    expect(home[0]!.props).toMatchObject({ background: "dark", imageSrc: "/media/stage-crowd.jpg", height: "large", valign: "bottom" });
+    const tiles = allBlocks(home).filter((b) => b.type === "ImageOverlay");
+    expect(tiles).toHaveLength(4);
+    for (const t of tiles) {
+      expect(t.props).toMatchObject({ background: "dark", titleLevel: "h3" });
+      expect(t.props.placeholder).toEqual(["imageSrc", "title", "text"]);
+      expect(String(t.props.imageAlt).length).toBeGreaterThan(20);
+    }
+    expect(template.posts[0]!.cover).toBe("/media/spiral-amber.jpg");
+    expect(template.posts[0]!.coverAlt.length).toBeGreaterThan(20);
+  });
+
+  it.runIf(spec === corner && !!spec.photos)("opens split (words on yellow, photo beside) and shows products as cards with photos (F053)", () => {
+    const home = template.pages[0]!.puck.content as Block[];
+    expect(home[0]!.props).toMatchObject({ background: "surface", imageSrc: "" });
+    const split = (home[0]!.props.content as Block[])[0]!;
+    expect(split.type).toBe("Columns");
+    expect((split.props.column1 as Block[]).map((b) => b.type)).toEqual(["Heading", "Text", "Button"]);
+    expect((split.props.column2 as Block[]).map((b) => b.type)).toEqual(["Image"]);
+    const cards = allBlocks(home).find((b) => b.type === "Grid")!;
+    const items = cards.props.items as { imageSrc: string; imageAlt: string }[];
+    expect(items).toHaveLength(3);
+    for (const i of items) {
+      expect(i.imageSrc).toMatch(/^\/media\/.+\.jpg$/);
+      expect(i.imageAlt.length).toBeGreaterThan(20);
+    }
+    const contact = allBlocks(template.pages.find((p) => p.path === "/contact")!.puck.content);
+    expect(contact.some((b) => b.type === "Image" && b.props.src === "/media/flower-shop.jpg")).toBe(true);
+    expect(template.posts[0]!.cover).toBe("/media/moka-pour.jpg");
+  });
+
+  it.runIf(!!spec.photos)("puts text on a photo only under a tint (F053)", () => {
+    for (const part of template.pages) {
+      for (const b of allBlocks(part.puck.content)) {
+        if ((b.type === "Section" || b.type === "ImageOverlay") && b.props.imageSrc) expect(["light", "medium", "strong"]).toContain(b.props.tint);
+      }
+    }
   });
 
   it("shows up in the Start from a template gallery", () => {
