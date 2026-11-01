@@ -1,4 +1,4 @@
-import { config, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
+import { config, CONTACT_FORM_SCRIPT, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -82,11 +82,12 @@ export const renderPreview = (data: Data): string => renderToStaticMarkup(<>{pag
 export const formsFor = (options: RenderOptions, path: string): FormsSetup | undefined =>
   options.forms?.endpoint ? { ...options.forms, path: path === "/" ? "/" : `${path.replace(/\/+$/, "")}/` } : undefined;
 
-/** Turnstile's script, only on pages with a contact form. */
-export const turnstileTag = (options: RenderOptions, puck: unknown) =>
-  options.forms?.endpoint && options.forms.siteKey && hasContactForm(puck)
-    ? `<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>\n`
-    : "";
+/** Turnstile's script, and (F069) the form's send-in-place script, only on pages with a connected contact form. */
+export const turnstileTag = (options: RenderOptions, puck: unknown) => {
+  if (!options.forms?.endpoint || !hasContactForm(puck)) return "";
+  const turnstile = options.forms.siteKey ? `<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>\n` : "";
+  return `${turnstile}<script type="module">${CONTACT_FORM_SCRIPT}</script>\n`;
+};
 
 export const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");

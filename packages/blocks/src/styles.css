@@ -446,6 +446,8 @@ main[tabindex="-1"]:focus { outline: none; }
 .cr-form-done p, .cr-form-failed p { margin: 0; }
 .cr-form-done:target, .cr-form-failed:target { display: block; }
 .cr-form-done:target ~ .cr-form { display: none; }
+/* F069: with the script the page doesn't reload, so the Back-button hint isn't needed. */
+.cr-form-js .cr-form-back { display: none; }
 
 /* Site search (F039): the /search/ page. Results come from Pagefind. */
 .cr-search-form { display: grid; gap: 6px; max-width: 40rem; margin-bottom: var(--cr-space-sm); }

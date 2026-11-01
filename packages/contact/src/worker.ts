@@ -2,7 +2,13 @@
  * Contact form Worker (F037). Receives the Contact form block's plain HTML
  * form post, checks it (spam trap, Turnstile, lengths), emails it to the
  * owner through Resend, and sends the visitor back to the page with
- * "#<form>-sent" or "#<form>-error", where the block shows a message.
+ * "#<form>-sent" or "#<form>-error-<problem>", where the block shows a
+ * message that says what went wrong (F069).
+ *
+ * F069: the block's small script sends the form with fetch (Accept:
+ * application/json) so the visitor's words stay on the page; it gets JSON
+ * back ({ ok, problem, field }) instead of the redirect. Without
+ * JavaScript the redirect works as before.
  *
  * Secrets (set by the deploy workflow from GitHub secrets, never in the repo):
  * TURNSTILE_SECRET, RESEND_API_KEY, TO_EMAIL. FROM_EMAIL is optional.
@@ -33,7 +39,15 @@ export interface Message {
   extras: { label: string; value: string }[];
 }
 
-export type Checked = { ok: true; message: Message } | { ok: false; reason: "spam" | "invalid"; form: string; page: string };
+/**
+ * What went wrong, for the visitor (F069): a field ("name", "email",
+ * "message", "extra"), the spam check ("check") or sending ("send").
+ */
+export type Problem = "name" | "email" | "message" | "extra" | "check" | "send";
+
+export type Checked =
+  | { ok: true; message: Message }
+  | { ok: false; reason: "spam" | "invalid"; form: string; page: string; problem?: Problem; field?: string };
 
 /** Reads and checks the posted fields. The form and page are needed to send the visitor back. */
 export function readForm(data: FormData): Checked {
@@ -53,17 +67,23 @@ export function readForm(data: FormData): Checked {
     const label = key.slice(6).trim().slice(0, limits.label);
     if (label && value.trim()) extras.push({ label, value: value.trim() });
   }
-  const bad =
-    !form ||
-    !name ||
-    name.length > limits.name ||
-    !EMAIL.test(email) ||
-    email.length > limits.email ||
-    !message ||
-    message.length > limits.message ||
-    extras.length > limits.extras ||
-    extras.some((x) => x.value.length > limits.extra);
-  return bad ? { ok: false, reason: "invalid", form, page } : { ok: true, message: { form, page, name, email, message, extras } };
+  // The first wrong field, in the order the form shows them (F069).
+  const longExtra = extras.find((x) => x.value.length > limits.extra);
+  const wrong: [Problem, string] | null =
+    !name || name.length > limits.name
+      ? ["name", "name"]
+      : !EMAIL.test(email) || email.length > limits.email
+        ? ["email", "email"]
+        : longExtra
+          ? ["extra", `extra:${longExtra.label}`]
+          : extras.length > limits.extras
+            ? ["extra", ""]
+            : !message || message.length > limits.message
+              ? ["message", "message"]
+              : null;
+  if (!form) return { ok: false, reason: "invalid", form, page };
+  if (wrong) return { ok: false, reason: "invalid", form, page, problem: wrong[0], ...(wrong[1] ? { field: wrong[1] } : {}) };
+  return { ok: true, message: { form, page, name, email, message, extras } };
 }
 
 /** Asks Cloudflare whether the visitor passed the Turnstile check. */
@@ -109,6 +129,13 @@ async function sendEmail(env: Env, m: Message, fetchFn: typeof fetch): Promise<b
 const back = (env: Env, page: string, target: string) =>
   new Response(null, { status: 303, headers: { Location: `${env.SITE_ORIGIN.replace(/\/+$/, "")}${page}#${target}`, "Cache-Control": "no-store" } });
 
+/** F069: the answer for the block's script, readable by the site's own pages only. */
+const answer = (env: Env, body: { ok: boolean; problem?: Problem; field?: string }) =>
+  new Response(JSON.stringify(body), {
+    status: 200,
+    headers: { "Content-Type": "application/json", "Cache-Control": "no-store", "Access-Control-Allow-Origin": new URL(env.SITE_ORIGIN).origin, Vary: "Origin" },
+  });
+
 export async function handleContact(request: Request, env: Env, fetchFn: typeof fetch = fetch): Promise<Response> {
   if (request.method !== "POST") return new Response("This address only receives the contact form.", { status: 405, headers: { Allow: "POST" } });
   if (!env.SITE_ORIGIN || !env.TURNSTILE_SECRET || !env.RESEND_API_KEY || !env.TO_EMAIL) {
@@ -126,18 +153,25 @@ export async function handleContact(request: Request, env: Env, fetchFn: typeof 
   } catch {
     return new Response("Not a form.", { status: 400 });
   }
+  const wantsJson = (request.headers.get("Accept") ?? "").includes("application/json");
+  // Back to the page: the thank-you, or a message that names the problem.
+  const reply = (form: string, page: string, problem?: Problem, field?: string) =>
+    wantsJson
+      ? answer(env, problem ? { ok: false, problem, ...(field ? { field } : {}) } : { ok: true })
+      : back(env, page, problem ? `${form || "cf-form"}-error-${problem}` : `${form || "cf-form"}-sent`);
   const checked = readForm(data);
   if (!checked.ok) {
     // Robots get the thank-you, so they learn nothing; nothing is sent.
-    if (checked.reason === "spam") return back(env, checked.page, `${checked.form || "cf-form"}-sent`);
-    return back(env, checked.page, `${checked.form || "cf-form"}-error`);
+    if (checked.reason === "spam") return reply(checked.form, checked.page);
+    if (!checked.problem) return wantsJson ? answer(env, { ok: false, problem: "send" }) : back(env, checked.page, `${checked.form || "cf-form"}-error`);
+    return reply(checked.form, checked.page, checked.problem, checked.field);
   }
   const m = checked.message;
   const token = data.get("cf-turnstile-response");
   if (!(await passedTurnstile(typeof token === "string" ? token : "", env.TURNSTILE_SECRET, request.headers.get("CF-Connecting-IP"), fetchFn))) {
-    return back(env, m.page, `${m.form}-error`);
+    return reply(m.form, m.page, "check");
   }
-  return back(env, m.page, (await sendEmail(env, m, fetchFn)) ? `${m.form}-sent` : `${m.form}-error`);
+  return (await sendEmail(env, m, fetchFn)) ? reply(m.form, m.page) : reply(m.form, m.page, "send");
 }
 
 export default { fetch: (request: Request, env: Env) => handleContact(request, env) };

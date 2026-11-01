@@ -41,8 +41,9 @@ describe("contact form Worker (F037)", () => {
   });
 
   it("failed spam checks and failed emails go back to the error message", async () => {
-    expect((await post(good, services(false).fetchFn)).headers.get("Location")).toBe("https://haho.pages.dev/contact/#cf-contact-1-error");
-    expect((await post(good, services(true, false).fetchFn)).headers.get("Location")).toBe("https://haho.pages.dev/contact/#cf-contact-1-error");
+    // F069: the message names what went wrong.
+    expect((await post(good, services(false).fetchFn)).headers.get("Location")).toBe("https://haho.pages.dev/contact/#cf-contact-1-error-check");
+    expect((await post(good, services(true, false).fetchFn)).headers.get("Location")).toBe("https://haho.pages.dev/contact/#cf-contact-1-error-send");
     const { fetchFn, sent } = services();
     const { "cf-turnstile-response": _t, ...noToken } = good;
     expect((await post(noToken, fetchFn)).headers.get("Location")).toContain("-error");
