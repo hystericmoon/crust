@@ -104,9 +104,9 @@
 
     // F061: updates. CI builds without the update key, so Crust says it
     // doesn't look (and never reaches out).
-    const status = await invoke("update_status");
+    const updateStatus = await invoke("update_status");
     const found = await invoke("update_check");
-    check("updates answer", typeof status.current === "string" && status.current.length > 0 && status.enabled === false && found.state === "off", JSON.stringify({ status, found }));
+    check("updates answer", typeof updateStatus.current === "string" && updateStatus.current.length > 0 && updateStatus.enabled === false && found.state === "off", JSON.stringify({ updateStatus, found }));
   } catch (e) {
     report.errors.push(String(e && e.stack ? e.stack : e));
   }
