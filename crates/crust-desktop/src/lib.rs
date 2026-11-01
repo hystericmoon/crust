@@ -10,7 +10,11 @@
 //! F056: the builder renders the site and the commands below finish it
 //! (checks, sitemap, photos, search index), export it to a folder, or
 //! show it in the person's browser.
+//!
+//! F058: or upload it to Cloudflare Pages or Netlify (hosts.rs), with the
+//! person's token kept in the computer's keychain.
 
+pub mod hosts;
 pub mod preview;
 pub mod publish;
 pub mod site;
@@ -24,10 +28,11 @@ use crust_publish::Checks;
 use serde::Serialize;
 use tauri::ipc::{InvokeBody, Request, Response};
 use tauri::utils::assets::{AssetKey, AssetsIter, CspHash};
-use tauri::{Manager, Runtime, State};
+use tauri::{Emitter, Manager, Runtime, State};
 use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_opener::OpenerExt;
 
+pub use hosts::{Account, Client, HostError, HostKind, HostService, HostStatus, Keychain, MemoryKeychain, SystemKeychain};
 pub use preview::PreviewServer;
 pub use publish::{BuildReport, Exported, RenderedFile, build_site, export_folder, export_site};
 pub use site::{SiteError, SiteFolder, default_site_folder, media_path};
@@ -204,6 +209,77 @@ fn site_preview<R: Runtime>(app: tauri::AppHandle<R>, builds: State<'_, Builds>,
         app.opener().open_url(&url, None::<&str>).map_err(|e| format!("Couldn't open your browser: {e}"))?;
     }
     Ok(url)
+}
+
+/// F058: the site's host connection, for the Publish card.
+pub struct AppHosts(pub Arc<HostService>);
+
+/// The hosts' APIs (`CRUST_CLOUDFLARE_API` / `CRUST_NETLIFY_API` point
+/// them elsewhere, for tests) and the keychain (in memory for the self-check).
+pub fn host_service() -> HostService {
+    let api = |name: &str, default: &str| std::env::var(name).ok().filter(|v| !v.is_empty()).unwrap_or_else(|| default.to_string());
+    let client = Client::new(&api("CRUST_CLOUDFLARE_API", hosts::CLOUDFLARE_API), &api("CRUST_NETLIFY_API", hosts::NETLIFY_API));
+    let keychain: Box<dyn Keychain> = if self_check_on() { Box::new(MemoryKeychain::default()) } else { Box::new(SystemKeychain) };
+    HostService::new(client, keychain)
+}
+
+async fn blocking<T: Send + 'static>(work: impl FnOnce() -> Result<T, HostError> + Send + 'static) -> Result<T, HostError> {
+    tauri::async_runtime::spawn_blocking(work).await.map_err(|e| HostError::other(format!("Stopped unexpectedly: {e}")))?
+}
+
+#[tauri::command]
+fn host_status(sites: State<'_, AppSites>, hosts: State<'_, AppHosts>) -> HostStatus {
+    hosts.0.status(&sites.0.current(), &sites.0.current_id())
+}
+
+#[tauri::command]
+async fn host_check_token(hosts: State<'_, AppHosts>, host: HostKind, token: String) -> Result<Vec<Account>, HostError> {
+    let service = hosts.0.clone();
+    blocking(move || service.check_token(host, &token)).await
+}
+
+#[tauri::command]
+async fn host_connect(sites: State<'_, AppSites>, hosts: State<'_, AppHosts>, host: HostKind, token: String, account: Account, name: String) -> Result<hosts::ConnectionView, HostError> {
+    let (service, site) = (hosts.0.clone(), sites.0.current());
+    blocking(move || service.connect(&site, host, &token, &account, &name)).await
+}
+
+#[tauri::command]
+async fn host_replace_token(sites: State<'_, AppSites>, hosts: State<'_, AppHosts>, token: String) -> Result<hosts::ConnectionView, HostError> {
+    let (service, site) = (hosts.0.clone(), sites.0.current());
+    blocking(move || service.replace_token(&site, &token)).await
+}
+
+/// Opens the host's token page in the person's browser (only those two pages).
+#[tauri::command]
+fn host_open_token_page<R: Runtime>(app: tauri::AppHandle<R>, host: HostKind) -> Result<(), String> {
+    app.opener().open_url(host.token_page(), None::<&str>).map_err(|e| format!("Couldn't open your browser: {e}"))
+}
+
+/// Opens the site's live address (from its connection) in the browser.
+#[tauri::command]
+fn host_open_site<R: Runtime>(app: tauri::AppHandle<R>, sites: State<'_, AppSites>) -> Result<(), String> {
+    let url = hosts::load_connection(&sites.0.current()).map(|c| c.url).filter(|u| u.starts_with("https://")).ok_or("This site isn't connected to a host yet.")?;
+    app.opener().open_url(url, None::<&str>).map_err(|e| format!("Couldn't open your browser: {e}"))
+}
+
+#[tauri::command]
+fn host_disconnect(sites: State<'_, AppSites>, hosts: State<'_, AppHosts>) -> Result<(), String> {
+    hosts.0.disconnect(&sites.0.current())
+}
+
+/// Uploads the latest build (made by `site_build` with checks on) to the
+/// site's host, telling the window how far it is ("host-progress").
+#[tauri::command]
+async fn host_publish<R: Runtime>(app: tauri::AppHandle<R>, sites: State<'_, AppSites>, builds: State<'_, Builds>, hosts: State<'_, AppHosts>) -> Result<hosts::Published, HostError> {
+    let (service, site, dir, lock) = (hosts.0.clone(), sites.0.current(), builds.dir.clone(), builds.building.clone());
+    blocking(move || {
+        let _one_at_a_time = lock.lock().unwrap_or_else(|e| e.into_inner());
+        service.publish(&site, &dir, &|progress| {
+            let _ = app.emit("host-progress", progress);
+        })
+    })
+    .await
 }
 
 #[derive(Serialize, Debug, PartialEq, Eq)]
@@ -393,6 +469,7 @@ pub fn run() {
             app.manage(AppSites(sites));
             let cache = app.path().app_cache_dir().unwrap_or_else(|_| std::env::temp_dir().join("crust"));
             app.manage(Builds::new(cache.join("site-build")));
+            app.manage(AppHosts(Arc::new(host_service())));
             Ok(())
         })
         .on_page_load(|webview, payload| {
@@ -400,7 +477,7 @@ pub fn run() {
                 let _ = webview.eval(SELF_CHECK);
             }
         })
-        .invoke_handler(tauri::generate_handler![site_info, site_read, site_write, site_remove, site_list, site_build, site_preview, site_export, site_export_replace, site_show_export, sites_list, sites_deleted, sites_create, sites_rename, sites_duplicate, sites_delete, sites_restore, sites_open, self_check_report])
+        .invoke_handler(tauri::generate_handler![site_info, site_read, site_write, site_remove, site_list, site_build, site_preview, site_export, site_export_replace, site_show_export, sites_list, sites_deleted, sites_create, sites_rename, sites_duplicate, sites_delete, sites_restore, sites_open, host_status, host_check_token, host_connect, host_replace_token, host_disconnect, host_open_token_page, host_open_site, host_publish, self_check_report])
         .run(context)
         .expect("Crust couldn't start");
 }

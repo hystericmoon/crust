@@ -8,6 +8,7 @@ import { LocalStore } from "../../server/local-store";
 import { setDesktopContent, type DesktopContent } from "./content";
 import { localApi, routedFetch } from "./local-api";
 import { localPublisher, setDesktopPublisher } from "./local-publish";
+import { hostsApi, setDesktopHosts, type Listen } from "../publish/hosts";
 import { tauriFolder, type Invoke } from "./tauri-folder";
 import { setSitesInvoke } from "../sites/sites";
 
@@ -88,8 +89,9 @@ export async function openSite(store: LocalStore, name = "My site"): Promise<Omi
 }
 
 /** Everything the app does before the builder appears. */
-export async function startDesktop(invoke?: Invoke): Promise<DesktopContent> {
+export async function startDesktop(invoke?: Invoke, listen?: Listen): Promise<DesktopContent> {
   const call: Invoke = invoke ?? ((await import("@tauri-apps/api/core")).invoke as Invoke);
+  const hear: Listen = listen ?? (invoke ? async () => () => {} : ((await import("@tauri-apps/api/event")).listen as unknown as Listen));
   const store = new LocalStore(tauriFolder(call));
   // F057: several sites; a new one starts with its folder's name.
   const { folder, id } = (await call("site_info")) as { folder: string; id?: string };
@@ -98,7 +100,10 @@ export async function startDesktop(invoke?: Invoke): Promise<DesktopContent> {
   setDesktopContent(content);
   setSitesInvoke(call);
   // F056: publishing happens on the computer.
-  setDesktopPublisher(localPublisher(store, call));
+  const publisher = localPublisher(store, call);
+  setDesktopPublisher(publisher);
+  // F058: and to Cloudflare Pages or Netlify.
+  setDesktopHosts(hostsApi(call, hear, (hostUrl) => publisher.buildToPublish(hostUrl)));
   window.fetch = routedFetch(window.fetch.bind(window), localApi({ store, localUser: "you" }), window.location.href);
   document.title = `${content.site.name} · Crust`;
   return content;

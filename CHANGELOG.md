@@ -4,6 +4,17 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Publish to Cloudflare Pages or Netlify (F058).** In the app, the
+  Publish card now offers both hosts. Press one, follow the four steps
+  to make a token on the host's website (a button opens the right page),
+  paste it, and pick your address, e.g. harbour-studio.pages.dev. From
+  then on **Publish** puts the site online in one press and shows how far
+  the upload is; only changed files are sent. The token stays in your
+  computer's keychain, never in the site folder, so a duplicated or
+  shared site never carries it. If the token expires, Publish says so
+  and lets you paste a new one. **Change or disconnect** moves the site
+  to another address or host. Export site folder and Preview in browser
+  are still there, under "Or keep it on this computer".
 - **Several sites in the app (F057).** Keep one site per client. The
   Pages screen has an **All sites** link that opens **Your sites**: every
   site with its page count and when it was last edited, the open one

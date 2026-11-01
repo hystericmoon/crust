@@ -15,6 +15,7 @@ function publisher(over: Partial<LocalPublisher> = {}): LocalPublisher {
     exportSite: vi.fn(async () => ({ result: { status: "done" as const, folder: "/Users/hosni/Desktop/Harbour website" }, report: report() })),
     replaceExport: vi.fn(async () => ({ status: "done" as const, folder: "/Users/hosni/Desktop/Harbour website" })),
     showExport: vi.fn(async () => undefined),
+    buildToPublish: vi.fn(async () => report()),
     ...over,
   };
 }

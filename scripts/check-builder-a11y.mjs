@@ -27,7 +27,8 @@ const samplePost = {
   coverAlt: "",
   puck: { root: { props: {} }, content: [{ type: "Text", props: { id: "t1", text: "Come and say hello." } }] },
 };
-// [label, address, post to seed, block to select first (F042: the rich text editor), buttons to press (F048)]
+// [label, address, post to seed, block to select first (F042: the rich text editor), buttons to press (F048),
+//  F058: { app: run as the desktop app (scripts/fake-tauri.js) with this host state, wait: what to wait for instead of the canvas }]
 const screens = [
   ["page builder", "/#/edit?path=/", null, null],
   ["page builder, Text block selected", "/#/edit?path=/", null, '[data-puck-component^="Text"]'],
@@ -35,22 +36,28 @@ const screens = [
   ["template gallery", "/#/templates", null, null],
   ["template preview", "/#/templates", null, null, [".tp-card[id]"]],
   ["template confirm question", "/#/templates", null, null, [".tp-card[id]", 'button:has-text("Use this template")', "dialog[open]"]],
+  ["app Publish card, no host yet", "/#/", null, null, [], { app: "none", wait: ".hp-host" }],
+  ["app connect dialog, token step", "/#/", null, null, [".hp-host", "dialog[open]"], { app: "none", wait: ".hp-host" }],
+  ["app Publish card, connected", "/#/", null, null, [], { app: "connected", wait: ".hp-where" }],
+  ["app change or disconnect", "/#/", null, null, ['button:has-text("Change or disconnect")', "dialog[open]"], { app: "connected", wait: ".hp-where" }],
 ];
+const fakeApp = await readFile(new URL("./fake-tauri.js", import.meta.url), "utf8");
 
 const server = await serve(distDir);
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 let failures = 0;
 try {
-  for (const [label, hash, post, select, clicks = []] of screens) {
+  for (const [label, hash, post, select, clicks = [], { app, wait } = {}] of screens) {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    if (app) await page.addInitScript(`window.__FAKE_TAURI__ = ${JSON.stringify({ host: app })};\n${fakeApp}`);
     if (post) {
       await page.addInitScript((p) => {
         localStorage.setItem(`crust:post:${p.slug}`, JSON.stringify({ post: p, updatedAt: new Date().toISOString(), savedToGitHub: false }));
       }, post);
     }
     await page.goto(server.url + hash, { waitUntil: "load" });
-    // Wait for Puck's canvas and the blocks inside it.
-    await page.waitForSelector("iframe", { timeout: 20_000 });
+    // Wait for Puck's canvas and the blocks inside it (or the screen's own landmark).
+    await page.waitForSelector(wait ?? "iframe", { timeout: 20_000 });
     await page.waitForTimeout(1500);
     // Buttons to press in order; a last "dialog[open]" only waits for the dialog to be there.
     for (const button of clicks) {

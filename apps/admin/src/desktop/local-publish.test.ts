@@ -175,3 +175,21 @@ describe("publishing from the app", () => {
     setDesktopPublisher(null);
   });
 });
+
+describe("F058: building to publish to a host", () => {
+  it("checks every page, and uses the host's address while the site's own isn't set", async () => {
+    const app = fakeApp();
+    const store = await bakery({ "content/site.json": json({ name: "Bakery", baseUrl: "https://example.pages.dev", language: "en", tokens: defaultTokens }) });
+    await localPublisher(store, app.invoke).buildToPublish("https://bakery.pages.dev");
+    const build = app.calls[0]!.args as { files: { path: string; content: string }[]; baseUrl: string; preview: boolean };
+    expect(build.preview).toBe(false);
+    expect(build.baseUrl).toBe("https://bakery.pages.dev");
+    expect(build.files.find((f) => f.path === "about/index.html")!.content).toContain('href="https://bakery.pages.dev/about/"');
+  });
+
+  it("keeps the site's own address when it's set", async () => {
+    const app = fakeApp();
+    await localPublisher(await bakery(), app.invoke).buildToPublish("https://bakery.pages.dev");
+    expect((app.calls[0]!.args as { baseUrl: string }).baseUrl).toBe("https://bakery.example");
+  });
+});

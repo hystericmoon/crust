@@ -588,3 +588,24 @@ to "Log".
   restores a site. **Owner can try:** only in the app (Mac installer by
   hand, ~150 counted minutes; ask Claude). The web admin is unchanged
   (one site, no Sites screen).
+
+- 2026-11-01 — F058 Publish to Cloudflare Pages or Netlify built (branch
+  `f058-publish-to-host`, stacked on F057 / PR #48). In the app, the
+  Publish card offers **Cloudflare Pages** and **Netlify**: a short
+  dialog shows how to make a token on the host's site (with a button
+  that opens that page), checks the pasted token straight away, then
+  asks for the address (harbour-studio.pages.dev). After that the card
+  has one **Publish** button, says where the site goes and when it last
+  went there, and shows upload progress ("Uploading 14 of 38 files");
+  only changed files are sent. The token is kept in the Mac Keychain
+  (Windows: Credential Manager), never in the site folder. Clear
+  messages for a wrong token, an expired token ("Paste a new token"), a
+  taken address (offers a free one), a project deleted on the host, no
+  internet, and page problems. Design snapshot
+  https://claude.ai/artifact/DMXMZc8NdDTNRXSFEBBuah (direction A built);
+  screenshots design/f058-*.png. done_check exit 0; 948 JS + 70 desktop
+  Rust tests (the hosts are played by a fake server on the computer, so
+  no real account is touched). CI's time limit raised from 35 to 45
+  minutes (DECISIONS F058). **Owner can try:** only in the app (Mac
+  installer by hand, ~150 counted minutes; ask Claude), with your own
+  free Cloudflare or Netlify account. The web admin is unchanged.
