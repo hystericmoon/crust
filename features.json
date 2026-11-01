@@ -666,7 +666,7 @@
       "description": "Design snapshot first. Start from a template also lists premium templates from the store's catalogue file: preview at three widths, price, and a 'Get this template' link that opens the store in the browser. Without internet it shows the free starters only. Bought template files open with 'Open a file' (F048). Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F060"],
       "done_check": "npm test -- catalogue && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

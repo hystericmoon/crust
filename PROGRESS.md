@@ -660,3 +660,17 @@ to "Log".
   accessibility check covers three new screens (no issues). **Owner can
   try:** nothing yet; it needs the update key (docs/setup-updates.md)
   and a release run, both your call.
+
+- 2026-11-02 — F062 Premium templates in the gallery (branch
+  `f062-premium-templates`, stacked on F061 / PR #52). Owner picked
+  direction A of https://claude.ai/artifact/B53eSPBXNaCJmAL6DNUeQs: Free
+  first, then Premium with prices; premium previews use the store's
+  pictures at three widths; "Get this template" opens the store in the
+  browser; "Already bought it? Open the file". Offline: one quiet line.
+  No store address yet, so a bundled example catalogue shows at
+  `#/templates?examples`. Screenshots design/f062-*.png. done_check
+  exit 0 (18 catalogue tests; builder accessibility check covers three
+  new screens, which caught and fixed two issues). **Owner can try:**
+  open the preview link's `#/templates?examples`, open "Example:
+  Studio", switch widths, press Get this template. Needs
+  `reviewed: true` from you.

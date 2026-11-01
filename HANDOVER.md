@@ -5,18 +5,18 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 (Jakarta): F061 Updates built in, built and
-passing on branch `f061-updates` (stacked on `f060-first-run` / PR #51),
-PR #52.
-F060 is PR #51 (on #50), F059 PR #50 (on #49), F058 PR #49 (on #48),
-F057 PR #48 (on #47), F056 PR #47 (on #46), F055 PR #46, F053 PR #45
-(none merged; the owner merges). Next: F062 Premium templates in the
-gallery (design snapshot first).
-**The F061 session was at the session-chain limit (depth 8)**, so it
-couldn't start the next session: the owner starts a fresh one with
-"Read HANDOVER.md on branch f061-updates and continue." That resets the
-chain. The new session archives the F061 session once it's idle and
-subscribes to PRs #45–#52.
+Last updated: 2026-11-02 (Jakarta): F062 Premium templates in the
+gallery built and passing on branch `f062-premium-templates` (stacked
+on `f061-updates` / PR #52), PR #53. Milestone 6 is complete (F055–F062).
+F061 is PR #52 (on #51), F060 PR #51 (on #50), F059 PR #50 (on #49),
+F058 PR #49 (on #48), F057 PR #48 (on #47), F056 PR #47 (on #46), F055
+PR #46, F053 PR #45 (none merged; the owner merges). Next: F063 Store
+site (Milestone 7, design snapshot first).
+**The F061/F062 session was at the session-chain limit (depth 8)**, so
+it couldn't start the next session: the owner starts a fresh one with
+"Read HANDOVER.md on branch f062-premium-templates and continue." That
+resets the chain. The new session archives the F061/F062 session once
+it's idle and subscribes to PRs #45–#53.
 
 ## How sessions work (owner's rule, 2026-10-30)
 
@@ -101,7 +101,8 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | F058 Publish to Cloudflare Pages or Netlify | built, passes, CI green | `f058-publish-to-host`, PR #49 (stacked on #48) |
 | F059 Publish by FTP or SFTP | built, passes, CI green | `f059-ftp-sftp`, PR #50 (stacked on #49) |
 | F060 First run | built, passes, CI green | `f060-first-run`, PR #51 (stacked on #50) |
-| F061 Updates built in | built, passes | `f061-updates`, PR #52 (stacked on #51) |
+| F061 Updates built in | built, passes, CI green | `f061-updates`, PR #52 (stacked on #51) |
+| F062 Premium templates in the gallery | built, passes, needs owner review | `f062-premium-templates`, PR #53 (stacked on #52) |
 
 - **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in
@@ -122,7 +123,8 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
   https://claude.ai/artifact/DMXMZc8NdDTNRXSFEBBuah (A built). F059: no
   snapshot (screenshots design/f059-*.png). F060
   https://claude.ai/artifact/Lx5SeC9B1GmSN3ztFebA3t (A built). F061: no
-  snapshot (screenshots design/f061-*.png).
+  snapshot (screenshots design/f061-*.png). F062
+  https://claude.ai/artifact/B53eSPBXNaCJmAL6DNUeQs (A, owner's pick).
 
 ## Next
 
@@ -253,9 +255,22 @@ The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
    The window self-check asks `update_status`/`update_check` (CI has no
    key, so "off"). Tests turn on tauri's `test` feature, so `cargo test`
    rebuilds the tauri crate once more than `cargo build` (~1 min of CI).
-   **Next: F062 Premium templates in the gallery** (design snapshot
-   first; it adds to the same gallery F060 shows; done_check `npm test --
-   catalogue && npm run check:builder`). Open proposals worth
+   ~~F062 Premium templates in the gallery~~ **built, passes** (PR #53,
+   branch `f062-premium-templates`, stacked on #52). Owner picked A of
+   https://claude.ai/artifact/B53eSPBXNaCJmAL6DNUeQs. See DECISIONS
+   "F062". How it fits: `apps/admin/src/templates/catalogue.ts`
+   (`readCatalogue`, `loadCatalogue`, `catalogueSource`;
+   `STORE_CATALOGUE_URL` is null until the store exists: **F063 must set
+   it** to the store's catalogue address); `TemplatesScreen.tsx`
+   (`PremiumGroup`, `PremiumDetail`, `openInBrowser`); Rust command
+   `open_link` (https only) in lib.rs. Catalogue format in docs/spec.md:
+   **F063's store writes exactly this file.** Example catalogue in
+   `apps/admin/public/sample-catalogue/` (regenerate with `npm run build
+   && node scripts/sample-catalogue.mjs`), shown at
+   `#/templates?examples`. check:builder covers three premium screens.
+   **Next: F063 Store site** (Milestone 7, docs/milestone-7.md; design
+   snapshot first; done_check `npm test -- store && npm run check:a11y
+   && npm run check:perf`). It writes the catalogue file F062 reads. Open proposals worth
    raising: "App wording", "Browser copies in the app" (found with
    F060: unsaved colours/drafts are shared between sites in the app),
    `.htaccess` redirects for FTP hosts.

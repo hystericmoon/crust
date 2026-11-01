@@ -3,11 +3,17 @@
  * templates, then one template's pages in a preview at desktop, tablet and
  * phone widths, then a question that says exactly what applying it
  * replaces and what it keeps. Design snapshot: design/f048-start-from-template-v1.html.
+ *
+ * F062 (design direction A, design/f062-premium-templates-v1.html): the free
+ * templates first, then the premium ones from the store's catalogue, each
+ * previewed with the store's pictures and bought in the browser.
  */
 import baseCss from "@crust/blocks/styles.css?raw";
 import { useEffect, useId, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { Dialog, focusAfterDialog } from "../pages/PageActions";
 import { setJustApplied } from "./local-site";
+import { sitesInvoke } from "../sites/sites";
+import { cardPicture, pictureFor, premiumTemplates, type CatalogueState, type CatalogueTemplate, type PreviewWidth } from "./catalogue";
 import { gallerySources, readTemplateText, type GallerySource, type Template } from "./sources";
 import { applyLocally, applyOnGitHub, previewHtml, replacePlan, templateFacts, type ApplyStep, type CurrentSite, type PreviewTarget, type ReplacePlan } from "./start";
 import "./templates.css";
@@ -36,15 +42,21 @@ export interface TemplatesScreenProps {
   sources?: GallerySource[];
   /** After applying: the app reloads so every screen picks up the new site. */
   onApplied?: () => void;
+  /** F062: the premium templates (the store's catalogue). */
+  premium?: () => Promise<CatalogueState>;
 }
+
+const fromStore = () => premiumTemplates(location.hash, location.href);
 
 const reload = () => {
   location.hash = "#/";
   location.reload();
 };
 
-export function TemplatesScreen({ siteName, githubOn, currentSite, sources: given, onApplied = reload }: TemplatesScreenProps) {
+export function TemplatesScreen({ siteName, githubOn, currentSite, sources: given, onApplied = reload, premium = fromStore }: TemplatesScreenProps) {
   const [sources] = useState(() => given ?? gallerySources());
+  const [catalogue, setCatalogue] = useState<CatalogueState>({ kind: "loading" });
+  const [premiumChosen, setPremiumChosen] = useState<CatalogueTemplate | null>(null);
   const [cards, setCards] = useState<Card[]>(() => sources.map((s) => ({ id: s.id, template: null, problems: [], loading: true })));
   const [chosen, setChosen] = useState<Template | null>(null);
   const [fileProblems, setFileProblems] = useState<string[]>([]);
@@ -53,10 +65,22 @@ export function TemplatesScreen({ siteName, githubOn, currentSite, sources: give
   const fileId = useId();
 
   useEffect(() => {
-    if (chosen || !returnTo) return;
+    if (chosen || premiumChosen || !returnTo) return;
     document.getElementById(returnTo)?.focus();
     setReturnTo(null);
-  }, [chosen, returnTo]);
+  }, [chosen, premiumChosen, returnTo]);
+
+  useEffect(() => {
+    let live = true;
+    void premium()
+      .catch((): CatalogueState => ({ kind: "offline" }))
+      .then((state) => {
+        if (live) setCatalogue(state);
+      });
+    return () => {
+      live = false;
+    };
+  }, [premium]);
 
   useEffect(() => {
     let live = true;
@@ -79,16 +103,38 @@ export function TemplatesScreen({ siteName, githubOn, currentSite, sources: give
     window.scrollTo?.(0, 0);
   };
 
+  const openFileText = async (file: File) => {
+    setFileProblems([]);
+    const read = readTemplateText(await file.text());
+    if (read.template) open(read.template, fileId);
+    else {
+      setFileProblems(read.problems);
+      setReturnTo(fileId);
+    }
+  };
+
   const openFile = async (e: ChangeEvent<HTMLInputElement>) => {
     const input = e.currentTarget;
     const file = input.files?.[0];
     setFileProblems([]);
     if (!file) return;
-    const read = readTemplateText(await file.text());
     input.value = "";
-    if (read.template) open(read.template, fileId);
-    else setFileProblems(read.problems);
+    await openFileText(file);
   };
+
+  if (premiumChosen) {
+    return (
+      <PremiumDetail
+        template={premiumChosen}
+        examples={catalogue.kind === "ready" && !!catalogue.catalogue.examples}
+        onBack={() => setPremiumChosen(null)}
+        onOpenFile={(file) => {
+          setPremiumChosen(null);
+          void openFileText(file);
+        }}
+      />
+    );
+  }
 
   if (chosen) {
     return (
@@ -116,6 +162,9 @@ export function TemplatesScreen({ siteName, githubOn, currentSite, sources: give
           Pick a template to look through its pages. Nothing changes until you choose “Use this template” and confirm; even then your
           previous site can be brought back.
         </p>
+        <h2 className="tp-group" id={`${fileId}-free`}>
+          Free
+        </h2>
         <ul className="tp-grid" aria-label="Templates" aria-busy={ready.length < cards.length || undefined}>
           {cards.map((c) =>
             c.template ? (
@@ -160,6 +209,152 @@ export function TemplatesScreen({ siteName, githubOn, currentSite, sources: give
             </ul>
           </div>
         ) : null}
+        <PremiumGroup
+          state={catalogue}
+          idPrefix={fileId}
+          onOpen={(t) => {
+            setReturnTo(`${fileId}-premium-${t.id}`);
+            setPremiumChosen(t);
+            window.scrollTo?.(0, 0);
+          }}
+        />
+      </main>
+    </div>
+  );
+}
+
+/** F062: the premium group, under the free one. Nothing at all before the store exists. */
+function PremiumGroup({ state, idPrefix, onOpen }: { state: CatalogueState; idPrefix: string; onOpen: (t: CatalogueTemplate) => void }) {
+  if (state.kind === "none" || state.kind === "loading") return null;
+  if (state.kind === "offline") {
+    return <p className="tp-offline">Premium templates show here when you're online.</p>;
+  }
+  const { templates, examples } = state.catalogue;
+  if (!templates.length) return null;
+  return (
+    <section className="tp-premium" aria-labelledby={`${idPrefix}-premium-h`}>
+      <h2 className="tp-group" id={`${idPrefix}-premium-h`}>
+        Premium
+      </h2>
+      <p className="tp-group-note">
+        {examples ? "Examples: the Crust store isn't open yet, so these show what premium templates will look like here. " : ""}
+        Bought in the Crust store, which opens in your browser. Then open the file with “Open a template file…” above.
+      </p>
+      <ul className="tp-grid" aria-label="Premium templates">
+        {templates.map((t) => {
+          const pic = cardPicture(t);
+          return (
+            <li key={t.id}>
+              <button type="button" id={`${idPrefix}-premium-${t.id}`} className="tp-card" onClick={() => onOpen(t)}>
+                <span className="tp-thumb tp-thumb-picture" aria-hidden="true">
+                  {pic ? <img src={pic.src} alt="" loading="lazy" /> : null}
+                </span>
+                <span className="tp-card-meta">
+                  {/* Read out as "Olive, premium, …": the visible name comes first (WCAG 2.5.3). */}
+                  <strong className="tp-card-name">
+                    {t.name}
+                    <span className="pg-sr">, premium, {t.price}.</span>
+                  </strong>
+                  {t.description ? <span>{t.description}</span> : null}
+                  <span className="tp-facts">{[t.kind, t.pages.length === 1 ? "1 page" : `${t.pages.length} pages`].filter(Boolean).join(", ")}</span>
+                  <span className="tp-price" aria-hidden="true">
+                    {t.price}
+                  </span>
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
+/** Opens a store page in the person's browser (the app's own command in the desktop app). */
+export function openInBrowser(url: string, e?: { preventDefault: () => void }) {
+  const invoke = sitesInvoke();
+  if (!invoke) return; // On the web the link opens a new tab by itself.
+  e?.preventDefault();
+  void invoke("open_link", { url }).catch(() => undefined);
+}
+
+/** F062: a premium template, looked through with the store's pictures. */
+function PremiumDetail({ template: t, examples, onBack, onOpenFile }: { template: CatalogueTemplate; examples: boolean; onBack: () => void; onOpenFile: (file: File) => void }) {
+  const [path, setPath] = useState(t.pages[0]?.path ?? "/");
+  const [widthId, setWidthId] = useState<PreviewWidth>(() => (narrow() ? "phone" : "desktop"));
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const fileId = useId();
+  useEffect(() => headingRef.current?.focus(), []);
+  const page = t.pages.find((p) => p.path === path) ?? t.pages[0]!;
+  const picture = pictureFor(page, widthId);
+  const width = widths.find((w) => w.id === widthId)!;
+
+  return (
+    <div className="st">
+      <header className="st-header">
+        <button type="button" className="st-back tp-back" onClick={onBack}>
+          <span aria-hidden="true">←</span> All templates
+        </button>
+        <h1 className="st-title" ref={headingRef} tabIndex={-1}>
+          {t.name}
+        </h1>
+        <div className="st-actions">
+          <a className="st-button st-button-primary tp-get" href={t.url} target="_blank" rel="noopener noreferrer" onClick={(e) => openInBrowser(t.url, e)}>
+            Get this template · {t.price}
+            <span className="pg-sr"> (opens in your browser)</span>
+            <span aria-hidden="true"> ↗</span>
+          </a>
+        </div>
+      </header>
+      <main className="tp-detail">
+        <nav className="tp-pages" aria-label={`Pages in ${t.name}`}>
+          {t.description ? <p className="tp-description">{t.description}</p> : null}
+          <h2 className="tp-sub">{t.pages.length === 1 ? "1 page" : `${t.pages.length} pages`}</h2>
+          <ul>
+            {t.pages.map((p) => (
+              <li key={p.path}>
+                <button type="button" aria-current={p.path === page.path ? "page" : undefined} onClick={() => setPath(p.path)}>
+                  {p.title}
+                  <span className="tp-path">{p.path}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="tp-bought">
+            <label htmlFor={fileId}>Already bought it? Open the file</label>
+            <input
+              id={fileId}
+              type="file"
+              accept=".crust,application/json"
+              onChange={(e) => {
+                const file = e.currentTarget.files?.[0];
+                if (file) onOpenFile(file);
+              }}
+            />
+          </div>
+        </nav>
+        <section className="tp-stage" aria-label="Preview">
+          <div className="tp-stage-bar">
+            <div className="st-segmented" role="group" aria-label="Preview width">
+              {widths.map((w) => (
+                <button key={w.id} type="button" className="st-segment" aria-pressed={w.id === widthId} onClick={() => setWidthId(w.id)}>
+                  {w.label}
+                </button>
+              ))}
+            </div>
+            <p className="tp-legend">{examples ? "Example pictures. " : ""}Pictures of the template from the Crust store. Scroll inside to see the whole page.</p>
+          </div>
+          <div className="tp-pane">
+            {picture ? (
+              // Scrolls when the page is long, so it can take keyboard focus (arrow keys scroll it).
+              <div className="tp-shot" style={{ maxWidth: width.width }} tabIndex={0} role="region" aria-label={`${page.title}, ${width.label.toLowerCase()} width`}>
+                <img src={picture.src} alt={picture.alt} />
+              </div>
+            ) : (
+              <p className="tp-no-picture">There's no picture of this page at {width.label.toLowerCase()} width.</p>
+            )}
+          </div>
+        </section>
       </main>
     </div>
   );

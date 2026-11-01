@@ -277,6 +277,23 @@ fn host_open_token_page<R: Runtime>(app: tauri::AppHandle<R>, host: HostKind) ->
     app.opener().open_url(host.token_page(), None::<&str>).map_err(|e| format!("Couldn't open your browser: {e}"))
 }
 
+/// F062: whether the window may open this address in the browser: secure
+/// web addresses only (a store page), never files or other apps.
+pub fn browser_link_ok(url: &str) -> bool {
+    let Some(rest) = url.strip_prefix("https://") else { return false };
+    let host = rest.split(['/', '?', '#']).next().unwrap_or("");
+    !host.is_empty() && !host.contains('@') && url.len() <= 2000 && !url.chars().any(|c| c.is_whitespace() || c.is_control())
+}
+
+/// F062: "Get this template" opens the store's page in the person's browser.
+#[tauri::command]
+fn open_link<R: Runtime>(app: tauri::AppHandle<R>, url: String) -> Result<(), String> {
+    if !browser_link_ok(&url) {
+        return Err("Crust only opens secure web addresses (https).".into());
+    }
+    app.opener().open_url(url, None::<&str>).map_err(|e| format!("Couldn't open your browser: {e}"))
+}
+
 /// Opens the site's live address (from its connection) in the browser.
 #[tauri::command]
 fn host_open_site<R: Runtime>(app: tauri::AppHandle<R>, sites: State<'_, AppSites>) -> Result<(), String> {
@@ -538,7 +555,7 @@ pub fn run() {
                 let _ = webview.eval(SELF_CHECK);
             }
         })
-        .invoke_handler(tauri::generate_handler![site_info, site_read, site_write, site_remove, site_list, site_build, site_preview, site_export, site_export_replace, site_show_export, sites_list, sites_deleted, sites_create, sites_rename, sites_duplicate, sites_delete, sites_restore, sites_open, host_status, host_check_token, host_connect, host_connect_ftp, host_resend_all, host_replace_token, host_disconnect, host_open_token_page, host_open_site, host_publish, update_status, update_check, update_download, update_restart, self_check_report])
+        .invoke_handler(tauri::generate_handler![site_info, site_read, site_write, site_remove, site_list, site_build, site_preview, site_export, site_export_replace, site_show_export, sites_list, sites_deleted, sites_create, sites_rename, sites_duplicate, sites_delete, sites_restore, sites_open, host_status, host_check_token, host_connect, host_connect_ftp, host_resend_all, host_replace_token, host_disconnect, host_open_token_page, host_open_site, host_publish, update_status, update_check, update_download, update_restart, open_link, self_check_report])
         .build(context)
         .expect("Crust couldn't start")
         .run(|app, event| {
@@ -592,6 +609,19 @@ mod tests {
         // Only photos: the site's other files can't be fetched this way.
         assert_eq!(site_photo(&site, "/content/site.json"), None);
         assert_eq!(site_photo(&site, "/media/../site.json"), None);
+    }
+
+    #[test]
+    fn only_secure_web_addresses_open_in_the_browser() {
+        assert!(browser_link_ok("https://store.crust.app/olive/"));
+        assert!(browser_link_ok("https://example.com"));
+        assert!(!browser_link_ok("http://example.com"));
+        assert!(!browser_link_ok("file:///etc/passwd"));
+        assert!(!browser_link_ok("javascript:alert(1)"));
+        assert!(!browser_link_ok("https://"));
+        assert!(!browser_link_ok("https://me@evil.example/"));
+        assert!(!browser_link_ok("https://example.com/a b"));
+        assert!(!browser_link_ok(&format!("https://example.com/{}", "a".repeat(2001))));
     }
 
     #[test]
