@@ -7,7 +7,7 @@ below; this file says where to look and what to do.
 
 Last updated: 2026-11-01 (Jakarta): F057 Several sites built and passing
 on branch `f057-several-sites` (stacked on `f056-publish-on-computer` /
-PR #47), PR #48 (see "Where things stand"). F056 is PR #47 (stacked on
+PR #47), PR #48 (CI green, not merged). F056 is PR #47 (stacked on
 #46), F055 is PR #46, F053 is PR #45 (all CI green, not merged; the
 owner merges). Next: F058 Publish to Cloudflare Pages or Netlify (design
 snapshot first).
@@ -91,7 +91,7 @@ Before every push: `npm test`, `npm run typecheck`, `cargo test`,
 | F053 Signal and Corner with real photos | built, passes, CI green | `f053-signal-corner-photos`, PR #45 |
 | F055 Desktop app shell (M6) | built, passes, CI green | `f055-desktop-shell`, PR #46 (base main) |
 | F056 Publish on your computer | built, passes, CI green | `f056-publish-on-computer`, PR #47 (stacked on #46) |
-| F057 Several sites | built, passes | `f057-several-sites`, PR #48 (stacked on #47) |
+| F057 Several sites | built, passes, CI green | `f057-several-sites`, PR #48 (stacked on #47) |
 
 - **Merge order when the owner says so:** #33, then #34, then #35, then #36 (GitHub
   retargets each to main as the one below merges), then the rest in
@@ -166,6 +166,11 @@ The owner approved a lot on 2026-10-31 evening; see DECISIONS.md
    left out of duplicates). Screenshots: design/f057-sites-screen.png
    (made with Playwright over `apps/admin/dist` and a fake
    `__TAURI_INTERNALS__`, quicker than the real window for a screen).
+   **CI time warning:** on #48 the `check` job took 30 of its 35
+   minutes (ci.yml `timeout-minutes`). If F058 adds much Rust (HTTP
+   client, keychain), expect it to cross 35: either cache `target/`
+   better or raise the limit, and log it in DECISIONS (it costs free
+   minutes, so mention it to the owner).
    **Next: F058 Publish to Cloudflare Pages or Netlify** (design
    snapshot first; tokens in the keychain, never the site folder).
    Branch from `f057-several-sites` until #46–#48 merge. The "App
