@@ -636,7 +636,7 @@
       "description": "Publish to any host with FTP, FTPS or SFTP. Only changed files are sent (remembered per site); plain FTP works but warns that passwords travel unencrypted. Passwords kept in the keychain. Tested against a local test server in CI. Approved by the owner with Milestone 6 (2026-10-31: 'M6: go ahead'); docs/milestone-6.md.",
       "depends_on": ["F058"],
       "done_check": "cargo test -p crust-desktop && npm test -- hosts",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

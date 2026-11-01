@@ -9,7 +9,9 @@ import {
   addressProblem,
   asHostFailure,
   describeProgress,
+  ftpProblems,
   HostFailure,
+  productName,
   hostsApi,
   tidyAddress,
   whenPublished,
@@ -37,7 +39,9 @@ function fakeHosts(status: HostStatus, over: Partial<HostsApi> = {}): HostsApi {
     status: vi.fn(async () => status),
     checkToken: vi.fn(async () => [{ id: "acc1", name: "Hosni" }]),
     connect: vi.fn(async (host, _token, account, name) => connection({ host, accountName: account.name, project: name, url: `https://${name}.pages.dev` })),
+    connectFtp: vi.fn(async (settings, _password, url) => connection({ host: "ftp", accountName: `${settings.username}@${settings.server}`, project: settings.server, url, ftp: settings })),
     replaceToken: vi.fn(async () => connection()),
+    resendAll: vi.fn(async () => undefined),
     disconnect: vi.fn(async () => undefined),
     openTokenPage: vi.fn(async () => undefined),
     openSite: vi.fn(async () => undefined),
@@ -471,5 +475,190 @@ describe("hosts: publishing", () => {
     await click("Change or disconnect");
     await click("Move to Netlify");
     expect(screen.getByRole("heading", { name: "Connect Netlify" })).toBeTruthy();
+  });
+});
+
+// ------------------------------------------------------------------ F059
+
+const ftpConnection = (over: Partial<HostConnection> = {}): HostConnection =>
+  connection({
+    host: "ftp",
+    accountName: "rina@ftp.example.com",
+    project: "ftp.example.com",
+    url: "https://rina.example.com",
+    ftp: { protocol: "sftp", server: "ftp.example.com", port: 22, username: "rina", folder: "public_html", hostKey: "SHA256:abc" },
+    ...over,
+  });
+
+const fillFtp = async (over: Record<string, string> = {}) => {
+  const values = { Server: "ftp.example.com", Username: "rina", Password: "secret", "Folder on the server": "public_html", "Site address": "https://rina.example.com", ...over };
+  for (const [label, value] of Object.entries(values)) await type(new RegExp(`^${label}`), value);
+};
+
+describe("hosts: FTP and SFTP words", () => {
+  it("checks the server form field by field", () => {
+    const ok = { protocol: "sftp" as const, server: "ftp.example.com", port: 22, username: "rina", folder: "public_html" };
+    expect(ftpProblems(ok, "pw", "https://example.com")).toEqual({});
+    expect(ftpProblems(ok, "pw", "example.com")).toEqual({});
+    expect(Object.keys(ftpProblems({ ...ok, server: "", username: " ", port: 0 }, "", ""))).toEqual(["server", "port", "username", "password", "url"]);
+    expect(ftpProblems({ ...ok, server: "ftp.example.com/public_html" }, "pw", "https://example.com").server).toMatch(/without a folder/);
+    expect(ftpProblems({ ...ok, folder: "../etc" }, "pw", "https://example.com").folder).toMatch(/“\.\.”/);
+    expect(ftpProblems(ok, "pw", "https://example.com/blog").url).toMatch(/nothing after the domain/);
+    expect(ftpProblems(ok, "", "https://example.com", false)).toEqual({});
+  });
+
+  it("names the connection by how files are sent", () => {
+    expect(productName(ftpConnection())).toBe("SFTP");
+    expect(productName(connection())).toBe("Cloudflare Pages");
+  });
+
+  it("calls the app's FTP commands", async () => {
+    const invoke = vi.fn(async () => null);
+    const api = hostsApi(invoke, vi.fn(), vi.fn());
+    const settings = { protocol: "ftps" as const, server: "s", port: 21, username: "u", folder: "" };
+    await api.connectFtp(settings, "pw", "https://example.com");
+    await api.resendAll();
+    expect(invoke).toHaveBeenCalledWith("host_connect_ftp", { settings, password: "pw", url: "https://example.com" });
+    expect(invoke).toHaveBeenCalledWith("host_resend_all", undefined);
+  });
+});
+
+describe("hosts: connecting your own web host", () => {
+  it("offers it next to the two hosts and connects with every detail on one form", async () => {
+    const hosts = fakeHosts(notConnected);
+    render(<HostPublish hosts={hosts} />);
+    await settle();
+    await click(/Your own web host\s*FTP or SFTP/);
+    expect(screen.getByRole("heading", { name: "Connect your own web host" })).toBeTruthy();
+    const sftp = screen.getByRole("radio", { name: /SFTP \(recommended\)/ }) as HTMLInputElement;
+    expect(sftp.checked).toBe(true);
+    expect(document.activeElement).toBe(sftp);
+    expect((screen.getByLabelText("Port") as HTMLInputElement).value).toBe("22");
+    await fillFtp();
+    await submit("Check and connect");
+    expect(hosts.connectFtp).toHaveBeenCalledWith(
+      { protocol: "sftp", server: "ftp.example.com", port: 22, username: "rina", folder: "public_html", hostKey: undefined },
+      "secret",
+      "https://rina.example.com",
+    );
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByText("SFTP")).toBeTruthy();
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Publish" }));
+  });
+
+  it("FTPS and FTP use port 21 unless the port was typed", async () => {
+    render(<HostPublish hosts={fakeHosts(notConnected)} />);
+    await settle();
+    await click(/Your own web host/);
+    await act(async () => fireEvent.click(screen.getByRole("radio", { name: /FTPS/ })));
+    expect((screen.getByLabelText("Port") as HTMLInputElement).value).toBe("21");
+    await type("Port", "2222");
+    await act(async () => fireEvent.click(screen.getByRole("radio", { name: /SFTP/ })));
+    expect((screen.getByLabelText("Port") as HTMLInputElement).value).toBe("2222");
+  });
+
+  it("plain FTP warns that the password travels unencrypted, in the dialog and on the card", async () => {
+    const hosts = fakeHosts(notConnected);
+    render(<HostPublish hosts={hosts} />);
+    await settle();
+    await click(/Your own web host/);
+    expect(screen.queryByText(/Not encrypted\./)).toBeNull();
+    await act(async () => fireEvent.click(screen.getByRole("radio", { name: /FTP \(not encrypted\)/ })));
+    expect(screen.getByText(/Not encrypted\./).closest(".dp-box")!.textContent).toMatch(/sends your password and files unencrypted/);
+    await fillFtp();
+    await submit("Check and connect");
+    expect(screen.getByText(/Plain FTP: your password and files travel unencrypted/)).toBeTruthy();
+  });
+
+  it("missing details are said under their fields, and the first one gets focus", async () => {
+    const hosts = fakeHosts(notConnected);
+    render(<HostPublish hosts={hosts} />);
+    await settle();
+    await click(/Your own web host/);
+    await submit("Check and connect");
+    expect(hosts.connectFtp).not.toHaveBeenCalled();
+    const server = screen.getByLabelText("Server");
+    expect(document.activeElement).toBe(server);
+    expect(server.getAttribute("aria-invalid")).toBe("true");
+    expect(document.getElementById(server.getAttribute("aria-describedby")!)!.textContent).toMatch(/server's name/);
+    expect(screen.getByText("Type the password.")).toBeTruthy();
+  });
+
+  it("the app's refusals land under the field they're about", async () => {
+    const cases: [string, string][] = [
+      ["token", "Password"],
+      ["offline", "Server"],
+      ["folder", "Folder on the server"],
+    ];
+    for (const [kind, label] of cases) {
+      const hosts = fakeHosts(notConnected, { connectFtp: vi.fn(async () => Promise.reject({ kind, message: `bad ${kind}` })) });
+      render(<HostPublish hosts={hosts} />);
+      await settle();
+      await click(/Your own web host/);
+      await fillFtp();
+      await submit("Check and connect");
+      const field = screen.getByLabelText(new RegExp(`^${label}`));
+      expect(document.activeElement).toBe(field);
+      expect(field.getAttribute("aria-describedby")).toContain("error");
+      expect(screen.getByText(`bad ${kind}`)).toBeTruthy();
+      cleanup();
+    }
+  });
+
+  it("a refused saved password asks for it again, not for a token", async () => {
+    const hosts = fakeHosts(
+      { connection: ftpConnection(), suggestedName: "x" },
+      {
+        publish: vi.fn(async () => Promise.reject({ kind: "token", message: "The server no longer accepts the saved password." })),
+        replaceToken: vi.fn(async () => ftpConnection()),
+      },
+    );
+    render(<HostPublish hosts={hosts} />);
+    await settle();
+    await click("Publish");
+    await click("Type the password again");
+    expect(screen.getByRole("heading", { name: "Type the password again" })).toBeTruthy();
+    await type(/^Password/, "new-secret");
+    await submit("Check and save");
+    expect(hosts.replaceToken).toHaveBeenCalledWith("new-secret");
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("a changed server key stops publishing and offers to check the details", async () => {
+    const hosts = fakeHosts(
+      { connection: ftpConnection(), suggestedName: "x" },
+      { publish: vi.fn(async () => Promise.reject({ kind: "identity", message: "The server's key has changed." })) },
+    );
+    render(<HostPublish hosts={hosts} />);
+    await settle();
+    await click("Publish");
+    expect(screen.getByRole("alert").textContent).toMatch(/key has changed/);
+    await click("Check the server details");
+    expect(screen.getByRole("heading", { name: "Change the server details" })).toBeTruthy();
+    expect((screen.getByLabelText("Server") as HTMLInputElement).value).toBe("ftp.example.com");
+    expect((screen.getByLabelText(/^Site address/) as HTMLInputElement).value).toBe("https://rina.example.com");
+  });
+
+  it("change dialog: server key, send every file next time, move to a host", async () => {
+    const hosts = fakeHosts({ connection: ftpConnection(), suggestedName: "x" });
+    render(<HostPublish hosts={hosts} />);
+    await settle();
+    await click("Change or disconnect");
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.textContent).toContain("rina@ftp.example.com");
+    expect(dialog.textContent).toContain("until you remove it from the server");
+    expect(dialog.textContent).toContain("SHA256:abc");
+    expect(within(dialog).getByRole("button", { name: "Move to Cloudflare Pages" })).toBeTruthy();
+    await click("Send every file next time", dialog);
+    expect(hosts.resendAll).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("a connected Cloudflare site can move to its own web host", async () => {
+    render(<HostPublish hosts={fakeHosts({ connection: connection(), suggestedName: "x" })} />);
+    await settle();
+    await click("Change or disconnect");
+    await click("Move to your own web host (FTP or SFTP)");
+    expect(screen.getByRole("heading", { name: "Connect your own web host" })).toBeTruthy();
   });
 });

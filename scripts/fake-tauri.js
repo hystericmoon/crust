@@ -2,17 +2,31 @@
 // screens (Publish card, connect dialog) can be checked and photographed
 // from apps/admin/dist. Files live in memory; host commands answer as a
 // connected or unconnected site. Set window.__FAKE_TAURI__ before this
-// runs: { host: "none" | "connected" }.
+// runs: { host: "none" | "connected" | "ftp" | "ftp-plain" } (F059: an FTP host).
 (() => {
   const opts = window.__FAKE_TAURI__ || {};
   const files = new Map();
   const callbacks = new Map();
   let nextId = 1;
   const decode = (s) => decodeURIComponent(s);
+  const hoursAgo = (h) => Date.now() - h * 60 * 60 * 1000;
+  const ftp = (protocol) => ({
+    host: "ftp",
+    accountName: "rina@ftp.harbour-studio.com",
+    project: "ftp.harbour-studio.com",
+    url: "https://harbour-studio.com",
+    lastPublished: hoursAgo(3),
+    hasToken: true,
+    ftp: { protocol, server: "ftp.harbour-studio.com", port: protocol === "sftp" ? 22 : 21, username: "rina", folder: "public_html", hostKey: protocol === "sftp" ? "SHA256:q3Jm7h0qJ1R5c2vZb0a8kX4yW9nL6tP1sE2dF3gH4iA" : "" },
+  });
   const connection =
     opts.host === "connected"
-      ? { host: "cloudflare", accountName: "Hosni", project: "harbour-studio", url: "https://harbour-studio.pages.dev", lastPublished: Date.now() - 3 * 60 * 60 * 1000, hasToken: true }
-      : null;
+      ? { host: "cloudflare", accountName: "Hosni", project: "harbour-studio", url: "https://harbour-studio.pages.dev", lastPublished: hoursAgo(3), hasToken: true }
+      : opts.host === "ftp"
+        ? ftp("sftp")
+        : opts.host === "ftp-plain"
+          ? ftp("ftp")
+          : null;
   const commands = {
     site_info: () => ({ folder: "/Users/hosni/Documents/Crust/Harbour Studio", id: "Harbour Studio" }),
     site_read: ({ path }) => {

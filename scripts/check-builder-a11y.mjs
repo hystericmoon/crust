@@ -40,6 +40,10 @@ const screens = [
   ["app connect dialog, token step", "/#/", null, null, [".hp-host", "dialog[open]"], { app: "none", wait: ".hp-host" }],
   ["app Publish card, connected", "/#/", null, null, [], { app: "connected", wait: ".hp-where" }],
   ["app change or disconnect", "/#/", null, null, ['button:has-text("Change or disconnect")', "dialog[open]"], { app: "connected", wait: ".hp-where" }],
+  ["app FTP connect dialog", "/#/", null, null, ['button:has-text("Your own web host")', "dialog[open]"], { app: "none", wait: ".hp-host" }],
+  ["app FTP dialog, plain FTP warning", "/#/", null, null, ['button:has-text("Your own web host")', 'label:has-text("FTP (not encrypted)")', "dialog[open]"], { app: "none", wait: ".hp-host" }],
+  ["app Publish card, plain FTP", "/#/", null, null, [], { app: "ftp-plain", wait: ".hp-plain" }],
+  ["app change or disconnect, SFTP", "/#/", null, null, ['button:has-text("Change or disconnect")', "dialog[open]"], { app: "ftp", wait: ".hp-where" }],
 ];
 const fakeApp = await readFile(new URL("./fake-tauri.js", import.meta.url), "utf8");
 

@@ -11,9 +11,15 @@ import {
   addressProblem,
   asHostFailure,
   describeProgress,
+  FTP_PROTOCOLS,
+  ftpProblems,
   HOSTS,
+  PLAIN_FTP_WARNING,
+  productName,
   tidyAddress,
   whenPublished,
+  type FtpProtocol,
+  type FtpSettings,
   type HostAccount,
   type HostConnection,
   type HostFailure,
@@ -21,6 +27,7 @@ import {
   type HostProgress,
   type HostsApi,
   type HostStatus,
+  type TokenHost,
 } from "./hosts";
 import type { BuildReport } from "../desktop/local-publish";
 
@@ -30,7 +37,7 @@ type Run =
   | { kind: "live"; url: string; report: BuildReport; uploaded: number }
   | { kind: "failed"; failure: HostFailure };
 
-type Open = { mode: "connect"; host: HostKind } | { mode: "token" } | { mode: "change" } | null;
+type Open = { mode: "connect"; host: TokenHost } | { mode: "ftp" } | { mode: "token" } | { mode: "change" } | null;
 
 /** The publish check's "Nothing was published. Fix …:\n  - …" split into a sentence and a list. */
 export function problemList(message: string): { lead: string; items: string[] } {
@@ -122,7 +129,9 @@ export function HostPublish({
   }
   if (!status) return <p className="st-help">Checking where this site is published…</p>;
 
-  const product = connection ? HOSTS[connection.host].product : "";
+  const product = connection ? productName(connection) : "";
+  const ftp = connection?.host === "ftp" ? (connection.ftp ?? null) : null;
+  const secretName = connection?.host === "ftp" ? "password" : "token";
   const failure = run.kind === "failed" ? run.failure : null;
 
   return (
@@ -148,14 +157,22 @@ export function HostPublish({
               Change or disconnect
             </button>
           </p>
+          {ftp?.protocol === "ftp" ? (
+            <p className="st-help hp-plain">
+              <span aria-hidden="true">⚠ </span>Plain FTP: your password and files travel unencrypted.
+            </p>
+          ) : null}
           {!connection.hasToken && run.kind !== "failed" ? (
             <div className="dp-box dp-warn">
               <p>
-                <strong>This computer's keychain no longer has the {HOSTS[connection.host].name} token.</strong> Paste it again to publish.
+                <strong>
+                  This computer's keychain no longer has the {connection.host === "ftp" ? "server's password" : `${HOSTS[connection.host].name} token`}.
+                </strong>{" "}
+                {connection.host === "ftp" ? "Type it again to publish." : "Paste it again to publish."}
               </p>
               <div className="pg-form-actions">
                 <button type="button" className="st-button" onClick={() => setOpen({ mode: "token" })}>
-                  Paste a new token
+                  {connection.host === "ftp" ? "Type the password again" : "Paste a new token"}
                 </button>
               </div>
             </div>
@@ -163,7 +180,7 @@ export function HostPublish({
         </>
       ) : (
         <>
-          <p className="st-help hp-intro">Put your site online with a free host. You need an account there.</p>
+          <p className="st-help hp-intro">Put your site online with a free host, or with the web host you already have.</p>
           <div className="hp-hosts">
             {(["cloudflare", "netlify"] as const).map((host, i) => (
               <button key={host} ref={i === 0 ? firstHostRef : undefined} type="button" className="hp-host" onClick={() => setOpen({ mode: "connect", host })}>
@@ -171,6 +188,10 @@ export function HostPublish({
                 <span>Connect…</span>
               </button>
             ))}
+            <button type="button" className="hp-host" onClick={() => setOpen({ mode: "ftp" })}>
+              <strong>Your own web host</strong>
+              <span>FTP or SFTP · Connect…</span>
+            </button>
           </div>
         </>
       )}
@@ -202,7 +223,7 @@ export function HostPublish({
         ) : null}
       </div>
 
-      {failure ? <Failure failure={failure} onToken={() => setOpen({ mode: "token" })} onReconnect={() => connection && setOpen({ mode: "connect", host: connection.host })} /> : null}
+      {failure ? <Failure failure={failure} secretName={secretName} onToken={() => setOpen({ mode: "token" })} onReconnect={() => connection && setOpen(connection.host === "ftp" ? { mode: "ftp" } : { mode: "connect", host: connection.host })} /> : null}
 
       {open?.mode === "connect" ? (
         <ConnectDialog
@@ -212,12 +233,31 @@ export function HostPublish({
           onClose={() => closeDialog(() => (connection ? publishRef.current : firstHostRef.current))}
           onConnected={connected}
         />
-      ) : open?.mode === "token" && connection ? (
+      ) : open?.mode === "ftp" ? (
+        <FtpDialog
+          hosts={hosts}
+          current={ftp}
+          currentUrl={ftp ? connection?.url : undefined}
+          onClose={() => closeDialog(() => (connection ? publishRef.current : firstHostRef.current))}
+          onConnected={connected}
+        />
+      ) : open?.mode === "token" && connection?.host === "ftp" ? (
+        <PasswordDialog hosts={hosts} connection={connection} onClose={() => closeDialog(() => publishRef.current)} onConnected={connected} />
+      ) : open?.mode === "token" && connection && connection.host !== "ftp" ? (
         <ConnectDialog hosts={hosts} host={connection.host} replace onClose={() => closeDialog(() => publishRef.current)} onConnected={connected} />
       ) : open?.mode === "change" && connection ? (
         <ChangeDialog
           connection={connection}
-          onOther={(host) => setOpen({ mode: "connect", host })}
+          onOther={(host) => setOpen(host === "ftp" ? { mode: "ftp" } : { mode: "connect", host })}
+          onResendAll={async () => {
+            try {
+              await hosts.resendAll();
+              setRun({ kind: "idle" });
+            } catch (e) {
+              setRun({ kind: "failed", failure: asHostFailure(e) });
+            }
+            closeDialog(() => publishRef.current);
+          }}
           onDisconnect={disconnect}
           onClose={() => closeDialog(() => publishRef.current)}
         />
@@ -226,7 +266,7 @@ export function HostPublish({
   );
 }
 
-function Failure({ failure, onToken, onReconnect }: { failure: HostFailure; onToken: () => void; onReconnect: () => void }) {
+function Failure({ failure, secretName, onToken, onReconnect }: { failure: HostFailure; secretName: string; onToken: () => void; onReconnect: () => void }) {
   if (failure.kind === "offline") {
     return (
       <div className="dp-box dp-warn" role="alert">
@@ -256,13 +296,13 @@ function Failure({ failure, onToken, onReconnect }: { failure: HostFailure; onTo
       {failure.kind === "token" ? (
         <div className="pg-form-actions">
           <button type="button" className="st-button st-button-primary" onClick={onToken}>
-            Paste a new token
+            {secretName === "password" ? "Type the password again" : "Paste a new token"}
           </button>
         </div>
-      ) : failure.kind === "gone" ? (
+      ) : failure.kind === "gone" || failure.kind === "identity" || failure.kind === "folder" ? (
         <div className="pg-form-actions">
           <button type="button" className="st-button st-button-primary" onClick={onReconnect}>
-            Connect again
+            {failure.kind === "gone" ? "Connect again" : "Check the server details"}
           </button>
         </div>
       ) : null}
@@ -280,7 +320,7 @@ function ConnectDialog({
   onConnected,
 }: {
   hosts: HostsApi;
-  host: HostKind;
+  host: TokenHost;
   suggestedName?: string;
   /** "Paste a new token" for the connected site: only step 1. */
   replace?: boolean;
@@ -507,31 +547,60 @@ function Steps({ step }: { step: 1 | 2 }) {
 function ChangeDialog({
   connection,
   onOther,
+  onResendAll,
   onDisconnect,
   onClose,
 }: {
   connection: HostConnection;
   onOther: (host: HostKind) => void;
+  onResendAll: () => void;
   onDisconnect: () => void;
   onClose: () => void;
 }) {
   const id = useId();
-  const other: HostKind = connection.host === "cloudflare" ? "netlify" : "cloudflare";
+  const isFtp = connection.host === "ftp";
+  const where = isFtp ? connection.accountName : connection.url.replace(/^https:\/\//, "");
+  const others = (["cloudflare", "netlify", "ftp"] as const).filter((h) => h !== connection.host);
+  const otherName = (h: HostKind) => (h === "ftp" ? "your own web host (FTP or SFTP)" : HOSTS[h].product);
   return (
     <Dialog labelledBy={`${id}-h`} describedBy={`${id}-body`} onClose={onClose}>
       <div className="pg-form">
         <h2 id={`${id}-h`}>Where this site is published</h2>
-        <p className="pg-dialog-body" id={`${id}-body`}>
-          Now: {HOSTS[connection.host].product}, <span className="pg-path">{connection.url.replace(/^https:\/\//, "")}</span>. Disconnecting
-          only forgets it here: the live site stays online until you remove it on {HOSTS[connection.host].name}.
-        </p>
+        <div className="pg-dialog-body" id={`${id}-body`}>
+          <p>
+            Now: {productName(connection)}, <span className="pg-path">{where}</span>
+            {isFtp && connection.ftp?.folder ? (
+              <>
+                {" "}
+                in <span className="pg-path">{connection.ftp.folder}</span>
+              </>
+            ) : null}
+            .
+          </p>
+          <p>
+            Disconnecting only forgets it here: the live site stays online until you remove it{" "}
+            {isFtp ? "from the server" : `on ${HOSTS[connection.host as TokenHost].name}`}.
+          </p>
+        </div>
+        {isFtp && connection.ftp?.hostKey ? (
+          <p className="st-help">
+            Server key remembered: <span className="pg-path">{connection.ftp.hostKey}</span>
+          </p>
+        ) : null}
         <div className="pg-form-actions hp-change">
           <button type="button" className="st-button" onClick={() => onOther(connection.host)}>
-            Use another address on {HOSTS[connection.host].name}
+            {isFtp ? "Change the server details" : `Use another address on ${HOSTS[connection.host as TokenHost].name}`}
           </button>
-          <button type="button" className="st-button" onClick={() => onOther(other)}>
-            Move to {HOSTS[other].product}
-          </button>
+          {isFtp ? (
+            <button type="button" className="st-button" onClick={onResendAll} aria-describedby={`${id}-resend`}>
+              Send every file next time
+            </button>
+          ) : null}
+          {others.map((h) => (
+            <button key={h} type="button" className="st-button" onClick={() => onOther(h)}>
+              Move to {otherName(h)}
+            </button>
+          ))}
           <button type="button" className="st-button" onClick={onDisconnect}>
             Disconnect
           </button>
@@ -539,7 +608,325 @@ function ChangeDialog({
             Cancel
           </button>
         </div>
+        {isFtp ? (
+          <p className="st-help" id={`${id}-resend`}>
+            Crust remembers which files are already on the server and sends only changes. If files were changed or removed there by hand, send everything once.
+          </p>
+        ) : null}
       </div>
+    </Dialog>
+  );
+}
+
+const PROTOCOL_ORDER: FtpProtocol[] = ["sftp", "ftps", "ftp"];
+type FtpField = "server" | "port" | "username" | "password" | "folder" | "url";
+/** Which field an error from the app belongs under. */
+const FIELD_FOR_KIND: Record<string, FtpField> = { server: "server", offline: "server", identity: "server", username: "username", token: "password", folder: "folder", url: "url" };
+
+/** F059: the server details, all on one form (they come together from the host's welcome email). */
+function FtpDialog({
+  hosts,
+  current,
+  currentUrl,
+  onClose,
+  onConnected,
+}: {
+  hosts: HostsApi;
+  current: FtpSettings | null;
+  currentUrl?: string;
+  onClose: () => void;
+  onConnected: (c: HostConnection) => void;
+}) {
+  const id = useId();
+  const [settings, setSettings] = useState<FtpSettings>(current ?? { protocol: "sftp", server: "", port: 22, username: "", folder: "" });
+  const [portTouched, setPortTouched] = useState(Boolean(current));
+  const [password, setPassword] = useState("");
+  const [url, setUrl] = useState(currentUrl ?? "");
+  const [errors, setErrors] = useState<Partial<Record<FtpField, string>>>({});
+  const [formError, setFormError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const refs = {
+    server: useRef<HTMLInputElement>(null),
+    port: useRef<HTMLInputElement>(null),
+    username: useRef<HTMLInputElement>(null),
+    password: useRef<HTMLInputElement>(null),
+    folder: useRef<HTMLInputElement>(null),
+    url: useRef<HTMLInputElement>(null),
+  };
+  const firstRef = useRef<HTMLInputElement>(null);
+  useEffect(() => firstRef.current?.focus(), []);
+
+  const set = (patch: Partial<FtpSettings>) => {
+    setSettings((s) => ({ ...s, ...patch }));
+    setErrors({});
+    setFormError(null);
+  };
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (busy) return;
+    const problems = ftpProblems(settings, password, url);
+    const order: FtpField[] = ["server", "port", "username", "password", "folder", "url"];
+    const first = order.find((f) => problems[f]);
+    setErrors(problems);
+    setFormError(null);
+    if (first) return refs[first].current?.focus();
+    setBusy(true);
+    try {
+      onConnected(await hosts.connectFtp({ ...settings, hostKey: undefined }, password, url));
+    } catch (err) {
+      const f = asHostFailure(err);
+      const field = FIELD_FOR_KIND[f.kind];
+      if (field) {
+        setErrors({ [field]: f.message });
+        refs[field].current?.focus();
+      } else setFormError(f.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const field = (name: FtpField, label: string, input: React.ReactNode, help?: React.ReactNode) => (
+    <div className="pg-field">
+      <label className="st-field-label" htmlFor={`${id}-${name}`}>
+        {label}
+      </label>
+      {input}
+      {help ? (
+        <p className="st-help" id={`${id}-${name}-help`}>
+          {help}
+        </p>
+      ) : null}
+      {errors[name] ? (
+        <p className="st-error" id={`${id}-${name}-error`} role="alert">
+          {errors[name]}
+        </p>
+      ) : null}
+    </div>
+  );
+  const describe = (name: FtpField, help: boolean) => [help ? `${id}-${name}-help` : null, errors[name] ? `${id}-${name}-error` : null].filter(Boolean).join(" ") || undefined;
+  const text = { className: "st-input", autoCapitalize: "none", autoCorrect: "off", spellCheck: false } as const;
+
+  return (
+    <Dialog labelledBy={`${id}-h`} onClose={onClose}>
+      <form className="pg-form hp-ftp" onSubmit={submit} noValidate>
+        <h2 id={`${id}-h`}>{current ? "Change the server details" : "Connect your own web host"}</h2>
+        <p className="st-help">Your host's welcome email or control panel has these details, usually under FTP or SFTP.</p>
+        <fieldset className="hp-accounts">
+          <legend className="st-field-label">How to send files</legend>
+          {PROTOCOL_ORDER.map((p, i) => (
+            <label key={p} className="hp-account-choice">
+              <input
+                ref={i === 0 ? firstRef : undefined}
+                type="radio"
+                name={`${id}-protocol`}
+                checked={settings.protocol === p}
+                aria-describedby={`${id}-${p}-help`}
+                onChange={() => set({ protocol: p, ...(portTouched ? {} : { port: FTP_PROTOCOLS[p].port }) })}
+              />{" "}
+              {FTP_PROTOCOLS[p].label}
+              <span className="st-help hp-choice-help" id={`${id}-${p}-help`}>
+                {" "}
+                {FTP_PROTOCOLS[p].help}
+              </span>
+            </label>
+          ))}
+        </fieldset>
+        {settings.protocol === "ftp" ? (
+          <div className="dp-box dp-warn" id={`${id}-plain`}>
+            <p>
+              <strong>Not encrypted.</strong> {PLAIN_FTP_WARNING}
+            </p>
+          </div>
+        ) : null}
+        <div className="hp-row">
+          {field(
+            "server",
+            "Server",
+            <input
+              ref={refs.server}
+              id={`${id}-server`}
+              {...text}
+              placeholder="ftp.example.com"
+              value={settings.server}
+              aria-invalid={errors.server ? true : undefined}
+              aria-describedby={describe("server", false)}
+              onChange={(e) => set({ server: e.target.value })}
+            />,
+          )}
+          {field(
+            "port",
+            "Port",
+            <input
+              ref={refs.port}
+              id={`${id}-port`}
+              className="st-input hp-port"
+              inputMode="numeric"
+              value={String(settings.port || "")}
+              aria-invalid={errors.port ? true : undefined}
+              aria-describedby={describe("port", false)}
+              onChange={(e) => {
+                setPortTouched(true);
+                set({ port: Number(e.target.value.replace(/\D/g, "").slice(0, 5)) || 0 });
+              }}
+            />,
+          )}
+        </div>
+        {field(
+          "username",
+          "Username",
+          <input
+            ref={refs.username}
+            id={`${id}-username`}
+            {...text}
+            autoComplete="off"
+            value={settings.username}
+            aria-invalid={errors.username ? true : undefined}
+            aria-describedby={describe("username", false)}
+            onChange={(e) => set({ username: e.target.value })}
+          />,
+        )}
+        {field(
+          "password",
+          "Password",
+          <input
+            ref={refs.password}
+            id={`${id}-password`}
+            {...text}
+            type="password"
+            autoComplete="off"
+            value={password}
+            aria-invalid={errors.password ? true : undefined}
+            aria-describedby={describe("password", true)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setErrors({});
+            }}
+          />,
+          "Kept in this computer's keychain, not in the site folder.",
+        )}
+        {field(
+          "folder",
+          "Folder on the server",
+          <input
+            ref={refs.folder}
+            id={`${id}-folder`}
+            {...text}
+            placeholder="public_html"
+            value={settings.folder}
+            aria-invalid={errors.folder ? true : undefined}
+            aria-describedby={describe("folder", true)}
+            onChange={(e) => set({ folder: e.target.value })}
+          />,
+          "Where your host wants website files: often public_html, www or htdocs. Leave empty for the folder you land in after signing in.",
+        )}
+        {field(
+          "url",
+          "Site address",
+          <input
+            ref={refs.url}
+            id={`${id}-url`}
+            {...text}
+            type="url"
+            placeholder="https://example.com"
+            value={url}
+            aria-invalid={errors.url ? true : undefined}
+            aria-describedby={describe("url", true)}
+            onChange={(e) => {
+              setUrl(e.target.value);
+              setErrors({});
+            }}
+          />,
+          "Where people will see the site. Used for links shared on social media and for search engines.",
+        )}
+        {formError ? (
+          <p className="st-error" role="alert">
+            {formError}
+          </p>
+        ) : null}
+        <div className="pg-form-actions">
+          <button type="submit" className="st-button st-button-primary" aria-disabled={busy || undefined}>
+            {busy ? "Signing in…" : "Check and connect"}
+          </button>
+          <button type="button" className="st-button" onClick={onClose}>
+            Cancel
+          </button>
+        </div>
+        <p className="st-help">Crust signs in and saves a small test file in the folder (then removes it) to check it can publish there.</p>
+      </form>
+    </Dialog>
+  );
+}
+
+/** F059: the saved FTP password stopped working, or the keychain lost it. */
+function PasswordDialog({ hosts, connection, onClose, onConnected }: { hosts: HostsApi; connection: HostConnection; onClose: () => void; onConnected: (c: HostConnection) => void }) {
+  const id = useId();
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => ref.current?.focus(), []);
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (busy) return;
+    if (!password) {
+      setError("Type the password.");
+      return ref.current?.focus();
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      onConnected(await hosts.replaceToken(password));
+    } catch (err) {
+      setError(asHostFailure(err).message);
+      ref.current?.focus();
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Dialog labelledBy={`${id}-h`} onClose={onClose}>
+      <form className="pg-form" onSubmit={submit} noValidate>
+        <h2 id={`${id}-h`}>Type the password again</h2>
+        <p className="st-help">
+          For <span className="pg-path">{connection.accountName}</span>.
+        </p>
+        <div className="pg-field">
+          <label className="st-field-label" htmlFor={`${id}-password`}>
+            Password
+          </label>
+          <input
+            ref={ref}
+            id={`${id}-password`}
+            className="st-input"
+            type="password"
+            autoComplete="off"
+            value={password}
+            aria-invalid={error ? true : undefined}
+            aria-describedby={[`${id}-lock`, error ? `${id}-error` : null].filter(Boolean).join(" ")}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setError(null);
+            }}
+          />
+          <p className="st-help" id={`${id}-lock`}>
+            Kept in this computer's keychain, not in the site folder.
+          </p>
+          {error ? (
+            <p className="st-error" id={`${id}-error`} role="alert">
+              {error}
+            </p>
+          ) : null}
+        </div>
+        <div className="pg-form-actions">
+          <button type="submit" className="st-button st-button-primary" aria-disabled={busy || undefined}>
+            {busy ? "Signing in…" : "Check and save"}
+          </button>
+          <button type="button" className="st-button" onClick={onClose}>
+            Cancel
+          </button>
+        </div>
+      </form>
     </Dialog>
   );
 }

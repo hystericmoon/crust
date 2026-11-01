@@ -14,6 +14,7 @@
 //! F058: or upload it to Cloudflare Pages or Netlify (hosts.rs), with the
 //! person's token kept in the computer's keychain.
 
+pub mod ftp;
 pub mod hosts;
 pub mod preview;
 pub mod publish;
@@ -244,6 +245,19 @@ async fn host_connect(sites: State<'_, AppSites>, hosts: State<'_, AppHosts>, ho
     blocking(move || service.connect(&site, host, &token, &account, &name)).await
 }
 
+/// F059: connects the site to an FTP/SFTP host (signs in and checks the folder first).
+#[tauri::command]
+async fn host_connect_ftp(sites: State<'_, AppSites>, hosts: State<'_, AppHosts>, settings: ftp::FtpSettings, password: String, url: String) -> Result<hosts::ConnectionView, HostError> {
+    let (service, site) = (hosts.0.clone(), sites.0.current());
+    blocking(move || service.connect_ftp(&site, settings, &password, &url)).await
+}
+
+/// F059: the next publish sends every file, not only changed ones.
+#[tauri::command]
+fn host_resend_all(sites: State<'_, AppSites>, hosts: State<'_, AppHosts>) -> Result<(), String> {
+    hosts.0.resend_all(&sites.0.current())
+}
+
 #[tauri::command]
 async fn host_replace_token(sites: State<'_, AppSites>, hosts: State<'_, AppHosts>, token: String) -> Result<hosts::ConnectionView, HostError> {
     let (service, site) = (hosts.0.clone(), sites.0.current());
@@ -253,13 +267,16 @@ async fn host_replace_token(sites: State<'_, AppSites>, hosts: State<'_, AppHost
 /// Opens the host's token page in the person's browser (only those two pages).
 #[tauri::command]
 fn host_open_token_page<R: Runtime>(app: tauri::AppHandle<R>, host: HostKind) -> Result<(), String> {
+    if host.token_page().is_empty() {
+        return Err("This host has no token page.".into());
+    }
     app.opener().open_url(host.token_page(), None::<&str>).map_err(|e| format!("Couldn't open your browser: {e}"))
 }
 
 /// Opens the site's live address (from its connection) in the browser.
 #[tauri::command]
 fn host_open_site<R: Runtime>(app: tauri::AppHandle<R>, sites: State<'_, AppSites>) -> Result<(), String> {
-    let url = hosts::load_connection(&sites.0.current()).map(|c| c.url).filter(|u| u.starts_with("https://")).ok_or("This site isn't connected to a host yet.")?;
+    let url = hosts::load_connection(&sites.0.current()).map(|c| c.url).filter(|u| u.starts_with("https://") || u.starts_with("http://")).ok_or("This site isn't connected to a host yet.")?;
     app.opener().open_url(url, None::<&str>).map_err(|e| format!("Couldn't open your browser: {e}"))
 }
 
@@ -477,7 +494,7 @@ pub fn run() {
                 let _ = webview.eval(SELF_CHECK);
             }
         })
-        .invoke_handler(tauri::generate_handler![site_info, site_read, site_write, site_remove, site_list, site_build, site_preview, site_export, site_export_replace, site_show_export, sites_list, sites_deleted, sites_create, sites_rename, sites_duplicate, sites_delete, sites_restore, sites_open, host_status, host_check_token, host_connect, host_replace_token, host_disconnect, host_open_token_page, host_open_site, host_publish, self_check_report])
+        .invoke_handler(tauri::generate_handler![site_info, site_read, site_write, site_remove, site_list, site_build, site_preview, site_export, site_export_replace, site_show_export, sites_list, sites_deleted, sites_create, sites_rename, sites_duplicate, sites_delete, sites_restore, sites_open, host_status, host_check_token, host_connect, host_connect_ftp, host_resend_all, host_replace_token, host_disconnect, host_open_token_page, host_open_site, host_publish, self_check_report])
         .run(context)
         .expect("Crust couldn't start");
 }

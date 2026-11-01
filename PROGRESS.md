@@ -609,3 +609,21 @@ to "Log".
   minutes (DECISIONS F058). **Owner can try:** only in the app (Mac
   installer by hand, ~150 counted minutes; ask Claude), with your own
   free Cloudflare or Netlify account. The web admin is unchanged.
+
+- 2026-11-01 — F059 Publish by FTP or SFTP built (branch
+  `f059-ftp-sftp`, stacked on F058 / PR #49). In the app, the Publish
+  card offers a third choice, **Your own web host (FTP or SFTP)**. One
+  form takes the details from the host's welcome email (SFTP
+  recommended, FTPS, or FTP with a visible warning), signs in and
+  checks it can write in the folder before saving anything. **Publish**
+  then sends only new or changed files (photos first, pages last) and
+  removes files it sent before that are gone; files it didn't send are
+  never touched. Password in the keychain. SFTP remembers the server's
+  key and stops if it changes. "Send every file next time" in the
+  Change dialog. No snapshot (the feature doesn't ask for one);
+  screenshots design/f059-*.png. done_check exit 0; 960 JS + 88 desktop
+  Rust tests, 18 of them against real FTP, FTPS and SFTP servers started
+  inside the tests. Builder accessibility check covers four new screens
+  (no issues). **Owner can try:** only in the app, with your own web
+  host's FTP or SFTP details (any shared hosting). Never tried against a
+  real host here; if it fails, the message says what the server said.
