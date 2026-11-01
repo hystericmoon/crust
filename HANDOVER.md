@@ -12,6 +12,11 @@ F060 is PR #51 (on #50), F059 PR #50 (on #49), F058 PR #49 (on #48),
 F057 PR #48 (on #47), F056 PR #47 (on #46), F055 PR #46, F053 PR #45
 (none merged; the owner merges). Next: F062 Premium templates in the
 gallery (design snapshot first).
+**The F061 session was at the session-chain limit (depth 8)**, so it
+couldn't start the next session: the owner starts a fresh one with
+"Read HANDOVER.md on branch f061-updates and continue." That resets the
+chain. The new session archives the F061 session once it's idle and
+subscribes to PRs #45–#52.
 
 ## How sessions work (owner's rule, 2026-10-30)
 
