@@ -4,6 +4,23 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Slideshow, Card slider, Tabs, Map and a Gallery lightbox (F079).** A
+  **Slideshow** shows up to ten photos one at a time, each with an
+  optional title, line and link, with back/next buttons and "2 / 5"
+  under the photo; swipe on phones. It plays on its own only if you
+  switch that on, and then always has a pause button (and never plays
+  for visitors who turned on Reduce motion). A **Card slider** is a row
+  of up to twelve cards that scrolls sideways, with the next card
+  peeking in and arrows above it. **Tabs** show two to eight short texts
+  one at a time (underline, pills, or a list on the left). A **Map**
+  shows your address, a drawn map in your colours and a "Show map"
+  button; the real map (OpenStreetMap) loads only when pressed, and
+  "Directions" opens the visitor's maps app. In the builder, type the
+  address and press **Find on the map**, or paste a Google Maps link.
+  **Galleries** can open photos larger when pressed (on for new
+  galleries). Pages without these blocks stay script-free; each block
+  works without JavaScript too.
+
 - **Stats, Video, Table, Pricing and numbered lists (F078).** A **Stats**
   block shows two to six big figures with what they count ("300+
   projects finished"), plain, with lines between, or in boxes. A

@@ -257,6 +257,78 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-02 — F079 Slideshow, Card slider, Tabs, Lightbox, Map (Claude, reversible)
+
+Snapshot https://claude.ai/artifact/FNRagTiH9MLL4iTdDgHeje
+(`design/f079-interactive-v1.html`); the owner hadn't picked, so the
+recommendations were built: A for all four choices.
+
+- **Plain HTML first, a small script second.** Slides and cards sit in a
+  row that scrolls and snaps (swipe works with no script); every tab's
+  text is on the page under its own heading; "Show map" is a link to
+  OpenStreetMap; a gallery photo is a link to the photo. A script (each
+  2.5 KB at most, unminified) is added only to pages that use the block
+  (`interactiveTags`) and turns on the buttons. So the M1 rule "pages
+  display with no JavaScript" still holds, search engines see every tab,
+  and a page without these blocks gets no script and none of their CSS
+  (`needsInteractiveCss`).
+- **Slideshow: control row under the photo (A).** Buttons never sit on
+  the photo, so they read on any picture without a scrim; "2 / 5" is
+  written (and read out as "Slide 2 of 5"); 44 px targets (WCAG 2.5.8 asks
+  24). B (dots on the photo) was turned down for tiny targets and
+  colour-only state; C (thumbnails) for loading every photo up front.
+  Following the WAI carousel pattern: a named region ("Slideshow: Our
+  rooms", `aria-roledescription="carousel"`), slides labelled "2 of 5".
+  Off by default, playing on its own needs "Yes, with a pause button";
+  then the pause button comes first, rotation stops while the pointer or
+  keyboard focus is inside (WCAG 2.2.2), the count isn't announced while
+  it plays (`aria-live="off"`), and under Reduce motion it never plays on
+  its own and slides without animation. The slideshow wraps from the last
+  slide to the first; the card slider stops at the ends (buttons marked
+  `aria-disabled`, not `disabled`, so focus isn't lost).
+- **Card slider: arrows above the row, on the right (A)**, with the next
+  card peeking in. Cards use the Grid's card look, so they match.
+- **Tabs:** the WAI tabs pattern with automatic activation (arrow keys
+  move and show; Home/End; the side look uses Up/Down). Looks: underline,
+  pills, side (left on desktop, underline on phones). The tab row scrolls
+  sideways on phones instead of turning into an accordion: changing
+  widget type by screen width confuses people and screen readers. A link
+  to `#<panel id>` opens that tab. Texts are plain paragraphs (like the
+  Accordion's answers), not rich text, to keep the block small.
+- **Lightbox: dark, the whole screen (A).** A real `<dialog>`
+  (`showModal`): focus moves in and back to the pressed photo, Esc closes
+  (the browser does that), arrow keys go through the gallery, the photo
+  keeps its description. Fixed colours (#EDEFEC on #141614, 16:1), so it
+  needs no per-site check. It's a Gallery switch, "Open photos larger
+  when pressed": on for new galleries, off (missing) for galleries made
+  before, so published sites don't change. Not in the builder, where
+  pressing a photo selects the block.
+- **Map: a drawn map card (A), OpenStreetMap on press.** The card is CSS
+  in the section's colours; a cover photo can replace it (B, built as an
+  option). Nothing is asked from a map service until "Show map" is
+  pressed (privacy, speed score); C (map shown straight away) was turned
+  down for that and because a map in the page traps scrolling on phones.
+  OpenStreetMap's embed needs no account or key; Google's keyless embed
+  isn't a documented API and could stop working. "Directions" uses
+  Google Maps' documented link (`maps/dir/?api=1`, no key), which opens
+  the visitor's maps app on phones. The press reuses the F078
+  press-to-load script (`VIDEO_EMBED_SCRIPT`, now also filling a
+  `data-cr-embed-box` frame). The address is always written out in an
+  `<address>` (a map tells a screen reader nothing).
+- **Finding the pin:** the builder's "Find on the map" asks OpenStreetMap's
+  free search (Nominatim) once per press, from the owner's browser only
+  (its usage policy allows this; never from published sites). Or paste a
+  Google Maps, Apple Maps or OpenStreetMap link, or coordinates
+  (`pinFromText`; a Google place's own pin `!3d…!4d…` wins over the map
+  centre `@…`). Short links (maps.app.goo.gl) can't be read without
+  following them, so the field explains how to copy a full one. The pin
+  is stored as `pin: { lat, lng }` (6 decimals).
+- **Content format:** all additive and optional (see docs/spec.md, F079);
+  no migration. `Gallery.lightbox` missing means off.
+- **Speed:** check:perf measures the Home page, which has none of these
+  blocks; the scripts are small, deferred (`type="module"`), and slides
+  after the first load lazily.
+
 ## 2026-11-02 — F078 Stats, Video, Table and Pricing, Numbered list (Claude, reversible)
 
 Snapshot https://claude.ai/artifact/X3bMNKoE6MCU7EqbLJx2mk

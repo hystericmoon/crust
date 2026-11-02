@@ -5,7 +5,31 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 ~20:30 (Jakarta). **F078 Stats, Video,
+Last updated: 2026-11-02 ~23:00 (Jakarta). **F079 Slideshow, Card
+slider, Tabs, Lightbox, Map built, passes** (branch
+`ccr-d50f7e80-weuq18`, restarted from main after F078 merged as PR #64;
+done_check exit 0; DECISIONS "F079"). Snapshot
+https://claude.ai/artifact/FNRagTiH9MLL4iTdDgHeje (A built for all
+four choices). How it fits: blocks in
+`packages/blocks/src/interactive.tsx` (Slideshow, CardSlider, Tabs,
+`MapBlock` registered as `Map`; `pinFromText`, `mapEmbedUrl`,
+`directionsUrl`; scripts `SLIDER_SCRIPT`, `TABS_SCRIPT`,
+`LIGHTBOX_SCRIPT`, picked per page by `interactiveTags`, which
+render.tsx `videoTag` appends); CSS `interactive-css.ts`
+(`INTERACTIVE_CSS`, `needsInteractiveCss`); the Gallery's `lightbox`
+switch in more-blocks.tsx; "Show map" reuses `VIDEO_EMBED_SCRIPT` (now
+fills a `data-cr-embed-box`). Tabs in the builder are a working React
+version (the published page uses the script). Builder:
+`apps/admin/src/interactive/` (`MapPinField.tsx` with Nominatim search
+in `geocode.ts`, `fields.tsx` `withInteractiveFields`,
+`interactiveFieldShown`). Samples in block-samples.ts; check:builder
+screens "Map pin field", "Tabs selected", "Slideshow Style tab".
+Needs `reviewed: true`. **Next: F080 Layout library v2** (design
+snapshot first; done_check `npm test -- layouts && npm run
+check:layouts`), on a new branch from main once F079 is merged, or
+stacked.
+
+Earlier (~20:30): **F078 Stats, Video,
 Table and Pricing, Numbered list built, passes** (branch
 `ccr-d50f7e80-weuq18`, from main after F077 merged as PR #63;
 done_check exit 0; DECISIONS "F078"). Snapshot

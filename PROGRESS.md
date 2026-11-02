@@ -5,6 +5,24 @@ to "Log".
 
 ## Current
 
+- **F079 Slideshow, Card slider, Tabs, Lightbox, Map: built, passes**
+  (branch `ccr-d50f7e80-weuq18`, from main after F078 was merged as PR
+  #64). Snapshot https://claude.ai/artifact/FNRagTiH9MLL4iTdDgHeje, A
+  built for all four choices. done_check `npm test -- interactive && npm
+  run check:a11y && npm run check:perf` exit 0. **To try** on the PR's
+  preview link: in the builder add a **Slideshow** (Media), add photos,
+  then Style tab → "Play on its own: Yes"; add a **Card slider** (Media)
+  and press its arrows in the canvas; add **Tabs** (Content) and click
+  between them, try the three looks; add a **Map** (Media), type an
+  address, press **Find on the map**, then "Check on OpenStreetMap" to
+  see it's right (or paste a Google Maps link); on a **Gallery**, Style
+  tab → "Open photos larger when pressed". The scripts only run on the
+  published page: use Preview/Publish to press "Show map", open a photo,
+  or let the slideshow play. Keyboard: arrow keys move between tabs and
+  through photos in the lightbox; Esc closes it. Screenshots
+  `design/f079-*.png`. Needs `reviewed: true`. Next: F080 Layout library
+  v2.
+
 - **F078 Stats, Video, Table and Pricing, Numbered list: built, passes**
   (branch `ccr-d50f7e80-weuq18`, from main after F077 was merged as PR
   #63). Snapshot https://claude.ai/artifact/X3bMNKoE6MCU7EqbLJx2mk, A
@@ -270,6 +288,11 @@ to "Log".
   but can't save (different Access app). Intended.
 
 ## Log
+
+- 2026-11-02 (evening, Jakarta) — F079 built on `ccr-d50f7e80-weuq18`
+  after F078 merged (PR #64). axe on the sample pages caught the slide
+  link and Directions link using the card link colour on Dark sections;
+  they now use the section's accent colour, like text links.
 
 - 2026-11-02 (15:15–, Jakarta) — F075 Motion built on `f075-motion`
   (one site-wide level, Section entrance and parallax, moving logo row
