@@ -7,7 +7,7 @@
 //! photos, then the search index (Pagefind as a library). The result is a
 //! plain folder that can be exported or previewed in a browser.
 
-use crust_publish::{Checks, finish, load_redirects, publish_media, search::build_search_index};
+use crust_publish::{Checks, finish, load_redirects, publish_fonts, publish_media, search::build_search_index};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -35,9 +35,13 @@ pub struct BuildReport {
     pub problems: Vec<String>,
 }
 
+/// Reads one of Crust's bundled fonts by file name (F070): the app's own
+/// copies in the window's files, so publishing needs no internet.
+pub type FontReader<'a> = &'a (dyn Fn(&str) -> Option<Vec<u8>> + Sync);
+
 /// Builds the finished site into `out`, replacing what was there only once
 /// the new one is complete. `checks` says whether problems stop it.
-pub fn build_site(site: &SiteFolder, files: &[RenderedFile], base_url: &str, checks: Checks, out: &Path) -> Result<BuildReport, String> {
+pub fn build_site(site: &SiteFolder, files: &[RenderedFile], base_url: &str, checks: Checks, out: &Path, fonts: FontReader) -> Result<BuildReport, String> {
     let fail = |e: anyhow::Error| format!("{e:#}");
     let staging = sibling(out, "building");
     remove_dir(&staging)?;
@@ -48,6 +52,10 @@ pub fn build_site(site: &SiteFolder, files: &[RenderedFile], base_url: &str, che
     }
     fs::create_dir_all(&staging).map_err(|e| format!("Couldn't make the site folder: {e}"))?;
     let photos = publish_media(&site.root().join("content").join("media"), &staging).map_err(fail)?;
+    if let Err(e) = publish_fonts(&staging, fonts) {
+        let _ = fs::remove_dir_all(&staging);
+        return Err(fail(e));
+    }
     let redirects_file = site.root().join("content").join("redirects.json");
     let redirects = if redirects_file.is_file() { load_redirects(&redirects_file).map_err(fail)? } else { Vec::new() };
     let result = finish(&staging, base_url, &redirects, checks);
@@ -160,6 +168,10 @@ fn copy_dir(from: &Path, to: &Path) -> std::io::Result<()> {
 
 #[cfg(test)]
 mod tests {
+    fn no_fonts(_: &str) -> Option<Vec<u8>> {
+        None
+    }
+
     use super::*;
 
     const PAGE: &str = "<!doctype html><html lang=\"en\"><head><title>Home</title><meta name=\"description\" content=\"The home page.\"></head>\
@@ -181,7 +193,7 @@ mod tests {
         let (_dir, site, out) = folders();
         site.write("content/redirects.json", br#"[{"from":"/old","to":"/"}]"#).unwrap();
         let files = [file("index.html", PAGE), file("about/index.html", &PAGE.replace("Home", "About")), file("404.html", PAGE)];
-        let report = build_site(&site, &files, "https://bakery.example", Checks::Stop, &out).unwrap();
+        let report = build_site(&site, &files, "https://bakery.example", Checks::Stop, &out, &no_fonts).unwrap();
         assert_eq!(report, BuildReport { pages: 2, photos: 0, searchable: 3, redirects: 1, problems: vec![] });
         assert!(fs::read_to_string(out.join("sitemap.xml")).unwrap().contains("https://bakery.example/about/"));
         assert!(out.join("robots.txt").is_file());
@@ -199,7 +211,7 @@ mod tests {
             .unwrap();
         site.write("content/media/harbour.png", &png).unwrap();
         let page = PAGE.replace("</h1>", "</h1><img src=\"/media/harbour.png\" alt=\"Boats\">");
-        let report = build_site(&site, &[file("index.html", &page)], "https://a.dev", Checks::Stop, &out).unwrap();
+        let report = build_site(&site, &[file("index.html", &page)], "https://a.dev", Checks::Stop, &out, &no_fonts).unwrap();
         assert_eq!(report.photos, 1);
         assert!(out.join("media/harbour.png").is_file());
         assert!(out.join("media/harbour-480w.png").is_file());
@@ -211,10 +223,10 @@ mod tests {
         let (_dir, site, out) = folders();
         let bad = PAGE.replace("<meta name=\"description\" content=\"The home page.\">", "");
         let files = [file("index.html", &bad)];
-        let err = build_site(&site, &files, "https://a.dev", Checks::Stop, &out).unwrap_err();
+        let err = build_site(&site, &files, "https://a.dev", Checks::Stop, &out, &no_fonts).unwrap_err();
         assert!(err.starts_with("Nothing was published."), "{err}");
         assert!(!out.exists());
-        let report = build_site(&site, &files, "https://a.dev", Checks::Report, &out).unwrap();
+        let report = build_site(&site, &files, "https://a.dev", Checks::Report, &out, &no_fonts).unwrap();
         assert_eq!(report.problems.len(), 1);
         assert!(report.problems[0].starts_with("Page /:"), "{:?}", report.problems);
         assert!(out.join("index.html").is_file());
@@ -223,9 +235,9 @@ mod tests {
     #[test]
     fn a_failed_build_keeps_the_previous_one() {
         let (_dir, site, out) = folders();
-        build_site(&site, &[file("index.html", PAGE)], "https://a.dev", Checks::Stop, &out).unwrap();
+        build_site(&site, &[file("index.html", PAGE)], "https://a.dev", Checks::Stop, &out, &no_fonts).unwrap();
         let bad = PAGE.replace("<title>Home</title>", "");
-        assert!(build_site(&site, &[file("index.html", &bad)], "https://a.dev", Checks::Stop, &out).is_err());
+        assert!(build_site(&site, &[file("index.html", &bad)], "https://a.dev", Checks::Stop, &out, &no_fonts).is_err());
         assert!(fs::read_to_string(out.join("index.html")).unwrap().contains("<title>Home</title>"));
     }
 
@@ -233,7 +245,7 @@ mod tests {
     fn rendered_files_stay_inside_the_build() {
         let (dir, site, out) = folders();
         for bad in ["../escape.html", "/etc/x.html", "a\\b.html"] {
-            let err = build_site(&site, &[file("index.html", PAGE), file(bad, PAGE)], "https://a.dev", Checks::Stop, &out).unwrap_err();
+            let err = build_site(&site, &[file("index.html", PAGE), file(bad, PAGE)], "https://a.dev", Checks::Stop, &out, &no_fonts).unwrap_err();
             assert!(err.contains("outside the site folder"), "{bad}: {err}");
         }
         assert!(!dir.path().join("escape.html").exists());
@@ -248,9 +260,28 @@ mod tests {
     }
 
     #[test]
+    fn copies_the_bundled_fonts_the_pages_use() {
+        let (_dir, site, out) = folders();
+        let page = PAGE.replace("</title>", "</title><style>@font-face { src: url(/fonts/geist-latin.woff2) format(\"woff2\"); }</style>");
+        let fonts = |name: &str| match name {
+            "geist-latin.woff2" => Some(b"wOF2".to_vec()),
+            "LICENSE.txt" => Some(b"OFL".to_vec()),
+            _ => None,
+        };
+        build_site(&site, &[file("index.html", &page)], "https://a.dev", Checks::Stop, &out, &fonts).unwrap();
+        assert_eq!(fs::read(out.join("fonts/geist-latin.woff2")).unwrap(), b"wOF2");
+        assert_eq!(fs::read(out.join("fonts/LICENSE.txt")).unwrap(), b"OFL");
+        // A font Crust doesn't have stops the build, and leaves no half-built folder.
+        let unknown = PAGE.replace("</title>", "</title><style>@font-face { src: url(/fonts/nope-latin.woff2); }</style>");
+        let err = build_site(&site, &[file("index.html", &unknown)], "https://a.dev", Checks::Stop, &out, &fonts).unwrap_err();
+        assert!(err.contains("nope-latin.woff2"), "{err}");
+        assert!(out.join("fonts/geist-latin.woff2").is_file(), "the previous build stays in place");
+    }
+
+    #[test]
     fn exports_and_asks_before_replacing() {
         let (dir, site, out) = folders();
-        build_site(&site, &[file("index.html", PAGE)], "https://a.dev", Checks::Stop, &out).unwrap();
+        build_site(&site, &[file("index.html", PAGE)], "https://a.dev", Checks::Stop, &out, &no_fonts).unwrap();
         let target = export_folder(dir.path(), "Bakery");
         assert_eq!(export_site(&out, &target, false).unwrap(), Exported::Done(target.clone()));
         assert!(target.join("pagefind/pagefind.js").is_file());
@@ -268,7 +299,7 @@ mod tests {
     #[test]
     fn never_replaces_a_folder_that_isnt_a_site() {
         let (dir, site, out) = folders();
-        build_site(&site, &[file("index.html", PAGE)], "https://a.dev", Checks::Stop, &out).unwrap();
+        build_site(&site, &[file("index.html", PAGE)], "https://a.dev", Checks::Stop, &out, &no_fonts).unwrap();
         let target = dir.path().join("Bakery website");
         fs::create_dir_all(&target).unwrap();
         fs::write(target.join("taxes.pdf"), "keep me").unwrap();

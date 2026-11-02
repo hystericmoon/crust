@@ -188,12 +188,15 @@ impl Builds {
 
 /// Finishes the rendered site. `preview`: problems are listed, not stopping it.
 #[tauri::command]
-async fn site_build(sites: State<'_, AppSites>, builds: State<'_, Builds>, files: Vec<RenderedFile>, base_url: String, preview: bool) -> Result<BuildReport, String> {
+async fn site_build<R: Runtime>(app: tauri::AppHandle<R>, sites: State<'_, AppSites>, builds: State<'_, Builds>, files: Vec<RenderedFile>, base_url: String, preview: bool) -> Result<BuildReport, String> {
     let (site, out, lock) = (sites.0.current(), builds.dir.clone(), builds.building.clone());
     let checks = if preview { Checks::Report } else { Checks::Stop };
     tauri::async_runtime::spawn_blocking(move || {
         let _one_at_a_time = lock.lock().unwrap_or_else(|e| e.into_inner());
-        build_site(&site, &files, &base_url, checks, &out)
+        // F070: fonts come from the window's own files (apps/admin/dist/fonts).
+        let resolver = app.asset_resolver();
+        let fonts = move |name: &str| resolver.get(format!("fonts/{name}")).map(|a| a.bytes);
+        build_site(&site, &files, &base_url, checks, &out, &fonts)
     })
     .await
     .map_err(|e| format!("Building the site stopped unexpectedly: {e}"))?

@@ -43,7 +43,7 @@ export {
 export type { SiteTokens, SpacingStep, ColorRole, TokenProblem } from "./tokens";
 export { AA, checkContrast, contrastPairs, contrastRatio, formatRatio, isHexColor, normalizeHex, suggestFix } from "./contrast";
 export type { ContrastPair, ContrastResult } from "./contrast";
-export { fontStacks, findFontStack } from "./fonts";
+export { fontStacks, findFontStack, bundledFonts, bundledStack, bundledFontIn, findBundledFont, fontCategoryNames, fontFaceCss, fontFiles, fontPairs, fontPreloads, findFontPair, fontDownloadKb, allFontsPreviewCss, pairFonts, siteFonts, fontSubsets } from "./fonts";
 export {
   typeScales,
   headingWeights,
@@ -59,7 +59,7 @@ export {
   validateStyleOptions,
 } from "./style-options";
 export type { StyleOptions, TypeScale, HeadingWeight, HeadingTracking, ButtonShape, CardStyle, LinkStyle } from "./style-options";
-export type { FontStack } from "./fonts";
+export type { FontStack, BundledFont, FontCategory, FontFile, FontPair, FontSubset } from "./fonts";
 export { safeUrl } from "./url";
 export {
   chromeLimits,

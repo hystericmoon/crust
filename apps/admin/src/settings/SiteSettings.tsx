@@ -1,4 +1,15 @@
 import {
+  allFontsPreviewCss,
+  bundledFontIn,
+  bundledFonts,
+  bundledStack,
+  fontCategoryNames,
+  fontDownloadKb,
+  fontPairs,
+  findFontPair,
+  findBundledFont,
+  pairFonts,
+  type FontCategory,
   checkContrast,
   colorRoleInfo,
   colorRoles,
@@ -386,13 +397,15 @@ export function SiteSettings({
           <section className="st-card" id="typography" aria-labelledby="typography-h" hidden={group !== "typography"}>
             <h2 id="typography-h" tabIndex={-1}>Typography</h2>
             <p className="st-lede">
-              These use fonts already on your visitors' devices: nothing to download, so pages stay fast. They look slightly
-              different on Mac, Windows and phones.
+              Pick a pair: each card is set in its own fonts. You can change either font below. Fonts are published with
+              your site, so visitors' browsers never contact Google.
             </p>
+            <FontPairs fonts={draft.fonts} onPick={(fonts) => onChange({ ...draft, fonts })} />
             <FontField label="Heading font" value={draft.fonts.heading} sample="Build fast sites, visually"
               onChange={(v) => onChange({ ...draft, fonts: { ...draft.fonts, heading: v } })} heading />
             <FontField label="Body font" value={draft.fonts.body} sample="Design pages with blocks and design tokens."
               onChange={(v) => onChange({ ...draft, fonts: { ...draft.fonts, body: v } })} />
+            <p className="st-help st-font-weight" aria-live="polite">{fontWeightNote(draft.fonts)}</p>
             <TypeOptions tokens={draft} onChange={onChange} />
           </section>
 
@@ -664,6 +677,68 @@ function ContrastPanel({
   );
 }
 
+/** F070: the bundled fonts' @font-face rules, once, so names and cards show in their own fonts. */
+function useFontPreviews() {
+  useEffect(() => {
+    if (document.querySelector("style[data-crust-font-previews]")) return;
+    const style = document.createElement("style");
+    style.dataset.crustFontPreviews = "";
+    style.textContent = allFontsPreviewCss();
+    document.head.appendChild(style);
+  }, []);
+}
+
+/** "Adds about 70 KB…", or that system fonts download nothing. */
+export function fontWeightNote(fonts: SiteTokens["fonts"]): string {
+  const kb = fontDownloadKb(fonts);
+  return kb ? `Adds about ${kb} KB, downloaded once per visitor and then kept by their browser.` : "These fonts are already on your visitors' devices: nothing to download.";
+}
+
+const PAIR_HEADING = "Calm rooms";
+const PAIR_BODY = "Houses and studios, designed to last.";
+
+/** F070: tested heading and body pairs as cards, each set in its own fonts. */
+function FontPairs({ fonts, onPick }: { fonts: SiteTokens["fonts"]; onPick: (fonts: SiteTokens["fonts"]) => void }) {
+  useFontPreviews();
+  const current = findFontPair(fonts);
+  const onSystem = !bundledFontIn(fonts.heading) && !bundledFontIn(fonts.body);
+  return (
+    <section aria-labelledby="font-pairs-h" className="st-font-pairs">
+      <h3 id="font-pairs-h" className="st-field-label">Font pairs</h3>
+      <ul className="st-fontpairs">
+        {fontPairs.map((pair) => {
+          const stacks = pairFonts(pair);
+          const h = findBundledFont(pair.heading)!;
+          const b = findBundledFont(pair.body)!;
+          const names = h === b ? h.family : `${h.family} and ${b.family}`;
+          return (
+            <li key={pair.id}>
+              {/* The name and font names are the button's name (visible = spoken, WCAG 2.5.3); samples are decoration. */}
+              <button type="button" className="st-fontpair" aria-pressed={current?.id === pair.id} onClick={() => onPick(stacks)}>
+                <span className="st-fontpair-name">{pair.name}</span>
+                <span className="st-fontpair-heading" style={{ fontFamily: stacks.heading }} aria-hidden="true">{PAIR_HEADING}</span>
+                <span className="st-fontpair-body" style={{ fontFamily: stacks.body }} aria-hidden="true">{PAIR_BODY}</span>
+                <span className="st-fontpair-fonts">{names}</span>
+              </button>
+            </li>
+          );
+        })}
+        <li>
+          <button type="button" className="st-fontpair" aria-pressed={onSystem}
+            onClick={() => onPick({ heading: fontStacks.find((f) => f.id === "humanist")!.stack, body: fontStacks.find((f) => f.id === "humanist")!.stack })}>
+            <span className="st-fontpair-name">System</span>
+            <span className="st-fontpair-heading" aria-hidden="true">{PAIR_HEADING}</span>
+            <span className="st-fontpair-body" aria-hidden="true">{PAIR_BODY}</span>
+            <span className="st-fontpair-fonts">Fonts on visitors' devices, nothing to download</span>
+          </button>
+        </li>
+      </ul>
+    </section>
+  );
+}
+
+const categories: FontCategory[] = ["serif", "sans", "mono"];
+
 function FontField({
   label,
   value,
@@ -678,7 +753,10 @@ function FontField({
   heading?: boolean;
 }) {
   const id = useId();
-  const current = findFontStack(value);
+  useFontPreviews();
+  const bundled = bundledFontIn(value);
+  const system = bundled ? undefined : findFontStack(value);
+  const selected = bundled ? `font:${bundled.id}` : system ? `stack:${system.id}` : "custom";
   return (
     <div className="st-font">
       <label className="st-field-label" htmlFor={id}>
@@ -687,25 +765,46 @@ function FontField({
       <select
         id={id}
         className="st-input"
-        value={current?.id ?? "custom"}
+        value={selected}
+        style={{ fontFamily: value }}
         onChange={(e) => {
-          const stack = fontStacks.find((f) => f.id === e.target.value);
-          if (stack) onChange(stack.stack);
+          const [kind, key = ""] = e.target.value.split(":");
+          if (kind === "font") {
+            const font = findBundledFont(key);
+            if (font) onChange(bundledStack(font));
+          } else if (kind === "stack") {
+            const stack = fontStacks.find((f) => f.id === key);
+            if (stack) onChange(stack.stack);
+          }
         }}
         aria-describedby={`${id}-stack`}
       >
-        {fontStacks.map((f) => (
-          <option key={f.id} value={f.id}>
-            {f.label}
-          </option>
+        {categories.map((cat) => (
+          <optgroup key={cat} label={fontCategoryNames[cat]}>
+            {bundledFonts
+              .filter((f) => f.category === cat && (heading || !f.displayOnly))
+              .map((f) => (
+                <option key={f.id} value={`font:${f.id}`} style={{ fontFamily: bundledStack(f) }}>
+                  {f.family}
+                </option>
+              ))}
+          </optgroup>
         ))}
-        {current ? null : <option value="custom">Custom</option>}
+        <optgroup label="On the visitor's device (no download)">
+          {fontStacks.map((f) => (
+            <option key={f.id} value={`stack:${f.id}`}>
+              {f.label}
+            </option>
+          ))}
+        </optgroup>
+        {selected === "custom" ? <option value="custom">Custom</option> : null}
       </select>
       <p className={heading ? "st-font-sample is-heading" : "st-font-sample"} style={{ fontFamily: value }}>
         {sample}
       </p>
       <p className="st-help st-stack" id={`${id}-stack`}>
-        Font list: {value}
+        {bundled ? `${bundled.family}, published with your site (${fontCategoryNames[bundled.category].toLowerCase()}).` : `Font list: ${value}`}
+        {!heading && bundled?.displayOnly ? " Made for headings: hard to read in paragraphs." : ""}
       </p>
     </div>
   );

@@ -252,6 +252,48 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-02 — F070 Fonts (Claude, reversible)
+
+- Design snapshot https://claude.ai/artifact/Gjyo7UxqKfgcUBc3MxaSCn
+  (`design/f070-fonts-v1.html`): A pairs first (built), B two lists and
+  a specimen, C a font browser. A because 32 fonts make about 1,000
+  combinations and most clash: cards turn recall into recognition and
+  cut the choice to 12 good ones; full control stays one step down.
+- **No format change.** A site uses a bundled font by naming its family
+  first in `tokens.fonts.heading/body` ("'Fraunces', Georgia, …").
+  `bundledFontIn()` recognises it; templates and theme packs carry it
+  by name. Sites on system fonts publish byte-for-byte the same CSS.
+- 32 families (12 serif, 16 sans, 4 mono) from the @fontsource packages
+  (OFL 1.1, owner-approved), copied by `npm run fonts:sync` into
+  `packages/blocks/fonts/` (committed, 3.7 MB, with LICENSE.txt) and
+  `packages/blocks/src/font-sizes.ts`. Latin + Latin-extended, upright
+  and italic, variable where available (one file per subset for all
+  weights). Optical sizing only for Fraunces and Bodoni Moda (the opsz
+  files of the others are 2× bigger for little gain).
+- Pages get `@font-face` rules (font-display: swap, unicode-range) and
+  preload links for the Latin upright file of each font in use. The
+  browser fetches italic or Latin-extended files only when text needs
+  them.
+- Publishing copies only the files pages point to (`/fonts/<name>.woff2`)
+  plus `fonts/LICENSE.txt` (OFL asks for the licence to travel with the
+  fonts): crust-publish `--fonts <dir>` (pipeline, template check,
+  publish:local) and `publish_fonts` with the app's own files in the
+  desktop app (`asset_resolver`, so no internet needed). A font Crust
+  doesn't have stops the publish with a message.
+- The admin serves the fonts at `/fonts/` (vite plugin copies them into
+  dist; dev server middleware). The picker loads one preview rule per
+  font; browsers download only fonts on screen.
+- Fonts made for headings (Playfair Display, Cormorant Garamond, Bodoni
+  Moda, Instrument Serif, DM Serif Display, Young Serif) aren't offered
+  for body text.
+- The sample site (content/site.json) now uses Editorial (Fraunces +
+  Inter Tight) so check:perf measures real font loading: Lighthouse 100.
+  Visible on the live site only after the owner publishes.
+- Name clash found by the screenshot: `.st-pair` was already the
+  contrast checker's row; the cards are `.st-fontpair`.
+- Light display weights (300–400) and tracking to −0.05 em come with
+  F071; the pair cards use each font's regular weight for now.
+
 ## 2026-11-02 — Milestone 8 approved (owner)
 
 - Owner: "Let's go A" on https://claude.ai/artifact/ULmnd4JZEKpGvyUHFg1Kpo.
@@ -266,6 +308,11 @@ Features Claude suggests. They are not work until the owner adds them to
   Apache-2.0, BSD, ISC). It's free, allows bundling and selling sites,
   and forbids only selling the fonts on their own. F070 needs an OK to
   use OFL fonts; until then its design snapshot can go ahead.
+- Owner answered (2026-11-02): "Yes to OFL fonts, and yes to MPL and
+  BlueOak. Let's just throw everything the best we can do right now".
+  CLAUDE.md's licence list now adds MPL-2.0, BlueOak-1.0.0 and SIL OFL
+  1.1 (fonts). This also closes the open F056 question (minicbor,
+  Tauri's MPL packages).
 - Correction to `design/premium-gap-v1.html`: Crust's "Dramatic" type
   scale already reaches about 76 px; the gap there is tracking, light
   weights and real fonts, not size.

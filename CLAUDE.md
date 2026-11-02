@@ -43,8 +43,9 @@ reasoning on UX decisions.
 
 ## Engineering rules
 
-- Free, open-source dependencies only (MIT, Apache-2.0, BSD, ISC). No paid
-  add-ons (Puck AI/Cloud, Tiptap Pro, GrapesJS Studio SDK).
+- Free, open-source dependencies only (MIT, Apache-2.0, BSD, ISC; also
+  MPL-2.0 and BlueOak-1.0.0, and SIL OFL 1.1 for fonts: owner, 2026-11-02).
+  No paid add-ons (Puck AI/Cloud, Tiptap Pro, GrapesJS Studio SDK).
 - Every feature has automated tests. `npm test`, `cargo test`, and
   `cargo clippy -- -D warnings` pass before every push.
 - Accessibility (WCAG 2.2 AA) is a requirement: keyboard alternative for

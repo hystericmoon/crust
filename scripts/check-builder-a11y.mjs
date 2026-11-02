@@ -55,6 +55,9 @@ const screens = [
   ["app Sites screen, update ready", "/#/sites", null, null, ['button:has-text("Check for updates")'], { app: "none", update: "available", wait: ".up-about" }],
   ["app What's new dialog", "/#/sites", null, null, ['button:has-text("Check for updates")', '.up-banner button:has-text("What\'s new")', "dialog[open]"], { app: "none", update: "available", wait: ".up-about" }],
   ["app Pages screen, update ready", "/#/sites", null, null, ['button:has-text("Check for updates")', ".st-back"], { app: "none", update: "available", wait: ".up-about" }],
+  // F070: Site settings → Typography, the font pairs and grouped font lists; then a pair picked.
+  ["Site settings, Typography", "/#/settings", null, null, ['.st-nav-item:has-text("Typography")'], { wait: ".st-nav" }],
+  ["Site settings, font pair picked", "/#/settings", null, null, ['.st-nav-item:has-text("Typography")', '.st-fontpair:has-text("Editorial")'], { wait: ".st-nav" }],
   ["app welcome screen, Blank picked", "/", null, null, ['label:has-text("Blank")'], { app: "none", firstRun: true, wait: ".fr-card iframe" }],
 ];
 const fakeApp = await readFile(new URL("./fake-tauri.js", import.meta.url), "utf8");

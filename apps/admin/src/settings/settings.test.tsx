@@ -158,7 +158,7 @@ describe("Site settings screen", () => {
 
   it("switches fonts from the curated list and shows the font list", () => {
     setup();
-    type("Heading font", "transitional");
+    type("Heading font", "stack:transitional");
     expect(screen.getAllByText(/Font list: Charter/)).toHaveLength(1);
   });
 
