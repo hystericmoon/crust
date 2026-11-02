@@ -15,6 +15,7 @@ import {
 } from "./more-blocks";
 import { spaceVar, spacingField } from "./fields";
 import { sectionStyleIds, sectionStyleNames, tintLevels, tintNames, type SectionStyleId, type TintLevel } from "./section-styles";
+import { columnAlignNames, columnAligns, columnExtras, rowExtras, type ColumnAlign, type ColumnBox, type ColumnHighlight } from "./columns-v2";
 import {
   backgroundKindNames,
   backgroundKindOf,
@@ -85,6 +86,14 @@ export type ColumnsProps = {
   count: "2" | "3" | "4";
   gap: SpacingStep;
   widths?: ColumnWidths;
+  /** F074 (all optional; rows without them publish as before). */
+  valign?: ColumnAlign;
+  box?: ColumnBox;
+  highlight?: ColumnHighlight;
+  rowGap?: SpacingStep;
+  dividers?: boolean;
+  phoneOrder?: "normal" | "reverse";
+  sticky?: number;
   column1: Slot;
   column2: Slot;
   column3: Slot;
@@ -419,26 +428,61 @@ const blocks: Config<Components> = {
           ],
         },
         gap: spacingField("Gap"),
+        valign: {
+          type: "radio",
+          label: "Line up",
+          options: columnAligns.map((a) => ({ label: columnAlignNames[a], value: a })),
+        },
+        box: {
+          type: "object",
+          label: "Boxes",
+          objectFields: {
+            style: { type: "text", label: "Style (none, background, surface, primary, dark)" },
+            padding: { type: "text", label: "Padding (sm, md, lg)" },
+            rounded: { type: "radio", label: "Rounded corners", options: [{ label: "Yes", value: true }, { label: "No", value: false }] },
+          },
+        },
+        highlight: {
+          type: "object",
+          label: "Highlight a column",
+          objectFields: { column: { type: "number", label: "Column", min: 0, max: 4 }, style: { type: "text", label: "Style" } },
+        },
+        rowGap: spacingField("Gap between rows"),
+        dividers: { type: "radio", label: "Dividers", options: [{ label: "No", value: false }, { label: "Yes", value: true }] },
+        phoneOrder: {
+          type: "radio",
+          label: "Order on phones",
+          options: [
+            { label: "As written", value: "normal" },
+            { label: "Last first", value: "reverse" },
+          ],
+        },
+        sticky: { type: "number", label: "Keep column in view (0 = none)", min: 0, max: 4 },
         column1: columnSlot,
         column2: columnSlot,
         column3: columnSlot,
         column4: columnSlot,
       },
       defaultProps: { count: "2", gap: "md", column1: [], column2: [], column3: [], column4: [] },
-      render: ({ count, gap, widths, column1, column2, column3, column4 }) => {
+      render: (props) => {
+        const { count, gap, widths, column1, column2, column3, column4 } = props;
         // Content in columns beyond `count` is kept (so lowering the count is
         // undoable) but not shown or published.
         const columns = [column1, column2, column3, column4].slice(0, Number(count));
+        const row = rowExtras(props);
         return (
           <div
-            className={["cr-columns", `cr-columns-${count}`, columnClasses(Number(count), widths)].filter(Boolean).join(" ")}
-            style={vars({ "--cr-columns-gap": spaceVar(gap) })}
+            className={["cr-columns", `cr-columns-${count}`, columnClasses(Number(count), widths), ...row.classes].filter(Boolean).join(" ")}
+            style={vars({ "--cr-columns-gap": spaceVar(gap), ...row.vars })}
           >
-            {columns.map((Column, i) => (
-              <div className="cr-column" key={i}>
-                <Column />
-              </div>
-            ))}
+            {columns.map((Column, i) => {
+              const col = columnExtras(props, i + 1);
+              return (
+                <div className={["cr-column", ...col.classes].join(" ")} key={i} style={col.classes.length ? vars(col.vars) : undefined}>
+                  <Column />
+                </div>
+              );
+            })}
           </div>
         );
       },

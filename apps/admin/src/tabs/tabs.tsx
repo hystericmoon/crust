@@ -32,6 +32,12 @@ const styleFields = new Set([
   "focus",
   "overlap",
   "headerOver",
+  // F074: Columns
+  "box",
+  "highlight",
+  "dividers",
+  "phoneOrder",
+  "sticky",
   "size",
   "widths",
   // F071: Card layout
@@ -45,7 +51,7 @@ const styleFields = new Set([
   "grayscale",
   "position",
 ]);
-const advancedFields = new Set(["hideOn", "anchor", "paddingY", "gap", "placeholder"]);
+const advancedFields = new Set(["hideOn", "anchor", "paddingY", "gap", "rowGap", "placeholder"]);
 
 export function tabOf(component: string, field: string): Tab {
   if (advancedFields.has(field)) return "advanced";

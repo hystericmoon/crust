@@ -201,6 +201,38 @@ function shareTags(site: Site, doc: DocumentParts, options: RenderOptions): stri
   return out;
 }
 
+/**
+ * Smaller inline CSS for published pages (from F074, when the block styles
+ * grew past Lighthouse's "Minify CSS" threshold): drops comments and spare
+ * whitespace. Quoted strings (font names, `content: ""`) are kept as they
+ * are; spaces inside calc() and between selectors stay.
+ */
+export function minifyCss(css: string): string {
+  // One pass: comments out, quoted strings kept whole, the rest squeezed.
+  let out = "";
+  let plain = "";
+  const flush = () => {
+    out += plain.replace(/\s+/g, " ").replace(/\s*([{};,>])\s*/g, "$1").replace(/;}/g, "}");
+    plain = "";
+  };
+  for (let i = 0; i < css.length; i++) {
+    const ch = css[i]!;
+    if (ch === "/" && css[i + 1] === "*") {
+      const end = css.indexOf("*/", i + 2);
+      i = end < 0 ? css.length : end + 1;
+      plain += " ";
+    } else if (ch === '"' || ch === "'") {
+      let j = i + 1;
+      while (j < css.length && css[j] !== ch && css[j] !== "\n") j += css[j] === "\\" ? 2 : 1;
+      flush();
+      out += css.slice(i, j + 1);
+      i = j;
+    } else plain += ch;
+  }
+  flush();
+  return out.trim();
+}
+
 /** The page shell around any content: head, header, main, footer. */
 export function renderDocument(site: Site, doc: DocumentParts, baseCss: string, options: RenderOptions): string {
   const { header, footer } = migrateChrome(site, options.pages ?? [{ path: doc.path, title: doc.title }]);
@@ -210,7 +242,7 @@ export function renderDocument(site: Site, doc: DocumentParts, baseCss: string, 
   const bottom = renderToStaticMarkup(<SiteFooterView footer={footer} siteName={site.name} path={doc.path} year={year} />);
   // A sticky header would cover whatever is scrolled or tabbed to; the page keeps room for it (WCAG 2.4.11).
   const htmlClass = header.show && header.sticky && !over ? ' class="cr-has-sticky"' : "";
-  const css = `${tokensToCss(site.tokens)}\n${baseCss}`;
+  const css = minifyCss(`${tokensToCss(site.tokens)}\n${baseCss}`);
   const title = doc.share?.searchTitle?.trim() || (doc.path === "/" ? doc.title : `${doc.title} | ${site.name}`);
   return `<!doctype html>
 <html lang="${escapeHtml(site.language)}"${htmlClass}>

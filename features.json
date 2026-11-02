@@ -786,7 +786,7 @@
       "description": "Column background, padding and radius; vertical alignment; gap sizes; order on phone; dividers; sticky column. Keyboard and reading order unchanged. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F073"],
       "done_check": "npm test -- columns-v2 && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

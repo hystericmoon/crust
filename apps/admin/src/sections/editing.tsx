@@ -18,6 +18,7 @@ import { HeightPicker, SectionStyleEditor, StyleSwatch, StyleTiles, TintPicker, 
 import { countSectionStyles, useSiteStyle } from "./site-style";
 import { ImageField } from "../media/ImageField";
 import { FocusPicker, sectionV2Fields } from "./sections-v2-fields";
+import { columnsV2Fields } from "./columns-v2-fields";
 
 const usePuckSelector = createUsePuck();
 
@@ -147,6 +148,7 @@ function TintField({ value, onChange }: { value: TintLevel; onChange: (v: TintLe
 /** The builder's config: the same blocks, with visual Section fields. */
 export function withSectionEditing(config: Config<Components>): Config<Components> {
   const section = config.components.Section;
+  const columns = config.components.Columns;
   return {
     ...config,
     components: {
@@ -170,6 +172,9 @@ export function withSectionEditing(config: Config<Components>): Config<Component
           ...sectionV2Fields,
         },
       },
+      // F074: Columns boxes, line-up, dividers, phone order, sticky.
+      // Widths (filled in by the responsive fields) come first in the Style tab, with Line up.
+      Columns: { ...columns, fields: { count: columns.fields?.count, widths: { type: "custom", label: "Widths", render: () => <></> }, ...columns.fields, ...columnsV2Fields } },
     },
   } as Config<Components>;
 }

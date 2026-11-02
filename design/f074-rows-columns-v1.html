@@ -1,0 +1,211 @@
+<title>F074 Rows and Columns</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,400&display=swap">
+<style>
+/* Layout: report column; "where it lands" as small published-row thumbnails; the Columns panel drawn three ways */
+:root{--bg:#F2F3F1;--panel:#FFFFFF;--fg:#17191B;--muted:#5C6267;--line:#D9DCD8;--accent:#3949AB;--soft:#E8EAF6;
+--ui:"Schibsted Grotesk",ui-sans-serif,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;--serif:"Fraunces",Georgia,serif;
+/* the sample site (Atelier Stone) — fixed, it is a picture of a published page */
+--s-bg:#F4F1EC;--s-surface:#E9E4DC;--s-text:#1E2420;--s-muted:#5A615C;--s-primary:#2F4A3A;--s-on:#FFFFFF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--ui);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1160px;margin:0 auto;padding-block:48px 96px;display:grid;gap:56px}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.015em}h1{font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.05;font-weight:600}h2{font-size:1.5rem;font-weight:600}h3{font-size:1.02rem;font-weight:600}
+p{margin:0;max-width:70ch}.eyebrow{font:500 .75rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.lede{font-size:1.1rem;color:var(--muted)}
+section{display:grid;gap:18px}
+.why{color:var(--muted);font-size:.93rem}
+.tag{font:600 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--accent);color:var(--panel);padding:6px 10px;border-radius:4px}
+
+/* where-it-lands grid */
+.lands{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.lands{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.lands{grid-template-columns:1fr}}
+.land{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:10px;align-content:start;min-width:0}
+.land p{font-size:.88rem;color:var(--muted)}
+.page{border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,.08);background:var(--s-bg);color:var(--s-text);font-family:var(--ui);position:relative}
+.page .bar{height:18px;display:flex;align-items:center;gap:8px;padding:0 10px;font-size:7px;letter-spacing:.06em;text-transform:uppercase;background:var(--s-bg);border-bottom:1px solid rgba(0,0,0,.06)}
+.page .bar b{font-weight:600;margin-right:auto}
+.blk{padding:12px 0;position:relative}
+.ct{margin:0 auto;width:72%;display:grid;gap:5px}
+.ln{height:5px;border-radius:2px;background:currentColor;opacity:.75}.ln.s{opacity:.35}
+.hd{font:300 15px/1 var(--serif);color:inherit}
+.ph{background:linear-gradient(160deg,#9AA59B,#56645A 55%,#2C362F);}
+.guide{position:absolute;top:0;bottom:0;border-left:1px dashed rgba(57,73,171,.6)}
+.wrow{display:grid;gap:4px}
+.wrow .w{height:16px;background:var(--s-surface);border-radius:2px;margin:0 auto;display:grid;place-items:center;font:500 7px var(--mono);color:var(--s-muted)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center}
+.vid{position:relative;height:96px;color:#fff;display:grid;align-content:end;padding:10px}
+.pause{position:absolute;right:8px;bottom:8px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);display:grid;place-items:center;font-size:8px}
+.badge{font:500 8px var(--mono);background:rgba(0,0,0,.55);color:#fff;padding:2px 5px;border-radius:3px;position:absolute;left:8px;top:8px}
+.crop{display:flex;gap:8px}.crop .fr{position:relative;flex:1;height:84px;border-radius:4px;overflow:hidden;background:#C9CFC6}
+.crop .subject{position:absolute;width:18px;height:30px;border-radius:9px 9px 3px 3px;background:#2F4A3A}
+.over-card{background:var(--s-bg);border-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,.18);padding:8px;display:grid;gap:4px}
+
+/* directions */
+.dir{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:18px}
+.dir.rec{border:2px solid var(--accent)}
+.dirhead{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.cols{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+.pnl{border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:12px;font-size:.84rem;background:var(--panel)}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line)}.tabs span{padding:6px 10px;font-size:.8rem;color:var(--muted)}.tabs span.on{color:var(--fg);font-weight:600;box-shadow:inset 0 -2px var(--accent)}
+.grp{display:grid;gap:8px}.grp>h4{margin:0;font:500 .7rem/1 var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg span{padding:7px 4px;text-align:center;font-size:.76rem;border-left:1px solid var(--line)}.seg span:first-child{border-left:0}.seg span.on{background:var(--soft);color:var(--accent);font-weight:600}
+.picto{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.picto div{border:1px solid var(--line);border-radius:6px;padding:6px 4px 4px;display:grid;gap:4px;justify-items:center;font-size:.64rem;color:var(--muted)}
+.picto div.on{border:2px solid var(--accent);padding:5px 3px 3px;color:var(--fg)}
+.picto i{display:block;height:16px;width:100%;position:relative;border-radius:2px;background:color-mix(in srgb,var(--line) 50%,transparent)}
+.picto i::after{content:"";position:absolute;top:4px;bottom:4px;background:var(--muted);border-radius:1px;left:var(--l);right:var(--r)}
+.field{display:grid;gap:4px}.field label,.field span.l{font-size:.76rem;color:var(--muted)}
+.input{border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:.78rem var(--mono);color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.thumb{position:relative;height:90px;border-radius:6px;overflow:hidden}
+.dot{position:absolute;width:16px;height:16px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.4);transform:translate(-50%,-50%)}
+.rng{display:grid;grid-template-columns:48px 1fr 34px;gap:6px;align-items:center;font-size:.74rem;color:var(--muted)}
+.rng i{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--accent) var(--v),var(--line) var(--v))}
+.tog{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sw{width:30px;height:18px;border-radius:9px;background:var(--line);position:relative;flex:none}.sw.on{background:var(--accent)}.sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--panel)}.sw.on::after{left:14px}
+.note{font-size:.74rem;color:var(--muted)}
+.ok{color:#2E7D4F}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ok{color:#7FCB9C}}:root[data-theme="dark"] .ok{color:#7FCB9C}
+.recipes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.recipes div{border:1px solid var(--line);border-radius:8px;padding:6px;display:grid;gap:4px;font-size:.72rem}
+.recipes i{display:block;height:34px;border-radius:4px}
+.canvas{border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative}
+.qbar{position:absolute;top:10px;left:50%;transform:translateX(-50%);display:flex;gap:2px;background:var(--fg);color:var(--bg);border-radius:8px;padding:3px;font-size:.72rem;white-space:nowrap;max-width:calc(100% - 16px);overflow:hidden}
+.qbar span{padding:5px 8px;border-radius:5px}.qbar span.on{background:var(--accent);color:var(--panel)}
+.pop{position:absolute;top:48px;left:50%;transform:translateX(-50%);width:min(240px,90%);background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:10px;display:grid;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:.78rem}
+ul.pros{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.92rem}
+ul.pros li::marker{color:var(--muted)}
+.panel2{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:12px}
+.facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 16px;font-size:.92rem;margin:0}.facts dt{color:var(--muted)}.facts dd{margin:0}
+code{font:.85em var(--mono);background:color-mix(in srgb,var(--line) 45%,transparent);padding:1px 4px;border-radius:3px}
+</style>
+<style>
+.row{display:grid;gap:6px;padding:10px}
+.row.c3{grid-template-columns:repeat(3,minmax(0,1fr))}.row.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.col{display:grid;gap:4px;align-content:start;min-height:52px;padding:2px 0}
+.col.box{background:var(--s-surface);padding:8px;border-radius:5px}
+.col.hi{background:var(--s-primary);color:#fff;padding:8px;border-radius:5px}
+.col.mid{align-content:center}.col.bot{align-content:end}
+.divl{border-left:1px solid rgba(30,36,32,.25);padding-left:6px}
+.num{font:500 7px var(--mono);color:var(--s-muted)}
+.phone{width:84px;border:1px solid rgba(0,0,0,.12);border-radius:8px;padding:6px;display:grid;gap:5px;background:var(--s-bg)}
+.colpick{display:flex;gap:4px}.colpick span{flex:1;text-align:center;border:1px solid var(--line);border-radius:6px;padding:5px 0;font-size:.74rem}.colpick span.on{border:2px solid var(--accent);color:var(--accent);font-weight:600}
+.minis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.minis i{display:block;height:22px;border-radius:4px;border:1px solid var(--line)}.minis i.on{outline:2px solid var(--accent);outline-offset:1px}
+.warn{font-size:.74rem;color:#8a3a06}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .warn{color:#F0B37E}}:root[data-theme="dark"] .warn{color:#F0B37E}
+</style>
+<main>
+<header style="display:grid;gap:14px">
+  <span class="eyebrow">Milestone 8 · F074 Rows and columns v2 · design sketch</span>
+  <h1>Columns that look designed, not just divided</h1>
+  <p class="lede">New Columns options: boxes behind columns (colour, padding, corners), one highlighted column, vertical alignment, a separate gap between rows, dividers, photo-first on phones, and a column that stays in view while the other scrolls. Below: what each looks like on the page, then three ways to arrange them in the builder.</p>
+</header>
+
+<section aria-labelledby="lands">
+  <span class="eyebrow">On the published page</span>
+  <h2 id="lands">Where each option lands</h2>
+  <div class="lands">
+    <div class="land"><h3>1 · Column boxes</h3>
+      <div class="page"><div class="row c3"><div class="col box"><span class="hd">Plan</span><div class="ln s"></div></div><div class="col box"><span class="hd">Build</span><div class="ln s"></div></div><div class="col box"><span class="hd">Launch</span><div class="ln s"></div></div></div></div>
+      <p>Every column gets a box in one of the site's section styles, with padding and the site's corner radius. Boxes in a row are always the same height.</p></div>
+    <div class="land"><h3>2 · Highlight one column</h3>
+      <div class="page"><div class="row c3"><div class="col box"><span class="num">BASIC</span><div class="ln s"></div></div><div class="col hi"><span class="num" style="color:#fff">STUDIO</span><div class="ln s"></div></div><div class="col box"><span class="num">AGENCY</span><div class="ln s"></div></div></div></div>
+      <p>For pricing or "most popular": one column takes another style. The text colours come from that style, so it always reads.</p></div>
+    <div class="land"><h3>3 · Vertical alignment</h3>
+      <div class="page"><div class="row c2"><div class="ph" style="height:64px;border-radius:3px"></div><div class="col mid"><span class="hd">Quiet rooms</span><div class="ln s"></div></div></div></div>
+      <p>Top (today), Middle or Bottom. Middle is the classic text-beside-a-photo row.</p></div>
+    <div class="land"><h3>4 · Gaps and dividers</h3>
+      <div class="page"><div class="row c3" style="gap:0"><div class="col" style="padding-right:6px"><span class="num">01</span><div class="ln s"></div></div><div class="col divl"><span class="num">02</span><div class="ln s"></div></div><div class="col divl"><span class="num">03</span><div class="ln s"></div></div></div></div>
+      <p>The gap between columns as today, plus its own gap between rows when columns wrap or stack. Dividers draw a thin line between columns, turning horizontal when they stack.</p></div>
+    <div class="land"><h3>5 · Photo first on phones</h3>
+      <div style="display:flex;gap:10px;align-items:start">
+        <div class="page" style="flex:1"><div class="row c2"><div class="col"><span class="hd">Studio</span><div class="ln s"></div></div><div class="ph" style="height:46px;border-radius:3px"></div></div></div>
+        <div class="phone"><div class="ph" style="height:30px;border-radius:3px"></div><div class="ln"></div><div class="ln s"></div></div>
+      </div>
+      <p>On phones the columns can show last-to-first, so the photo leads. Screen readers and the Tab key still follow the written order, so keep links in the text column.</p></div>
+    <div class="land"><h3>6 · Sticky column</h3>
+      <div class="page"><div class="row c2" style="align-items:start"><div class="col" style="position:relative"><span class="hd">Services</span><div class="ln s"></div><span class="badge" style="position:static;justify-self:start">stays in view</span></div><div class="col"><div class="ln"></div><div class="ln s"></div><div class="ln"></div><div class="ln s"></div><div class="ln"></div><div class="ln s"></div></div></div></div>
+      <p>On wide screens one column stays in view while the longer one scrolls past. Phones and tablets scroll normally.</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="dirs">
+  <span class="eyebrow">In the builder · Columns → Style tab</span>
+  <h2 id="dirs">Three directions</h2>
+
+  <div class="dir rec">
+    <div class="dirhead"><span class="tag">Recommended</span><h3>A · One look for all columns, plus a highlight</h3></div>
+    <div class="cols">
+      <div class="pnl" aria-label="Sketch of the Columns Style tab, direction A">
+        <div class="tabs"><span>Content</span><span class="on">Style</span><span>Advanced</span></div>
+        <div class="grp"><h4>Layout</h4>
+          <div class="field"><span class="l">Widths (today) · Desktop, Tablet, Phone</span><div class="seg"><span class="on">Equal</span><span>2/3 + 1/3</span><span>Stacked</span></div></div>
+          <div class="field"><span class="l">Line up</span><div class="seg"><span class="on">Top</span><span>Middle</span><span>Bottom</span></div></div>
+        </div>
+        <div class="grp"><h4>Boxes</h4>
+          <div class="minis"><i style="background:repeating-linear-gradient(45deg,transparent 0 3px,var(--line) 3px 4px)"></i><i style="background:#F4F1EC"></i><i class="on" style="background:#E9E4DC"></i><i style="background:#2F4A3A"></i><i style="background:#1E2420"></i></div>
+          <p class="note">None · Page · Muted · Primary · Dark</p>
+          <div class="field"><span class="l">Padding</span><div class="seg"><span>S</span><span class="on">M</span><span>L</span></div></div>
+          <div class="tog"><span>Rounded corners</span><span class="sw on" aria-hidden="true"></span></div>
+          <div class="field"><span class="l">Highlight a column</span><div class="seg"><span>None</span><span>1</span><span class="on">2</span><span>3</span></div></div>
+        </div>
+        <div class="grp"><h4>Between and around</h4>
+          <div class="tog"><span>Dividers</span><span class="sw" aria-hidden="true"></span></div>
+          <div class="tog"><span>Photo first on phones</span><span class="sw on" aria-hidden="true"></span></div>
+          <div class="field"><span class="l">Keep in view while scrolling</span><div class="seg"><span class="on">None</span><span>Column 1</span><span>Column 2</span></div></div>
+        </div>
+      </div>
+      <div style="display:grid;gap:12px;align-content:start">
+        <p class="why">Rows of columns in a premium layout almost always share one look. Usually the only exception is one standout column (pricing, "most popular"). One look plus one highlight covers that in five controls, and rows stay consistent by default.</p>
+        <ul class="pros">
+          <li><strong>Consistency and standards:</strong> boxes reuse the site's section styles, so a column box matches a Muted section, and contrast is already checked.</li>
+          <li><strong>Error prevention:</strong> "Photo first on phones" explains that reading order stays as written. Sticky offers only columns that exist, and only works on wide screens.</li>
+          <li>Gap and row gap stay in Advanced with spacing, as today.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="dir">
+    <div class="dirhead"><h3>B · Settings per column</h3></div>
+    <div class="cols">
+      <div class="pnl" aria-label="Sketch of direction B">
+        <div class="grp"><h4>Column</h4><div class="colpick"><span>1</span><span class="on">2</span><span>3</span></div></div>
+        <div class="grp"><h4>Column 2</h4>
+          <div class="minis"><i></i><i style="background:#F4F1EC"></i><i style="background:#E9E4DC"></i><i class="on" style="background:#2F4A3A"></i><i style="background:#1E2420"></i></div>
+          <div class="field"><span class="l">Padding</span><div class="seg"><span>S</span><span class="on">M</span><span>L</span></div></div>
+          <div class="field"><span class="l">Line up</span><div class="seg"><span>Top</span><span class="on">Middle</span><span>Bottom</span></div></div>
+        </div>
+      </div>
+      <p class="why">The most flexible: every column has its own colour, padding and alignment. But three columns means three sets to keep in step. A row of cards with one padding a step off is easy to make and hard to spot. The "which column am I editing" switch is also one more thing to track (it adds to working memory).</p>
+    </div>
+  </div>
+
+  <div class="dir">
+    <div class="dirhead"><h3>C · A column becomes its own block</h3></div>
+    <div class="cols">
+      <div class="pnl" aria-label="Sketch of direction C">
+        <div class="grp"><h4>Outline</h4>
+          <p class="note">Columns<br>&nbsp;&nbsp;└ Column 1 (Muted)<br>&nbsp;&nbsp;└ Column 2 (Primary)<br>&nbsp;&nbsp;└ Column 3 (Muted)</p>
+        </div>
+      </div>
+      <p class="why">Click a column on the canvas to select it, like Webflow or YOOtheme. It's familiar, but it changes the page format: every saved page with Columns would need a migration. It also adds a click level between the row and its blocks, which makes selecting a heading inside a column fiddlier.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="how">
+  <span class="eyebrow">Details</span>
+  <h2 id="how">How it works</h2>
+  <div class="panel2">
+    <dl class="facts">
+      <dt>Saved as</dt><dd>New optional Columns props: <code>valign</code>, <code>box</code> <code>{ style, padding, rounded }</code>, <code>highlight</code> <code>{ column, style }</code>, <code>rowGap</code>, <code>dividers</code>, <code>phoneOrder</code>, <code>sticky</code>. A row without them publishes exactly as before, so no migration is needed.</dd>
+      <dt>Reading order</dt><dd>Never changed: "Photo first on phones" only moves columns visually, on phones. The builder notes it when the moved column holds links or buttons, because the Tab key would then jump back up (WCAG 2.4.3).</dd>
+      <dt>Sticky</dt><dd>From 1024 px wide, leaving room for a sticky header. A section that hid overflow would stop sticky from working, so sections switch to a clip that looks the same.</dd>
+      <dt>Dividers</dt><dd>Vertical between side-by-side columns, horizontal when they stack, worked out for each screen size from the widths you chose. Where columns wrap 2 + 1, no lines are drawn, because a half-row line looks broken.</dd>
+    </dl>
+  </div>
+</section>
+</main>
