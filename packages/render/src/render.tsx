@@ -1,4 +1,4 @@
-import { config, HEADER_V2_CSS, needsHeaderV2Css, ICONS_CSS, needsIconCss, BLOCKS_V3_CSS, needsBlocksV3Css, hasVideoEmbed, VIDEO_EMBED_SCRIPT, motionCss, heroStyle, hasDropdowns, DROPDOWN_SCRIPT, layoutOf, CONTACT_FORM_SCRIPT, hasBackgroundVideo, headerOverStyle, onlyFirstHeaderOver, VIDEO_SCRIPT, type SectionStyleId, fontPreloads, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
+import { config, HEADER_V2_CSS, needsHeaderV2Css, ICONS_CSS, needsIconCss, BLOCKS_V3_CSS, needsBlocksV3Css, hasVideoEmbed, VIDEO_EMBED_SCRIPT, INTERACTIVE_CSS, needsInteractiveCss, hasMapEmbed, interactiveTags, motionCss, heroStyle, hasDropdowns, DROPDOWN_SCRIPT, layoutOf, CONTACT_FORM_SCRIPT, hasBackgroundVideo, headerOverStyle, onlyFirstHeaderOver, VIDEO_SCRIPT, type SectionStyleId, fontPreloads, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -93,8 +93,10 @@ export const turnstileTag = (options: RenderOptions, puck: unknown) => {
 /** F073: starts background videos, only on pages that have one. */
 export const videoTag = (puck: unknown) =>
   (hasBackgroundVideo(puck) ? `<script type="module">${VIDEO_SCRIPT}</script>\n` : "") +
-  // F078: a YouTube or Vimeo player is put in only when its cover is pressed.
-  (hasVideoEmbed(puck) ? `<script type="module">${VIDEO_EMBED_SCRIPT}</script>\n` : "");
+  // F078: a YouTube or Vimeo player is put in only when its cover is pressed; F079: a map too.
+  (hasVideoEmbed(puck) || hasMapEmbed(puck) ? `<script type="module">${VIDEO_EMBED_SCRIPT}</script>\n` : "") +
+  // F079: sliders, tabs and the gallery lightbox, each only on pages that use it.
+  interactiveTags(puck);
 
 export const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -277,7 +279,9 @@ export function renderDocument(site: Site, doc: DocumentParts, baseCss: string, 
   const iconCss = needsIconCss(top + doc.body + bottom) ? `\n${ICONS_CSS}` : "";
   // F078: stats, video, table, pricing and numbered-list CSS only on pages that show one.
   const v3Css = needsBlocksV3Css(top + doc.body + bottom) ? `\n${BLOCKS_V3_CSS}` : "";
-  const css = minifyCss(`${tokensToCss(site.tokens)}\n${baseCss}${chromeCss}${iconCss}${v3Css}${motion ? `\n${motion}` : ""}`);
+  // F079: slideshow, card slider, tabs, map and lightbox CSS only on pages that show one.
+  const interactiveCss = needsInteractiveCss(top + doc.body + bottom) ? `\n${INTERACTIVE_CSS}` : "";
+  const css = minifyCss(`${tokensToCss(site.tokens)}\n${baseCss}${chromeCss}${iconCss}${v3Css}${interactiveCss}${motion ? `\n${motion}` : ""}`);
   const title = doc.share?.searchTitle?.trim() || (doc.path === "/" ? doc.title : `${doc.title} | ${site.name}`);
   return `<!doctype html>
 <html lang="${escapeHtml(site.language)}"${htmlClass}${htmlStyle}>

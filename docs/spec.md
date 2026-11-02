@@ -157,6 +157,20 @@ Vimeo video is published as a link to the video with the cover; a
 small script, only on pages that have one, swaps in the player
 (youtube-nocookie.com, Vimeo with "do not track") when it's pressed.
 
+F079 adds four blocks (all props optional): `Slideshow` (`name`;
+`slides` [{ imageSrc, imageAlt, title, text, linkLabel, linkHref }], up
+to 10; `ratio`: `16:9`, `3:2`, `4:3`, `21:9`; `autoplay`: `no`, `yes`;
+`speed`: `5`, `8`, `12` seconds; `titleLevel`), `CardSlider` (`name`;
+`items`, cards like the Grid's, up to 12; `visible`: `2`–`4`;
+`titleLevel`; `background`), `Tabs` (`tabs` [{ label, text }], up to 8,
+text in plain paragraphs; `look`: `underline`, `pills`, `side`;
+`titleLevel`, the headings shown without the script) and `Map` (`place`,
+`address`, `pin` { lat, lng }, `zoom`: `street`, `area`, `city`;
+`ratio`; `imageSrc`, a photo shown before the map). A Gallery may carry
+`lightbox` (`"yes"`: a photo opens larger when pressed; missing means
+no). Each block's small script is added only to pages that use it; the
+map loads from OpenStreetMap only when "Show map" is pressed.
+
 `tokens.style.motion` (optional, F075): `off`, `subtle` or `lively`;
 missing means Off. A Section may carry `entrance` (`rise`, `zoom`,
 `slide`, `none`; missing means Rise) and `parallax` (`true`: its photo

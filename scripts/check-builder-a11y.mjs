@@ -37,6 +37,10 @@ const blocksPost = {
       { type: "Table", props: { id: "Table-check", caption: "Opening hours", headers: "both", look: "lines", rows: [["", "Studio"], ["Saturday", "10–16"]] } },
       { type: "Video", props: { id: "Video-check", src: "/media/tour.mp4", title: "", imageSrc: "", captionsSrc: "", caption: "", ratio: "16:9" } },
       { type: "Pricing", props: { id: "Pricing-check", highlight: "1", badge: "Most popular", planStyle: "surface", highlightStyle: "primary", titleLevel: "h2", plans: [{ name: "Studio", price: "€49", period: "per month", description: "", features: "5 sites", buttonLabel: "", buttonHref: "/contact" }] } },
+      // F079
+      { type: "Map", props: { id: "Map-check", place: "Crust Bakery", address: "Harbour street 12", pin: { lat: 52.3731, lng: 4.8922 }, zoom: "street", ratio: "16:9", imageSrc: "" } },
+      { type: "Tabs", props: { id: "Tabs-check", look: "pills", titleLevel: "h2", tabs: [{ label: "Menu", text: "Bread." }, { label: "Hours", text: "From 7." }] } },
+      { type: "Slideshow", props: { id: "Slideshow-check", name: "Rooms", ratio: "16:9", autoplay: "yes", speed: "8", titleLevel: "h2", slides: [{ imageSrc: "", imageAlt: "", title: "One", text: "", linkLabel: "", linkHref: "" }, { imageSrc: "", imageAlt: "", title: "Two", text: "", linkLabel: "", linkHref: "" }] } },
       { type: "Stats", props: { id: "Stats-check", look: "lines", size: "md", colour: "text", align: "left", items: [{ value: "12", label: "years", detail: "" }] } },
     ],
   },
@@ -84,6 +88,10 @@ const screens = [
   ["Table cells", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Table"]'],
   ["Video notes", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Video"]'],
   ["Pricing Style tab", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Pricing"]', [], { then: ['.tb-tab:has-text("Style"):visible'] }],
+  // F079: the Map's pin field, the Tabs working in the canvas, the Slideshow's Style tab (speed shows with autoplay).
+  ["Map pin field", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Map"]'],
+  ["Tabs selected", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Tabs"]'],
+  ["Slideshow Style tab", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Slideshow"]', [], { then: ['.tb-tab:has-text("Style"):visible'] }],
   // F077: a Card's icon picker (Content tab), then a category picked.
   ["Card icon picker", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { then: ['.ic-chip:has-text("Food"):visible'] }],
   // F074: a Columns row's Style tab, then boxes and a highlighted column picked.

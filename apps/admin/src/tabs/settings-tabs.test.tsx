@@ -52,7 +52,7 @@ const sectionVariants = (["colour", "gradient", "photo", "video"] as const).map(
 });
 
 /** F078: fields that show only with another setting (number look with Numbers, badge with a highlighted plan). */
-const blockVariants: Record<string, Record<string, unknown>[]> = { IconList: [{ icon: "numbers" }], Pricing: [{ highlight: "2" }] };
+const blockVariants: Record<string, Record<string, unknown>[]> = { IconList: [{ icon: "numbers" }], Pricing: [{ highlight: "2" }], Slideshow: [{ autoplay: "yes" }] };
 
 describe("settings-tabs: where each setting lives", () => {
   it("puts wording and links in Content, looks in Style, and spacing, visibility and anchors in Advanced", () => {

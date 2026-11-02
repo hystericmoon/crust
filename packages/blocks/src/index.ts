@@ -162,6 +162,37 @@ export {
 } from "./blocks-v3";
 export type { StatItem, StatLook, StatsProps, VideoSource, VideoRatio, VideoProps, TableHeaders, TableLook, TableProps, Plan, PricingProps } from "./blocks-v3";
 export { BLOCKS_V3_CSS, needsBlocksV3Css } from "./blocks-v3-css";
+export {
+  interactiveBlocks,
+  interactiveLimits,
+  slideRatios,
+  slideRatioNames,
+  slideSpeeds,
+  slideList,
+  slideshowLabel,
+  cardSliderLabel,
+  sliderVisible,
+  tabLooks,
+  tabLookNames,
+  tabList,
+  mapZooms,
+  mapZoomNames,
+  mapRatios,
+  mapRatioNames,
+  cleanPin,
+  pinFromText,
+  mapEmbedUrl,
+  mapPageUrl,
+  directionsUrl,
+  hasMapEmbed,
+  interactiveNeeds,
+  interactiveTags,
+  SLIDER_SCRIPT,
+  TABS_SCRIPT,
+  LIGHTBOX_SCRIPT,
+} from "./interactive";
+export type { Slide, SlideRatio, SlideSpeed, SlideshowProps, SliderCard, CardSliderProps, TabItem, TabLook, TabsProps, MapPin, MapZoom, MapRatio, MapProps } from "./interactive";
+export { INTERACTIVE_CSS, needsInteractiveCss } from "./interactive-css";
 export type { GridItem, GridProps, GalleryImage, GalleryProps, AccordionItem, AccordionProps, ListIcon, IconListProps, Logo, LogoRowProps, QuoteProps, ImageOverlayProps } from "./more-blocks";
 export { PACK_FORMAT, PACK_VERSION, packLimits, makeThemePack, packFileName, readThemePack, freeLayoutName, packSummary } from "./theme-pack";
 export type { ThemePack, PackLayout, PackChrome, PackParts, PackCheck, BlockSpecs } from "./theme-pack";

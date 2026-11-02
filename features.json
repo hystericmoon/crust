@@ -836,7 +836,7 @@
       "description": "Interactive blocks with a little JavaScript only on pages that use them: Slideshow, Card slider (scroll snap), Tabs, Lightbox for galleries, Map (loads when pressed). All keyboard operable, no autoplay without a pause button. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F078"],
       "done_check": "npm test -- interactive && npm run check:a11y && npm run check:perf",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

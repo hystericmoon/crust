@@ -26,7 +26,8 @@ export type GridItem = { title: string; text: string; imageSrc: string; imageAlt
 export type GridProps = { items: GridItem[]; columns: "2" | "3" | "4"; titleLevel: TitleLevel; background: "background" | "surface" | "primary" };
 
 export type GalleryImage = { src: string; alt: string; caption: string };
-export type GalleryProps = { images: GalleryImage[]; columns: "2" | "3" | "4"; shape: "square" | "wide" | "original" };
+/** `lightbox` was added in F079 (missing: off): pressing a photo opens it larger. */
+export type GalleryProps = { images: GalleryImage[]; columns: "2" | "3" | "4"; shape: "square" | "wide" | "original"; lightbox?: "yes" | "no" };
 
 export type AccordionItem = { question: string; answer: string };
 export type AccordionProps = { items: AccordionItem[]; firstOpen: "yes" | "no"; oneAtATime: "yes" | "no" };
@@ -221,6 +222,7 @@ export const Gallery: ComponentConfig<GalleryProps> = {
         { label: "As uploaded", value: "original" },
       ],
     },
+    lightbox: yesNo("Open photos larger when pressed"),
   },
   defaultProps: {
     images: [
@@ -230,16 +232,29 @@ export const Gallery: ComponentConfig<GalleryProps> = {
     ],
     columns: "3",
     shape: "square",
+    lightbox: "yes",
   },
-  render: ({ images, columns, shape, puck }: GalleryProps & Editing) => {
+  render: ({ images, columns, shape, lightbox, puck }: GalleryProps & Editing) => {
     // Photos without an address are only placeholders in the builder.
     const list = (images ?? []).filter((im) => im.src?.trim() || puck?.isEditing);
+    // F079: with the lightbox, each photo is a link to itself; LIGHTBOX_SCRIPT opens it in a dialog.
+    const open = lightbox === "yes" && !puck?.isEditing;
     return (
-      <ul className={`cr-gallery cr-grid-${columns} cr-shape-${shape}`} role="list">
+      <ul className={`cr-gallery cr-grid-${columns} cr-shape-${shape}${open ? " cr-gallery-lightbox" : ""}`} role="list" {...(open ? { "data-cr-gallery": "" } : {})}>
         {list.map((im, i) => (
           <li key={i}>
             <figure className="cr-gallery-item">
-              {im.src?.trim() ? <Img src={im.src} size="third" {...altOf(im.alt ?? "")} loading="lazy" decoding="async" /> : <Placeholder>Add an image URL</Placeholder>}
+              {im.src?.trim() ? (
+                open ? (
+                  <a className="cr-gallery-open" href={safeUrl(im.src)} data-cr-lightbox="">
+                    <Img src={im.src} size="third" {...altOf(im.alt ?? "")} loading="lazy" decoding="async" />
+                  </a>
+                ) : (
+                  <Img src={im.src} size="third" {...altOf(im.alt ?? "")} loading="lazy" decoding="async" />
+                )
+              ) : (
+                <Placeholder>Add an image URL</Placeholder>
+              )}
               {im.caption?.trim() ? <figcaption>{im.caption}</figcaption> : null}
             </figure>
           </li>
