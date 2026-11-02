@@ -5,6 +5,22 @@ to "Log".
 
 ## Current
 
+- **F080 Layout library v2: built, passes** (branch
+  `ccr-d50f7e80-weuq18`, stacked on F079, PR #65 still open). Snapshot
+  https://claude.ai/artifact/VpbNu8K34npejqHXQpiYnj, A built for all
+  three choices. done_check `npm test -- layouts && npm run
+  check:layouts` exit 0. **To try** on the PR's preview link: in the
+  builder press **Layouts** (or a "+" between sections): 64 new sections
+  in 16 categories, the old ones under **Simple** at the end of each;
+  switch to **Whole pages** and add "Studio home" to an empty page. The
+  sample photos are copied into your Media library (Media shows them as
+  `sample-…`) and the "To replace" list names each one; publishing waits
+  until you replace them or press Keep as is. Then select a Button (or
+  any block), open the **Style** tab: **Saved styles** at the top. Save
+  its style, select another button and press the saved style; Undo puts
+  it back. Screenshots `design/f080-*.png`. Needs `reviewed: true`.
+  Next: F081 Images: WebP, AVIF, focal point.
+
 - **F079 Slideshow, Card slider, Tabs, Lightbox, Map: built, passes**
   (branch `ccr-d50f7e80-weuq18`, from main after F078 was merged as PR
   #64). Snapshot https://claude.ai/artifact/FNRagTiH9MLL4iTdDgHeje, A

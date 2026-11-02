@@ -5,7 +5,33 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 ~23:00 (Jakarta). **F079 Slideshow, Card
+Last updated: 2026-11-03 ~02:30 (Jakarta). **F080 Layout library v2
+built, passes** (branch `ccr-d50f7e80-weuq18`, stacked on F079: PR #65
+is still open and now holds F079 and F080; done_check exit 0;
+DECISIONS "F080"). Started at 01:15 by a scheduled message the owner
+asked for. Snapshot https://claude.ai/artifact/VpbNu8K34npejqHXQpiYnj
+(A built for all three choices). How it fits: sections and pages in
+`packages/blocks/src/layouts-v2.ts` (`sectionLayoutsV2`,
+`pageLayoutsV2`, `fitLayoutToTokens`), merged in layouts.ts
+(`sectionLayouts` = new first, then the first library with `simple:
+true`); sample photos `layout-photos.ts` + files in
+`apps/admin/public/layout-photos/`; builder copy into Media
+`apps/admin/src/layouts/photos.tsx` (`LayoutPhotoWatcher` in App.tsx
+`BuilderRoot`, `adoptLayoutPhotos`); mark kept by `isSampleCopy`,
+publish stop `uncopiedSampleLabel` (placeholders.ts, used in config.tsx
+`withVisibility`); gallery "Simple" group `ItemGrid`/`splitSimple`.
+Saved element styles: `apps/admin/src/tabs/element-styles.tsx`
+(`SavedStyles`, `_styles` field added in tabs.tsx), stored as
+SavedLayout kind `"element"` (server content.ts `checkLayout`). Soft
+button fix: section-styles.ts `softFg`/`softBg`. check:layouts renders
+`library-v2-<look>`; check:builder has "Section Style tab, saving a
+style" and "layout gallery, Hero". Needs `reviewed: true`. **Next:
+F081 Images: WebP, AVIF, focal point** (design snapshot first if it has
+visible choices; done_check `npm test -- images && cargo test -p
+crust-publish && npm run check:perf`), on this branch (stacked) or a new
+branch from main once #65 is merged.
+
+Earlier (~23:00): **F079 Slideshow, Card
 slider, Tabs, Lightbox, Map built, passes** (branch
 `ccr-d50f7e80-weuq18`, restarted from main after F078 merged as PR #64;
 done_check exit 0; DECISIONS "F079"). Snapshot

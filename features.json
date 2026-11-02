@@ -846,7 +846,7 @@
       "description": "About 60 premium sections and 10 page layouts rebuilt on the new layer; saved element styles. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F072", "F074", "F075", "F076", "F079"],
       "done_check": "npm test -- layouts && npm run check:layouts",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

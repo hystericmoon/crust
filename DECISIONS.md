@@ -257,6 +257,76 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-03 — F080 Layout library v2 (Claude, reversible)
+
+Snapshot https://claude.ai/artifact/VpbNu8K34npejqHXQpiYnj
+(`design/f080-layout-library-v1.html`); the owner was asleep, so the
+recommendations were built: A for all three choices. Built from 01:15
+Jakarta, the time the owner asked to continue.
+
+- **64 new sections, 10 new whole pages** (`packages/blocks/src/layouts-v2.ts`),
+  on the Milestone 8 layer: display headings with labels, photo and
+  gradient backgrounds, section widths, boxed, highlighted, divided and
+  sticky columns, icons, figures, tables, pricing, sliders, tabs, maps,
+  the lightbox. Only section styles and tokens, never colours of their
+  own. Categories grew to Hero, Intro, About, Features, Services, Work,
+  Gallery, Testimonials, Logos, Numbers, Process, Pricing, FAQ, Team,
+  Call to action, Contact (and Content, from the first library). Words are
+  written for a small design studio/workshop so a layout reads as a real
+  page; "Step 1" labels appear only where the content is a sequence.
+- **Photos: A, sample photos marked "to replace".** 15 public-domain
+  photos from our own templates (CREDITS.md), resized to 1600 px, plus
+  five made-up logos drawn for Crust (PNG, Liberation/DejaVu fonts),
+  served by the builder at `/layout-photos/` (`apps/admin/public`,
+  3 MB). `LayoutPhotoWatcher` copies each one into the site's Media
+  library the first time a page uses it (one upload at a time, with its
+  description as alt; a photo already there under its name is reused),
+  then points the blocks at `/media/…` without an undo step. It watches
+  the page, not the insert, so a page saved before the copy finished is
+  put right next time. Every sample photo is marked (F046), so
+  publishing waits until it's replaced or kept with "Keep as is"; the
+  builder's own swap to the library copy keeps the mark
+  (`isSampleCopy`). Safety net: a block still pointing at
+  `/layout-photos/` (copy failed, then "Keep as is") renders with
+  `data-crust-placeholder` and stops publishing
+  (`uncopiedSampleLabel`). B (empty frames) was turned down because
+  photo-led layouts looked unfinished; C (type-only) because big imagery
+  is most of what makes the reference sites feel premium.
+- **No team portraits.** We have no public-domain portraits; team
+  layouts use workplace photos (marked to replace) or names only.
+- **Old layouts: A, under "Simple".** The first library (26 sections, 5
+  pages) is kept and listed after the new ones in each category under a
+  "Simple" heading (its own named list for screen readers), and found by
+  searching "simple". Fewer finished-looking choices first (Hick's law)
+  without taking away layouts the owner knows. No ids changed.
+- **Gradients fit the site.** A layout's gradient ends in a colour role
+  that may not read in every look; on insert `fitLayoutToTokens` swaps
+  it for one that keeps AA (or a plain colour). check:layouts renders all
+  64 sections on every look (one colourway each, in turn) the same way.
+- **Saved element styles: A, copy on apply.** "Saved styles" sits at the
+  top of every block's Style tab: "Save this button's style…" stores the
+  block's Style-tab settings (never words, links or photos; a Section's
+  photo, video and focus are left out) as a saved layout of kind
+  `"element"` in `content/layouts/` (or the browser until saving is on).
+  Pressing a saved style copies its settings in, one undo step; "In use"
+  shows when the block already matches. Rename and Delete in the same
+  list, delete asks first. Only styles from the same kind of block are
+  offered. B (linked styles) was turned down: it changes the page format
+  and renderer, and the Style library already does "change once
+  everywhere". C (one default per block type) allows only one look.
+  Element styles stay out of theme packs and templates for now (Proposal
+  below).
+- **Content format:** `SavedLayout.kind` may be `"element"` (one block).
+  Additive; pages are untouched. The server accepts it only with exactly
+  one block.
+- **Soft button fix (found by the new check).** In the Bistro and
+  Playground looks a Soft button's label (the accent) was under 4.5:1 on
+  its own tint. Each section style now works out `--cr-sec-soft-fg` (the
+  accent, or the text colour) and `--cr-sec-soft-bg` (the 14% tint,
+  lighter until the label reads); hover now outlines instead of
+  darkening. Existing Soft buttons only gain contrast.
+- **Proposal:** carry saved element styles in theme packs (small, S).
+
 ## 2026-11-02 — F079 Slideshow, Card slider, Tabs, Lightbox, Map (Claude, reversible)
 
 Snapshot https://claude.ai/artifact/FNRagTiH9MLL4iTdDgHeje

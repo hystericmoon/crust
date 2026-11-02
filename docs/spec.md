@@ -334,11 +334,21 @@ section's current blocks into each page; a missing section stops the
 publish with the page's name. A linked section holds no h1 and no other
 linked section, and can't be deleted while a page uses it.
 
+F080: a saved layout's `kind` may also be `"element"`: a saved element
+style, `content` holding exactly one block whose props are only its
+Style-tab settings (no words, links or photos, no id). The builder
+copies them into a block of the same type when applied; they're never
+published, and theme packs and templates leave them out. Layouts from
+the library may use the builder's sample photos (`/layout-photos/…`);
+the builder copies them into `content/media/` and the blocks then use
+`/media/…`. A block still pointing at `/layout-photos/` stops the
+publish.
+
 `content/layouts/<id>.json` (optional, added with F027)
 ```json
 { "id": "studio-intro", "name": "Studio intro", "kind": "section", "savedAt": "…", "content": [ … ] }
 ```
-A section or whole page the owner saved to reuse. `content` is top-level
+A section or whole page the owner saved to reuse (or, from F080, a saved element style). `content` is top-level
 blocks, like a page's `puck.content`. Only the builder reads these; they are
 never published.
 

@@ -4,6 +4,21 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Layout library v2 and saved styles (F080).** The layout library has
+  **64 new sections** (heroes on full photos, text beside a photo, big
+  statements, services as rows, project grids and sliders, figures,
+  steps, pricing with a highlighted plan, questions with a heading that
+  stays in view, maps with opening hours, and more) and **10 new whole
+  pages** (Studio home, Restaurant or shop home, Product landing,
+  Services, About, Work, Case study, Pricing, Contact, Venue or event).
+  They follow your site's look. Layouts with photos come with sample
+  photos that are copied into your Media library and marked "to
+  replace", so they can't go live by accident. The first library's
+  layouts are still there, under **Simple** in each category. New in
+  every block's **Style** tab: **Saved styles**. Save a block's look
+  under a name and apply it to another block of the same kind in one
+  press. Also: Soft buttons now always keep readable contrast.
+
 - **Slideshow, Card slider, Tabs, Map and a Gallery lightbox (F079).** A
   **Slideshow** shows up to ten photos one at a time, each with an
   optional title, line and link, with back/next buttons and "2 / 5"
