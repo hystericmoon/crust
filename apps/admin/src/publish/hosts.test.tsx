@@ -334,9 +334,12 @@ describe("hosts: the Publish card before connecting", () => {
   });
 });
 
+/** A minute ago, but never before midnight, so "today" holds when tests run just after 00:00. */
+const aMinuteAgoToday = () => Math.max(Date.now() - 60_000, new Date().setHours(0, 0, 0, 0));
+
 describe("hosts: publishing", () => {
   it("publishes and says the site is live, with a way to open it", async () => {
-    const hosts = fakeHosts({ connection: connection({ lastPublished: Date.now() - 60_000 }), suggestedName: "x" });
+    const hosts = fakeHosts({ connection: connection({ lastPublished: aMinuteAgoToday() }), suggestedName: "x" });
     render(<HostPublish hosts={hosts} />);
     await settle();
     expect(screen.getByText(/Cloudflare Pages/)).toBeTruthy();
