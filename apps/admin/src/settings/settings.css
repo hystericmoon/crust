@@ -165,6 +165,29 @@ body:has(.st) { margin: 0; }
 .st-current { font-size: 0.8125rem; font-weight: 600; }
 .st-undo { margin-top: 12px; }
 
+/* F072: Style library */
+.st-looks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 12px; }
+.st-look-item { display: grid; gap: 6px; align-content: start; }
+.st-look {
+  display: grid; gap: 4px; width: 100%; padding: 8px; text-align: left; cursor: pointer;
+  border: 1px solid var(--st-border); border-radius: 12px; background: var(--st-panel); color: var(--st-text); font: inherit;
+}
+.st-look:hover { background: #f4f4f5; }
+.st-look[aria-pressed="true"] { border: 2px solid var(--st-action); padding: 7px; }
+.st-look-spec { display: grid; gap: 6px; align-content: end; min-height: 9.5rem; padding: 14px; margin-bottom: 4px; border: 1px solid rgb(0 0 0 / 0.08); }
+.st-look-label { justify-self: start; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.1em; }
+.st-look-label.is-chip { padding: 3px 7px; border: 1px solid color-mix(in srgb, currentColor 35%, transparent); border-radius: 999px; }
+.st-look-display { font-size: 1.5rem; line-height: 1; }
+.st-look-body { font-size: 0.75rem; line-height: 1.35; }
+.st-look-btn { justify-self: start; margin-top: 4px; padding: 5px 11px; border: 1.5px solid; font-size: 0.75rem; font-weight: 500; }
+.st-look-name { font-weight: 600; }
+.st-look-suits { font-size: 0.8125rem; color: var(--st-muted); }
+.st-swatches { display: flex; align-items: center; gap: 8px; padding: 0 4px; }
+/* 24px targets with spacing (WCAG 2.5.8). */
+.st-swatch { width: 24px; height: 24px; padding: 0; border-radius: 50%; border: 1px solid var(--st-border); cursor: pointer; }
+.st-swatch[aria-checked="true"] { outline: 2px solid var(--st-action); outline-offset: 2px; }
+.st-swatch-name { font-size: 0.75rem; color: var(--st-muted); }
+
 /* F071: small label pictures */
 .st-label-pic { font-size: 0.75rem; font-weight: 600; }
 .st-label-pic.is-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border: 1px solid currentColor; border-radius: 999px; }

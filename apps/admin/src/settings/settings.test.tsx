@@ -66,7 +66,7 @@ describe("Site settings screen", () => {
     expect(screen.getAllByRole("heading", { level: 1 }).map((h) => h.textContent)).toEqual(["Site settings"]);
     // F028 direction A: one group shown at a time; the others stay in the page, hidden.
     expect(screen.getAllByRole("heading", { level: 2, hidden: true }).map((h) => h.textContent)).toEqual([
-      "Presets",
+      "Styles",
       "Colours",
       "Contrast checks",
       "Buttons",
@@ -82,7 +82,7 @@ describe("Site settings screen", () => {
       "Save as template",
       "Site address",
     ]);
-    expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Presets"]);
+    expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Styles"]);
     for (const name of ["Page", "Surface", "Text", "Muted text", "Primary", "Text on primary"]) {
       expect(screen.getByLabelText(name, { selector: "input:not([type=color])" })).toBeTruthy();
       expect(screen.getByLabelText(`Pick ${name} colour`)).toBeTruthy();
@@ -184,27 +184,34 @@ describe("Site settings screen", () => {
   });
 });
 
-describe("theme presets (settings)", () => {
-  it("marks the current preset", () => {
+describe("style library (settings, F072)", () => {
+  it("marks no look on a site that doesn't match one", () => {
     setup();
-    const crust = screen.getByRole("button", { name: /^Crust/ });
-    expect(crust.getAttribute("aria-pressed")).toBe("true");
-    expect(screen.getByRole("button", { name: /^Forest/ }).getAttribute("aria-pressed")).toBe("false");
+    expect(screen.getAllByRole("button", { pressed: true }).filter((b) => b.classList.contains("st-look"))).toHaveLength(0);
   });
 
-  it("applies a preset's colours and fonts, and undoes it in one step", () => {
+  it("applies a look's colours, fonts and corners, and undoes it in one step", () => {
     setup({ ...defaultTokens, radius: 3 });
-    act(() => screen.getByRole("button", { name: /^Forest/ }).click());
-    expect((field("Primary") as HTMLInputElement).value).toBe("#1F6B45");
-    expect((screen.getByLabelText("Corner radius in px") as HTMLInputElement).value).toBe("3");
-    expect(screen.getByRole("button", { name: /^Forest/ }).getAttribute("aria-pressed")).toBe("true");
-    expect(screen.getByRole("status").textContent).toMatch(/^Forest applied/);
+    act(() => screen.getByRole("button", { name: /^Clinic/ }).click());
+    expect((field("Primary") as HTMLInputElement).value).toBe("#1559D6");
+    expect((screen.getByLabelText("Corner radius in px") as HTMLInputElement).value).toBe("12");
+    expect(screen.getByRole("button", { name: /^Clinic/ }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("status").textContent).toMatch(/^Clinic, Clear applied/);
     expect(screen.getByText("Unsaved changes")).toBeTruthy();
 
-    act(() => screen.getByRole("button", { name: "Undo preset (Forest)" }).click());
+    act(() => screen.getByRole("button", { name: "Undo style (Clinic Clear)" }).click());
     expect((field("Primary") as HTMLInputElement).value.toUpperCase()).toBe("#4338CA");
-    expect(screen.queryByRole("button", { name: /Undo preset/ })).toBeNull();
-    expect(screen.getByRole("status").textContent).toMatch(/^Undid Forest/);
+    expect((screen.getByLabelText("Corner radius in px") as HTMLInputElement).value).toBe("3");
+    expect(screen.queryByRole("button", { name: /Undo style/ })).toBeNull();
+    expect(screen.getByRole("status").textContent).toMatch(/^Undid Clinic Clear/);
+  });
+
+  it("one Undo goes back past several looks tried in a row", () => {
+    setup();
+    act(() => screen.getByRole("button", { name: /^Clinic/ }).click());
+    act(() => screen.getByRole("button", { name: /^Journal/ }).click());
+    act(() => screen.getByRole("button", { name: "Undo style (Journal Newsprint)" }).click());
+    expect((field("Primary") as HTMLInputElement).value.toUpperCase()).toBe("#4338CA");
   });
 });
 

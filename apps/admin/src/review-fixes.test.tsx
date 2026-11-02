@@ -160,10 +160,11 @@ describe("review-fixes 2: focus returns when a dialog closes (F022, F015, F013)"
     expect(document.activeElement).toBe(publish);
   });
 
-  it("moves focus to the current preset (or the heading) after Undo preset", () => {
+  it("moves focus to the current look (or the heading) after Undo style", () => {
+    // F072: the Style library replaced the presets; the focus rule stays.
     const source = readFileSync("apps/admin/src/settings/SiteSettings.tsx", "utf8");
-    const undo = source.slice(source.indexOf("Undid ${beforePreset.name}"), source.indexOf("Undo preset ({beforePreset.name})"));
-    expect(undo).toContain(`#presets .st-preset[aria-pressed='true']`);
+    const undo = source.slice(source.indexOf("Undid ${beforePreset.name}"), source.indexOf("Undo style ({beforePreset.name})"));
+    expect(undo).toContain(`#presets .st-look[aria-pressed='true']`);
     expect(undo).toContain(`document.getElementById("presets-h")`);
   });
 });
