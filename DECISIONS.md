@@ -288,6 +288,12 @@ Features Claude suggests. They are not work until the owner adds them to
 - check:layouts renders a Rows and columns v2 page in all 12 looks;
   check:builder adds two Columns Style tab screens (reached through the
   "Columns" breadcrumb, since a row has no padding of its own to click).
+- **CI fix (template-check):** with F073 and F074 the inline block CSS
+  reached 38 KB and Lighthouse scored Corner's home page 94 ("Minify
+  CSS"). Published pages now inline minified CSS (`minifyCss` in
+  `render.tsx`: comments and spare whitespace out, quoted strings kept;
+  about 15% smaller). Corner passes again. Splitting CSS per block used
+  is a proposal if it grows further.
 
 ## 2026-11-02 — F073 Sections v2 (Claude, reversible)
 

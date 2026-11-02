@@ -18,7 +18,7 @@ describe("fonts in published pages (F070)", () => {
     const html = renderPage(site(editorial), page, "");
     expect(html).toContain('<link rel="preload" href="/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>');
     expect(html).toContain('<link rel="preload" href="/fonts/inter-tight-latin.woff2" as="font" type="font/woff2" crossorigin>');
-    expect(html).toContain("@font-face { font-family: 'Fraunces'");
+    expect(html).toContain("@font-face{font-family: 'Fraunces'");
     expect(html).toContain("src: url(/fonts/inter-tight-latin-ext.woff2)");
     // Preloads come before the styles, so the browser starts on them first.
     expect(html.indexOf('rel="preload"')).toBeLessThan(html.indexOf("<style>"));
