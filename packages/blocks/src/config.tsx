@@ -43,12 +43,14 @@ export type SectionProps = {
   tint?: TintLevel;
   content: Slot;
 };
-export type HeadingProps = { text: string; level: "h1" | "h2" | "h3" | "h4"; align: Align };
+/** `size` and `eyebrow` were added in F071; headings without them render as before. */
+export type HeadingProps = { text: string; level: "h1" | "h2" | "h3" | "h4"; align: Align; size?: "normal" | "display"; eyebrow?: string };
 /** `text` is rich text (F042); pages saved before F042 hold a plain string. */
 export type TextProps = { text: RichText | string; align: Align; tone: "default" | "muted" };
 export type ImageProps = { src: string; alt: string; caption: string };
 /** `align` was added in F012; pages saved before it have none and stay left-aligned. */
-export type ButtonProps = { label: string; href: string; variant: "primary" | "secondary"; align?: Align };
+/** F071 added "soft" and "arrow". */
+export type ButtonProps = { label: string; href: string; variant: "primary" | "secondary" | "soft" | "arrow"; align?: Align };
 export type SpacerProps = { size: SpacingStep };
 /** `widths` was added in F029; Columns saved before it keep the old per-device behaviour. */
 export type ColumnsProps = {
@@ -60,7 +62,9 @@ export type ColumnsProps = {
   column3: Slot;
   column4: Slot;
 };
+/** `layout` was added in F071 ("cover": the photo fills the card). */
 export type CardProps = {
+  layout?: "stacked" | "cover";
   imageSrc: string;
   imageAlt: string;
   title: string;
@@ -198,11 +202,30 @@ const blocks: Config<Components> = {
           ],
         },
         align: alignField,
+        // F071: a Display heading is a step above H1 (its look is set in Site settings → Typography).
+        size: {
+          type: "radio",
+          label: "Size",
+          options: [
+            { label: "Normal", value: "normal" },
+            { label: "Display", value: "display" },
+          ],
+        },
+        eyebrow: { type: "text", label: "Small label above (optional)" },
       },
-      defaultProps: { text: "Heading", level: "h2", align: "left" },
-      render: ({ text, level, align }) => {
+      defaultProps: { text: "Heading", level: "h2", align: "left", size: "normal", eyebrow: "" },
+      render: ({ text, level, align, size, eyebrow }) => {
         const Tag = headingTag(level, "h2");
-        return <Tag className={`cr-heading cr-${Tag} cr-align-${align}`}>{text}</Tag>;
+        const display = size === "display" ? " cr-display" : "";
+        const label = eyebrow?.trim();
+        if (!label) return <Tag className={`cr-heading cr-${Tag}${display} cr-align-${align}`}>{text}</Tag>;
+        // The label is part of the heading group, so screen readers meet it with the heading (not as its own heading).
+        return (
+          <hgroup className={`cr-hgroup cr-align-${align}`}>
+            <p className="cr-eyebrow">{label}</p>
+            <Tag className={`cr-heading cr-${Tag}${display} cr-align-${align}`}>{text}</Tag>
+          </hgroup>
+        );
       },
     },
     Text: {
@@ -260,7 +283,9 @@ const blocks: Config<Components> = {
           label: "Style",
           options: [
             { label: "Primary", value: "primary" },
-            { label: "Secondary", value: "secondary" },
+            { label: "Outline", value: "secondary" },
+            { label: "Soft", value: "soft" },
+            { label: "Text with arrow", value: "arrow" },
           ],
         },
         align: alignField,
@@ -270,6 +295,8 @@ const blocks: Config<Components> = {
         <div className={`cr-button-row cr-align-${align ?? "left"}`}>
           <a className={`cr-button cr-button-${variant}`} href={safeUrl(href)}>
             {label}
+            {/* The arrow is decoration; the label already says where the link goes. */}
+            {variant === "arrow" ? <span className="cr-arrow" aria-hidden="true">→</span> : null}
           </a>
         </div>
       ),
@@ -338,8 +365,17 @@ const blocks: Config<Components> = {
         linkLabel: { type: "text", label: "Link text (say where it goes)" },
         linkHref: { type: "text", label: "Link" },
         background: backgroundField,
+        layout: {
+          type: "radio",
+          label: "Layout",
+          options: [
+            { label: "Stacked", value: "stacked" },
+            { label: "Photo fills the card", value: "cover" },
+          ],
+        },
       },
       defaultProps: {
+        layout: "stacked",
         title: "Card title",
         titleLevel: "h3",
         text: "A short description.",
@@ -349,12 +385,14 @@ const blocks: Config<Components> = {
         linkHref: "",
         background: "surface",
       },
-      render: ({ imageSrc, imageAlt, title, titleLevel, text, linkLabel, linkHref, background }) => {
+      render: ({ layout, imageSrc, imageAlt, title, titleLevel, text, linkLabel, linkHref, background }) => {
         const Title = headingTag(titleLevel, "h3");
         // Same rule as the Image block: missing alt is left out for the publish check.
         const altAttr = imageAlt.trim() ? { alt: imageAlt.trim() } : {};
+        // F071: without a photo, "Photo fills the card" falls back to stacked.
+        const cover = layout === "cover" && !!imageSrc.trim();
         return (
-          <article className={`cr-card cr-bg-${background}`}>
+          <article className={cover ? "cr-card cr-card-cover" : `cr-card cr-bg-${background}`}>
             {imageSrc.trim() ? (
               <Img className="cr-card-media" src={imageSrc} size="half" {...altAttr} loading="lazy" decoding="async" />
             ) : null}

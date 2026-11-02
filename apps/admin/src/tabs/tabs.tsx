@@ -25,6 +25,8 @@ const styleFields = new Set([
   "tint",
   "size",
   "widths",
+  // F071: Card layout
+  "layout",
   // F032 blocks
   "columns",
   "shape",

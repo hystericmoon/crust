@@ -73,9 +73,9 @@ describe("settings-tabs: where each setting lives", () => {
 
   it("shows only the current tab's fields, always with the switch and the slots", () => {
     setTab("content");
-    expect(shown("Heading")).toEqual(["_tabs", "text", "level"]);
+    expect(shown("Heading")).toEqual(["_tabs", "text", "level", "eyebrow"]);
     setTab("style");
-    expect(shown("Heading")).toEqual(["_tabs", "align"]);
+    expect(shown("Heading")).toEqual(["_tabs", "align", "size"]);
     setTab("advanced");
     expect(shown("Columns")).toEqual(["_tabs", "gap", "column1", "column2", "column3", "column4", "hideOn", "anchor"]);
   });

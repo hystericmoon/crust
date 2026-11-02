@@ -4,6 +4,19 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Display headings, small labels, more buttons and photo cards
+  (F071).** A Heading can now be **Display** size, a step above H1, and
+  can have a **small label above** it, like "ARCHITECTURE STUDIO".
+  Site settings → Typography sets how they look everywhere: Display
+  weight (now down to Light and Regular) and letter spacing (now down to
+  Tighter and Tightest), and labels as Plain, Caps, Mono or Chip. Buttons
+  gain **Soft** (a tinted fill) and **Text with arrow**; "Secondary" is
+  now called **Outline**. A Card can be **Photo fills the card**, with
+  its words on a dark band over the photo. Smaller headings (H3, H4)
+  never go thinner than Medium, so they stay easy to read. Nothing
+  changes on your pages until you use these. The sample site's home
+  page now shows a Display heading with a chip label.
+
 - **Real fonts (F070).** Site settings → Typography now has 32
   typefaces that ship with Crust, among them Fraunces, Geist, Instrument
   Serif, Bodoni Moda and DM Sans. Pick one of 12 tested **font pairs**:

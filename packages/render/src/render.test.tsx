@@ -19,7 +19,8 @@ describe("renderPage", () => {
     expect(html).toContain("<title>Crust demo</title>");
     expect(html).toContain('<meta name="description" content="A sample page built with the Crust visual builder.">');
     expect(html).toContain("--cr-color-primary: #4338ca;");
-    expect(html).toContain('<h1 class="cr-heading cr-h1 cr-align-center">Build fast sites, visually</h1>');
+    // F071: the sample hero is a Display heading with a small label above it.
+    expect(html).toContain('<hgroup class="cr-hgroup cr-align-center"><p class="cr-eyebrow">Visual website builder</p><h1 class="cr-heading cr-h1 cr-display cr-align-center">Build fast sites, visually</h1></hgroup>');
     expect(html).not.toContain("<script");
   });
 

@@ -101,6 +101,12 @@ section styles; a Section's `background` names one (`background`,
 `typeScale`, `headingWeight`, `headingTracking`, `buttonShape`, `cardStyle`,
 `linkStyle`, each picked from a short list. Missing options keep the look
 sites had before F028. A section style's `button` can also be `"soft"`.
+F071 adds `displayWeight`, `displayTracking` and `labelStyle` (`plain`,
+`caps`, `mono`, `chip`), weights 300/400 and trackings `tighter` and
+`tightest`. A Heading block may carry `size` (`"display"`) and
+`eyebrow` (a small label above it); a Button's `variant` may be
+`"soft"` or `"arrow"`; a Card may carry `layout: "cover"` (the photo
+fills the card).
 
 Any block's props may carry `hideOn` (optional, added with F029): a list of
 `"desktop"`, `"tablet"`, `"phone"`. A Columns block may carry `widths`

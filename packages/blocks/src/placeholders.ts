@@ -25,7 +25,7 @@ const list = (field: string, label: string): MarkableField => ({ field, label, k
 /** The fields each block can mark, in the order the checklist names them. */
 export const markableFields: Readonly<Record<string, readonly MarkableField[]>> = {
   Section: [photo("imageSrc", "Background photo")],
-  Heading: [text("text", "Text")],
+  Heading: [text("text", "Text"), text("eyebrow", "Small label")],
   Text: [text("text", "Text")],
   Image: [photo("src")],
   Button: [text("label", "Button text")],

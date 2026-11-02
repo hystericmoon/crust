@@ -3,9 +3,9 @@
  * Blocks never use raw values; they reference these through CSS variables,
  * so changing a token restyles the whole site.
  */
-import { fontFaceCss } from "./fonts";
+import { fontFaceCss, labelFontStack } from "./fonts";
 import { sectionStylesCss, validateSectionStyles, type SectionStyle, type SectionStyleId } from "./section-styles";
-import { styleOptionsCss, validateStyleOptions, type StyleOptions } from "./style-options";
+import { labelsUseMono, styleOptionsCss, validateStyleOptions, type StyleOptions } from "./style-options";
 
 export const spacingSteps = ["none", "xs", "sm", "md", "lg", "xl"] as const;
 export type SpacingStep = (typeof spacingSteps)[number];
@@ -62,13 +62,16 @@ export function tokensToCss(tokens: SiteTokens, selector = ":root"): string {
   for (const role of colorRoles) lines.push(`--cr-color-${role}: ${safe(tokens.colors[role])};`);
   lines.push(`--cr-font-heading: ${safe(tokens.fonts.heading)};`);
   lines.push(`--cr-font-body: ${safe(tokens.fonts.body)};`);
+  // F071: Mono and Chip labels use the bundled Geist Mono.
+  const monoLabels = labelsUseMono(tokens);
+  if (monoLabels) lines.push(`--cr-font-label: ${labelFontStack()};`);
   for (const step of spacingSteps) lines.push(`--cr-space-${step}: ${Number(tokens.spacing[step])}rem;`);
   lines.push(`--cr-radius: ${Number(tokens.radius)}px;`);
   lines.push(`--cr-max-width: ${Number(tokens.maxWidth)}px;`);
   const scope = selector === ":root" ? "" : selector;
   const options = styleOptionsCss(tokens, scope);
   // F070: bundled fonts the site uses (nothing for sites on system fonts).
-  const faces = fontFaceCss(tokens.fonts);
+  const faces = fontFaceCss(tokens.fonts, "/fonts/", monoLabels ? [labelFontStack()] : []);
   return `${faces ? `${faces}\n` : ""}${selector} {\n  ${lines.join("\n  ")}\n}\n${sectionStylesCss(tokens, scope)}${options ? `\n${options}` : ""}`;
 }
 

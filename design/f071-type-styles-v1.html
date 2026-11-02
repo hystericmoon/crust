@@ -1,0 +1,151 @@
+<title>F071 Type and Detail</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,700&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Inter+Tight:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600&display=swap">
+<style>
+/* Layout: report column; a before/after hero, then each direction drawn as the builder's side panel next to the result */
+:root{
+  --bg:#F2F3F1;--panel:#FFFFFF;--fg:#17191B;--muted:#5C6267;--line:#D9DCD8;--accent:#3949AB;--accent-soft:#E7E9F7;
+  --ui:"Schibsted Grotesk",ui-sans-serif,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--accent-soft:#252A45;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--accent-soft:#252A45;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--ui);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1100px;margin:0 auto;padding-block:48px 96px;display:grid;gap:56px}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.015em}
+h1{font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.05;font-weight:600}h2{font-size:1.5rem;font-weight:600}h3{font-size:1.05rem;font-weight:600}
+p{margin:0;max-width:70ch}
+.eyebrow{font:500 .75rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.lede{font-size:1.1rem;color:var(--muted)}
+section{display:grid;gap:18px}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.ba{grid-template-columns:1fr}}
+.ba figure{margin:0;display:grid;gap:6px}
+.ba figcaption{font:500 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+/* site mock: fixed colours, it depicts a published page */
+.site{border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#F4F0E9;color:#1D1A16;padding:7% 7% 6%;display:grid;gap:14px;align-content:start;min-height:100%}
+.site.before{font-family:Arial,Helvetica,sans-serif}
+.site.before h4{font:700 30px/1.15 Arial,Helvetica,sans-serif;margin:0}
+.site.before p{font-size:13px;line-height:1.5;color:#4A443C}
+.site.before .btns{display:flex;gap:8px}.site.before .b1{background:#2F4A3A;color:#fff;padding:8px 14px;border-radius:6px;font-size:12px;font-weight:700}.site.before .b2{border:2px solid #2F4A3A;color:#2F4A3A;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700}
+.site.after h4{font:300 46px/.98 "Fraunces",serif;letter-spacing:-.05em;margin:0}
+.site.after p{font:13px/1.5 "Inter Tight",sans-serif;color:#4A443C}
+.chip{justify-self:start;display:inline-flex;gap:6px;align-items:center;font:500 10px/1 "Geist Mono",monospace;letter-spacing:.1em;text-transform:uppercase;border:1px solid #CFC6B8;background:#FBF8F3;padding:6px 9px;border-radius:99px;color:#5E5548}
+.chip i{width:6px;height:6px;background:#2F4A3A;border-radius:1px}
+.monolabel{font:500 10px/1 "Geist Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:#6E6457}
+.site.after .btns{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.pill{background:#1D1A16;color:#F4F0E9;padding:9px 16px;border-radius:99px;font:500 12px "Inter Tight",sans-serif}
+.ghost{background:#E9E2D6;color:#1D1A16;padding:9px 16px;border-radius:99px;font:500 12px "Inter Tight",sans-serif}
+.arrow{font:500 12px "Inter Tight",sans-serif;color:#1D1A16;border-bottom:1px solid currentColor;padding-bottom:2px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.tile{background:#EAE3D8;border-radius:12px;padding:12px;display:grid;gap:4px;font:12px "Inter Tight",sans-serif}
+.tile b{font:400 16px "Fraunces",serif;letter-spacing:-.02em}
+.cover{border-radius:12px;min-height:96px;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.62)),linear-gradient(135deg,#7A6450,#2E2620);color:#fff;display:grid;align-content:end;padding:12px;font:12px "Inter Tight",sans-serif;box-shadow:0 10px 28px -12px rgba(40,30,20,.45)}
+.cover b{font:400 16px "Fraunces",serif}
+/* directions */
+.dir{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+.dir.rec{border:2px solid var(--accent)}
+@media (max-width:860px){.dir{grid-template-columns:1fr}}
+.meta{display:grid;gap:10px;font-size:.93rem}
+.meta ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.tag{justify-self:start;font:600 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--accent);color:var(--panel);padding:6px 10px;border-radius:4px}
+.why{color:var(--muted)}
+.panelui{background:#fff;color:#1A1C1E;border:1px solid #DADDE0;border-radius:10px;padding:14px;display:grid;gap:10px;font:13px/1.4 var(--ui)}
+.panelui h4{margin:0;font-size:13px;font-weight:600}
+.row{display:grid;gap:4px}
+.row > span{font-size:11.5px;font-weight:500;color:#3E4347}
+.seg{display:flex;border:1px solid #BFC4C9;border-radius:6px;overflow:hidden}
+.seg b{flex:1;text-align:center;padding:6px 4px;font-weight:500;font-size:12px;border-right:1px solid #DADDE0}
+.seg b:last-child{border-right:0}.seg b.on{background:#E7E9F7;color:#26338A}
+.inp{border:1px solid #BFC4C9;border-radius:6px;padding:6px 8px;font-size:12px;color:#3E4347}
+.slider{height:4px;background:#DADDE0;border-radius:2px;position:relative;margin:8px 0}
+.slider i{position:absolute;top:-5px;width:14px;height:14px;border-radius:50%;background:#3949AB}
+.small{font-size:11px;color:#5A6066}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.tiles div{border:1px solid #DADDE0;border-radius:6px;padding:8px;text-align:center;font-size:11px}
+.tiles div.on{border:2px solid #3949AB;padding:7px}
+.tiles strong{display:block;font:300 18px "Fraunces",serif;letter-spacing:-.04em}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:10px}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:.92rem;margin:0}
+.facts dt{color:var(--muted)}.facts dd{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+<main>
+<header style="display:grid;gap:14px">
+  <span class="eyebrow">Milestone 8 · F071 Type and detail styles · design sketch</span>
+  <h1>The small details that make a page feel expensive</h1>
+  <p class="lede">After fonts, the next layer: light display headings with tight tracking, small labels above headings, more button styles, and cards that feel like objects. The question is where you set them.</p>
+</header>
+
+<section aria-labelledby="ba">
+  <span class="eyebrow">What F071 adds, same words and fonts</span>
+  <h2 id="ba">Before and after</h2>
+  <div class="ba">
+    <figure><div class="site before" aria-hidden="true"><h4>Rooms that stay calm for decades</h4><p>Houses, studios and public rooms, from first sketch to last fitting.</p><div class="btns"><span class="b1">See the work</span><span class="b2">Contact</span></div></div><figcaption>Today: bold heading, two button styles</figcaption></figure>
+    <figure><div class="site after" aria-hidden="true"><span class="chip"><i></i>Architecture studio</span><h4>Rooms that stay calm for decades</h4><p>Houses, studios and public rooms, from first sketch to last fitting.</p><div class="btns"><span class="pill">See the work</span><span class="ghost">Our process</span><span class="arrow">Contact →</span></div>
+      <div class="cards"><div class="tile"><span class="monolabel">01 · Houses</span><b>Private homes</b>Quiet rooms built around how you live.</div><div class="cover"><b>Harbourside Library</b>2024 · Public</div></div></div><figcaption>F071: display weight 300, tracking −0.05 em, chip label, three button styles, tile and photo cards</figcaption></figure>
+  </div>
+</section>
+
+<section aria-labelledby="dirs">
+  <span class="eyebrow">Where you set it</span>
+  <h2 id="dirs">Three directions</h2>
+
+  <article class="dir rec">
+    <div style="display:grid;gap:10px">
+      <div class="panelui" aria-label="Direction A drawn: Site settings, Type and details">
+        <h4>Site settings → Typography</h4>
+        <div class="row"><span>Display headings</span><div class="tiles"><div><strong>Aa</strong>Light</div><div class="on"><strong style="font-weight:300">Aa</strong>Thin, tight</div><div><strong style="font-weight:700;letter-spacing:-.02em">Aa</strong>Bold</div></div></div>
+        <div class="row"><span>Small labels</span><div class="seg"><b>Plain</b><b>Caps</b><b>Mono</b><b class="on">Chip</b></div></div>
+        <div class="row"><span>Card shadow</span><div class="seg"><b>None</b><b class="on">Soft</b><b>Lifted</b></div></div>
+      </div>
+      <div class="panelui" aria-label="Direction A drawn: the Heading block's fields">
+        <h4>Heading block</h4>
+        <div class="row"><span>Small label above (optional)</span><div class="inp">Architecture studio</div></div>
+        <div class="row"><span>Size</span><div class="seg"><b>Normal</b><b class="on">Display</b></div></div>
+        <p class="small">Button block → Style: Primary · Outline · Soft · Text with arrow. Card block → Layout: Stacked · Photo fills the card.</p>
+      </div>
+    </div>
+    <div class="meta"><span class="tag">Recommended</span><h3>A · Set the look once, pick per block</h3>
+      <ul><li>Site settings decides how Display headings, labels, buttons and cards look everywhere</li><li>Each block only picks which one: "Display" or "Normal", a label or none, which button style</li><li>Templates and the Style library (F072) set these values too</li></ul>
+      <p class="why"><b>Why:</b> one change restyles the whole site, so pages stay consistent. A visitor reads consistency as quality, and inconsistent sizes and weights are the most common sign of a home-made site. YOOtheme, Webflow classes and Figma text styles all use this model: shared styles plus a pick per element. Each block has two or three new choices, not ten.</p></div>
+  </article>
+
+  <article class="dir">
+    <div class="panelui" aria-label="Direction B drawn: per-heading sliders">
+      <h4>Heading block</h4>
+      <div class="row"><span>Size · 46 px</span><div class="slider"><i style="left:62%"></i></div></div>
+      <div class="row"><span>Weight · 300</span><div class="slider"><i style="left:20%"></i></div></div>
+      <div class="row"><span>Letter spacing · −0.05 em</span><div class="slider"><i style="left:10%"></i></div></div>
+      <div class="row"><span>Label above</span><div class="inp">Architecture studio</div></div>
+    </div>
+    <div class="meta"><h3>B · Free controls on every block</h3>
+      <ul><li>Full control, Webflow-style</li><li>No setup in Site settings</li></ul>
+      <p class="why">Every heading drifts a little: 44 px here, 47 px there. Restyling the site means editing every page, and templates can't change it cleanly.</p></div>
+  </article>
+
+  <article class="dir">
+    <div class="panelui" aria-label="Direction C drawn: style picked only through the Style library">
+      <h4>Site settings → Style</h4>
+      <div class="tiles"><div class="on"><strong>Aa</strong>Studio</div><div><strong style="font-family:Geist;font-weight:400">Aa</strong>Agency</div><div><strong style="font-weight:700">Aa</strong>Bistro</div></div>
+      <p class="small">Display, labels, buttons and cards come with the chosen style. No separate controls.</p>
+    </div>
+    <div class="meta"><h3>C · Only through complete styles</h3>
+      <ul><li>Simplest screen</li><li>Always consistent</li></ul>
+      <p class="why">You can't keep a style but want a bolder heading. This would turn F072 into the only way in, and the screen would feel locked.</p></div>
+  </article>
+</section>
+
+<section class="panel" aria-labelledby="details">
+  <h2 id="details">What A adds, in detail</h2>
+  <dl class="facts">
+    <dt>Headings</dt><dd>Weights 300 and 400 join 500–800. Tracking adds Tighter (−0.04 em) and Tightest (−0.05 em). A Heading can be Display size, which is a step above H1 that scales with the screen. Display has its own weight and tracking setting.</dd>
+    <dt>Labels</dt><dd>Optional "Small label above" on Headings, styled site-wide as Plain, Caps, Mono (Geist Mono, added only when used) or Chip. It's published inside the heading group, so screen readers read it with the heading.</dd>
+    <dt>Buttons</dt><dd>Primary and Outline as today, plus Soft (a tinted fill) and Text with arrow. The arrow is decorative and hidden from screen readers.</dd>
+    <dt>Cards</dt><dd>Card styles add Tile (a filled panel). A card can be "Photo fills the card", with its words on a dark scrim. The site-wide Card shadow is None, Soft or Lifted.</dd>
+    <dt>Old sites</dt><dd>Look exactly the same until you change something. The new settings are optional and default to today's look.</dd>
+    <dt>Accessibility</dt><dd>Labels are never below 12 px and keep 4.5:1 contrast, checked against your colours. Thin weights are for Display and H1–H2 only. Body text never goes below 400. Words on photo cards get a scrim, and the contrast check counts it.</dd>
+  </dl>
+</section>
+</main>

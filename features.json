@@ -756,7 +756,7 @@
       "description": "Design snapshot first. Display and headline styles (light to heavy weights, tracking down to -0.05em, larger display sizes), eyebrow and mono label styles, tag chips, more button styles (outline, ghost, text with arrow) and card styles (tile, image cover), radius and shadow scales. Contrast and minimum label size checked. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F070"],
       "done_check": "npm test -- type-styles && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

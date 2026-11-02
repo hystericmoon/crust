@@ -252,6 +252,39 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-02 — F071 Type and detail styles (Claude, reversible)
+
+- Snapshot https://claude.ai/artifact/H3pscypcAov3mFHwoMHAHS
+  (`design/f071-type-styles-v1.html`): A set the look once, pick per
+  block (built); B free sliders per block; C only via complete styles.
+  A keeps pages consistent and matches how YOOtheme, Webflow classes and
+  Figma text styles work.
+- **Format (optional fields, no migration):** `tokens.style` gains
+  `displayWeight`, `displayTracking` (unset: follow the heading weight
+  and spacing) and `labelStyle` (`plain|caps|mono|chip`, default caps);
+  `headingWeight` adds 300/400, trackings add `tighter` (−0.04) and
+  `tightest` (−0.05). Heading props gain `size` (`normal|display`) and
+  `eyebrow`; Button `variant` adds `soft` and `arrow`; Card adds
+  `layout` (`stacked|cover`). Old pages render byte-for-byte the same.
+- Overlap with what existed: a site-wide "soft" button look already
+  existed per section style (F028), and Flat cards are already tiles, so
+  F071 adds per-button Soft/Arrow and the photo card, and no separate
+  tile or shadow scale (Card style Shadow stays).
+- The label is a `<p class="cr-eyebrow">` inside `<hgroup>` with the
+  heading (HTML's pattern for a heading's subtitle/kicker; not its own
+  heading, so heading order is unaffected). Colour is the heading's own
+  (no new contrast pair); 12px minimum. Mono/Chip use bundled Geist Mono
+  (`--cr-font-label`, files copied only when used).
+- H3/H4 use `max(500, heading weight)` so Light/Regular only thin the big
+  headings. The arrow is `aria-hidden`; its nudge stops under Reduce
+  motion. Photo-card words sit on a 0→72% black gradient (white text
+  passes on any photo at the bottom where the words are).
+- Bug caught by the screenshot: the label rules (in the tokens CSS)
+  came before the base stylesheet and lost; they're now
+  `.cr-hgroup .cr-eyebrow`.
+- The sample home page uses Display + Light + Tightest and a Chip label;
+  Lighthouse 100, no serious axe issues.
+
 ## 2026-11-02 — F070 Fonts (Claude, reversible)
 
 - Design snapshot https://claude.ai/artifact/Gjyo7UxqKfgcUBc3MxaSCn
