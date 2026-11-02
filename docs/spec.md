@@ -272,7 +272,12 @@ Pages use a photo by its address, `/media/<file>`, in any image field
 (web addresses still work). `alt` is the library's description, copied
 into a block's alt field when picked. Publishing copies the photos into
 the site with resized copies (`<name>-480w.jpg`, `-960w`, `-1440w`) for
-`srcset`; those are never stored in `content/`.
+`srcset`; those are never stored in `content/`. F081: each photo and
+resized copy also gets AVIF and WebP copies (`harbour.jpg.avif`,
+`harbour-480w.jpg.webp`; a WebP photo only AVIF), which pages offer first
+in a `<picture>`. A media.json item may carry `focus` `{ "x": 0–100,
+"y": 0–100 }` (optional; missing means the middle): blocks that crop the
+photo keep that point in view. Template photos may carry it too.
 
 A page may carry `seo` (optional, added with F036): `{ "title": "…",
 "image": "/media/…", "imageAlt": "…", "noindex": true }`, each optional.

@@ -257,6 +257,76 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-03 — F081 Images: WebP, AVIF, focal point (Claude, reversible)
+
+Snapshot https://claude.ai/artifact/Qp4rkNmxNn3AKWKxDTr9hB
+(`design/f081-images-v1.html`). Only the focal point picker had a
+visible choice; the owner was away, so the recommendation was built: A.
+
+- **Copies, not conversion.** crust-publish writes `<file>.avif` and
+  `<file>.webp` beside every library photo and every resized copy
+  (`harbour.jpg.avif`, `harbour-480w.jpg.webp`); a WebP photo gets only
+  AVIF. The original's extension stays in the name so `harbour.jpg` and
+  an uploaded `harbour.webp` never share a copy. Pages list them in a
+  `<picture>` (AVIF, then WebP, then the original `<img>`, which keeps
+  srcset, size, alt and loading). Nothing is stored in `content/`.
+- **Encoders.** AVIF: `ravif`/`rav1e` (BSD-3/BSD-2), pure Rust, built
+  without assembly so no NASM is needed on Mac/Windows. WebP: `webp`
+  (MIT/Apache) over libwebp (BSD-3), built from source by libwebp-sys
+  (needs a C compiler, which every build already has). The `image`
+  crate's own WebP writer is lossless only, which makes photos larger
+  than the JPEG. Settings: AVIF quality 60 at speed 10, WebP 78. On
+  Corner's eleven photos AVIF weighs 41% of the JPEGs, WebP 68%; slower
+  AVIF speeds saved a few percent for 2–3× the time.
+- **Speed.** Rust builds generic code inside the crate that uses it, so
+  rav1e's encoder is compiled inside crust-publish; `cargo run` (a dev
+  build) made a photo take ~5 s. `[profile.dev.package.crust-publish]
+  opt-level = 2` brings it to ~0.4 s. Photos are encoded on a few
+  threads at once.
+- **Cache.** `--photo-cache <dir>` (crust-publish) keeps each photo's
+  copies under `<file>-<fingerprint>/` (FNV-1a of its bytes and a
+  settings version, `COPIES_VERSION`); an unchanged photo is copied from
+  there, changed or deleted photos' entries are removed. The publish
+  workflow keeps `.crust-cache/photos` with `actions/cache` (keyed on
+  `content/media/**`, restoring the last one); the desktop app keeps it
+  in the site's `.crust/photo-cache`. A cache that can't be written only
+  makes the next publish slower.
+- **`<picture>` doesn't change layouts.** It's `display: contents`
+  (`.cr-picture`), so the `<img>` lays out as before; the three CSS rules
+  that used `>` to reach a section photo also match through it. Checked
+  in Chromium on the published Corner template at desktop and phone
+  width: every photo loads its AVIF copy, and every photo's box is
+  identical with and without the `<picture>`.
+- **Focal point: A, press on the photo.** In the media library's photo
+  details: press (or drag) on the photo, arrow keys move 5% (Shift 20%),
+  "Centre" resets; three small crops (wide, square, tall) show what
+  blocks will keep. Direct manipulation over B's nine positions (too
+  coarse: a subject between two positions is clipped) and C's sliders
+  (indirect: two controls to steer one point). Keyboard: one tab stop,
+  `role="application"` so screen readers pass the arrows through, the
+  label reads the position as words and a polite live region repeats it
+  after each move. No dragging is needed (a single press works, WCAG
+  2.5.7). The dot is a white ring inside a dark ring, visible on light
+  and dark photos.
+- **Saving.** "Save changes" (or "Use this photo") saves alt text and
+  focal point in one commit (new `details` action on `/api/media`). A
+  focal point can be saved before the photo has alt text. The middle is
+  stored as no focus at all.
+- **Format (contract).** `content/media.json` items may carry `focus`
+  `{ "x": 0–100, "y": 0–100 }` (optional; missing means the middle, as
+  before), so no migration is needed. Template files' photos may carry
+  it too, and it comes along when a template is applied.
+- **Where it's used.** Every library photo shown through `Img`, i.e. all
+  of them: cards, galleries, sliders, slideshows, section and overlay
+  backgrounds, post covers and thumbnails, quote portraits, video and
+  map covers. Uncropped photos ignore it. A Section's own Focus (F073)
+  wins when it isn't the middle. The builder's canvas gets the focal
+  points too (`MediaFocusProvider`, which loads the library once), so
+  the canvas crops like the site.
+- **check:builder** has a "media library, focal point" screen (the
+  library is faked with Playwright routes). Screenshot
+  `design/f081-focal-point-picker.png`.
+
 ## 2026-11-03 — F080 Layout library v2 (Claude, reversible)
 
 Snapshot https://claude.ai/artifact/VpbNu8K34npejqHXQpiYnj

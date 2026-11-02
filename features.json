@@ -856,7 +856,7 @@
       "description": "Publishing makes WebP and AVIF copies (free Rust libraries) next to JPG/PNG; focal point picked in the media library and used for crops. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F034"],
       "done_check": "npm test -- images && cargo test -p crust-publish && npm run check:perf",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

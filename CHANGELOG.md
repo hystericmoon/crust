@@ -4,6 +4,18 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Lighter photos and a focal point (F081).** Publishing now makes
+  **AVIF and WebP** copies of every photo in your Media library (and of
+  each smaller copy for phones). Browsers that can read them get those:
+  about 40% of the JPEG's size for AVIF, so pages load faster, with
+  nothing to set. Unchanged photos aren't made again on the next
+  publish. In the media library, each photo now has a **Focal point**:
+  press the part of the photo that must stay in view (or use the arrow
+  keys), and the three small previews show what a wide, square and tall
+  block will keep. Cards, galleries, sliders, section backgrounds and
+  every other block that crops the photo keep that part in view, in the
+  builder and on the site.
+
 - **Layout library v2 and saved styles (F080).** The layout library has
   **64 new sections** (heroes on full photos, text beside a photo, big
   statements, services as rows, project grids and sliders, figures,

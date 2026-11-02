@@ -5,7 +5,30 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-03 ~02:30 (Jakarta). **F080 Layout library v2
+Last updated: 2026-11-03 ~05:00 (Jakarta). **F081 Images: WebP, AVIF,
+focal point built, passes** (branch `ccr-d50f7e80-weuq18`, stacked on
+F079/F080 in PR #65; done_check exit 0; DECISIONS "F081"). Snapshot
+https://claude.ai/artifact/Qp4rkNmxNn3AKWKxDTr9hB (A built). How it
+fits: crust-publish `media.rs` (`modern_formats`, `modern_file`,
+`publish_media_cached` with `--photo-cache`, FNV fingerprint +
+`COPIES_VERSION`, threads), `validate.rs` reads `<source srcset>`;
+Cargo.toml `[profile.dev.package.crust-publish] opt-level = 2` (AVIF is
+~12× slower without it); publish.yml caches `.crust-cache/photos`;
+desktop `publish.rs` uses `.crust/photo-cache`, `.avif` MIME in
+preview.rs/hosts.rs. Blocks: `media.ts` (`focus` on MediaItem,
+`mediaFocus`, `modernFormats`, `modernFile`), `media-img.tsx` (`Img`
+renders `<picture class="cr-picture">`, `MediaFocusContext`),
+`.cr-picture { display: contents }` + three `>` selectors in
+styles.css/motion.ts. Admin: `media/FocusPicker.tsx` (`FocusPicker`,
+`MediaFocusProvider` in App.tsx `BuilderCanvas`), MediaPicker "Save
+changes", server `/api/media` action `details`; template photos carry
+`focus`. check:builder screen "media library, focal point" (fakes
+/api/media with page.route). Needs `reviewed: true`. **Next: F082
+Post, blog and 404 designs** (design snapshot first; done_check `npm
+test -- page-designs && npm run check:a11y`), stacked on this branch
+or from main once #65 is merged.
+
+Earlier (~02:30): **F080 Layout library v2
 built, passes** (branch `ccr-d50f7e80-weuq18`, stacked on F079: PR #65
 is still open and now holds F079 and F080; done_check exit 0;
 DECISIONS "F080"). Started at 01:15 by a scheduled message the owner
