@@ -5,27 +5,29 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 ~16:30 (Jakarta). **F075 Motion built, passes**
-(branch `f075-motion` from main, PR open; DECISIONS "F075"). Snapshot
-https://claude.ai/artifact/MnHuVJQob5bY9H1qnd3jDe (A built; changed so
-words never fade). How it fits: `packages/blocks/src/motion.ts`
-(`motionCss`, levels, `entrances`, `sectionMotionClasses`,
-`marqueeRepeat`), added to published CSS in `render.tsx`
-`renderDocument` only when `tokens.style.motion` is on (the builder
-canvas never gets it); Section `entrance`/`parallax` in `config.tsx`;
-LogoRow `moving` in `more-blocks.tsx` (marquee with a CSS-only pause
-checkbox; base rule `.cr-marquee [hidden]` in styles.css); builder
-fields in `sections-v2-fields.tsx` (`EntranceField`, `ParallaxField`,
-`MovingField`, `MotionOffNote`); Site settings group "Motion"
-(`MotionOptions` in `StyleGroups.tsx`). check:layouts writes
-`motion-<look>` pages (`motionSamples`). F070–F074 are merged to main
-and still need `reviewed: true`.
-**Next: F076 Header and footer v2** (design snapshot first), on a new
-branch from main (or stacked on `f075-motion` if F075's PR isn't
-merged yet). The owner starts sessions by hand: the session chain is at
-its limit, so this session can't start the next one or set reminders.
-A fresh session gets the prompt "Read HANDOVER.md on branch main and
-continue" (if F075 isn't merged, use branch `f075-motion`).
+Last updated: 2026-11-02 ~17:15 (Jakarta). **F075 Motion merged**
+(PR #61, owner: "Merge it"). **F076 Header and footer v2 built, passes**
+(branch `f076-header-footer` from main, PR open; DECISIONS "F076").
+Snapshot https://claude.ai/artifact/MQpL3LHaxEQW9r3KsWEygz (A built).
+How it fits: model in `packages/blocks/src/chrome-model.ts`
+(`headerLayouts`, `layoutOf`, `TopBar`/`defaultTopBar`, `contactHref`,
+`footerStarter`, menu `children` checks), views in `chrome.tsx`
+(`SiteHeaderView` layouts/split/panel, `MenuList` dropdowns,
+`TopBarView`, `DROPDOWN_SCRIPT`, `hasDropdowns`), CSS "Header and
+footer v2 (F076)" in styles.css (`--cr-header-room`), `heroStyle` in
+sections-v2.ts; render.tsx `footerHtml` (footer from a linked section;
+throws when missing, simple footer when no sections are given),
+`overHero`, header room, dropdown script. Admin: `settings/MenuEditor.tsx`
+(indent/outdent/move/remove), `ChromeGroups.tsx` (`LayoutPicker`,
+`TopBarFields`, `FooterKind`), Site settings wrapped in
+`LinkedSectionsProvider`, Preview passes linked sections, canvas shows a
+blocks footer (`chrome-canvas.tsx`). check:layouts writes
+`header-v2-<layout>` pages. F070–F076 need `reviewed: true`. F075 (motion) is described in DECISIONS "F075" and spec.md (`motion.ts`, `motionCss` added in `renderDocument`).
+**Next: F077 Icons, Divider, Social** (design snapshot first), on a new
+branch from main once F076's PR is merged (else stack on
+`f076-header-footer`). The owner starts sessions by hand (chain limit):
+"Read HANDOVER.md on branch main and continue" (or branch
+`f076-header-footer` if its PR isn't merged).
 
 Earlier (2026-11-02 13:10, Jakarta): **F070–F074 merged to main** (owner: "Merge em all"; PRs #54–#59, merge commits, in order). Start F075 on a new branch from main. PRs #53 (F062) and #45 (F053)
 **merged to main** (owner had said to merge). Then the owner said our

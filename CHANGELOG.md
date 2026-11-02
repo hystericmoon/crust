@@ -4,6 +4,20 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Header and footer v2 (F076).** Site settings → Header & menu now
+  has six **layouts** (Classic, Centred menu, Logo on top, Split, Left
+  together, Menu button only), **dropdown menus** ("Put under above"
+  makes one, "Take out" undoes it; opened by click, tap or Enter,
+  closed with Escape), a **top bar** above the header (a short message,
+  a link, a phone number or email), and **Clear on a hero photo**: the
+  header sits on any page that starts with a photo or video section.
+  On phones, menus with a new layout or a dropdown open as a **panel
+  from the side** (Close, or tap outside). Site settings → Footer can
+  now be **built from blocks**: a linked section you edit in the
+  builder ("Make one from my simple footer" starts it from what you
+  have). Existing headers and footers look the same until you use
+  these.
+
 - **Motion (F075).** Site settings has a new **Motion** group: Off
   (as before), Subtle or Lively. With motion on, sections ease into
   place as visitors scroll to them, rows of columns, cards and photos

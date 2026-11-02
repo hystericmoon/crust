@@ -1,0 +1,246 @@
+<title>F076 Header and Footer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,400&display=swap">
+<style>
+/* Layout: report column; six header layouts as small published-page tops; phone menu, dropdown, top bar and footer drawn as UI; the settings drawn three ways */
+:root{--bg:#F2F3F1;--panel:#FFFFFF;--fg:#17191B;--muted:#5C6267;--line:#D9DCD8;--accent:#3949AB;--soft:#E8EAF6;
+--ui:"Schibsted Grotesk",ui-sans-serif,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;--serif:"Fraunces",Georgia,serif;
+/* the sample site (Atelier Stone) — fixed, it is a picture of a published page */
+--s-bg:#F4F1EC;--s-surface:#E9E4DC;--s-text:#1E2420;--s-muted:#5A615C;--s-primary:#2F4A3A;--s-on:#FFFFFF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--ui);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1160px;margin:0 auto;padding-block:48px 96px;display:grid;gap:56px}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.015em}h1{font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.05;font-weight:600}h2{font-size:1.5rem;font-weight:600}h3{font-size:1.02rem;font-weight:600}
+p{margin:0;max-width:70ch}.eyebrow{font:500 .75rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.lede{font-size:1.1rem;color:var(--muted)}
+section{display:grid;gap:18px}
+.why{color:var(--muted);font-size:.93rem}
+.tag{font:600 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--accent);color:var(--panel);padding:6px 10px;border-radius:4px}
+
+/* where-it-lands grid */
+.lands{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.lands{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.lands{grid-template-columns:1fr}}
+.land{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:10px;align-content:start;min-width:0}
+.land p{font-size:.88rem;color:var(--muted)}
+.page{border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,.08);background:var(--s-bg);color:var(--s-text);font-family:var(--ui);position:relative}
+.page .bar{height:18px;display:flex;align-items:center;gap:8px;padding:0 10px;font-size:7px;letter-spacing:.06em;text-transform:uppercase;background:var(--s-bg);border-bottom:1px solid rgba(0,0,0,.06)}
+.page .bar b{font-weight:600;margin-right:auto}
+.blk{padding:12px 0;position:relative}
+.ct{margin:0 auto;width:72%;display:grid;gap:5px}
+.ln{height:5px;border-radius:2px;background:currentColor;opacity:.75}.ln.s{opacity:.35}
+.hd{font:300 15px/1 var(--serif);color:inherit}
+.ph{background:linear-gradient(160deg,#9AA59B,#56645A 55%,#2C362F);}
+.guide{position:absolute;top:0;bottom:0;border-left:1px dashed rgba(57,73,171,.6)}
+.wrow{display:grid;gap:4px}
+.wrow .w{height:16px;background:var(--s-surface);border-radius:2px;margin:0 auto;display:grid;place-items:center;font:500 7px var(--mono);color:var(--s-muted)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center}
+.vid{position:relative;height:96px;color:#fff;display:grid;align-content:end;padding:10px}
+.pause{position:absolute;right:8px;bottom:8px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);display:grid;place-items:center;font-size:8px}
+.badge{font:500 8px var(--mono);background:rgba(0,0,0,.55);color:#fff;padding:2px 5px;border-radius:3px;position:absolute;left:8px;top:8px}
+.crop{display:flex;gap:8px}.crop .fr{position:relative;flex:1;height:84px;border-radius:4px;overflow:hidden;background:#C9CFC6}
+.crop .subject{position:absolute;width:18px;height:30px;border-radius:9px 9px 3px 3px;background:#2F4A3A}
+.over-card{background:var(--s-bg);border-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,.18);padding:8px;display:grid;gap:4px}
+
+/* directions */
+.dir{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:18px}
+.dir.rec{border:2px solid var(--accent)}
+.dirhead{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.cols{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+.pnl{border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:12px;font-size:.84rem;background:var(--panel)}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line)}.tabs span{padding:6px 10px;font-size:.8rem;color:var(--muted)}.tabs span.on{color:var(--fg);font-weight:600;box-shadow:inset 0 -2px var(--accent)}
+.grp{display:grid;gap:8px}.grp>h4{margin:0;font:500 .7rem/1 var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg span{padding:7px 4px;text-align:center;font-size:.76rem;border-left:1px solid var(--line)}.seg span:first-child{border-left:0}.seg span.on{background:var(--soft);color:var(--accent);font-weight:600}
+.picto{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.picto div{border:1px solid var(--line);border-radius:6px;padding:6px 4px 4px;display:grid;gap:4px;justify-items:center;font-size:.64rem;color:var(--muted)}
+.picto div.on{border:2px solid var(--accent);padding:5px 3px 3px;color:var(--fg)}
+.picto i{display:block;height:16px;width:100%;position:relative;border-radius:2px;background:color-mix(in srgb,var(--line) 50%,transparent)}
+.picto i::after{content:"";position:absolute;top:4px;bottom:4px;background:var(--muted);border-radius:1px;left:var(--l);right:var(--r)}
+.field{display:grid;gap:4px}.field label,.field span.l{font-size:.76rem;color:var(--muted)}
+.input{border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:.78rem var(--mono);color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.thumb{position:relative;height:90px;border-radius:6px;overflow:hidden}
+.dot{position:absolute;width:16px;height:16px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.4);transform:translate(-50%,-50%)}
+.rng{display:grid;grid-template-columns:48px 1fr 34px;gap:6px;align-items:center;font-size:.74rem;color:var(--muted)}
+.rng i{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--accent) var(--v),var(--line) var(--v))}
+.tog{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sw{width:30px;height:18px;border-radius:9px;background:var(--line);position:relative;flex:none}.sw.on{background:var(--accent)}.sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--panel)}.sw.on::after{left:14px}
+.note{font-size:.74rem;color:var(--muted)}
+.ok{color:#2E7D4F}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ok{color:#7FCB9C}}:root[data-theme="dark"] .ok{color:#7FCB9C}
+.recipes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.recipes div{border:1px solid var(--line);border-radius:8px;padding:6px;display:grid;gap:4px;font-size:.72rem}
+.recipes i{display:block;height:34px;border-radius:4px}
+.canvas{border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative}
+.qbar{position:absolute;top:10px;left:50%;transform:translateX(-50%);display:flex;gap:2px;background:var(--fg);color:var(--bg);border-radius:8px;padding:3px;font-size:.72rem;white-space:nowrap;max-width:calc(100% - 16px);overflow:hidden}
+.qbar span{padding:5px 8px;border-radius:5px}.qbar span.on{background:var(--accent);color:var(--panel)}
+.pop{position:absolute;top:48px;left:50%;transform:translateX(-50%);width:min(240px,90%);background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:10px;display:grid;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:.78rem}
+ul.pros{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.92rem}
+ul.pros li::marker{color:var(--muted)}
+.panel2{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:12px}
+.facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 16px;font-size:.92rem;margin:0}.facts dt{color:var(--muted)}.facts dd{margin:0}
+code{font:.85em var(--mono);background:color-mix(in srgb,var(--line) 45%,transparent);padding:1px 4px;border-radius:3px}
+</style>
+<style>
+.hd6{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.hd6{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.hd6{grid-template-columns:1fr}}
+.hb{display:flex;align-items:center;gap:8px;padding:10px 12px;font:500 8px var(--ui);color:var(--s-text);border-bottom:1px solid rgba(0,0,0,.08);background:var(--s-bg);min-height:40px}
+.hb .lg{font:400 12px var(--serif);white-space:nowrap}
+.hb .mn{display:flex;gap:8px;white-space:nowrap}
+.hb .cta{background:var(--s-primary);color:#fff;padding:4px 8px;border-radius:3px;font-weight:600;white-space:nowrap}
+.hb .burger{width:14px;height:9px;border-block:1.5px solid currentColor;position:relative}.hb .burger::after{content:"";position:absolute;left:0;right:0;top:2.5px;border-top:1.5px solid currentColor}
+.hb.col{flex-direction:column;gap:6px}
+.sp{flex:1}
+.hero{height:54px;background:linear-gradient(160deg,#9AA59B,#56645A 55%,#2C362F)}
+.page .hb.over{position:absolute;inset:0 0 auto;background:transparent;color:#fff;border-color:rgba(255,255,255,.25)}
+.page .hb.over .cta{background:#fff;color:#1E2420}
+.topbar{display:flex;justify-content:space-between;gap:8px;padding:4px 12px;font:500 7px var(--mono);background:var(--s-primary);color:#fff;letter-spacing:.04em}
+.dd{position:absolute;top:38px;left:96px;background:var(--s-bg);border:1px solid rgba(0,0,0,.12);border-radius:4px;box-shadow:0 6px 18px rgba(0,0,0,.14);padding:6px;display:grid;gap:5px;font:500 8px var(--ui);color:var(--s-text);min-width:92px}
+.dd b{font-weight:500}
+.phonef{width:150px;height:240px;border:1px solid rgba(0,0,0,.15);border-radius:14px;overflow:hidden;position:relative;background:var(--s-bg);flex:none}
+.sheet{position:absolute;inset:0 0 0 30%;background:var(--s-text);color:var(--s-bg);padding:12px;display:grid;align-content:start;gap:9px;font:500 10px var(--ui);box-shadow:-8px 0 20px rgba(0,0,0,.25)}
+.sheet .x{justify-self:end;font-size:12px}
+.sheet .sub{padding-left:8px;opacity:.85;font-size:9px;display:grid;gap:6px}
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.35)}
+.foot{background:#1E2420;color:#E9E4DC;padding:12px;display:grid;gap:8px;font:500 7px var(--ui)}
+.foot .fr{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px}
+.foot .big{font:300 16px var(--serif)}
+.foot .blkout{outline:1px dashed rgba(233,228,220,.5);outline-offset:3px;border-radius:2px}
+.flexrow{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.lay{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.lay div{border:1px solid var(--line);border-radius:6px;padding:6px;display:grid;gap:4px;font-size:.66rem;color:var(--muted)}
+.lay div.on{border:2px solid var(--accent);padding:5px;color:var(--fg)}
+.lay i{display:flex;align-items:center;gap:3px;height:16px;padding:0 4px;border-radius:2px;background:color-mix(in srgb,var(--line) 50%,transparent)}
+.lay i b{display:block;height:4px;border-radius:1px;background:var(--muted)}
+.mi{display:grid;gap:4px;font-size:.78rem}
+.mi div{display:flex;justify-content:space-between;border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+.mi div.ch{margin-left:18px}
+.mi span.n{color:var(--muted);font-size:.7rem}
+</style>
+<main>
+<header style="display:grid;gap:14px">
+  <span class="eyebrow">Milestone 8 · F076 Header and footer v2 · design sketch</span>
+  <h1>A header and footer that look made for the site</h1>
+  <p class="lede">Six header layouts, a header that sits clear on the hero photo, dropdown menus, a phone menu that slides in from the side, an optional top bar, and a footer you build from blocks like any section. All of it works with the keyboard and screen readers, and needs no scripts on the site.</p>
+</header>
+
+<section aria-labelledby="six">
+  <span class="eyebrow">On the published page</span>
+  <h2 id="six">Six header layouts</h2>
+  <div class="hd6">
+    <div class="land"><h3>1 · Classic</h3><div class="page"><div class="hb"><span class="lg">Atelier</span><span class="sp"></span><span class="mn"><span>Work</span><span>Studio</span><span>Journal</span></span><span class="cta">Contact</span></div></div><p>Logo left, menu and button right. Today's header; every site keeps it until you pick another.</p></div>
+    <div class="land"><h3>2 · Centred menu</h3><div class="page"><div class="hb"><span class="lg">Atelier</span><span class="sp"></span><span class="mn"><span>Work</span><span>Studio</span><span>Journal</span></span><span class="sp"></span><span class="cta">Contact</span></div></div><p>Menu in the middle, button at the end. Balanced on wide screens; common on product and studio sites.</p></div>
+    <div class="land"><h3>3 · Logo on top</h3><div class="page"><div class="hb col"><span class="lg">Atelier</span><span class="mn"><span>Work</span><span>Studio</span><span>Journal</span><span>Contact</span></span></div></div><p>Centred logo with the menu underneath. Editorial: restaurants, magazines, hotels.</p></div>
+    <div class="land"><h3>4 · Split</h3><div class="page"><div class="hb"><span class="mn"><span>Work</span><span>Studio</span></span><span class="sp"></span><span class="lg">Atelier</span><span class="sp"></span><span class="mn"><span>Journal</span><span>Contact</span></span></div></div><p>Logo in the middle, the menu split on both sides. A boutique look; works best with four to six links.</p></div>
+    <div class="land"><h3>5 · Left together</h3><div class="page"><div class="hb"><span class="lg">Atelier</span><span class="mn" style="margin-left:6px"><span>Work</span><span>Studio</span><span>Journal</span></span><span class="sp"></span><span class="cta">Contact</span></div></div><p>Menu right after the logo, button far right. App and SaaS style: the eye reads the menu straight away.</p></div>
+    <div class="land"><h3>6 · Menu button only</h3><div class="page"><div class="hb"><span class="lg">Atelier</span><span class="sp"></span><span class="cta">Contact</span><span style="display:flex;align-items:center;gap:4px">Menu <span class="burger"></span></span></div></div><p>Only a Menu button, on every screen size, opening the side panel. Portfolios and photo-led sites, where the hero should be uncluttered.</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="parts">
+  <span class="eyebrow">On the published page</span>
+  <h2 id="parts">The new parts</h2>
+  <div class="lands">
+    <div class="land"><h3>Clear on the hero</h3><div class="page"><div class="hero"></div><div class="hb over"><span class="lg">Atelier</span><span class="sp"></span><span class="mn"><span>Work</span><span>Studio</span></span><span class="cta">Contact</span></div></div><p>A site-wide switch: on every page that starts with a photo, video or dark section, the header sits on it in light text. Today this is set page by page (F073); that stays as the override.</p></div>
+    <div class="land"><h3>Dropdown menus</h3><div class="page" style="height:112px"><div class="hb"><span class="lg">Atelier</span><span class="sp"></span><span class="mn"><span>Work</span><span><u>Studio ▾</u></span><span>Journal</span></span></div><div class="dd" style="left:auto;right:44px"><b>About us</b><b>Team</b><b>Careers</b></div></div><p>A menu item can hold up to 8 links, one level deep. It opens on click, tap or Enter and closes with Escape. Hover alone never opens it, so nothing pops up by accident. It's the disclosure pattern the W3C recommends for site menus.</p></div>
+    <div class="land"><h3>Top bar</h3><div class="page"><div class="topbar"><span>FREE DELIVERY OVER €50</span><span>+31 20 555 0101</span></div><div class="hb"><span class="lg">Atelier</span><span class="sp"></span><span class="mn"><span>Work</span><span>Studio</span></span><span class="cta">Contact</span></div></div><p>An optional thin strip above the header: a short message with an optional link, and a phone number or email on the right. Uses a section style, so its contrast is already checked.</p></div>
+  </div>
+  <div class="flexrow" style="margin-top:6px">
+    <div class="land" style="flex:1 1 280px"><h3>Phone menu slides in</h3>
+      <div class="flexrow">
+        <div class="phonef"><div class="hb" style="min-height:34px"><span class="lg">Atelier</span><span class="sp"></span><span class="burger"></span></div><div class="scrim"></div><div class="sheet"><span class="x">✕ Close</span><span>Work</span><span>Studio ▾</span><span class="sub"><span>About us</span><span>Team</span></span><span>Journal</span><span style="background:var(--s-bg);color:var(--s-text);padding:6px 8px;border-radius:4px;justify-self:start">Contact</span></div></div>
+        <p style="flex:1 1 140px">The Menu button opens a panel from the right, over a dimmed page. Dropdowns become indented lists inside it. It closes with ✕ or Escape. Built on the native <code>&lt;details&gt;</code> element, as today, so it works without scripts. Reduce motion: it appears without sliding.</p>
+      </div></div>
+    <div class="land" style="flex:1 1 280px"><h3>Footer from blocks</h3>
+      <div class="page"><div class="foot"><span class="big blkout">Let's make something.</span><div class="fr"><span class="blkout">Studio Atelier<br>Keizersgracht 12</span><span class="blkout">Work<br>Studio<br>Journal</span><span class="blkout">Instagram<br>Newsletter</span></div><span style="opacity:.7">© 2026 Atelier</span></div></div>
+      <p>Choose "Build from blocks": the footer becomes a linked section called Footer, edited in the builder with any block (big heading, columns, a form, logos). One edit updates every page. The simple footer stays available.</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="dirs">
+  <span class="eyebrow">In the builder</span>
+  <h2 id="dirs">Three directions</h2>
+
+  <div class="dir rec">
+    <div class="dirhead"><span class="tag">Recommended</span><h3>A · Pick a layout, then the menu; footer from blocks as an option</h3></div>
+    <div class="cols">
+      <div class="pnl" aria-label="Sketch of Site settings, Header and menu, direction A">
+        <div class="tabs"><span class="on">Header &amp; menu</span><span>Footer</span></div>
+        <div class="grp"><h4>Layout</h4>
+          <div class="lay">
+            <div class="on"><i><b style="width:10px"></b><span style="flex:1"></span><b style="width:14px"></b></i>Classic</div>
+            <div><i><b style="width:8px"></b><span style="flex:1"></span><b style="width:12px"></b><span style="flex:1"></span></i>Centred</div>
+            <div><i style="flex-direction:column;justify-content:center;gap:2px;height:16px"><b style="width:8px"></b><b style="width:14px"></b></i>Logo on top</div>
+            <div><i><b style="width:7px"></b><span style="flex:1"></span><b style="width:6px"></b><span style="flex:1"></span><b style="width:7px"></b></i>Split</div>
+            <div><i><b style="width:6px"></b><b style="width:12px"></b><span style="flex:1"></span></i>Left</div>
+            <div><i><b style="width:8px"></b><span style="flex:1"></span><b style="width:5px"></b></i>Button only</div>
+          </div>
+        </div>
+        <div class="grp"><h4>Menu</h4>
+          <div class="mi"><div><span>Work</span><span class="n">/work</span></div><div><span>Studio</span><span class="n">3 links ▾</span></div><div class="ch"><span>Team</span><span class="n">/team</span></div><div><span>Journal</span><span class="n">/blog</span></div></div>
+          <p class="note">Move up / down, "Put under the item above" and "Take out" make a dropdown. No dragging needed.</p>
+        </div>
+        <div class="grp"><h4>More</h4>
+          <div class="tog"><span>Clear on a hero photo</span><span class="sw on" aria-hidden="true"></span></div>
+          <div class="tog"><span>Top bar</span><span class="sw" aria-hidden="true"></span></div>
+          <div class="tog"><span>Stays at the top (sticky)</span><span class="sw" aria-hidden="true"></span></div>
+        </div>
+      </div>
+      <div style="display:grid;gap:12px">
+        <ul class="pros">
+          <li><b>Layout pictures first.</b> The biggest visual decision is one click, made by recognising a picture rather than combining alignment settings (recognition over recall).</li>
+          <li><b>The menu stays a list</b>, with the same Move up / down buttons as today. Nesting is one more button pair, so dropdowns work by keyboard in the builder too. Limited to one level: deeper menus test badly on phones (NN/g on mega-menus and mobile navigation).</li>
+          <li><b>Footer from blocks reuses linked sections (F043)</b>, which you already know. Its contrast, headings and links get the same checks as any page. The simple footer stays for quick sites.</li>
+          <li><b>Header stays structured, not free-form.</b> Then the skip link, landmarks, sticky offset, phone menu and focus order are guaranteed on every site.</li>
+        </ul>
+        <dl class="facts"><dt>Saved as</dt><dd><code>header.layout</code>, <code>menu[].children</code>, <code>header.overHero</code>, <code>header.topBar</code>; <code>footer.kind: "blocks"</code> + <code>footer.section</code></dd><dt>Work</dt><dd>Large (the milestone's biggest piece after the layout library)</dd></dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="dir">
+    <div class="dirhead"><h3>B · Header and footer both built from blocks</h3></div>
+    <div class="cols">
+      <div class="pnl" aria-label="Sketch of a header being edited on the canvas with blocks">
+        <div class="tabs"><span class="on">Header (linked section)</span></div>
+        <div class="page"><div class="hb" style="outline:2px solid var(--accent);outline-offset:-2px"><span class="lg" style="outline:1px dashed var(--accent)">Logo block</span><span class="sp"></span><span class="mn" style="outline:1px dashed var(--accent)"><span>Menu block</span></span><span class="cta">Button</span></div></div>
+        <p class="note">New blocks: Logo, Menu, Search link. You arrange them in Columns.</p>
+      </div>
+      <ul class="pros">
+        <li><b>Total freedom:</b> any arrangement, two rows, icons, a phone number in the header. This is how YOOtheme's builder header works.</li>
+        <li><b>Easy to break:</b> a header without a menu, with the menu hidden on phones, or with two h1s. Crust would need many new checks to keep it accessible.</li>
+        <li>The phone menu and sticky behaviour have to work around whatever you build, so they get less reliable. Work: very large.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="dir">
+    <div class="dirhead"><h3>C · Finished headers to pick from</h3></div>
+    <div class="cols">
+      <div class="pnl" aria-label="Sketch of a gallery of finished headers">
+        <div class="recipes"><div><i style="background:#F4F1EC;border:1px solid var(--line)"></i>Studio</div><div><i style="background:#2F4A3A"></i>Boutique, with top bar</div><div><i style="background:linear-gradient(160deg,#9AA59B,#2C362F)"></i>Gallery, clear on hero</div></div>
+        <p class="note">Each preset sets layout, top bar, style and phone menu together.</p>
+      </div>
+      <ul class="pros">
+        <li><b>Fastest to a good result:</b> one click.</li>
+        <li><b>Combinations get stuck:</b> "Boutique, but without the top bar" needs the controls from A anyway.</li>
+        <li>Could sit on top of A later, as the style library does for type and colour. Work: medium, plus A's work for the parts it needs.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="panel2" aria-labelledby="a11y">
+  <h2 id="a11y">Accessibility, built in</h2>
+  <dl class="facts">
+    <dt>Landmarks</dt><dd>One "Main" navigation, a banner and a contentinfo landmark. Footer link groups keep their headings.</dd>
+    <dt>Dropdowns</dt><dd>A real button with <code>aria-expanded</code> (native <code>&lt;details&gt;</code>). The parent's own page, if it has one, is the first link inside. Escape closes it and returns focus to the button.</dd>
+    <dt>Phone menu</dt><dd>Opens from a 44 px Menu button and closes with ✕ (44 px) or Escape. Focus moves through the panel in order. Nothing behind it moves.</dd>
+    <dt>Top bar and clear header</dt><dd>Section styles carry the colours. On a photo, the hero's own tint keeps the header text readable; on pages that don't start with one, the header stays solid.</dd>
+    <dt>Keyboard in the builder</dt><dd>Menu nesting is done with buttons, not dragging (CLAUDE.md: a keyboard way for every drag).</dd>
+    <dt>Without scripts</dt><dd>Everything above works with plain HTML and CSS. A tiny optional script only adds "Escape closes" and "click outside closes", and only on pages with a dropdown or the side panel.</dd>
+  </dl>
+</section>
+</main>

@@ -5,6 +5,18 @@ to "Log".
 
 ## Current
 
+- **F076 Header and footer v2: built, passes** (branch `f076-header-footer`,
+  from main after F075 was merged as PR #61, owner: "Merge it").
+  Snapshot https://claude.ai/artifact/MQpL3LHaxEQW9r3KsWEygz, A built.
+  **To try** on the PR's preview link: Site settings → Header & menu:
+  press the layout pictures; in the menu press "Put under above" on an
+  item to make a dropdown; tick "Clear on a hero photo" and "Show a thin
+  bar above the header"; narrow the window (or use a phone) and open
+  the menu panel. Site settings → Footer → Built from blocks → "Make
+  one from my simple footer", save, then "Edit … in the builder".
+  Screenshots `design/f076-*.png`. Needs `reviewed: true`. Next: F077
+  Icons, Divider, Social.
+
 - **F075 Motion: built, passes** (branch `f075-motion`, from main).
   Snapshot https://claude.ai/artifact/MnHuVJQob5bY9H1qnd3jDe, A built,
   with one change: words never fade (a scroll-linked fade left text

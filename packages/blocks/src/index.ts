@@ -64,6 +64,7 @@ export {
 export type { StyleOptions, TypeScale, HeadingWeight, HeadingTracking, ButtonShape, CardStyle, LinkStyle, LabelStyle } from "./style-options";
 export type { FontStack, BundledFont, FontCategory, FontFile, FontPair, FontSubset } from "./fonts";
 export { safeUrl } from "./url";
+export { HEADER_V2_CSS, needsHeaderV2Css } from "./header-v2-css";
 export {
   entranceNames,
   entrances,
@@ -87,8 +88,17 @@ export {
   validateChrome,
   SiteHeaderView,
   SiteFooterView,
+  contactHref,
+  defaultTopBar,
+  footerStarter,
+  DROPDOWN_SCRIPT,
+  hasDropdowns,
+  headerLayoutHelp,
+  headerLayoutNames,
+  headerLayouts,
+  layoutOf,
 } from "./chrome";
-export type { MenuLink, SiteHeader, SiteFooter, FooterColumn, SiteChrome, ChromeProblem } from "./chrome";
+export type { MenuLink, SiteHeader, SiteFooter, FooterColumn, SiteChrome, ChromeProblem, HeaderLayout, TopBar } from "./chrome";
 export type { Site, Page, Redirect, SavedLayout } from "./content";
 export { themePresets, matchingPreset, applyPreset } from "./presets";
 export type { ThemePreset } from "./presets";
@@ -242,6 +252,7 @@ export {
   gradientReads,
   hasBackgroundVideo,
   headerOverStyle,
+  heroStyle,
   onlyFirstHeaderOver,
   overlapNames,
   overlapSizes,

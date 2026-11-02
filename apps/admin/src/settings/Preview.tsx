@@ -3,6 +3,7 @@ import baseCss from "@crust/blocks/styles.css?raw";
 import { renderPage } from "@crust/render";
 import { useDeferredValue, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { roleForElement } from "./pick";
+import { useLinkedSections } from "../linked/store";
 
 const widths = [
   { id: "desktop", label: "Desktop", width: 1280 },
@@ -37,13 +38,21 @@ export function Preview({ site, page, open, onToggle, onPick }: PreviewProps) {
   const [paneWidth, setPaneWidth] = useState(0);
   const [contentHeight, setContentHeight] = useState(800);
 
+  // F076: linked sections, for a footer built from blocks (and pages that show one).
+  const { sections } = useLinkedSections();
   const html = useMemo(() => {
+    const linkedSections = sections ? new Map(sections.map((s) => [s.id, s])) : undefined;
     try {
-      return renderPage(deferredSite, page, baseCss);
+      return renderPage(deferredSite, page, baseCss, { linkedSections });
     } catch {
-      return null;
+      // A missing section: the simple footer stands in rather than no preview at all.
+      try {
+        return renderPage(deferredSite, page, baseCss);
+      } catch {
+        return null;
+      }
     }
-  }, [deferredSite, page]);
+  }, [deferredSite, page, sections]);
 
   useEffect(() => {
     const pane = paneRef.current;
