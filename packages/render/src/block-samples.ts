@@ -66,6 +66,35 @@ const sampleBlocks = (n: string): Content => [
     },
   },
   { type: "IconList", props: { id: `icons-${n}`, icon: "check", iconColor: "primary", items: [{ text: "Fast pages" }, { text: "Accessible" }] } },
+  // F077: icons in every look, a named one, an icon link, dividers and social links.
+  { type: "IconList", props: { id: `icons2-${n}`, icon: "map-pin", iconColor: "primary", items: [{ text: "Keizersgracht 12" }, { text: "+31 20 555 0101", icon: "phone" }] } },
+  {
+    type: "Columns",
+    props: {
+      id: `icon-cols-${n}`,
+      count: "3",
+      gap: "md",
+      column1: [{ type: "Icon", props: { id: `ic1-${n}`, icon: "truck", look: "circle", size: "md", colour: "primary", label: "", href: "", align: "left" } }],
+      column2: [{ type: "Icon", props: { id: `ic2-${n}`, icon: "leaf", look: "square", size: "lg", colour: "text", label: "Organic", href: "", align: "left" } }],
+      column3: [{ type: "Icon", props: { id: `ic3-${n}`, icon: "phone", look: "plain", size: "sm", colour: "primary", label: "Call us", href: "tel:+31205550101", align: "left" } }],
+    },
+  },
+  { type: "Card", props: { id: `icard-${n}`, background: "surface", icon: "clock", title: "Open late", titleLevel: "h3", text: "Until 22:00.", imageSrc: "", imageAlt: "", linkLabel: "", linkHref: "" } },
+  { type: "Button", props: { id: `ibtn-${n}`, label: "Book a table", href: "/book", variant: "secondary", icon: "calendar", iconAt: "before" } },
+  { type: "Divider", props: { id: `div1-${n}`, kind: "label", label: "Our menu", width: "full", space: "md", align: "center" } },
+  { type: "Divider", props: { id: `div2-${n}`, kind: "dots", label: "", width: "short", space: "sm", align: "center" } },
+  { type: "Divider", props: { id: `div3-${n}`, kind: "accent", label: "", width: "short", space: "sm", align: "left" } },
+  {
+    type: "SocialLinks",
+    props: {
+      id: `social-${n}`,
+      who: "Atelier",
+      show: n === "surface" ? "names" : "icons",
+      look: n === "primary" ? "circle" : "plain",
+      align: "left",
+      links: [{ href: "https://instagram.com/atelier" }, { href: "https://www.linkedin.com/company/atelier" }, { href: "https://example.com/atelier" }],
+    },
+  },
   {
     type: "LogoRow",
     props: {

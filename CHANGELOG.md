@@ -4,6 +4,20 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Icons, Divider and Social links (F077).** A new **Icon** block: pick
+  from about 150 icons by searching what you mean ("food", "phone",
+  "delivery") or by category; show it plain, in a circle or in a square,
+  in three sizes, optionally as a link. **Icon lists** can now use any
+  icon, for the whole list or per line. A **Card** can show an icon
+  instead of a photo, and a **Button** can have an icon before or after
+  its label. A **Divider** block draws a thin line, a short bar, a line
+  with a label ("Our menu"), or three dots. A **Social links** block
+  turns pasted profile addresses into the right network icons
+  (Instagram, LinkedIn, TikTok and 13 more), icons only or with names.
+  Icons are drawn into the page (nothing extra to download) and take
+  the section's colours. An icon that is a link needs a name for screen
+  readers; publishing waits until it has one.
+
 - **Header and footer v2 (F076).** Site settings → Header & menu now
   has six **layouts** (Classic, Centred menu, Logo on top, Split, Left
   together, Menu button only), **dropdown menus** ("Put under above"

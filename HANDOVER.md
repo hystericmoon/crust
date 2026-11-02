@@ -5,36 +5,27 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 ~17:50 (Jakarta). **F076 Header and footer v2
-merged** (PR #62, owner: "Merge it when green"; a crust-desktop FTPS
-test broke off once in CI and passed on re-run, not this PR's).
-**F077 Icons, Divider, Social: design snapshot published, build not
-started.** Snapshot https://claude.ai/artifact/8o1uPhHmTBd9hgkzmx1pU2
-(`design/f077-icons-v1.html`). Recommended **A**: search + categories
-over a curated ~120 Lucide icons; Icon block (plain / circle / square
-badge, S/M/L, optional link that then needs a name); any icon in
-IconList (per list or per line), Card (icon instead of photo), Button
-(icon before/after); Divider block (line, short accent bar, line with a
-label, three dots; width and space; decorative ones aria-hidden, a
-labelled one is a separator); Social links block (paste profile URLs,
-network recognised from the host, icons only or with names, each link
-named "<site> on <network>", 44 px targets). The owner hasn't picked;
-build A unless he says otherwise.
-**Icon sources found:** `lucide-static@1.66.0` (ISC) has 2,292 icons
-but **no brand icons** (removed in v1). Social icons come from
-`@tabler/icons@3.50.0` (MIT), `icons/outline/brand-*.svg`: instagram,
-facebook, linkedin, youtube, x, tiktok, pinterest, threads, bluesky,
-mastodon, whatsapp, github, dribbble, behance, spotify, vimeo all exist
-(drop Tabler's `<path stroke="none" d="M0 0h24v24H0z" fill="none"/>`).
-Plan: a script `scripts/sync-icons.mjs` that `npm pack`s both, picks the
-curated names and writes `packages/blocks/src/icons-data.ts` (name,
-category, keywords, inner SVG), committed with a licence header; no
-runtime dependency (like `npm run fonts:sync` for F070). done_check:
-`npm test -- icons && npm run check:a11y` (name test files `icons*`).
-Next after F077: F078 Stats, Video, Table and Pricing, Numbered list.
-The owner starts sessions by hand (chain limit): "Read HANDOVER.md on
-branch f077-icons and continue" (the branch holds this note and the
-snapshot; F077 is built there).
+Last updated: 2026-11-02 ~19:00 (Jakarta). **F077 Icons, Divider,
+Social built, passes** (branch `f077-icons`, from main; done_check
+`npm test -- icons && npm run check:a11y` exit 0; DECISIONS "F077").
+Direction A of https://claude.ai/artifact/8o1uPhHmTBd9hgkzmx1pU2 (owner
+hadn't picked). How it fits: `scripts/sync-icons.mjs` writes
+`packages/blocks/src/icons-data.ts` (151 Lucide icons + 16 Tabler social
+icons, committed; add icons to `CURATED` and rerun); model in
+`icons.tsx` (`searchIcons`, `IconSvg`, `socialLinkOf`, `iconA11y`);
+blocks in `icon-blocks.tsx` (Icon, Divider, SocialLinks, `IconMark`);
+Card `icon`, Button `icon`/`iconAt` in config.tsx; IconList any icon +
+per-line icon in more-blocks.tsx (classic six marks keep their
+drawings). Builder: `apps/admin/src/icons/` (`IconPicker.tsx`,
+`fields.tsx` `withIconFields`, items.tsx sub-field type `icon`). Publish
+check: crust-publish validate.rs `data-cr-needs-name` (icon link without
+a name). Samples in block-samples.ts; check:builder screen "Card icon
+picker". Screenshots `design/f077-*.png`. Needs `reviewed: true`.
+**Next: F078 Stats, Video, Table and Pricing, Numbered list** (design
+snapshot first; done_check `npm test -- blocks-v3 && npm run
+check:a11y`), on a new branch from main once F077 is merged, or stacked
+on `f077-icons`. The owner starts sessions by hand (chain limit): "Read
+HANDOVER.md on branch f077-icons and continue".
 
 Earlier today (~17:15): F075 Motion merged (PR #61). F076 notes: model
 in `packages/blocks/src/chrome-model.ts` (`headerLayouts`, `layoutOf`,

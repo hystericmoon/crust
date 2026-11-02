@@ -110,6 +110,18 @@ pub fn validate_page(page: &str, html: &str) -> Vec<Issue> {
         n => messages.push(format!("{n} Image blocks have no image URL. Add each image's address, or remove those blocks.")),
     }
 
+    // F077: an Icon block that is a link needs a name, or screen readers only say "link".
+    let unnamed_icons = tags.iter().filter(|t| !t.closing && t.attr("data-cr-needs-name").is_some()).count();
+    match unnamed_icons {
+        0 => {}
+        1 => messages.push(
+            "An icon is a link but has no name. Say where it goes in the Icon block's \"Name for screen readers\" (for example \"Call us\").".to_string(),
+        ),
+        n => messages.push(format!(
+            "{n} icons are links but have no name. Say where each goes in its Icon block's \"Name for screen readers\" (for example \"Call us\")."
+        )),
+    }
+
     // F046: template sample content still marked "replace me".
     let samples: Vec<&str> = tags.iter().filter(|t| !t.closing).filter_map(|t| t.attr("data-crust-placeholder")).collect();
     if !samples.is_empty() {
@@ -375,6 +387,18 @@ mod tests {
         let html = page("<title>t</title><meta name=\"description\" content=\"d\">", &format!("<h1>Hi</h1>{many}"));
         let m = &messages(&html)[0];
         assert!(m.starts_with("12 blocks") && m.contains("Text 9 (text); and 2 more.") && !m.contains("Text 10"), "{m}");
+    }
+
+    #[test]
+    fn validate_flags_icon_links_without_a_name() {
+        let unnamed = r#"<a class="cr-icon-link" href="/menu" data-cr-needs-name="Icon"><span aria-hidden="true"></span></a>"#;
+        let m = messages(&page(HEAD, &format!("<h1>Hi</h1>{unnamed}")));
+        assert_eq!(m.len(), 1, "{m:?}");
+        assert!(m[0].starts_with("An icon is a link but has no name."), "{}", m[0]);
+        let m = messages(&page(HEAD, &format!("<h1>Hi</h1>{unnamed}{unnamed}")));
+        assert!(m[0].starts_with("2 icons are links"), "{}", m[0]);
+        let named = r#"<a class="cr-icon-link" href="/menu" aria-label="Our menu"><span aria-hidden="true"></span></a>"#;
+        assert!(messages(&page(HEAD, &format!("<h1>Hi</h1>{named}"))).is_empty());
     }
 
     #[test]

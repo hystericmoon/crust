@@ -5,6 +5,20 @@ to "Log".
 
 ## Current
 
+- **F077 Icons, Divider, Social: built, passes** (branch `f077-icons`,
+  from main). Snapshot https://claude.ai/artifact/8o1uPhHmTBd9hgkzmx1pU2,
+  A built. **To try** on the PR's preview link: in the builder add an
+  **Icon** block (Content → Icon): search "food" or "phone", or press a
+  category; try In a circle / In a square and the sizes in the Style
+  tab; give it a link and see it ask for a name. Click a **Card** →
+  Content tab → pick an icon (shows when the card has no photo). A
+  **Button** → Icon. An **Icon list** → Style tab → any icon for every
+  line; open a line for its own icon. Add a **Divider** (Layout) and a
+  **Social links** block (paste your Instagram/LinkedIn addresses).
+  Keyboard: Tab into the icon grid, arrow keys move, Enter picks.
+  Screenshots `design/f077-*.png`. Needs `reviewed: true`. Next: F078
+  Stats, Video, Table and Pricing, Numbered list.
+
 - **2026-11-02: F075 and F076 merged to main** (PRs #61, #62; owner:
   "Merge it" / "Merge it when green"). **F077 Icons, Divider, Social:
   snapshot published** https://claude.ai/artifact/8o1uPhHmTBd9hgkzmx1pU2
