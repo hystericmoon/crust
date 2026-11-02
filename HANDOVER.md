@@ -26,8 +26,28 @@ DECISIONS "F070"). How it fits: `packages/blocks/src/fonts.ts`
 `f071-type-styles`, stacked on f070-fonts; DECISIONS "F071"): style
 options in `style-options.ts` (`displaySize`, `labelsUseMono`), Heading
 `size`/`eyebrow`, Button soft/arrow, Card `layout: cover`, UI in
-`StyleGroups.tsx` (`DisplayOptions`). **Next: F072 Style library**,
-design snapshot first. Branch `f063-store-site` (PR #54) holds the comparison
+`StyleGroups.tsx` (`DisplayOptions`). **F072 Style library: in progress, paused by the owner
+(2026-11-02)** on branch `f072-style-library` (stacked on
+f071-type-styles; WIP PR). Snapshot
+https://claude.ai/artifact/GaX1QoHvVTp8S3bU1ybxsa (A built: grid of
+looks with colourway dots). Done so far: `packages/blocks/src/style-library.ts`
+(12 looks × 3 colourways, `applyLook`, `matchingLook`), 79 tests in
+`style-library.test.ts` (all 36 colourways pass contrast + section
+warnings), `StyleLibrary` in `SiteSettings.tsx` (group "presets" now
+labelled "Styles", Undo style restores colours/fonts/style/section
+styles/radius), old preset tests rewritten, two check:builder screens;
+done_check `npm test -- style-library && npm run check:builder` exited 0.
+**Left to do:** (1) rename `.st-swatch`/`.st-swatches`/`.st-swatch-name`
+in the StyleLibrary JSX and its CSS block in `settings.css` (F072 block)
+to `.st-cw*`: `.st-swatch` already styles the colour picker, so the
+colourway dots draw square (see `design/f072-styles.png`); re-shoot the
+screenshots with the scratch script pattern (Playwright over
+apps/admin/dist, click `.st-look:has-text("Atelier")`, screenshot
+`#presets`); (2) DECISIONS "F072" entry (looks replace presets in the UI,
+themePresets kept for old sites; header style per look dropped, comes
+with F076; undo keeps the first pre-look tokens across several picks);
+(3) set F072 `passes: true`, PROGRESS, CHANGELOG, spec note; (4) remove
+"WIP" from the PR title/body. Then **F073 Sections v2**. Branch `f063-store-site` (PR #54) holds the comparison
 pages, the M8 write-up and a midnight test fix; no store code. Start
 F070 on a new branch from main once #54 is merged, or stack on it.
 This session can't start new sessions (chain limit): if it ends, the

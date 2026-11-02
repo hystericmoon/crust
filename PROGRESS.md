@@ -5,6 +5,10 @@ to "Log".
 
 ## Current
 
+- **F072 Style library: in progress, paused** (branch
+  `f072-style-library`, WIP PR). See HANDOVER.md for what's left (one
+  CSS class clash, docs). PRs #54 → #55 (F070) → #56 (F071) are green
+  and ready to merge in that order.
 - **F071 Type and detail styles: built, passes** (branch
   `f071-type-styles`, stacked on F070's PR). Snapshot
   https://claude.ai/artifact/H3pscypcAov3mFHwoMHAHS, A built. **To try:**
