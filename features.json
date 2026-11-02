@@ -796,7 +796,7 @@
       "description": "Design snapshot first. Entrance effects per section and block with stagger, light parallax, hover lifts, logo marquee. CSS only, content visible without it, off under Reduce motion. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F073"],
       "done_check": "npm test -- motion && npm run check:a11y && npm run check:perf",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
