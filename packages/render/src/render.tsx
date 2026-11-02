@@ -1,4 +1,4 @@
-import { config, HEADER_V2_CSS, needsHeaderV2Css, motionCss, heroStyle, hasDropdowns, DROPDOWN_SCRIPT, layoutOf, CONTACT_FORM_SCRIPT, hasBackgroundVideo, headerOverStyle, onlyFirstHeaderOver, VIDEO_SCRIPT, type SectionStyleId, fontPreloads, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
+import { config, HEADER_V2_CSS, needsHeaderV2Css, ICONS_CSS, needsIconCss, motionCss, heroStyle, hasDropdowns, DROPDOWN_SCRIPT, layoutOf, CONTACT_FORM_SCRIPT, hasBackgroundVideo, headerOverStyle, onlyFirstHeaderOver, VIDEO_SCRIPT, type SectionStyleId, fontPreloads, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -270,7 +270,9 @@ export function renderDocument(site: Site, doc: DocumentParts, baseCss: string, 
   const motion = motionCss(site.tokens);
   // F076: the new header and footer CSS only for sites that use them.
   const chromeCss = needsHeaderV2Css(header, footer) ? `\n${HEADER_V2_CSS}` : "";
-  const css = minifyCss(`${tokensToCss(site.tokens)}\n${baseCss}${chromeCss}${motion ? `\n${motion}` : ""}`);
+  // F077: icon, divider and social CSS only on pages that show one.
+  const iconCss = needsIconCss(top + doc.body + bottom) ? `\n${ICONS_CSS}` : "";
+  const css = minifyCss(`${tokensToCss(site.tokens)}\n${baseCss}${chromeCss}${iconCss}${motion ? `\n${motion}` : ""}`);
   const title = doc.share?.searchTitle?.trim() || (doc.path === "/" ? doc.title : `${doc.title} | ${site.name}`);
   return `<!doctype html>
 <html lang="${escapeHtml(site.language)}"${htmlClass}${htmlStyle}>

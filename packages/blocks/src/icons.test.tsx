@@ -211,3 +211,18 @@ describe("icons: in lists, cards and buttons", () => {
     expect(html("Button", { label: "Go" })).toBe('<div class="cr-button-row cr-align-left"><a class="cr-button cr-button-primary" href="/">Go</a></div>');
   });
 });
+
+describe("icons: CSS only where used", () => {
+  it("spots pages that use an icon, divider or social link", async () => {
+    const { needsIconCss, ICONS_CSS } = await import("./icons-css");
+    expect(needsIconCss(html("Icon"))).toBe(true);
+    expect(needsIconCss(html("Divider"))).toBe(true);
+    expect(needsIconCss(html("SocialLinks"))).toBe(true);
+    expect(needsIconCss(html("Button", { icon: "phone" }))).toBe(true);
+    // List icons use the base CSS.
+    expect(needsIconCss(html("IconList", { icon: "map-pin" }))).toBe(false);
+    expect(needsIconCss(html("Card", { icon: "truck" }))).toBe(true);
+    expect(needsIconCss(html("Button") + html("Card") + html("IconList"))).toBe(false);
+    expect(ICONS_CSS).toContain(".cr-social-link");
+  });
+});

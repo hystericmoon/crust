@@ -1,5 +1,5 @@
 import { checkPost, config, countPlaceholders, defaultBlog, migrateChrome, tokensToCss,
-  HEADER_V2_CSS, type BlogSettings, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
+  HEADER_V2_CSS, ICONS_CSS, type BlogSettings, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
 import { relinkPage } from "@crust/blocks/links";
 import { Puck, useGetPuck, type Data } from "@puckeditor/core";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -221,7 +221,7 @@ export function App() {
   const [githubOn, setGithubOn] = useState<boolean | null>(null);
   // The builder shows unsaved token edits too, so switching screens loses nothing.
   // F076: the builder always has the header and footer v2 CSS (published pages only when used).
-  useTokenStyles(useMemo(() => `${tokensToCss(draft)}\n${HEADER_V2_CSS}`, [draft]));
+  useTokenStyles(useMemo(() => `${tokensToCss(draft)}\n${HEADER_V2_CSS}\n${ICONS_CSS}`, [draft]));
 
   useEffect(() => {
     void getStatus().then((s) => setGithubOn(s.ok && s.configured));

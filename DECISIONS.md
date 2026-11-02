@@ -311,6 +311,11 @@ recommendation was built.
   and has `rel="me"` (profile verification on Mastodon and others).
 - **Content format:** all additions optional; pages made before render
   the same (docs/spec.md, "F077 adds three blocks").
+- **CSS only where used** (found by CI's template check: Corner's home
+  page dropped to Lighthouse 94, "Reduce unused CSS"): the F077 CSS lives
+  in `icons-css.ts` (`ICONS_CSS`) and a published page gets it only when
+  its rendered HTML uses one of the classes (`needsIconCss`); the builder
+  always has it. Same approach as F076's header CSS.
 
 ## 2026-11-02 — F076 Header and footer v2 (Claude, reversible)
 
