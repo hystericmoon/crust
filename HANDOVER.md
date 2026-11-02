@@ -22,8 +22,12 @@ DECISIONS "F070"). How it fits: `packages/blocks/src/fonts.ts`
 (`bundledFonts`, `fontPairs`, `fontFaceCss`, `fontPreloads`), files in
 `packages/blocks/fonts/` (`npm run fonts:sync`), crust-publish
 `fonts.rs` (`--fonts`), desktop `build_site(.., fonts)`, picker in
-`SiteSettings.tsx` (`FontPairs`, `FontField`). **Next: F071 Type and
-detail styles**, design snapshot first. Branch `f063-store-site` (PR #54) holds the comparison
+`SiteSettings.tsx` (`FontPairs`, `FontField`). **F071 Type and detail styles built, passes** (branch
+`f071-type-styles`, stacked on f070-fonts; DECISIONS "F071"): style
+options in `style-options.ts` (`displaySize`, `labelsUseMono`), Heading
+`size`/`eyebrow`, Button soft/arrow, Card `layout: cover`, UI in
+`StyleGroups.tsx` (`DisplayOptions`). **Next: F072 Style library**,
+design snapshot first. Branch `f063-store-site` (PR #54) holds the comparison
 pages, the M8 write-up and a midnight test fix; no store code. Start
 F070 on a new branch from main once #54 is merged, or stack on it.
 This session can't start new sessions (chain limit): if it ends, the

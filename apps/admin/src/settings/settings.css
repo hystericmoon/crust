@@ -165,6 +165,11 @@ body:has(.st) { margin: 0; }
 .st-current { font-size: 0.8125rem; font-weight: 600; }
 .st-undo { margin-top: 12px; }
 
+/* F071: small label pictures */
+.st-label-pic { font-size: 0.75rem; font-weight: 600; }
+.st-label-pic.is-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border: 1px solid currentColor; border-radius: 999px; }
+.st-label-pic.is-chip::before { content: ""; width: 6px; height: 6px; border-radius: 1px; background: currentColor; }
+
 /* F070: font pairs */
 .st-font-pairs { display: grid; gap: 8px; padding-bottom: 12px; }
 .st-font-pairs h3 { margin: 0; }

@@ -9,6 +9,8 @@ import {
   headingSizes,
   headingTrackings,
   headingWeights,
+  labelFontStack,
+  labelStyles,
   linkStyles,
   sectionStylesOf,
   styleOptionNames,
@@ -72,6 +74,15 @@ function OptionField<V extends string>({
   );
 }
 
+const trackingEm: Record<(typeof headingTrackings)[number], string> = {
+  tightest: "-0.05em",
+  tighter: "-0.04em",
+  tight: "-0.03em",
+  snug: "-0.02em",
+  normal: "0",
+  wide: "0.02em",
+};
+
 export function TypeOptions(props: Props) {
   const [scale, setScale] = useOption(props, "typeScale");
   const [weight, setWeight] = useOption(props, "headingWeight");
@@ -127,12 +138,85 @@ export function TypeOptions(props: Props) {
             <span
               className="st-option-pic"
               aria-hidden="true"
-              style={{ fontFamily: heading, fontWeight: weight, letterSpacing: { tight: "-0.03em", snug: "-0.02em", normal: "0", wide: "0.02em" }[t] }}
+              style={{ fontFamily: heading, fontWeight: weight, letterSpacing: trackingEm[t] }}
             >
               Studio
             </span>
           ),
         }))}
+      />
+      <DisplayOptions {...props} />
+    </>
+  );
+}
+
+/** F071: Display headings (a Heading block set to "Display") and the small labels above headings. */
+function DisplayOptions(props: Props) {
+  const { tokens, onChange } = props;
+  const o = styleOptionsOf(tokens);
+  // Unset, Display follows the heading weight and spacing (as the published CSS does).
+  const dWeight = tokens.style?.displayWeight ?? o.headingWeight;
+  const dTrack = tokens.style?.displayTracking ?? o.headingTracking;
+  const set = (patch: Partial<StyleOptions>) => onChange({ ...tokens, style: { ...tokens.style, ...patch } });
+  const [label, setLabel] = useOption(props, "labelStyle");
+  const heading = tokens.fonts.heading;
+  const labelPic = (l: (typeof labelStyles)[number]) => {
+    const mono = l === "mono" || l === "chip";
+    return (
+      <span className="st-option-pic" aria-hidden="true">
+        <span
+          className={l === "chip" ? "st-label-pic is-chip" : "st-label-pic"}
+          style={{
+            fontFamily: mono ? labelFontStack() : tokens.fonts.body,
+            textTransform: l === "plain" ? "none" : "uppercase",
+            letterSpacing: l === "plain" ? 0 : mono ? "0.1em" : "0.08em",
+          }}
+        >
+          Studio
+        </span>
+      </span>
+    );
+  };
+  return (
+    <>
+      <OptionField
+        id="display-weight"
+        label="Display heading weight"
+        hint="For headings set to Display size in the builder. Light and Regular suit big headings; H3 and H4 never go below Medium."
+        value={String(dWeight) as `${typeof dWeight}`}
+        onChange={(v) => set({ displayWeight: Number(v) as typeof dWeight })}
+        options={headingWeights.map((w) => ({
+          value: String(w) as `${typeof w}`,
+          label: styleOptionNames.headingWeight[w],
+          content: (
+            <span className="st-option-pic" aria-hidden="true" style={{ fontFamily: heading, fontWeight: w, fontSize: "1.75rem", letterSpacing: trackingEm[dTrack] }}>
+              Ag
+            </span>
+          ),
+        }))}
+      />
+      <OptionField
+        id="display-tracking"
+        label="Display heading letter spacing"
+        value={dTrack}
+        onChange={(t) => set({ displayTracking: t })}
+        options={headingTrackings.map((t) => ({
+          value: t,
+          label: styleOptionNames.headingTracking[t],
+          content: (
+            <span className="st-option-pic" aria-hidden="true" style={{ fontFamily: heading, fontWeight: dWeight, fontSize: "1.375rem", letterSpacing: trackingEm[t] }}>
+              Calm
+            </span>
+          ),
+        }))}
+      />
+      <OptionField
+        id="label-style"
+        label="Small labels"
+        hint="The optional label above a heading. Mono and Chip use Geist Mono, added to the site only when used."
+        value={label}
+        onChange={setLabel}
+        options={labelStyles.map((l) => ({ value: l, label: styleOptionNames.labelStyle[l], content: labelPic(l) }))}
       />
     </>
   );

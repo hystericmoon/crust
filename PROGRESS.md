@@ -5,6 +5,13 @@ to "Log".
 
 ## Current
 
+- **F071 Type and detail styles: built, passes** (branch
+  `f071-type-styles`, stacked on F070's PR). Snapshot
+  https://claude.ai/artifact/H3pscypcAov3mFHwoMHAHS, A built. **To try:**
+  Site settings → Typography (Display weight, spacing, Small labels);
+  in the builder, a Heading's Style tab → Size: Display, Content tab →
+  Small label; a Button's Style; a Card's Layout. Screenshots
+  `design/f071-home*.png`. Needs `reviewed: true`. Next: F072 Style library.
 - **F070 Fonts: built, passes** (branch `f070-fonts`, stacked on PR #54).
   Snapshot https://claude.ai/artifact/Gjyo7UxqKfgcUBc3MxaSCn, A built.
   **To try** on the PR's preview link: Site settings → Typography,

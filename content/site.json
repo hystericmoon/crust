@@ -31,7 +31,10 @@
       "headingTracking": "normal",
       "buttonShape": "pill",
       "cardStyle": "flat",
-      "linkStyle": "underline"
+      "linkStyle": "underline",
+      "displayWeight": 300,
+      "displayTracking": "tightest",
+      "labelStyle": "chip"
     },
     "sectionStyles": {
       "background": {

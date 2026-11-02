@@ -54,6 +54,25 @@
 .cr-h3 { font-size: var(--cr-h3-size, 1.5rem); letter-spacing: var(--cr-h34-track, normal); }
 .cr-h4 { font-size: var(--cr-h4-size, 1.25rem); letter-spacing: var(--cr-h34-track, normal); }
 
+/* F071: light weights are for big headings only; H3 and H4 stay at 500 or more for legibility. */
+.cr-h3, .cr-h4 { font-weight: max(500, var(--cr-heading-weight, 700)); }
+/* Display: a step above H1, with its own weight and spacing (style options). */
+.cr-heading.cr-display {
+  font-size: var(--cr-display-size, clamp(2.375rem, 8vw, 4.75rem));
+  font-weight: var(--cr-display-weight, var(--cr-heading-weight, 700));
+  letter-spacing: var(--cr-display-track, -0.03em);
+  line-height: 1.02;
+}
+/* The small label above a heading: published inside <hgroup>, read with the heading. Never below 12px. */
+.cr-hgroup { margin: 0 0 var(--cr-space-sm); }
+.cr-hgroup > .cr-heading { margin-bottom: 0; }
+.cr-hgroup.cr-align-center { text-align: center; }
+.cr-hgroup.cr-align-right { text-align: right; }
+.cr-eyebrow {
+  margin: 0 0 var(--cr-space-xs); font-family: var(--cr-font-body);
+  font-size: 0.75rem; font-weight: 600; line-height: 1.2; letter-spacing: 0.08em; text-transform: uppercase;
+}
+
 .cr-text { max-width: 68ch; }
 .cr-text p { margin: 0 0 var(--cr-space-sm); }
 /* F042: lists and links inside Text blocks. Links are always underlined
@@ -104,6 +123,23 @@
 }
 .cr-button:hover { filter: brightness(1.08); }
 .cr-button:focus-visible { outline: 3px solid var(--cr-sec-ink, var(--cr-color-text)); outline-offset: 3px; }
+/* F071: Soft (tinted fill) and Text with arrow. */
+.cr-button-soft {
+  background: color-mix(in srgb, var(--cr-sec-accent, var(--cr-color-primary)) 14%, transparent);
+  color: var(--cr-sec-accent, var(--cr-color-primary)); border-color: transparent;
+}
+.cr-button-soft:hover { background: color-mix(in srgb, var(--cr-sec-accent, var(--cr-color-primary)) 22%, transparent); }
+.cr-button-arrow {
+  background: transparent; border-color: transparent; padding: 0 0.25rem; min-width: 44px;
+  color: var(--cr-sec-accent, var(--cr-color-primary));
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.3em;
+}
+.cr-button-arrow:hover { text-decoration-thickness: 2px; }
+.cr-button-arrow .cr-arrow { display: inline-block; margin-left: 0.4em; transition: transform 0.15s ease; }
+.cr-button-arrow:hover .cr-arrow { transform: translateX(3px); }
+.cr-bg-primary .cr-button-soft { background: color-mix(in srgb, var(--cr-color-onPrimary) 18%, transparent); color: var(--cr-color-onPrimary); }
+.cr-bg-primary .cr-button-arrow { color: var(--cr-color-onPrimary); }
+@media (prefers-reduced-motion: reduce) { .cr-button-arrow .cr-arrow { transition: none; } }
 .cr-bg-primary .cr-button-primary { background: var(--cr-color-onPrimary); color: var(--cr-color-primary); border-color: var(--cr-color-onPrimary); }
 .cr-bg-primary .cr-button-secondary { color: var(--cr-color-onPrimary); border-color: var(--cr-color-onPrimary); }
 /* On a Primary section the text colour can be too dark to see; use the label colour. */
@@ -466,3 +502,11 @@ main[tabindex="-1"]:focus { outline: none; }
 .cr-search-results h2 { margin: 0 0 4px; }
 .cr-search-results p { margin: 0; }
 .cr-search-results mark { background: color-mix(in srgb, var(--cr-color-primary) 22%, transparent); color: inherit; padding: 0 1px; }
+
+/* F071: "Photo fills the card": the words sit on a dark scrim over the photo, so they read on any photo. */
+.cr-card.cr-card-cover { position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; min-height: 18rem; padding: 0; border: 0; background: #1a1a1a; color: #fff; }
+.cr-card-cover .cr-card-media { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; }
+.cr-card-cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(0 0 0 / 0) 25%, rgb(0 0 0 / 0.72) 100%); }
+.cr-card-cover .cr-card-body { position: relative; z-index: 1; padding: var(--cr-space-md); }
+.cr-card-cover .cr-card-body, .cr-card-cover .cr-card-body * { color: #fff; }
+.cr-card-cover a:focus-visible { outline-color: #fff; }

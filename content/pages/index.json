@@ -3,7 +3,9 @@
   "title": "Crust demo",
   "description": "A sample page built with the Crust visual builder.",
   "puck": {
-    "root": { "props": {} },
+    "root": {
+      "props": {}
+    },
     "content": [
       {
         "type": "Section",
@@ -14,7 +16,14 @@
           "content": [
             {
               "type": "Heading",
-              "props": { "id": "Heading-hero", "text": "Build fast sites, visually", "level": "h1", "align": "center" }
+              "props": {
+                "id": "Heading-hero",
+                "text": "Build fast sites, visually",
+                "level": "h1",
+                "align": "center",
+                "size": "display",
+                "eyebrow": "Visual website builder"
+              }
             },
             {
               "type": "Text",
@@ -25,10 +34,32 @@
                 "tone": "muted"
               }
             },
-            { "type": "Spacer", "props": { "id": "Spacer-hero", "size": "sm" } },
+            {
+              "type": "Spacer",
+              "props": {
+                "id": "Spacer-hero",
+                "size": "sm"
+              }
+            },
             {
               "type": "Button",
-              "props": { "id": "Button-hero", "label": "See how it works", "href": "#how", "variant": "primary", "align": "center" }
+              "props": {
+                "id": "Button-hero",
+                "label": "See how it works",
+                "href": "#how",
+                "variant": "primary",
+                "align": "center"
+              }
+            },
+            {
+              "type": "Button",
+              "props": {
+                "id": "hero-arrow",
+                "label": "Read the guide",
+                "href": "#how",
+                "variant": "arrow",
+                "align": "center"
+              }
             }
           ]
         }
@@ -42,7 +73,13 @@
           "content": [
             {
               "type": "Heading",
-              "props": { "id": "Heading-how", "text": "How it works", "level": "h2", "align": "left" }
+              "props": {
+                "id": "Heading-how",
+                "text": "How it works",
+                "level": "h2",
+                "align": "left",
+                "eyebrow": "Three steps"
+              }
             },
             {
               "type": "Text",
@@ -59,9 +96,54 @@
                 "id": "Columns-how",
                 "count": "3",
                 "gap": "md",
-                "column1": [{ "type": "Card", "props": { "id": "Card-design", "title": "Design", "titleLevel": "h3", "text": "Lay out pages with blocks and your design tokens.", "imageSrc": "", "imageAlt": "", "linkLabel": "", "linkHref": "", "background": "surface" } }],
-                "column2": [{ "type": "Card", "props": { "id": "Card-publish", "title": "Publish", "titleLevel": "h3", "text": "One click turns them into plain, fast HTML.", "imageSrc": "", "imageAlt": "", "linkLabel": "", "linkHref": "", "background": "surface" } }],
-                "column3": [{ "type": "Card", "props": { "id": "Card-share", "title": "Share", "titleLevel": "h3", "text": "Open the live link on any device.", "imageSrc": "", "imageAlt": "", "linkLabel": "", "linkHref": "", "background": "surface" } }],
+                "column1": [
+                  {
+                    "type": "Card",
+                    "props": {
+                      "id": "Card-design",
+                      "title": "Design",
+                      "titleLevel": "h3",
+                      "text": "Lay out pages with blocks and your design tokens.",
+                      "imageSrc": "",
+                      "imageAlt": "",
+                      "linkLabel": "",
+                      "linkHref": "",
+                      "background": "surface"
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "Card",
+                    "props": {
+                      "id": "Card-publish",
+                      "title": "Publish",
+                      "titleLevel": "h3",
+                      "text": "One click turns them into plain, fast HTML.",
+                      "imageSrc": "",
+                      "imageAlt": "",
+                      "linkLabel": "",
+                      "linkHref": "",
+                      "background": "surface"
+                    }
+                  }
+                ],
+                "column3": [
+                  {
+                    "type": "Card",
+                    "props": {
+                      "id": "Card-share",
+                      "title": "Share",
+                      "titleLevel": "h3",
+                      "text": "Open the live link on any device.",
+                      "imageSrc": "",
+                      "imageAlt": "",
+                      "linkLabel": "",
+                      "linkHref": "",
+                      "background": "surface"
+                    }
+                  }
+                ],
                 "column4": []
               }
             }

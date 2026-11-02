@@ -147,10 +147,14 @@ export function fontFiles(font: BundledFont): FontFile[] {
   return out;
 }
 
-/** The bundled fonts a site uses (heading first), without repeats. */
-export function siteFonts(fonts: { heading?: string; body?: string } | undefined): BundledFont[] {
+/** F071: the font for Mono and Chip labels. */
+export const LABEL_FONT_ID = "geist-mono";
+export const labelFontStack = (): string => bundledStack(findBundledFont(LABEL_FONT_ID)!);
+
+/** The bundled fonts a site uses (heading first), without repeats. `extra`: more font lists (F071: the label font). */
+export function siteFonts(fonts: { heading?: string; body?: string } | undefined, extra: string[] = []): BundledFont[] {
   const out: BundledFont[] = [];
-  for (const stack of [fonts?.heading, fonts?.body]) {
+  for (const stack of [fonts?.heading, fonts?.body, ...extra]) {
     const font = bundledFontIn(stack);
     if (font && !out.includes(font)) out.push(font);
   }
@@ -162,8 +166,8 @@ export function siteFonts(fonts: { heading?: string; body?: string } | undefined
  * none, so sites without them publish exactly the CSS they did before.
  * Browsers fetch a file only when text needs it (unicode-range, style).
  */
-export function fontFaceCss(fonts: { heading?: string; body?: string } | undefined, base = "/fonts/"): string {
-  return siteFonts(fonts)
+export function fontFaceCss(fonts: { heading?: string; body?: string } | undefined, base = "/fonts/", extra: string[] = []): string {
+  return siteFonts(fonts, extra)
     .flatMap((font) =>
       fontFiles(font).map(
         (f) =>
