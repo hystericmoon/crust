@@ -43,7 +43,8 @@ export interface SavedLayout {
   /** Also the file name; never changes, even on rename. */
   id: string;
   name: string;
-  kind: "section" | "page";
+  /** F080: "element" is a saved element style: one block holding only its style settings, applied as a copy. */
+  kind: "section" | "page" | "element";
   /** ISO date. */
   savedAt: string;
   /** Top-level blocks, as in a page's puck.content. */

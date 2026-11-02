@@ -114,6 +114,9 @@ export {
   hasH1,
 } from "./layouts";
 export type { LayoutCategory, SectionLayout, PageLayout } from "./layouts";
+export { fitLayoutToTokens, sectionLayoutsV2, pageLayoutsV2 } from "./layouts-v2";
+export { LAYOUT_PHOTO_PREFIX, layoutPhotos, layoutLogos, layoutPhotoSrc, layoutPhotoOf, layoutPhotoSrcs, swapLayoutPhotos } from "./layout-photos";
+export type { LayoutPhoto, LayoutPhotoId } from "./layout-photos";
 export { itemLimits, listIcons, listIconNames, moreBlocks, ListIconSvg, isListIcon, numberStyles, numberStyleNames, listNumber, NUMBERS } from "./more-blocks";
 export type { NumberStyle } from "./more-blocks";
 export {

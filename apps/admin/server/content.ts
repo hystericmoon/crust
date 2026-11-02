@@ -127,7 +127,9 @@ const isBlock = (v: unknown): boolean =>
 export function checkLayout(layout: unknown): string[] {
   if (!isObject(layout)) return ["The layout is missing."];
   const problems = checkLayoutName(layout.name);
-  if (layout.kind !== "section" && layout.kind !== "page") problems.push("A layout is either a section or a whole page.");
+  if (layout.kind !== "section" && layout.kind !== "page" && layout.kind !== "element") problems.push("A layout is either a section or a whole page.");
+  // F080: a saved element style is one block's style settings.
+  else if (layout.kind === "element" && (!Array.isArray(layout.content) || layout.content.length !== 1)) problems.push("A saved style holds one block.");
   if (!Array.isArray(layout.content) || layout.content.length === 0 || !layout.content.every(isBlock)) {
     problems.push("The layout's blocks are missing or damaged.");
   } else problems.push(...richTextProblems(layout.content));

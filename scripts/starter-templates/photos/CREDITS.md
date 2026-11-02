@@ -74,3 +74,12 @@ Stored in `photos/corner/`. Picks: design/f053/corner-shortlist.json; snapshot d
 | flower-shop.jpg | Contact | Barcelona, Spain (Unsplash oH66az yug) | Roman Kraft romankraft | CC0 | https://commons.wikimedia.org/wiki/File:Barcelona,_Spain_(Unsplash_oH66az_yug).jpg |
 | lemon-loaf.jpg | Home card, Work | Lemon and lavender Bread (Unsplash) | Annie Spratt anniespratt | CC0 | https://commons.wikimedia.org/wiki/File:Lemon_and_lavender_Bread_(Unsplash).jpg |
 | moka-pour.jpg | Journal post cover | Coffee from a steel kettle (Unsplash) | Annie Spratt anniespratt | CC0 | https://commons.wikimedia.org/wiki/File:Coffee_from_a_steel_kettle_(Unsplash).jpg |
+
+## Layout library samples (F080)
+
+`apps/admin/public/layout-photos/sample-*.jpg` are resized copies (at
+most 1600 px) of fifteen photos listed above: terraces, balconies,
+angles, wood-spiral, home-office, shadows, window-tree, pool-house
+(Harbour), pottery-wheel, tool-wall, ceramic-bottles, moka-breakfast
+(Corner) and studio-lounge, atrium, copper-stair (Signal). Same licence
+(CC0). The five `sample-logo-*.png` are made-up names drawn for Crust.

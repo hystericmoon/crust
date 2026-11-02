@@ -22,6 +22,7 @@ import {
   type PendingChanges,
 } from "./api-client";
 import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot, openKeyboardHelp } from "./keyboard/KeyboardEditing";
+import { LayoutPhotoWatcher } from "./layouts/photos";
 import { LayoutGallery, LayoutInserters, LayoutsButton } from "./layouts/LayoutGallery";
 import { MyLayoutsProvider } from "./layouts/mine";
 import { PageList, editHref } from "./pages/PageList";
@@ -545,6 +546,7 @@ function BuilderRoot({ children }: { children: ReactNode }) {
       {children}
       <LayoutGallery />
       <PlaceholderWatcher />
+      <LayoutPhotoWatcher />
     </KeyboardRoot>
   );
 }

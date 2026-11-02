@@ -173,10 +173,12 @@
 .cr-button:focus-visible { outline: 3px solid var(--cr-sec-ink, var(--cr-color-text)); outline-offset: 3px; }
 /* F071: Soft (tinted fill) and Text with arrow. */
 .cr-button-soft {
-  background: color-mix(in srgb, var(--cr-sec-accent, var(--cr-color-primary)) 14%, transparent);
-  color: var(--cr-sec-accent, var(--cr-color-primary)); border-color: transparent;
+  background: var(--cr-sec-soft-bg, color-mix(in srgb, var(--cr-sec-accent, var(--cr-color-primary)) 14%, transparent));
+  /* F080: the accent can be too faint on its own tint (some looks); the section style then gives the text colour. */
+  color: var(--cr-sec-soft-fg, var(--cr-sec-accent, var(--cr-color-primary))); border-color: transparent;
 }
-.cr-button-soft:hover { background: color-mix(in srgb, var(--cr-sec-accent, var(--cr-color-primary)) 22%, transparent); }
+/* F080: hover outlines instead of darkening, so the label keeps its contrast. */
+.cr-button-soft:hover { box-shadow: inset 0 0 0 1px currentColor; }
 .cr-button-arrow {
   background: transparent; border-color: transparent; padding: 0 0.25rem; min-width: 44px;
   color: var(--cr-sec-accent, var(--cr-color-primary));

@@ -86,7 +86,8 @@ describe("settings-tabs: where each setting lives", () => {
     setTab("content");
     expect(shown("Heading")).toEqual(["_tabs", "text", "level", "eyebrow"]);
     setTab("style");
-    expect(shown("Heading")).toEqual(["_tabs", "align", "size"]);
+    // F080: saved element styles sit at the top of the Style tab.
+    expect(shown("Heading")).toEqual(["_tabs", "_styles", "align", "size"]);
     setTab("advanced");
     expect(shown("Columns")).toEqual(["_tabs", "gap", "rowGap", "column1", "column2", "column3", "column4", "hideOn", "anchor"]);
   });

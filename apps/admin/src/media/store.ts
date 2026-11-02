@@ -51,6 +51,11 @@ export async function loadMedia(force = false): Promise<void> {
   else set({ status: res.notConfigured ? "off" : "error", error: res.error });
 }
 
+/** F080: a photo uploaded elsewhere (a layout's sample photo) joins the list. */
+export function rememberUploaded(item: MediaItem) {
+  if (!state.items.some((i) => i.file === item.file)) set({ items: [item, ...state.items] });
+}
+
 /** Shrinks and uploads one photo; the new item comes first in the library. */
 export async function addPhoto(file: File): Promise<{ ok: true; item: MediaItem } | { ok: false; error: string }> {
   const prepared = await prepareUpload(file);

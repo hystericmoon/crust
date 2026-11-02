@@ -43,7 +43,7 @@ import { blocksV3, type PricingProps, type StatsProps, type TableProps, type Vid
 import { interactiveBlocks, type CardSliderProps, type MapProps, type SlideshowProps, type TabsProps } from "./interactive";
 import { IconSvg, isIconName } from "./icons";
 import { LinkedSection, type LinkedSectionProps } from "./linked-section-block";
-import { placeholderBadge, placeholderLabel } from "./placeholders";
+import { placeholderBadge, placeholderLabel, uncopiedSampleLabel } from "./placeholders";
 import { Img } from "./media-img";
 import { safeUrl } from "./url";
 import { entranceNames, entrances, sectionMotionClasses, type Entrance } from "./motion";
@@ -636,7 +636,7 @@ function withVisibility(c: Config<Components>): Config<Components> {
         const classes = hideClasses(props.hideOn);
         const anchor = cleanAnchor(props.anchor);
         // F046: sample content still to replace. Publishing stops on this attribute; the builder outlines it.
-        const sample = placeholderLabel(name, props);
+        const sample = placeholderLabel(name, props) || uncopiedSampleLabel(name, props);
         if (!classes && !anchor && !sample) return out;
         return (
           <div

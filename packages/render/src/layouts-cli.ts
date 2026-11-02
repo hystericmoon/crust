@@ -5,7 +5,7 @@
  * whole-page layout with every theme preset, plus one page of the F032
  * blocks per preset.
  */
-import { applyLook, applyPreset, buildPageLayout, fitHeadings, footerStarter, headerLayouts, migrateChrome, newPost, pageLayouts, sectionLayouts, styleLooks, themePresets, type Page, type Site } from "@crust/blocks";
+import { applyLook, applyPreset, buildPageLayout, fitHeadings, fitLayoutToTokens, sectionLayoutsV2, footerStarter, headerLayouts, migrateChrome, newPost, pageLayouts, sectionLayouts, styleLooks, themePresets, type Page, type Site } from "@crust/blocks";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -31,6 +31,12 @@ for (const preset of themePresets) {
   for (const layout of pageLayouts) await write(`${layout.id}-${preset.id}`, themed, `${layout.name} (${preset.name})`, buildPageLayout(layout));
   // F032: the new blocks, on every section style, in every preset.
   await write(`blocks-${preset.id}`, themed, `New blocks (${preset.name})`, blockSamples());
+}
+// F080: the new sections, all on one page per look of the style library (and every colourway in turn), fitted to that look as the builder does on insert.
+for (const [i, look] of styleLooks.entries()) {
+  const looked: Site = { ...site, tokens: applyLook(site.tokens, look, look.variations[i % look.variations.length]) };
+  const all = sectionLayoutsV2.flatMap((l) => l.build());
+  await write(`library-v2-${look.id}`, looked, `Layout library v2 (${look.name})`, fitHeadings(fitLayoutToTokens(all, looked.tokens), false));
 }
 // F073: Sections v2 in every look of the style library (first colourway).
 for (const look of styleLooks) {

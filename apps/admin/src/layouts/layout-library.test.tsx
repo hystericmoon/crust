@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import { config, pageLayouts, sectionLayouts } from "@crust/blocks";
 import type { ComponentData, Config, Data } from "@puckeditor/core";
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { findById } from "../keyboard/moves";
 import { LayoutGallery, LayoutInserters, LayoutsButton, insertSpots } from "./LayoutGallery";
@@ -56,7 +56,7 @@ const page = (): Data => ({
 const headingLevels = (items: ComponentData[]): string[] =>
   items.flatMap((i) => [
     ...(i.type === "Heading" ? [String(i.props.level)] : []),
-    ...Object.values(i.props).flatMap((v) => (Array.isArray(v) ? headingLevels(v as ComponentData[]) : [])),
+    ...Object.values(i.props).flatMap((v) => (Array.isArray(v) && v.every((x) => x && typeof x === "object" && "type" in x) ? headingLevels(v as ComponentData[]) : [])),
   ]);
 
 beforeEach(() => {
@@ -81,13 +81,15 @@ describe("layout-library: choosing layouts", () => {
   it("searches names, categories and descriptions, every word, ignoring case and accents", () => {
     expect(filterLayouts("section", "All", "PRICING").map((i) => i.layout.id)).toContain("pricing-3");
     expect(filterLayouts("section", "All", "questions two").every((i) => i.kind === "section" && i.layout.category === "FAQ")).toBe(true);
-    expect(filterLayouts("section", "All", "centréd hero").map((i) => i.layout.id)).toEqual(["hero-centered"]);
+    expect(filterLayouts("section", "All", "centréd hero").map((i) => i.layout.id)).toContain("hero-centered");
+    // F080: the first library's layouts are found with "simple" too.
+    expect(filterLayouts("section", "All", "centréd hero simple").map((i) => i.layout.id)).toEqual(["hero-centered"]);
     expect(filterLayouts("section", "All", "zebra")).toEqual([]);
   });
 
   it("lists whole pages on their own tab", () => {
     expect(filterLayouts("page", "All", "").map((i) => i.layout.id)).toEqual(pageLayouts.map((l) => l.id));
-    expect(filterLayouts("page", "All", "contact").map((i) => i.layout.id)).toEqual(["page-contact"]);
+    expect(filterLayouts("page", "All", "contact").map((i) => i.layout.id)).toEqual(["page-contact-v2", "page-contact"]);
   });
 });
 
@@ -125,7 +127,7 @@ describe("layout-library: inserting", () => {
   });
 
   it("inserts every section of a whole page, with fresh ids each time", () => {
-    const about = filterLayouts("page", "All", "about")[0]!;
+    const about = filterLayouts("page", "All", "about simple")[0]!;
     const a = planLayoutInsert({ root: { props: {} }, content: [] }, about, 0)!;
     const b = planLayoutInsert({ root: { props: {} }, content: [] }, about, 0)!;
     expect(a.data.content).toHaveLength(about.kind === "page" ? about.layout.sections.length : 0);
@@ -176,7 +178,7 @@ describe("layout-library: gallery", () => {
 
   it("inserts the picked layout as one undoable step, selects it and closes", async () => {
     await openAt(1);
-    fireEvent.click(screen.getByRole("button", { name: /^Three plans/ }));
+    fireEvent.click(screen.getByRole("button", { name: /^Three plans Pricing/ }));
     const set = dispatch.mock.calls.find(([a]) => a.type === "setData")![0];
     expect(set.recordHistory).toBe(true);
     expect(set.data.content).toHaveLength(3);
@@ -189,7 +191,8 @@ describe("layout-library: gallery", () => {
     await openAt(0);
     fireEvent.click(screen.getByRole("radio", { name: "Whole pages" }));
     expect(screen.queryByRole("button", { name: /^Hero/ })).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: /^Services/ }));
+    // F080: the first library's pages are listed under "Simple", after the new ones.
+    fireEvent.click(within(screen.getByRole("list", { name: /^Simple/ })).getByRole("button", { name: /^Services/ }));
     const set = dispatch.mock.calls.find(([a]) => a.type === "setData")![0];
     expect(set.data.content).toHaveLength(2 + pageLayouts.find((p) => p.id === "page-services")!.sections.length);
   });

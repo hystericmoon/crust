@@ -9,6 +9,7 @@
  * it's edited. A list (a Grid's cards, a Gallery's photos) is only done when
  * you say so, because changing one card doesn't replace the others.
  */
+import { LAYOUT_PHOTO_PREFIX, layoutPhotoSrcs } from "./layout-photos";
 import { richTextToPlain } from "./rich-text";
 
 export type PlaceholderKind = "text" | "photo" | "list";
@@ -169,6 +170,29 @@ export function placeholderBadge(type: string, value: unknown): string {
 
 const same = (a: unknown, b: unknown) => a === b || JSON.stringify(a) === JSON.stringify(b);
 
+const stem = (src: string) => fileName(src).replace(/(-\d+)?\.[a-z0-9]+$/i, "");
+/**
+ * F080: the builder swapping a layout's sample photo for its copy in the
+ * Media library (sample-pool.jpg → /media/sample-pool.jpg, or -2 when the
+ * name was taken) isn't the owner replacing it, so the mark stays.
+ */
+export const isSampleCopy = (before: unknown, after: unknown): boolean =>
+  typeof before === "string" &&
+  typeof after === "string" &&
+  before.startsWith(LAYOUT_PHOTO_PREFIX) &&
+  after.startsWith("/media/") &&
+  stem(after) === stem(before);
+
+/**
+ * F080: a block still pointing at a builder sample photo (not yet copied into
+ * the Media library) can't be published: the photo isn't part of the site.
+ * Its own props only; blocks inside it are checked on their own.
+ */
+export function uncopiedSampleLabel(type: string, props: Record<string, unknown>): string {
+  const own = Object.fromEntries(Object.entries(props).filter(([, v]) => !isBlockList(v)));
+  return layoutPhotoSrcs(own).length ? `${blockName(type)} (sample photo not in your Media library yet)` : "";
+}
+
 function mapBlocks(blocks: Block[], fn: (b: Block) => Block): Block[] {
   let changed = false;
   const out = blocks.map((b) => {
@@ -215,7 +239,7 @@ export function clearEditedPlaceholders<T>(before: T, after: T): T {
     const kinds = new Map(markableFields[b.type]!.map((f) => [f.field, f.kind]));
     // Only marks that were there before the edit: undoing an edit brings its mark back.
     const before = cleanPlaceholder(b.type, prev.placeholder);
-    const left = marked.filter((f) => kinds.get(f) === "list" || !before.includes(f) || same(prev[f], b.props[f]));
+    const left = marked.filter((f) => kinds.get(f) === "list" || !before.includes(f) || same(prev[f], b.props[f]) || isSampleCopy(prev[f], b.props[f]));
     return left.length === marked.length ? b : withMark(b, left);
   }) as T;
 }
