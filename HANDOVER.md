@@ -5,7 +5,7 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 11:10 (Jakarta), F073 finished. PRs #53 (F062) and #45 (F053)
+Last updated: 2026-11-02 12:00 (Jakarta), F074 finished. PRs #53 (F062) and #45 (F053)
 **merged to main** (owner had said to merge). Then the owner said our
 templates aren't premium next to eliras/zorven/labzzy.webflow.io and
 chose **B: upgrade the design layer, "all in"**, and asked for a
@@ -48,8 +48,17 @@ fields in `apps/admin/src/sections/sections-v2-fields.tsx`
 header in `chrome-canvas.tsx`. check:layouts has `sections-v2-<look>`
 pages (`sectionsV2Samples`); check:builder screens can press buttons
 after selecting a block (`then`).
-**Next: F074 Rows and columns v2** (design snapshot first), on a new
-branch stacked on `f073-sections-v2`. Branch `f063-store-site` (PR #54) holds the comparison
+**F074 Rows and columns v2 built, passes** (branch
+`f074-rows-columns-v2`, stacked on `f073-sections-v2`; DECISIONS
+"F074"). Snapshot https://claude.ai/artifact/9mia2cufYDWGXjSPr3zYbn (A
+built). How it fits: `packages/blocks/src/columns-v2.ts` (`rowExtras`,
+`columnExtras`, `dividerModes`, `reversedFocusWarning`), Columns render
+in `config.tsx`, CSS "Rows and columns v2" in `styles.css`; builder
+fields in `apps/admin/src/sections/columns-v2-fields.tsx` (added in
+`withSectionEditing`, Widths moved to the top of the Style tab). Sample
+pages `columns-v2-<look>` in check:layouts (`columnsV2Samples`).
+**Next: F075 Motion** (design snapshot first), on a new branch stacked
+on `f074-rows-columns-v2`. Branch `f063-store-site` (PR #54) holds the comparison
 pages, the M8 write-up and a midnight test fix; no store code. Start
 F070 on a new branch from main once #54 is merged, or stack on it.
 This session can't start new sessions (chain limit): if it ends, the

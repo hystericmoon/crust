@@ -4,6 +4,17 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Columns that look designed (F074).** A Columns row's **Style** tab
+  now has **Line up** (Top, Middle, Bottom), **boxes** behind every
+  column in one of your section styles (padding S, M or L, rounded or
+  square), a **highlighted column** in another style for pricing or a
+  "most popular" choice, **dividers** between columns, **last column
+  first on phones** (so a photo leads), and **keep a column in view**
+  while a longer one scrolls past on wide screens. Advanced adds a
+  separate gap between rows. Screen readers and the Tab key always
+  follow the written order. Existing rows look the same until you use
+  these.
+
 - **Sections that reach the edge, move and overlap (F073).** A
   Section's **Style** tab now has three groups. **Layout**: width as
   Narrow, Normal, Wide, Full, or reaching the left or right edge of the

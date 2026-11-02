@@ -119,6 +119,13 @@ address of an .mp4/.webm; needs `imageSrc` as its still), `focus`
 `{ "x": 0–100, "y": 0–100 }`, `overlap` (`none`, `sm`, `md`, `lg`) and
 `headerOver` (`true`: the site header sits on it; first block only).
 
+A Columns block may carry (F074, all optional) `valign` (`top`,
+`middle`, `bottom`), `box` `{ "style": "<section style>" | "none",
+"padding": "sm" | "md" | "lg", "rounded": true }`, `highlight`
+`{ "column": 1–4, "style": "<section style>" }`, `rowGap` (a spacing
+step), `dividers` (boolean), `phoneOrder` (`normal`, `reverse`: visual
+only, reading order stays) and `sticky` (a column number).
+
 Any block's props may carry `hideOn` (optional, added with F029): a list of
 `"desktop"`, `"tablet"`, `"phone"`. A Columns block may carry `widths`
 (`{ desktop, tablet, phone }`, each a width id such as `"two-one"` or

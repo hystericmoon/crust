@@ -143,3 +143,41 @@ export function sectionsV2Samples(tokens: SiteTokens): Content {
     section("video", { background: "primary", bgKind: "video", imageSrc: "/sample.jpg", videoSrc: "/sample-loop.mp4", height: "medium", width: "full" }, words("video", "A background video")),
   ] as Content;
 }
+
+/**
+ * F074: rows using every Columns v2 option, so axe checks column boxes and
+ * the highlighted column in each style, dividers, phone order and sticky.
+ */
+export function columnsV2Samples(): Content {
+  const words = (id: string, title: string, withButton = false): Content => [
+    { type: "Heading", props: { id: `h-${id}`, text: title, level: "h3", align: "left" } },
+    { type: "Text", props: { id: `t-${id}`, text: "A short line about this column.", align: "left", tone: "default" } },
+    ...(withButton ? [{ type: "Button", props: { id: `b-${id}`, label: `Choose ${title}`, href: "/contact", variant: "primary" } }] : []),
+  ] as Content;
+  const row = (id: string, props: Record<string, unknown>, cols: Content[]) => ({
+    type: "Columns",
+    props: { id, count: String(cols.length), gap: "md", column1: cols[0] ?? [], column2: cols[1] ?? [], column3: cols[2] ?? [], column4: cols[3] ?? [], ...props },
+  });
+  const section = (id: string, background: string, content: Content) => ({ type: "Section", props: { id, background, paddingY: "lg", content } });
+  return [
+    { type: "Heading", props: { id: "h-top", text: "Rows and columns v2", level: "h1", align: "left" } },
+    ...sectionStyleIds.map((style) =>
+      section(`s-${style}`, style, [
+        { type: "Heading", props: { id: `h-${style}`, text: `Boxes on ${style}`, level: "h2", align: "left" } },
+        row(`price-${style}`, { box: { style: style === "surface" ? "background" : "surface", padding: "md", rounded: true }, highlight: { column: 2, style: style === "primary" ? "dark" : "primary" }, rowGap: "lg" }, [
+          words(`basic-${style}`, "Basic", true),
+          words(`studio-${style}`, "Studio", true),
+          words(`agency-${style}`, "Agency", true),
+        ]),
+        row(`div-${style}`, { dividers: true, valign: "middle" }, [words(`d1-${style}`, "One"), words(`d2-${style}`, "Two"), words(`d3-${style}`, "Three")]),
+      ]),
+    ),
+    section("s-order", "background", [
+      row("reverse", { phoneOrder: "reverse", valign: "middle", box: { style: "dark", padding: "lg", rounded: false } }, [
+        words("rev-text", "Photo first on phones", true),
+        [{ type: "Image", props: { id: "rev-img", src: "/sample.jpg", alt: "A sample photo", caption: "" } }] as Content,
+      ]),
+      row("sticky", { sticky: 1, dividers: true }, [words("st-1", "Stays in view"), [...words("st-2a", "Long column"), ...words("st-2b", "More"), ...words("st-2c", "And more")] as Content]),
+    ]),
+  ] as Content;
+}

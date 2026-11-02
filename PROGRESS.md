@@ -5,6 +5,14 @@ to "Log".
 
 ## Current
 
+- **F074 Rows and columns v2: built, passes** (branch
+  `f074-rows-columns-v2`, stacked on F073's PR #58). Snapshot
+  https://claude.ai/artifact/9mia2cufYDWGXjSPr3zYbn, A built. **To try**
+  on the PR's preview link: click a Card on the home page, then
+  "Columns" at the top of the settings panel → Style: Line up Middle,
+  Box behind each column Muted, Highlight 2, Dividers, Last column
+  first on phones (check at phone width), Keep in view. Screenshots
+  `design/f074-*.png`. Needs `reviewed: true`. Next: F075 Motion.
 - **F073 Sections v2: built, passes** (branch `f073-sections-v2`,
   stacked on F072's PR). Snapshot
   https://claude.ai/artifact/NK9TwfBQMN6s6LHuEAuWQi, A built. **To try**
@@ -742,3 +750,4 @@ to "Log".
   F063 Store site, from main.
 - 2026-11-02: F072 Style library finished (colourway dot class clash fixed, screenshots re-shot, DECISIONS "F072"); done_check exit 0.
 - 2026-11-02: F073 Sections v2 built (snapshot, direction A); done_check `npm test -- sections-v2 && npm run check:a11y` exit 0.
+- 2026-11-02: F074 Rows and columns v2 built (snapshot, direction A); done_check `npm test -- columns-v2 && npm run check:a11y` exit 0.

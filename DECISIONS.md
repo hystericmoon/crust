@@ -255,6 +255,40 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-02 — F074 Rows and columns v2 (Claude, reversible)
+
+- Snapshot https://claude.ai/artifact/9mia2cufYDWGXjSPr3zYbn
+  (`design/f074-rows-columns-v1.html`): A one box look for all columns
+  plus one highlighted column (built); B settings per column; C a
+  column as its own block. A keeps rows consistent by default and
+  covers the usual exception (pricing, "most popular") in a few
+  controls; B makes uneven rows easy and adds a "which column am I
+  editing" switch; C needs a migration of every saved page.
+- **Format (optional Columns props, no migration):** `valign`
+  (`top|middle|bottom`), `box` `{ style: <section style>|"none",
+  padding: sm|md|lg, rounded }`, `highlight` `{ column: 1–4, style }`,
+  `rowGap` (spacing step), `dividers` (boolean), `phoneOrder`
+  (`normal|reverse`), `sticky` (column number). A row without them
+  renders byte-for-byte as before (test).
+- Boxes and the highlight reuse the section style classes, so their
+  colours, links and buttons are the ones already contrast-checked for
+  that style. Boxes in a row are equal height (grid stretch); Line up
+  moves content inside them. Box padding is capped at M on phones.
+- **Reading order:** never changed. "Last column first on phones" only
+  sets CSS `order` below 640 px. When two or more columns hold links or
+  buttons, the field warns that the Tab key will reach them bottom to
+  top on phones (WCAG 2.4.3); one interactive column keeps its order
+  among them, so no warning.
+- **Dividers:** per screen size from the chosen widths: vertical for
+  side-by-side columns, horizontal for stacked, none for 2 + 1 wraps.
+- **Sticky column:** 1024 px and wider, below a sticky header when there
+  is one. Sections switched from `overflow: hidden` to `overflow: clip`
+  (hidden kept as the fallback line): it looks the same but no longer
+  stops sticky from working.
+- check:layouts renders a Rows and columns v2 page in all 12 looks;
+  check:builder adds two Columns Style tab screens (reached through the
+  "Columns" breadcrumb, since a row has no padding of its own to click).
+
 ## 2026-11-02 — F073 Sections v2 (Claude, reversible)
 
 - Snapshot https://claude.ai/artifact/NK9TwfBQMN6s6LHuEAuWQi

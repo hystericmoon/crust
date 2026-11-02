@@ -1,5 +1,5 @@
 export { config, sectionHeights, sectionHeightNames } from "./config";
-export type { Components, SectionProps, SectionHeight, SectionAlign, Visibility } from "./config";
+export type { Components, ColumnsProps, SectionProps, SectionHeight, SectionAlign, Visibility } from "./config";
 export {
   devices,
   deviceNames,
@@ -238,3 +238,17 @@ export {
   videoAddress,
 } from "./sections-v2";
 export type { BackgroundKind, FocalPoint, GradientDirection, OverlapSize, SectionGradient, SectionWidth } from "./sections-v2";
+export {
+  boxPaddingNames,
+  boxPaddings,
+  cleanBox,
+  cleanHighlight,
+  cleanSticky,
+  columnAlignNames,
+  columnAligns,
+  columnExtras,
+  dividerModes,
+  reversedFocusWarning,
+  rowExtras,
+} from "./columns-v2";
+export type { BoxPadding, ColumnAlign, ColumnBox, ColumnHighlight } from "./columns-v2";

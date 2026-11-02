@@ -141,3 +141,13 @@
 .sx-focus-row output { text-align: right; font-variant-numeric: tabular-nums; color: #52525b; }
 .sx-check { display: flex; align-items: center; gap: 8px; min-height: 32px; font-size: 0.875rem; font-weight: 600; color: #18181b; cursor: pointer; }
 .sx-check input { width: 18px; height: 18px; accent-color: #4338ca; }
+
+/* Rows and columns v2 (F074) */
+.sx-boxstyles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.sx-boxstyle {
+  display: flex; flex-direction: column; gap: 4px; padding: 4px; min-height: 44px;
+  border: 1.5px solid #d4d4d8; border-radius: 8px; background: #fff; color: #18181b; font: inherit; font-size: 0.75rem; cursor: pointer;
+}
+.sx-boxstyle .sx-swatch { height: 28px; padding: 5px; }
+.sx-boxstyle[aria-checked="true"] { border: 2px solid #4338ca; padding: 3.5px; }
+.sx-box-none { display: block; height: 28px; border-radius: 6px; border: 1px dashed #a1a1aa; background: repeating-linear-gradient(45deg, transparent 0 5px, #f4f4f5 5px 7px); }

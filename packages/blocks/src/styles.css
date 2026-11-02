@@ -28,6 +28,8 @@
   background: var(--cr-sec-bg, var(--cr-color-background));
   color: var(--cr-sec-ink, var(--cr-color-text));
   overflow: hidden;
+  /* F074: clip looks the same, but doesn't stop a sticky column from sticking. */
+  overflow: clip;
 }
 .cr-section > .cr-container { position: relative; width: 100%; }
 .cr-height-medium { min-height: 50vh; min-height: 50svh; }
@@ -195,6 +197,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--cr-columns-gap, var(--cr-space-md));
+  row-gap: var(--cr-columns-row-gap, var(--cr-columns-gap, var(--cr-space-md)));
   margin: 0 0 var(--cr-space-sm);
 }
 .cr-column { display: flex; flex-direction: column; min-width: 0; }
@@ -208,6 +211,43 @@
 @media (min-width: 640px) {
   .cr-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+/* Rows and columns v2 (F074) */
+.cr-column-box { padding: var(--cr-column-pad, var(--cr-space-md)); background: var(--cr-sec-bg); color: var(--cr-sec-ink); }
+.cr-column-rounded { border-radius: var(--cr-radius); }
+.cr-line-middle > .cr-column { justify-content: center; }
+.cr-line-bottom > .cr-column { justify-content: flex-end; }
+/* Dividers: a line in the middle of the gap, vertical beside, horizontal above; per screen, from the chosen widths. */
+.cr-dividers > .cr-column { position: relative; }
+.cr-dividers > .cr-column + .cr-column::before { content: ""; position: absolute; display: none; background: currentColor; opacity: 0.2; pointer-events: none; }
+@media (max-width: 639.98px) {
+  .cr-div-p-v > .cr-column + .cr-column::before { display: block; top: 0; bottom: 0; width: 1px; left: calc(var(--cr-columns-gap, var(--cr-space-md)) / -2); }
+  .cr-div-p-h > .cr-column + .cr-column::before { display: block; left: 0; right: 0; height: 1px; top: calc(var(--cr-columns-row-gap, var(--cr-columns-gap, var(--cr-space-md))) / -2); }
+  /* Big box padding would squeeze the words on a phone. */
+  .cr-column-box { padding: min(var(--cr-column-pad, var(--cr-space-md)), var(--cr-space-md)); }
+  /* Photo first on phones: only where it shows; the HTML (reading and Tab order) stays as written. */
+  .cr-phone-reverse > .cr-column:nth-child(1) { order: 4; }
+  .cr-phone-reverse > .cr-column:nth-child(2) { order: 3; }
+  .cr-phone-reverse > .cr-column:nth-child(3) { order: 2; }
+  .cr-phone-reverse > .cr-column:nth-child(4) { order: 1; }
+}
+@media (min-width: 640px) and (max-width: 1023.98px) {
+  .cr-div-t-v > .cr-column + .cr-column::before { display: block; top: 0; bottom: 0; width: 1px; left: calc(var(--cr-columns-gap, var(--cr-space-md)) / -2); }
+  .cr-div-t-h > .cr-column + .cr-column::before { display: block; left: 0; right: 0; height: 1px; top: calc(var(--cr-columns-row-gap, var(--cr-columns-gap, var(--cr-space-md))) / -2); }
+}
+@media (min-width: 1024px) {
+  .cr-div-d-v > .cr-column + .cr-column::before { display: block; top: 0; bottom: 0; width: 1px; left: calc(var(--cr-columns-gap, var(--cr-space-md)) / -2); }
+  .cr-div-d-h > .cr-column + .cr-column::before { display: block; left: 0; right: 0; height: 1px; top: calc(var(--cr-columns-row-gap, var(--cr-columns-gap, var(--cr-space-md))) / -2); }
+  /* Keep a column in view while the other scrolls (wide screens only), below a sticky header. */
+  .cr-sticky-col-1 > .cr-column:nth-child(1), .cr-sticky-col-2 > .cr-column:nth-child(2),
+  .cr-sticky-col-3 > .cr-column:nth-child(3), .cr-sticky-col-4 > .cr-column:nth-child(4) {
+    position: sticky; top: var(--cr-space-md); align-self: start;
+  }
+  .cr-has-sticky .cr-sticky-col-1 > .cr-column:nth-child(1), .cr-has-sticky .cr-sticky-col-2 > .cr-column:nth-child(2),
+  .cr-has-sticky .cr-sticky-col-3 > .cr-column:nth-child(3), .cr-has-sticky .cr-sticky-col-4 > .cr-column:nth-child(4) {
+    top: calc(64px + var(--cr-space-md));
+  }
+}
+
 @media (min-width: 1024px) {
   .cr-columns-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .cr-columns-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }

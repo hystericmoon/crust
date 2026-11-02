@@ -84,7 +84,7 @@ describe("settings-tabs: where each setting lives", () => {
     setTab("style");
     expect(shown("Heading")).toEqual(["_tabs", "align", "size"]);
     setTab("advanced");
-    expect(shown("Columns")).toEqual(["_tabs", "gap", "column1", "column2", "column3", "column4", "hideOn", "anchor"]);
+    expect(shown("Columns")).toEqual(["_tabs", "gap", "rowGap", "column1", "column2", "column3", "column4", "hideOn", "anchor"]);
   });
 
   it("says so when a tab has nothing for this block", () => {
