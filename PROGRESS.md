@@ -5,7 +5,7 @@ to "Log".
 
 ## Current
 
-- **F076 Header and footer v2: built** (branch `f076-header-footer`,
+- **F076 Header and footer v2: built, passes** (branch `f076-header-footer`,
   from main after F075 was merged as PR #61, owner: "Merge it").
   Snapshot https://claude.ai/artifact/MQpL3LHaxEQW9r3KsWEygz, A built.
   **To try** on the PR's preview link: Site settings → Header & menu:
