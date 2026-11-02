@@ -806,7 +806,7 @@
       "description": "Design snapshot first. Six header layouts, transparent over the hero, dropdown submenus, slide-in phone menu, top bar; the footer built from blocks as a linked section. Keyboard and screen reader tested. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F071"],
       "done_check": "npm test -- header-v2 && npm run check:a11y && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

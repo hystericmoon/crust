@@ -1,4 +1,5 @@
-import { checkPost, config, countPlaceholders, defaultBlog, migrateChrome, tokensToCss, type BlogSettings, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
+import { checkPost, config, countPlaceholders, defaultBlog, migrateChrome, tokensToCss,
+  HEADER_V2_CSS, type BlogSettings, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
 import { relinkPage } from "@crust/blocks/links";
 import { Puck, useGetPuck, type Data } from "@puckeditor/core";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -217,7 +218,8 @@ export function App() {
   const [addressDraft, setAddressDraft] = useState(savedAddress);
   const [githubOn, setGithubOn] = useState<boolean | null>(null);
   // The builder shows unsaved token edits too, so switching screens loses nothing.
-  useTokenStyles(useMemo(() => tokensToCss(draft), [draft]));
+  // F076: the builder always has the header and footer v2 CSS (published pages only when used).
+  useTokenStyles(useMemo(() => `${tokensToCss(draft)}\n${HEADER_V2_CSS}`, [draft]));
 
   useEffect(() => {
     void getStatus().then((s) => setGithubOn(s.ok && s.configured));
@@ -275,6 +277,8 @@ export function App() {
     return (
       // My layouts are here too: a theme pack can carry them (F033).
       <MyLayoutsProvider githubOn={!!githubOn}>
+        {/* F076: a footer built from blocks is a linked section. */}
+        <LinkedSectionsProvider githubOn={!!githubOn}>
         <SiteSettings
           headerLink={shortcut("st-button st-link-button")}
           site={site}
@@ -298,6 +302,7 @@ export function App() {
           templateLoader={githubOn ? githubLoader : bundledLoader}
           githubOn={githubOn === true}
         />
+        </LinkedSectionsProvider>
         <MediaPicker />
       </MyLayoutsProvider>
     );

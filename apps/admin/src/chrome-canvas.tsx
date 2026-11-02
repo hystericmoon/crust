@@ -3,9 +3,10 @@
  * designed in context. They're edited in Site settings, so here they're a
  * picture: inert (no focus, no clicks) with a link to where they're edited.
  */
-import { headerOverStyle, SiteFooterView, SiteHeaderView, type Components, type SectionStyleId, type SiteChrome } from "@crust/blocks";
+import { headerOverStyle, heroStyle, SiteFooterView, SiteHeaderView, type Components, type SectionStyleId, type SiteChrome } from "@crust/blocks";
 import { createUsePuck, type Config, type Data } from "@puckeditor/core";
 import { createContext, useContext, type ReactNode } from "react";
+import { sectionHtml, useLinkedSections } from "./linked/store";
 
 const usePuckSelector = createUsePuck();
 
@@ -13,8 +14,13 @@ export const SiteChromeContext = createContext<{ chrome: SiteChrome; siteName: s
 
 function Chrome({ part, over }: { part: "header" | "footer"; over?: SectionStyleId }) {
   const ctx = useContext(SiteChromeContext);
+  const linked = useLinkedSections();
   if (!ctx) return null;
-  const view =
+  // F076: a footer built from blocks shows its linked section, as published.
+  const blocks = part === "footer" && ctx.chrome.footer.kind === "blocks" ? linked.get(ctx.chrome.footer.section ?? "") : undefined;
+  const view = blocks ? (
+    <footer className="cr-site-footer cr-footer-blocks" dangerouslySetInnerHTML={{ __html: sectionHtml(blocks.content) }} />
+  ) :
     part === "header" ? (
       <SiteHeaderView header={ctx.chrome.header} path={ctx.path} over={over} />
     ) : (
@@ -22,7 +28,7 @@ function Chrome({ part, over }: { part: "header" | "footer"; over?: SectionStyle
     );
   if (!(part === "header" ? ctx.chrome.header.show : ctx.chrome.footer.show)) return null;
   return (
-    <div className={over ? "cc-chrome is-over" : "cc-chrome"} data-part={part === "header" ? "Site header · edit in Site settings" : "Site footer · edit in Site settings"}>
+    <div className={over ? "cc-chrome is-over" : "cc-chrome"} data-part={part === "header" ? "Site header · edit in Site settings" : blocks ? `Site footer · linked section “${blocks.name}”` : "Site footer · edit in Site settings"}>
       <div inert aria-hidden="true">
         {view}
       </div>
@@ -34,7 +40,8 @@ function Chrome({ part, over }: { part: "header" | "footer"; over?: SectionStyle
 function CanvasPage({ children }: { children: ReactNode }) {
   const ctx = useContext(SiteChromeContext);
   const content = usePuckSelector((s) => (s.appState.data as Data).content);
-  const style = headerOverStyle(content);
+  // F076: "Clear on a hero photo" sits the header on a first section with a photo or video.
+  const style = headerOverStyle(content) ?? (ctx?.chrome.header.overHero ? heroStyle(content) : null);
   const over = style && ctx?.chrome.header.show ? style : undefined;
   return (
     <div className={over ? "cr-page cc-page cr-page-header-over" : "cr-page cc-page"}>

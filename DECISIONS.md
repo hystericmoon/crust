@@ -5,6 +5,8 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 
 ## Proposals
 
+- **Footer section in use (from F076).** Count the footer as a use of its linked section, so Layouts → Linked sections won't delete it while the footer shows it (today publishing stops with a clear message instead). Small.
+
 - **Video uploads (from F073).** Background videos are linked by address for now. Uploading them to the media library would need size limits (a 10 s loop is 2–8 MB) and maybe Git LFS or Cloudflare R2, which may cost money. Owner's call.
 - **Gradient check at publish (from F073).** Let F083's stricter template check (or publishing) stop on a Section gradient that no longer keeps text readable after a colour change.
 
@@ -254,6 +256,60 @@ Features Claude suggests. They are not work until the owner adds them to
   the redirects and Crust's 404 page. Small (M). Only helps Apache hosts
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
+
+## 2026-11-02 — F076 Header and footer v2 (Claude, reversible)
+
+- Snapshot https://claude.ai/artifact/MQpL3LHaxEQW9r3KsWEygz
+  (`design/f076-header-footer-v1.html`): A layout pictures + the menu
+  list with nesting buttons + a footer from blocks (built); B header and
+  footer both from blocks (YOOtheme style); C finished header presets.
+  A makes the biggest choice one recognisable picture, keeps the menu
+  keyboard-editable (no dragging) and keeps the header structured, so
+  landmarks, skip link, phone menu and sticky offsets stay guaranteed;
+  B's freedom makes a broken header easy; C can be added on top of A.
+- **Format (optional, no migration):** `header.layout`, menu items'
+  `children` (one level, 8 max; a parent's `href` may be empty),
+  `header.overHero`, `header.topBar`, `footer.kind`/`footer.section`.
+  A classic header without dropdowns renders byte-for-byte as before,
+  including its fold-down phone menu (test).
+- **Dropdowns:** `<details name="cr-menu">` (a real button with
+  expanded state, one open at a time natively). The parent's own page,
+  if it has one, is the first link inside. Hover never opens them
+  (hover-only menus fail touch and keyboard, and open by accident). A
+  ~350-byte module script, only on pages whose header has a dropdown,
+  adds Escape (focus back to the button) and click-outside closing;
+  everything works without it. In the phone menu, dropdowns are
+  indented lists under their label (no second button to press).
+- **Phone panel:** for the new layouts and any menu with dropdowns.
+  Still `<details>`: when open, the summary's `::before` dims the page
+  (a click there closes it, since it's part of the button) and its
+  "Close" label is fixed above the panel, so no script is needed.
+  Slides in with `@starting-style`, not under Reduce motion.
+- **Split:** the logo sits inside the nav between the two halves, so
+  reading and Tab order match what's seen; the phone row keeps its own
+  logo. **Menu button only:** the button stays beside Menu.
+- **Clear on a hero photo:** only a first section with a photo or video
+  background (its tint keeps the header's words readable; gradients
+  and plain colours don't qualify). A section's own "Header sits on
+  this section" still works. Header room (`--cr-header-room`): 64 px,
+  112 for Logo on top, +36 with a top bar; used for the hero's top
+  padding, sticky columns and scroll padding.
+- **Footer from blocks:** a linked section (F043), so it gets the
+  builder, contrast and heading checks. "Make one from my simple
+  footer" builds a Section in the footer's style: the text, then each
+  column as an h2 and a list of links. The simple columns are kept for
+  switching back; the copyright line stays under the blocks. A missing
+  section stops the publish naming the fix; previews without the
+  sections fall back to the simple footer. Known gap: deleting the
+  linked section isn't blocked while the footer uses it (see Proposals).
+- **CSS only where used:** the F076 CSS (~5 KB) lives in
+  `header-v2-css.ts` and is added to published pages only when the site
+  uses a new layout, a dropdown, the top bar or a footer from blocks
+  (the builder always has it). With it in the base CSS, Lighthouse
+  scored Corner's home page 94 ("Reduce unused CSS") in CI.
+- check:layouts renders `header-v2-<layout>` pages (each layout, a
+  dropdown, top bar on two, clear on hero on three, footer from blocks
+  on three).
 
 ## 2026-11-02 — F075 Motion (Claude, reversible)
 

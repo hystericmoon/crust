@@ -365,3 +365,20 @@ body:has(.st) { margin: 0; }
 }
 .crust-header-link:hover { background: #f4f4f5; }
 .crust-header-link:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
+
+/* F076: header layout pictures, menu dropdowns */
+.st-layouts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.st-layout-pic { flex-direction: column; gap: 4px; padding: 8px; }
+.st-layout-row { display: flex; align-items: center; gap: 3px; width: 100%; }
+.st-layout-row i { display: block; height: 6px; border-radius: 2px; background: #52525b; }
+.st-layout-row i.is-logo { width: 14px; height: 8px; background: #18181b; }
+.st-layout-row i.is-menu { width: 22px; background: repeating-linear-gradient(90deg, #71717a 0 5px, transparent 5px 7px); }
+.st-layout-row i.is-button { width: 12px; height: 8px; background: #4338ca; border-radius: 3px; }
+.st-layout-row i.is-burger { width: 10px; height: 8px; background: none; border-block: 2px solid #52525b; }
+.st-layout-gap { flex: 1; }
+.st-layout-row:only-child .st-layout-gap:only-of-type { flex: 1; }
+.st-menu-children { grid-column: 1 / -1; margin: 6px 0 0 24px; padding-left: 10px; border-left: 2px solid #d4d4d8; }
+.st-menu-child { background: #fafafa; }
+.st-icon-button.st-text-button { width: auto; padding: 0 8px; font-size: 0.75rem; white-space: nowrap; }
+.st-footer-blocks { display: grid; gap: 8px; margin-top: 8px; }
+.st-links .st-link-actions { flex-wrap: wrap; }

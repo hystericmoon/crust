@@ -192,6 +192,22 @@ export function headerOverStyle(content: unknown): SectionStyleId | null {
   return (first.props.background as SectionStyleId) ?? "background";
 }
 
+/**
+ * F076: the style of a page's first section when it has a photo or video
+ * background (and shows on every screen), for "Clear on a hero photo".
+ * The section's tint keeps the header's words readable, as for its own.
+ */
+export function heroStyle(content: unknown): SectionStyleId | null {
+  if (!Array.isArray(content)) return null;
+  const first = content[0] as { type?: unknown; props?: Record<string, unknown> } | undefined;
+  if (first?.type !== "Section" || !first.props) return null;
+  const hide = first.props.hideOn;
+  if (Array.isArray(hide) && hide.length) return null;
+  const kind = backgroundKindOf(first.props as { bgKind?: BackgroundKind; imageSrc?: string });
+  if ((kind !== "photo" && kind !== "video") || typeof first.props.imageSrc !== "string" || !first.props.imageSrc.trim()) return null;
+  return (first.props.background as SectionStyleId) ?? "background";
+}
+
 /** Only a page's first block may carry the header; the flag is dropped from any other (e.g. a section moved down). */
 export function onlyFirstHeaderOver<T extends { props?: Record<string, unknown> }>(content: T[]): T[] {
   return content.map((b, i) => (i > 0 && b.props?.headerOver === true ? { ...b, props: { ...b.props, headerOver: false } } : b));
