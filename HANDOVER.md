@@ -25,8 +25,9 @@ seeds a post `check-blocks` (ids must start with the block type for
 Slideshow, Card slider, Tabs, Lightbox, Map** (design snapshot first;
 done_check `npm test -- interactive && npm run check:a11y && npm run
 check:perf`), on a new branch from main once F078 is merged, or stacked.
-Sessions: the owner starts them by hand ("Read HANDOVER.md on branch
-main and continue"); the new session archives the previous Crust one.
+Sessions: from now on one session, reset with `/clear` between
+features (owner, 2026-11-02); after a clear the owner sends "Read
+HANDOVER.md on branch <branch> and continue".
 
 Earlier (~19:00): **F077 Icons, Divider,
 Social built, passes** (branch `f077-icons`, from main; done_check
@@ -125,31 +126,25 @@ This session can't start new sessions (chain limit): if it ends, the
 owner starts a fresh one with "Read HANDOVER.md on branch
 f063-store-site and continue".
 
-## How sessions work (owner's rule, 2026-10-30)
+## How sessions work (owner's rule, updated 2026-11-02)
 
-The owner said: work in a single session; when a task is finished or the
-session is getting full, start a new session and close the previous one;
-always write the information down somewhere. So:
+The owner said (2026-11-02): "Let's use clear instead of creating new
+sessions moving forward." So the work stays in **one Crust session**,
+and its context is reset with `/clear` instead of starting new sessions:
 
-1. **One session at a time.** Only the newest Crust session works. When a
-   session starts, it archives the session that created it
-   (`archive_session`, the parent named in the handover prompt) and any
-   other idle Crust session still open. Never archive sessions of other
-   projects (Adwam, Whittle, OpenRef, Smol).
-   **Limit found 2026-10-31:** a chain of sessions, each started by the
-   one before, stops at depth 8. The F048 session was at the limit, so
-   it could not start the next session or set reminders (send_later). If
-   `create_session` is refused, tell the owner to start a fresh Claude
-   Code session on the crust repo with the prompt from step 2; that
-   resets the chain.
-2. **Write first, then move.** After each finished feature (or when the
+1. **One session, cleared between features.** Don't call
+   `create_session` to hand over, and don't archive the current session.
+   (The old rule chained new sessions; the chain stopped at depth 8.)
+2. **Write first, then clear.** After each finished feature (or when the
    context is getting long): commit and push, update this file,
-   PROGRESS.md and CHANGELOG.md, then create the next session
-   (`create_session`) with a short prompt that says "Read HANDOVER.md on
-   branch <branch> and continue", plus anything not yet written here.
-3. **Tell the owner** in plain language what was finished, what he can
-   try, and that a new session took over (with its title).
-4. Never stop without doing 2 and 3. "Keep on continuing, don't stop."
+   PROGRESS.md and CHANGELOG.md, so a cleared context can pick up from
+   here. Then tell the owner it's ready for `/clear`.
+3. **After a clear,** the owner sends "Read HANDOVER.md on branch
+   <branch> and continue" in the same session; the session starts from
+   this file as before.
+4. **Tell the owner** in plain language what was finished and what he
+   can try. Never stop without doing 2 and 4. "Keep on continuing,
+   don't stop."
 
 ## The owner
 
