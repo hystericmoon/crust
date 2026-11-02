@@ -38,29 +38,43 @@ export interface IconPickerProps {
   classic?: boolean;
   /** Read after the label, for lists ("Line 2"). */
   context?: string;
+  /** F078: offer "Numbers" (a numbered list) at the start of the list marks. */
+  numbers?: boolean;
 }
+
+/** F078: the Icon list's numbered look, stored as the icon "numbers". */
+export const NUMBERS_OPTION = "numbers";
+const NumbersGlyph = () => (
+  <span className="ic-numbers" aria-hidden="true">
+    1 2 3
+  </span>
+);
 
 const classicLabel = (name: string) => `${listIconNames[name as keyof typeof listIconNames]} (list mark)`;
 const isClassic = (name: string) => (listIcons as readonly string[]).includes(name);
 
-export function IconPicker({ label, value, onChange, optional = false, classic = false, context }: IconPickerProps) {
+export function IconPicker({ label, value, onChange, optional = false, classic = false, context, numbers = false }: IconPickerProps) {
   const id = useId();
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<Category>(() => (classic && (!value || isClassic(value)) ? "classic" : "all"));
+  const isMark = (n: string) => isClassic(n) || (numbers && n === NUMBERS_OPTION);
+  const [category, setCategory] = useState<Category>(() => (classic && (!value || isMark(value)) ? "classic" : "all"));
   const grid = useRef<HTMLDivElement>(null);
   const [focusIndex, setFocusIndex] = useState<number | null>(null);
 
   const names = useMemo(() => {
-    if (category === "classic" && !query.trim()) return [...listIcons] as string[];
-    return searchIcons(query, category === "classic" ? "all" : category);
-  }, [query, category]);
+    if (category === "classic" && !query.trim()) return [...(numbers ? [NUMBERS_OPTION] : []), ...listIcons] as string[];
+    const found = searchIcons(query, category === "classic" ? "all" : category);
+    // "number", "steps", "1": the numbered look comes first.
+    return numbers && /^(?:n(?:u(?:m(?:b(?:e(?:r(?:s|ed)?)?)?)?)?)?|steps?|order|1)$/i.test(query.trim()) ? [NUMBERS_OPTION, ...found] : found;
+  }, [query, category, numbers]);
   const options = optional && !query.trim() ? ["", ...names] : names;
   const current = options.indexOf(value);
   // The Tab stop: the last focused icon, else the chosen one, else the first.
   const tabIndexAt = focusIndex !== null && focusIndex < options.length ? focusIndex : current >= 0 ? current : 0;
 
-  const nameOf = (n: string) => (n === "" ? "No icon" : classic && isClassic(n) ? classicLabel(n) : iconLabel(n));
-  const picked = value && (isIconName(value) || (classic && isClassic(value))) ? nameOf(value) : optional ? "No icon" : "None";
+  const nameOf = (n: string) =>
+    n === "" ? "No icon" : numbers && n === NUMBERS_OPTION ? "Numbers 1, 2, 3 (numbered list)" : classic && isClassic(n) ? classicLabel(n) : iconLabel(n);
+  const picked = value && (isIconName(value) || (classic && isMark(value))) ? nameOf(value) : optional ? "No icon" : "None";
 
   const move = (to: number) => {
     const next = Math.max(0, Math.min(options.length - 1, to));
@@ -142,6 +156,8 @@ export function IconPicker({ label, value, onChange, optional = false, classic =
             >
               {n === "" ? (
                 <span className="ic-none" aria-hidden="true" />
+              ) : numbers && n === NUMBERS_OPTION ? (
+                <NumbersGlyph />
               ) : classic && isClassic(n) ? (
                 <ListIconSvg icon={n} />
               ) : (

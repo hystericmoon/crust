@@ -257,6 +257,86 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-02 — F078 Stats, Video, Table and Pricing, Numbered list (Claude, reversible)
+
+Snapshot https://claude.ai/artifact/X3bMNKoE6MCU7EqbLJx2mk
+(`design/f078-blocks-v3-v1.html`); the owner hadn't picked, so the
+recommendations were built: A for all three choices.
+
+- **Video, YouTube and Vimeo: your own cover, player only on press (A).**
+  The published page holds a link to the video with the cover photo and
+  a play button; nothing is requested from YouTube or Vimeo until it's
+  pressed (no cookies, no tracking, speed score unaffected). Then a
+  ~400-byte script (only on pages with such a video) swaps in the
+  player: `youtube-nocookie.com` with captions on (`cc_load_policy=1`),
+  Vimeo with `dnt=1`, and moves focus into it. Without JavaScript the
+  link opens the video's own page. B (YouTube's thumbnail) was turned
+  down because every visit would ask YouTube's servers for it; C (files
+  only) because most people already host on YouTube or Vimeo. The play
+  label sits on a dark plate (rgba 0,0,0,.78, at least 9:1 with white on
+  any cover), per the M8 "text on photos gets a scrim" rule.
+- **Video files:** the browser's own player, `preload="none"` (nothing
+  downloads until play), poster from the cover, a `<track
+  kind="captions">` from a .vtt address. No autoplay ever. Like Section
+  videos, files are linked by address (no upload yet; see Proposals
+  "Video uploads"). A captions file on another site would need that site
+  to allow it (CORS); a site-relative .vtt always works. No `srclang`:
+  the block doesn't know the site language and captions don't require it.
+- **Addresses** are parsed strictly: https only, known hosts (youtube.com,
+  m., music., youtube-nocookie.com, youtu.be; vimeo.com,
+  player.vimeo.com), an 11-character YouTube id, a numeric Vimeo id (plus
+  the unlisted-video hash). "youtube.com/watch?v=…" without https:// is
+  accepted, since people paste it. Start times (`t=1m30s`) carry over.
+- **Table: a grid of cells in the panel, plus paste (A).** Text boxes
+  laid out as the table, buttons to add/move/remove rows and columns
+  (they act on the last cell you were in), Enter/Up/Down move between
+  rows, Enter in the last row adds one, and pasting cells copied from a
+  spreadsheet fills the grid from that cell (tabs and new lines, quoted
+  cells understood; commas aren't split, they're normal in prices).
+  Limits 50 rows × 8 columns × 300 characters. Cells are plain text.
+- **Table on phones: scrolls sideways (recommended).** The table sits in
+  a focusable region named by its title (WCAG 2.1.1; axe
+  `scrollable-region-focusable`); with "Top row and first column" the
+  first column stays put (sticky). Stacked cards were turned down: CSS
+  that turns a table into cards removes table semantics in Safari.
+  An empty top-left cell is a `<td>`, not an empty header. Cells that are
+  figures ("€49", "1,200", "12%") align right with tabular numbers.
+- **Pricing: plan cards (A).** Each plan is a list item, its name a
+  heading (level chosen, H3 by default), price and period as text ("€49
+  per month"). Plans use a section style (Muted by default), the
+  highlighted one another (Primary by default), so colours and the
+  button stay contrast-checked by the section styles. The highlight has
+  a written badge (WCAG 1.4.1): in the HTML it comes after the name, so
+  heading navigation lands on the name, and CSS shows it above. Buttons
+  default to "Choose <plan>" (WCAG 2.4.4). A comparison table is the
+  Table block's job (B); price lists (C) could become a look later.
+  **Changed from the snapshot:** the highlighted plan doesn't move first
+  on phones; visual order then wouldn't match reading and Tab order
+  (WCAG 1.3.2, 2.4.3).
+- **Stats:** a list of figures, each item read as one phrase ("300+
+  projects finished"); figures in the heading font, accent colour
+  optional (the accent is AA-checked against the section). No count-up
+  animation: a moving number is unreadable while it runs and screen
+  readers get nothing from it. Boxes use a 6% tint of the text colour,
+  so they work on every section style; their extra line uses the text
+  colour, not the muted one, to keep 4.5:1 on the tint.
+- **Numbered list:** a "Numbers" option first among the Icon list's
+  marks (in the picker; search "steps" or "number" too), stored as
+  `icon: "numbers"` with `numberStyle`. Published as `<ol role="list">`
+  with the numbers as text (In a circle, Large "01" in the heading font,
+  Plain "1."). Not a separate block: it's the same list, so switching
+  back and forth keeps the lines.
+- **Builder:** "Number look" shows only with Numbers, the badge and its
+  colours only with a highlighted plan, the captions field only for
+  video files (`blockFieldShown`, next to F073's `sectionFieldShown`).
+  Under a Video's address the builder says what it found and what's
+  missing (a title; captions for a file with speech; a cover).
+- **CSS only where used:** `blocks-v3-css.ts` (`BLOCKS_V3_CSS`,
+  `needsBlocksV3Css`), like F076 and F077, so pages without these blocks
+  stay as light as before. Plan buttons are relinked when a page is
+  renamed (`ITEM_LINK_PROPS.Pricing`). Phone quick edit covers Stats,
+  Video, Table titles and Pricing words.
+
 ## 2026-11-02 — F077 Icons, Divider, Social (Claude, reversible)
 
 Direction A of https://claude.ai/artifact/8o1uPhHmTBd9hgkzmx1pU2

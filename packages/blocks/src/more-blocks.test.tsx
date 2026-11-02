@@ -20,7 +20,8 @@ describe("more blocks: in the builder", () => {
   it("are all in the block list, under Layout, Content or Media", () => {
     const listed = Object.values(config.categories ?? {}).flatMap((c) => c.components ?? []);
     for (const name of newBlocks) expect(listed).toContain(name);
-    expect(config.categories?.media?.components).toEqual(["Gallery", "ImageOverlay", "LogoRow"]);
+    // F078 added Video.
+    expect(config.categories?.media?.components).toEqual(["Gallery", "Video", "ImageOverlay", "LogoRow"]);
   });
 
   it("render with their defaults, with no script and no inline handlers", () => {

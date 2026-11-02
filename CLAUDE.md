@@ -24,10 +24,11 @@ reasoning on UX decisions.
    the owner should test) and `CHANGELOG.md`.
 6. Visual/UX items also have `needs_review: true`; only the owner sets
    `reviewed: true` after testing the preview link.
-7. Update `HANDOVER.md`, then hand over: one session works at a time. When
-   a feature is done or the session is getting full, start a new session
-   pointing at `HANDOVER.md`, and the new session archives the old one
-   (see `HANDOVER.md`, "How sessions work").
+7. Update `HANDOVER.md`, then hand over: one session works at a time,
+   and between features its context is reset with `/clear` (owner,
+   2026-11-02), not by starting a new session. After a clear the owner
+   sends "Read HANDOVER.md on branch <branch> and continue" (see
+   `HANDOVER.md`, "How sessions work").
 
 ## Decision policy
 

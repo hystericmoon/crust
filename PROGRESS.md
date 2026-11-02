@@ -5,6 +5,23 @@ to "Log".
 
 ## Current
 
+- **F078 Stats, Video, Table and Pricing, Numbered list: built, passes**
+  (branch `ccr-d50f7e80-weuq18`, from main after F077 was merged as PR
+  #63). Snapshot https://claude.ai/artifact/X3bMNKoE6MCU7EqbLJx2mk, A
+  built for all three choices (one change: the highlighted plan keeps
+  its place on phones, so reading order matches). done_check `npm test
+  -- blocks-v3 && npm run check:a11y` exit 0. **To try** on the PR's
+  preview link: in the builder add **Stats** (Content), switch its Look
+  in the Style tab; add a **Video** (Media) and paste a YouTube link,
+  then give it a title and a cover photo, and read the notes under the
+  address; add a **Table** (Content): type in the grid, use Add row /
+  Add column, and paste a few cells copied from Numbers or Google
+  Sheets into a cell; add **Pricing** (Content) and pick which plan to
+  highlight in the Style tab; on an **Icon list** pick "Numbers" first
+  in the icon list, then a Number look. Screenshots
+  `design/f078-*.png`. Needs `reviewed: true`. Next: F079 Slideshow,
+  Card slider, Tabs, Lightbox, Map.
+
 - **F077 Icons, Divider, Social: built, passes** (branch `f077-icons`,
   from main). Snapshot https://claude.ai/artifact/8o1uPhHmTBd9hgkzmx1pU2,
   A built. **To try** on the PR's preview link: in the builder add an

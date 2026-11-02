@@ -4,6 +4,20 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Stats, Video, Table, Pricing and numbered lists (F078).** A **Stats**
+  block shows two to six big figures with what they count ("300+
+  projects finished"), plain, with lines between, or in boxes. A
+  **Video** block takes a YouTube or Vimeo link or your own .mp4: it
+  shows your cover photo with a play button, and nothing loads from
+  YouTube or Vimeo until a visitor presses play. Your own videos can
+  have a captions file. A **Table** block is edited as a grid of cells
+  in the side panel; paste cells copied from Numbers, Excel or Google
+  Sheets to fill it. On phones the table scrolls sideways with the
+  first column kept in view. A **Pricing** block shows up to four plans
+  as cards, one highlighted with a badge ("Most popular"). **Icon
+  lists** can now be numbered (Numbers, in a circle, large "01" or
+  plain "1.").
+
 - **Icons, Divider and Social links (F077).** A new **Icon** block: pick
   from about 150 icons by searching what you mean ("food", "phone",
   "delivery") or by category; show it plain, in a circle or in a square,

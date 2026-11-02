@@ -39,6 +39,7 @@ import {
 import type { SpacingStep } from "./tokens";
 import { ContactForm, type ContactFormProps } from "./contact-form";
 import { IconMark, iconBlocks, type DividerProps, type IconProps, type SocialLinksProps } from "./icon-blocks";
+import { blocksV3, type PricingProps, type StatsProps, type TableProps, type VideoProps } from "./blocks-v3";
 import { IconSvg, isIconName } from "./icons";
 import { LinkedSection, type LinkedSectionProps } from "./linked-section-block";
 import { placeholderBadge, placeholderLabel } from "./placeholders";
@@ -146,6 +147,10 @@ export type Components = {
   Icon: IconProps & Visibility;
   Divider: DividerProps & Visibility;
   SocialLinks: SocialLinksProps & Visibility;
+  Stats: StatsProps & Visibility;
+  Video: VideoProps & Visibility;
+  Table: TableProps & Visibility;
+  Pricing: PricingProps & Visibility;
   LinkedSection: LinkedSectionProps & Visibility;
 };
 
@@ -176,8 +181,8 @@ const blocks: Config<Components> = {
   },
   categories: {
     layout: { title: "Layout", components: ["Section", "Columns", "Grid", "Spacer", "Divider"] },
-    content: { title: "Content", components: ["Heading", "Text", "Image", "Button", "Card", "Icon", "IconList", "Quote", "Accordion", "SocialLinks"] },
-    media: { title: "Media", components: ["Gallery", "ImageOverlay", "LogoRow"] },
+    content: { title: "Content", components: ["Heading", "Text", "Image", "Button", "Card", "Icon", "IconList", "Stats", "Table", "Pricing", "Quote", "Accordion", "SocialLinks"] },
+    media: { title: "Media", components: ["Gallery", "Video", "ImageOverlay", "LogoRow"] },
     forms: { title: "Forms", components: ["ContactForm"] },
     // F043: added through Layouts → Linked sections, not from the block list.
     linked: { title: "Linked", components: ["LinkedSection"], visible: false },
@@ -601,6 +606,7 @@ const blocks: Config<Components> = {
     ...(moreBlocks as unknown as Pick<Config<Components>["components"], keyof typeof moreBlocks>),
     ContactForm: ContactForm as unknown as Config<Components>["components"]["ContactForm"],
     ...(iconBlocks as unknown as Pick<Config<Components>["components"], keyof typeof iconBlocks>),
+    ...(blocksV3 as unknown as Pick<Config<Components>["components"], keyof typeof blocksV3>),
     LinkedSection: LinkedSection as unknown as Config<Components>["components"]["LinkedSection"],
   },
 };

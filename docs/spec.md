@@ -139,6 +139,24 @@ F077: a Card's `icon` (shown when it has no photo), a Button's `icon` and
 Icon list's `icon` may now be any icon name besides the six classic
 marks. An Icon with an `href` needs a `label`, or publishing stops.
 
+F078 adds four blocks (all props optional for pages made before):
+`Stats` (`items` [{ value, label, detail }], up to 6; `look`: `plain`,
+`lines`, `boxes`; `size`: `md`, `lg`; `colour`: `text`, `primary`;
+`align`), `Video` (`src`: a YouTube or Vimeo link, or an https:// or
+site address of an .mp4/.webm; `title`; `imageSrc`, the cover;
+`captionsSrc`, a .vtt file for .mp4/.webm; `caption`; `ratio`: `16:9`,
+`4:3`, `1:1`, `9:16`), `Table` (`caption`; `rows`, a list of rows of
+plain-text cells, at most 50 × 8; `headers`: `top`, `both`, `none`;
+`look`: `lines`, `stripes`) and `Pricing` (`plans` [{ name, price,
+period, description, features (one per line), buttonLabel, buttonHref
+}], up to 4; `highlight`: `none` or `1`–`4`; `badge`; `planStyle` and
+`highlightStyle`, section style ids; `titleLevel`). An Icon list's
+`icon` may be `"numbers"` (a numbered list), with `numberStyle`
+(`circle`, `large`, `plain`; missing means `circle`). A YouTube or
+Vimeo video is published as a link to the video with the cover; a
+small script, only on pages that have one, swaps in the player
+(youtube-nocookie.com, Vimeo with "do not track") when it's pressed.
+
 `tokens.style.motion` (optional, F075): `off`, `subtle` or `lively`;
 missing means Off. A Section may carry `entrance` (`rise`, `zoom`,
 `slide`, `none`; missing means Rise) and `parallax` (`true`: its photo
