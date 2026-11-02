@@ -1,0 +1,225 @@
+<title>F078 Stats, Video, Pricing</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,400&display=swap">
+<style>
+/* Layout: report column; five published-page thumbnails; three decisions drawn as UI, recommendation outlined */
+:root{--bg:#F2F3F1;--panel:#FFFFFF;--fg:#17191B;--muted:#5C6267;--line:#D9DCD8;--accent:#3949AB;--soft:#E8EAF6;--warn:#9A4A12;
+--ui:"Schibsted Grotesk",ui-sans-serif,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;--serif:"Fraunces",Georgia,serif;
+/* the sample site (Atelier Stone): fixed, it is a picture of a published page */
+--s-bg:#F4F1EC;--s-surface:#E9E4DC;--s-text:#1E2420;--s-muted:#5A615C;--s-primary:#2F4A3A;--s-on:#FFFFFF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;--warn:#F0A672;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;--warn:#F0A672;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--ui);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1160px;margin:0 auto;padding-block:48px 96px;display:grid;gap:56px}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.015em}h1{font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.05;font-weight:600}h2{font-size:1.5rem;font-weight:600}h3{font-size:1.02rem;font-weight:600}
+p{margin:0;max-width:70ch}.eyebrow{font:500 .75rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.lede{font-size:1.1rem;color:var(--muted)}
+section{display:grid;gap:18px}
+.tag{font:600 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--accent);color:var(--panel);padding:6px 10px;border-radius:4px}
+.lands{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.lands{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.lands{grid-template-columns:1fr}}
+.land{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:10px;align-content:start;min-width:0}
+.land p{font-size:.88rem;color:var(--muted)}
+.page{border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,.08);background:var(--s-bg);color:var(--s-text);position:relative;padding:14px}
+.page.dark{background:var(--s-primary);color:var(--s-on)}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.stats div{display:grid;gap:2px;padding:0 10px}
+.stats.lines div+div{border-left:1px solid color-mix(in srgb,currentColor 25%,transparent)}
+.stats.boxes{gap:6px}.stats.boxes div{background:var(--s-surface);border-radius:6px;padding:10px}
+.num{font:300 26px/1 var(--serif);letter-spacing:-.02em}
+.lab{font-size:10px;color:var(--s-muted);line-height:1.3}
+.page.dark .lab{color:#DCE5DF}
+/* video */
+.vid{position:relative;aspect-ratio:16/9;border-radius:4px;overflow:hidden;background:linear-gradient(160deg,#9AA59B,#56645A 55%,#2C362F);display:grid;place-items:center;color:#fff}
+.vid.yt{background:linear-gradient(160deg,#6C6C6C,#2B2B2B)}
+.play{width:46px;height:46px;border-radius:50%;background:#fff;color:#17191B;display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.vcap{position:absolute;left:8px;bottom:8px;right:8px;display:flex;justify-content:space-between;font-size:9px;background:linear-gradient(transparent,rgba(0,0,0,.55));padding:14px 4px 0}
+.cc{font:500 8px var(--mono);border:1px solid #fff;border-radius:2px;padding:1px 3px}
+/* table */
+.tbl{width:100%;border-collapse:collapse;font-size:10px}
+.tbl caption{text-align:left;font-weight:600;font-size:11px;padding-bottom:6px}
+.tbl th,.tbl td{text-align:left;padding:5px 6px;border-bottom:1px solid color-mix(in srgb,var(--s-text) 18%,transparent)}
+.tbl thead th{font-weight:600;border-bottom:1.5px solid var(--s-text)}
+.tbl tbody th{font-weight:600}
+.tbl.stripes tbody tr:nth-child(odd){background:var(--s-surface)}
+.tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+/* pricing */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;align-items:stretch}
+.plan{background:var(--s-surface);border-radius:6px;padding:9px;display:grid;gap:5px;align-content:start;font-size:9px;position:relative}
+.plan.hi{background:var(--s-primary);color:var(--s-on)}
+.plan b{font-size:10px}.price{font:300 20px/1 var(--serif)}.per{font-size:8px;opacity:.8}
+.plan ul{margin:0;padding:0;list-style:none;display:grid;gap:2px}.plan li::before{content:"✓ ";opacity:.8}
+.pbtn{margin-top:4px;text-align:center;border-radius:99px;padding:4px;font-weight:600;border:1px solid currentColor}
+.plan.hi .pbtn{background:var(--s-on);color:var(--s-primary);border-color:var(--s-on)}
+.badge{justify-self:start;font:600 7px var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--s-on);color:var(--s-primary);padding:2px 5px;border-radius:99px}
+/* numbered list */
+.steps{margin:0;padding:0;list-style:none;display:grid;gap:8px;font-size:10px}
+.steps li{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center}
+.circ{width:20px;height:20px;border-radius:50%;background:var(--s-primary);color:var(--s-on);display:grid;place-items:center;font:600 9px var(--ui)}
+.big{font:300 22px/1 var(--serif);color:var(--s-primary);min-width:28px;font-variant-numeric:tabular-nums}
+.pl{font:600 10px var(--ui);min-width:12px}
+
+/* directions */
+.dir{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:16px}
+.dir.rec{border:2px solid var(--accent)}
+.dirhead{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.trio{grid-template-columns:1fr}}
+.opt{border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:10px;align-content:start;min-width:0}
+.opt.rec{border:2px solid var(--accent);background:color-mix(in srgb,var(--soft) 45%,var(--panel))}
+.opt h3{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.opt p{font-size:.86rem;color:var(--muted)}
+.opt .warn{color:var(--warn)}
+.pnl{border:1px solid var(--line);border-radius:8px;padding:10px;display:grid;gap:8px;font-size:.78rem;background:var(--panel)}
+.pnl .l{font-size:.72rem;color:var(--muted)}
+.grid-ed{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
+.grid-ed span{border:1px solid var(--line);border-radius:4px;padding:4px 5px;font:.7rem var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grid-ed span.h{font-weight:600;background:var(--soft)}
+.grid-ed span.f{outline:2px solid var(--accent);outline-offset:-1px}
+.btns{display:flex;gap:4px;flex-wrap:wrap}.btns span{border:1px solid var(--line);border-radius:6px;padding:3px 7px;font-size:.7rem}
+.ta{border:1px solid var(--line);border-radius:6px;padding:6px;font:.7rem/1.5 var(--mono);white-space:pre;overflow:hidden}
+.items{display:grid;gap:4px}.items span{border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:.72rem;display:flex;justify-content:space-between}
+.phone{width:150px;justify-self:center;border:6px solid #2A2D30;border-radius:18px;background:var(--s-bg);color:var(--s-text);padding:10px 8px;overflow:hidden}
+.scrollr{overflow:hidden;border:1px dashed color-mix(in srgb,var(--s-text) 35%,transparent);border-radius:4px;position:relative}
+.scrollr .tbl{width:200px}
+.scrollr::after{content:"→ scroll";position:absolute;right:3px;bottom:2px;font:500 7px var(--mono);background:var(--s-bg);padding:1px 3px}
+.stack{display:grid;gap:5px;font-size:9px}.stack div{background:var(--s-surface);border-radius:4px;padding:5px;display:grid;gap:1px}
+ul.pros{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.88rem}
+ul.pros li::marker{color:var(--muted)}
+.a11y{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.a11y{grid-template-columns:1fr}}
+.a11y div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:6px}
+.a11y p{font-size:.88rem;color:var(--muted)}
+.looks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.looks{grid-template-columns:1fr}}
+.looks .lk{display:grid;gap:6px;min-width:0}.looks .lk span{font-size:.8rem;color:var(--muted)}
+</style>
+
+<main>
+<header style="display:grid;gap:14px">
+  <span class="eyebrow">Crust · Milestone 8 · F078 design snapshot</span>
+  <h1>Stats, Video, Table, Pricing and Numbered list</h1>
+  <p class="lede">Five new pieces for content pages. All are plain HTML and CSS on the published page; only Video adds a few lines of script, and only on pages that have one. Three choices need a direction; the recommended one is outlined.</p>
+</header>
+
+<section>
+  <h2>Where each lands</h2>
+  <div class="lands">
+    <div class="land"><h3>Stats</h3>
+      <div class="page"><div class="stats lines"><div><span class="num">1,200+</span><span class="lab">sites published</span></div><div><span class="num">98</span><span class="lab">average speed score</span></div><div><span class="num">€0</span><span class="lab">monthly running cost</span></div></div></div>
+      <p>Two to six figures with a label each, and an optional line of detail. Looks: plain, lines between, or boxes. Numbers stay still: no count-up animation.</p></div>
+    <div class="land"><h3>Video</h3>
+      <div class="page"><div class="vid"><span class="play" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z" fill="currentColor"/></svg></span><div class="vcap"><span>Play video: A morning at the studio · 2:14</span><span class="cc">CC</span></div></div></div>
+      <p>Your own .mp4 or a YouTube or Vimeo link. Shows your cover photo with a play button; nothing downloads until the visitor presses it.</p></div>
+    <div class="land"><h3>Table</h3>
+      <div class="page"><table class="tbl stripes"><caption>Opening hours</caption><thead><tr><th>Day</th><th>Studio</th><th>Shop</th></tr></thead><tbody><tr><th>Mon–Fri</th><td>9–18</td><td>10–18</td></tr><tr><th>Saturday</th><td>10–16</td><td>10–17</td></tr><tr><th>Sunday</th><td>Closed</td><td>12–16</td></tr></tbody></table></div>
+      <p>A real table with a title, header row and optional header column. Looks: lines or stripes.</p></div>
+    <div class="land"><h3>Pricing</h3>
+      <div class="page"><div class="plans">
+        <div class="plan"><b>Starter</b><span class="price">€19</span><span class="per">per month</span><ul><li>1 site</li><li>Email help</li></ul><span class="pbtn">Choose Starter</span></div>
+        <div class="plan hi"><span class="badge">Most popular</span><b>Studio</b><span class="price">€49</span><span class="per">per month</span><ul><li>5 sites</li><li>Own domain</li></ul><span class="pbtn">Choose Studio</span></div>
+        <div class="plan"><b>Agency</b><span class="price">€99</span><span class="per">per month</span><ul><li>20 sites</li><li>Priority help</li></ul><span class="pbtn">Choose Agency</span></div>
+      </div></div>
+      <p>Up to four plans. One can be highlighted, with a written badge so the highlight isn't colour alone.</p></div>
+    <div class="land"><h3>Numbered list</h3>
+      <div class="page"><ol class="steps"><li><span class="circ">1</span>Pick a template</li><li><span class="circ">2</span>Replace the words and photos</li><li><span class="circ">3</span>Press Publish</li></ol></div>
+      <p>A new “Numbers” mark in the Icon list. Becomes a numbered list for screen readers too.</p></div>
+    <div class="land"><h3>On a Primary section</h3>
+      <div class="page dark"><div class="stats"><div><span class="num">24 h</span><span class="lab">from order to door</span></div><div><span class="num">4.9</span><span class="lab">average review</span></div><div><span class="num">12</span><span class="lab">bakers</span></div></div></div>
+      <p>Every block takes its colours from the section style it sits in, so contrast is checked once, at the section.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Choice 1 · How a YouTube or Vimeo video appears before it plays</h2>
+  <div class="trio">
+    <div class="opt rec"><h3><span class="tag">Recommended</span>A · Your cover photo</h3>
+      <div class="page"><div class="vid"><span class="play" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z" fill="currentColor"/></svg></span><div class="vcap"><span>Play video: Our bakery</span><span>YouTube</span></div></div></div>
+      <ul class="pros"><li>The page loads nothing from YouTube until the visitor presses play (no cookies, no tracking, speed score unaffected).</li><li>Then it plays from youtube-nocookie.com in place.</li><li>Without a cover photo: a calm panel in the section's colours with the title.</li><li>Without JavaScript the button is a link to the video.</li></ul></div>
+    <div class="opt"><h3>B · YouTube's own thumbnail</h3>
+      <div class="page"><div class="vid yt"><span class="play" style="background:#E62117;color:#fff" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z" fill="currentColor"/></svg></span><div class="vcap"><span>Our bakery</span></div></div></div>
+      <ul class="pros"><li>No photo to choose.</li><li class="warn">Every visit asks YouTube's servers for the picture, which tells YouTube who visited (a privacy notice issue in the EU).</li><li class="warn">Their thumbnail rarely matches the site's look.</li></ul></div>
+    <div class="opt"><h3>C · Your own video files only</h3>
+      <div class="page"><div class="vid"><span class="play" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z" fill="currentColor"/></svg></span><div class="vcap"><span>studio-tour.mp4</span><span class="cc">CC</span></div></div></div>
+      <ul class="pros"><li>No outside services at all.</li><li class="warn">Video files are large; the site host serves every play (Cloudflare Pages allows up to 25 MB per file).</li><li class="warn">Most people already have their videos on YouTube or Vimeo.</li></ul></div>
+  </div>
+  <p style="color:var(--muted);font-size:.9rem">All three: your own .mp4 always works too, as the browser's own player with <code>preload="none"</code> and a captions file (.vtt). A, B and C only differ for YouTube and Vimeo links.</p>
+</section>
+
+<section>
+  <h2>Choice 2 · How you fill in a table</h2>
+  <div class="trio">
+    <div class="opt rec"><h3><span class="tag">Recommended</span>A · A grid of cells, and paste</h3>
+      <div class="pnl"><span class="l">Table</span>
+        <div class="grid-ed"><span class="h">Day</span><span class="h">Studio</span><span class="h">Shop</span><span>Mon–Fri</span><span class="f">9–18</span><span>10–18</span><span>Saturday</span><span>10–16</span><span>10–17</span></div>
+        <div class="btns"><span>+ Row</span><span>+ Column</span><span>Remove row</span><span>Move row up</span></div>
+        <span class="l">Paste cells copied from Numbers, Excel or Google Sheets into any cell and they fill the grid.</span></div>
+      <ul class="pros"><li>Looks like the table you'll get.</li><li>Arrow keys and Tab move between cells; buttons instead of dragging.</li></ul></div>
+    <div class="opt"><h3>B · One text box</h3>
+      <div class="pnl"><span class="l">Rows (cells split by | )</span><div class="ta">Day | Studio | Shop
+Mon–Fri | 9–18 | 10–18
+Saturday | 10–16 | 10–17</div></div>
+      <ul class="pros"><li>Quick to build.</li><li class="warn">Easy to break: one missing bar shifts a whole row, and a | inside a cell can't be typed.</li></ul></div>
+    <div class="opt"><h3>C · One list item per row</h3>
+      <div class="pnl"><span class="l">Rows</span><div class="items"><span>Mon–Fri <i>▾</i></span><span>Saturday <i>▾</i></span><span>Sunday <i>▾</i></span></div><span class="l">Each row opens with one field per column.</span></div>
+      <ul class="pros"><li>Same editor as other lists.</li><li class="warn">You never see more than one row at a time; adding a column means opening every row.</li></ul></div>
+  </div>
+  <div class="trio" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+    <div class="opt rec"><h3><span class="tag">Recommended</span>On phones: the table scrolls sideways</h3>
+      <div class="phone"><div class="scrollr"><table class="tbl"><thead><tr><th>Day</th><th>Studio</th><th>Shop</th><th>Café</th></tr></thead><tbody><tr><th>Mon–Fri</th><td>9–18</td><td>10–18</td><td>8–17</td></tr><tr><th>Sat</th><td>10–16</td><td>10–17</td><td>9–17</td></tr></tbody></table></div></div>
+      <p>The first column stays put. The scrolling area is named by the table's title and can be scrolled with the keyboard. Table reading in screen readers keeps working.</p></div>
+    <div class="opt"><h3>Alternative: rows become stacked cards</h3>
+      <div class="phone"><div class="stack"><div><b>Mon–Fri</b><span>Studio 9–18</span><span>Shop 10–18</span></div><div><b>Saturday</b><span>Studio 10–16</span><span>Shop 10–17</span></div></div></div>
+      <p>Reads nicely for 2–3 columns, but CSS that turns a table into cards removes the table semantics in Safari, and comparing down a column gets hard.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Choice 3 · Pricing</h2>
+  <div class="trio">
+    <div class="opt rec"><h3><span class="tag">Recommended</span>A · Plan cards</h3>
+      <div class="page"><div class="plans">
+        <div class="plan"><b>Starter</b><span class="price">€19</span><span class="per">per month</span><span class="pbtn">Choose</span></div>
+        <div class="plan hi"><span class="badge">Most popular</span><b>Studio</b><span class="price">€49</span><span class="per">per month</span><span class="pbtn">Choose</span></div>
+        <div class="plan"><b>Agency</b><span class="price">€99</span><span class="per">per month</span><span class="pbtn">Choose</span></div></div></div>
+      <ul class="pros"><li>The pattern people recognise; one highlighted plan steers the choice (the “decoy” and “default” effects).</li><li>Stacks to one column on phones, highlighted plan first.</li><li>For a feature-by-feature comparison, put a Table under it.</li></ul></div>
+    <div class="opt"><h3>B · Comparison table</h3>
+      <div class="page"><table class="tbl"><thead><tr><th></th><th>Starter</th><th>Studio</th></tr></thead><tbody><tr><th>Sites</th><td>1</td><td>5</td></tr><tr><th>Domain</th><td>–</td><td>✓</td></tr><tr><th>Price</th><td>€19</td><td>€49</td></tr></tbody></table></div>
+      <ul class="pros"><li>Precise for many features.</li><li class="warn">Dense, and on phones it needs sideways scrolling. The Table block already covers it.</li></ul></div>
+    <div class="opt"><h3>C · Price list rows</h3>
+      <div class="page"><div class="stack" style="font-size:10px"><div style="grid-template-columns:1fr auto;display:grid"><b>Haircut</b><span>€35</span></div><div style="grid-template-columns:1fr auto;display:grid"><b>Colour</b><span>€70</span></div><div style="grid-template-columns:1fr auto;display:grid"><b>Cut and colour</b><span>€95</span></div></div></div>
+      <ul class="pros"><li>Fits menus and service lists.</li><li class="warn">That's a different need (a price list); could come later as a look of the same block.</li></ul></div>
+  </div>
+</section>
+
+<section>
+  <h2>Looks inside the blocks (no choice needed)</h2>
+  <div class="dir">
+    <h3>Stats</h3>
+    <div class="looks">
+      <div class="lk"><div class="page"><div class="stats"><div><span class="num">15</span><span class="lab">years</span></div><div><span class="num">300</span><span class="lab">projects</span></div><div><span class="num">9</span><span class="lab">awards</span></div></div></div><span>Plain</span></div>
+      <div class="lk"><div class="page"><div class="stats lines"><div><span class="num">15</span><span class="lab">years</span></div><div><span class="num">300</span><span class="lab">projects</span></div><div><span class="num">9</span><span class="lab">awards</span></div></div></div><span>Lines between</span></div>
+      <div class="lk"><div class="page"><div class="stats boxes"><div><span class="num">15</span><span class="lab">years</span></div><div><span class="num">300</span><span class="lab">projects</span></div><div><span class="num">9</span><span class="lab">awards</span></div></div></div><span>Boxes</span></div>
+    </div>
+    <h3>Numbers in the Icon list</h3>
+    <div class="looks">
+      <div class="lk"><div class="page"><ol class="steps"><li><span class="circ">1</span>Book a call</li><li><span class="circ">2</span>Get a plan</li></ol></div><span>In a circle</span></div>
+      <div class="lk"><div class="page"><ol class="steps"><li><span class="big">01</span>Book a call</li><li><span class="big">02</span>Get a plan</li></ol></div><span>Large (01, 02), in the heading font</span></div>
+      <div class="lk"><div class="page"><ol class="steps"><li><span class="pl">1.</span>Book a call</li><li><span class="pl">2.</span>Get a plan</li></ol></div><span>Plain</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Accessibility built in</h2>
+  <div class="a11y">
+    <div><h3>Stats</h3><p>Each figure and its label are read together as one list item (“1,200+ sites published”). The figure is real text in the heading font, not a picture. No counting animation: moving numbers are unreadable for a moment and announce nothing useful.</p></div>
+    <div><h3>Video</h3><p>The play button says what plays (“Play video: Our bakery”). Captions: a .vtt file for your own video (the builder reminds you if there's none and the video has speech); YouTube and Vimeo show their captions switched on. Nothing plays on its own and nothing makes sound before the press (WCAG 1.4.2, 2.2.2).</p></div>
+    <div><h3>Table</h3><p>Real &lt;table&gt; with &lt;caption&gt;, &lt;th scope&gt; for the header row and column. The phone scroll area is focusable and named, so keyboard users can scroll it (WCAG 2.1.1). Numbers line up (tabular figures) and align right.</p></div>
+    <div><h3>Pricing</h3><p>Each plan is a list item with its name as a heading. The highlight carries a written badge (WCAG 1.4.1). Buttons say which plan (“Choose Studio”), so a list of links still makes sense (WCAG 2.4.4). Prices are text, e.g. “€49 per month”.</p></div>
+  </div>
+</section>
+</main>
