@@ -5,6 +5,11 @@ to "Log".
 
 ## Current
 
+- **2026-11-02: F070–F074 merged to main** (PRs #54–#59, owner: "Merge
+  em all"). The admin runs them; the live site changes only on the next
+  Publish. Still need `reviewed: true` from the owner: F070, F071, F072,
+  F073, F074. Next: F075 Motion, from main.
+
 - **F074 Rows and columns v2: built, passes** (branch
   `f074-rows-columns-v2`, stacked on F073's PR #58). Snapshot
   https://claude.ai/artifact/9mia2cufYDWGXjSPr3zYbn, A built. **To try**
@@ -751,3 +756,4 @@ to "Log".
 - 2026-11-02: F072 Style library finished (colourway dot class clash fixed, screenshots re-shot, DECISIONS "F072"); done_check exit 0.
 - 2026-11-02: F073 Sections v2 built (snapshot, direction A); done_check `npm test -- sections-v2 && npm run check:a11y` exit 0.
 - 2026-11-02: F074 Rows and columns v2 built (snapshot, direction A); done_check `npm test -- columns-v2 && npm run check:a11y` exit 0.
+- 2026-11-02: PRs #54–#59 merged to main in order (owner asked). Next: F075 Motion.
