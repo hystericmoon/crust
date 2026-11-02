@@ -17,7 +17,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { HeightPicker, SectionStyleEditor, StyleSwatch, StyleTiles, TintPicker, RadioGroup } from "./controls";
 import { countSectionStyles, useSiteStyle } from "./site-style";
 import { ImageField } from "../media/ImageField";
-import { FocusPicker, sectionV2Fields } from "./sections-v2-fields";
+import { FocusPicker, MovingField, sectionV2Fields } from "./sections-v2-fields";
 import { columnsV2Fields } from "./columns-v2-fields";
 
 const usePuckSelector = createUsePuck();
@@ -45,6 +45,13 @@ function useScope(): [Scope, (s: Scope) => void] {
 export function useSelectedSection(): SectionProps | null {
   const item = usePuckSelector((s) => s.selectedItem);
   return item?.type === "Section" ? (item.props as SectionProps) : null;
+}
+
+/** Whether the selected block is the page's first top-level block (F075: it never waits for an entrance). */
+export function useIsFirstSection(): boolean {
+  const id = usePuckSelector((s) => s.selectedItem?.props.id as string | undefined);
+  const first = usePuckSelector((s) => (s.appState.data as Data).content?.[0]?.props.id as string | undefined);
+  return !!id && id === first;
 }
 
 function useCounts() {
@@ -149,6 +156,7 @@ function TintField({ value, onChange }: { value: TintLevel; onChange: (v: TintLe
 export function withSectionEditing(config: Config<Components>): Config<Components> {
   const section = config.components.Section;
   const columns = config.components.Columns;
+  const logos = config.components.LogoRow;
   return {
     ...config,
     components: {
@@ -174,6 +182,14 @@ export function withSectionEditing(config: Config<Components>): Config<Component
       },
       // F074: Columns boxes, line-up, dividers, phone order, sticky.
       // Widths (filled in by the responsive fields) come first in the Style tab, with Line up.
+      // F075: the moving logo row, with a note when the site's motion is off.
+      LogoRow: {
+        ...logos,
+        fields: {
+          ...logos.fields,
+          moving: { type: "custom", label: "Scroll slowly", render: ({ value, onChange }) => <MovingField value={value} onChange={onChange} /> },
+        },
+      },
       Columns: { ...columns, fields: { count: columns.fields?.count, widths: { type: "custom", label: "Widths", render: () => <></> }, ...columns.fields, ...columnsV2Fields } },
     },
   } as Config<Components>;

@@ -126,6 +126,14 @@ A Columns block may carry (F074, all optional) `valign` (`top`,
 step), `dividers` (boolean), `phoneOrder` (`normal`, `reverse`: visual
 only, reading order stays) and `sticky` (a column number).
 
+`tokens.style.motion` (optional, F075): `off`, `subtle` or `lively`;
+missing means Off. A Section may carry `entrance` (`rise`, `zoom`,
+`slide`, `none`; missing means Rise) and `parallax` (`true`: its photo
+moves slower). A LogoRow may carry `moving` (`"yes"`: scrolls slowly,
+with a pause switch). Published pages get the motion CSS only when
+motion is on; it is CSS only (scroll-linked), off under Reduce motion,
+and words never fade.
+
 Any block's props may carry `hideOn` (optional, added with F029): a list of
 `"desktop"`, `"tablet"`, `"phone"`. A Columns block may carry `widths`
 (`{ desktop, tablet, phone }`, each a width id such as `"two-one"` or

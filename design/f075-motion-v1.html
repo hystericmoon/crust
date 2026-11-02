@@ -1,0 +1,272 @@
+<title>F075 Motion</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,400&display=swap">
+<style>
+/* Layout: report column; each effect plays live in a small published-page frame; the builder controls drawn three ways */
+:root{--bg:#F2F3F1;--panel:#FFFFFF;--fg:#17191B;--muted:#5C6267;--line:#D9DCD8;--accent:#3949AB;--soft:#E8EAF6;
+--ui:"Schibsted Grotesk",ui-sans-serif,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;--serif:"Fraunces",Georgia,serif;
+/* the sample site (Atelier Stone) — fixed, it is a picture of a published page */
+--s-bg:#F4F1EC;--s-surface:#E9E4DC;--s-text:#1E2420;--s-muted:#5A615C;--s-primary:#2F4A3A;--s-on:#FFFFFF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--ui);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1160px;margin:0 auto;padding-block:48px 96px;display:grid;gap:56px}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.015em}h1{font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.05;font-weight:600}h2{font-size:1.5rem;font-weight:600}h3{font-size:1.02rem;font-weight:600}
+p{margin:0;max-width:70ch}.eyebrow{font:500 .75rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.lede{font-size:1.1rem;color:var(--muted)}
+section{display:grid;gap:18px}
+.why{color:var(--muted);font-size:.93rem}
+.tag{font:600 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--accent);color:var(--panel);padding:6px 10px;border-radius:4px}
+
+/* where-it-lands grid */
+.lands{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.lands{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.lands{grid-template-columns:1fr}}
+.land{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:10px;align-content:start;min-width:0}
+.land p{font-size:.88rem;color:var(--muted)}
+.page{border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,.08);background:var(--s-bg);color:var(--s-text);font-family:var(--ui);position:relative}
+.page .bar{height:18px;display:flex;align-items:center;gap:8px;padding:0 10px;font-size:7px;letter-spacing:.06em;text-transform:uppercase;background:var(--s-bg);border-bottom:1px solid rgba(0,0,0,.06)}
+.page .bar b{font-weight:600;margin-right:auto}
+.blk{padding:12px 0;position:relative}
+.ct{margin:0 auto;width:72%;display:grid;gap:5px}
+.ln{height:5px;border-radius:2px;background:currentColor;opacity:.75}.ln.s{opacity:.35}
+.hd{font:300 15px/1 var(--serif);color:inherit}
+.ph{background:linear-gradient(160deg,#9AA59B,#56645A 55%,#2C362F);}
+.guide{position:absolute;top:0;bottom:0;border-left:1px dashed rgba(57,73,171,.6)}
+.wrow{display:grid;gap:4px}
+.wrow .w{height:16px;background:var(--s-surface);border-radius:2px;margin:0 auto;display:grid;place-items:center;font:500 7px var(--mono);color:var(--s-muted)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center}
+.vid{position:relative;height:96px;color:#fff;display:grid;align-content:end;padding:10px}
+.pause{position:absolute;right:8px;bottom:8px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);display:grid;place-items:center;font-size:8px}
+.badge{font:500 8px var(--mono);background:rgba(0,0,0,.55);color:#fff;padding:2px 5px;border-radius:3px;position:absolute;left:8px;top:8px}
+.crop{display:flex;gap:8px}.crop .fr{position:relative;flex:1;height:84px;border-radius:4px;overflow:hidden;background:#C9CFC6}
+.crop .subject{position:absolute;width:18px;height:30px;border-radius:9px 9px 3px 3px;background:#2F4A3A}
+.over-card{background:var(--s-bg);border-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,.18);padding:8px;display:grid;gap:4px}
+
+/* directions */
+.dir{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:18px}
+.dir.rec{border:2px solid var(--accent)}
+.dirhead{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.cols{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+.pnl{border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:12px;font-size:.84rem;background:var(--panel)}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line)}.tabs span{padding:6px 10px;font-size:.8rem;color:var(--muted)}.tabs span.on{color:var(--fg);font-weight:600;box-shadow:inset 0 -2px var(--accent)}
+.grp{display:grid;gap:8px}.grp>h4{margin:0;font:500 .7rem/1 var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg span{padding:7px 4px;text-align:center;font-size:.76rem;border-left:1px solid var(--line)}.seg span:first-child{border-left:0}.seg span.on{background:var(--soft);color:var(--accent);font-weight:600}
+.picto{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.picto div{border:1px solid var(--line);border-radius:6px;padding:6px 4px 4px;display:grid;gap:4px;justify-items:center;font-size:.64rem;color:var(--muted)}
+.picto div.on{border:2px solid var(--accent);padding:5px 3px 3px;color:var(--fg)}
+.picto i{display:block;height:16px;width:100%;position:relative;border-radius:2px;background:color-mix(in srgb,var(--line) 50%,transparent)}
+.picto i::after{content:"";position:absolute;top:4px;bottom:4px;background:var(--muted);border-radius:1px;left:var(--l);right:var(--r)}
+.field{display:grid;gap:4px}.field label,.field span.l{font-size:.76rem;color:var(--muted)}
+.input{border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:.78rem var(--mono);color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.thumb{position:relative;height:90px;border-radius:6px;overflow:hidden}
+.dot{position:absolute;width:16px;height:16px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.4);transform:translate(-50%,-50%)}
+.rng{display:grid;grid-template-columns:48px 1fr 34px;gap:6px;align-items:center;font-size:.74rem;color:var(--muted)}
+.rng i{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--accent) var(--v),var(--line) var(--v))}
+.tog{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sw{width:30px;height:18px;border-radius:9px;background:var(--line);position:relative;flex:none}.sw.on{background:var(--accent)}.sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--panel)}.sw.on::after{left:14px}
+.note{font-size:.74rem;color:var(--muted)}
+.ok{color:#2E7D4F}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ok{color:#7FCB9C}}:root[data-theme="dark"] .ok{color:#7FCB9C}
+.recipes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.recipes div{border:1px solid var(--line);border-radius:8px;padding:6px;display:grid;gap:4px;font-size:.72rem}
+.recipes i{display:block;height:34px;border-radius:4px}
+.canvas{border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative}
+.qbar{position:absolute;top:10px;left:50%;transform:translateX(-50%);display:flex;gap:2px;background:var(--fg);color:var(--bg);border-radius:8px;padding:3px;font-size:.72rem;white-space:nowrap;max-width:calc(100% - 16px);overflow:hidden}
+.qbar span{padding:5px 8px;border-radius:5px}.qbar span.on{background:var(--accent);color:var(--panel)}
+.pop{position:absolute;top:48px;left:50%;transform:translateX(-50%);width:min(240px,90%);background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:10px;display:grid;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:.78rem}
+ul.pros{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.92rem}
+ul.pros li::marker{color:var(--muted)}
+.panel2{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:12px}
+.facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 16px;font-size:.92rem;margin:0}.facts dt{color:var(--muted)}.facts dd{margin:0}
+code{font:.85em var(--mono);background:color-mix(in srgb,var(--line) 45%,transparent);padding:1px 4px;border-radius:3px}
+</style>
+<style>
+/* live demos */
+.stage{position:relative;height:128px;overflow:hidden}
+.play{justify-self:start;font:600 .78rem var(--ui);color:var(--accent);background:var(--soft);border:0;border-radius:6px;padding:7px 12px;min-height:32px;cursor:pointer}
+.play:focus-visible,.mq-pause:focus-visible,.hv:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cardrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;width:80%;margin:0 auto}
+.mc{background:var(--s-surface);border-radius:4px;padding:6px;display:grid;gap:4px}
+.mc .ph{height:28px;border-radius:2px}
+@media (prefers-reduced-motion:no-preference){
+ .go .rise{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+ .go .fade{animation:fade .8s ease both}
+ .go .zoom{animation:zoom .8s cubic-bezier(.2,.7,.2,1) both}
+ .go .mc{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+ .go .mc:nth-child(2){animation-delay:.12s}.go .mc:nth-child(3){animation-delay:.24s}
+ .hv{transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s}
+ .hv:hover,.hv:focus-visible{transform:translateY(-3px);box-shadow:0 8px 18px rgba(0,0,0,.14)}
+ .hv .ph{transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+ .hv:hover .ph,.hv:focus-visible .ph{transform:scale(1.06)}
+ .mq-track{animation:mq 18s linear infinite}
+ .mq:hover .mq-track,.mq:focus-within .mq-track,.mq.paused .mq-track{animation-play-state:paused}
+}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+@keyframes fade{from{opacity:0}}
+@keyframes zoom{from{opacity:0;transform:scale(.94)}}
+@keyframes mq{to{transform:translateX(-50%)}}
+.px{height:128px;overflow-y:auto;position:relative;scrollbar-width:thin}
+.px .band{height:84px;position:relative;overflow:hidden;color:#fff;display:grid;place-items:center;font:300 15px var(--serif)}
+.px .band .ph{position:absolute;inset:-20px 0;z-index:0}
+.px .band span{position:relative}
+.px .fill{padding:10px 0}
+@supports (animation-timeline:view()){@media (prefers-reduced-motion:no-preference){
+ .px .band .ph{animation:par linear both;animation-timeline:view();}
+}}
+@keyframes par{from{transform:translateY(-16px)}to{transform:translateY(16px)}}
+.mq{overflow:hidden;padding:14px 0 10px;position:relative}
+.mq-track{display:flex;width:max-content;gap:22px}
+.mq-track b{font:600 11px var(--ui);letter-spacing:.08em;color:var(--s-muted);white-space:nowrap}
+.mq-pause{position:absolute;right:6px;bottom:4px;min-width:24px;height:24px;border-radius:50%;border:1px solid rgba(0,0,0,.2);background:var(--s-bg);color:var(--s-text);font-size:9px;cursor:pointer}
+.hv{display:grid;gap:4px;background:var(--s-surface);border-radius:4px;padding:6px;overflow:hidden;color:inherit;text-decoration:none}
+.hv .ph{height:30px;border-radius:2px}
+.btn{display:inline-block;background:var(--s-primary);color:#fff;font:600 8px var(--ui);padding:5px 9px;border-radius:4px;justify-self:start}
+.levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.levels div{border:1px solid var(--line);border-radius:8px;padding:8px 6px;display:grid;gap:3px;font-size:.74rem}
+.levels div b{font-size:.8rem}.levels div span{color:var(--muted);font-size:.68rem;line-height:1.3}
+.levels div.on{border:2px solid var(--accent);padding:7px 5px}
+.rm{background:var(--soft);color:var(--fg);border-radius:8px;padding:10px 12px;font-size:.85rem}
+.timeline{display:grid;gap:4px;font:500 .7rem var(--mono);color:var(--muted)}
+.timeline div{display:grid;grid-template-columns:70px 1fr;gap:8px;align-items:center}
+.timeline i{display:block;height:8px;border-radius:2px;background:var(--accent);opacity:.8}
+</style>
+<main>
+<header style="display:grid;gap:14px">
+  <span class="eyebrow">Milestone 8 · F075 Motion · design sketch</span>
+  <h1>Pages that move a little, and only when it helps</h1>
+  <p class="lede">Sections ease in as you scroll, cards follow one after another, photos drift slowly behind the text, cards lift under the pointer, and a logo row can scroll slowly with a pause button. Pure CSS: no scripts on the page. Below, each effect plays in a small sample page. After that come three ways to set it up in the builder.</p>
+  <p class="rm" id="rmnote" hidden>Your device has <b>Reduce motion</b> turned on, so these samples stay still. Published sites behave the same way for visitors who turn it on.</p>
+</header>
+
+<section aria-labelledby="lands">
+  <span class="eyebrow">On the published page</span>
+  <h2 id="lands">Where each effect lands</h2>
+  <div class="lands">
+    <div class="land"><h3>1 · Entrance</h3>
+      <div class="page"><div class="stage" id="d1"><div class="blk"><div class="ct rise"><span class="hd">Quiet rooms by the harbour</span><div class="ln"></div><div class="ln s"></div><span class="btn">Book a stay</span></div></div></div></div>
+      <button class="play" type="button" data-play="d1">Play</button>
+      <p>When a section scrolls into view, its blocks rise into place and its photos fade in. Choices: Rise, Zoom, Slide in, or None. <b>Built:</b> words never fade (see below). The first section is already on screen when the page opens, so it never waits.</p></div>
+    <div class="land"><h3>2 · Stagger</h3>
+      <div class="page"><div class="stage" id="d2"><div class="blk"><div class="cardrow"><div class="mc"><div class="ph"></div><div class="ln s"></div></div><div class="mc"><div class="ph"></div><div class="ln s"></div></div><div class="mc"><div class="ph"></div><div class="ln s"></div></div></div></div></div></div>
+      <button class="play" type="button" data-play="d2">Play</button>
+      <p>Columns, grid cards and gallery photos come in one after another, about a tenth of a second apart, from left to right. That's the "designed" rhythm premium sites have.</p></div>
+    <div class="land"><h3>3 · Light parallax</h3>
+      <div class="page"><div class="px" tabindex="0" aria-label="Sample page, scroll it"><div class="fill"><div class="ct"><div class="ln s"></div><div class="ln s"></div><div class="ln s"></div></div></div><div class="band"><div class="ph"></div><span>Scroll this frame</span></div><div class="fill"><div class="ct"><div class="ln s"></div><div class="ln s"></div><div class="ln s"></div><div class="ln s"></div></div></div></div></div>
+      <p>A section's background photo moves a little slower than the page. It's a light effect: the photo shifts about 8% of its height. The text never moves. Only for photo backgrounds.</p></div>
+    <div class="land"><h3>4 · Hover lift</h3>
+      <div class="page"><div class="blk"><div class="cardrow"><a class="hv" href="#lands"><div class="ph"></div><div class="ln s"></div></a><a class="hv" href="#lands"><div class="ph"></div><div class="ln s"></div></a><a class="hv" href="#lands"><div class="ph"></div><div class="ln s"></div></a></div></div></div>
+      <p>Point at a card (or Tab to it): it lifts 3 px and its photo zooms in slightly. Buttons lift too. Only cards and buttons that link somewhere move, so the effect tells you what you can press.</p></div>
+    <div class="land"><h3>5 · Moving logo row</h3>
+      <div class="page"><div class="mq" id="mq"><div class="mq-track"><b>NORDHAVN</b><b>ALBA &amp; CO</b><b>KESTREL</b><b>LUMEN</b><b>OAKWELL</b><b>NORDHAVN</b><b>ALBA &amp; CO</b><b>KESTREL</b><b>LUMEN</b><b>OAKWELL</b></div><button class="mq-pause" type="button" aria-pressed="false" aria-label="Pause the moving logos">❚❚</button></div></div>
+      <p>A logo row can scroll slowly and endlessly. It stops while the pointer or keyboard is on it, and it always has a pause button: anything that moves by itself for more than 5 seconds needs one (WCAG 2.2.2). Screen readers read each logo once.</p></div>
+    <div class="land"><h3>6 · Always safe</h3>
+      <div class="timeline" aria-hidden="true">
+        <div><span>Reduce motion</span><i style="width:0;opacity:0"></i></div>
+        <div><span>Old browser</span><i style="width:0;opacity:0"></i></div>
+        <div><span>No motion set</span><i style="width:0;opacity:0"></i></div>
+      </div>
+      <p>Content is never hidden waiting for an effect. With Reduce motion on, in browsers that can't link animation to scrolling (Firefox today), or on sites that never turn motion on, the page shows complete and still, exactly as now.</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="dirs">
+  <span class="eyebrow">In the builder</span>
+  <h2 id="dirs">Three directions</h2>
+
+  <div class="dir rec">
+    <div class="dirhead"><span class="tag">Recommended</span><h3>A · One motion setting for the site, with a few exceptions per section</h3></div>
+    <div class="cols">
+      <div style="display:grid;gap:12px">
+      <div class="pnl" aria-label="Sketch of Site settings, Styles, Motion">
+        <div class="tabs"><span>Links</span><span class="on">Motion</span><span>Section styles</span></div>
+        <div class="grp"><h4>Motion</h4>
+          <div class="levels"><div><b>Off</b><span>Still, like today</span></div><div class="on"><b>Subtle</b><span>Rise in, small lifts</span></div><div><b>Lively</b><span>Bigger moves, zoom on photos</span></div></div>
+          <p class="note">Visitors who turn on Reduce motion always see a still page.</p>
+        </div>
+      </div>
+      <div class="pnl" aria-label="Sketch of the Section Style tab, direction A">
+        <div class="tabs"><span>Content</span><span class="on">Style</span><span>Advanced</span></div>
+        <div class="grp"><h4>Motion</h4>
+          <div class="field"><span class="l">Entrance</span><div class="seg"><span class="on">Rise</span><span>Zoom</span><span>Slide in</span><span>None</span></div></div>
+          <div class="tog"><span>Photo moves slower (parallax)</span><span class="sw on" aria-hidden="true"></span></div>
+        </div>
+      </div>
+      <div class="pnl" aria-label="Sketch of the Logo row settings">
+        <div class="tabs"><span class="on">Content</span><span>Style</span></div>
+        <div class="tog"><span>Scroll slowly (with pause button)</span><span class="sw" aria-hidden="true"></span></div>
+      </div>
+      </div>
+      <div style="display:grid;gap:12px">
+        <ul class="pros">
+          <li><b>One decision covers the whole site.</b> Off, Subtle or Lively sets the entrance, stagger, timing and hover lift together. Premium sites use one motion language throughout; mixing effects is what makes a page look like a slideshow. This is the consistency heuristic (Nielsen #4).</li>
+          <li><b>Exceptions where they're useful.</b> A section can use another entrance or none (a price table that shouldn't wait). Parallax and the moving logos are opt-in where they apply.</li>
+          <li><b>Three levels to choose from, not a dozen settings.</b> Timing is a craft decision, so Crust makes it. You compare finished looks instead of typing durations (Hick's law; recognition over recall).</li>
+          <li><b>Old sites stay still.</b> Missing means Off. The style library's looks can suggest a level later.</li>
+        </ul>
+        <dl class="facts"><dt>Saved as</dt><dd><code>tokens.style.motion</code> (<code>off|subtle|lively</code>); Section <code>entrance</code>, <code>parallax</code>; Logo row <code>moving</code></dd><dt>Work</dt><dd>Medium</dd></dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="dir">
+    <div class="dirhead"><h3>B · An animation panel on every block</h3></div>
+    <div class="cols">
+      <div class="pnl" aria-label="Sketch of a block's Advanced tab with an animation panel">
+        <div class="tabs"><span>Content</span><span>Style</span><span class="on">Advanced</span></div>
+        <div class="grp"><h4>Animation</h4>
+          <div class="field"><span class="l">Effect</span><div class="input">Slide up and fade ▾</div></div>
+          <div class="rng"><span>Delay</span><i style="--v:20%"></i><span>0.2 s</span></div>
+          <div class="rng"><span>Length</span><i style="--v:45%"></i><span>0.6 s</span></div>
+          <div class="field"><span class="l">Start when</span><div class="seg"><span class="on">In view</span><span>Half in</span><span>Page load</span></div></div>
+        </div>
+      </div>
+      <ul class="pros">
+        <li><b>Complete control,</b> the way YOOtheme and Webflow work: any block, any effect, any timing.</li>
+        <li><b>Easy to overdo.</b> Every block can move differently, and the page starts to feel busy and cheap. Getting it right takes many small decisions per page.</li>
+        <li><b>Recall over recognition:</b> you'd need to know that 0.6 s feels right and 1.2 s drags. Templates would be hard to keep consistent.</li>
+        <li>Stagger has to be set by hand with delays. Work: large.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="dir">
+    <div class="dirhead"><h3>C · Motion comes with the look, no controls</h3></div>
+    <div class="cols">
+      <div class="pnl" aria-label="Sketch of the style library with motion built into each look">
+        <div class="tabs"><span>Colours</span><span>Fonts</span><span class="on">Styles</span></div>
+        <div class="recipes"><div><i style="background:#2F4A3A"></i>Atelier<span class="note">Subtle motion</span></div><div><i style="background:#1E2420"></i>Noir<span class="note">Lively motion</span></div><div><i style="background:#E9E4DC"></i>Paper<span class="note">Still</span></div></div>
+      </div>
+      <ul class="pros">
+        <li><b>Nothing to learn.</b> Picking a look brings its motion along.</li>
+        <li><b>No way out.</b> You can't keep the look and turn motion off, or quiet one section. That breaks user control and freedom (Nielsen #3).</li>
+        <li>Parallax and moving logos still need a switch per block, so C ends up half of A anyway. Work: small.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="panel2" aria-labelledby="how">
+  <h2 id="how">How it stays fast and accessible</h2>
+  <dl class="facts">
+    <dt>No scripts</dt><dd>Effects use CSS scroll-linked animation. Pages stay script-free, and Lighthouse stays at 95 or more.</dd>
+    <dt>Words never fade</dt><dd>Changed while building. Scroll-linked effects follow the scroll, so text that faded in would stay half see-through if a visitor stopped scrolling with it near the bottom of the screen, and fail contrast. So blocks only move into place, and only photos fade. A browser without support shows the page still.</dd>
+    <dt>Reduce motion</dt><dd>All of it is off, including parallax, hover lifts and the moving logos.</dd>
+    <dt>Keyboard</dt><dd>Hover lifts also show on keyboard focus. The moving logos stop while focus is inside them, and the pause button is a real button with at least 24 × 24 px of target (WCAG 2.5.8).</dd>
+    <dt>In the builder</dt><dd>The canvas stays still while you edit, so blocks don't jump under the pointer. The preview in Site settings and the published site show the motion.</dd>
+  </dl>
+</section>
+</main>
+<script>
+(function(){
+  var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(rm){document.getElementById('rmnote').hidden=false;}
+  document.querySelectorAll('[data-play]').forEach(function(b){
+    b.addEventListener('click',function(){var s=document.getElementById(b.dataset.play);s.classList.remove('go');void s.offsetWidth;s.classList.add('go');});
+  });
+  ['d1','d2'].forEach(function(id){document.getElementById(id).classList.add('go');});
+  var mq=document.getElementById('mq'),p=mq.querySelector('.mq-pause');
+  p.addEventListener('click',function(){var on=mq.classList.toggle('paused');p.setAttribute('aria-pressed',on);p.textContent=on?'▶':'❚❚';p.setAttribute('aria-label',on?'Play the moving logos':'Pause the moving logos');});
+})();
+</script>

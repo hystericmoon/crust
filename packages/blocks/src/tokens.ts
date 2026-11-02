@@ -5,6 +5,7 @@
  */
 import { fontFaceCss, labelFontStack } from "./fonts";
 import { sectionStylesCss, validateSectionStyles, type SectionStyle, type SectionStyleId } from "./section-styles";
+import type { MotionLevel } from "./motion";
 import { labelsUseMono, styleOptionsCss, validateStyleOptions, type StyleOptions } from "./style-options";
 
 export const spacingSteps = ["none", "xs", "sm", "md", "lg", "xl"] as const;
@@ -25,7 +26,8 @@ export interface SiteTokens {
   /** Site-wide section styles (F025). Optional: sites saved before F025 use the defaults. */
   sectionStyles?: Record<SectionStyleId, SectionStyle>;
   /** Type, buttons, cards and links (F028). Optional: missing options keep the pre-F028 look. */
-  style?: Partial<StyleOptions>;
+  /** F075 adds `motion` beside the style options; missing means Off. */
+  style?: Partial<StyleOptions> & { motion?: MotionLevel };
 }
 
 export const defaultTokens: SiteTokens = {

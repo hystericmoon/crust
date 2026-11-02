@@ -4,6 +4,19 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Motion (F075).** Site settings has a new **Motion** group: Off
+  (as before), Subtle or Lively. With motion on, sections ease into
+  place as visitors scroll to them, rows of columns, cards and photos
+  come in one after another, photos fade in, and cards and buttons that
+  link somewhere lift under the pointer (and on keyboard focus). A
+  Section's **Style** tab can pick another entrance (Rise, Zoom, Slide
+  in) or none, and photo backgrounds can **move slower** (parallax). A
+  **Logo row** can scroll slowly, with a pause button; it stops while
+  the pointer or keyboard is on it. Words never fade, so they stay
+  readable wherever a visitor stops. Visitors with Reduce motion on see
+  a still page, and the builder always stays still. No scripts are
+  added to the site. Existing sites stay still until you turn it on.
+
 - **Columns that look designed (F074).** A Columns row's **Style** tab
   now has **Line up** (Top, Middle, Bottom), **boxes** behind every
   column in one of your section styles (padding S, M or L, rounded or

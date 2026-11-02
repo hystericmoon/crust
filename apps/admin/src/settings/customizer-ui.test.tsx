@@ -46,6 +46,7 @@ describe("customizer: one group at a time", () => {
       "Buttons",
       "Cards",
       "Links",
+      "Motion",
       "Section styles",
       "Header & menu",
       "Footer",
