@@ -302,6 +302,11 @@ Features Claude suggests. They are not work until the owner adds them to
   section stops the publish naming the fix; previews without the
   sections fall back to the simple footer. Known gap: deleting the
   linked section isn't blocked while the footer uses it (see Proposals).
+- **CSS only where used:** the F076 CSS (~5 KB) lives in
+  `header-v2-css.ts` and is added to published pages only when the site
+  uses a new layout, a dropdown, the top bar or a footer from blocks
+  (the builder always has it). With it in the base CSS, Lighthouse
+  scored Corner's home page 94 ("Reduce unused CSS") in CI.
 - check:layouts renders `header-v2-<layout>` pages (each layout, a
   dropdown, top bar on two, clear on hero on three, footer from blocks
   on three).
