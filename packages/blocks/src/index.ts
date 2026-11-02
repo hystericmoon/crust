@@ -64,6 +64,7 @@ export {
 export type { StyleOptions, TypeScale, HeadingWeight, HeadingTracking, ButtonShape, CardStyle, LinkStyle, LabelStyle } from "./style-options";
 export type { FontStack, BundledFont, FontCategory, FontFile, FontPair, FontSubset } from "./fonts";
 export { safeUrl } from "./url";
+export { HEADER_V2_CSS, needsHeaderV2Css } from "./header-v2-css";
 export {
   entranceNames,
   entrances,

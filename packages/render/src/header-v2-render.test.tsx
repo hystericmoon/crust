@@ -34,6 +34,14 @@ describe("published header v2 (F076)", () => {
     expect(renderPage(site(), plain, "")).not.toContain("<script");
   });
 
+  it("adds the header v2 CSS only to sites that use it (keeps other pages light)", () => {
+    const css = ".cr-dropdown";
+    expect(renderPage(site(), plain, "")).not.toContain(css);
+    expect(renderPage(site({ layout: "split" }), plain, "")).toContain(css);
+    expect(renderPage(site({ topBar: { show: true, text: "Hi" } }), plain, "")).toContain(css);
+    expect(renderPage(site({}, { kind: "blocks", section: "footer" }), plain, "")).toContain(css);
+  });
+
   it("leaves room for a taller header (logo on top, top bar)", () => {
     expect(renderPage(site(), plain, "")).toMatch(/<html lang="en">/);
     expect(renderPage(site({ layout: "stacked" }), plain, "")).toContain('<html lang="en" style="--cr-header-room: 112px">');
