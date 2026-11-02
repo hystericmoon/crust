@@ -176,7 +176,8 @@ export function applyLook(tokens: SiteTokens, look: StyleLook, variation: LookVa
     colors: { ...variation.colors },
     fonts: lookFonts(look),
     radius: look.radius,
-    style: { ...look.style },
+    // F075: motion is its own setting; a look keeps it.
+    style: { ...look.style, ...(tokens.style?.motion ? { motion: tokens.style.motion } : {}) },
     sectionStyles: {
       ...looks,
       background: { ...looks.background, button: look.buttonLook },

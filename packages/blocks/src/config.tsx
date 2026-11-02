@@ -42,6 +42,7 @@ import { LinkedSection, type LinkedSectionProps } from "./linked-section-block";
 import { placeholderBadge, placeholderLabel } from "./placeholders";
 import { Img } from "./media-img";
 import { safeUrl } from "./url";
+import { entranceNames, entrances, sectionMotionClasses, type Entrance } from "./motion";
 import { cleanAnchor, columnClasses, hiddenLabel, hideClasses, type ColumnWidths, type HideOn } from "./responsive";
 
 
@@ -70,6 +71,9 @@ export type SectionProps = {
   focus?: FocalPoint;
   overlap?: OverlapSize;
   headerOver?: boolean;
+  /** F075 (optional): how the section's blocks come in (missing: Rise), and a slower-moving photo. */
+  entrance?: Entrance;
+  parallax?: boolean;
   content: Slot;
 };
 /** `size` and `eyebrow` were added in F071; headings without them render as before. */
@@ -237,11 +241,24 @@ const blocks: Config<Components> = {
             { label: "Yes", value: true },
           ],
         },
+        entrance: {
+          type: "radio",
+          label: "Entrance",
+          options: entrances.map((e) => ({ label: entranceNames[e], value: e })),
+        },
+        parallax: {
+          type: "radio",
+          label: "Photo moves slower (parallax)",
+          options: [
+            { label: "No", value: false },
+            { label: "Yes", value: true },
+          ],
+        },
         paddingY: spacingField("Vertical padding"),
         content: { type: "slot" },
       },
       defaultProps: { background: "background", paddingY: "lg", height: "auto", valign: "center", imageSrc: "", tint: "medium", content: [] },
-      render: ({ background, paddingY, height, valign, imageSrc, tint, width, bgKind, gradient, videoSrc, focus, overlap, headerOver, content: Content }) => {
+      render: ({ background, paddingY, height, valign, imageSrc, tint, width, bgKind, gradient, videoSrc, focus, overlap, headerOver, entrance, parallax, content: Content }) => {
         const kind = backgroundKindOf({ bgKind, imageSrc });
         // An unsafe address (e.g. javascript:) means no image at all. Video needs its still photo.
         const image = (kind === "photo" || kind === "video") && imageSrc?.trim() ? safeUrl(imageSrc) : "#";
@@ -253,6 +270,7 @@ const blocks: Config<Components> = {
         if (overlap && overlap !== "none" && overlapSizes.includes(overlap)) classes.push(`cr-overlap-${overlap}`);
         if (headerOver === true) classes.push("cr-under-header");
         if (grad) classes.push("cr-has-gradient");
+        classes.push(...sectionMotionClasses({ entrance, parallax }, image !== "#"));
         const style: Record<string, string> = { "--cr-section-pad": spaceVar(paddingY) };
         if (grad) style["--cr-section-gradient"] = gradientCss(grad);
         return (

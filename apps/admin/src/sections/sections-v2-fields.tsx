@@ -11,6 +11,10 @@ import {
   backgroundKinds,
   cleanFocus,
   cleanGradient,
+  entranceNames,
+  entrances,
+  motionOf,
+  type Entrance,
   colorRoleInfo,
   gradientColours,
   gradientDirectionNames,
@@ -38,7 +42,7 @@ import { useId, useState, type KeyboardEvent, type MouseEvent, type ReactElement
 import { ImageField } from "../media/ImageField";
 import { RadioGroup } from "./controls";
 import { useSiteStyle } from "./site-style";
-import { usePatchSelected, useSelectedSection } from "./editing";
+import { useIsFirstSection, usePatchSelected, useSelectedSection } from "./editing";
 
 // --- Which fields show ---------------------------------------------------------------------
 
@@ -60,6 +64,8 @@ export function sectionFieldShown(key: string, props: Partial<SectionProps>, isF
       return (kind === "photo" || kind === "video") && !!props.imageSrc?.trim();
     case "headerOver":
       return isFirst;
+    case "parallax":
+      return (kind === "photo" || kind === "video") && !!props.imageSrc?.trim();
     default:
       return true;
   }
@@ -353,6 +359,72 @@ function HeaderOverField({ value, onChange }: { value: boolean | undefined; onCh
   );
 }
 
+// --- Motion (F075) -------------------------------------------------------------------------
+
+/** Says where motion is switched on, when the site has it off. */
+export function MotionOffNote() {
+  const site = useSiteStyle();
+  if (motionOf(site.tokens) !== "off") return null;
+  return <p className="sx-note">Motion is Off for this site, so this has no effect yet. Turn it on in Site settings → Motion.</p>;
+}
+
+function EntranceField({ value, onChange }: { value: Entrance | undefined; onChange: (e: Entrance) => void }) {
+  const first = useIsFirstSection();
+  return (
+    <div className="sx-stack">
+      <span className="sx-group">Motion</span>
+      <span className="sx-label">Entrance</span>
+      <RadioGroup<Entrance>
+        label="Entrance"
+        className="sx-seg"
+        optionClass="sx-seg-option"
+        value={value ?? "rise"}
+        onChange={onChange}
+        options={entrances.map((e) => ({ value: e, label: entranceNames[e] }))}
+      />
+      <p className="sx-note">
+        {first
+          ? "This is the page's first section: it is on screen when the page opens, so it never waits for an entrance."
+          : "How this section's blocks come in as visitors scroll to it. Rows of columns, cards and photos come in one after another."}
+      </p>
+      <MotionOffNote />
+    </div>
+  );
+}
+
+function ParallaxField({ value, onChange }: { value: boolean | undefined; onChange: (v: boolean) => void }) {
+  const id = useId();
+  return (
+    <div className="sx-stack">
+      <label className="sx-check" htmlFor={id}>
+        <input id={id} type="checkbox" checked={value === true} onChange={(e) => onChange(e.target.checked)} aria-describedby={`${id}-help`} />
+        Photo moves slower (parallax)
+      </label>
+      <p className="sx-note" id={`${id}-help`}>
+        The background moves a little slower than the page as visitors scroll. The words don't move. Off for visitors with Reduce motion on.
+      </p>
+    </div>
+  );
+}
+
+/** Logo row: scroll slowly, with a pause switch on the page. */
+export function MovingField({ value, onChange }: { value: "yes" | "no" | undefined; onChange: (v: "yes" | "no") => void }) {
+  const id = useId();
+  return (
+    <div className="sx-stack">
+      <label className="sx-check" htmlFor={id}>
+        <input id={id} type="checkbox" checked={value === "yes"} onChange={(e) => onChange(e.target.checked ? "yes" : "no")} aria-describedby={`${id}-help`} />
+        Scroll slowly
+      </label>
+      <p className="sx-note" id={`${id}-help`}>
+        The logos move slowly from right to left on the published page, with a pause button (anything that moves by itself needs one). They stop while
+        the pointer or keyboard is on them. The builder shows them still.
+      </p>
+      <MotionOffNote />
+    </div>
+  );
+}
+
 type Render<T> = (p: { value: T; onChange: (v: T) => void }) => ReactElement | null;
 const custom = <T,>(label: string, render: Render<T>) => ({ type: "custom", label, render }) as unknown as CustomField<T>;
 
@@ -366,4 +438,6 @@ export const sectionV2Fields = {
   focus: custom<FocalPoint | undefined>("Focal point", ({ value, onChange }) => <FocusField value={value} onChange={(v) => onChange(v)} />),
   overlap: custom<OverlapSize | undefined>("Pull up over the section above", ({ value, onChange }) => <OverlapField value={value} onChange={(v) => onChange(v)} />),
   headerOver: custom<boolean | undefined>("Header sits on this section", ({ value, onChange }) => <HeaderOverField value={value} onChange={(v) => onChange(v)} />),
+  entrance: custom<Entrance | undefined>("Entrance", ({ value, onChange }) => <EntranceField value={value} onChange={(v) => onChange(v)} />),
+  parallax: custom<boolean | undefined>("Photo moves slower (parallax)", ({ value, onChange }) => <ParallaxField value={value} onChange={(v) => onChange(v)} />),
 };

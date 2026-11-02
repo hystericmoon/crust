@@ -131,7 +131,8 @@ export function applyPreset(tokens: SiteTokens, preset: ThemePreset): SiteTokens
     ...tokens,
     colors: { ...preset.colors },
     fonts: { ...preset.fonts },
-    style: { ...preset.style },
+    // F075: motion is its own setting; a preset keeps it.
+    style: { ...preset.style, ...(tokens.style?.motion ? { motion: tokens.style.motion } : {}) },
     sectionStyles: {
       ...looks,
       background: { ...looks.background, button: preset.buttonLook },

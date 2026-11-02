@@ -32,6 +32,10 @@ const styleFields = new Set([
   "focus",
   "overlap",
   "headerOver",
+  // F075: Section motion, moving logo row
+  "entrance",
+  "parallax",
+  "moving",
   // F074: Columns
   "box",
   "highlight",

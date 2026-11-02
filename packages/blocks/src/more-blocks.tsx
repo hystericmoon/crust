@@ -9,7 +9,8 @@
  */
 import type { ComponentConfig } from "@puckeditor/core";
 import type { ReactNode } from "react";
-import { alignField, headingTag, paragraphs, type Align } from "./block-helpers";
+import { alignField, headingTag, paragraphs, vars, type Align } from "./block-helpers";
+import { marqueeRepeat } from "./motion";
 import { sectionStyleIds, sectionStyleNames, tintLevels, tintNames, type SectionStyleId, type TintLevel } from "./section-styles";
 import { Img } from "./media-img";
 import { safeUrl } from "./url";
@@ -35,7 +36,8 @@ export const listIconNames: Record<ListIcon, string> = { check: "Check", arrow: 
 export type IconListProps = { items: { text: string }[]; icon: ListIcon; iconColor: "primary" | "text" };
 
 export type Logo = { src: string; alt: string; href: string };
-export type LogoRowProps = { logos: Logo[]; logoSize: "small" | "medium" | "large"; grayscale: "yes" | "no"; align: Align };
+/** `moving` was added in F075 (missing: still). */
+export type LogoRowProps = { logos: Logo[]; logoSize: "small" | "medium" | "large"; grayscale: "yes" | "no"; align: Align; moving?: "yes" | "no" };
 
 export type QuoteProps = { text: string; name: string; role: string; imageSrc: string; align: Align; size: "normal" | "large" };
 
@@ -332,6 +334,7 @@ export const LogoRow: ComponentConfig<LogoRowProps> = {
     },
     grayscale: yesNo("Grey until hovered"),
     align: alignField,
+    moving: yesNo("Scroll slowly (with a pause button)"),
   },
   defaultProps: {
     logos: [
@@ -344,14 +347,48 @@ export const LogoRow: ComponentConfig<LogoRowProps> = {
     grayscale: "yes",
     align: "center",
   },
-  render: ({ logos, logoSize, grayscale, align, puck }: LogoRowProps & Editing) => {
+  render: ({ logos, logoSize, grayscale, align, moving, puck }: LogoRowProps & Editing) => {
     const list = (logos ?? []).filter((l) => l.src?.trim() || puck?.isEditing);
+    const className = `cr-logos cr-logos-${logoSize} cr-align-${align}${grayscale === "yes" ? " cr-logos-grey" : ""}`;
+    /** "extra": a repeat inside the real list (hidden until the row moves); "copy": in the hidden second list. */
+    const item = (l: Logo, key: string, kind: "real" | "extra" | "copy") => {
+      const img = l.src?.trim() ? <Img src={l.src} size="small" {...altOf(l.alt ?? "")} loading="lazy" decoding="async" /> : <Placeholder>Logo</Placeholder>;
+      // Repeats are for the eye only: hidden from screen readers and skipped by the Tab key.
+      const link = l.href?.trim() ? <a href={safeUrl(l.href)} tabIndex={kind === "real" ? undefined : -1}>{img}</a> : img;
+      return (
+        <li key={key} hidden={kind === "extra" || undefined} aria-hidden={kind === "extra" || undefined}>
+          {link}
+        </li>
+      );
+    };
+    // F075: a moving row (published only; the builder shows it still). Without the motion CSS
+    // (site motion Off, Reduce motion) the repeats and the pause switch stay hidden: an ordinary row.
+    if (moving === "yes" && !puck?.isEditing && list.length) {
+      const times = marqueeRepeat(list.length);
+      const half = (copy: boolean) =>
+        Array.from({ length: times }, (_, r) => list.map((l, i) => item(l, `${r}-${i}`, copy ? "copy" : r > 0 ? "extra" : "real"))).flat();
+      return (
+        <div className="cr-marquee" style={vars({ "--cr-marquee-n": String(list.length * times) })}>
+          <div className="cr-marquee-window">
+            <div className="cr-marquee-track">
+              <ul className={className} role="list">
+                {half(false)}
+              </ul>
+              <ul className={className} role="list" aria-hidden="true" hidden>
+                {half(true)}
+              </ul>
+            </div>
+          </div>
+          <label className="cr-marquee-pause" hidden>
+            <input type="checkbox" />
+            <span>Pause the moving logos</span>
+          </label>
+        </div>
+      );
+    }
     return (
-      <ul className={`cr-logos cr-logos-${logoSize} cr-align-${align}${grayscale === "yes" ? " cr-logos-grey" : ""}`} role="list">
-        {list.map((l, i) => {
-          const img = l.src?.trim() ? <Img src={l.src} size="small" {...altOf(l.alt ?? "")} loading="lazy" decoding="async" /> : <Placeholder>Logo</Placeholder>;
-          return <li key={i}>{l.href?.trim() ? <a href={safeUrl(l.href)}>{img}</a> : img}</li>;
-        })}
+      <ul className={className} role="list">
+        {list.map((l, i) => item(l, String(i), "real"))}
       </ul>
     );
   },

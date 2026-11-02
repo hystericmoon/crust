@@ -181,3 +181,67 @@ export function columnsV2Samples(): Content {
     ]),
   ] as Content;
 }
+
+/**
+ * F075: a page using every motion option (entrances, staggered rows of
+ * linked cards and photos, parallax, the moving logo row with its pause
+ * switch), so axe checks it with motion on in a real browser.
+ */
+export function motionSamples(): Content {
+  const entrances = ["rise", "zoom", "slide", "none"] as const;
+  const card = (id: string, title: string) => ({
+    type: "Card",
+    props: { id, background: "background", title, text: "A card that links somewhere lifts.", imageSrc: "/sample.jpg", imageAlt: "A sample photo", linkLabel: `Read about ${title}`, linkHref: `/${id}` },
+  });
+  const section = (id: string, props: Record<string, unknown>, content: Content) => ({
+    type: "Section",
+    props: { id, paddingY: "lg", height: "auto", valign: "center", tint: "medium", imageSrc: "", ...props, content },
+  });
+  return [
+    section("hero", { background: "dark", imageSrc: "/sample.jpg", height: "large", parallax: true }, [
+      { type: "Heading", props: { id: "h-hero", text: "Motion", level: "h1", align: "left" } },
+      { type: "Button", props: { id: "b-hero", label: "Get in touch", href: "/contact", variant: "primary" } },
+    ]),
+    ...sectionStyleIds.map((style, i) =>
+      section(`s-${style}`, { background: style, entrance: entrances[i % entrances.length] }, [
+        { type: "Heading", props: { id: `h-${style}`, text: `Entrance on ${style}`, level: "h2", align: "left" } },
+        {
+          type: "Columns",
+          props: { id: `cols-${style}`, count: "3", gap: "md", column1: [card(`one-${style}`, "One")], column2: [card(`two-${style}`, "Two")], column3: [card(`three-${style}`, "Three")] },
+        },
+        {
+          type: "Grid",
+          props: {
+            id: `grid-${style}`,
+            columns: "3",
+            titleLevel: "h3",
+            background: "background",
+            items: ["Plan", "Build", "Publish", "Review"].map((t) => ({ title: t, text: "Step.", imageSrc: "", imageAlt: "", linkLabel: `More on ${t}`, linkHref: `/${t.toLowerCase()}` })),
+          },
+        },
+        {
+          type: "LogoRow",
+          props: {
+            id: `logos-${style}`,
+            logoSize: "medium",
+            grayscale: "no",
+            align: "center",
+            moving: "yes",
+            logos: [
+              { src: "/l1.svg", alt: "Acme", href: "https://example.com" },
+              { src: "/l2.svg", alt: "Globex", href: "" },
+              { src: "/l3.svg", alt: "Initech", href: "" },
+            ],
+          },
+        },
+      ]),
+    ),
+    section("photo", { background: "dark", imageSrc: "/sample.jpg", height: "medium", parallax: true }, [
+      { type: "Heading", props: { id: "h-photo", text: "Photo moves slower", level: "h2", align: "left" } },
+      {
+        type: "Gallery",
+        props: { id: "gallery", columns: "3", shape: "square", images: [{ src: "/a.jpg", alt: "A studio desk", caption: "" }, { src: "/b.jpg", alt: "A plant", caption: "" }, { src: "/sample.jpg", alt: "A sample photo", caption: "" }] },
+      },
+    ]),
+  ] as Content;
+}

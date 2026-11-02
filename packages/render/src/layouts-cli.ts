@@ -9,7 +9,7 @@ import { applyLook, applyPreset, buildPageLayout, fitHeadings, newPost, pageLayo
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { blockSamples, columnsV2Samples, sectionsV2Samples } from "./block-samples";
+import { blockSamples, columnsV2Samples, motionSamples, sectionsV2Samples } from "./block-samples";
 import { renderBlogIndex, renderPost } from "./blog";
 import { renderPage } from "./render";
 
@@ -38,6 +38,9 @@ for (const look of styleLooks) {
   await write(`sections-v2-${look.id}`, looked, `Sections v2 (${look.name})`, sectionsV2Samples(looked.tokens));
   // F074: Rows and columns v2 in the same looks.
   await write(`columns-v2-${look.id}`, looked, `Rows and columns v2 (${look.name})`, columnsV2Samples());
+  // F075: motion on (Subtle and Lively in turn), in the same looks.
+  const moving: Site = { ...looked, tokens: { ...looked.tokens, style: { ...looked.tokens.style, motion: styleLooks.indexOf(look) % 2 ? "lively" : "subtle" } } };
+  await write(`motion-${look.id}`, moving, `Motion (${look.name})`, motionSamples());
 }
 // F035: the blog's list page and a post, in every preset.
 const posts = [

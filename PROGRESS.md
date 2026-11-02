@@ -5,6 +5,21 @@ to "Log".
 
 ## Current
 
+- **F075 Motion: built, passes** (branch `f075-motion`, from main).
+  Snapshot https://claude.ai/artifact/MnHuVJQob5bY9H1qnd3jDe, A built,
+  with one change: words never fade (a scroll-linked fade left text
+  half see-through and failing contrast where a visitor stops
+  scrolling), so blocks rise, zoom or slide in and only photos fade.
+  **To try** on the PR's preview link: Site settings → **Motion** →
+  Subtle, then scroll the preview beside it; Lively for comparison. In
+  the builder, a Section's Style tab → Motion (Entrance; "Photo moves
+  slower" on a photo background); a Logo row's Style tab → Scroll
+  slowly. The motion shows on published pages and the Site settings
+  preview; the builder canvas stays still on purpose. Turn on Reduce
+  motion (Mac: System Settings → Accessibility → Display) to see the
+  still version. Screenshots `design/f075-motion-*.png`. Needs
+  `reviewed: true`. Next: F076 Header and footer v2.
+
 - **2026-11-02: F070–F074 merged to main** (PRs #54–#59, owner: "Merge
   em all"). The admin runs them; the live site changes only on the next
   Publish. Still need `reviewed: true` from the owner: F070, F071, F072,
@@ -206,6 +221,12 @@ to "Log".
   but can't save (different Access app). Intended.
 
 ## Log
+
+- 2026-11-02 (15:15–, Jakarta) — F075 Motion built on `f075-motion`
+  (one site-wide level, Section entrance and parallax, moving logo row
+  with a CSS-only pause switch, hover lift). axe on the motion sample
+  pages caught text left half-faded by the scroll-linked entrance;
+  entrances now only move blocks and fade photos.
 
 - 2026-10-28 — Repo created. Docs and workflow files set up (CLAUDE.md,
   spec, features.json, DECISIONS/BLOCKED/CHANGELOG, .claude/settings.json

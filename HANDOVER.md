@@ -5,7 +5,29 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 13:10 (Jakarta). **F070–F074 merged to main** (owner: "Merge em all"; PRs #54–#59, merge commits, in order). Start F075 on a new branch from main. PRs #53 (F062) and #45 (F053)
+Last updated: 2026-11-02 ~16:30 (Jakarta). **F075 Motion built, passes**
+(branch `f075-motion` from main, PR open; DECISIONS "F075"). Snapshot
+https://claude.ai/artifact/MnHuVJQob5bY9H1qnd3jDe (A built; changed so
+words never fade). How it fits: `packages/blocks/src/motion.ts`
+(`motionCss`, levels, `entrances`, `sectionMotionClasses`,
+`marqueeRepeat`), added to published CSS in `render.tsx`
+`renderDocument` only when `tokens.style.motion` is on (the builder
+canvas never gets it); Section `entrance`/`parallax` in `config.tsx`;
+LogoRow `moving` in `more-blocks.tsx` (marquee with a CSS-only pause
+checkbox; base rule `.cr-marquee [hidden]` in styles.css); builder
+fields in `sections-v2-fields.tsx` (`EntranceField`, `ParallaxField`,
+`MovingField`, `MotionOffNote`); Site settings group "Motion"
+(`MotionOptions` in `StyleGroups.tsx`). check:layouts writes
+`motion-<look>` pages (`motionSamples`). F070–F074 are merged to main
+and still need `reviewed: true`.
+**Next: F076 Header and footer v2** (design snapshot first), on a new
+branch from main (or stacked on `f075-motion` if F075's PR isn't
+merged yet). The owner starts sessions by hand: the session chain is at
+its limit, so this session can't start the next one or set reminders.
+A fresh session gets the prompt "Read HANDOVER.md on branch main and
+continue" (if F075 isn't merged, use branch `f075-motion`).
+
+Earlier (2026-11-02 13:10, Jakarta): **F070–F074 merged to main** (owner: "Merge em all"; PRs #54–#59, merge commits, in order). Start F075 on a new branch from main. PRs #53 (F062) and #45 (F053)
 **merged to main** (owner had said to merge). Then the owner said our
 templates aren't premium next to eliras/zorven/labzzy.webflow.io and
 chose **B: upgrade the design layer, "all in"**, and asked for a

@@ -255,6 +255,58 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-02 — F075 Motion (Claude, reversible)
+
+- Snapshot https://claude.ai/artifact/MnHuVJQob5bY9H1qnd3jDe
+  (`design/f075-motion-v1.html`): A one site-wide level with a few
+  exceptions per section (built); B an animation panel on every block
+  (YOOtheme style); C motion bundled into the style library's looks. A
+  keeps one motion language across the site (consistency, Nielsen #4),
+  replaces timing values with three levels to compare (recognition over
+  recall, Hick's law) and keeps user control (a section can opt out).
+  B makes busy pages easy and consistency hard; C gives no way out.
+- **Format (optional, no migration):** `tokens.style.motion`
+  (`off|subtle|lively`, missing = Off), Section `entrance`
+  (`rise|zoom|slide|none`, missing = Rise) and `parallax` (boolean, only
+  with a photo or video background), LogoRow `moving` (`"yes"|"no"`).
+  Sites without them publish byte-for-byte as before (tests); the
+  motion CSS is added only when motion is on. Picking a look or preset
+  keeps the motion level, and a look is still recognised with motion set.
+- **CSS only, scroll-linked** (`animation-timeline: view()`), inside
+  `@supports` and `prefers-reduced-motion: no-preference`. A browser
+  without scroll-linked animation (Firefox today) shows the page still.
+  Nothing is time-triggered, so nothing waits hidden for a script.
+- **Words never fade (changed from the snapshot, which showed Rise +
+  fade and a Fade choice).** With a scroll-linked fade, text stops half
+  see-through when a visitor stops scrolling with it near the foot of
+  the screen; axe found 22 contrast failures on the sample pages. So
+  blocks only move (Rise 24/56 px, Zoom 0.96/0.9, Slide in from the
+  left) and only photos fade. "Fade" became "Slide in".
+- The page's first section never has an entrance (it's on screen when
+  the page opens). Rows (Columns, Grid, Gallery) stagger their items by
+  4 vh (Lively 6 vh) of scrolling, cycling every four; a row's own block
+  doesn't move as well. Photos time their fade by the block they're in
+  (a named view timeline), because a card's `overflow: hidden` would
+  hide the scroll from the photo itself.
+- **Hover lift:** only cards and buttons that link somewhere (the
+  movement says "pressable"), also on keyboard focus; arrow buttons
+  keep their own arrow nudge. Lively also zooms the card photo.
+- **Parallax:** the photo is scaled 1.16 and moves ±6% over the
+  section's time on screen; the words don't move.
+- **Moving logo row:** published only; the builder shows the row still.
+  The logos repeat until each half holds 8; the repeats and the copy
+  are hidden from screen readers and their links skipped by Tab, so
+  each logo is read and reached once. Pause is a real checkbox ("Pause
+  the moving logos", 44 px) working without JavaScript through
+  `:has(:checked)`; the row also stops on hover and keyboard focus
+  (WCAG 2.2.2). Without the motion CSS (Off, Reduce motion) the repeats
+  and the switch stay `hidden` (a base rule keeps `.cr-logos`'s flex
+  from showing them).
+- The builder canvas never gets the motion CSS (it's added in
+  `renderDocument`), so blocks don't jump while being edited; Site
+  settings' preview and published pages show it. check:layouts renders
+  a motion sample page in all 12 looks (Subtle and Lively in turn).
+
 ## 2026-11-02 — F074 Rows and columns v2 (Claude, reversible)
 
 - Snapshot https://claude.ai/artifact/9mia2cufYDWGXjSPr3zYbn

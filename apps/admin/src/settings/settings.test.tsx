@@ -72,6 +72,7 @@ describe("Site settings screen", () => {
       "Buttons",
       "Cards",
       "Links",
+      "Motion",
       "Section styles",
       "Header & menu",
       "Footer",

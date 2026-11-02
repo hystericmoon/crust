@@ -337,6 +337,8 @@
 .cr-logos .cr-image-empty { min-height: 40px; width: 120px; }
 .cr-logos a { display: block; border-radius: 2px; }
 .cr-logos a:focus-visible { outline: 3px solid currentColor; outline-offset: 4px; }
+/* F075: a moving logo row's repeats and pause switch show only while it moves (motion CSS). */
+.cr-marquee [hidden] { display: none; }
 .cr-logos-grey img { filter: grayscale(1); opacity: 0.8; transition: filter 150ms ease, opacity 150ms ease; }
 .cr-logos-grey a:hover img, .cr-logos-grey a:focus-visible img { filter: none; opacity: 1; }
 

@@ -7,6 +7,7 @@
  * Like section styles, these are plain choices from short lists, never CSS
  * typed by the owner.
  */
+import { motionLevelNames, motionLevels } from "./motion";
 import type { SiteTokens } from "./tokens";
 
 export const typeScales = ["subtle", "balanced", "bold", "dramatic"] as const;
@@ -158,7 +159,8 @@ export interface StyleOptionProblem {
   message: string;
 }
 
-const lists: { [K in keyof StyleOptions]: readonly StyleOptions[K][] } = {
+const lists: { [K in keyof StyleOptions]: readonly StyleOptions[K][] } & { motion: readonly string[] } = {
+  motion: motionLevels,
   displayWeight: headingWeights,
   displayTracking: headingTrackings,
   labelStyle: labelStyles,
@@ -170,7 +172,8 @@ const lists: { [K in keyof StyleOptions]: readonly StyleOptions[K][] } = {
   linkStyle: linkStyles,
 };
 
-const labels: Record<keyof StyleOptions, string> = {
+const labels: Record<keyof StyleOptions | "motion", string> = {
+  motion: "Motion",
   displayWeight: "Display heading weight",
   displayTracking: "Display heading letter spacing",
   labelStyle: "Small labels",
@@ -188,11 +191,11 @@ export function validateStyleOptions(tokens: SiteTokens): StyleOptionProblem[] {
   if (typeof style !== "object" || style === null || Array.isArray(style)) return [{ path: "style", message: "The style options are damaged." }];
   const problems: StyleOptionProblem[] = [];
   for (const [key, value] of Object.entries(style)) {
-    const list = lists[key as keyof StyleOptions] as readonly unknown[] | undefined;
+    const list = (lists as Record<string, readonly unknown[]>)[key];
     if (!list) problems.push({ path: `style.${key}`, message: `Unknown style option "${key}".` });
     else if (!list.includes(value)) {
-      const names = Object.values(styleOptionNames[key as keyof StyleOptions]).join(", ");
-      problems.push({ path: `style.${key}`, message: `${labels[key as keyof StyleOptions]}: pick one of ${names}.` });
+      const names = Object.values(key === "motion" ? motionLevelNames : styleOptionNames[key as keyof StyleOptions]).join(", ");
+      problems.push({ path: `style.${key}`, message: `${labels[key as keyof StyleOptions | "motion"]}: pick one of ${names}.` });
     }
   }
   return problems;

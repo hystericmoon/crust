@@ -12,11 +12,16 @@ import {
   labelFontStack,
   labelStyles,
   linkStyles,
+  motionLevelHelp,
+  motionLevelNames,
+  motionLevels,
+  motionOf,
   sectionStylesOf,
   styleOptionNames,
   styleOptionsOf,
   typeScales,
   type ButtonLook,
+  type MotionLevel,
   type SiteTokens,
   type StyleOptions,
 } from "@crust/blocks";
@@ -351,5 +356,46 @@ export function LinkOptions(props: Props) {
         ),
       }))}
     />
+  );
+}
+
+/** Offsets of the three bars in each motion picture, in px: how far things travel. */
+const motionBars: Record<MotionLevel, [number, number, number]> = { off: [0, 0, 0], subtle: [0, 3, 6], lively: [0, 7, 14] };
+
+/** F075: one motion level for the whole site. */
+export function MotionOptions({ tokens, onChange }: Props) {
+  const level = motionOf(tokens);
+  const c = tokens.colors;
+  return (
+    <>
+      <OptionField<MotionLevel>
+        id="motion-level"
+        label="Motion"
+        hint="How the published site moves as visitors scroll and point. The builder always stays still; the preview shows it."
+        value={level}
+        onChange={(m) => onChange({ ...tokens, style: { ...tokens.style, motion: m } })}
+        options={motionLevels.map((m) => ({
+          value: m,
+          label: motionLevelNames[m],
+          content: (
+            <span className="st-option-pic st-motion-pic" aria-hidden="true" style={{ background: c.background }}>
+              {motionBars[m].map((y, i) => (
+                <i key={i} style={{ background: i === 0 ? c.text : c.muted, transform: `translateY(${y}px)`, opacity: m === "off" ? 1 : 1 - i * 0.25 }} />
+              ))}
+            </span>
+          ),
+        }))}
+      />
+      <p className="st-help">
+        <b>{motionLevelNames[level]}:</b> {motionLevelHelp[level]}.{" "}
+        {level === "off"
+          ? "Nothing moves."
+          : "Sections ease in as they scroll into view, rows of cards follow one another, and cards and buttons that link somewhere lift under the pointer. A section can pick another entrance or none, and photo backgrounds can move slower (parallax), in the section's Style tab."}
+      </p>
+      <p className="st-help">
+        Visitors who turn on Reduce motion on their device always see a still page. Browsers that can't link animation to scrolling (Firefox today) show
+        the page still too; nothing is ever hidden.
+      </p>
+    </>
   );
 }

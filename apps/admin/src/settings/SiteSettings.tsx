@@ -42,7 +42,7 @@ import { sameTokens } from "../tokens-store";
 import { Icon } from "./icons";
 import { Preview } from "./Preview";
 import { ThemePackGroup, type PackPreview } from "./ThemePack";
-import { ButtonOptions, CardOptions, LinkOptions, TypeOptions } from "./StyleGroups";
+import { ButtonOptions, CardOptions, LinkOptions, MotionOptions, TypeOptions } from "./StyleGroups";
 import { chromeProblems, FooterOptions, HeaderOptions, type PageOption } from "./ChromeGroups";
 import { migrateChrome, validateChrome, type SiteChrome } from "@crust/blocks";
 import { SiteAddressGroup } from "./SiteAddress";
@@ -86,6 +86,7 @@ export const groups = [
   { id: "buttons", label: "Buttons" },
   { id: "cards", label: "Cards" },
   { id: "links", label: "Links" },
+  { id: "motion", label: "Motion" },
   { id: "section-styles", label: "Section styles" },
   { id: "header", label: "Header & menu" },
   { id: "footer", label: "Footer" },
@@ -345,6 +346,11 @@ export function SiteSettings({
           <section className="st-card" id="links" aria-labelledby="links-h" hidden={group !== "links"}>
             <h2 id="links-h" tabIndex={-1}>Links</h2>
             <LinkOptions tokens={draft} onChange={onChange} />
+          </section>
+
+          <section className="st-card" id="motion" aria-labelledby="motion-h" hidden={group !== "motion"}>
+            <h2 id="motion-h" tabIndex={-1}>Motion</h2>
+            <MotionOptions tokens={draft} onChange={onChange} />
           </section>
 
           <section className="st-card" id="section-styles" aria-labelledby="section-styles-h" hidden={group !== "section-styles"}>

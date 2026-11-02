@@ -65,6 +65,20 @@ export type { StyleOptions, TypeScale, HeadingWeight, HeadingTracking, ButtonSha
 export type { FontStack, BundledFont, FontCategory, FontFile, FontPair, FontSubset } from "./fonts";
 export { safeUrl } from "./url";
 export {
+  entranceNames,
+  entrances,
+  isEntrance,
+  marqueeRepeat,
+  MARQUEE_MIN,
+  motionCss,
+  motionLevelHelp,
+  motionLevelNames,
+  motionLevels,
+  motionOf,
+  sectionMotionClasses,
+} from "./motion";
+export type { Entrance, MotionLevel } from "./motion";
+export {
   chromeLimits,
   defaultFooter,
   defaultHeader,
