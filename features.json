@@ -746,7 +746,7 @@
       "description": "Design snapshot first. About 30 open-licence typefaces bundled with Crust in tested heading/body pairs, picked in Site settings, served from the site itself (woff2, only the weights and characters a site uses, font-display swap, preloaded). Templates and theme packs carry the choice. System stacks stay as an option. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F028"],
       "done_check": "npm test -- fonts && npm run check:a11y && npm run check:perf",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

@@ -12,8 +12,8 @@
       "onPrimary": "#FFFFFF"
     },
     "fonts": {
-      "heading": "Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', sans-serif",
-      "body": "Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', sans-serif"
+      "heading": "'Fraunces', Georgia, 'Times New Roman', serif",
+      "body": "'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif"
     },
     "spacing": {
       "none": 0,

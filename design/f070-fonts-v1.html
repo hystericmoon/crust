@@ -1,0 +1,158 @@
+<title>F070 Fonts Picker</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Cormorant+Garamond:wght@500&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Figtree:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,500&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500&family=Instrument+Sans:wght@400;500&family=Instrument+Serif&family=Inter+Tight:wght@400;500&family=JetBrains+Mono:wght@500&family=Lora:wght@400&family=Plus+Jakarta+Sans:wght@600;700&family=Schibsted+Grotesk:wght@400;600&family=Space+Grotesk:wght@500&family=Work+Sans:wght@400&family=Young+Serif&display=swap">
+<style>
+/* Layout: report column; each direction shows the Site settings Typography card as UI, recommended one framed */
+:root{
+  --bg:#F2F3F1;--panel:#FFFFFF;--fg:#17191B;--muted:#5C6267;--line:#D9DCD8;--accent:#3949AB;--accent-soft:#E7E9F7;--ok:#2F6B45;
+  --ui:"Schibsted Grotesk",ui-sans-serif,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--accent-soft:#252A45;--ok:#8CC5A0;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--accent-soft:#252A45;--ok:#8CC5A0;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--ui);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1100px;margin:0 auto;padding-block:48px 96px;display:grid;gap:56px}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.015em}
+h1{font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.05;font-weight:600}h2{font-size:1.5rem;font-weight:600}h3{font-size:1.05rem;font-weight:600}
+p{margin:0;max-width:70ch}
+.eyebrow{font:500 .75rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.lede{font-size:1.1rem;color:var(--muted)}
+section{display:grid;gap:18px}
+.dir{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:start}
+.dir.rec{border:2px solid var(--accent)}
+@media (max-width:880px){.dir{grid-template-columns:1fr}}
+.meta{display:grid;gap:10px;font-size:.93rem}
+.meta ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.tag{justify-self:start;font:600 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--accent);color:var(--panel);padding:6px 10px;border-radius:4px}
+.why{color:var(--muted)}
+/* the admin card being drawn: fixed light colours, it depicts Crust's admin */
+.card{background:#fff;color:#1A1C1E;border:1px solid #DADDE0;border-radius:10px;padding:16px;display:grid;gap:12px;font-family:var(--ui)}
+.card h4{margin:0;font-size:15px;font-weight:600}
+.card .help{font-size:12px;color:#5A6066}
+.pairs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (max-width:560px){.pairs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.pair{border:1px solid #DADDE0;border-radius:8px;padding:10px;display:grid;gap:4px;min-height:96px;align-content:start;background:#fff}
+.pair.on{border:2px solid #3949AB;padding:9px;background:#F7F8FD}
+.pair .l{font:500 8.5px/1 "Geist Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:#6A6F75}
+.pair .h{font-size:19px;line-height:1.05}
+.pair .b{font-size:10.5px;line-height:1.35;color:#3E4347}
+.pair .n{font:500 10px/1 var(--ui);color:#5A6066;margin-top:auto;padding-top:6px;display:flex;justify-content:space-between}
+.pair.on .n{color:#3949AB}
+.fine{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sel{display:grid;gap:4px;font-size:12px}
+.sel span{font-weight:500}
+.sel div{border:1px solid #BFC4C9;border-radius:6px;padding:7px 9px;display:flex;justify-content:space-between;font-size:13px}
+.weight{font-size:11px;color:#2F6B45}
+/* B */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.list{border:1px solid #DADDE0;border-radius:8px;overflow:hidden;font-size:13px}
+.list .s{padding:7px 9px;border-bottom:1px solid #E6E8EA;color:#6A6F75;font-size:12px}
+.list .g{padding:5px 9px;font:500 9px/1 "Geist Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:#6A6F75;background:#F5F6F7}
+.list .i{padding:6px 9px;border-bottom:1px solid #F0F1F2}
+.list .i.on{background:#E7E9F7;color:#26338A}
+.spec{border:1px solid #DADDE0;border-radius:8px;padding:12px;display:grid;gap:4px}
+/* C */
+.drawer{display:grid;grid-template-columns:110px 1fr;border:1px solid #DADDE0;border-radius:8px;overflow:hidden;min-height:250px}
+.drawer aside{background:#F5F6F7;padding:10px;display:grid;gap:6px;align-content:start;font-size:12px}
+.drawer aside b{font:500 9px/1 "Geist Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:#6A6F75}
+.drawer aside span{padding:4px 6px;border-radius:4px}.drawer aside span.on{background:#E7E9F7;color:#26338A}
+.drawer .grid{padding:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-content:start}
+.drawer .f{border:1px solid #E1E3E5;border-radius:6px;padding:8px;display:grid;gap:2px}
+.drawer .f b{font-size:22px;font-weight:400;line-height:1}.drawer .f span{font-size:10px;color:#6A6F75}
+/* page preview strip */
+.preview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.preview{grid-template-columns:1fr}}
+.site{border-radius:10px;overflow:hidden;border:1px solid var(--line);aspect-ratio:4/3;max-width:100%;padding:8%;display:grid;align-content:end;gap:6px}
+.site .k{font:500 8px/1 "Geist Mono",monospace;letter-spacing:.12em;text-transform:uppercase}
+.site .t{line-height:1;margin:0}
+.site .p{font-size:11px;line-height:1.4;max-width:30ch}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.92rem;margin:0}
+.facts dt{color:var(--muted)}.facts dd{margin:0}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:10px}
+.panel ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.93rem}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+<main>
+<header style="display:grid;gap:14px">
+  <span class="eyebrow">Milestone 8 · F070 Fonts · design sketch</span>
+  <h1>Choosing fonts in Crust: three directions</h1>
+  <p class="lede">Crust will ship 32 open-licence typefaces in tested pairs, served from the site itself. No Google requests and nothing for visitors to accept. The open question is how you pick from them in Site settings → Typography.</p>
+</header>
+
+<section aria-labelledby="look">
+  <span class="eyebrow">What changes on the site</span>
+  <h2 id="look">Same words, three of the bundled pairs</h2>
+  <div class="preview">
+    <div class="site" style="background:#F3EFE8;color:#1E1A16"><span class="k" style="color:#7A6C5C">Studio · Since 2008</span><p class="t" style="font:300 34px/1 'Fraunces',serif;letter-spacing:-.035em">Rooms that stay calm for decades</p><p class="p" style="font-family:'Inter Tight',sans-serif">Houses, studios and public rooms, from first sketch to last fitting.</p></div>
+    <div class="site" style="background:#16181A;color:#F2F2EF"><span class="k" style="color:#A9ADB1">Agency · Lisbon</span><p class="t" style="font:400 34px/1 'Geist',sans-serif;letter-spacing:-.05em">Brands people talk about</p><p class="p" style="font-family:'Geist',sans-serif;opacity:.85">Identity, campaigns and launch events for teams that want to be noticed.</p></div>
+    <div class="site" style="background:#FBF4E4;color:#1F2340"><span class="k" style="color:#6B6553">Bakery · Open six days</span><p class="t" style="font:400 32px/1.02 'Young Serif',serif;letter-spacing:-.02em">Made by hand, around the corner</p><p class="p" style="font-family:'Work Sans',sans-serif">Bread, coffee and small things made in the back room.</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="dirs">
+  <span class="eyebrow">Your call (or mine, if you don't pick)</span>
+  <h2 id="dirs">How you choose</h2>
+
+  <article class="dir rec">
+    <div class="card" aria-label="Direction A drawn: pair cards, then fine-tune">
+      <h4>Typography</h4>
+      <p class="help">Pick a pair. Each is set in its own fonts. You can change either font below.</p>
+      <div class="pairs">
+        <div class="pair on"><span class="l">Editorial</span><span class="h" style="font-family:'Fraunces',serif;font-weight:300;letter-spacing:-.03em">Calm rooms</span><span class="b" style="font-family:'Inter Tight',sans-serif">Houses and studios, designed to last.</span><span class="n"><span>Fraunces · Inter Tight</span><span>✓</span></span></div>
+        <div class="pair"><span class="l">Studio</span><span class="h" style="font-family:'Geist',sans-serif;letter-spacing:-.05em">Calm rooms</span><span class="b" style="font-family:'Geist',sans-serif">Houses and studios, designed to last.</span><span class="n"><span>Geist</span></span></div>
+        <div class="pair"><span class="l">Gallery</span><span class="h" style="font-family:'Instrument Serif',serif">Calm rooms</span><span class="b" style="font-family:'Instrument Sans',sans-serif">Houses and studios, designed to last.</span><span class="n"><span>Instrument Serif · Sans</span></span></div>
+        <div class="pair"><span class="l">Luxury</span><span class="h" style="font-family:'Bodoni Moda',serif">Calm rooms</span><span class="b" style="font-family:'Hanken Grotesk',sans-serif">Houses and studios, designed to last.</span><span class="n"><span>Bodoni Moda · Hanken</span></span></div>
+        <div class="pair"><span class="l">Friendly</span><span class="h" style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;letter-spacing:-.03em">Calm rooms</span><span class="b" style="font-family:'Figtree',sans-serif">Houses and studios, designed to last.</span><span class="n"><span>Bricolage · Figtree</span></span></div>
+        <div class="pair"><span class="l">Clinic</span><span class="h" style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;letter-spacing:-.02em">Calm rooms</span><span class="b" style="font-family:'DM Sans',sans-serif">Houses and studios, designed to last.</span><span class="n"><span>Jakarta · DM Sans</span></span></div>
+      </div>
+      <p class="help">+ 6 more pairs · System fonts (no download)</p>
+      <div class="fine">
+        <label class="sel"><span>Heading font</span><div><span style="font-family:'Fraunces',serif">Fraunces</span><span>▾</span></div></label>
+        <label class="sel"><span>Body font</span><div><span style="font-family:'Inter Tight',sans-serif">Inter Tight</span><span>▾</span></div></label>
+      </div>
+      <p class="weight">Adds about 70 KB, downloaded once per visitor.</p>
+    </div>
+    <div class="meta"><span class="tag">Recommended</span><h3>A · Pairs first, fine-tune after</h3>
+      <ul><li>Twelve tested pairs as cards, each set in its own fonts</li><li>Heading and body dropdowns below, grouped Serif · Sans · Mono · On the visitor's device, each name shown in its font</li><li>The size it adds, in plain words</li></ul>
+      <p class="why"><b>Why:</b> 32 fonts make about 1,000 combinations, and most pairs don't work. Pair cards turn recall into recognition (Nielsen's heuristic 6) and cut the choice to twelve good options (choice overload, Iyengar and Lepper). You still have full control one step down. This is also how Squarespace and Framer present type.</p></div>
+  </article>
+
+  <article class="dir">
+    <div class="card" aria-label="Direction B drawn: two searchable lists and a specimen">
+      <h4>Typography</h4>
+      <div class="cols">
+        <div class="list"><div class="s">Heading · Search fonts</div><div class="g">Serif</div><div class="i on" style="font-family:'Fraunces',serif">Fraunces</div><div class="i" style="font-family:'Cormorant Garamond',serif">Cormorant Garamond</div><div class="i" style="font-family:'Young Serif',serif">Young Serif</div><div class="g">Sans</div><div class="i" style="font-family:'Geist',sans-serif">Geist</div></div>
+        <div class="list"><div class="s">Body · Search fonts</div><div class="g">Sans</div><div class="i on" style="font-family:'Inter Tight',sans-serif">Inter Tight</div><div class="i" style="font-family:'DM Sans',sans-serif">DM Sans</div><div class="i" style="font-family:'Work Sans',sans-serif">Work Sans</div><div class="g">Serif</div><div class="i" style="font-family:'Lora',serif">Lora</div></div>
+      </div>
+      <div class="spec"><span style="font:300 22px/1 'Fraunces',serif;letter-spacing:-.03em">Rooms that stay calm</span><span style="font:12px/1.4 'Inter Tight',sans-serif;color:#3E4347">Houses, studios and public rooms, from first sketch to last fitting.</span></div>
+    </div>
+    <div class="meta"><h3>B · Two lists and a specimen</h3>
+      <ul><li>Full control from the start</li><li>Good for people who know type</li></ul>
+      <p class="why">Every combination is open, including bad ones. Most site owners don't know which pairs work, so they'd stay on the default or make a clash.</p></div>
+  </article>
+
+  <article class="dir">
+    <div class="card" aria-label="Direction C drawn: a full font browser">
+      <h4>Font browser</h4>
+      <div class="drawer"><aside><b>Kind</b><span class="on">Serif</span><span>Sans</span><span>Display</span><span>Mono</span><b>Mood</b><span>Calm</span><span>Bold</span><span>Warm</span></aside>
+        <div class="grid"><div class="f"><b style="font-family:'Fraunces',serif">Aa</b><span>Fraunces</span></div><div class="f"><b style="font-family:'Bodoni Moda',serif">Aa</b><span>Bodoni Moda</span></div><div class="f"><b style="font-family:'Instrument Serif',serif">Aa</b><span>Instrument Serif</span></div><div class="f"><b style="font-family:'Young Serif',serif">Aa</b><span>Young Serif</span></div><div class="f"><b style="font-family:'Cormorant Garamond',serif">Aa</b><span>Cormorant</span></div><div class="f"><b style="font-family:'Lora',serif">Aa</b><span>Lora</span></div></div></div>
+    </div>
+    <div class="meta"><h3>C · A font browser</h3>
+      <ul><li>Feels like a font site: browse by kind and mood</li><li>Room to grow past 32 fonts</li></ul>
+      <p class="why">It's a separate screen to learn, and it still picks one font at a time. At 32 fonts it's more machinery than the job needs.</p></div>
+  </article>
+</section>
+
+<section class="panel" aria-labelledby="how">
+  <h2 id="how">How it works, whichever you pick</h2>
+  <dl class="facts">
+    <dt>Fonts</dt><dd>Serif: Fraunces, Newsreader, Playfair Display, EB Garamond, Cormorant Garamond, Source Serif 4, Literata, Lora, Bodoni Moda, Instrument Serif, DM Serif Display, Young Serif. Sans: Geist, Inter Tight, DM Sans, Instrument Sans, Schibsted Grotesk, Manrope, Figtree, Onest, Hanken Grotesk, Plus Jakarta Sans, Space Grotesk, Sora, Outfit, Public Sans, Work Sans, Bricolage Grotesque. Mono: Geist Mono, JetBrains Mono, IBM Plex Mono, DM Mono.</dd>
+    <dt>Speed</dt><dd>Only the fonts a site uses are published: Latin and Latin-extended, all weights in one file each. The main ones load first, and text shows straight away in a fallback font. Lighthouse must stay at 95 or more.</dd>
+    <dt>Privacy</dt><dd>The files come from your own site, never from Google, so there's nothing to consent to.</dd>
+    <dt>Old sites</dt><dd>Sites keep their system fonts until you pick a pair. Templates and theme packs carry the choice by name.</dd>
+    <dt>Accessibility</dt><dd>Text keeps its sizes. Very thin weights are offered for display headings only, never for body text.</dd>
+    <dt>Licence</dt><dd>SIL Open Font License 1.1, approved by you on 2 Nov. Each font's licence ships with Crust.</dd>
+  </dl>
+</section>
+</main>

@@ -1,4 +1,4 @@
-import { config, CONTACT_FORM_SCRIPT, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
+import { config, CONTACT_FORM_SCRIPT, fontPreloads, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -212,7 +212,7 @@ export function renderDocument(site: Site, doc: DocumentParts, baseCss: string, 
 <title>${escapeHtml(title)}</title>
 <meta name="description" content="${escapeHtml(doc.description)}">
 <meta name="generator" content="Crust">
-${shareTags(site, doc, options)}${doc.head ?? ""}<style>${css.replace(/<\/style/gi, "<\\/style")}</style>
+${shareTags(site, doc, options)}${fontPreloads(site.tokens.fonts).map((href) => `<link rel="preload" href="${escapeHtml(href)}" as="font" type="font/woff2" crossorigin>\n`).join("")}${doc.head ?? ""}<style>${css.replace(/<\/style/gi, "<\\/style")}</style>
 </head>
 <body class="cr-page">
 <a class="cr-skip" href="#content">Skip to content</a>

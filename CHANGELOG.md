@@ -4,6 +4,20 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Real fonts (F070).** Site settings → Typography now has 32
+  typefaces that ship with Crust, among them Fraunces, Geist, Instrument
+  Serif, Bodoni Moda and DM Sans. Pick one of 12 tested **font pairs**:
+  each card is set in its own fonts. Or change the heading and body font
+  separately from lists grouped by Serif, Sans serif and Monospace, each
+  name shown in its own font. The fonts are published with your site,
+  so visitors' browsers never contact Google and there's nothing to
+  consent to. Only the fonts you use are published, and the screen says
+  how much they add (about 70–120 KB, once per visitor). Fonts made for
+  headings, like Bodoni Moda, aren't offered for body text. Sites keep
+  their current fonts until you pick new ones. The sample site now uses
+  the Editorial pair (Fraunces and Inter Tight); the live site changes
+  only when you publish.
+
 - **Premium templates in the template gallery (F062).** Pages → Start
   from a template now has two groups: **Free** (the starters, as
   before) and **Premium**, templates from the Crust store with the price

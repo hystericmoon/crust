@@ -3,6 +3,7 @@
  * Blocks never use raw values; they reference these through CSS variables,
  * so changing a token restyles the whole site.
  */
+import { fontFaceCss } from "./fonts";
 import { sectionStylesCss, validateSectionStyles, type SectionStyle, type SectionStyleId } from "./section-styles";
 import { styleOptionsCss, validateStyleOptions, type StyleOptions } from "./style-options";
 
@@ -66,7 +67,9 @@ export function tokensToCss(tokens: SiteTokens, selector = ":root"): string {
   lines.push(`--cr-max-width: ${Number(tokens.maxWidth)}px;`);
   const scope = selector === ":root" ? "" : selector;
   const options = styleOptionsCss(tokens, scope);
-  return `${selector} {\n  ${lines.join("\n  ")}\n}\n${sectionStylesCss(tokens, scope)}${options ? `\n${options}` : ""}`;
+  // F070: bundled fonts the site uses (nothing for sites on system fonts).
+  const faces = fontFaceCss(tokens.fonts);
+  return `${faces ? `${faces}\n` : ""}${selector} {\n  ${lines.join("\n  ")}\n}\n${sectionStylesCss(tokens, scope)}${options ? `\n${options}` : ""}`;
 }
 
 /** What each colour role does, in the owner's words. */

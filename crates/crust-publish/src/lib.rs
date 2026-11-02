@@ -5,6 +5,7 @@
 //! library photos (F034), and with the `search` feature the search index
 //! (Pagefind as a library, F056: the desktop app has no Node).
 
+pub mod fonts;
 pub mod media;
 pub mod redirects;
 #[cfg(feature = "search")]
@@ -17,6 +18,7 @@ use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
 pub use redirects::{Redirect, load_redirects, plan_redirects};
+pub use fonts::{FontReport, folder_fonts, font_refs, publish_fonts};
 pub use media::{MediaReport, publish_media};
 pub use validate::{Issue, is_noindex, media_refs, validate_page};
 

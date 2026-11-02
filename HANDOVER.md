@@ -16,10 +16,14 @@ https://claude.ai/artifact/FMb9QuLomsLCvQC9aZscf3. See DECISIONS
 Proposals "Premium design layer".
 **Milestone 8 approved** (owner, 2026-11-02: "Let's go A"):
 `docs/milestone-8.md`, F070–F084 in features.json; F063 now depends on
-F084, so the store waits. **Next: F070 Fonts**, design snapshot first.
-**Blocked on the owner for F070's build:** OK to use SIL OFL 1.1 fonts
-(not in CLAUDE.md's licence list; asked 2026-11-02, DECISIONS "Milestone
-8 approved"). Branch `f063-store-site` (PR #54) holds the comparison
+F084, so the store waits. Owner allowed OFL fonts, MPL and BlueOak.
+**F070 Fonts built, passes** (branch `f070-fonts`, PR stacked on #54;
+DECISIONS "F070"). How it fits: `packages/blocks/src/fonts.ts`
+(`bundledFonts`, `fontPairs`, `fontFaceCss`, `fontPreloads`), files in
+`packages/blocks/fonts/` (`npm run fonts:sync`), crust-publish
+`fonts.rs` (`--fonts`), desktop `build_site(.., fonts)`, picker in
+`SiteSettings.tsx` (`FontPairs`, `FontField`). **Next: F071 Type and
+detail styles**, design snapshot first. Branch `f063-store-site` (PR #54) holds the comparison
 pages, the M8 write-up and a midnight test fix; no store code. Start
 F070 on a new branch from main once #54 is merged, or stack on it.
 This session can't start new sessions (chain limit): if it ends, the

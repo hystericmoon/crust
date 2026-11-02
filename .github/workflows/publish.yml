@@ -104,7 +104,7 @@ jobs:
       - name: Check and finish the site (crust-publish)
         env:
           BASE_URL: ${{ steps.site.outputs.url }}
-        run: cargo run -q -p crust-publish -- dist/site --base-url "$BASE_URL" --redirects content/redirects.json --media content/media
+        run: cargo run -q -p crust-publish -- dist/site --base-url "$BASE_URL" --redirects content/redirects.json --media content/media --fonts packages/blocks/fonts
 
       - name: Build the site search index (Pagefind)
         run: npx pagefind --site dist/site

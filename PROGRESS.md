@@ -5,6 +5,12 @@ to "Log".
 
 ## Current
 
+- **F070 Fonts: built, passes** (branch `f070-fonts`, stacked on PR #54).
+  Snapshot https://claude.ai/artifact/Gjyo7UxqKfgcUBc3MxaSCn, A built.
+  **To try** on the PR's preview link: Site settings → Typography,
+  press a few pair cards and watch the preview; change one font from
+  the list. Screenshots `design/f070-typography*.png`. Needs
+  `reviewed: true` from the owner. Next: F071 Type and detail styles.
 - **2026-11-02: Milestone 8 "Premium design layer" approved** (owner:
   "Let's go A"), docs/milestone-8.md, F070–F084. Came from the owner's
   feedback that our templates don't feel premium; gap pages

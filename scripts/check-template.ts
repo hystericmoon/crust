@@ -72,7 +72,7 @@ async function check(text: string, source: string, missing: string[] = []): Prom
     groups.push(publishGroup(false, render.output));
   } else {
     const media = t.media.length ? ["--media", join(contentDir, "media")] : [];
-    const publish = run("cargo", ["run", "-q", "-p", "crust-publish", "--", siteDir, "--base-url", CHECK_BASE_URL, ...media]);
+    const publish = run("cargo", ["run", "-q", "-p", "crust-publish", "--", siteDir, "--base-url", CHECK_BASE_URL, ...media, "--fonts", join(root, "packages/blocks/fonts")]);
     groups.push(publishGroup(publish.ok, publish.output));
     run(join(root, "node_modules/.bin/pagefind"), ["--site", siteDir, "--silent"]);
     console.log("  axe on every page at three widths…");

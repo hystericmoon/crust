@@ -24,6 +24,8 @@ describe("publish workflow (F008)", () => {
     expect(step("Check and finish the site (crust-publish)").run).toContain("crust-publish -- dist/site");
     expect(step("Check and finish the site (crust-publish)").run).toContain("--redirects content/redirects.json");
     expect(step("Check and finish the site (crust-publish)").run).toContain("--media content/media");
+    // F070: the bundled fonts the pages use are copied in.
+    expect(step("Check and finish the site (crust-publish)").run).toContain("--fonts packages/blocks/fonts");
     // F039: the search index is built from the finished site, before the accessibility check.
     expect(names.indexOf("Check and finish the site (crust-publish)")).toBeLessThan(names.indexOf("Build the site search index (Pagefind)"));
     expect(names.indexOf("Build the site search index (Pagefind)")).toBeLessThan(names.indexOf("Accessibility check (stops the publish on serious issues)"));

@@ -87,6 +87,12 @@ address): `https://` plus the domain, no path. `https://example.pages.dev`
 means "not set"; publishing then uses the Cloudflare Pages address, and it
 uses the own domain only once Cloudflare reports it connected.
 
+`tokens.fonts.heading` and `.body` are CSS font lists. From F070 the
+first family may be one of Crust's bundled fonts (`bundledFonts`, e.g.
+`'Fraunces', Georgia, serif`); publishing then adds its `@font-face`
+rules and copies its files to `/fonts/`. Any other list uses fonts on
+the visitor's device, as before.
+
 `tokens.sectionStyles` (optional, added with F025) defines the site-wide
 section styles; a Section's `background` names one (`background`,
 `surface`, `primary`, `dark`).
