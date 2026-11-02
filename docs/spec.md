@@ -1,6 +1,6 @@
 # Crust — product spec
 
-Working name. Owner: Hosni. Status: Milestones 1–4 complete (2026-10-29/31); Milestone 5 approved, `docs/milestone-5.md`.
+Working name. Owner: Hosni. Status: Milestones 1–6 complete (2026-10-29 to 11-02); Milestone 8 (premium design layer, `docs/milestone-8.md`) approved and next; Milestone 7 (store, `docs/milestone-7.md`) resumes after it.
 
 ## What it is
 

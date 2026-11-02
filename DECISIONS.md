@@ -251,6 +251,25 @@ Features Claude suggests. They are not work until the owner adds them to
   the redirects and Crust's 404 page. Small (M). Only helps Apache hosts
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
+
+## 2026-11-02 — Milestone 8 approved (owner)
+
+- Owner: "Let's go A" on https://claude.ai/artifact/ULmnd4JZEKpGvyUHFg1Kpo.
+  Milestone 8 "Premium design layer", F070–F084, written in
+  `docs/milestone-8.md` and added to features.json (owner-approved
+  scope). The "Premium design layer" proposal is now this milestone.
+- The store waits: F063 now also depends on F084, as the approved plan
+  said ("Then the store resumes"). This keeps the session protocol from
+  picking F063 first.
+- Open question for the owner: most good open fonts are under the SIL
+  Open Font License 1.1, which is not in CLAUDE.md's licence list (MIT,
+  Apache-2.0, BSD, ISC). It's free, allows bundling and selling sites,
+  and forbids only selling the fonts on their own. F070 needs an OK to
+  use OFL fonts; until then its design snapshot can go ahead.
+- Correction to `design/premium-gap-v1.html`: Crust's "Dramatic" type
+  scale already reaches about 76 px; the gap there is tracking, light
+  weights and real fonts, not size.
+
 ## 2026-11-01 — F053 Signal and Corner with real photos (Claude, reversible)
 
 - **Directions (snapshot `design/f053-signal-corner-v1.html`):** Signal

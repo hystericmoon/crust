@@ -14,12 +14,17 @@ https://claude.ai/artifact/ULmnd4JZEKpGvyUHFg1Kpo
 (`design/yootheme-gap-v1.html`); first comparison
 https://claude.ai/artifact/FMb9QuLomsLCvQC9aZscf3. See DECISIONS
 Proposals "Premium design layer".
-**Next: wait for the owner to approve Milestone 8** (A all in, 15
-features F070–F084, recommended; or B core 9). On approval: write
-`docs/milestone-8.md`, add the features to features.json (owner-approved
-scope), start F070 Fonts with a design snapshot. **F063 Store is
-paused** until M8 is done; branch `f063-store-site` (PR #54) holds only
-these notes and design pages, no store code yet.
+**Milestone 8 approved** (owner, 2026-11-02: "Let's go A"):
+`docs/milestone-8.md`, F070–F084 in features.json; F063 now depends on
+F084, so the store waits. **Next: F070 Fonts**, design snapshot first.
+**Blocked on the owner for F070's build:** OK to use SIL OFL 1.1 fonts
+(not in CLAUDE.md's licence list; asked 2026-11-02, DECISIONS "Milestone
+8 approved"). Branch `f063-store-site` (PR #54) holds the comparison
+pages, the M8 write-up and a midnight test fix; no store code. Start
+F070 on a new branch from main once #54 is merged, or stack on it.
+This session can't start new sessions (chain limit): if it ends, the
+owner starts a fresh one with "Read HANDOVER.md on branch
+f063-store-site and continue".
 
 ## How sessions work (owner's rule, 2026-10-30)
 
