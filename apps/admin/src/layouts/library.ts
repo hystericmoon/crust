@@ -9,8 +9,11 @@ import {
   insertLayout,
   linkedBlock,
   migrateRichTextBlocks,
+  designLayoutsFor,
   pageLayouts,
   sectionLayouts,
+  type DesignKind,
+  type DesignLayout,
   type LayoutCategory,
   type LinkedSectionFile,
   type PageLayout,
@@ -26,18 +29,33 @@ export type LayoutItem =
   | { kind: "page"; layout: PageLayout }
   | { kind: "mine"; layout: SavedLayout }
   /** F043: inserted as a link to the shared section, not a copy. */
-  | { kind: "linked"; layout: LinkedSectionFile };
+  | { kind: "linked"; layout: LinkedSectionFile }
+  /** F082: a starting design (post, blog or "Page not found"); picking one replaces the design. */
+  | { kind: "design"; layout: DesignLayout };
 
 const words = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 
 /** Layouts of one kind, in one category ("All" for every one), matching every word of the search. */
-export function filterLayouts(kind: LayoutKind, category: LayoutCategory | "All", query: string, mine: SavedLayout[] = [], linked: LinkedSectionFile[] = []): LayoutItem[] {
+export function filterLayouts(
+  kind: LayoutKind,
+  category: LayoutCategory | "All",
+  query: string,
+  mine: SavedLayout[] = [],
+  linked: LinkedSectionFile[] = [],
+  design: DesignKind | null = null,
+): LayoutItem[] {
   const terms = words(query).split(/\s+/).filter(Boolean);
   const matches = (text: string) => terms.every((t) => words(text).includes(t));
   if (kind === "linked") return linked.filter((l) => matches(`${l.name} linked section`)).map((layout) => ({ kind: "linked", layout }));
   if (kind === "mine") {
     // F080: saved element styles live beside saved layouts, but aren't layouts.
     return mine.filter((l) => l.kind !== "element" && matches(`${l.name} ${l.kind === "page" ? "page" : "section"}`)).map((layout) => ({ kind: "mine", layout }));
+  }
+  // F082: in a design, "Whole pages" are that design's starting designs.
+  if (kind === "page" && design) {
+    return designLayoutsFor(design)
+      .filter((l) => matches(`${l.name} ${l.description} design`))
+      .map((layout) => ({ kind: "design", layout }));
   }
   if (kind === "page") {
     return pageLayouts
@@ -65,13 +83,14 @@ export function freshIds(items: ComponentData[]): ComponentData[] {
 export function buildItem(item: LayoutItem, tokens?: SiteTokens): ComponentData[] {
   if (item.kind === "linked") return [linkedBlock(item.layout.id)];
   if (item.kind === "mine") return freshIds(migrateRichTextBlocks(item.layout.content));
+  if (item.kind === "design") return freshIds(item.layout.build());
   const blocks = item.kind === "page" ? buildPageLayout(item.layout) : item.layout.build();
   return tokens ? fitLayoutToTokens(blocks, tokens) : blocks;
 }
 
 /** F080: built-in items split into the new layouts and the first library's plainer ones ("Simple"). */
 export function splitSimple(items: LayoutItem[]): { main: LayoutItem[]; simple: LayoutItem[] } {
-  const isSimple = (i: LayoutItem) => (i.kind === "section" || i.kind === "page") && i.layout.simple === true;
+  const isSimple = (i: LayoutItem) => (i.kind === "section" || i.kind === "page") && (i.layout as { simple?: boolean }).simple === true;
   return { main: items.filter((i) => !isSimple(i)), simple: items.filter(isSimple) };
 }
 
@@ -132,6 +151,15 @@ export interface Insertion {
 export function planLayoutInsert(data: Data, item: LayoutItem, index: number, tokens?: SiteTokens): Insertion | null {
   const blocks = buildItem(item, tokens);
   if (!blocks.length) return null;
+  // F082: a starting design is the whole design, so it replaces what's there (one Undo brings it back).
+  if (item.kind === "design") {
+    return {
+      data: { ...data, content: blocks },
+      firstId: String(blocks[0]!.props.id),
+      index: 0,
+      announcement: `The design is now “${item.layout.name}”. Undo brings back the one before.`,
+    };
+  }
   const at = Math.max(0, Math.min(index, data.content.length));
   const content = insertLayout(data.content, blocks, at);
   const firstId = String(content[at]!.props.id);

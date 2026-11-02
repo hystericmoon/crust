@@ -11,6 +11,7 @@
  * axe, Lighthouse) and puts it together.
  */
 import {
+  designFileInContent,
   AA,
   blockName,
   checkContrast,
@@ -105,6 +106,8 @@ export function unpackTemplate(t: Template): Map<string, string | Uint8Array> {
     files.set("blog.json", json(t.blog));
     for (const p of stripPlaceholders(t.posts)) files.set(`posts/${p.slug}.json`, json(p));
   }
+  // F082: the template's designs, published like the site's.
+  for (const d of t.designs ?? []) files.set(designFileInContent(d.kind), json({ kind: d.kind, ...(d.title ? { title: d.title } : {}), savedAt: "", content: d.content }));
   if (t.media.length) {
     files.set("media.json", json(mediaOf(t)));
     for (const m of t.media) files.set(`media/${m.file}`, new Uint8Array(Buffer.from(m.data, "base64")));

@@ -5,7 +5,33 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-03 ~05:00 (Jakarta). **F081 Images: WebP, AVIF,
+Last updated: 2026-11-03 ~07:30 (Jakarta). **F082 Post, blog and 404
+designs built, passes** (branch `ccr-d50f7e80-weuq18`, stacked on
+F079–F081 in PR #65; done_check exit 0; DECISIONS "F082"). Snapshot
+https://claude.ai/artifact/6DUK8yisbSiBT5LuYuhUND (A for all three).
+How it fits: model `packages/blocks/src/page-designs.ts` (files
+`content/designs/{post,blog,404}.json`, `checkDesign`, `parseDesign`,
+nine `designLayouts`, `currentDesign`), blocks
+`page-design-blocks.tsx` (`PageDesignContext`, PostTitle, PostDetails,
+PostSummary, PostCover, PostHero, PostContent, BlogTitle, BlogIntro,
+PostList; config categories `post`/`blog`, hidden in page editors), CSS
+"F082" in styles.css. Render: `renderDesignBody` (render.tsx),
+`renderDesignedPost`/blog in blog.tsx, `renderNotFound` with
+`options.designs`; site.ts reads designs (damaged one stops publish).
+Server `apps/admin/server/designs.ts` (`/api/designs`, function +
+local-api). Admin `apps/admin/src/designs/` (`store.ts` with browser
+copies, `DesignEditor.tsx` with `withDesignEditing`, `DesignLinks.tsx`
+cards + Pages row, `context.ts` for the gallery's "Starting designs");
+post editor draws the design (`PostFrame` in posts/editing.tsx,
+`StaticBlocks` from @crust/render). Templates carry `designs`
+(template.ts, server template.ts apply, collect.ts, content-template.ts,
+template-check.ts). CI fix in this round: ci.yml "Make room on the
+runner" (F081's encoders filled the disk; link died with Bus error).
+Needs `reviewed: true`. **Next: F083 Stricter template check**
+(done_check in features.json), stacked on this branch or from main once
+#65 is merged.
+
+Earlier (~05:00): **F081 Images: WebP, AVIF,
 focal point built, passes** (branch `ccr-d50f7e80-weuq18`, stacked on
 F079/F080 in PR #65; done_check exit 0; DECISIONS "F081"). Snapshot
 https://claude.ai/artifact/Qp4rkNmxNn3AKWKxDTr9hB (A built). How it

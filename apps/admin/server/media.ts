@@ -18,6 +18,7 @@ import {
   sniffImage,
   type MediaItem,
 } from "@crust/blocks/media";
+import { designFile, designKinds, designNames, parseDesign } from "@crust/blocks/page-designs";
 import { fail, gate, githubFailure, repoFor, json, readPages, type Env } from "./api";
 import { commitFiles, readFile, readRaw, type Repo } from "./github";
 
@@ -41,6 +42,11 @@ async function usage(cfg: Repo, fetchFn: typeof fetch): Promise<Record<string, M
   };
   for (const { page } of [...pages].sort((a, b) => a.page.path.localeCompare(b.page.path))) {
     add(mediaUsedIn(page.puck), { path: page.path, title: page.title });
+  }
+  // F082: a photo in a post, blog or "Page not found" design is in use too.
+  for (const kind of designKinds) {
+    const design = parseDesign(await readFile(cfg, designFile(kind), fetchFn), kind);
+    if (design) add(mediaUsedIn(design.content), { path: `design:${kind}`, title: `${designNames[kind]} design` });
   }
   if (siteText) {
     try {

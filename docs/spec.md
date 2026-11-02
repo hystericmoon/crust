@@ -328,6 +328,29 @@ editing a marked word or photo field drops its mark, lists (`items`,
 `images`, `logos`) are cleared with "Keep as is". Marked blocks render
 with `data-crust-placeholder`, and publishing stops while any page has one.
 
+`content/designs/post.json`, `blog.json` and `404.json` (optional, added
+with F082): the post page, blog page and "Page not found" designed in the
+builder. A missing file means the built-in look.
+```json
+{ "kind": "post", "savedAt": "…", "content": [ … ] }
+```
+`kind` is `post`, `blog` or `notFound`; a `notFound` design may carry
+`title` (the browser tab's title, "Page not found" when missing).
+`content` is top-level blocks, like a page's `puck.content`, and may use
+blocks that fill themselves in: in the post design `PostTitle`
+(`size`, `align`), `PostDetails` (`show`: `both`, `date`, `blog`;
+`align`), `PostSummary` (`align`), `PostCover` (`ratio`: `auto`,
+`wide`, `cinema`, `square`, `tall`), `PostHero` (the cover with the
+title on it: `height`, `tint`, `align`, `summary`) and `PostContent`
+(where each post's own blocks go: exactly one, never inside a section or
+column); in the blog design `BlogTitle`, `BlogIntro`; in both
+`PostList` (`look`: `cards`, `list`, `featured`; `columns`: `auto`, `2`,
+`3`; `count`: `all`, `3`, `6`, `12`; `photo`, `date`, `summary`:
+`yes`/`no`; `titleLevel`; on a post it leaves out that post). A blog
+design needs a `PostList`. A damaged design stops the publish. Template
+files may carry `designs` [{ kind, title?, content }], one per kind;
+starting from a template replaces the site's designs.
+
 `content/sections/<id>.json` (optional, added with F043): a linked section,
 shown on many pages and edited once.
 ```json

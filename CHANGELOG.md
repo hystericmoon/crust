@@ -4,6 +4,20 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Design the post page, the blog page and "Page not found" (F082).**
+  These three now open in the builder like any page. On the **Posts**
+  screen, press **Design the blog page** or **Design the post page**;
+  "Page not found" is at the end of the **Pages** list. Blue blocks fill
+  themselves in: the post's title, date, summary and cover, **Post
+  content** (each post's own blocks), the blog's title and intro, and a
+  **Post list** (cards, a list, or the newest large; also as "More
+  posts" under a post). Add any other blocks around them, like a sign-up
+  strip. **Layouts → Starting designs** offers three looks for each
+  (nine in all), in your site's colours and fonts. Until you save a
+  design, your site keeps today's look, and **Use the built-in look**
+  takes you back to it. While you write a post, the canvas shows it
+  inside your post design. Templates carry their designs.
+
 - **Lighter photos and a focal point (F081).** Publishing now makes
   **AVIF and WebP** copies of every photo in your Media library (and of
   each smaller copy for phones). Browsers that can read them get those:

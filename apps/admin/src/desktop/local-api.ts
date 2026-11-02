@@ -20,6 +20,7 @@ import {
   handleStatus,
   type Env,
 } from "../../server/api";
+import { handleDesigns } from "../../server/designs";
 import { handleMedia, handleMediaFile } from "../../server/media";
 import { handlePosts } from "../../server/posts";
 import { handleSections } from "../../server/sections";
@@ -33,6 +34,7 @@ export const routes: Record<string, Partial<Record<Method, Handler>>> = {
   "/api/changes": { GET: handleChanges },
   "/api/delete": { POST: handleDelete },
   "/api/deleted": { GET: handleDeleted },
+  "/api/designs": { GET: handleDesigns, POST: handleDesigns },
   "/api/layouts": { GET: handleLayouts, POST: handleLayouts },
   "/api/links": { GET: handleLinks },
   "/api/media": { GET: handleMedia, POST: handleMedia },

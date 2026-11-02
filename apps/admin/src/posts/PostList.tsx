@@ -6,6 +6,7 @@
 import { formatPostDate, isValidDate, isValidSlug, newPost, postLimits, postPath, slugFor, today, type BlogSettings } from "@crust/blocks";
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { deletePost, saveBlog, savePost } from "../api-client";
+import { DesignCard } from "../designs/DesignLinks";
 import { loadPostRows, removeLocalPost, saveLocalPost, type PostRow } from "./store";
 
 export const postEditHref = (slug: string) => `#/post?slug=${encodeURIComponent(slug)}`;
@@ -171,6 +172,9 @@ export function PostList({ siteName, githubOn, language }: { siteName: string; g
         </section>
 
         {blog ? <BlogSettingsForm blog={blog} githubOn={githubOn} onSaved={setBlog} /> : null}
+        {/* F082: how the blog page and every post look, designed in the builder. */}
+        <DesignCard kind="blog" text="How the list of posts at /blog/ looks: its title, intro and the posts as cards, a list or with the newest large." />
+        <DesignCard kind="post" text="How every post looks around its own blocks: where the title, date and cover go, and anything you add above or below." />
       </main>
     </div>
   );

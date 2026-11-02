@@ -8,6 +8,12 @@
  * or browser parts and runs in either.
  */
 import {
+  checkDesign,
+  designFileInContent,
+  designKinds,
+  designNames,
+  parseDesign,
+  type PageDesigns,
   isBlogPath,
   parseBlog,
   parseLinkedSection,
@@ -41,6 +47,8 @@ export interface SiteContent {
   blog: BlogSettings;
   media: MediaItem[];
   linkedSections: Map<string, LinkedSectionFile>;
+  /** F082: the post, blog and "Page not found" designs; missing ones use the built-in look. */
+  designs?: PageDesigns;
 }
 
 /** One finished file: where it goes in the site, and its text. */
@@ -79,7 +87,24 @@ export async function readSiteContent(source: ContentSource): Promise<SiteConten
     if (!section) throw new Error(`content/sections/${file} isn't a linked section Crust can read.`);
     linkedSections.set(id, section);
   }
-  return { site, pages, posts, blog, media, linkedSections };
+  // F082: designs. A damaged one stops the publish rather than quietly using the built-in look.
+  const designs: PageDesigns = {};
+  for (const kind of designKinds) {
+    const text = await source.read(designFileInContent(kind));
+    if (text === null) continue;
+    const design = parseDesign(text, kind);
+    if (!design) {
+      let problems: string[] = [];
+      try {
+        problems = checkDesign(JSON.parse(text));
+      } catch {
+        problems = [];
+      }
+      throw new Error(`The ${designNames[kind]} design (content/${designFileInContent(kind)}) can't be published. ${problems.join(" ") || "The file is damaged."} Open it in the builder and save it again.`);
+    }
+    designs[kind] = design;
+  }
+  return { site, pages, posts, blog, media, linkedSections, designs };
 }
 
 export interface RenderSiteOptions {
@@ -95,10 +120,10 @@ export interface RenderSiteOptions {
  * page uses an address that belongs to the blog or search.
  */
 export function renderSite(content: SiteContent, baseCss: string, opts: RenderSiteOptions = {}): RenderedFile[] {
-  const { site, pages, posts, blog, media, linkedSections } = content;
+  const { site, pages, posts, blog, media, linkedSections, designs } = content;
   const baseUrl = opts.baseUrl || site.baseUrl;
   // Sites saved before F031 have no menu yet: it's made from these pages.
-  const options: RenderOptions = { pages: pages.map(({ page }) => ({ path: page.path, title: page.title })), media, baseUrl, forms: opts.forms, linkedSections };
+  const options: RenderOptions = { pages: pages.map(({ page }) => ({ path: page.path, title: page.title })), media, baseUrl, forms: opts.forms, linkedSections, designs };
   const files: RenderedFile[] = [];
   const seen = new Map<string, string>();
   for (const { file, page } of pages) {
@@ -114,7 +139,7 @@ export function renderSite(content: SiteContent, baseCss: string, opts: RenderSi
   if (posts.length) {
     files.push({ path: "blog/index.html", content: renderBlogIndex(site, posts, blog, baseCss, options) });
     files.push({ path: "blog/feed.xml", content: rssFeed(site, posts, blog, baseUrl) });
-    for (const post of posts) files.push({ path: `blog/${post.slug}/index.html`, content: renderPost(site, post, blog, baseCss, options) });
+    for (const post of posts) files.push({ path: `blog/${post.slug}/index.html`, content: renderPost(site, post, blog, baseCss, { ...options, posts }) });
   }
   // F039: the site search page; the search index is built after crust-publish.
   files.push({ path: "search/index.html", content: renderSearchPage(site, baseCss, options) });

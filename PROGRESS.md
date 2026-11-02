@@ -5,6 +5,22 @@ to "Log".
 
 ## Current
 
+- **F082 Post, blog and 404 designs: built, passes** (branch
+  `ccr-d50f7e80-weuq18`, stacked on F079–F081, PR #65 still open).
+  Snapshot https://claude.ai/artifact/6DUK8yisbSiBT5LuYuhUND, A built for
+  all three decisions. done_check `npm test -- page-designs && npm run
+  check:a11y` exit 0. **To try** on the PR's preview link: **Posts** →
+  **Design the post page**. Press **Layouts → Starting designs** and
+  pick "On the photo" or "Split", change anything (add a Section with a
+  sign-up line under "Post content"), **Save design**. Then open a post:
+  it shows inside your design. Back on Posts, **Design the blog page**:
+  try the "List" and "Featured" starting designs, or select the **Post
+  list** and switch its Look. **Pages** list → **Page not found** (last
+  row): try "Helpful". **Use the built-in look** goes back to today's
+  look. On preview links designs are kept in your browser; on
+  crust-admin.pages.dev they're saved to GitHub. Needs `reviewed: true`.
+  Next: F083 Stricter template check.
+
 - **F081 Images: WebP, AVIF, focal point: built, passes** (branch
   `ccr-d50f7e80-weuq18`, stacked on F079/F080, PR #65 still open).
   Snapshot https://claude.ai/artifact/Qp4rkNmxNn3AKWKxDTr9hB, A built.
@@ -320,6 +336,11 @@ to "Log".
   but can't save (different Access app). Intended.
 
 ## Log
+
+- 2026-11-03 (Jakarta) — CI on PR #65 went red after F081: the desktop
+  app's link step died with "Bus error" (runner disk full with the new
+  AVIF/WebP encoders). ci.yml now removes unused preinstalled toolkits
+  (~25 GB) first. F082 built on the same branch.
 
 - 2026-11-03 (Jakarta) — F081 built on `ccr-d50f7e80-weuq18`. The AVIF
   encoder took ~5 s a photo in `cargo run` builds (Rust compiles its

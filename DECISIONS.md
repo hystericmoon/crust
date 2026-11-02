@@ -257,6 +257,66 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-03 — F082 Post, blog and 404 designs (Claude, reversible)
+
+Snapshot https://claude.ai/artifact/6DUK8yisbSiBT5LuYuhUND
+(`design/f082-page-designs-v1.html`); the owner said "Go ahead and run",
+so the recommendations were built: A for all three decisions.
+
+- **How: A, a design with blocks that fill themselves in.** One way of
+  working for pages, posts and designs (consistency, Jakob's law inside
+  the product); anything can be added around the post (sign-up strip,
+  linked section, "More posts"); premium templates (F084) can ship
+  designed post and blog pages. B (layout switches) couldn't hold extra
+  sections; C (fixed top, blocks around it) left the most visible part
+  fixed.
+- **Format.** `content/designs/{post,blog,404}.json`, `{ kind, title?,
+  savedAt, content }` (spec, `page-designs.ts`). New optional files, so
+  no migration: a missing file keeps the old renderer path exactly (the
+  tests compare the output byte for byte). A damaged file stops the
+  publish with its name, rather than quietly using the built-in look.
+- **Rules (`checkDesign`).** The post design needs exactly one "Post
+  content", at the top level (it holds the post's own full-width
+  sections; inside a section it would nest sections). The builder keeps
+  it, and "Cover with title", out of slots (`disallow`, also inside the
+  settings tabs' `resolveFields`); saving checks again. The blog design
+  needs a Post list. Self-filling blocks only go in their own designs;
+  outside a design they publish nothing. One h1 stays the publish
+  check's job: every starting design has exactly one.
+- **Starting designs: all nine**, today's look first and marked. Post:
+  Classic (today's), Split (title beside a tall cover, cropped to the
+  photo's focal point), On the photo (`PostHero`: the cover fills a dark
+  section with a strong tint, 4.5:1 kept; without a cover it's a plain
+  dark section). Blog: Cards (today's), List, Featured. 404: Simple
+  (today's), Helpful (home and site search, which every site has),
+  Statement (big heading on dark). In the layout gallery "Whole pages"
+  becomes "Starting designs"; picking one replaces the design (one Undo
+  brings it back), because two designs on top of each other would mean
+  two "Post content" blocks.
+- **Where: A.** Posts screen cards "Blog page design" and "Post page
+  design" with "Now: Built-in look / Your design", and "Page not found"
+  as its own row after the pages (hidden while searching the list).
+  Route `#/design?kind=post|blog|notFound`.
+- **Builder canvas.** The design editor shows the newest post (its own
+  blocks drawn read-only where "Post content" is) and the real list of
+  posts; without posts, sample words. The post editor shows the post
+  inside the saved post design (`StaticBlocks` from @crust/render around
+  Puck's own blocks). Known gap: a "More posts" list in the post editor
+  shows "No posts yet" (the editor doesn't load the other posts).
+- **Saving** like posts: a copy in this browser wins until it's saved
+  (`crust:design:<kind>`), so preview links without saving work; "Use
+  the built-in look" deletes the file (`/api/designs` action `reset`).
+  Photos used in a design count as used in the media library.
+- **Templates** carry `designs` (optional; old files read as before);
+  starting from a template replaces the site's designs and removes ones
+  it doesn't have; the template check publishes them.
+- **Search.** A post's design blocks are inside the post's searchable
+  `<main>`, so text the design adds (a sign-up strip) is indexed with
+  every post. Small; a later fix could mark them `data-pagefind-ignore`.
+- **Checks.** check:layouts publishes the nine designs in every other
+  style look (54 pages, axe at desktop and phone); check:builder has
+  four new screens.
+
 ## 2026-11-03 — F081 Images: WebP, AVIF, focal point (Claude, reversible)
 
 Snapshot https://claude.ai/artifact/Qp4rkNmxNn3AKWKxDTr9hB

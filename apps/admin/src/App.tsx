@@ -1,5 +1,5 @@
 import { checkPost, config, countPlaceholders, defaultBlog, migrateChrome, tokensToCss,
-  HEADER_V2_CSS, ICONS_CSS, BLOCKS_V3_CSS, INTERACTIVE_CSS, type BlogSettings, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
+  HEADER_V2_CSS, ICONS_CSS, BLOCKS_V3_CSS, INTERACTIVE_CSS, designNames, isDesignKind, type DesignKind, type BlogSettings, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
 import { relinkPage } from "@crust/blocks/links";
 import { Puck, useGetPuck, type Data } from "@puckeditor/core";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -79,6 +79,7 @@ import { SitesScreen } from "./sites/SitesScreen";
 import { withMediaFields } from "./media/fields";
 import { MediaPicker } from "./media/MediaPicker";
 import { MediaFocusProvider } from "./media/FocusPicker";
+import { DesignEditor } from "./designs/DesignEditor";
 import { BlogContext, withPostEditing } from "./posts/editing";
 import { SeoSiteProvider, withSeoEditing } from "./seo/fields";
 import { PostList } from "./posts/PostList";
@@ -126,18 +127,8 @@ function SaveDraftButton({ onSave }: { onSave: (data: Data) => void }) {
   );
 }
 
-/** F069: GitHub refused or couldn't be reached (not "isn't switched on yet", which is expected). */
-export const saveFailed = (result: ApiResult<unknown>) => !result.ok && !result.notConfigured;
-
-/** What to tell the owner after a save: GitHub first, the browser copy as the safety net. */
-export function saveMessage(result: ApiResult<unknown>, savedLocally: boolean, what: string): string {
-  // F055: in the desktop app, saving means the site folder on the computer.
-  if (desktopContent()) return result.ok ? `${what} saved. Visitors see it after you publish.` : `${what} not saved: ${result.error}`;
-  if (result.ok) return `${what} saved to GitHub. Visitors see it after you publish.`;
-  const local = savedLocally ? " A copy is safe in this browser." : "";
-  if (result.notConfigured) return `${what} saved in this browser. Saving to GitHub isn't switched on yet.`;
-  return `${what} not saved to GitHub: ${result.error}${local}`;
-}
+export { saveFailed, saveMessage } from "./save-messages";
+import { saveFailed, saveMessage } from "./save-messages";
 
 // --- Routing: #/ pages · #/edit?path=/about · #/settings · #/posts · #/post?slug=x ---
 
@@ -152,6 +143,8 @@ export type Route =
   | { name: "section"; id: string; from: string }
   /** F048: Start from a template. */
   | { name: "templates" }
+  /** F082: the post page, blog page or "Page not found" design. */
+  | { name: "design"; kind: DesignKind }
   /** F057: the desktop app's Sites screen. */
   | { name: "sites" };
 
@@ -170,6 +163,10 @@ export function parseRoute(hash: string): Route {
     const from = q.get("from") ?? "";
     // Back only ever goes to a screen of this app.
     if (id) return { name: "section", id, from: from.startsWith("#/") ? from : "#/" };
+  }
+  if (hash.startsWith("#/design?")) {
+    const kind = new URLSearchParams(hash.split("?")[1] ?? "").get("kind");
+    if (isDesignKind(kind)) return { name: "design", kind };
   }
   if (hash.startsWith("#/edit")) {
     const path = new URLSearchParams(hash.split("?")[1] ?? "").get("path");
@@ -247,7 +244,9 @@ export function App() {
                 ? "Editing a linked section · Crust"
                 : route.name === "templates"
                   ? "Start from a template · Crust"
-                  : "Pages · Crust";
+                  : route.name === "design"
+                    ? `${designNames[route.kind]} design · Crust`
+                    : "Pages · Crust";
   }, [route]);
 
   const saveSiteTokens = async (tokens: SiteTokens) => {
@@ -355,6 +354,28 @@ export function App() {
               id={route.id}
               back={route.from}
               githubOn={githubOn}
+              config={editorConfig}
+              overrides={{ puck: BuilderRoot, iframe: BuilderCanvas, actionBar: KeyboardActionBar }}
+            />
+          </LinkedSectionsProvider>
+          <MediaPicker />
+        </SiteChromeContext.Provider>
+      </SiteStyleContext.Provider>
+    );
+  }
+
+  if (route.name === "design") {
+    if (githubOn === null) return <Loading />;
+    const path = route.kind === "post" ? "/blog/post" : route.kind === "blog" ? "/blog" : "/404";
+    return (
+      <SiteStyleContext.Provider value={siteStyle}>
+        <SiteChromeContext.Provider value={{ chrome: chromeDraft, siteName: site.name, path }}>
+          <LinkedSectionsProvider githubOn={githubOn}>
+            <DesignEditor
+              key={route.kind}
+              kind={route.kind}
+              githubOn={githubOn}
+              language={site.language}
               config={editorConfig}
               overrides={{ puck: BuilderRoot, iframe: BuilderCanvas, actionBar: KeyboardActionBar }}
             />

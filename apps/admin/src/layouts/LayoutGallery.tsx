@@ -29,6 +29,7 @@ import {
 } from "./library";
 import { MAX_NAME, useMyLayouts } from "./mine";
 import { SiteStyleContext } from "../sections/site-style";
+import { DesignKindContext } from "../designs/context";
 
 const usePuckSelector = createUsePuck();
 
@@ -88,10 +89,11 @@ type BuiltIn = Exclude<LayoutItem, { kind: "mine" } | { kind: "linked" }>;
 function Card({ item, onPick }: { item: BuiltIn; onPick: (item: LayoutItem) => void }) {
   const { layout } = item;
   const descId = `lg-desc-${item.kind}-${layout.id}`;
-  const meta = item.kind === "page" ? `${item.layout.sections.length} sections` : item.layout.category;
+  const meta =
+    item.kind === "page" ? `${item.layout.sections.length} sections` : item.kind === "design" ? (item.layout.current ? "Today's look" : "Starting design") : item.layout.category;
   return (
     <li className="lg-card">
-      <Thumb item={item} maxHeight={item.kind === "page" ? 300 : 190} />
+      <Thumb item={item} maxHeight={item.kind === "page" || item.kind === "design" ? 300 : 190} />
       <div className="lg-card-text">
         <button type="button" className="lg-card-button" aria-describedby={descId} onClick={() => onPick(item)}>
           <span className="lg-card-name">{layout.name}</span>
@@ -417,7 +419,12 @@ export function LayoutGallery() {
   const linked = useLinkedSections();
   // A linked section can't hold another one, so its own editor doesn't offer them.
   const linkedOn = !useInSectionEditor();
-  const items = useMemo(() => filterLayouts(kind, category, query, mine.layouts ?? [], linked.sections ?? []), [kind, category, query, mine.layouts, linked.sections]);
+  // F082: in a post, blog or "Page not found" design, whole pages are its starting designs.
+  const design = useContext(DesignKindContext);
+  const items = useMemo(
+    () => filterLayouts(kind, category, query, mine.layouts ?? [], linked.sections ?? [], design),
+    [kind, category, query, mine.layouts, linked.sections, design],
+  );
   const mineCount = mine.layouts?.filter((l) => l.kind !== "element").length ?? 0;
   const siteStyle = useContext(SiteStyleContext);
   const linkedCount = linked.sections?.length ?? 0;
@@ -454,7 +461,7 @@ export function LayoutGallery() {
             <div className="lg-head-text">
               <h2 id="lg-title">Add a layout</h2>
               <p id="lg-where" className="lg-where">
-                {where}
+                {design && kind === "page" ? "A starting design replaces the whole design. Undo brings it back." : where}
               </p>
             </div>
             <RadioGroup<LayoutKind>
@@ -465,7 +472,7 @@ export function LayoutGallery() {
               onChange={setKind}
               options={[
                 { value: "section", label: "Sections" },
-                { value: "page", label: "Whole pages" },
+                { value: "page", label: design ? "Starting designs" : "Whole pages" },
                 { value: "mine", label: mineCount ? `My layouts (${mineCount})` : "My layouts" },
                 ...(linkedOn ? [{ value: "linked" as const, label: linkedCount ? `Linked (${linkedCount})` : "Linked" }] : []),
               ]}
@@ -488,7 +495,11 @@ export function LayoutGallery() {
                   ))}
                 </ul>
               ) : kind === "page" ? (
-                <p className="lg-side-note">A whole page adds all its sections at once. Change or remove any of them after.</p>
+                <p className="lg-side-note">
+                  {design
+                    ? "Each one is a whole design to start from, in your site's colours and fonts. Change anything after."
+                    : "A whole page adds all its sections at once. Change or remove any of them after."}
+                </p>
               ) : kind === "linked" ? (
                 <p className="lg-side-note">
                   Sections shown on many pages, kept in {linked.where}. Adding one adds a link: edit it once and every page that shows it
@@ -520,7 +531,7 @@ export function LayoutGallery() {
                       `${items.length === 1 ? "1 layout" : `${items.length} layouts`}`
                     : kind === "linked"
                       ? `${items.length} linked section${items.length === 1 ? "" : "s"}`
-                    : `${items.length} ${kind === "page" ? "page layout" : "section"}${items.length === 1 ? "" : "s"}${
+                    : `${items.length} ${kind === "page" ? (design ? "starting design" : "page layout") : "section"}${items.length === 1 ? "" : "s"}${
                         kind === "section" && category !== "All" ? ` in ${category}` : ""
                       }`}
               </p>

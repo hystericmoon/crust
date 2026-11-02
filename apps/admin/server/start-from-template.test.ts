@@ -1,4 +1,5 @@
 import { defaultTokens, migrateChrome, type Site } from "@crust/blocks";
+import { currentDesign } from "@crust/blocks";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fromBase64, toBase64 } from "./github";
 import { applyChanges, checkTemplateContent, handleTemplate, type TemplateContent } from "./template";
@@ -190,6 +191,17 @@ describe("start from a template: the server (F048)", () => {
     const marked = harbour({ pages: [{ ...page("/", "Home"), puck: { root: { props: {} }, content: [{ ...heading("Studio"), props: { ...heading("Studio").props, placeholder: ["text"] } }] } }] });
     const changes = applyChanges(marked, { site: mySite, pageFiles: [], sectionFiles: [], postFiles: [], layoutIds: [], redirects: null }, new Date("2026-10-30T00:00:00Z"));
     expect(changes.find((c) => c.path === "content/pages/index.json")!.content).toContain('"placeholder"');
+  });
+
+  it("F082: the template's designs replace the site's; one it doesn't have goes back to the built-in look", () => {
+    const blog = { kind: "blog" as const, content: currentDesign("blog") };
+    const t = harbour({ designs: [blog] });
+    expect(checkTemplateContent(t)).toEqual([]);
+    const changes = applyChanges(t, { site: mySite, pageFiles: [], sectionFiles: [], postFiles: [], layoutIds: [], redirects: null, designFiles: ["content/designs/post.json", "content/designs/blog.json"] }, new Date("2026-10-30T00:00:00Z"));
+    expect(JSON.parse(changes.find((c) => c.path === "content/designs/blog.json")!.content!)).toMatchObject({ kind: "blog", savedAt: "2026-10-30T00:00:00.000Z" });
+    expect(changes.find((c) => c.path === "content/designs/post.json")!.content).toBeNull();
+    expect(checkTemplateContent(harbour({ designs: [{ kind: "post", content: [] }] }))[0]).toMatch(/needs a “Post content” block/);
+    expect(checkTemplateContent(harbour({ designs: [blog, blog] }))).toContain("The template has two Blog page designs.");
   });
 
   it("refuses a damaged template and writes nothing", async () => {

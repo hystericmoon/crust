@@ -19,7 +19,12 @@ const rows = [
   row("/services", "Services", "2026-10-29T10:00:00Z"),
   row("/team", "Our team", "2026-10-21T10:00:00Z"),
 ];
-const titles = () => within(screen.getByRole("table")).getAllByRole("rowheader").map((h) => h.textContent);
+// The pages only: "Page not found" (F082) has a row of its own after them.
+const titles = () =>
+  within(screen.getByRole("table"))
+    .getAllByRole("rowheader")
+    .filter((h) => !h.closest(".pg-builtin"))
+    .map((h) => h.textContent);
 
 describe("find-sort: rules", () => {
   it("matches every word in the title or address, ignoring case and accents", () => {

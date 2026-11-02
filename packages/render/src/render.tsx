@@ -1,4 +1,4 @@
-import { config, HEADER_V2_CSS, needsHeaderV2Css, ICONS_CSS, needsIconCss, BLOCKS_V3_CSS, needsBlocksV3Css, hasVideoEmbed, VIDEO_EMBED_SCRIPT, INTERACTIVE_CSS, needsInteractiveCss, hasMapEmbed, interactiveTags, motionCss, heroStyle, hasDropdowns, DROPDOWN_SCRIPT, layoutOf, CONTACT_FORM_SCRIPT, hasBackgroundVideo, headerOverStyle, onlyFirstHeaderOver, VIDEO_SCRIPT, type SectionStyleId, fontPreloads, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
+import { config, HEADER_V2_CSS, needsHeaderV2Css, ICONS_CSS, needsIconCss, BLOCKS_V3_CSS, needsBlocksV3Css, hasVideoEmbed, VIDEO_EMBED_SCRIPT, INTERACTIVE_CSS, needsInteractiveCss, hasMapEmbed, interactiveTags, motionCss, heroStyle, hasDropdowns, DROPDOWN_SCRIPT, layoutOf, CONTACT_FORM_SCRIPT, hasBackgroundVideo, headerOverStyle, onlyFirstHeaderOver, VIDEO_SCRIPT, type SectionStyleId, fontPreloads, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, PageDesignContext, NOT_FOUND_TITLE, type PageDesignData, type PageDesigns, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -36,7 +36,7 @@ export const withMedia = (node: ReactNode, media: MediaItem[] | undefined) =>
   media ? <MediaContext.Provider value={new Map(media.map((m) => [m.file, m]))}>{node}</MediaContext.Provider> : node;
 
 /** Blocks that span the whole width themselves; everything else needs the page column. */
-const FULL_WIDTH = new Set(["Section", "LinkedSection"]);
+const FULL_WIDTH = new Set(["Section", "LinkedSection", "PostHero", "PostContent"]);
 
 /**
  * F069: page-level blocks outside a Section (a post's body text, a block
@@ -70,6 +70,21 @@ export function renderBody(data: Data, media?: MediaItem[], forms?: FormsSetup):
   const blocks = withMedia(<>{pageLevel(onlyFirstHeaderOver(data.content))}</>, media);
   // F037: contact forms post to the Worker and come back to this page.
   return renderToStaticMarkup(forms ? <FormsContext.Provider value={forms}>{blocks}</FormsContext.Provider> : blocks);
+}
+
+/**
+ * F082: a post, blog or "Page not found" design. Its self-filling blocks
+ * read `data`; `inner` (a post's own blocks) goes where "Post content" is.
+ */
+export function renderDesignBody(design: Data, data: Omit<PageDesignData, "body">, inner: Data | null, media?: MediaItem[], forms?: FormsSetup): string {
+  const value: PageDesignData = inner ? { ...data, body: <>{pageLevel(inner.content)}</> } : data;
+  const blocks = withMedia(<PageDesignContext.Provider value={value}>{pageLevel(onlyFirstHeaderOver(design.content))}</PageDesignContext.Provider>, media);
+  return renderToStaticMarkup(forms ? <FormsContext.Provider value={forms}>{blocks}</FormsContext.Provider> : blocks);
+}
+
+/** F082: blocks drawn as in the builder, as React (the post editor draws the post design around the post). */
+export function StaticBlocks({ items }: { items: ComponentData[] }) {
+  return <>{pageLevel(items, true)}</>;
 }
 
 /**
@@ -114,6 +129,8 @@ export interface RenderOptions {
   forms?: { endpoint: string; siteKey: string };
   /** content/sections (F043): linked sections are built into each page that uses them. */
   linkedSections?: ReadonlyMap<string, LinkedSectionFile>;
+  /** content/designs (F082): the post, blog and "Page not found" designs; missing ones use the built-in look. */
+  designs?: PageDesigns;
 }
 
 /** A page's or post's blocks with linked sections built in (F043). Says which page uses a missing one. */
@@ -308,6 +325,12 @@ ${bottom}
  * the home page with status 200.
  */
 export function renderNotFound(site: Site, baseCss: string, options: RenderOptions = {}): string {
+  // F082: a designed "Page not found" is published like a page.
+  const design = options.designs?.notFound;
+  if (design) {
+    const puck = withLinkedSections({ root: { props: {} }, content: design.content } as Page["puck"], options, "The “Page not found” design");
+    return renderPage(site, { path: "/404", title: design.title ?? NOT_FOUND_TITLE, description: "This page doesn't exist.", puck }, baseCss, options);
+  }
   const page: Page = {
     path: "/404",
     title: "Page not found",

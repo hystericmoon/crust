@@ -101,6 +101,11 @@ const screens = [
   // F074: a Columns row's Style tab, then boxes and a highlighted column picked.
   ["Columns Style tab", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { then: ['button:text-is("Columns"):visible', '.tb-tab:has-text("Style"):visible'] }],
   ["Columns Style tab, boxes and highlight", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { then: ['button:text-is("Columns"):visible', '.tb-tab:has-text("Style"):visible', '[aria-label="Box behind each column"] [aria-label="Muted"]:visible', '[aria-label="Highlight a column"] [aria-label="Column 2"]:visible'] }],
+  // F082: the post page design with its Post title block selected, the blog design's starting designs, and the Posts screen's design cards.
+  ["post page design, title selected", "/#/design?kind=post", null, '[data-puck-component^="PostTitle"]', []],
+  ["blog page design, starting designs", "/#/design?kind=blog", null, null, ['button:has-text("Layouts")', '.lg-kind-option:has-text("Starting designs")']],
+  ["Page not found design", "/#/design?kind=notFound", null, null, []],
+  ["posts screen with designs", "/#/posts", null, null, [], { wait: ".dz-status" }],
   // F081: the media library's photo details with the focal point picker.
   ["media library, focal point", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { media: true, then: ['button:has-text("Choose image"):visible', '.mp-photo[data-file="stage.jpg"]'] }],
   ["app welcome screen, Blank picked", "/", null, null, ['label:has-text("Blank")'], { app: "none", firstRun: true, wait: ".fr-card iframe" }],

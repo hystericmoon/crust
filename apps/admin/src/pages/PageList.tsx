@@ -8,6 +8,7 @@ import { FIND_FROM, loadSort, matchesQuery, pageStatus, saveSort, SORT_LABELS, s
 import { focusAfterDialog, PageActions, type LinkingPage, type PageAction } from "./PageActions";
 import type { PageRow } from "./store";
 import { UpdateBanner } from "../updates/UpdateNotice";
+import { designHref, useDesignStatus } from "../designs/DesignLinks";
 
 /**
  * F069: an address may wrap after a "/" or "-", never mid-word
@@ -321,6 +322,8 @@ export function PageList({ allSites = false, siteName, rows, sourceNote, loadErr
                   );
                 })}
               </tbody>
+              {/* F082: the page visitors see at an address with no page, designed like the others. */}
+              {query.trim() ? null : <NotFoundRow actions={anyActions} />}
             </table>
             )}
             </>
@@ -532,5 +535,27 @@ function NewPageForm({
         </div>
       </form>
     </section>
+  );
+}
+
+/** "Page not found" as a row of its own, after the pages (F082). */
+function NotFoundRow({ actions }: { actions: boolean }) {
+  const status = useDesignStatus("notFound");
+  return (
+    <tbody className="pg-builtin">
+      <tr>
+        <th scope="row">
+          <a href={designHref("notFound")}>Page not found</a>
+        </th>
+        <td data-label="Status">{status}</td>
+        <td className="pg-path-cell" data-label="Address">
+          Shown for addresses with no page
+        </td>
+        <td className="pg-date" data-label="Last edited">
+          –
+        </td>
+        {actions ? <td className="pg-actions-cell" /> : null}
+      </tr>
+    </tbody>
   );
 }

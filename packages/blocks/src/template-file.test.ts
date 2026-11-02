@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { config } from "./config";
 import { migrateChrome } from "./chrome-model";
 import { linkedBlock } from "./linked-sections";
+import { currentDesign } from "./page-designs";
 import { makeTemplate, photosUsed, readTemplate, templateFileName, templateSummary, type TemplateSource } from "./template";
 import { defaultTokens } from "./tokens";
 import { makeThemePack } from "./theme-pack";
@@ -158,5 +159,31 @@ describe("template-file: reading a template (F045)", () => {
 
   it("refuses files that are too big", () => {
     expect(readTemplate(" ".repeat(60 * 1024 * 1024 + 1), blocks).problems).toEqual(["This file is too big to be a Crust template."]);
+  });
+});
+
+describe("template-file: page designs (F082)", () => {
+  const blogDesign = { kind: "blog" as const, content: currentDesign("blog") };
+  const photoPost = { kind: "post" as const, content: [...currentDesign("post"), { type: "Image", props: { id: "i-d", src: "/media/harbour.png", alt: "Boats", caption: "" } }] as never };
+
+  it("go into the template with the photos they use, and come back out", async () => {
+    const { template } = await made({ designs: [blogDesign, photoPost], media: [{ file: "harbour.png", alt: "Boats in the harbour", width: 1600, height: 900 }] });
+    expect(template.designs!.map((d) => d.kind)).toEqual(["blog", "post"]);
+    expect(photosUsed({ ...source(), pages: [], designs: [photoPost] })).toEqual(["harbour.png"]);
+    const back = readTemplate(JSON.stringify(template), blocks);
+    expect(back.problems).toEqual([]);
+    expect(back.template!.designs!.map((d) => d.kind)).toEqual(["blog", "post"]);
+    // Templates without designs read as before, with none.
+    expect(readTemplate(JSON.stringify((await made()).template), blocks).template).not.toHaveProperty("designs");
+  });
+
+  it("a design that can't be published, or two of one kind, refuse the file", async () => {
+    const { template } = await made();
+    const bad = { ...template, designs: [{ kind: "post", content: [] }] };
+    expect(readTemplate(JSON.stringify(bad), blocks).problems).toContain("Post page design: The post page design needs a “Post content” block, where each post's own blocks go.");
+    const twice = { ...template, designs: [blogDesign, blogDesign] };
+    expect(readTemplate(JSON.stringify(twice), blocks).problems).toContain("The template has two Blog page designs.");
+    const other = { kind: "notFound", content: [{ type: "Image", props: { id: "i-x", src: "/media/door.png", alt: "Door", caption: "" } }] };
+    expect(readTemplate(JSON.stringify({ ...template, designs: [other] }), blocks).problems).toContain("The photo door.png is used but isn't in the template.");
   });
 });

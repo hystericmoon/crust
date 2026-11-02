@@ -17,6 +17,8 @@ export const JUST_KEY = "crust:template-just";
 const SWITCHED = (key: string) =>
   key.startsWith("crust:page:") ||
   key.startsWith("crust:post:") ||
+  // F082: page designs kept in this browser.
+  key.startsWith("crust:design:") ||
   key === "crust:draft:index" ||
   key === "crust:sections" ||
   key === "crust:my-layouts" ||

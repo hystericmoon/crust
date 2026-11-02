@@ -307,7 +307,7 @@ export {
   isTemplatePagePath,
   photoType,
 } from "./template";
-export type { Template, TemplatePage, TemplatePhoto, TemplateSource, TemplateCheck } from "./template";
+export type { Template, TemplateDesign, TemplatePage, TemplatePhoto, TemplateSource, TemplateCheck } from "./template";
 export {
   blockName,
   cleanPlaceholder,
@@ -363,3 +363,28 @@ export {
   rowExtras,
 } from "./columns-v2";
 export type { BoxPadding, ColumnAlign, ColumnBox, ColumnHighlight } from "./columns-v2";
+// F082: post, blog and "Page not found" designs.
+export {
+  DESIGNS_FOLDER,
+  NOT_FOUND_TITLE,
+  allBlocks,
+  blockLabel,
+  checkDesign,
+  cleanDesign,
+  currentDesign,
+  designBlocks,
+  designBlocksFor,
+  designFile,
+  designFileInContent,
+  designKinds,
+  designLayouts,
+  designLayoutsFor,
+  designLimits,
+  designNames,
+  isDesignBlock,
+  isDesignKind,
+  parseDesign,
+} from "./page-designs";
+export type { DesignKind, DesignLayout, PageDesign, PageDesigns } from "./page-designs";
+export { PageDesignContext, coverRatios, pageDesignBlocks, postListLooks } from "./page-design-blocks";
+export type { DesignPost, PageDesignData } from "./page-design-blocks";

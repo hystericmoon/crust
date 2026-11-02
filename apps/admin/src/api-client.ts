@@ -2,7 +2,7 @@
  * Browser side of the admin API (apps/admin/server). Every call resolves to
  * a plain result; it never throws, so the UI always has a message to show.
  */
-import type { BlogSettings, LinkedSectionFile, MediaItem, Page, Post, SavedLayout, Site } from "@crust/blocks";
+import type { BlogSettings, DesignKind, LinkedSectionFile, MediaItem, Page, PageDesign, PageDesigns, Post, SavedLayout, Site } from "@crust/blocks";
 
 export type ApiResult<T = Record<string, never>> =
   | ({ ok: true } & T)
@@ -117,6 +117,11 @@ export const setMediaAlt = (file: string, alt: string) => call<{ item: MediaItem
 export const setMediaDetails = (file: string, alt: string, focus: { x: number; y: number } | null) =>
   call<{ item: MediaItem }>("/api/media", post({ action: "details", file, alt, focus }));
 export const deleteMedia = (file: string) => call<{ usedOn?: MediaUse[] }>("/api/media", post({ action: "delete", file }));
+
+/** Post, blog and "Page not found" designs (F082): content/designs/. */
+export const listDesigns = () => call<{ designs: PageDesigns }>("/api/designs");
+export const saveDesign = (design: Pick<PageDesign, "kind" | "content" | "title">) => call<{ design: PageDesign }>("/api/designs", post({ action: "save", design }));
+export const resetDesign = (kind: DesignKind) => call<{ commit: string | null }>("/api/designs", post({ action: "reset", kind }));
 
 /** Blog posts (F035): content/posts/<slug>.json; list page title and intro in content/blog.json. */
 export type PostSummary = Omit<Post, "puck">;
