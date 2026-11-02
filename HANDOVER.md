@@ -5,7 +5,7 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 12:00 (Jakarta), F074 finished. PRs #53 (F062) and #45 (F053)
+Last updated: 2026-11-02 13:10 (Jakarta). **F070–F074 merged to main** (owner: "Merge em all"; PRs #54–#59, merge commits, in order). Start F075 on a new branch from main. PRs #53 (F062) and #45 (F053)
 **merged to main** (owner had said to merge). Then the owner said our
 templates aren't premium next to eliras/zorven/labzzy.webflow.io and
 chose **B: upgrade the design layer, "all in"**, and asked for a
@@ -57,8 +57,10 @@ in `config.tsx`, CSS "Rows and columns v2" in `styles.css`; builder
 fields in `apps/admin/src/sections/columns-v2-fields.tsx` (added in
 `withSectionEditing`, Widths moved to the top of the Style tab). Sample
 pages `columns-v2-<look>` in check:layouts (`columnsV2Samples`).
-**Next: F075 Motion** (design snapshot first), on a new branch stacked
-on `f074-rows-columns-v2`. Branch `f063-store-site` (PR #54) holds the comparison
+**Next: F075 Motion** (design snapshot first), on a new branch from
+`main` (everything through F074 is merged). The owner starts sessions
+by hand now: the old session chain hit its limit, so a fresh session
+gets the prompt "Read HANDOVER.md on branch main and continue". Branch `f063-store-site` (PR #54) holds the comparison
 pages, the M8 write-up and a midnight test fix; no store code. Start
 F070 on a new branch from main once #54 is merged, or stack on it.
 This session can't start new sessions (chain limit): if it ends, the
