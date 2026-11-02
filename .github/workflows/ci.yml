@@ -21,6 +21,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # F081: with the AVIF/WebP encoders the Rust build no longer fit on
+      # the runner's disk (the linker died with "Bus error" while writing the
+      # app). Tools this job never uses take ~25 GB; they go first.
+      - name: Make room on the runner
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL
+          df -h /
+
       # F055: the desktop app (Tauri) needs the Linux window libraries to build.
       - name: Install the desktop app's Linux libraries
         run: |
@@ -60,6 +68,7 @@ jobs:
       # builder, saving to the site folder and photos work together.
       - name: Desktop app self-check
         run: |
+          df -h /
           cargo build -p crust-desktop --features tauri/custom-protocol
           CRUST_SITE_FOLDER="$RUNNER_TEMP/crust-home/crust-site" CRUST_EXPORT_FOLDER="$RUNNER_TEMP/crust-export" CRUST_SELF_CHECK=1 timeout 180 xvfb-run -a target/debug/crust
 
