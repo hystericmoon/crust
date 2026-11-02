@@ -49,8 +49,14 @@ const styleFields = new Set([
   // F032 blocks
   "columns",
   "shape",
-  "icon",
+  "icon:IconList",
   "iconColor",
+  // F077: Icon, Button icon, Divider, Social links
+  "look",
+  "colour",
+  "iconAt",
+  "show",
+  "space",
   "logoSize",
   "grayscale",
   "position",

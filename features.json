@@ -816,7 +816,7 @@
       "description": "An open-licence icon set (Lucide, ISC) inlined as SVG at publish; Icon block, icons in lists, cards and buttons; Divider block; Social links block. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F071"],
       "done_check": "npm test -- icons && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

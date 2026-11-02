@@ -1,5 +1,5 @@
 import { checkPost, config, countPlaceholders, defaultBlog, migrateChrome, tokensToCss,
-  HEADER_V2_CSS, type BlogSettings, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
+  HEADER_V2_CSS, ICONS_CSS, type BlogSettings, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
 import { relinkPage } from "@crust/blocks/links";
 import { Puck, useGetPuck, type Data } from "@puckeditor/core";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -52,6 +52,8 @@ import { LinkedSectionsProvider } from "./linked/store";
 import { SectionEditor } from "./linked/SectionEditor";
 export { SIGN_OUT_URL, SignOutLink } from "./sign-out";
 import { withItemEditing } from "./items/items";
+import { withIconFields } from "./icons/fields";
+import "./icons/icons.css";
 import { withResponsiveEditing } from "./responsive/fields";
 import { withPlaceholderEditing } from "./placeholders/fields";
 import { PlaceholderChecklist, PlaceholderWatcher } from "./placeholders/Checklist";
@@ -81,7 +83,7 @@ import { fromPuckData as postFromPuckData, loadPost, saveLocalPost, toPuckData a
 /** The site's settings: built into the web admin, or from the desktop app's site folder (F055). */
 const site = (desktopContent()?.site ?? siteJson) as Site;
 /** The builder's blocks: "Replace me" marks (F046), rich text in Text blocks (F042), image fields with the media library (F034), visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
-const editorConfig = withSiteChrome(withSettingsTabs(withPlaceholderEditing(withResponsiveEditing(withSectionEditing(withItemEditing(withMediaFields(withRichText(withLinkedSectionFields(config)))))))));
+const editorConfig = withSiteChrome(withSettingsTabs(withPlaceholderEditing(withResponsiveEditing(withSectionEditing(withItemEditing(withIconFields(withMediaFields(withRichText(withLinkedSectionFields(config))))))))));
 /** Posts (F035): the same blocks, with the post's details and top. */
 const postEditorConfig = withPostEditing(editorConfig);
 /** Pages also get search and sharing settings (F036). */
@@ -219,7 +221,7 @@ export function App() {
   const [githubOn, setGithubOn] = useState<boolean | null>(null);
   // The builder shows unsaved token edits too, so switching screens loses nothing.
   // F076: the builder always has the header and footer v2 CSS (published pages only when used).
-  useTokenStyles(useMemo(() => `${tokensToCss(draft)}\n${HEADER_V2_CSS}`, [draft]));
+  useTokenStyles(useMemo(() => `${tokensToCss(draft)}\n${HEADER_V2_CSS}\n${ICONS_CSS}`, [draft]));
 
   useEffect(() => {
     void getStatus().then((s) => setGithubOn(s.ok && s.configured));

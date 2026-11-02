@@ -65,6 +65,7 @@ export type { StyleOptions, TypeScale, HeadingWeight, HeadingTracking, ButtonSha
 export type { FontStack, BundledFont, FontCategory, FontFile, FontPair, FontSubset } from "./fonts";
 export { safeUrl } from "./url";
 export { HEADER_V2_CSS, needsHeaderV2Css } from "./header-v2-css";
+export { ICONS_CSS, needsIconCss } from "./icons-css";
 export {
   entranceNames,
   entrances,
@@ -113,7 +114,26 @@ export {
   hasH1,
 } from "./layouts";
 export type { LayoutCategory, SectionLayout, PageLayout } from "./layouts";
-export { itemLimits, listIcons, listIconNames, moreBlocks } from "./more-blocks";
+export { itemLimits, listIcons, listIconNames, moreBlocks, ListIconSvg, isListIcon } from "./more-blocks";
+export {
+  iconCategories,
+  iconCategoryNames,
+  iconNames,
+  isIconName,
+  iconLabel,
+  iconCategoryOf,
+  searchIcons,
+  IconSvg,
+  SocialSvg,
+  socialNetworks,
+  socialNetworkNames,
+  socialLinkOf,
+  socialLabel,
+  iconA11y,
+} from "./icons";
+export type { IconCategory, SocialNetwork, SocialLink } from "./icons";
+export { iconBlocks, iconLooks, iconLookNames, iconSizes, iconSizeNames, dividerKinds, dividerKindNames, dividerWidths, socialLimit, IconMark } from "./icon-blocks";
+export type { IconProps, IconLook, IconSize, DividerProps, DividerKind, DividerWidth, SocialLinksProps } from "./icon-blocks";
 export type { GridItem, GridProps, GalleryImage, GalleryProps, AccordionItem, AccordionProps, ListIcon, IconListProps, Logo, LogoRowProps, QuoteProps, ImageOverlayProps } from "./more-blocks";
 export { PACK_FORMAT, PACK_VERSION, packLimits, makeThemePack, packFileName, readThemePack, freeLayoutName, packSummary } from "./theme-pack";
 export type { ThemePack, PackLayout, PackChrome, PackParts, PackCheck, BlockSpecs } from "./theme-pack";

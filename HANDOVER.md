@@ -5,29 +5,40 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 ~17:15 (Jakarta). **F075 Motion merged**
-(PR #61, owner: "Merge it"). **F076 Header and footer v2 built, passes**
-(branch `f076-header-footer` from main, PR open; DECISIONS "F076").
-Snapshot https://claude.ai/artifact/MQpL3LHaxEQW9r3KsWEygz (A built).
-How it fits: model in `packages/blocks/src/chrome-model.ts`
-(`headerLayouts`, `layoutOf`, `TopBar`/`defaultTopBar`, `contactHref`,
-`footerStarter`, menu `children` checks), views in `chrome.tsx`
-(`SiteHeaderView` layouts/split/panel, `MenuList` dropdowns,
-`TopBarView`, `DROPDOWN_SCRIPT`, `hasDropdowns`), CSS "Header and
-footer v2 (F076)" in styles.css (`--cr-header-room`), `heroStyle` in
-sections-v2.ts; render.tsx `footerHtml` (footer from a linked section;
-throws when missing, simple footer when no sections are given),
-`overHero`, header room, dropdown script. Admin: `settings/MenuEditor.tsx`
-(indent/outdent/move/remove), `ChromeGroups.tsx` (`LayoutPicker`,
-`TopBarFields`, `FooterKind`), Site settings wrapped in
-`LinkedSectionsProvider`, Preview passes linked sections, canvas shows a
-blocks footer (`chrome-canvas.tsx`). check:layouts writes
-`header-v2-<layout>` pages. F070–F076 need `reviewed: true`. F075 (motion) is described in DECISIONS "F075" and spec.md (`motion.ts`, `motionCss` added in `renderDocument`).
-**Next: F077 Icons, Divider, Social** (design snapshot first), on a new
-branch from main once F076's PR is merged (else stack on
-`f076-header-footer`). The owner starts sessions by hand (chain limit):
-"Read HANDOVER.md on branch main and continue" (or branch
-`f076-header-footer` if its PR isn't merged).
+Last updated: 2026-11-02 ~19:00 (Jakarta). **F077 Icons, Divider,
+Social built, passes** (branch `f077-icons`, from main; done_check
+`npm test -- icons && npm run check:a11y` exit 0; DECISIONS "F077").
+Direction A of https://claude.ai/artifact/8o1uPhHmTBd9hgkzmx1pU2 (owner
+hadn't picked). How it fits: `scripts/sync-icons.mjs` writes
+`packages/blocks/src/icons-data.ts` (151 Lucide icons + 16 Tabler social
+icons, committed; add icons to `CURATED` and rerun); model in
+`icons.tsx` (`searchIcons`, `IconSvg`, `socialLinkOf`, `iconA11y`);
+blocks in `icon-blocks.tsx` (Icon, Divider, SocialLinks, `IconMark`);
+Card `icon`, Button `icon`/`iconAt` in config.tsx; IconList any icon +
+per-line icon in more-blocks.tsx (classic six marks keep their
+drawings). Builder: `apps/admin/src/icons/` (`IconPicker.tsx`,
+`fields.tsx` `withIconFields`, items.tsx sub-field type `icon`). Publish
+check: crust-publish validate.rs `data-cr-needs-name` (icon link without
+a name). Samples in block-samples.ts; check:builder screen "Card icon
+picker". Screenshots `design/f077-*.png`. Needs `reviewed: true`.
+**Next: F078 Stats, Video, Table and Pricing, Numbered list** (design
+snapshot first; done_check `npm test -- blocks-v3 && npm run
+check:a11y`), on a new branch from main once F077 is merged, or stacked
+on `f077-icons`. The owner starts sessions by hand (chain limit): "Read
+HANDOVER.md on branch f077-icons and continue".
+
+Earlier today (~17:15): F075 Motion merged (PR #61). F076 notes: model
+in `packages/blocks/src/chrome-model.ts` (`headerLayouts`, `layoutOf`,
+`TopBar`, `contactHref`, `footerStarter`, menu `children` checks), views
+in `chrome.tsx` (`SiteHeaderView`, `MenuList`, `TopBarView`,
+`DROPDOWN_SCRIPT`, `hasDropdowns`), CSS in `header-v2-css.ts`
+(`HEADER_V2_CSS`, added to published pages only when
+`needsHeaderV2Css`; the builder always has it), `heroStyle` in
+sections-v2.ts; render.tsx `footerHtml`, `overHero`,
+`--cr-header-room`. Admin: `settings/MenuEditor.tsx`,
+`ChromeGroups.tsx` (`LayoutPicker`, `TopBarFields`, `FooterKind`).
+F070–F076 need `reviewed: true`. F075 (motion): DECISIONS "F075",
+`motion.ts`, `motionCss` in `renderDocument`.
 
 Earlier (2026-11-02 13:10, Jakarta): **F070–F074 merged to main** (owner: "Merge em all"; PRs #54–#59, merge commits, in order). Start F075 on a new branch from main. PRs #53 (F062) and #45 (F053)
 **merged to main** (owner had said to merge). Then the owner said our

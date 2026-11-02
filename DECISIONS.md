@@ -257,6 +257,66 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-02 — F077 Icons, Divider, Social (Claude, reversible)
+
+Direction A of https://claude.ai/artifact/8o1uPhHmTBd9hgkzmx1pU2
+(`design/f077-icons-v1.html`); the owner hadn't picked, so the
+recommendation was built.
+
+- **Icon sources:** 151 Lucide icons (`lucide-static@1.66.0`, ISC) in six
+  categories (Contact, Places & time, Food & drink, Services, Shapes &
+  marks, Arrows), and 16 social networks from Tabler
+  (`@tabler/icons@3.50.0`, MIT, outline `brand-*`), because Lucide
+  removed brand logos in v1. `scripts/sync-icons.mjs` `npm pack`s both
+  into a temp folder and writes `packages/blocks/src/icons-data.ts`
+  (licence header, ~56 KB, committed). No runtime dependency, no
+  package.json change. A bit more than the ~120 in the snapshot: the
+  extra are everyday business icons (bed, wifi, key…); still one
+  browsable list per category.
+- **Drawn inline:** each icon is its SVG in the page, `stroke:
+  currentColor`, `aria-hidden`. A test checks every icon holds only
+  drawing elements (no scripts, links, styles), since the drawings are
+  inserted as markup.
+- **Search by meaning:** each icon carries Lucide's tags plus our own
+  words ("food" on utensils, coffee, pizza…). Every typed word must match
+  the start of a name part or a word; name matches rank first.
+- **Picker:** buttons in a grid with one Tab stop (arrow keys move by
+  one / by a row of 6, Home/End, Enter or Space picks); `aria-pressed`
+  shows the pick. Not a radio group, because arrows shouldn't change the
+  icon while you browse 150 of them.
+- **Names:** an Icon on its own is decoration; with a name and no link
+  it's `role="img"`; with a link, the name is the link's name, and a
+  link without one is rendered with `data-cr-needs-name` and stops the
+  publish (crust-publish `validate.rs`, like a missing alt text). The
+  builder says why under the field.
+- **Icon list:** `icon` and a line's own `icon` take any icon. The six
+  classic marks keep their own bolder drawings, so lists made before look
+  the same; the picker shows them first as "List marks".
+- **Card** shows an icon (in a circle, accent colours) only when it has no
+  photo; a photo wins. **Button** icons are decoration; with "Text with
+  arrow" an icon after the label replaces the arrow.
+- **Colours:** plain icons use the section's accent (or text) colour;
+  circle and square badges use the section's button colours, already
+  contrast-checked. On a Primary section the accent becomes the text
+  colour, as buttons do.
+- **Divider:** decorative looks are `aria-hidden`; "Line with a label"
+  is `role="separator"` named by its label (an empty label falls back to
+  a plain line).
+- **Social links:** networks recognised by host (www./m. ignored,
+  look-alike hosts refused); any https:// address whose path starts
+  with `/@` on an unknown host counts as Mastodon; other sites get a
+  globe and their host as the name. Only https:// addresses are
+  published. Each link is named "<who> on <network>" (or just the
+  network), contains the visible word (WCAG 2.5.3), is at least 44 px,
+  and has `rel="me"` (profile verification on Mastodon and others).
+- **Content format:** all additions optional; pages made before render
+  the same (docs/spec.md, "F077 adds three blocks").
+- **CSS only where used** (found by CI's template check: Corner's home
+  page dropped to Lighthouse 94, "Reduce unused CSS"): the F077 CSS lives
+  in `icons-css.ts` (`ICONS_CSS`) and a published page gets it only when
+  its rendered HTML uses one of the classes (`needsIconCss`); the builder
+  always has it. Same approach as F076's header CSS.
+
 ## 2026-11-02 — F076 Header and footer v2 (Claude, reversible)
 
 - Snapshot https://claude.ai/artifact/MQpL3LHaxEQW9r3KsWEygz

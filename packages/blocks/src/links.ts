@@ -6,7 +6,7 @@ import type { Data } from "@puckeditor/core";
 import { mapRichLinks } from "./rich-text";
 
 /** Which prop holds a page link, per block type. */
-export const LINK_PROPS: Record<string, string> = { Button: "href", Card: "linkHref", ImageOverlay: "linkHref" };
+export const LINK_PROPS: Record<string, string> = { Button: "href", Card: "linkHref", ImageOverlay: "linkHref", Icon: "href" };
 
 /** Blocks whose rich text can hold links (F042): block type → text prop. */
 export const RICH_TEXT_PROPS: Record<string, string> = { Text: "text" };

@@ -1,0 +1,33 @@
+/* Icon picker (F077). Matches the panel's other custom fields (items.css). */
+.ic-picker, .ic-field { display: flex; flex-direction: column; gap: 8px; }
+.ic-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.ic-label { font-weight: 600; font-size: 0.875rem; color: #18181b; }
+.ic-picked { font-size: 0.8125rem; color: #52525b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ic-search, .ic-input {
+  width: 100%; min-height: 36px; padding: 6px 10px; border: 1px solid #71717a; border-radius: 6px;
+  background: #fff; color: #18181b; font: inherit; font-size: 0.875rem;
+}
+.ic-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.ic-chip {
+  min-height: 28px; padding: 0 10px; border: 1px solid #d4d4d8; border-radius: 999px;
+  background: #fff; color: #3f3f46; font: inherit; font-size: 0.75rem; cursor: pointer;
+}
+.ic-chip[aria-pressed="true"] { background: #eef2ff; border-color: #4f46e5; color: #3730a3; font-weight: 600; }
+.ic-grid {
+  display: grid; gap: 4px; max-height: 232px; overflow-y: auto; padding: 3px;
+  border: 1px solid #e4e4e7; border-radius: 8px; background: #fafafa;
+}
+.ic-cell {
+  display: grid; place-items: center; aspect-ratio: 1; min-height: 36px;
+  border: 1px solid #e4e4e7; border-radius: 6px; background: #fff; color: #27272a; cursor: pointer; padding: 0;
+}
+.ic-cell:hover { border-color: #a1a1aa; }
+.ic-cell[aria-pressed="true"] { border: 2px solid #4f46e5; color: #3730a3; background: #eef2ff; }
+.ic-cell .cr-list-icon { margin: 0; }
+.ic-none { width: 18px; height: 18px; border: 1.5px dashed #71717a; border-radius: 4px; position: relative; }
+.ic-none::after { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; border-left: 1.5px solid #71717a; transform: rotate(45deg); }
+.ic-chip:focus-visible, .ic-cell:focus-visible, .ic-search:focus-visible, .ic-input:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
+.ic-empty, .ic-hint, .ic-note { margin: 0; font-size: 0.8125rem; color: #52525b; }
+.ic-note.is-warning { color: #92400e; background: #fffbeb; border: 1px solid #f59e0b; border-radius: 6px; padding: 6px 8px; }
+.ic-input[aria-invalid="true"] { border-color: #b45309; }
+.ic-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

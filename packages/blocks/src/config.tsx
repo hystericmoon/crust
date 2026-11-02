@@ -38,6 +38,8 @@ import {
 } from "./sections-v2";
 import type { SpacingStep } from "./tokens";
 import { ContactForm, type ContactFormProps } from "./contact-form";
+import { IconMark, iconBlocks, type DividerProps, type IconProps, type SocialLinksProps } from "./icon-blocks";
+import { IconSvg, isIconName } from "./icons";
 import { LinkedSection, type LinkedSectionProps } from "./linked-section-block";
 import { placeholderBadge, placeholderLabel } from "./placeholders";
 import { Img } from "./media-img";
@@ -83,7 +85,8 @@ export type TextProps = { text: RichText | string; align: Align; tone: "default"
 export type ImageProps = { src: string; alt: string; caption: string };
 /** `align` was added in F012; pages saved before it have none and stay left-aligned. */
 /** F071 added "soft" and "arrow". */
-export type ButtonProps = { label: string; href: string; variant: "primary" | "secondary" | "soft" | "arrow"; align?: Align };
+/** `icon` and `iconAt` were added in F077 (missing: no icon). */
+export type ButtonProps = { label: string; href: string; variant: "primary" | "secondary" | "soft" | "arrow"; align?: Align; icon?: string; iconAt?: "before" | "after" };
 export type SpacerProps = { size: SpacingStep };
 /** `widths` was added in F029; Columns saved before it keep the old per-device behaviour. */
 export type ColumnsProps = {
@@ -103,9 +106,10 @@ export type ColumnsProps = {
   column3: Slot;
   column4: Slot;
 };
-/** `layout` was added in F071 ("cover": the photo fills the card). */
+/** `layout` was added in F071 ("cover": the photo fills the card); `icon` in F077 (shown when there's no photo). */
 export type CardProps = {
   layout?: "stacked" | "cover";
+  icon?: string;
   imageSrc: string;
   imageAlt: string;
   title: string;
@@ -139,6 +143,9 @@ export type Components = {
   Quote: QuoteProps & Visibility;
   ImageOverlay: ImageOverlayProps & Visibility;
   ContactForm: ContactFormProps & Visibility;
+  Icon: IconProps & Visibility;
+  Divider: DividerProps & Visibility;
+  SocialLinks: SocialLinksProps & Visibility;
   LinkedSection: LinkedSectionProps & Visibility;
 };
 
@@ -168,8 +175,8 @@ const blocks: Config<Components> = {
     render: ({ children }) => <div className="cr-page">{children}</div>,
   },
   categories: {
-    layout: { title: "Layout", components: ["Section", "Columns", "Grid", "Spacer"] },
-    content: { title: "Content", components: ["Heading", "Text", "Image", "Button", "Card", "IconList", "Quote", "Accordion"] },
+    layout: { title: "Layout", components: ["Section", "Columns", "Grid", "Spacer", "Divider"] },
+    content: { title: "Content", components: ["Heading", "Text", "Image", "Button", "Card", "Icon", "IconList", "Quote", "Accordion", "SocialLinks"] },
     media: { title: "Media", components: ["Gallery", "ImageOverlay", "LogoRow"] },
     forms: { title: "Forms", components: ["ContactForm"] },
     // F043: added through Layouts → Linked sections, not from the block list.
@@ -413,17 +420,34 @@ const blocks: Config<Components> = {
           ],
         },
         align: alignField,
+        // F077: an icon before or after the label (decoration: the label says it all).
+        icon: { type: "text", label: "Icon (optional)" },
+        iconAt: {
+          type: "radio",
+          label: "Icon position",
+          options: [
+            { label: "Before the label", value: "before" },
+            { label: "After the label", value: "after" },
+          ],
+        },
       },
-      defaultProps: { label: "Learn more", href: "/", variant: "primary", align: "left" },
-      render: ({ label, href, variant, align }) => (
-        <div className={`cr-button-row cr-align-${align ?? "left"}`}>
-          <a className={`cr-button cr-button-${variant}`} href={safeUrl(href)}>
-            {label}
-            {/* The arrow is decoration; the label already says where the link goes. */}
-            {variant === "arrow" ? <span className="cr-arrow" aria-hidden="true">→</span> : null}
-          </a>
-        </div>
-      ),
+      defaultProps: { label: "Learn more", href: "/", variant: "primary", align: "left", icon: "", iconAt: "before" },
+      render: ({ label, href, variant, align, icon, iconAt }) => {
+        const hasIcon = isIconName(icon);
+        const after = hasIcon && iconAt === "after";
+        const mark = hasIcon ? <IconSvg name={icon!} className="cr-button-icon" size={18} /> : null;
+        return (
+          <div className={`cr-button-row cr-align-${align ?? "left"}`}>
+            <a className={`cr-button cr-button-${variant}${hasIcon ? " cr-has-icon" : ""}`} href={safeUrl(href)}>
+              {hasIcon && !after ? mark : null}
+              {label}
+              {after ? mark : null}
+              {/* The arrow is decoration; the label already says where the link goes. An icon after the label takes its place. */}
+              {variant === "arrow" && !after ? <span className="cr-arrow" aria-hidden="true">→</span> : null}
+            </a>
+          </div>
+        );
+      },
     },
     Spacer: {
       label: "Spacer",
@@ -521,6 +545,7 @@ const blocks: Config<Components> = {
         text: { type: "textarea", label: "Text" },
         imageSrc: { type: "text", label: "Image URL (optional)" },
         imageAlt: { type: "text", label: "Image alt text (describe the image)" },
+        icon: { type: "text", label: "Icon (shown when there's no photo)" },
         linkLabel: { type: "text", label: "Link text (say where it goes)" },
         linkHref: { type: "text", label: "Link" },
         background: backgroundField,
@@ -544,7 +569,7 @@ const blocks: Config<Components> = {
         linkHref: "",
         background: "surface",
       },
-      render: ({ layout, imageSrc, imageAlt, title, titleLevel, text, linkLabel, linkHref, background }) => {
+      render: ({ layout, imageSrc, imageAlt, icon, title, titleLevel, text, linkLabel, linkHref, background }) => {
         const Title = headingTag(titleLevel, "h3");
         // Same rule as the Image block: missing alt is left out for the publish check.
         const altAttr = imageAlt.trim() ? { alt: imageAlt.trim() } : {};
@@ -554,6 +579,11 @@ const blocks: Config<Components> = {
           <article className={cover ? "cr-card cr-card-cover" : `cr-card cr-bg-${background}`}>
             {imageSrc.trim() ? (
               <Img className="cr-card-media" src={imageSrc} size="half" {...altAttr} loading="lazy" decoding="async" />
+            ) : isIconName(icon) ? (
+              // F077: an icon instead of a photo (decoration: the title says it all).
+              <div className="cr-card-icon">
+                <IconMark name={icon} look="circle" size="md" colour="primary" />
+              </div>
             ) : null}
             <div className="cr-card-body">
               {title.trim() ? <Title className="cr-heading cr-card-title">{title}</Title> : null}
@@ -570,6 +600,7 @@ const blocks: Config<Components> = {
     },
     ...(moreBlocks as unknown as Pick<Config<Components>["components"], keyof typeof moreBlocks>),
     ContactForm: ContactForm as unknown as Config<Components>["components"]["ContactForm"],
+    ...(iconBlocks as unknown as Pick<Config<Components>["components"], keyof typeof iconBlocks>),
     LinkedSection: LinkedSection as unknown as Config<Components>["components"]["LinkedSection"],
   },
 };

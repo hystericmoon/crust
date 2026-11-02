@@ -126,6 +126,19 @@ A Columns block may carry (F074, all optional) `valign` (`top`,
 step), `dividers` (boolean), `phoneOrder` (`normal`, `reverse`: visual
 only, reading order stays) and `sticky` (a column number).
 
+F077 adds three blocks: `Icon` (`icon`, `look`: `plain`, `circle`,
+`square`; `size`: `sm`, `md`, `lg`; `colour`: `primary`, `text`;
+`label`, `href`, `align`), `Divider` (`kind`: `line`, `accent`, `label`,
+`dots`; `label`, `width`: `short`, `medium`, `full`; `space`, `align`)
+and `SocialLinks` (`links` [{ href }], `show`: `icons`, `names`; `look`:
+`plain`, `circle`; `who`, `align`). An icon is a name from Crust's set
+(`iconNames`, `packages/blocks/src/icons-data.ts`, written by
+`scripts/sync-icons.mjs`); unknown names draw nothing. Optional, all
+F077: a Card's `icon` (shown when it has no photo), a Button's `icon` and
+`iconAt` (`before`, `after`), and an Icon list line's own `icon`; the
+Icon list's `icon` may now be any icon name besides the six classic
+marks. An Icon with an `href` needs a `label`, or publishing stops.
+
 `tokens.style.motion` (optional, F075): `off`, `subtle` or `lively`;
 missing means Off. A Section may carry `entrance` (`rise`, `zoom`,
 `slide`, `none`; missing means Rise) and `parallax` (`true`: its photo

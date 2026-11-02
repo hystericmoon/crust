@@ -14,6 +14,7 @@ import { marqueeRepeat } from "./motion";
 import { sectionStyleIds, sectionStyleNames, tintLevels, tintNames, type SectionStyleId, type TintLevel } from "./section-styles";
 import { Img } from "./media-img";
 import { safeUrl } from "./url";
+import { IconSvg, isIconName } from "./icons";
 
 type Editing = { puck?: { isEditing?: boolean } };
 type TitleLevel = "h2" | "h3" | "h4";
@@ -33,7 +34,11 @@ export type AccordionProps = { items: AccordionItem[]; firstOpen: "yes" | "no"; 
 export const listIcons = ["check", "arrow", "star", "dot", "plus", "heart"] as const;
 export type ListIcon = (typeof listIcons)[number];
 export const listIconNames: Record<ListIcon, string> = { check: "Check", arrow: "Arrow", star: "Star", dot: "Dot", plus: "Plus", heart: "Heart" };
-export type IconListProps = { items: { text: string }[]; icon: ListIcon; iconColor: "primary" | "text" };
+/**
+ * `icon` is one of the classic list marks (`listIcons`) or, from F077, any
+ * icon from the set (`iconNames`); a line may have its own `icon` (F077).
+ */
+export type IconListProps = { items: { text: string; icon?: string }[]; icon: ListIcon | string; iconColor: "primary" | "text" };
 
 export type Logo = { src: string; alt: string; href: string };
 /** `moving` was added in F075 (missing: still). */
@@ -100,10 +105,18 @@ const iconPaths: Record<ListIcon, ReactNode> = {
   heart: <path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z" fill="currentColor" />,
 };
 
-export function ListIconSvg({ icon }: { icon: ListIcon }) {
+export const isListIcon = (icon: unknown): icon is ListIcon => listIcons.includes(icon as ListIcon);
+
+/**
+ * A list line's mark. The six classic marks keep their own bold drawings
+ * (lists made before F077 look the same); any other name is an icon from
+ * the set. Unknown names fall back to the check.
+ */
+export function ListIconSvg({ icon }: { icon: ListIcon | string }) {
+  if (!isListIcon(icon) && isIconName(icon)) return <IconSvg name={icon} className="cr-list-icon" size={20} />;
   return (
     <svg className="cr-list-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-      {iconPaths[icon] ?? iconPaths.check}
+      {iconPaths[icon as ListIcon] ?? iconPaths.check}
     </svg>
   );
 }
@@ -274,14 +287,11 @@ export const IconList: ComponentConfig<IconListProps> = {
       label: "Lines",
       max: itemLimits.iconList,
       getItemSummary: (item) => item.text || "Line",
-      defaultItemProps: { text: "Another point" },
-      arrayFields: { text: { type: "text", label: "Text" } },
+      defaultItemProps: { text: "Another point", icon: "" },
+      arrayFields: { text: { type: "text", label: "Text" }, icon: { type: "text", label: "Own icon (optional)" } },
     },
-    icon: {
-      type: "select",
-      label: "Icon",
-      options: listIcons.map((i) => ({ label: listIconNames[i], value: i })),
-    },
+    // The builder swaps this for the icon picker (classic marks first).
+    icon: { type: "text", label: "Icon" },
     iconColor: {
       type: "radio",
       label: "Icon colour",
@@ -300,7 +310,7 @@ export const IconList: ComponentConfig<IconListProps> = {
     <ul className={`cr-icon-list cr-icon-${iconColor}`} role="list">
       {(items ?? []).map((it, i) => (
         <li key={i}>
-          <ListIconSvg icon={icon} />
+          <ListIconSvg icon={it.icon && (isListIcon(it.icon) || isIconName(it.icon)) ? it.icon : icon} />
           <span>{it.text}</span>
         </li>
       ))}

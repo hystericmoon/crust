@@ -8,12 +8,15 @@ import type { Components } from "@crust/blocks";
 import type { Config } from "@puckeditor/core";
 import { useId, useState } from "react";
 import { ImageField } from "../media/ImageField";
+import { IconPicker } from "../icons/IconPicker";
 
 type SubField =
   | { type: "text" | "textarea"; label?: string }
   | { type: "select" | "radio"; label?: string; options: { label: string; value: string }[] }
   // F034: a photo from the media library; picking one also fills `altKey`.
-  | { type: "image"; label?: string; altKey?: string };
+  | { type: "image"; label?: string; altKey?: string }
+  // F077: an icon from the set; `classic` adds the Icon list's own marks.
+  | { type: "icon"; label?: string; classic?: boolean };
 
 export type ItemsFieldDef = {
   type: "array";
@@ -138,6 +141,16 @@ export function ItemsField({ field, value, onChange }: { field: ItemsFieldDef; v
                         value={typeof item[key] === "string" ? (item[key] as string) : ""}
                         onChange={(v) => set(i, key, v)}
                         onPick={sub.altKey ? (src, alt) => setMany(i, { [key]: src, [sub.altKey!]: alt }) : undefined}
+                      />
+                    ) : sub.type === "icon" ? (
+                      <IconPicker
+                        key={key}
+                        label={sub.label ?? key}
+                        context={`${cap(noun)} ${i + 1}`}
+                        optional
+                        classic={sub.classic}
+                        value={typeof item[key] === "string" ? (item[key] as string) : ""}
+                        onChange={(v) => set(i, key, v)}
                       />
                     ) : (
                     <SubInput
