@@ -866,7 +866,7 @@
       "description": "Design the post page, the blog list and the 404 page in the builder instead of fixed designs. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F073"],
       "done_check": "npm test -- page-designs && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
