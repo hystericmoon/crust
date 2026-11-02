@@ -149,6 +149,17 @@ site-wide header (`show`, `logo { text, imageSrc, imageAlt }`, `menu`
 `columns` [{ title, links }], `copyright`, `style`). Missing fields get
 defaults (see `migrateChrome`).
 
+F076 adds (all optional; headers and footers without them look as
+before): `header.layout` (`classic`, `centred`, `stacked`, `split`,
+`left`, `button`), a menu item's `children` (a dropdown, one level, up
+to 8 links; the item's own `href` may then be empty),
+`header.overHero` (`true`: the header sits on any page whose first
+section has a photo or video background), `header.topBar` (`show`,
+`text`, `link { label, href }`, `contact`, `style`), and
+`footer.kind: "blocks"` with `footer.section` (a linked section's id):
+the footer is then that section's blocks, with the copyright line
+under them; a missing section stops the publish.
+
 `content/redirects.json` (optional, added with F015)
 ```json
 [{ "from": "/old-address", "to": "/new-address" }]
