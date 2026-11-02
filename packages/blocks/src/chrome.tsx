@@ -11,6 +11,7 @@ import type { ReactNode } from "react";
 import type { MenuLink, SiteFooter, SiteHeader } from "./chrome-model";
 import { Img } from "./media-img";
 import { safeUrl } from "./url";
+import type { SectionStyleId } from "./section-styles";
 
 export * from "./chrome-model";
 
@@ -32,7 +33,8 @@ function MenuList({ menu, path }: { menu: MenuLink[]; path: string }) {
   );
 }
 
-export function SiteHeaderView({ header, path }: { header: SiteHeader; path: string }): ReactNode {
+/** `over` (F073): the header sits on the page's first section, in that section's style, and doesn't stick. */
+export function SiteHeaderView({ header, path, over }: { header: SiteHeader; path: string; over?: SectionStyleId }): ReactNode {
   if (!header.show) return null;
   const cta = header.cta.label.trim() ? (
     <a className="cr-button cr-button-primary cr-header-cta" href={safeUrl(header.cta.href)}>
@@ -51,7 +53,7 @@ export function SiteHeaderView({ header, path }: { header: SiteHeader; path: str
     header.logo.text
   );
   return (
-    <header className={`cr-site-header cr-style-${header.style}${header.sticky ? " cr-sticky" : ""}`}>
+    <header className={over ? `cr-site-header cr-style-${over} cr-header-over` : `cr-site-header cr-style-${header.style}${header.sticky ? " cr-sticky" : ""}`}>
       <div className="cr-container cr-header-inner">
         <a className="cr-logo" href="/" aria-current={path === "/" ? "page" : undefined}>
           {logo}

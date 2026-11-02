@@ -4,7 +4,7 @@
  */
 import { BLOG_PATH, BlogListView, PostHeaderView, postPath, sortPosts, type BlogSettings, type Post, type Site } from "@crust/blocks";
 import { renderToStaticMarkup } from "react-dom/server";
-import { escapeHtml, formsFor, renderBody, renderDocument, turnstileTag, withLinkedSections, withMedia, type RenderOptions } from "./render";
+import { escapeHtml, formsFor, renderBody, renderDocument, turnstileTag, videoTag, withLinkedSections, withMedia, type RenderOptions } from "./render";
 
 const FEED = `${BLOG_PATH}/feed.xml`;
 
@@ -18,7 +18,7 @@ export function renderPost(site: Site, input: Post, blog: BlogSettings, baseCss:
   const body = `<article class="cr-post">${top}${renderBody(post.puck, options.media, formsFor(options, postPath(post.slug)))}</article>`;
   // F036: a shared post shows its cover.
   const share = { image: post.cover || undefined, imageAlt: post.coverAlt, type: "article" as const };
-  return renderDocument(site, { path: postPath(post.slug), title: post.title, description: post.description || post.title, body, head: feedLink(site, blog) + turnstileTag(options, post.puck), share }, baseCss, options);
+  return renderDocument(site, { path: postPath(post.slug), title: post.title, description: post.description || post.title, body, head: feedLink(site, blog) + turnstileTag(options, post.puck) + videoTag(post.puck), share }, baseCss, options);
 }
 
 export function renderBlogIndex(site: Site, posts: Post[], blog: BlogSettings, baseCss: string, options: RenderOptions = {}): string {

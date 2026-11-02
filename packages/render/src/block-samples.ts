@@ -3,7 +3,7 @@
  * check renders this with every theme preset so axe can check the new
  * blocks' contrast, names and structure (no published page uses them yet).
  */
-import { sectionStyleIds, type Page } from "@crust/blocks";
+import { gradientColours, sectionStyleIds, type Page, type SiteTokens } from "@crust/blocks";
 
 type Content = Page["puck"]["content"];
 
@@ -106,5 +106,40 @@ export function blockSamples(): Content {
       type: "Section",
       props: { id: `s-${style}`, background: style, paddingY: "md", content: sampleBlocks(style) },
     })),
+  ] as Content;
+}
+
+/**
+ * F073: one page using every Sections v2 option, so axe checks the header on
+ * a photo, gradients, the video's pause button and pulled-up cards. Gradients
+ * end in the first colour the builder would offer for each style.
+ */
+export function sectionsV2Samples(tokens: SiteTokens): Content {
+  const card = (n: string) => ({
+    type: "Card",
+    props: { id: `card-${n}`, background: "background", title: `Card ${n}`, text: "Pulled up over the photo.", imageSrc: "", imageAlt: "", linkLabel: "", linkHref: "" },
+  });
+  const section = (id: string, props: Record<string, unknown>, content: Content) => ({
+    type: "Section",
+    props: { id, paddingY: "lg", height: "auto", valign: "center", tint: "medium", imageSrc: "", ...props, content },
+  });
+  const words = (id: string, text: string, level: "h1" | "h2" = "h2"): Content => [
+    { type: "Heading", props: { id: `h-${id}`, text, level, align: "left" } },
+    { type: "Text", props: { id: `t-${id}`, text: "Text and a link to the [menu].", align: "left", tone: "default" } },
+    { type: "Button", props: { id: `b-${id}`, label: "Get in touch", href: "/contact", variant: "primary" } },
+  ];
+  return [
+    section("hero", { background: "dark", bgKind: "photo", imageSrc: "/sample.jpg", focus: { x: 30, y: 60 }, headerOver: true, height: "large", width: "wide" }, words("hero", "Sections v2", "h1")),
+    section("cards", { background: "background", overlap: "md", width: "normal" }, [
+      { type: "Columns", props: { id: "cols", count: "3", gap: "md", column1: [card("1")], column2: [card("2")], column3: [card("3")] } },
+    ]),
+    ...sectionStyleIds.flatMap((style) => {
+      const to = gradientColours(tokens, style)[0];
+      return to ? [section(`grad-${style}`, { background: style, bgKind: "gradient", gradient: { to, direction: "diagonal" }, width: "narrow" }, words(`grad-${style}`, `Gradient on ${style}`))] : [];
+    }),
+    section("edge", { background: "surface", width: "right" }, [
+      { type: "Columns", props: { id: "edge-cols", count: "2", gap: "md", column1: words("edge", "To the right edge"), column2: [{ type: "Image", props: { id: "edge-img", src: "/sample.jpg", alt: "A sample photo", caption: "" } }] } },
+    ]),
+    section("video", { background: "primary", bgKind: "video", imageSrc: "/sample.jpg", videoSrc: "/sample-loop.mp4", height: "medium", width: "full" }, words("video", "A background video")),
   ] as Content;
 }

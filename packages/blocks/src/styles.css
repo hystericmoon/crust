@@ -37,6 +37,51 @@
 .cr-valign-bottom { justify-content: flex-end; }
 .cr-section-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .cr-section-tint { position: absolute; inset: 0; background: var(--cr-sec-bg); opacity: 0.65; }
+
+/* Sections v2 (F073) */
+.cr-width-narrow > .cr-container { max-width: 46rem; }
+.cr-width-wide > .cr-container { max-width: calc(var(--cr-max-width) * 1.25); }
+.cr-width-full > .cr-container { max-width: none; }
+/* Reach one edge: the text keeps the page grid on one side, the other side runs to the screen's edge. */
+.cr-width-right > .cr-container { max-width: none; margin-left: max(0px, calc((100% - var(--cr-max-width)) / 2)); margin-right: 0; padding-right: 0; }
+.cr-width-left > .cr-container { max-width: none; margin-right: max(0px, calc((100% - var(--cr-max-width)) / 2)); margin-left: 0; padding-left: 0; }
+@media (max-width: 639.98px) {
+  .cr-width-right > .cr-container, .cr-width-left > .cr-container { margin-inline: 0; padding-inline: var(--cr-space-sm); }
+}
+.cr-has-gradient { background: var(--cr-section-gradient); }
+.cr-section-video { z-index: 0; }
+.cr-section-video[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) { .cr-section-video { display: none; } }
+.cr-video-toggle {
+  position: absolute; right: var(--cr-space-sm); bottom: var(--cr-space-sm); z-index: 2;
+  display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0;
+  border: 2px solid var(--cr-sec-ink); border-radius: 50%; background: var(--cr-sec-bg); color: var(--cr-sec-ink); cursor: pointer;
+}
+.cr-video-toggle > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.cr-video-toggle::before { content: ""; width: 12px; height: 14px; border-inline: 4px solid currentColor; box-sizing: border-box; }
+.cr-video-toggle[aria-pressed="true"]::before { width: 0; height: 0; border-style: solid; border-width: 7px 0 7px 12px; border-color: transparent transparent transparent currentColor; }
+.cr-video-toggle:focus-visible { outline: 3px solid var(--cr-sec-ink); outline-offset: 2px; }
+.cr-video-toggle[hidden] { display: none; }
+/* Pull up over the section above: the top of this section is see-through and its content starts that much higher. */
+.cr-overlap-sm { --cr-overlap: var(--cr-space-md); }
+.cr-overlap-md { --cr-overlap: var(--cr-space-xl); }
+.cr-overlap-lg { --cr-overlap: calc(var(--cr-space-xl) * 2); }
+.cr-section[class*="cr-overlap-"] {
+  z-index: 1; margin-top: calc(-1 * var(--cr-overlap)); padding-top: 0; overflow: visible;
+  background: linear-gradient(transparent var(--cr-overlap), var(--cr-sec-bg) var(--cr-overlap));
+}
+.cr-section.cr-has-gradient[class*="cr-overlap-"] { background: var(--cr-section-gradient) 0 var(--cr-overlap) / 100% calc(100% - var(--cr-overlap)) no-repeat; }
+.cr-section[class*="cr-overlap-"] > .cr-section-media, .cr-section[class*="cr-overlap-"] > .cr-section-tint { top: var(--cr-overlap); height: calc(100% - var(--cr-overlap)); }
+/* The section above gets the same room at its foot, so its words aren't covered. */
+.cr-section:has(+ .cr-overlap-sm, + .cr-show > .cr-overlap-sm),
+.cr-show:has(+ .cr-overlap-sm, + .cr-show > .cr-overlap-sm) > .cr-section { padding-bottom: calc(var(--cr-section-pad, var(--cr-space-lg)) + var(--cr-space-md)); }
+.cr-section:has(+ .cr-overlap-md, + .cr-show > .cr-overlap-md),
+.cr-show:has(+ .cr-overlap-md, + .cr-show > .cr-overlap-md) > .cr-section { padding-bottom: calc(var(--cr-section-pad, var(--cr-space-lg)) + var(--cr-space-xl)); }
+.cr-section:has(+ .cr-overlap-lg, + .cr-show > .cr-overlap-lg),
+.cr-show:has(+ .cr-overlap-lg, + .cr-show > .cr-overlap-lg) > .cr-section { padding-bottom: calc(var(--cr-section-pad, var(--cr-space-lg)) + var(--cr-space-xl) * 2); }
+/* Header on the first section: no background of its own, the section's colours, and room above the content. */
+.cr-site-header.cr-header-over { position: absolute; top: 0; left: 0; right: 0; background: transparent; border-bottom-color: transparent; }
+.cr-page-header-over .cr-under-header { padding-top: calc(var(--cr-section-pad, var(--cr-space-lg)) + 64px); }
 .cr-bg-background { background: var(--cr-color-background); color: var(--cr-color-text); }
 .cr-bg-surface { background: var(--cr-color-surface); color: var(--cr-color-text); }
 .cr-bg-primary { background: var(--cr-color-primary); color: var(--cr-color-onPrimary); }

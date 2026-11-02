@@ -15,6 +15,26 @@ import {
 } from "./more-blocks";
 import { spaceVar, spacingField } from "./fields";
 import { sectionStyleIds, sectionStyleNames, tintLevels, tintNames, type SectionStyleId, type TintLevel } from "./section-styles";
+import {
+  backgroundKindNames,
+  backgroundKindOf,
+  backgroundKinds,
+  cleanGradient,
+  focusPosition,
+  gradientCss,
+  isSectionWidth,
+  overlapNames,
+  overlapSizes,
+  sectionWidthNames,
+  sectionWidths,
+  videoAddress,
+  videoType,
+  type BackgroundKind,
+  type FocalPoint,
+  type OverlapSize,
+  type SectionGradient,
+  type SectionWidth,
+} from "./sections-v2";
 import type { SpacingStep } from "./tokens";
 import { ContactForm, type ContactFormProps } from "./contact-form";
 import { LinkedSection, type LinkedSectionProps } from "./linked-section-block";
@@ -41,6 +61,14 @@ export type SectionProps = {
   valign?: SectionAlign;
   imageSrc?: string;
   tint?: TintLevel;
+  /** F073 (all optional; Sections without them publish as before). */
+  width?: SectionWidth;
+  bgKind?: BackgroundKind;
+  gradient?: SectionGradient;
+  videoSrc?: string;
+  focus?: FocalPoint;
+  overlap?: OverlapSize;
+  headerOver?: boolean;
   content: Slot;
 };
 /** `size` and `eyebrow` were added in F071; headings without them render as before. */
@@ -143,6 +171,11 @@ const blocks: Config<Components> = {
           label: "Style",
           options: sectionStyleIds.map((id) => ({ label: sectionStyleNames[id], value: id })),
         },
+        width: {
+          type: "select",
+          label: "Width",
+          options: sectionWidths.map((w) => ({ label: sectionWidthNames[w], value: w })),
+        },
         height: {
           type: "select",
           label: "Height",
@@ -157,32 +190,96 @@ const blocks: Config<Components> = {
             { label: "Bottom", value: "bottom" },
           ],
         },
+        bgKind: {
+          type: "radio",
+          label: "Background",
+          options: backgroundKinds.map((k) => ({ label: backgroundKindNames[k], value: k })),
+        },
+        gradient: {
+          type: "object",
+          label: "Gradient",
+          objectFields: {
+            to: { type: "text", label: "Ends in (site colour)" },
+            direction: { type: "text", label: "Direction" },
+          },
+        },
         imageSrc: { type: "text", label: "Background image URL (optional)" },
+        videoSrc: { type: "text", label: "Video address (.mp4 or .webm)" },
+        focus: {
+          type: "object",
+          label: "Focal point",
+          objectFields: { x: { type: "number", label: "Across (%)", min: 0, max: 100 }, y: { type: "number", label: "Down (%)", min: 0, max: 100 } },
+        },
         tint: {
           type: "radio",
           label: "Image tint",
           options: tintLevels.map((l) => ({ label: tintNames[l], value: l })),
         },
+        overlap: {
+          type: "select",
+          label: "Pull up over the section above",
+          options: overlapSizes.map((o) => ({ label: overlapNames[o], value: o })),
+        },
+        headerOver: {
+          type: "radio",
+          label: "Header sits on this section",
+          options: [
+            { label: "No", value: false },
+            { label: "Yes", value: true },
+          ],
+        },
         paddingY: spacingField("Vertical padding"),
         content: { type: "slot" },
       },
       defaultProps: { background: "background", paddingY: "lg", height: "auto", valign: "center", imageSrc: "", tint: "medium", content: [] },
-      render: ({ background, paddingY, height, valign, imageSrc, tint, content: Content }) => {
-        // An unsafe address (e.g. javascript:) means no image at all.
-        const image = imageSrc?.trim() ? safeUrl(imageSrc) : "#";
+      render: ({ background, paddingY, height, valign, imageSrc, tint, width, bgKind, gradient, videoSrc, focus, overlap, headerOver, content: Content }) => {
+        const kind = backgroundKindOf({ bgKind, imageSrc });
+        // An unsafe address (e.g. javascript:) means no image at all. Video needs its still photo.
+        const image = (kind === "photo" || kind === "video") && imageSrc?.trim() ? safeUrl(imageSrc) : "#";
+        const video = kind === "video" && image !== "#" ? videoAddress(videoSrc) : null;
+        const grad = kind === "gradient" ? cleanGradient(gradient) : null;
+        const position = focusPosition(focus);
         const classes = ["cr-section", `cr-style-${background}`, `cr-height-${height ?? "auto"}`, `cr-valign-${valign ?? "center"}`];
+        if (isSectionWidth(width) && width !== "normal") classes.push(`cr-width-${width}`);
+        if (overlap && overlap !== "none" && overlapSizes.includes(overlap)) classes.push(`cr-overlap-${overlap}`);
+        if (headerOver === true) classes.push("cr-under-header");
+        if (grad) classes.push("cr-has-gradient");
+        const style: Record<string, string> = { "--cr-section-pad": spaceVar(paddingY) };
+        if (grad) style["--cr-section-gradient"] = gradientCss(grad);
         return (
-          <section className={classes.join(" ")} style={vars({ "--cr-section-pad": spaceVar(paddingY) })}>
+          <section className={classes.join(" ")} style={vars(style)}>
             {image !== "#" ? (
               <>
                 {/* Background photos are decoration; the tint keeps text readable on any photo. */}
-                <Img className="cr-section-media" src={image} size="wide" alt="" decoding="async" />
+                <Img className="cr-section-media" src={image} size="wide" alt="" decoding="async" style={position ? { objectPosition: position } : undefined} />
+                {video ? (
+                  // Hidden until VIDEO_SCRIPT starts it, only when the visitor allows motion (F073).
+                  <video
+                    className="cr-section-media cr-section-video"
+                    data-cr-video=""
+                    muted
+                    loop
+                    playsInline
+                    preload="none"
+                    aria-hidden="true"
+                    tabIndex={-1}
+                    hidden
+                    style={position ? { objectPosition: position } : undefined}
+                  >
+                    <source src={video} type={videoType(video)} />
+                  </video>
+                ) : null}
                 <div className={`cr-section-tint cr-tint-${tint ?? "medium"}`} aria-hidden="true" />
               </>
             ) : null}
             <div className="cr-container">
               <Content />
             </div>
+            {video ? (
+              <button className="cr-video-toggle" type="button" aria-pressed="false" hidden>
+                <span>Pause background video</span>
+              </button>
+            ) : null}
           </section>
         );
       },

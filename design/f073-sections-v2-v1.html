@@ -1,0 +1,240 @@
+<title>F073 Sections v2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,400&display=swap">
+<style>
+/* Layout: report column; "where it lands" as small published-page thumbnails; the Section panel drawn three ways */
+:root{--bg:#F2F3F1;--panel:#FFFFFF;--fg:#17191B;--muted:#5C6267;--line:#D9DCD8;--accent:#3949AB;--soft:#E8EAF6;
+--ui:"Schibsted Grotesk",ui-sans-serif,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;--serif:"Fraunces",Georgia,serif;
+/* the sample site (Atelier Stone) — fixed, it is a picture of a published page */
+--s-bg:#F4F1EC;--s-surface:#E9E4DC;--s-text:#1E2420;--s-muted:#5A615C;--s-primary:#2F4A3A;--s-on:#FFFFFF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--ui);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1160px;margin:0 auto;padding-block:48px 96px;display:grid;gap:56px}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.015em}h1{font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.05;font-weight:600}h2{font-size:1.5rem;font-weight:600}h3{font-size:1.02rem;font-weight:600}
+p{margin:0;max-width:70ch}.eyebrow{font:500 .75rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.lede{font-size:1.1rem;color:var(--muted)}
+section{display:grid;gap:18px}
+.why{color:var(--muted);font-size:.93rem}
+.tag{font:600 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--accent);color:var(--panel);padding:6px 10px;border-radius:4px}
+
+/* where-it-lands grid */
+.lands{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.lands{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.lands{grid-template-columns:1fr}}
+.land{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:10px;align-content:start;min-width:0}
+.land p{font-size:.88rem;color:var(--muted)}
+.page{border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,.08);background:var(--s-bg);color:var(--s-text);font-family:var(--ui);position:relative}
+.page .bar{height:18px;display:flex;align-items:center;gap:8px;padding:0 10px;font-size:7px;letter-spacing:.06em;text-transform:uppercase;background:var(--s-bg);border-bottom:1px solid rgba(0,0,0,.06)}
+.page .bar b{font-weight:600;margin-right:auto}
+.blk{padding:12px 0;position:relative}
+.ct{margin:0 auto;width:72%;display:grid;gap:5px}
+.ln{height:5px;border-radius:2px;background:currentColor;opacity:.75}.ln.s{opacity:.35}
+.hd{font:300 15px/1 var(--serif);color:inherit}
+.ph{background:linear-gradient(160deg,#9AA59B,#56645A 55%,#2C362F);}
+.guide{position:absolute;top:0;bottom:0;border-left:1px dashed rgba(57,73,171,.6)}
+.wrow{display:grid;gap:4px}
+.wrow .w{height:16px;background:var(--s-surface);border-radius:2px;margin:0 auto;display:grid;place-items:center;font:500 7px var(--mono);color:var(--s-muted)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center}
+.vid{position:relative;height:96px;color:#fff;display:grid;align-content:end;padding:10px}
+.pause{position:absolute;right:8px;bottom:8px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);display:grid;place-items:center;font-size:8px}
+.badge{font:500 8px var(--mono);background:rgba(0,0,0,.55);color:#fff;padding:2px 5px;border-radius:3px;position:absolute;left:8px;top:8px}
+.crop{display:flex;gap:8px}.crop .fr{position:relative;flex:1;height:84px;border-radius:4px;overflow:hidden;background:#C9CFC6}
+.crop .subject{position:absolute;width:18px;height:30px;border-radius:9px 9px 3px 3px;background:#2F4A3A}
+.over-card{background:var(--s-bg);border-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,.18);padding:8px;display:grid;gap:4px}
+
+/* directions */
+.dir{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:18px}
+.dir.rec{border:2px solid var(--accent)}
+.dirhead{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.cols{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+.pnl{border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:12px;font-size:.84rem;background:var(--panel)}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line)}.tabs span{padding:6px 10px;font-size:.8rem;color:var(--muted)}.tabs span.on{color:var(--fg);font-weight:600;box-shadow:inset 0 -2px var(--accent)}
+.grp{display:grid;gap:8px}.grp>h4{margin:0;font:500 .7rem/1 var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg span{padding:7px 4px;text-align:center;font-size:.76rem;border-left:1px solid var(--line)}.seg span:first-child{border-left:0}.seg span.on{background:var(--soft);color:var(--accent);font-weight:600}
+.picto{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.picto div{border:1px solid var(--line);border-radius:6px;padding:6px 4px 4px;display:grid;gap:4px;justify-items:center;font-size:.64rem;color:var(--muted)}
+.picto div.on{border:2px solid var(--accent);padding:5px 3px 3px;color:var(--fg)}
+.picto i{display:block;height:16px;width:100%;position:relative;border-radius:2px;background:color-mix(in srgb,var(--line) 50%,transparent)}
+.picto i::after{content:"";position:absolute;top:4px;bottom:4px;background:var(--muted);border-radius:1px;left:var(--l);right:var(--r)}
+.field{display:grid;gap:4px}.field label,.field span.l{font-size:.76rem;color:var(--muted)}
+.input{border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:.78rem var(--mono);color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.thumb{position:relative;height:90px;border-radius:6px;overflow:hidden}
+.dot{position:absolute;width:16px;height:16px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.4);transform:translate(-50%,-50%)}
+.rng{display:grid;grid-template-columns:48px 1fr 34px;gap:6px;align-items:center;font-size:.74rem;color:var(--muted)}
+.rng i{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--accent) var(--v),var(--line) var(--v))}
+.tog{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sw{width:30px;height:18px;border-radius:9px;background:var(--line);position:relative;flex:none}.sw.on{background:var(--accent)}.sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--panel)}.sw.on::after{left:14px}
+.note{font-size:.74rem;color:var(--muted)}
+.ok{color:#2E7D4F}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ok{color:#7FCB9C}}:root[data-theme="dark"] .ok{color:#7FCB9C}
+.recipes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.recipes div{border:1px solid var(--line);border-radius:8px;padding:6px;display:grid;gap:4px;font-size:.72rem}
+.recipes i{display:block;height:34px;border-radius:4px}
+.canvas{border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative}
+.qbar{position:absolute;top:10px;left:50%;transform:translateX(-50%);display:flex;gap:2px;background:var(--fg);color:var(--bg);border-radius:8px;padding:3px;font-size:.72rem;white-space:nowrap;max-width:calc(100% - 16px);overflow:hidden}
+.qbar span{padding:5px 8px;border-radius:5px}.qbar span.on{background:var(--accent);color:var(--panel)}
+.pop{position:absolute;top:48px;left:50%;transform:translateX(-50%);width:min(240px,90%);background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:10px;display:grid;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:.78rem}
+ul.pros{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.92rem}
+ul.pros li::marker{color:var(--muted)}
+.panel2{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:12px}
+.facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 16px;font-size:.92rem;margin:0}.facts dt{color:var(--muted)}.facts dd{margin:0}
+code{font:.85em var(--mono);background:color-mix(in srgb,var(--line) 45%,transparent);padding:1px 4px;border-radius:3px}
+</style>
+<main>
+<header style="display:grid;gap:14px">
+  <span class="eyebrow">Milestone 8 · F073 Sections v2 · design sketch</span>
+  <h1>Sections that reach the edge, move, and overlap</h1>
+  <p class="lede">Six new things a Section can do: width, gradient backgrounds, a muted background video, a focal point on its photo, pulling up over the section above, and letting the header sit on top of the first section. Below: what each looks like on the published page, then three ways to put them in the Section's settings.</p>
+</header>
+
+<section aria-labelledby="lands">
+  <span class="eyebrow">On the published page</span>
+  <h2 id="lands">Where each option lands</h2>
+  <div class="lands">
+    <div class="land">
+      <h3>1 · Width</h3>
+      <div class="page"><div class="blk"><div class="wrow">
+        <div class="w" style="width:46%">Narrow · text</div>
+        <div class="w" style="width:72%">Normal · today</div>
+        <div class="w" style="width:86%">Wide</div>
+        <div class="w" style="width:100%;border-radius:0">Full · edge to edge</div>
+      </div></div></div>
+      <p>Narrow suits long reading (about 46 rem, near 70 characters). Wide is a quarter wider than the page. Full uses the whole screen with a small gutter. To run a photo right to the edge, use Left or Right edge.</p>
+    </div>
+    <div class="land">
+      <h3>2 · Reach one edge</h3>
+      <div class="page"><div class="blk" style="padding-right:0"><div class="split" style="margin-left:14%">
+        <div class="ct" style="width:100%"><span class="hd">Quiet rooms</span><div class="ln"></div><div class="ln s"></div></div>
+        <div class="ph" style="height:70px;border-radius:3px 0 0 3px"></div>
+      </div><span class="guide" style="left:14%"></span><span class="guide" style="right:14%"></span></div></div>
+      <p>The text stays on the page's grid (dashed lines). The photo column runs on to the right or left edge of the screen. On phones everything stacks.</p>
+    </div>
+    <div class="land">
+      <h3>3 · Gradient</h3>
+      <div class="page"><div class="blk" style="background:linear-gradient(160deg,var(--s-primary),#1E2420);color:#fff;padding:18px 0"><div class="ct"><span class="hd">Since 1998</span><div class="ln"></div><div class="ln s"></div></div></div></div>
+      <p>From the section's style colour to another site colour: downward, diagonal, across, or a soft glow. Only colours that keep the text readable at <em>both</em> ends are offered.</p>
+    </div>
+    <div class="land">
+      <h3>4 · Background video</h3>
+      <div class="page"><div class="vid ph"><span class="badge">muted · loops</span><span class="hd" style="color:#fff">The workshop</span><span class="pause" aria-hidden="true">❚❚</span></div></div>
+      <p>Silent and looping, with a pause button (WCAG 2.2.2). <strong>Reduce motion</strong> on, or no JavaScript: the still photo shows instead and the video never loads.</p>
+    </div>
+    <div class="land">
+      <h3>5 · Focal point</h3>
+      <div class="crop">
+        <div class="fr"><span class="subject" style="left:72%;top:40%"></span><span class="badge">desktop</span></div>
+        <div class="fr" style="flex:.45"><span class="subject" style="left:30%;top:40%"></span><span class="badge">phone</span></div>
+      </div>
+      <p>You mark what matters in the photo. When a phone crops a wide photo, it keeps that spot in view instead of the middle.</p>
+    </div>
+    <div class="land">
+      <h3>6 · Pull up, header on top</h3>
+      <div class="page">
+        <div class="ph" style="height:78px;color:#fff;position:relative">
+          <div class="bar" style="background:transparent;border:0;color:#fff;position:absolute;inset:0 0 auto"><b>Atelier</b><span>Work</span><span>Studio</span></div>
+          <div class="ct" style="padding-top:28px"><span class="hd" style="color:#fff">Rooms for living</span></div>
+        </div>
+        <div class="blk" style="padding-top:0"><div class="ct" style="grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:-22px;width:80%">
+          <div class="over-card"><div class="ln"></div><div class="ln s"></div></div><div class="over-card"><div class="ln"></div><div class="ln s"></div></div><div class="over-card"><div class="ln"></div><div class="ln s"></div></div>
+        </div></div>
+      </div>
+      <p>The header sits on the first section's photo, in that section's text colour. The section below pulls up so its cards overlap the photo.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="dirs">
+  <span class="eyebrow">In the builder · Section → Style tab</span>
+  <h2 id="dirs">Three directions</h2>
+
+  <div class="dir rec">
+    <div class="dirhead"><span class="tag">Recommended</span><h3>A · Three groups: Layout, Background, Over and under</h3></div>
+    <div class="cols">
+      <div class="pnl" aria-label="Sketch of the Section's Style tab, direction A">
+        <div class="tabs"><span>Content</span><span class="on">Style</span><span>Advanced</span></div>
+        <div class="grp"><h4>Layout</h4>
+          <div class="picto">
+            <div><i style="--l:32%;--r:32%"></i>Narrow</div>
+            <div class="on"><i style="--l:20%;--r:20%"></i>Normal</div>
+            <div><i style="--l:10%;--r:10%"></i>Wide</div>
+            <div><i style="--l:0;--r:0"></i>Full</div>
+            <div><i style="--l:0;--r:20%"></i>Left edge</div>
+            <div><i style="--l:20%;--r:0"></i>Right edge</div>
+          </div>
+          <div class="field"><span class="l">Height · Content position</span><div class="seg"><span>Auto</span><span class="on">Large</span><span>Full screen</span></div></div>
+        </div>
+        <div class="grp"><h4>Background</h4>
+          <div class="seg"><span>Colour</span><span>Gradient</span><span class="on">Photo</span><span>Video</span></div>
+          <div class="thumb ph"><span class="dot" style="left:68%;top:42%"></span></div>
+          <div class="rng"><span>Across</span><i style="--v:68%"></i><span>68%</span></div>
+          <div class="rng"><span>Down</span><i style="--v:42%"></i><span>42%</span></div>
+          <p class="note">Click the photo to set the focal point, or use the sliders (arrow keys).</p>
+          <div class="field"><span class="l">Tint</span><div class="seg"><span>None</span><span>Light</span><span class="on">Medium</span><span>Strong</span></div></div>
+        </div>
+        <div class="grp"><h4>Over and under</h4>
+          <div class="field"><span class="l">Pull up over the section above</span><div class="seg"><span class="on">No</span><span>A little</span><span>Half</span><span>A lot</span></div></div>
+          <div class="tog"><span>Header sits on this section</span><span class="sw on" aria-hidden="true"></span></div>
+          <p class="note ok">Only on the first section. Header text uses this section's colours.</p>
+        </div>
+      </div>
+      <div style="display:grid;gap:12px;align-content:start">
+        <p class="why">The settings follow the order you think in: how wide, what's behind it, how it meets its neighbours. The Background kinds are a segmented control, so only one set of fields shows at a time. A video section asks for a still photo first, so Reduce motion always has something to show.</p>
+        <ul class="pros">
+          <li><strong>Progressive disclosure:</strong> the Style tab stays short. Gradient, photo and video fields appear only when you choose that kind.</li>
+          <li><strong>Recognition over recall:</strong> widths are little pictures, not names you have to remember.</li>
+          <li><strong>Error prevention:</strong> gradient colours that would fail contrast aren't offered. "Header sits on this section" appears only on a page's first section.</li>
+          <li>The canvas quick bar keeps Height and Image as they are, and its Image pop-up gains the focal point.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="dir">
+    <div class="dirhead"><h3>B · Start from a section recipe</h3></div>
+    <div class="cols">
+      <div class="pnl" aria-label="Sketch of direction B">
+        <div class="grp"><h4>Pick a recipe</h4>
+          <div class="recipes">
+            <div><i class="ph"></i>Photo hero</div>
+            <div><i style="background:linear-gradient(90deg,var(--s-bg) 50%,#56645A 50%)"></i>Photo to the edge</div>
+            <div><i class="ph" style="opacity:.8"></i>Video hero</div>
+            <div><i style="background:linear-gradient(160deg,var(--s-primary),#1E2420)"></i>Gradient band</div>
+            <div><i style="background:linear-gradient(var(--s-primary) 55%,var(--s-bg) 55%)"></i>Overlapping cards</div>
+            <div><i style="background:var(--s-surface)"></i>Narrow text</div>
+          </div>
+        </div>
+        <p class="note">Then the same fields as today, in one list.</p>
+      </div>
+      <p class="why">Quick for a first page, and close to what F080's layout library will do anyway. But a recipe replaces several settings at once, so changing one thing later means finding it in a long list. It also overlaps with the section layouts you can already insert.</p>
+    </div>
+  </div>
+
+  <div class="dir">
+    <div class="dirhead"><h3>C · Everything on the canvas quick bar</h3></div>
+    <div class="cols">
+      <div class="canvas" style="height:220px" aria-label="Sketch of direction C">
+        <div class="ph" style="position:absolute;inset:0"></div>
+        <div class="qbar"><span>Style</span><span>Width</span><span class="on">Background</span><span>Height</span><span>Overlap</span><span>Header</span></div>
+        <div class="pop"><div class="seg"><span>Colour</span><span>Gradient</span><span class="on">Photo</span><span>Video</span></div><div class="input">/media/workshop.jpg</div></div>
+      </div>
+      <p class="why">Direct, and you see the result right away. But six buttons crowd the bar on a narrow section, the pop-ups cover the thing you're changing, and the settings panel would still need the same fields for keyboard and screen-reader users. That means two places to keep in step.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="how">
+  <span class="eyebrow">Details</span>
+  <h2 id="how">How it works</h2>
+  <div class="panel2">
+    <dl class="facts">
+      <dt>Saved as</dt><dd>New optional Section props: <code>width</code>, <code>gradient</code> <code>{ to, direction }</code>, <code>videoSrc</code>, <code>focus</code> <code>{ x, y }</code>, <code>overlap</code>, <code>headerOver</code>. Sections without them publish exactly as before, so no migration is needed.</dd>
+      <dt>Video</dt><dd>Linked from a web address (<code>https://…mp4</code> or <code>.webm</code>). The media library holds photos only for now; adding video uploads would make the Git repo heavy (proposal). The still photo is required. About 20 lines of JavaScript, only on pages with a video, start it when motion is allowed and add the pause button.</dd>
+      <dt>Header on top</dt><dd>Works on the page's first section only. The header loses its own background and takes the section's text colour, and the section gets extra top space so nothing hides under it. On that page the header scrolls away instead of sticking. A sticky header that changes colour as you scroll comes with F076.</dd>
+      <dt>Pull up</dt><dd>The section moves up by a spacing step (A little = M, Half = XL, A lot = 2×XL). The section above gets the same extra space at the bottom so its words aren't covered. Whatever overlaps needs its own background (a Card, or a Muted column), or its words would sit on the photo above.</dd>
+      <dt>Accessibility</dt><dd>Contrast is checked at both ends of a gradient and for the header over the photo (through the tint). The focal point has slider fields for the keyboard. The video has a real pause button with a label and never plays under Reduce motion. Width pictures have text labels.</dd>
+    </dl>
+  </div>
+</section>
+</main>

@@ -28,6 +28,7 @@ const samplePost = {
   puck: { root: { props: {} }, content: [{ type: "Text", props: { id: "t1", text: "Come and say hello." } }] },
 };
 // [label, address, post to seed, block to select first (F042: the rich text editor), buttons to press (F048),
+//  F073: { then: buttons to press after selecting the block },
 //  F058: { app: run as the desktop app (scripts/fake-tauri.js) with this host state, wait: what to wait for instead of the canvas,
 //  F060: firstRun: a brand new Crust (the welcome screen), F061: update: "available" }]
 const screens = [
@@ -61,6 +62,10 @@ const screens = [
   // F070: Site settings → Typography, the font pairs and grouped font lists; then a pair picked.
   ["Site settings, Typography", "/#/settings", null, null, ['.st-nav-item:has-text("Typography")'], { wait: ".st-nav" }],
   ["Site settings, font pair picked", "/#/settings", null, null, ['.st-nav-item:has-text("Typography")', '.st-fontpair:has-text("Editorial")'], { wait: ".st-nav" }],
+  // F073: a Section's Style tab (Layout, Background, Over and under), then Gradient and Photo picked.
+  ["Section Style tab", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible'] }],
+  ["Section Style tab, gradient", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible', '[aria-label="Background"] .sx-seg-option:has-text("Gradient"):visible'] }],
+  ["Section Style tab, video", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible', '[aria-label="Background"] .sx-seg-option:has-text("Video"):visible'] }],
   ["app welcome screen, Blank picked", "/", null, null, ['label:has-text("Blank")'], { app: "none", firstRun: true, wait: ".fr-card iframe" }],
 ];
 const fakeApp = await readFile(new URL("./fake-tauri.js", import.meta.url), "utf8");
@@ -69,7 +74,7 @@ const server = await serve(distDir);
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 let failures = 0;
 try {
-  for (const [label, hash, post, select, clicks = [], { app, wait, firstRun, update } = {}] of screens) {
+  for (const [label, hash, post, select, clicks = [], { app, wait, firstRun, update, then = [] } = {}] of screens) {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     if (app) await page.addInitScript(`window.__FAKE_TAURI__ = ${JSON.stringify({ host: app, firstRun, update })};\n${fakeApp}`);
     if (post) {
@@ -88,9 +93,15 @@ try {
       await page.waitForTimeout(800);
     }
     if (select) {
-      await page.frameLocator("#preview-frame").locator(select).first().click();
-      await page.waitForSelector(".rt-editor", { state: "attached", timeout: 10_000 });
+      // A Section is clicked near its corner, so the Section itself is selected rather than a block inside it.
+      await page.frameLocator("#preview-frame").locator(select).first().click(select.includes("Section") ? { position: { x: 12, y: 12 } } : undefined);
+      if (select.includes("Text")) await page.waitForSelector(".rt-editor", { state: "attached", timeout: 10_000 });
       await page.waitForTimeout(500);
+    }
+    // F073: buttons to press once the block is selected (its settings panel).
+    for (const button of then) {
+      await page.locator(button).first().click();
+      await page.waitForTimeout(600);
     }
     await page.addScriptTag({ content: axeSource });
     const results = await page.evaluate(() =>

@@ -776,7 +776,7 @@
       "description": "Design snapshot first. Section widths (narrow to full bleed, expand one side), colour and gradient backgrounds, muted background video with a still image under Reduce motion, image focal point, overlap with the next section, transparent header over the first section. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F071"],
       "done_check": "npm test -- sections-v2 && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

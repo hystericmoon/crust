@@ -5,11 +5,11 @@
  * whole-page layout with every theme preset, plus one page of the F032
  * blocks per preset.
  */
-import { applyPreset, buildPageLayout, fitHeadings, newPost, pageLayouts, sectionLayouts, themePresets, type Page, type Site } from "@crust/blocks";
+import { applyLook, applyPreset, buildPageLayout, fitHeadings, newPost, pageLayouts, sectionLayouts, styleLooks, themePresets, type Page, type Site } from "@crust/blocks";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { blockSamples } from "./block-samples";
+import { blockSamples, sectionsV2Samples } from "./block-samples";
 import { renderBlogIndex, renderPost } from "./blog";
 import { renderPage } from "./render";
 
@@ -31,6 +31,11 @@ for (const preset of themePresets) {
   for (const layout of pageLayouts) await write(`${layout.id}-${preset.id}`, themed, `${layout.name} (${preset.name})`, buildPageLayout(layout));
   // F032: the new blocks, on every section style, in every preset.
   await write(`blocks-${preset.id}`, themed, `New blocks (${preset.name})`, blockSamples());
+}
+// F073: Sections v2 in every look of the style library (first colourway).
+for (const look of styleLooks) {
+  const looked: Site = { ...site, tokens: applyLook(site.tokens, look) };
+  await write(`sections-v2-${look.id}`, looked, `Sections v2 (${look.name})`, sectionsV2Samples(looked.tokens));
 }
 // F035: the blog's list page and a post, in every preset.
 const posts = [

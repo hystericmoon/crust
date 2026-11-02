@@ -214,3 +214,27 @@ export type { MarkableField, Placeholder, PlaceholderKind } from "./placeholders
 
 export { applyLook, findLook, lookFonts, lookHeadingFont, matchingLook, styleLooks } from "./style-library";
 export type { LookVariation, StyleLook } from "./style-library";
+export {
+  backgroundKindNames,
+  backgroundKindOf,
+  backgroundKinds,
+  cleanFocus,
+  cleanGradient,
+  focusPosition,
+  gradientColours,
+  gradientCss,
+  gradientDirectionNames,
+  gradientDirections,
+  gradientReads,
+  hasBackgroundVideo,
+  headerOverStyle,
+  onlyFirstHeaderOver,
+  overlapNames,
+  overlapSizes,
+  sectionWidthHelp,
+  sectionWidthNames,
+  sectionWidths,
+  VIDEO_SCRIPT,
+  videoAddress,
+} from "./sections-v2";
+export type { BackgroundKind, FocalPoint, GradientDirection, OverlapSize, SectionGradient, SectionWidth } from "./sections-v2";

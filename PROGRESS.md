@@ -5,6 +5,16 @@ to "Log".
 
 ## Current
 
+- **F073 Sections v2: built, passes** (branch `f073-sections-v2`,
+  stacked on F072's PR). Snapshot
+  https://claude.ai/artifact/NK9TwfBQMN6s6LHuEAuWQi, A built. **To try**
+  on the PR's preview link: select a Section (click near its edge) →
+  Style tab: try the width pictures, Background → Gradient, Photo (then
+  click the photo to set the focal point), Video (paste an https://
+  .mp4 address and pick a still photo); on the first section tick
+  "Header sits on this section"; on the second, "Pull up" → Half, with
+  Cards inside. Screenshots `design/f073-*.png`. Needs `reviewed: true`.
+  Next: F074 Rows and columns v2.
 - **F072 Style library: built, passes** (branch `f072-style-library`,
   PR #57, stacked on F071's PR). Snapshot
   https://claude.ai/artifact/GaX1QoHvVTp8S3bU1ybxsa, A built.
@@ -731,3 +741,4 @@ to "Log".
   sides) once their CI was green. Main now has Milestones 1–6. Next:
   F063 Store site, from main.
 - 2026-11-02: F072 Style library finished (colourway dot class clash fixed, screenshots re-shot, DECISIONS "F072"); done_check exit 0.
+- 2026-11-02: F073 Sections v2 built (snapshot, direction A); done_check `npm test -- sections-v2 && npm run check:a11y` exit 0.
