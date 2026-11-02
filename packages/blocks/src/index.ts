@@ -87,8 +87,17 @@ export {
   validateChrome,
   SiteHeaderView,
   SiteFooterView,
+  contactHref,
+  defaultTopBar,
+  footerStarter,
+  DROPDOWN_SCRIPT,
+  hasDropdowns,
+  headerLayoutHelp,
+  headerLayoutNames,
+  headerLayouts,
+  layoutOf,
 } from "./chrome";
-export type { MenuLink, SiteHeader, SiteFooter, FooterColumn, SiteChrome, ChromeProblem } from "./chrome";
+export type { MenuLink, SiteHeader, SiteFooter, FooterColumn, SiteChrome, ChromeProblem, HeaderLayout, TopBar } from "./chrome";
 export type { Site, Page, Redirect, SavedLayout } from "./content";
 export { themePresets, matchingPreset, applyPreset } from "./presets";
 export type { ThemePreset } from "./presets";
@@ -242,6 +251,7 @@ export {
   gradientReads,
   hasBackgroundVideo,
   headerOverStyle,
+  heroStyle,
   onlyFirstHeaderOver,
   overlapNames,
   overlapSizes,

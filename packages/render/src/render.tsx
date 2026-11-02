@@ -1,4 +1,4 @@
-import { config, motionCss, CONTACT_FORM_SCRIPT, hasBackgroundVideo, headerOverStyle, onlyFirstHeaderOver, VIDEO_SCRIPT, type SectionStyleId, fontPreloads, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
+import { config, motionCss, heroStyle, hasDropdowns, DROPDOWN_SCRIPT, layoutOf, CONTACT_FORM_SCRIPT, hasBackgroundVideo, headerOverStyle, onlyFirstHeaderOver, VIDEO_SCRIPT, type SectionStyleId, fontPreloads, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -135,6 +135,7 @@ export function renderPage(site: Site, input: Page, baseCss: string, options: Re
       body: renderBody(page.puck, options.media, formsFor(options, page.path)),
       head: turnstileTag(options, page.puck) + videoTag(page.puck),
       headerOver: headerOverStyle(page.puck.content) ?? undefined,
+      hero: heroStyle(page.puck.content) ?? undefined,
       share: { searchTitle: seo.title, image: seo.image, imageAlt: seo.imageAlt, noindex: seo.noindex },
       searchable,
     },
@@ -157,6 +158,8 @@ export interface DocumentParts {
   searchable?: boolean;
   /** F073: the page's first section carries the header, in this style. */
   headerOver?: SectionStyleId;
+  /** F076: the style of a first section with a photo or video, for the header's "Clear on a hero photo". */
+  hero?: SectionStyleId;
 }
 
 export interface ShareInfo {
@@ -233,28 +236,49 @@ export function minifyCss(css: string): string {
   return out.trim();
 }
 
+/**
+ * The footer: the simple one (F031), or (F076) a linked section's blocks
+ * with the copyright line under them. A missing section stops the publish;
+ * without the sections at hand (a preview), the simple footer stands in.
+ */
+function footerHtml(site: Site, footer: ReturnType<typeof migrateChrome>["footer"], path: string, year: number, options: RenderOptions): string {
+  if (footer.show && footer.kind === "blocks" && options.linkedSections) {
+    const section = options.linkedSections.get(footer.section ?? "");
+    if (!section) throw new Error(`The footer uses the linked section "${footer.section ?? ""}", which doesn't exist. Pick another in Site settings → Footer, or go back to Simple.`);
+    const body = renderBody({ root: { props: {} }, content: section.content } as Page["puck"], options.media, formsFor(options, path));
+    const copyright = footer.copyright.replace(/\{year\}/g, String(year)).replace(/\{name\}/g, () => site.name).trim();
+    const end = copyright ? `<div class="cr-footer-end cr-style-${footer.style}"><div class="cr-container"><p class="cr-footer-copy">${escapeHtml(copyright)}</p></div></div>` : "";
+    return `<footer class="cr-site-footer cr-footer-blocks">${body}${end}</footer>`;
+  }
+  return renderToStaticMarkup(<SiteFooterView footer={footer} siteName={site.name} path={path} year={year} />);
+}
+
 /** The page shell around any content: head, header, main, footer. */
 export function renderDocument(site: Site, doc: DocumentParts, baseCss: string, options: RenderOptions): string {
   const { header, footer } = migrateChrome(site, options.pages ?? [{ path: doc.path, title: doc.title }]);
   const year = options.year ?? new Date().getFullYear();
-  const over = header.show && doc.headerOver ? doc.headerOver : undefined;
+  const over = header.show ? (doc.headerOver ?? (header.overHero ? doc.hero : undefined)) : undefined;
   const top = renderToStaticMarkup(withMedia(<SiteHeaderView header={header} path={doc.path} over={over} />, options.media));
-  const bottom = renderToStaticMarkup(<SiteFooterView footer={footer} siteName={site.name} path={doc.path} year={year} />);
+  const bottom = footerHtml(site, footer, doc.path, year, options);
   // A sticky header would cover whatever is scrolled or tabbed to; the page keeps room for it (WCAG 2.4.11).
   const htmlClass = header.show && header.sticky && !over ? ' class="cr-has-sticky"' : "";
+  // F076: a taller header (logo on top, top bar) needs more room above a section it sits on, and below a sticky one.
+  const room = header.show ? (layoutOf(header) === "stacked" ? 112 : 64) + (header.topBar?.show ? 36 : 0) : 64;
+  const htmlStyle = room !== 64 ? ` style="--cr-header-room: ${room}px"` : "";
+  const dropdowns = hasDropdowns(header) ? `<script type="module">${DROPDOWN_SCRIPT}</script>\n` : "";
   // F075: motion CSS only when the site turns motion on (the builder canvas never gets it).
   const motion = motionCss(site.tokens);
   const css = minifyCss(`${tokensToCss(site.tokens)}\n${baseCss}${motion ? `\n${motion}` : ""}`);
   const title = doc.share?.searchTitle?.trim() || (doc.path === "/" ? doc.title : `${doc.title} | ${site.name}`);
   return `<!doctype html>
-<html lang="${escapeHtml(site.language)}"${htmlClass}>
+<html lang="${escapeHtml(site.language)}"${htmlClass}${htmlStyle}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(title)}</title>
 <meta name="description" content="${escapeHtml(doc.description)}">
 <meta name="generator" content="Crust">
-${shareTags(site, doc, options)}${fontPreloads(site.tokens.fonts).map((href) => `<link rel="preload" href="${escapeHtml(href)}" as="font" type="font/woff2" crossorigin>\n`).join("")}${doc.head ?? ""}<style>${css.replace(/<\/style/gi, "<\\/style")}</style>
+${shareTags(site, doc, options)}${fontPreloads(site.tokens.fonts).map((href) => `<link rel="preload" href="${escapeHtml(href)}" as="font" type="font/woff2" crossorigin>\n`).join("")}${doc.head ?? ""}${dropdowns}<style>${css.replace(/<\/style/gi, "<\\/style")}</style>
 </head>
 <body class="cr-page${over ? " cr-page-header-over" : ""}">
 <a class="cr-skip" href="#content">Skip to content</a>

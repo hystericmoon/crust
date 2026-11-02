@@ -5,7 +5,7 @@
  * whole-page layout with every theme preset, plus one page of the F032
  * blocks per preset.
  */
-import { applyLook, applyPreset, buildPageLayout, fitHeadings, newPost, pageLayouts, sectionLayouts, styleLooks, themePresets, type Page, type Site } from "@crust/blocks";
+import { applyLook, applyPreset, buildPageLayout, fitHeadings, footerStarter, headerLayouts, migrateChrome, newPost, pageLayouts, sectionLayouts, styleLooks, themePresets, type Page, type Site } from "@crust/blocks";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -19,10 +19,10 @@ const site = JSON.parse(await readFile(join(contentDir, "site.json"), "utf8")) a
 const baseCss = await readFile(stylesPath, "utf8");
 
 await rm(outDir, { recursive: true, force: true });
-const write = async (slug: string, s: Site, title: string, content: Page["puck"]["content"]) => {
+const write = async (slug: string, s: Site, title: string, content: Page["puck"]["content"], options: Parameters<typeof renderPage>[3] = {}) => {
   const page: Page = { path: `/${slug}`, title, description: `Layout check: ${title}`, puck: { root: { props: {} }, content } };
   await mkdir(join(outDir, slug), { recursive: true });
-  await writeFile(join(outDir, slug, "index.html"), renderPage(s, page, baseCss));
+  await writeFile(join(outDir, slug, "index.html"), renderPage(s, page, baseCss, options));
 };
 
 for (const layout of sectionLayouts) await write(layout.id, site, layout.name, fitHeadings(layout.build(), false));
@@ -41,6 +41,28 @@ for (const look of styleLooks) {
   // F075: motion on (Subtle and Lively in turn), in the same looks.
   const moving: Site = { ...looked, tokens: { ...looked.tokens, style: { ...looked.tokens.style, motion: styleLooks.indexOf(look) % 2 ? "lively" : "subtle" } } };
   await write(`motion-${look.id}`, moving, `Motion (${look.name})`, motionSamples());
+}
+// F076: every header layout, in turn on a photo hero or a plain page, with a dropdown, a top bar, and a footer built from blocks.
+{
+  const chrome = migrateChrome(site, [{ path: "/", title: "Home" }]);
+  const menu = [
+    { label: "Work", href: "/work" },
+    { label: "Studio", href: "/studio", children: [{ label: "Team", href: "/team" }, { label: "Careers", href: "/careers" }] },
+    { label: "Journal", href: "/blog" },
+    { label: "Visit", href: "", children: [{ label: "Opening hours", href: "/hours" }] },
+  ];
+  const footerSection = { id: "footer", name: "Footer", savedAt: "2026-11-02T00:00:00Z", content: footerStarter({ ...chrome.footer, style: "dark", text: "Studio Atelier, Keizersgracht 12.", columns: [{ title: "Explore", links: menu.slice(0, 1) }] }, site.name) as Page["puck"]["content"] };
+  for (const [i, layout] of headerLayouts.entries()) {
+    const looked = applyLook(site.tokens, styleLooks[i % styleLooks.length]!);
+    const s: Site = {
+      ...site,
+      tokens: looked,
+      header: { ...chrome.header, layout, menu, cta: { label: "Contact", href: "/contact" }, overHero: i % 2 === 0, sticky: i === 1, topBar: { show: i % 3 === 0, text: "Free delivery over €50", link: { label: "Shop", href: "/shop" }, contact: "+31 20 555 0101", style: "primary" } },
+      footer: { ...chrome.footer, kind: i % 2 ? "simple" : "blocks", section: "footer", style: "dark", columns: [{ title: "Explore", links: menu.slice(0, 1) }] },
+    };
+    const hero = { type: "Section", props: { id: "hero", background: "dark", paddingY: "xl", height: "large", imageSrc: "/sample.jpg", tint: "strong", content: [{ type: "Heading", props: { id: "h1", text: `Header: ${layout}`, level: "h1", align: "left" } }] } };
+    await write(`header-v2-${layout}`, s, `Header v2 (${layout})`, [hero, ...sectionsV2Samples(looked).slice(1)] as Page["puck"]["content"], { linkedSections: new Map([["footer", footerSection]]) });
+  }
 }
 // F035: the blog's list page and a post, in every preset.
 const posts = [

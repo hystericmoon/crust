@@ -275,6 +275,8 @@ export function App() {
     return (
       // My layouts are here too: a theme pack can carry them (F033).
       <MyLayoutsProvider githubOn={!!githubOn}>
+        {/* F076: a footer built from blocks is a linked section. */}
+        <LinkedSectionsProvider githubOn={!!githubOn}>
         <SiteSettings
           headerLink={shortcut("st-button st-link-button")}
           site={site}
@@ -298,6 +300,7 @@ export function App() {
           templateLoader={githubOn ? githubLoader : bundledLoader}
           githubOn={githubOn === true}
         />
+        </LinkedSectionsProvider>
         <MediaPicker />
       </MyLayoutsProvider>
     );
