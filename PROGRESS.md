@@ -5,6 +5,12 @@ to "Log".
 
 ## Current
 
+- **2026-11-02: F075 and F076 merged to main** (PRs #61, #62; owner:
+  "Merge it" / "Merge it when green"). **F077 Icons, Divider, Social:
+  snapshot published** https://claude.ai/artifact/8o1uPhHmTBd9hgkzmx1pU2
+  (A recommended; build not started), on branch `f077-icons`. See
+  HANDOVER.md for the icon sources (Lucide ISC + Tabler MIT brands).
+
 - **F076 Header and footer v2: built, passes** (branch `f076-header-footer`,
   from main after F075 was merged as PR #61, owner: "Merge it").
   Snapshot https://claude.ai/artifact/MQpL3LHaxEQW9r3KsWEygz, A built.

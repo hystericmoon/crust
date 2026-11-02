@@ -5,29 +5,49 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 ~17:15 (Jakarta). **F075 Motion merged**
-(PR #61, owner: "Merge it"). **F076 Header and footer v2 built, passes**
-(branch `f076-header-footer` from main, PR open; DECISIONS "F076").
-Snapshot https://claude.ai/artifact/MQpL3LHaxEQW9r3KsWEygz (A built).
-How it fits: model in `packages/blocks/src/chrome-model.ts`
-(`headerLayouts`, `layoutOf`, `TopBar`/`defaultTopBar`, `contactHref`,
-`footerStarter`, menu `children` checks), views in `chrome.tsx`
-(`SiteHeaderView` layouts/split/panel, `MenuList` dropdowns,
-`TopBarView`, `DROPDOWN_SCRIPT`, `hasDropdowns`), CSS "Header and
-footer v2 (F076)" in styles.css (`--cr-header-room`), `heroStyle` in
-sections-v2.ts; render.tsx `footerHtml` (footer from a linked section;
-throws when missing, simple footer when no sections are given),
-`overHero`, header room, dropdown script. Admin: `settings/MenuEditor.tsx`
-(indent/outdent/move/remove), `ChromeGroups.tsx` (`LayoutPicker`,
-`TopBarFields`, `FooterKind`), Site settings wrapped in
-`LinkedSectionsProvider`, Preview passes linked sections, canvas shows a
-blocks footer (`chrome-canvas.tsx`). check:layouts writes
-`header-v2-<layout>` pages. F070–F076 need `reviewed: true`. F075 (motion) is described in DECISIONS "F075" and spec.md (`motion.ts`, `motionCss` added in `renderDocument`).
-**Next: F077 Icons, Divider, Social** (design snapshot first), on a new
-branch from main once F076's PR is merged (else stack on
-`f076-header-footer`). The owner starts sessions by hand (chain limit):
-"Read HANDOVER.md on branch main and continue" (or branch
-`f076-header-footer` if its PR isn't merged).
+Last updated: 2026-11-02 ~17:50 (Jakarta). **F076 Header and footer v2
+merged** (PR #62, owner: "Merge it when green"; a crust-desktop FTPS
+test broke off once in CI and passed on re-run, not this PR's).
+**F077 Icons, Divider, Social: design snapshot published, build not
+started.** Snapshot https://claude.ai/artifact/8o1uPhHmTBd9hgkzmx1pU2
+(`design/f077-icons-v1.html`). Recommended **A**: search + categories
+over a curated ~120 Lucide icons; Icon block (plain / circle / square
+badge, S/M/L, optional link that then needs a name); any icon in
+IconList (per list or per line), Card (icon instead of photo), Button
+(icon before/after); Divider block (line, short accent bar, line with a
+label, three dots; width and space; decorative ones aria-hidden, a
+labelled one is a separator); Social links block (paste profile URLs,
+network recognised from the host, icons only or with names, each link
+named "<site> on <network>", 44 px targets). The owner hasn't picked;
+build A unless he says otherwise.
+**Icon sources found:** `lucide-static@1.66.0` (ISC) has 2,292 icons
+but **no brand icons** (removed in v1). Social icons come from
+`@tabler/icons@3.50.0` (MIT), `icons/outline/brand-*.svg`: instagram,
+facebook, linkedin, youtube, x, tiktok, pinterest, threads, bluesky,
+mastodon, whatsapp, github, dribbble, behance, spotify, vimeo all exist
+(drop Tabler's `<path stroke="none" d="M0 0h24v24H0z" fill="none"/>`).
+Plan: a script `scripts/sync-icons.mjs` that `npm pack`s both, picks the
+curated names and writes `packages/blocks/src/icons-data.ts` (name,
+category, keywords, inner SVG), committed with a licence header; no
+runtime dependency (like `npm run fonts:sync` for F070). done_check:
+`npm test -- icons && npm run check:a11y` (name test files `icons*`).
+Next after F077: F078 Stats, Video, Table and Pricing, Numbered list.
+The owner starts sessions by hand (chain limit): "Read HANDOVER.md on
+branch f077-icons and continue" (the branch holds this note and the
+snapshot; F077 is built there).
+
+Earlier today (~17:15): F075 Motion merged (PR #61). F076 notes: model
+in `packages/blocks/src/chrome-model.ts` (`headerLayouts`, `layoutOf`,
+`TopBar`, `contactHref`, `footerStarter`, menu `children` checks), views
+in `chrome.tsx` (`SiteHeaderView`, `MenuList`, `TopBarView`,
+`DROPDOWN_SCRIPT`, `hasDropdowns`), CSS in `header-v2-css.ts`
+(`HEADER_V2_CSS`, added to published pages only when
+`needsHeaderV2Css`; the builder always has it), `heroStyle` in
+sections-v2.ts; render.tsx `footerHtml`, `overHero`,
+`--cr-header-room`. Admin: `settings/MenuEditor.tsx`,
+`ChromeGroups.tsx` (`LayoutPicker`, `TopBarFields`, `FooterKind`).
+F070–F076 need `reviewed: true`. F075 (motion): DECISIONS "F075",
+`motion.ts`, `motionCss` in `renderDocument`.
 
 Earlier (2026-11-02 13:10, Jakarta): **F070–F074 merged to main** (owner: "Merge em all"; PRs #54–#59, merge commits, in order). Start F075 on a new branch from main. PRs #53 (F062) and #45 (F053)
 **merged to main** (owner had said to merge). Then the owner said our
