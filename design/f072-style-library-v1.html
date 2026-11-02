@@ -1,0 +1,172 @@
+<title>F072 Style Library</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@300;400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;700;800&display=swap">
+
+<style>
+/* Layout: report column; the Styles screen drawn three ways; the recommended grid uses the real 12 looks */
+:root{--bg:#F2F3F1;--panel:#FFFFFF;--fg:#17191B;--muted:#5C6267;--line:#D9DCD8;--accent:#3949AB;--ui:"Schibsted Grotesk",ui-sans-serif,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--ui);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1160px;margin:0 auto;padding-block:48px 96px;display:grid;gap:56px}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.015em}h1{font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.05;font-weight:600}h2{font-size:1.5rem;font-weight:600}h3{font-size:1.05rem;font-weight:600}
+p{margin:0;max-width:70ch}.eyebrow{font:500 .75rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.lede{font-size:1.1rem;color:var(--muted)}
+section{display:grid;gap:18px}
+.dir{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:20px}
+.dir.rec{border:2px solid var(--accent)}
+.dirhead{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.tag{font:600 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--accent);color:var(--panel);padding:6px 10px;border-radius:4px}
+.why{color:var(--muted);font-size:.93rem}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:980px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:720px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:440px){.grid{grid-template-columns:1fr}}
+.look{border:1px solid var(--line);border-radius:10px;padding:8px;display:grid;gap:8px;background:var(--panel)}
+.look.on{border:2px solid var(--accent);padding:7px}
+.spec{display:grid;gap:6px;padding:14px;min-height:150px;align-content:end;border:1px solid rgba(0,0,0,.06)}
+.spec .lab{justify-self:start;font-size:9px;line-height:1;font-weight:500}
+.spec .dis{font-size:24px;line-height:1}
+.spec .bod{font-size:11px;line-height:1.35}
+.spec .btn{justify-self:start;font-size:11px;font-weight:500;padding:6px 11px;margin-top:4px}
+.meta{display:grid;gap:3px;padding:0 4px 4px;font-size:.85rem}
+.meta span,.meta small{color:var(--muted)}.meta small{font-size:.75rem}
+.sws{display:flex;gap:6px;margin-top:2px}.sw{width:18px;height:18px;border-radius:50%;border:1px solid var(--line)}.sw.on{outline:2px solid var(--accent);outline-offset:1px}
+.vars{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:720px){.vars{grid-template-columns:1fr}}
+.spec.big{min-height:200px;border-radius:10px;position:relative}.spec.big em{position:absolute;top:10px;right:12px;font:500 10px var(--mono);font-style:normal;opacity:.7}
+.listview{display:grid;grid-template-columns:200px 1fr;gap:12px;border:1px solid var(--line);border-radius:10px;overflow:hidden;min-height:220px}
+@media (max-width:600px){.listview{grid-template-columns:1fr}}
+.listview ul{list-style:none;margin:0;padding:8px;display:grid;gap:2px;align-content:start;background:color-mix(in srgb,var(--line) 30%,transparent)}
+.listview li{padding:6px 8px;border-radius:6px;font-size:.9rem}.listview li.on{background:var(--panel);font-weight:600}
+.big-prev{display:grid;place-items:center;color:var(--muted);font-size:.9rem;padding:16px;text-align:center}
+.quiz{display:grid;gap:10px;border:1px solid var(--line);border-radius:10px;padding:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chips span{border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:.88rem}.chips span.on{border-color:var(--accent);color:var(--accent)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:10px}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:.92rem;margin:0}.facts dt{color:var(--muted)}.facts dd{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+<main>
+<header style="display:grid;gap:14px">
+  <span class="eyebrow">Milestone 8 · F072 Style library · design sketch</span>
+  <h1>Twelve complete looks, each in three colourways</h1>
+  <p class="lede">A look sets everything from F070 and F071 at once: font pair, Display weight and spacing, label style, button shape and look, cards, links and corners. Colours come from one of three variations, one of them dark. All 36 pass every contrast check.</p>
+</header>
+
+<section aria-labelledby="dirs">
+  <span class="eyebrow">How you pick one in Site settings → Styles</span>
+  <h2 id="dirs">Three directions</h2>
+  <article class="dir rec">
+    <div class="dirhead"><span class="tag">Recommended</span><h3>A · A grid of looks, colourway dots on each card</h3></div>
+    <div class="grid"><article class="look on"><div class="spec" style="background:#F4F0E9;color:#1D1A16;border-radius:6px">
+<span class="lab" style="border:1px solid color-mix(in srgb, #1D1A16 30%, transparent);padding:4px 8px;border-radius:99px;font-family:'Geist Mono',monospace;letter-spacing:.1em;text-transform:uppercase">Architects</span>
+<span class="dis" style="font-family:'Fraunces';font-weight:300;letter-spacing:-0.05em">Quiet, well made</span>
+<span class="bod" style="font-family:'Inter Tight';color:#5E564C">Pages that feel finished from the start.</span>
+<span class="btn" style="background:#2F4A3A;color:#FFFFFF;border:1.5px solid #2F4A3A;border-radius:999px;font-family:'Inter Tight'">Get in touch</span></div><div class="meta"><b>Atelier</b><span>Architects, interiors, studios</span><div class="sws" aria-hidden="true"><span class="sw on" title="Stone" style="background:linear-gradient(135deg, #F4F0E9 50%, #2F4A3A 50%)"></span><span class="sw" title="Clay" style="background:linear-gradient(135deg, #F6EEE6 50%, #8A3B1E 50%)"></span><span class="sw" title="Night" style="background:linear-gradient(135deg, #171512 50%, #D9C7A7 50%)"></span></div><small>Stone · Clay · Night</small></div></article>
+<article class="look"><div class="spec" style="background:#0E0F11;color:#F2F2EF;border-radius:4px">
+<span class="lab" style="font-family:'Geist Mono',monospace;letter-spacing:.12em;text-transform:uppercase">Agencies</span>
+<span class="dis" style="font-family:'Geist';font-weight:400;letter-spacing:-0.05em">Quiet, well made</span>
+<span class="bod" style="font-family:'Geist';color:#A3A7AD">Pages that feel finished from the start.</span>
+<span class="btn" style="background:#F2F2EF;color:#0E0F11;border:1.5px solid #F2F2EF;border-radius:2px;font-family:'Geist'">Get in touch</span></div><div class="meta"><b>Studio</b><span>Agencies, product teams</span><div class="sws" aria-hidden="true"><span class="sw on" title="Carbon" style="background:linear-gradient(135deg, #0E0F11 50%, #F2F2EF 50%)"></span><span class="sw" title="Paper" style="background:linear-gradient(135deg, #FFFFFF 50%, #111214 50%)"></span><span class="sw" title="Signal" style="background:linear-gradient(135deg, #0E0F11 50%, #FF6B4A 50%)"></span></div><small>Carbon · Paper · Signal</small></div></article>
+<article class="look"><div class="spec" style="background:#FFFFFF;color:#141414;border-radius:0px">
+<span class="lab" style="font-family:'Instrument Sans'">Photographers</span>
+<span class="dis" style="font-family:'Instrument Serif';font-weight:400;letter-spacing:-0.03em">Quiet, well made</span>
+<span class="bod" style="font-family:'Instrument Sans';color:#5C5C5A">Pages that feel finished from the start.</span>
+<span class="btn" style="background:transparent;color:#141414;border:1.5px solid #141414;border-radius:2px;font-family:'Instrument Sans'">Get in touch</span></div><div class="meta"><b>Gallery</b><span>Photographers, artists</span><div class="sws" aria-hidden="true"><span class="sw on" title="White" style="background:linear-gradient(135deg, #FFFFFF 50%, #141414 50%)"></span><span class="sw" title="Linen" style="background:linear-gradient(135deg, #F3EFE7 50%, #1E1B17 50%)"></span><span class="sw" title="Black" style="background:linear-gradient(135deg, #0B0B0B 50%, #EDEDEA 50%)"></span></div><small>White · Linen · Black</small></div></article>
+<article class="look"><div class="spec" style="background:#FAF7F2;color:#1A1714;border-radius:0px">
+<span class="lab" style="letter-spacing:.08em;text-transform:uppercase;font-family:'Hanken Grotesk'">Fashion</span>
+<span class="dis" style="font-family:'Bodoni Moda';font-weight:400;letter-spacing:-0.04em">Quiet, well made</span>
+<span class="bod" style="font-family:'Hanken Grotesk';color:#5E5850">Pages that feel finished from the start.</span>
+<span class="btn" style="background:#1A1714;color:#FAF7F2;border:1.5px solid #1A1714;border-radius:2px;font-family:'Hanken Grotesk'">Get in touch</span></div><div class="meta"><b>Maison</b><span>Fashion, hotels, luxury</span><div class="sws" aria-hidden="true"><span class="sw on" title="Ivory" style="background:linear-gradient(135deg, #FAF7F2 50%, #1A1714 50%)"></span><span class="sw" title="Bordeaux" style="background:linear-gradient(135deg, #F7F1EE 50%, #6E1F2B 50%)"></span><span class="sw" title="Onyx" style="background:linear-gradient(135deg, #121110 50%, #CBB27C 50%)"></span></div><small>Ivory · Bordeaux · Onyx</small></div></article>
+<article class="look"><div class="spec" style="background:#FFF8EC;color:#1F1A2E;border-radius:12px">
+<span class="lab" style="border:1px solid color-mix(in srgb, #1F1A2E 30%, transparent);padding:4px 8px;border-radius:99px;font-family:'Geist Mono',monospace;letter-spacing:.1em;text-transform:uppercase">Startups</span>
+<span class="dis" style="font-family:'Bricolage Grotesque';font-weight:800;letter-spacing:-0.03em">Quiet, well made</span>
+<span class="bod" style="font-family:'Figtree';color:#5C5470">Pages that feel finished from the start.</span>
+<span class="btn" style="background:#5B3DF5;color:#FFFFFF;border:1.5px solid #5B3DF5;border-radius:999px;font-family:'Figtree'">Get in touch</span></div><div class="meta"><b>Playground</b><span>Startups, kids, community</span><div class="sws" aria-hidden="true"><span class="sw on" title="Sunny" style="background:linear-gradient(135deg, #FFF8EC 50%, #5B3DF5 50%)"></span><span class="sw" title="Mint" style="background:linear-gradient(135deg, #F1FBF6 50%, #0B7A4B 50%)"></span><span class="sw" title="Grape" style="background:linear-gradient(135deg, #17122B 50%, #FFC94A 50%)"></span></div><small>Sunny · Mint · Grape</small></div></article>
+<article class="look"><div class="spec" style="background:#FFFFFF;color:#0F1E33;border-radius:12px">
+<span class="lab" style="letter-spacing:.08em;text-transform:uppercase;font-family:'DM Sans'">Health</span>
+<span class="dis" style="font-family:'Plus Jakarta Sans';font-weight:700;letter-spacing:-0.03em">Quiet, well made</span>
+<span class="bod" style="font-family:'DM Sans';color:#4D5B70">Pages that feel finished from the start.</span>
+<span class="btn" style="background:#1559D6;color:#FFFFFF;border:1.5px solid #1559D6;border-radius:8px;font-family:'DM Sans'">Get in touch</span></div><div class="meta"><b>Clinic</b><span>Health, labs, care</span><div class="sws" aria-hidden="true"><span class="sw on" title="Clear" style="background:linear-gradient(135deg, #FFFFFF 50%, #1559D6 50%)"></span><span class="sw" title="Sage" style="background:linear-gradient(135deg, #FAFCFA 50%, #1E6B4A 50%)"></span><span class="sw" title="Navy" style="background:linear-gradient(135deg, #0D1A2D 50%, #7DB2FF 50%)"></span></div><small>Clear · Sage · Navy</small></div></article>
+<article class="look"><div class="spec" style="background:#FBF7EF;color:#2B2117;border-radius:6px">
+<span class="lab" style="font-family:'Lora'">Weddings</span>
+<span class="dis" style="font-family:'Cormorant Garamond';font-weight:500;letter-spacing:-0.02em">Quiet, well made</span>
+<span class="bod" style="font-family:'Lora';color:#66584A">Pages that feel finished from the start.</span>
+<span class="btn" style="background:transparent;color:#2B2117;border:1.5px solid #2B2117;border-radius:8px;font-family:'Lora'">Get in touch</span></div><div class="meta"><b>Heritage</b><span>Weddings, wineries, history</span><div class="sws" aria-hidden="true"><span class="sw on" title="Parchment" style="background:linear-gradient(135deg, #FBF7EF 50%, #6B4E2E 50%)"></span><span class="sw" title="Olive" style="background:linear-gradient(135deg, #F6F5EE 50%, #4F5A2A 50%)"></span><span class="sw" title="Cellar" style="background:linear-gradient(135deg, #1A1512 50%, #D8B98A 50%)"></span></div><small>Parchment · Olive · Cellar</small></div></article>
+<article class="look"><div class="spec" style="background:#FBFAF7;color:#161616;border-radius:2px">
+<span class="lab" style="letter-spacing:.08em;text-transform:uppercase;font-family:'Public Sans'">Writers</span>
+<span class="dis" style="font-family:'Newsreader';font-weight:400;letter-spacing:-0.04em">Quiet, well made</span>
+<span class="bod" style="font-family:'Public Sans';color:#555450">Pages that feel finished from the start.</span>
+<span class="btn" style="background:#B3261E;color:#FFFFFF;border:1.5px solid #B3261E;border-radius:2px;font-family:'Public Sans'">Get in touch</span></div><div class="meta"><b>Journal</b><span>Writers, magazines, newsletters</span><div class="sws" aria-hidden="true"><span class="sw on" title="Newsprint" style="background:linear-gradient(135deg, #FBFAF7 50%, #B3261E 50%)"></span><span class="sw" title="Ink" style="background:linear-gradient(135deg, #FFFFFF 50%, #1D3F8F 50%)"></span><span class="sw" title="Midnight" style="background:linear-gradient(135deg, #111317 50%, #F2A490 50%)"></span></div><small>Newsprint · Ink · Midnight</small></div></article>
+<article class="look"><div class="spec" style="background:#F7F9FA;color:#132029;border-radius:8px">
+<span class="lab" style="font-family:'Geist Mono',monospace;letter-spacing:.12em;text-transform:uppercase">Consultants</span>
+<span class="dis" style="font-family:'Schibsted Grotesk';font-weight:500;letter-spacing:-0.04em">Quiet, well made</span>
+<span class="bod" style="font-family:'Schibsted Grotesk';color:#4D5C66">Pages that feel finished from the start.</span>
+<span class="btn" style="background:#1F5F7A;color:#FFFFFF;border:1.5px solid #1F5F7A;border-radius:8px;font-family:'Schibsted Grotesk'">Get in touch</span></div><div class="meta"><b>Nordic</b><span>Consultants, architects, NGOs</span><div class="sws" aria-hidden="true"><span class="sw on" title="Fjord" style="background:linear-gradient(135deg, #F7F9FA 50%, #1F5F7A 50%)"></span><span class="sw" title="Birch" style="background:linear-gradient(135deg, #FAFAF7 50%, #2E2F2A 50%)"></span><span class="sw" title="Polar" style="background:linear-gradient(135deg, #0F161B 50%, #8CCBE6 50%)"></span></div><small>Fjord · Birch · Polar</small></div></article>
+<article class="look"><div class="spec" style="background:#0B0D12;color:#EEF1F7;border-radius:12px">
+<span class="lab" style="font-family:'Geist Mono',monospace;letter-spacing:.12em;text-transform:uppercase">Software</span>
+<span class="dis" style="font-family:'Space Grotesk';font-weight:500;letter-spacing:-0.05em">Quiet, well made</span>
+<span class="bod" style="font-family:'Inter Tight';color:#A3ABBD">Pages that feel finished from the start.</span>
+<span class="btn" style="background:#9B8CFF;color:#0B0D12;border:1.5px solid #9B8CFF;border-radius:999px;font-family:'Inter Tight'">Get in touch</span></div><div class="meta"><b>Launch</b><span>Software, apps, tech</span><div class="sws" aria-hidden="true"><span class="sw on" title="Orbit" style="background:linear-gradient(135deg, #0B0D12 50%, #9B8CFF 50%)"></span><span class="sw" title="Daylight" style="background:linear-gradient(135deg, #FFFFFF 50%, #4B3BDB 50%)"></span><span class="sw" title="Lime" style="background:linear-gradient(135deg, #0B0D0C 50%, #C6F36B 50%)"></span></div><small>Orbit · Daylight · Lime</small></div></article>
+<article class="look"><div class="spec" style="background:#FBF4E4;color:#1F2340;border-radius:10px">
+<span class="lab" style="letter-spacing:.08em;text-transform:uppercase;font-family:'Work Sans'">Restaurants</span>
+<span class="dis" style="font-family:'Young Serif';font-weight:400;letter-spacing:-0.03em">Quiet, well made</span>
+<span class="bod" style="font-family:'Work Sans';color:#575A70">Pages that feel finished from the start.</span>
+<span class="btn" style="background:#1F2340;color:#FBF4E4;border:1.5px solid #1F2340;border-radius:999px;font-family:'Work Sans'">Get in touch</span></div><div class="meta"><b>Bistro</b><span>Restaurants, cafés, bakeries</span><div class="sws" aria-hidden="true"><span class="sw on" title="Cream" style="background:linear-gradient(135deg, #FBF4E4 50%, #1F2340 50%)"></span><span class="sw" title="Tomato" style="background:linear-gradient(135deg, #FFF6EF 50%, #B8341B 50%)"></span><span class="sw" title="Espresso" style="background:linear-gradient(135deg, #1B1411 50%, #E9B872 50%)"></span></div><small>Cream · Tomato · Espresso</small></div></article>
+<article class="look"><div class="spec" style="background:#FCF5F3;color:#2A1B1C;border-radius:12px">
+<span class="lab" style="border:1px solid color-mix(in srgb, #2A1B1C 30%, transparent);padding:4px 8px;border-radius:99px;font-family:'Geist Mono',monospace;letter-spacing:.1em;text-transform:uppercase">Shops</span>
+<span class="dis" style="font-family:'Playfair Display';font-weight:400;letter-spacing:-0.03em">Quiet, well made</span>
+<span class="bod" style="font-family:'Manrope';color:#6A5556">Pages that feel finished from the start.</span>
+<span class="btn" style="background:#8C3B4A;color:#FFFFFF;border:1.5px solid #8C3B4A;border-radius:999px;font-family:'Manrope'">Get in touch</span></div><div class="meta"><b>Boutique</b><span>Shops, beauty, florists</span><div class="sws" aria-hidden="true"><span class="sw on" title="Blush" style="background:linear-gradient(135deg, #FCF5F3 50%, #8C3B4A 50%)"></span><span class="sw" title="Sand" style="background:linear-gradient(135deg, #FAF6EF 50%, #5A4632 50%)"></span><span class="sw" title="Velvet" style="background:linear-gradient(135deg, #1A1216 50%, #E8A7B7 50%)"></span></div><small>Blush · Sand · Velvet</small></div></article></div>
+    <p class="why"><b>Why:</b> each card is a small piece of a real page in that look's own fonts and colours, so you compare looks by seeing them, not by reading names (recognition over recall). Twelve fit on one screen, which avoids choice overload better than a long list. The dots switch colourway in place. The live preview beside Site settings shows your own Home page, and Undo brings back your previous look. This is how YOOtheme's Style Library and Squarespace's site styles work.</p>
+  </article>
+  <article class="dir">
+    <div class="dirhead"><h3>B · A list of names and one big preview</h3></div>
+    <div class="listview"><ul><li class="on">Atelier</li><li>Studio</li><li>Gallery</li><li>Maison</li><li>Playground</li><li>…</li></ul><div class="big-prev">Your Home page, large, in the selected look</div></div>
+    <p class="why">The large preview is nice, but you only see one look at a time, so comparing means clicking through all twelve and remembering them.</p>
+  </article>
+  <article class="dir">
+    <div class="dirhead"><h3>C · Three questions, then three suggestions</h3></div>
+    <div class="quiz"><span>What kind of site is it?</span><div class="chips"><span class="on">Studio or agency</span><span>Shop</span><span>Restaurant</span><span>Health</span><span>Writer</span></div><span>Light or dark?</span><div class="chips"><span class="on">Light</span><span>Dark</span></div></div>
+    <p class="why">Friendly for a first site, but it hides most looks, and you can't browse. It would make a good addition to the first-run screen later, not a replacement for the grid.</p>
+  </article>
+</section>
+
+<section aria-labelledby="var">
+  <span class="eyebrow">Colourways</span>
+  <h2 id="var">Atelier's three variations</h2>
+  <div class="vars"><div class="spec big" style="background:#F4F0E9;color:#1D1A16"><span class="lab" style="border:1px solid color-mix(in srgb, #1D1A16 30%, transparent);padding:4px 8px;border-radius:99px;font-family:'Geist Mono',monospace;letter-spacing:.1em;text-transform:uppercase">Architecture studio</span><span class="dis" style="font-family:'Fraunces';font-weight:300;letter-spacing:-.05em;font-size:30px">Rooms that stay calm</span><span class="bod" style="font-family:'Inter Tight';color:#5E564C">Houses, studios and public rooms.</span><span class="btn" style="background:#2F4A3A;color:#FFFFFF;border-radius:999px;font-family:'Inter Tight'">See the work</span><em>Stone</em></div><div class="spec big" style="background:#F6EEE6;color:#2A1D15"><span class="lab" style="border:1px solid color-mix(in srgb, #2A1D15 30%, transparent);padding:4px 8px;border-radius:99px;font-family:'Geist Mono',monospace;letter-spacing:.1em;text-transform:uppercase">Architecture studio</span><span class="dis" style="font-family:'Fraunces';font-weight:300;letter-spacing:-.05em;font-size:30px">Rooms that stay calm</span><span class="bod" style="font-family:'Inter Tight';color:#6A5245">Houses, studios and public rooms.</span><span class="btn" style="background:#8A3B1E;color:#FFFFFF;border-radius:999px;font-family:'Inter Tight'">See the work</span><em>Clay</em></div><div class="spec big" style="background:#171512;color:#F2EDE4"><span class="lab" style="border:1px solid color-mix(in srgb, #F2EDE4 30%, transparent);padding:4px 8px;border-radius:99px;font-family:'Geist Mono',monospace;letter-spacing:.1em;text-transform:uppercase">Architecture studio</span><span class="dis" style="font-family:'Fraunces';font-weight:300;letter-spacing:-.05em;font-size:30px">Rooms that stay calm</span><span class="bod" style="font-family:'Inter Tight';color:#B8AE9F">Houses, studios and public rooms.</span><span class="btn" style="background:#D9C7A7;color:#1A1612;border-radius:999px;font-family:'Inter Tight'">See the work</span><em>Night</em></div></div>
+</section>
+
+<section class="panel" aria-labelledby="how">
+  <h2 id="how">How it works</h2>
+  <dl class="facts">
+    <dt>Applying</dt><dd>Sets colours, font pair, type and detail options, button shape and look, cards, links and corner radius. Spacing, page width, your pages and your header menu stay as they are. Undo brings back the previous look.</dd>
+    <dt>After</dt><dd>Change anything afterwards, such as one colour or a font. The card then shows "Changed from Atelier".</dd>
+    <dt>The old presets</dt><dd>The 9 colour presets leave the screen. Sites using one keep their look.</dd>
+    <dt>Accessibility</dt><dd>Every colourway passes all seven contrast pairs and the section style checks. The cards are buttons with their name as the label, and the colourway dots are a labelled radio group, so they work by keyboard and screen reader.</dd>
+  </dl>
+</section>
+</main>

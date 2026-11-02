@@ -106,7 +106,9 @@ F071 adds `displayWeight`, `displayTracking` and `labelStyle` (`plain`,
 `tightest`. A Heading block may carry `size` (`"display"`) and
 `eyebrow` (a small label above it); a Button's `variant` may be
 `"soft"` or `"arrow"`; a Card may carry `layout: "cover"` (the photo
-fills the card).
+fills the card). The style library (F072, Site settings → Styles)
+writes only these ordinary tokens (fonts, colours, `style`,
+`sectionStyles`, `radius`); no look id is stored.
 
 Any block's props may carry `hideOn` (optional, added with F029): a list of
 `"desktop"`, `"tablet"`, `"phone"`. A Columns block may carry `widths`

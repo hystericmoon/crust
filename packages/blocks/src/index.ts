@@ -211,3 +211,6 @@ export {
   unmarkPlaceholder,
 } from "./placeholders";
 export type { MarkableField, Placeholder, PlaceholderKind } from "./placeholders";
+
+export { applyLook, findLook, lookFonts, lookHeadingFont, matchingLook, styleLooks } from "./style-library";
+export type { LookVariation, StyleLook } from "./style-library";

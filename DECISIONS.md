@@ -252,6 +252,37 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-02 — F072 Style library (Claude, reversible)
+
+- Snapshot https://claude.ai/artifact/GaX1QoHvVTp8S3bU1ybxsa
+  (`design/f072-style-library-v1.html`): A a grid of looks with
+  colourway dots on each card (built); B a list of names with one big
+  preview; C three questions, then three suggestions. A lets the owner
+  compare looks side by side (recognition over recall), and each card is
+  drawn in its own fonts, colours, label and button, so it previews
+  honestly. B shows one look at a time; C hides most looks.
+- 12 looks × 3 colourways in `packages/blocks/src/style-library.ts`.
+  A look sets the font pair, the F028/F071 style options, the main
+  button look, the corner radius, colours and section styles. It leaves
+  spacing, page width and pages alone. All 36 colourways pass the
+  contrast checks and raise no section-style warnings (tests).
+- **No format change:** `applyLook` writes ordinary tokens;
+  `matchingLook` finds which look and colourway the tokens match, so
+  the current card is marked without storing a look id.
+- Looks replace the 9 colour presets in Site settings (group "presets"
+  now labelled "Styles"). `themePresets` stays in code for older sites
+  and the tests that use it; nothing stored refers to it.
+- Header style per look is left out: it comes with F076 (header
+  styles), so the looks don't promise a header we can't draw yet.
+- "Undo style" keeps the tokens from before the *first* look picked in
+  this visit, even after several picks, so trying looks one after
+  another is always one step from where you started. It restores
+  colours, fonts, style options, section styles and radius.
+- Colourway dots are 24 px round radio buttons with 8 px gaps (WCAG
+  2.5.8); each has its colourway's name as label; the selected one has a
+  2 px outline. Their classes are `.st-cw*`, because `.st-swatch` already
+  styles the colour picker and made the dots square.
+
 ## 2026-11-02 — F071 Type and detail styles (Claude, reversible)
 
 - Snapshot https://claude.ai/artifact/H3pscypcAov3mFHwoMHAHS

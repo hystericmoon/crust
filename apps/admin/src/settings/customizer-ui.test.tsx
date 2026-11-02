@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-import { applyPreset, defaultTokens, themePresets, type Page, type Site, type SiteTokens } from "@crust/blocks";
+import { applyLook, defaultTokens, findLook, type Page, type Site, type SiteTokens } from "@crust/blocks";
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { useState } from "react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
@@ -40,7 +40,7 @@ describe("customizer: one group at a time", () => {
     setup();
     const nav = screen.getByRole("navigation", { name: "Style groups" });
     expect(within(nav).getAllByRole("button").map((b) => b.textContent)).toEqual([
-      "Presets",
+      "Styles",
       "Colours",
       "Typography",
       "Buttons",
@@ -55,7 +55,7 @@ describe("customizer: one group at a time", () => {
       "Template",
       "Site address",
     ]);
-    expect(within(nav).getByRole("button", { name: "Presets" }).getAttribute("aria-current")).toBe("true");
+    expect(within(nav).getByRole("button", { name: "Styles" }).getAttribute("aria-current")).toBe("true");
     openGroup("Buttons");
     expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Buttons"]);
     expect(within(nav).getByRole("button", { name: "Buttons" }).getAttribute("aria-current")).toBe("true");
@@ -134,23 +134,39 @@ describe("customizer: the new options", () => {
   });
 });
 
-describe("customizer: presets", () => {
+describe("customizer: style library (F072)", () => {
   it("applies the whole look and one Undo takes it all back", () => {
     setup();
     act(() => fireEvent.click(screen.getByRole("button", { name: /^Studio/ })));
-    expect(latest.style?.buttonShape).toBe("pill");
-    expect(latest.colors.primary).toBe("#6D28D9");
+    const studio = findLook("studio")!;
+    expect(latest.colors).toEqual(studio.variations[0]!.colors);
+    expect(latest.style?.buttonShape).toBe("square");
+    expect(latest.radius).toBe(4);
     expect(screen.getByRole("button", { name: /^Studio/ }).getAttribute("aria-pressed")).toBe("true");
-    act(() => fireEvent.click(screen.getByRole("button", { name: "Undo preset (Studio)" })));
+    act(() => fireEvent.click(screen.getByRole("button", { name: "Undo style (Studio Carbon)" })));
     expect(latest.colors).toEqual(defaultTokens.colors);
     expect(latest.style).toBeUndefined();
     expect(latest.sectionStyles).toBeUndefined();
+    expect(latest.radius).toBe(defaultTokens.radius);
   });
 
-  it("shows all 9 presets", () => {
-    setup(applyPreset(defaultTokens, themePresets.at(-1)!));
-    const list = screen.getByRole("region", { name: "Presets" });
-    expect(within(list).getAllByRole("button").filter((b) => b.hasAttribute("aria-pressed"))).toHaveLength(9);
-    expect(within(list).getByRole("button", { name: /^Night/ }).getAttribute("aria-pressed")).toBe("true");
+  it("shows all 12 looks with three colourways each, the current one checked", () => {
+    const night = findLook("atelier")!;
+    setup(applyLook(defaultTokens, night, night.variations[2]));
+    const list = screen.getByRole("region", { name: "Styles" });
+    expect(within(list).getAllByRole("button").filter((b) => b.hasAttribute("aria-pressed"))).toHaveLength(12);
+    expect(within(list).getByRole("button", { name: /^Atelier/ }).getAttribute("aria-pressed")).toBe("true");
+    const dots = within(list).getByRole("radiogroup", { name: "Atelier colourway" });
+    expect(within(dots).getAllByRole("radio").map((r) => r.getAttribute("aria-label"))).toEqual(["Stone", "Clay", "Night"]);
+    expect(within(dots).getByRole("radio", { name: "Night" }).getAttribute("aria-checked")).toBe("true");
+  });
+
+  it("switches colourway in place", () => {
+    setup();
+    const dots = screen.getByRole("radiogroup", { name: "Bistro colourway" });
+    act(() => fireEvent.click(within(dots).getByRole("radio", { name: "Espresso" })));
+    expect(latest.colors).toEqual(findLook("bistro")!.variations[2]!.colors);
+    expect(screen.getByRole("status").textContent).toMatch(/^Bistro, Espresso applied/);
   });
 });
+

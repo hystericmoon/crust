@@ -28,9 +28,12 @@ import {
   type Site,
   type SiteTokens,
   type SpacingStep,
-  applyPreset,
-  matchingPreset,
-  themePresets,
+  applyLook,
+  lookFonts,
+  matchingLook,
+  styleLooks,
+  type LookVariation,
+  type StyleLook,
 } from "@crust/blocks";
 import { useCallback, useEffect, useId, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import { sectionStyleIds, sectionStyleNames } from "@crust/blocks";
@@ -77,7 +80,7 @@ export interface SiteSettingsProps {
 
 /** Direction A (F028): one group at a time, beside the live preview. */
 export const groups = [
-  { id: "presets", label: "Presets" },
+  { id: "presets", label: "Styles" },
   { id: "colours", label: "Colours" },
   { id: "typography", label: "Typography" },
   { id: "buttons", label: "Buttons" },
@@ -263,59 +266,39 @@ export function SiteSettings({
 
         <main className="st-form">
           <section className="st-card" id="presets" aria-labelledby="presets-h" hidden={group !== "presets"}>
-            <h2 id="presets-h" tabIndex={-1}>Presets</h2>
+            <h2 id="presets-h" tabIndex={-1}>Styles</h2>
             <p className="st-lede">
-              A complete look: colours, fonts, headings, buttons, cards and links. Spacing, corners and page width stay as they
-              are, and every preset passes the contrast checks.
+              A complete look: fonts, headings, labels, buttons, cards, links and corners, in one of three colourways. Spacing,
+              page width and your pages stay as they are. Every colourway passes the contrast checks.
             </p>
-            <ul className="st-presets">
-              {themePresets.map((preset) => {
-                const current = matchingPreset(draft)?.id === preset.id;
-                return (
-                  <li key={preset.id}>
-                    <button
-                      type="button"
-                      className="st-preset"
-                      aria-pressed={current}
-                      onClick={() => {
-                        if (current) return;
-                        setBeforePreset({ tokens: draft, name: preset.name });
-                        onChange(applyPreset(draft, preset));
-                        setStatus(`${preset.name} applied. Use "Undo preset" to go back.`);
-                      }}
-                    >
-                      <span className="st-preset-swatches" aria-hidden="true">
-                        {(["background", "surface", "text", "primary"] as const).map((role) => (
-                          <span key={role} style={{ background: preset.colors[role] }} />
-                        ))}
-                      </span>
-                      <span className="st-preset-name" style={{ fontFamily: preset.fonts.heading }}>
-                        {preset.name}
-                      </span>
-                      <span className="st-help">{preset.description}</span>
-                      {current ? <span className="st-current">Current</span> : null}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
+            <StyleLibrary
+              tokens={draft}
+              onPick={(look, variation) => {
+                const now = matchingLook(draft);
+                if (now?.look.id === look.id && now.variation.id === variation.id) return;
+                if (!beforePreset) setBeforePreset({ tokens: draft, name: `${look.name} ${variation.name}` });
+                else setBeforePreset({ ...beforePreset, name: `${look.name} ${variation.name}` });
+                onChange(applyLook(draft, look, variation));
+                setStatus(`${look.name}, ${variation.name} applied. Use "Undo style" to go back.`);
+              }}
+            />
             {beforePreset ? (
               <button
                 type="button"
                 className="st-button st-undo"
                 onClick={() => {
                   const before = beforePreset.tokens;
-                  onChange({ ...draft, colors: before.colors, fonts: before.fonts, style: before.style, sectionStyles: before.sectionStyles });
+                  onChange({ ...draft, colors: before.colors, fonts: before.fonts, style: before.style, sectionStyles: before.sectionStyles, radius: before.radius });
                   setStatus(`Undid ${beforePreset.name}. The look is back to what it was.`);
                   setBeforePreset(null);
-                  // F069 (WCAG 2.4.3): this button goes away; focus the preset that is current again, or the heading.
+                  // F069 (WCAG 2.4.3): this button goes away; focus the look that is current again, or the heading.
                   setTimeout(() => {
-                    const back = document.querySelector<HTMLElement>("#presets .st-preset[aria-pressed='true']") ?? document.getElementById("presets-h");
+                    const back = document.querySelector<HTMLElement>("#presets .st-look[aria-pressed='true']") ?? document.getElementById("presets-h");
                     back?.focus();
                   }, 0);
                 }}
               >
-                Undo preset ({beforePreset.name})
+                Undo style ({beforePreset.name})
               </button>
             ) : null}
           </section>
@@ -674,6 +657,82 @@ function ContrastPanel({
         })}
       </ul>
     </section>
+  );
+}
+
+/** F072: the Style library: a card per look (set in its own fonts and colours) and its three colourways. */
+function StyleLibrary({ tokens, onPick }: { tokens: SiteTokens; onPick: (look: StyleLook, variation: LookVariation) => void }) {
+  useFontPreviews();
+  const current = matchingLook(tokens);
+  const track = { tightest: "-0.05em", tighter: "-0.04em", tight: "-0.03em", snug: "-0.02em", normal: "0", wide: "0.02em" } as const;
+  const shape = { square: "2px", rounded: "8px", pill: "999px" } as const;
+  return (
+    <ul className="st-looks">
+      {styleLooks.map((look) => {
+        const on = current?.look.id === look.id;
+        const shown = on ? current!.variation : look.variations[0]!;
+        const col = shown.colors;
+        const fonts = lookFonts(look);
+        const mono = look.style.labelStyle === "mono" || look.style.labelStyle === "chip";
+        return (
+          <li key={look.id} className="st-look-item">
+            {/* Visible name and "suits" line are the button's name (WCAG 2.5.3); the specimen is decoration. */}
+            <button type="button" className="st-look" aria-pressed={on} onClick={() => onPick(look, shown)}>
+              <span className="st-look-spec" aria-hidden="true" style={{ background: col.background, color: col.text, borderRadius: Math.min(look.radius, 12) }}>
+                <span
+                  className={look.style.labelStyle === "chip" ? "st-look-label is-chip" : "st-look-label"}
+                  style={{
+                    fontFamily: mono ? "'Geist Mono', ui-monospace, monospace" : fonts.body,
+                    textTransform: look.style.labelStyle === "plain" ? "none" : "uppercase",
+                  }}
+                >
+                  {look.suits.split(",")[0]}
+                </span>
+                <span className="st-look-display" style={{ fontFamily: fonts.heading, fontWeight: look.style.displayWeight, letterSpacing: track[look.style.displayTracking] }}>
+                  Quiet, well made
+                </span>
+                <span className="st-look-body" style={{ fontFamily: fonts.body, color: col.muted }}>
+                  Pages that feel finished.
+                </span>
+                <span
+                  className="st-look-btn"
+                  style={{
+                    fontFamily: fonts.body,
+                    borderRadius: shape[look.style.buttonShape],
+                    ...(look.buttonLook === "outline"
+                      ? { background: "transparent", color: col.text, borderColor: col.text }
+                      : { background: col.primary, color: col.onPrimary, borderColor: col.primary }),
+                  }}
+                >
+                  Get in touch
+                </span>
+              </span>
+              <span className="st-look-name">{look.name}</span>
+              <span className="st-look-suits">{look.suits}</span>
+            </button>
+            <div className="st-cws" role="radiogroup" aria-label={`${look.name} colourway`}>
+              {look.variations.map((v) => {
+                const checked = on && current!.variation.id === v.id;
+                return (
+                  <button
+                    key={v.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={checked}
+                    aria-label={v.name}
+                    title={v.name}
+                    className="st-cw"
+                    style={{ background: `linear-gradient(135deg, ${v.colors.background} 50%, ${v.colors.primary} 50%)` }}
+                    onClick={() => onPick(look, v)}
+                  />
+                );
+              })}
+              <span className="st-cw-name" aria-hidden="true">{on ? current!.variation.name : look.variations.map((v) => v.name).join(" · ")}</span>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
