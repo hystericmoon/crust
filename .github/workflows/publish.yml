@@ -101,10 +101,19 @@ jobs:
           TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
         run: npm run render
 
+      # F081: each photo's resized and AVIF/WebP copies are kept between
+      # publishes, so only new or changed photos are encoded.
+      - name: Photo copies from the last publish
+        uses: actions/cache@v4
+        with:
+          path: .crust-cache/photos
+          key: photos-v1-${{ hashFiles('content/media/**') }}
+          restore-keys: photos-v1-
+
       - name: Check and finish the site (crust-publish)
         env:
           BASE_URL: ${{ steps.site.outputs.url }}
-        run: cargo run -q -p crust-publish -- dist/site --base-url "$BASE_URL" --redirects content/redirects.json --media content/media --fonts packages/blocks/fonts
+        run: cargo run -q -p crust-publish -- dist/site --base-url "$BASE_URL" --redirects content/redirects.json --media content/media --photo-cache .crust-cache/photos --fonts packages/blocks/fonts
 
       - name: Build the site search index (Pagefind)
         run: npx pagefind --site dist/site

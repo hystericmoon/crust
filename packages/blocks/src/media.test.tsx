@@ -126,13 +126,16 @@ describe("published images (F034)", () => {
     expect(render(<Img src="javascript:alert(1)" alt="A" loading="lazy" />)).toBe('<img src="#" alt="A" loading="lazy"/>');
   });
 
-  it("small photos get no srcset, only their size", () => {
+  it("small photos get no srcset, only their size (and, F081, their AVIF/WebP copies)", () => {
     const small = new Map([["s.png", { ...item, file: "s.png", width: 300, height: 100 }]]);
     const html = renderToStaticMarkup(
       <MediaContext.Provider value={small}>
         <Img src="/media/s.png" alt="Logo" loading="lazy" />
       </MediaContext.Provider>,
     );
-    expect(html).toBe('<img src="/media/s.png" width="300" height="100" alt="Logo" loading="lazy"/>');
+    expect(html).toBe(
+      '<picture class="cr-picture"><source type="image/avif" srcSet="/media/s.png.avif"/><source type="image/webp" srcSet="/media/s.png.webp"/>' +
+        '<img src="/media/s.png" width="300" height="100" alt="Logo" loading="lazy"/></picture>',
+    );
   });
 });

@@ -10,7 +10,7 @@ import type { Data } from "@puckeditor/core";
 import { validateChrome, type SiteChrome, type SiteFooter, type SiteHeader } from "./chrome-model";
 import { checkContrast, formatRatio } from "./contrast";
 import { checkSectionContent, checkSectionName, isValidSectionId, linkedSectionIds, type LinkedSectionFile } from "./linked-sections";
-import { mediaFileOf, mediaLimits, mediaTypes, mediaUsedIn, MAX_EDGE, sniffImage, type MediaExt } from "./media";
+import { mediaFileOf, mediaFocus, mediaLimits, mediaTypes, mediaUsedIn, MAX_EDGE, sniffImage, type MediaExt } from "./media";
 import { checkBlog, checkPost, isBlogPath, isSearchPath, type BlogSettings, type Post } from "./posts";
 import { richTextProblems } from "./rich-text";
 import { sectionStyleWarnings } from "./section-styles";
@@ -48,6 +48,8 @@ export interface TemplatePhoto {
   height: number;
   /** The photo itself, base64. */
   data: string;
+  /** F081: the photo's focal point, when it isn't the middle. */
+  focus?: { x: number; y: number };
 }
 
 export interface Template {
@@ -81,7 +83,7 @@ export interface TemplateSource {
   blog: BlogSettings;
   posts: Post[];
   /** The photo library; only photos the template uses are fetched and kept. */
-  media: { file: string; alt: string; width: number; height: number }[];
+  media: { file: string; alt: string; width: number; height: number; focus?: { x: number; y: number } }[];
 }
 
 /** The photos (file names) a template's pages, posts, sections, layouts and header use. */
@@ -113,7 +115,7 @@ export async function makeTemplate(
     const item = library.get(file);
     const data = item ? await photo(file) : null;
     if (!item || !data) missing.push(file);
-    else media.push({ file, alt: item.alt, width: item.width, height: item.height, data });
+    else media.push({ file, alt: item.alt, width: item.width, height: item.height, data, ...(item.focus ? { focus: item.focus } : {}) });
   }
   const template: Template = {
     format: TEMPLATE_FORMAT,
@@ -229,7 +231,8 @@ export function readTemplatePhoto(m: unknown): TemplatePhoto | string {
   if (bytes.length > mediaLimits.uploadBytes) return `${label} is bigger than ${mediaLimits.uploadBytes / 1024 / 1024} MB.`;
   if (sniffed.width > MAX_EDGE || sniffed.height > MAX_EDGE) return `${label} is bigger than ${MAX_EDGE} pixels.`;
   if (!alt) return `${label} needs a description (alt text).`;
-  return { file, alt, width: sniffed.width, height: sniffed.height, data: (m as { data: string }).data };
+  const focus = mediaFocus((m as { focus?: unknown }).focus);
+  return { file, alt, width: sniffed.width, height: sniffed.height, data: (m as { data: string }).data, ...(focus ? { focus } : {}) };
 }
 
 /**

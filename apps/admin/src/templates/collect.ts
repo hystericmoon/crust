@@ -25,7 +25,7 @@ export interface TemplateLoader {
   pages: () => Promise<TemplatePage[]>;
   sections: () => Promise<Pick<LinkedSectionFile, "id" | "name" | "content">[]>;
   blog: () => Promise<{ blog: BlogSettings; posts: Post[] }>;
-  media: () => Promise<Pick<MediaItem, "file" | "alt" | "width" | "height">[]>;
+  media: () => Promise<Pick<MediaItem, "file" | "alt" | "width" | "height" | "focus">[]>;
   /** One photo's bytes as base64; null when it can't be read. */
   photo: (file: string) => Promise<string | null>;
 }

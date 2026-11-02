@@ -128,6 +128,7 @@ fn content_type(file: &Path) -> &'static str {
         Some("jpg" | "jpeg") => "image/jpeg",
         Some("png") => "image/png",
         Some("webp") => "image/webp",
+        Some("avif") => "image/avif",
         Some("svg") => "image/svg+xml",
         Some("wasm") => "application/wasm",
         _ => "application/octet-stream",

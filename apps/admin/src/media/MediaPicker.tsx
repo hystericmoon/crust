@@ -1,14 +1,16 @@
 /**
  * "Choose an image" (F034, direction A): one dialog for every image field.
  * Upload (button or drop), search, a grid of photos and a details pane where
- * the alt text is required before a photo can be used.
+ * the alt text is required before a photo can be used. F081: the details
+ * pane also sets the photo's focal point (FocusPicker).
  *
  * Mounted once in the app; image fields open it with openMediaPicker().
  */
 import { formatBytes, mediaFileOf, mediaSrc, type MediaItem } from "@crust/blocks";
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { ACCEPT } from "./shrink";
-import { addPhoto, describePhoto, loadMedia, removePhoto, useMedia } from "./store";
+import { CENTRE, FocusPicker, sameFocus, type Focus } from "./FocusPicker";
+import { addPhoto, describePhoto, loadMedia, removePhoto, savePhotoDetails, useMedia } from "./store";
 
 export interface PickRequest {
   /** The field's current address, to start on that photo. */
@@ -54,6 +56,8 @@ export function MediaPicker() {
   const [selected, setSelected] = useState<string | null>(null);
   // Alt text being typed, for one photo; any other photo shows its saved alt text.
   const [draft, setDraft] = useState<{ file: string; alt: string; touched: boolean } | null>(null);
+  // F081: the focal point being picked, for one photo.
+  const [focusDraft, setFocusDraft] = useState<{ file: string; focus: Focus } | null>(null);
   const [busy, setBusy] = useState<string>("");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
@@ -90,6 +94,20 @@ export function MediaPicker() {
   const usedOn = item ? (media.usage[item.file] ?? []) : [];
   const altMissing = !alt.trim();
   const altChanged = !!item && alt.trim() !== item.alt;
+  const focus = item && focusDraft?.file === item.file ? focusDraft.focus : (item?.focus ?? CENTRE);
+  const focusChanged = !!item && !sameFocus(focus, item.focus);
+  const setFocus = (f: Focus) => item && setFocusDraft({ file: item.file, focus: f });
+
+  /** Saves what changed: alt text, focal point or both (one commit). */
+  const saveChanges = async (): Promise<boolean> => {
+    if (!item) return false;
+    setBusy("Saving…");
+    const res = focusChanged ? await savePhotoDetails(item.file, altChanged ? alt.trim() : item.alt, sameFocus(focus, CENTRE) ? null : focus) : await describePhoto(item.file, alt.trim());
+    setBusy("");
+    if (!res.ok) setErrors([res.error]);
+    else if (focusChanged) setFocusDraft(null);
+    return res.ok;
+  };
   const uploadsOff = media.status === "off";
 
   const close = () => dialog.current?.close();
@@ -134,28 +152,20 @@ export function MediaPicker() {
       altInput.current?.focus();
       return;
     }
-    if (altChanged) {
-      setBusy("Saving alt text…");
-      const res = await describePhoto(item.file, alt.trim());
-      setBusy("");
-      if (!res.ok) {
-        setErrors([res.error]);
-        return;
-      }
-    }
+    if ((altChanged || focusChanged) && !(await saveChanges())) return;
     req.onPick(mediaSrc(item.file), alt.trim());
     close();
   };
 
   const saveAlt = async () => {
     if (!item) return;
-    setAltTouched(true);
-    if (altMissing) return;
-    setBusy("Saving alt text…");
-    const res = await describePhoto(item.file, alt.trim());
-    setBusy("");
-    if (res.ok) setMessage("Alt text saved.");
-    else setErrors([res.error]);
+    // Alt text can't be emptied; a focal point can be saved before there's alt text.
+    if (altChanged) {
+      setAltTouched(true);
+      if (altMissing) return;
+    }
+    const what = altChanged && focusChanged ? "Alt text and focal point saved." : focusChanged ? "Focal point saved." : "Alt text saved.";
+    if (await saveChanges()) setMessage(what);
   };
 
   const remove = async () => {
@@ -327,7 +337,7 @@ export function MediaPicker() {
               </h3>
               {item ? (
                 <>
-                  <img className="mp-preview" src={mediaSrc(item.file)} alt="" />
+                  <FocusPicker key={item.file} item={item} focus={focus} onChange={setFocus} />
                   <div className="mp-field">
                     <label className="mp-label" htmlFor={`${id}-alt`}>
                       Alt text <span className="mp-required">(required)</span>
@@ -367,9 +377,9 @@ export function MediaPicker() {
                     <button type="button" className="mp-button mp-primary" disabled={!!busy} onClick={() => void use()}>
                       Use this photo
                     </button>
-                    {altChanged ? (
+                    {altChanged || focusChanged ? (
                       <button type="button" className="mp-button" disabled={!!busy} onClick={() => void saveAlt()}>
-                        Save alt text
+                        {focusChanged ? "Save changes" : "Save alt text"}
                       </button>
                     ) : null}
                   </div>

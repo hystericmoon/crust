@@ -169,7 +169,7 @@ export async function applyOnGitHub(t: Template, onStep: (step: ApplyStep, done?
   let sent = 0;
   for (const batch of batches) {
     onStep("photos", sent, t.media.length);
-    const res = await sendTemplatePhotos(t.name, batch.map(({ file, alt, data }) => ({ file, alt, data })));
+    const res = await sendTemplatePhotos(t.name, batch.map(({ file, alt, data, focus }) => ({ file, alt, data, ...(focus ? { focus } : {}) })));
     if (!res.ok) return `Nothing was replaced. Adding the photos stopped: ${res.error}${sent ? ` ${plural(sent, "photo")} already joined your photo library.` : ""}`;
     sent += batch.length;
   }

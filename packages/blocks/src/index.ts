@@ -212,6 +212,10 @@ export {
   mediaSrc,
   variantFile,
   variantWidths,
+  modernFormats,
+  modernFile,
+  mediaFocus,
+  isFocalPoint,
   mediaFileFor,
   fitWithin,
   sniffImage,
@@ -220,7 +224,7 @@ export {
   formatBytes,
 } from "./media";
 export type { MediaItem, MediaExt } from "./media";
-export { Img, MediaContext, imageSizes } from "./media-img";
+export { Img, MediaContext, MediaFocusContext, imageSizes } from "./media-img";
 export {
   POSTS_FOLDER,
   BLOG_FILE,

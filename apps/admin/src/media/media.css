@@ -79,6 +79,26 @@
 }
 
 .mp-preview { display: block; width: 100%; max-height: 260px; object-fit: contain; border-radius: 10px; background: #e4e4e7; }
+
+/* F081: focal point. The box is the photo's own size, so a press maps to the photo. */
+.mp-focus {
+  position: relative; align-self: center; width: fit-content; max-width: 100%; border-radius: 10px;
+  cursor: crosshair; touch-action: none; user-select: none;
+}
+.mp-focus .mp-preview { width: auto; max-width: 100%; object-fit: initial; background: none; }
+.mp-focus:focus-visible { outline: 3px solid #4338ca; outline-offset: 2px; }
+/* White ring inside a dark ring: visible on light and dark photos. */
+.mp-dot {
+  position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%;
+  border: 3px solid #fff; box-shadow: 0 0 0 2px #18181b, 0 2px 6px rgb(0 0 0 / 0.4); pointer-events: none;
+}
+.mp-dot::after { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: #fff; }
+.mp-crops { display: flex; gap: 10px; align-items: flex-end; }
+.mp-crop { display: flex; flex-direction: column; gap: 3px; font-size: 0.75rem; color: #52525b; }
+.mp-crop img { display: block; object-fit: cover; border-radius: 6px; background: #e4e4e7; }
+.mp-crop-wide { width: 112px; aspect-ratio: 16 / 9; }
+.mp-crop-square { width: 63px; aspect-ratio: 1; }
+.mp-crop-tall { width: 47px; aspect-ratio: 3 / 4; }
 .mp-field { display: flex; flex-direction: column; gap: 6px; }
 .mp-label { font-weight: 600; font-size: 0.9375rem; }
 .mp-required { font-weight: 400; color: #52525b; }

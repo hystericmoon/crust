@@ -78,6 +78,7 @@ import { sitesApi, sitesInvoke } from "./sites/sites";
 import { SitesScreen } from "./sites/SitesScreen";
 import { withMediaFields } from "./media/fields";
 import { MediaPicker } from "./media/MediaPicker";
+import { MediaFocusProvider } from "./media/FocusPicker";
 import { BlogContext, withPostEditing } from "./posts/editing";
 import { SeoSiteProvider, withSeoEditing } from "./seo/fields";
 import { PostList } from "./posts/PostList";

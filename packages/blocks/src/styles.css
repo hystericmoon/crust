@@ -37,6 +37,8 @@
 .cr-height-full { min-height: 100vh; min-height: 100svh; }
 .cr-valign-top { justify-content: flex-start; }
 .cr-valign-bottom { justify-content: flex-end; }
+/* F081: a library photo is a <picture> (AVIF, WebP, then the original); it takes no box of its own. */
+.cr-picture { display: contents; }
 .cr-section-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .cr-section-tint { position: absolute; inset: 0; background: var(--cr-sec-bg); opacity: 0.65; }
 
@@ -73,7 +75,7 @@
   background: linear-gradient(transparent var(--cr-overlap), var(--cr-sec-bg) var(--cr-overlap));
 }
 .cr-section.cr-has-gradient[class*="cr-overlap-"] { background: var(--cr-section-gradient) 0 var(--cr-overlap) / 100% calc(100% - var(--cr-overlap)) no-repeat; }
-.cr-section[class*="cr-overlap-"] > .cr-section-media, .cr-section[class*="cr-overlap-"] > .cr-section-tint { top: var(--cr-overlap); height: calc(100% - var(--cr-overlap)); }
+.cr-section[class*="cr-overlap-"] > .cr-section-media, .cr-section[class*="cr-overlap-"] > .cr-picture > .cr-section-media, .cr-section[class*="cr-overlap-"] > .cr-section-tint { top: var(--cr-overlap); height: calc(100% - var(--cr-overlap)); }
 /* The section above gets the same room at its foot, so its words aren't covered. */
 .cr-section:has(+ .cr-overlap-sm, + .cr-show > .cr-overlap-sm),
 .cr-show:has(+ .cr-overlap-sm, + .cr-show > .cr-overlap-sm) > .cr-section { padding-bottom: calc(var(--cr-section-pad, var(--cr-space-lg)) + var(--cr-space-md)); }
@@ -365,7 +367,7 @@
 .cr-overlay-center { align-items: center; justify-content: center; text-align: center; }
 .cr-overlay-bottom-left { align-items: flex-end; }
 .cr-overlay-top-left { align-items: flex-start; }
-.cr-overlay > .cr-section-media, .cr-overlay > .cr-section-tint { z-index: -1; }
+.cr-overlay > .cr-section-media, .cr-overlay > .cr-picture > .cr-section-media, .cr-overlay > .cr-section-tint { z-index: -1; }
 .cr-overlay-body { position: relative; max-width: 40rem; }
 .cr-overlay-center .cr-overlay-body .cr-text { margin-inline: auto; }
 .cr-overlay-title { color: inherit; }

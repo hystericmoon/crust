@@ -48,7 +48,8 @@ const blocksPost = {
 // [label, address, post to seed, block to select first (F042: the rich text editor), buttons to press (F048),
 //  F073: { then: buttons to press after selecting the block },
 //  F058: { app: run as the desktop app (scripts/fake-tauri.js) with this host state, wait: what to wait for instead of the canvas,
-//  F060: firstRun: a brand new Crust (the welcome screen), F061: update: "available" }]
+//  F060: firstRun: a brand new Crust (the welcome screen), F061: update: "available",
+//  F081: media: a media library (two photos, one with a focal point) behind /api/media }]
 const screens = [
   ["page builder", "/#/edit?path=/", null, null],
   ["page builder, Text block selected", "/#/edit?path=/", null, '[data-puck-component^="Text"]'],
@@ -100,6 +101,8 @@ const screens = [
   // F074: a Columns row's Style tab, then boxes and a highlighted column picked.
   ["Columns Style tab", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { then: ['button:text-is("Columns"):visible', '.tb-tab:has-text("Style"):visible'] }],
   ["Columns Style tab, boxes and highlight", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { then: ['button:text-is("Columns"):visible', '.tb-tab:has-text("Style"):visible', '[aria-label="Box behind each column"] [aria-label="Muted"]:visible', '[aria-label="Highlight a column"] [aria-label="Column 2"]:visible'] }],
+  // F081: the media library's photo details with the focal point picker.
+  ["media library, focal point", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { media: true, then: ['button:has-text("Choose image"):visible', '.mp-photo[data-file="stage.jpg"]'] }],
   ["app welcome screen, Blank picked", "/", null, null, ['label:has-text("Blank")'], { app: "none", firstRun: true, wait: ".fr-card iframe" }],
 ];
 const fakeApp = await readFile(new URL("./fake-tauri.js", import.meta.url), "utf8");
@@ -108,8 +111,18 @@ const server = await serve(distDir);
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 let failures = 0;
 try {
-  for (const [label, hash, post, select, clicks = [], { app, wait, firstRun, update, then = [] } = {}] of screens) {
+  for (const [label, hash, post, select, clicks = [], { app, wait, firstRun, update, media, then = [] } = {}] of screens) {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    if (media) {
+      const items = [
+        { file: "stage.jpg", alt: "The band on stage", width: 1920, height: 1200, bytes: 400000, uploadedAt: "2026-11-02T10:00:00Z", focus: { x: 18, y: 45 } },
+        { file: "door.jpg", alt: "", width: 1920, height: 1280, bytes: 300000, uploadedAt: "2026-11-01T10:00:00Z" },
+      ];
+      await page.route("**/api/media", (r) => r.fulfill({ json: { ok: true, items, usage: {} } }));
+      await page.route("**/media/*.jpg", async (r) =>
+        r.fulfill({ contentType: "image/jpeg", body: await readFile(new URL(`./starter-templates/photos/${r.request().url().includes("stage") ? "signal/guitarist" : "corner/tool-wall"}.jpg`, import.meta.url)) }),
+      );
+    }
     if (app) await page.addInitScript(`window.__FAKE_TAURI__ = ${JSON.stringify({ host: app, firstRun, update })};\n${fakeApp}`);
     if (post) {
       await page.addInitScript((p) => {

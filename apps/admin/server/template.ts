@@ -222,7 +222,7 @@ export async function handleTemplate(request: Request, env: Env, fetchFn: typeof
       const kept = items.filter((i) => !incoming.has(i.file));
       if (kept.length + photos.length > mediaLimits.photos) return fail(422, `The photo library would be over ${mediaLimits.photos} photos. Delete photos you no longer use.`);
       const uploadedAt = new Date().toISOString();
-      const added: MediaItem[] = photos.map((p) => ({ file: p.file, alt: p.alt, width: p.width, height: p.height, bytes: Math.floor((p.data.length * 3) / 4), uploadedAt }));
+      const added: MediaItem[] = photos.map((p) => ({ file: p.file, alt: p.alt, width: p.width, height: p.height, bytes: Math.floor((p.data.length * 3) / 4), uploadedAt, ...(p.focus ? { focus: p.focus } : {}) }));
       const result = await commitFiles(
         cfg,
         [

@@ -19,7 +19,7 @@ use walkdir::WalkDir;
 
 pub use redirects::{Redirect, load_redirects, plan_redirects};
 pub use fonts::{FontReport, folder_fonts, font_refs, publish_fonts};
-pub use media::{MediaReport, publish_media};
+pub use media::{MediaReport, publish_media, publish_media_cached};
 pub use validate::{Issue, is_noindex, media_refs, validate_page};
 
 /// What a publish run produced, for the summary printed to the log.
@@ -115,8 +115,10 @@ pub fn validate_site(site_dir: &Path) -> Result<Vec<Issue>> {
     Ok(issues)
 }
 
-/// `harbour-480w.jpg` → `harbour.jpg`, so a missing photo is named once, as the owner knows it.
+/// `harbour-480w.jpg` (or its copy `harbour-480w.jpg.avif`) → `harbour.jpg`,
+/// so a missing photo is named once, as the owner knows it.
 fn media_original(file: &str) -> String {
+    let file = file.strip_suffix(".avif").or_else(|| file.strip_suffix(".webp").filter(|f| f.contains('.'))).unwrap_or(file);
     if let Some((stem, ext)) = file.rsplit_once('.')
         && let Some((base, width)) = stem.rsplit_once('-')
         && width.strip_suffix('w').is_some_and(|n| media::VARIANT_WIDTHS.iter().any(|w| w.to_string() == n))

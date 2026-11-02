@@ -90,7 +90,7 @@ function png(width: number, height: number): Uint8Array {
   return b;
 }
 const b64 = (bytes: Uint8Array) => Buffer.from(bytes).toString("base64");
-const index = () => JSON.parse(files.get("content/media.json") ?? "[]") as { file: string; alt: string; width: number }[];
+const index = () => JSON.parse(files.get("content/media.json") ?? "[]") as { file: string; alt: string; width: number; focus?: { x: number; y: number } }[];
 const page = (path: string, title: string, src: string) =>
   JSON.stringify({ path, title, description: "", puck: { root: { props: {} }, content: [{ type: "Image", props: { id: "i", src, alt: "x", caption: "" } }] } });
 
@@ -159,6 +159,24 @@ describe("media library API (F034)", () => {
     expect(index()[0]!.alt).toBe("A red door");
     expect((await post({ action: "alt", file: "missing.png", alt: "x" })).status).toBe(404);
     expect((await post({ action: "alt", file: "../site.json", alt: "x" })).status).toBe(400);
+  });
+
+  it("F081: saves alt text and focal point in one commit; the middle clears it", async () => {
+    await post({ action: "upload", name: "a.png", data: b64(png(10, 10)), alt: "" });
+    const res = await post({ action: "details", file: "a.png", alt: " A red door ", focus: { x: 18.4, y: 45 } });
+    expect(res.status).toBe(200);
+    expect((await res.json()).item).toMatchObject({ alt: "A red door", focus: { x: 18, y: 45 } });
+    expect(index()[0]).toMatchObject({ alt: "A red door", focus: { x: 18, y: 45 } });
+    expect(commits.at(-1)!.message).toMatch(/^Edit photo a.png/);
+
+    await post({ action: "details", file: "a.png", alt: "A red door", focus: { x: 50, y: 50 } });
+    expect(index()[0]!.focus).toBeUndefined();
+    await post({ action: "details", file: "a.png", alt: "A red door", focus: { x: 10, y: 10 } });
+    await post({ action: "details", file: "a.png", alt: "A red door", focus: null });
+    expect(index()[0]!.focus).toBeUndefined();
+
+    expect((await post({ action: "details", file: "a.png", alt: "x", focus: { x: "left" } })).status).toBe(400);
+    expect((await post({ action: "details", file: "a.png", focus: null })).status).toBe(422);
   });
 
   it("deletes an unused photo, and refuses while a page still uses it", async () => {

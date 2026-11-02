@@ -465,6 +465,7 @@ fn paths_and_types() {
     assert_eq!(encode_path("/blog/my post/ü.html"), "/blog/my%20post/%C3%BC.html");
     assert_eq!(content_type("/pagefind/pagefind.js"), "application/javascript");
     assert_eq!(content_type("/media/a.JPG"), "image/jpeg");
+    assert_eq!(content_type("/media/a.jpg.avif"), "image/avif");
     assert_eq!(content_type("/pagefind/x.pf_meta"), "application/octet-stream");
 }
 
