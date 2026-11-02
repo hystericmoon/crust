@@ -5,7 +5,7 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 10:30 (Jakarta), F072 finished. PRs #53 (F062) and #45 (F053)
+Last updated: 2026-11-02 11:10 (Jakarta), F073 finished. PRs #53 (F062) and #45 (F053)
 **merged to main** (owner had said to merge). Then the owner said our
 templates aren't premium next to eliras/zorven/labzzy.webflow.io and
 chose **B: upgrade the design layer, "all in"**, and asked for a
@@ -35,8 +35,21 @@ fits: `packages/blocks/src/style-library.ts` (`styleLooks`, 12 looks ×
 `.st-cw*` in `settings.css`). Screenshots `design/f072-styles*.png`
 (Playwright over apps/admin/dist: open `#/settings`, click
 `.st-look:has-text("Atelier")`, screenshot `#presets`).
-**Next: F073 Sections v2** (design snapshot first), on a new branch
-stacked on `f072-style-library`. Branch `f063-store-site` (PR #54) holds the comparison
+**F073 Sections v2 built, passes** (branch `f073-sections-v2`, stacked
+on `f072-style-library`; DECISIONS "F073"). Snapshot
+https://claude.ai/artifact/NK9TwfBQMN6s6LHuEAuWQi (A built). How it
+fits: `packages/blocks/src/sections-v2.ts` (widths, `backgroundKindOf`,
+`gradientColours`/`gradientReads`, `focusPosition`, `videoAddress`,
+`VIDEO_SCRIPT`, `headerOverStyle`, `onlyFirstHeaderOver`), Section
+render in `config.tsx`, CSS in `styles.css` ("Sections v2"); renderer
+adds `videoTag` and `headerOver` (`render.tsx`, `blog.tsx`); builder
+fields in `apps/admin/src/sections/sections-v2-fields.tsx`
+(`sectionFieldShown` is used by `tabs.tsx` resolveFields), canvas
+header in `chrome-canvas.tsx`. check:layouts has `sections-v2-<look>`
+pages (`sectionsV2Samples`); check:builder screens can press buttons
+after selecting a block (`then`).
+**Next: F074 Rows and columns v2** (design snapshot first), on a new
+branch stacked on `f073-sections-v2`. Branch `f063-store-site` (PR #54) holds the comparison
 pages, the M8 write-up and a midnight test fix; no store code. Start
 F070 on a new branch from main once #54 is merged, or stack on it.
 This session can't start new sessions (chain limit): if it ends, the

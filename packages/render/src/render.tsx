@@ -1,4 +1,4 @@
-import { config, CONTACT_FORM_SCRIPT, fontPreloads, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
+import { config, CONTACT_FORM_SCRIPT, hasBackgroundVideo, headerOverStyle, onlyFirstHeaderOver, VIDEO_SCRIPT, type SectionStyleId, fontPreloads, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -66,7 +66,8 @@ function pageLevel(items: ComponentData[], editing = false): ReactNode[] {
 }
 
 export function renderBody(data: Data, media?: MediaItem[], forms?: FormsSetup): string {
-  const blocks = withMedia(<>{pageLevel(data.content)}</>, media);
+  // F073: only the first block can carry the header.
+  const blocks = withMedia(<>{pageLevel(onlyFirstHeaderOver(data.content))}</>, media);
   // F037: contact forms post to the Worker and come back to this page.
   return renderToStaticMarkup(forms ? <FormsContext.Provider value={forms}>{blocks}</FormsContext.Provider> : blocks);
 }
@@ -88,6 +89,9 @@ export const turnstileTag = (options: RenderOptions, puck: unknown) => {
   const turnstile = options.forms.siteKey ? `<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>\n` : "";
   return `${turnstile}<script type="module">${CONTACT_FORM_SCRIPT}</script>\n`;
 };
+
+/** F073: starts background videos, only on pages that have one. */
+export const videoTag = (puck: unknown) => (hasBackgroundVideo(puck) ? `<script type="module">${VIDEO_SCRIPT}</script>\n` : "");
 
 export const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -129,7 +133,8 @@ export function renderPage(site: Site, input: Page, baseCss: string, options: Re
       title: page.title,
       description: page.description,
       body: renderBody(page.puck, options.media, formsFor(options, page.path)),
-      head: turnstileTag(options, page.puck),
+      head: turnstileTag(options, page.puck) + videoTag(page.puck),
+      headerOver: headerOverStyle(page.puck.content) ?? undefined,
       share: { searchTitle: seo.title, image: seo.image, imageAlt: seo.imageAlt, noindex: seo.noindex },
       searchable,
     },
@@ -150,6 +155,8 @@ export interface DocumentParts {
   share?: ShareInfo;
   /** In the site search index (F039); not for hidden pages, lists or the 404. Default true. */
   searchable?: boolean;
+  /** F073: the page's first section carries the header, in this style. */
+  headerOver?: SectionStyleId;
 }
 
 export interface ShareInfo {
@@ -198,10 +205,11 @@ function shareTags(site: Site, doc: DocumentParts, options: RenderOptions): stri
 export function renderDocument(site: Site, doc: DocumentParts, baseCss: string, options: RenderOptions): string {
   const { header, footer } = migrateChrome(site, options.pages ?? [{ path: doc.path, title: doc.title }]);
   const year = options.year ?? new Date().getFullYear();
-  const top = renderToStaticMarkup(withMedia(<SiteHeaderView header={header} path={doc.path} />, options.media));
+  const over = header.show && doc.headerOver ? doc.headerOver : undefined;
+  const top = renderToStaticMarkup(withMedia(<SiteHeaderView header={header} path={doc.path} over={over} />, options.media));
   const bottom = renderToStaticMarkup(<SiteFooterView footer={footer} siteName={site.name} path={doc.path} year={year} />);
   // A sticky header would cover whatever is scrolled or tabbed to; the page keeps room for it (WCAG 2.4.11).
-  const htmlClass = header.show && header.sticky ? ' class="cr-has-sticky"' : "";
+  const htmlClass = header.show && header.sticky && !over ? ' class="cr-has-sticky"' : "";
   const css = `${tokensToCss(site.tokens)}\n${baseCss}`;
   const title = doc.share?.searchTitle?.trim() || (doc.path === "/" ? doc.title : `${doc.title} | ${site.name}`);
   return `<!doctype html>
@@ -214,7 +222,7 @@ export function renderDocument(site: Site, doc: DocumentParts, baseCss: string, 
 <meta name="generator" content="Crust">
 ${shareTags(site, doc, options)}${fontPreloads(site.tokens.fonts).map((href) => `<link rel="preload" href="${escapeHtml(href)}" as="font" type="font/woff2" crossorigin>\n`).join("")}${doc.head ?? ""}<style>${css.replace(/<\/style/gi, "<\\/style")}</style>
 </head>
-<body class="cr-page">
+<body class="cr-page${over ? " cr-page-header-over" : ""}">
 <a class="cr-skip" href="#content">Skip to content</a>
 ${top}<main id="content" tabindex="-1"${doc.searchable === false || doc.share?.noindex ? "" : " data-pagefind-body"}>${doc.body}</main>
 ${bottom}

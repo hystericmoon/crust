@@ -16,3 +16,8 @@
   /* Where the page column's text starts: the gutter, or more on wide canvases. */
   margin-inline: max(var(--cr-space-sm), calc((100% - var(--cr-max-width)) / 2 + var(--cr-space-sm)));
 }
+
+/* F073: the header sits on the page's first section. */
+.cc-page { position: relative; }
+.cc-chrome.is-over { position: absolute; top: 0; left: 0; right: 0; z-index: 5; }
+.cc-chrome.is-over .cr-site-header.cr-header-over { position: relative; }

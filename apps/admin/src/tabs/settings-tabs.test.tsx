@@ -42,8 +42,14 @@ beforeEach(() => {
 afterEach(() => cleanup());
 
 const builder = withSettingsTabs(withResponsiveEditing(withSectionEditing(config as Config<Components>)));
-type Resolve = () => Fields;
-const shown = (type: keyof Components) => Object.keys((builder.components[type] as unknown as { resolveFields: Resolve }).resolveFields());
+type Resolve = (data?: unknown, params?: unknown) => Fields;
+const shown = (type: keyof Components, data?: unknown, params?: unknown) =>
+  Object.keys((builder.components[type] as unknown as { resolveFields: Resolve }).resolveFields(data, params));
+/** F073: a Section's background fields follow its kind, and "Header sits on this section" needs the first block. */
+const sectionVariants = (["colour", "gradient", "photo", "video"] as const).map((bgKind) => {
+  const props = { id: "s", bgKind, imageSrc: "/media/a.jpg" };
+  return [{ props }, { appState: { data: { content: [{ type: "Section", props }] } }, parent: null }] as const;
+});
 
 describe("settings-tabs: where each setting lives", () => {
   it("puts wording and links in Content, looks in Style, and spacing, visibility and anchors in Advanced", () => {
@@ -64,6 +70,7 @@ describe("settings-tabs: where each setting lives", () => {
       for (const t of ["content", "style", "advanced"] as const) {
         setTab(t);
         for (const k of shown(name as keyof Components)) all.add(k);
+        if (name === "Section") for (const [d, p] of sectionVariants) for (const k of shown("Section", d, p)) all.add(k);
       }
       for (const k of Object.keys(comp.fields ?? {})) if (k !== "_empty") expect(all, `${name}.${k}`).toContain(k);
       setTab("advanced");
@@ -131,5 +138,32 @@ describe("settings-tabs: anchor names", () => {
     const html = renderBody({ root: { props: {} }, content: [heading("x", "Our Team"), heading("y")] });
     expect(html).toContain('<div class="cr-show"><span class="cr-anchor" id="our-team"></span><h2');
     expect(html.match(/cr-show/g)).toHaveLength(1);
+  });
+});
+
+describe("settings-tabs: Section v2 fields (F073)", () => {
+  const style = (props: Record<string, unknown>, first = true) => {
+    setTab("style");
+    const p = { id: "s", ...props };
+    return shown("Section", { props: p }, { appState: { data: { content: [{ type: "Section", props: first ? p : { id: "other" } }] } }, parent: null });
+  };
+  afterEach(() => setTab("content"));
+
+  it("shows only the chosen background's fields", () => {
+    expect(style({ bgKind: "colour" })).not.toEqual(expect.arrayContaining(["gradient"]));
+    expect(style({ bgKind: "colour" })).not.toContain("imageSrc");
+    expect(style({ bgKind: "gradient" })).toContain("gradient");
+    expect(style({ bgKind: "photo" })).toEqual(expect.arrayContaining(["imageSrc", "tint"]));
+    expect(style({ bgKind: "photo" })).not.toContain("focus");
+    expect(style({ bgKind: "photo", imageSrc: "/media/a.jpg" })).toContain("focus");
+    expect(style({ bgKind: "video" })).toEqual(expect.arrayContaining(["imageSrc", "videoSrc"]));
+    // Sections saved before F073: a photo means the Photo kind.
+    expect(style({ imageSrc: "/media/a.jpg" })).toContain("imageSrc");
+  });
+
+  it("offers the header only on the page's first section", () => {
+    expect(style({})).toContain("headerOver");
+    expect(style({}, false)).not.toContain("headerOver");
+    expect(style({})).toEqual(expect.arrayContaining(["width", "bgKind", "overlap"]));
   });
 });

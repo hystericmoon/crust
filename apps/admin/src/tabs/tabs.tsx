@@ -4,10 +4,11 @@
  * `resolveFields` shows only the current tab's fields. The chosen tab is
  * kept when you select another block.
  */
-import { cleanAnchor, type Components } from "@crust/blocks";
+import { cleanAnchor, type Components, type SectionProps } from "@crust/blocks";
 import { createUsePuck, useGetPuck, type ComponentData, type Config, type Data, type Field, type Fields } from "@puckeditor/core";
 import { useEffect, useId, useState, useSyncExternalStore } from "react";
 import { RadioGroup } from "../sections/controls";
+import { sectionFieldShown } from "../sections/sections-v2-fields";
 
 export const tabs = ["content", "style", "advanced"] as const;
 export type Tab = (typeof tabs)[number];
@@ -23,6 +24,14 @@ const styleFields = new Set([
   "valign",
   "imageSrc:Section",
   "tint",
+  // F073: Section
+  "width",
+  "bgKind",
+  "gradient",
+  "videoSrc",
+  "focus",
+  "overlap",
+  "headerOver",
   "size",
   "widths",
   // F071: Card layout
@@ -170,9 +179,15 @@ export function withSettingsTabs(config: Config<Components>): Config<Components>
         anchor: { type: "custom", label: "Anchor name", render: ({ value, onChange }) => <AnchorField value={value as string} onChange={onChange} /> },
         _empty: { type: "custom", label: "", render: () => <EmptyTab component={name} /> },
       };
-      const resolveFields = () => {
+      const resolveFields = (data?: { props?: Record<string, unknown> }, params?: { appState?: { data?: Data }; parent?: unknown }) => {
         const tab = getTab();
-        const picked = Object.entries(own).filter(([key, f]) => key === "_tabs" || isSlot(f) || (key !== "_empty" && tabOf(name, key) === tab));
+        // F073: a Section shows only its background kind's fields, and "Header sits on this section" only when it's the page's first block.
+        const props = (data?.props ?? {}) as Partial<SectionProps> & { id?: string };
+        const isFirst = !params?.parent && params?.appState?.data?.content?.[0]?.props?.id === props.id;
+        const shown = (key: string) => name !== "Section" || sectionFieldShown(key, props, isFirst);
+        const picked = Object.entries(own).filter(
+          ([key, f]) => key === "_tabs" || isSlot(f) || (key !== "_empty" && tabOf(name, key) === tab && shown(key)),
+        );
         const visible = picked.filter(([key, f]) => key !== "_tabs" && !isSlot(f));
         if (!visible.length) picked.push(["_empty", own._empty!]);
         return Object.fromEntries(picked) as Fields;

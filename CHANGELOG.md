@@ -4,6 +4,19 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Sections that reach the edge, move and overlap (F073).** A
+  Section's **Style** tab now has three groups. **Layout**: width as
+  Narrow, Normal, Wide, Full, or reaching the left or right edge of the
+  screen while the text stays on the page grid. **Background**: Colour,
+  Gradient (ending in a site colour; only colours that keep the text
+  readable are offered), Photo with a **focal point** (click the photo or
+  use the sliders) that phones keep in view, or a silent looping
+  **Video** with a pause button. Visitors with Reduce motion on see the
+  still photo instead. **Over and under**: pull a section up over the
+  one above, for cards that overlap a photo, and let the **header sit
+  on the first section** in that section's colours. Existing pages look
+  the same until you use these.
+
 - **A style library (F072).** Site settings → **Styles** now offers
   12 complete looks, such as Atelier, Studio, Maison, Clinic and
   Bistro, each in three colourways. A look sets fonts, headings, small

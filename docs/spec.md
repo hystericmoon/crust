@@ -110,6 +110,15 @@ fills the card). The style library (F072, Site settings → Styles)
 writes only these ordinary tokens (fonts, colours, `style`,
 `sectionStyles`, `radius`); no look id is stored.
 
+A Section may carry (F073, all optional) `width` (`narrow`, `normal`,
+`wide`, `full`, `left`, `right`), `bgKind` (`colour`, `gradient`,
+`photo`, `video`; missing means `photo` when `imageSrc` is set),
+`gradient` `{ "to": "<colour role>", "direction": "down" }`
+(`diagonal`, `across`, `glow`), `videoSrc` (an `https://` or site
+address of an .mp4/.webm; needs `imageSrc` as its still), `focus`
+`{ "x": 0–100, "y": 0–100 }`, `overlap` (`none`, `sm`, `md`, `lg`) and
+`headerOver` (`true`: the site header sits on it; first block only).
+
 Any block's props may carry `hideOn` (optional, added with F029): a list of
 `"desktop"`, `"tablet"`, `"phone"`. A Columns block may carry `widths`
 (`{ desktop, tablet, phone }`, each a width id such as `"two-one"` or

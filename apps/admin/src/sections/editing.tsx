@@ -4,6 +4,7 @@
  * the scope switch, the site-wide style itself ("Whole site").
  */
 import {
+  backgroundKindOf,
   sectionStyleNames,
   type Components,
   type SectionHeight,
@@ -16,6 +17,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { HeightPicker, SectionStyleEditor, StyleSwatch, StyleTiles, TintPicker, RadioGroup } from "./controls";
 import { countSectionStyles, useSiteStyle } from "./site-style";
 import { ImageField } from "../media/ImageField";
+import { FocusPicker, sectionV2Fields } from "./sections-v2-fields";
 
 const usePuckSelector = createUsePuck();
 
@@ -39,7 +41,7 @@ function useScope(): [Scope, (s: Scope) => void] {
   return [value, setScope];
 }
 
-function useSelectedSection(): SectionProps | null {
+export function useSelectedSection(): SectionProps | null {
   const item = usePuckSelector((s) => s.selectedItem);
   return item?.type === "Section" ? (item.props as SectionProps) : null;
 }
@@ -50,7 +52,7 @@ function useCounts() {
 }
 
 /** Changes props of the selected section in one undoable step. */
-function usePatchSelected() {
+export function usePatchSelected() {
   const getPuck = useGetPuck();
   return (patch: Partial<SectionProps>) => {
     const puck = getPuck();
@@ -165,6 +167,7 @@ export function withSectionEditing(config: Config<Components>): Config<Component
             ),
           },
           tint: { type: "custom", label: "Image tint", render: ({ value, onChange }) => <TintField value={value ?? "medium"} onChange={onChange} /> },
+          ...sectionV2Fields,
         },
       },
     },
@@ -251,9 +254,17 @@ export function SectionToolbar() {
           {pop === "height" ? <HeightPicker value={section.height ?? "auto"} onChange={(height) => patch({ height })} /> : null}
           {pop === "image" ? (
             <div className="sx-stack">
-              <ImageField label="Background image" value={section.imageSrc ?? ""} onChange={(imageSrc) => patch({ imageSrc })} />
+              <ImageField
+                label={backgroundKindOf(section) === "video" ? "Still photo" : "Background image"}
+                value={section.imageSrc ?? ""}
+                // F073: a photo picked here shows, whatever background kind was chosen before (a video keeps it as its still).
+                onChange={(imageSrc) => patch(backgroundKindOf(section) === "video" || !imageSrc.trim() ? { imageSrc } : { imageSrc, bgKind: "photo" })}
+              />
               {section.imageSrc?.trim() ? (
-                <TintPicker tokens={site.tokens} style={style} value={section.tint ?? "medium"} onChange={(tint) => patch({ tint })} />
+                <>
+                  <FocusPicker src={section.imageSrc} value={section.focus} onChange={(focus) => patch({ focus })} />
+                  <TintPicker tokens={site.tokens} style={style} value={section.tint ?? "medium"} onChange={(tint) => patch({ tint })} />
+                </>
               ) : null}
             </div>
           ) : null}

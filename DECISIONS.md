@@ -5,6 +5,9 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 
 ## Proposals
 
+- **Video uploads (from F073).** Background videos are linked by address for now. Uploading them to the media library would need size limits (a 10 s loop is 2–8 MB) and maybe Git LFS or Cloudflare R2, which may cost money. Owner's call.
+- **Gradient check at publish (from F073).** Let F083's stricter template check (or publishing) stop on a Section gradient that no longer keeps text readable after a colour change.
+
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
@@ -251,6 +254,60 @@ Features Claude suggests. They are not work until the owner adds them to
   the redirects and Crust's 404 page. Small (M). Only helps Apache hosts
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
+
+## 2026-11-02 — F073 Sections v2 (Claude, reversible)
+
+- Snapshot https://claude.ai/artifact/NK9TwfBQMN6s6LHuEAuWQi
+  (`design/f073-sections-v2-v1.html`): A three groups in the Style tab
+  (Layout, Background, Over and under; built), B section recipes first,
+  C everything on the canvas quick bar. A uses progressive disclosure
+  (only the chosen background kind's fields show), pictures for widths
+  (recognition over recall) and error prevention (unreadable gradient
+  colours aren't offered). B overlaps the layout library; C crowds the
+  quick bar and would still need the panel for keyboard users.
+- **Format (optional Section props, no migration):** `width`
+  (`narrow|normal|wide|full|left|right`), `bgKind`
+  (`colour|gradient|photo|video`; missing = photo when `imageSrc` is set,
+  so old sections read the same), `gradient` `{ to: <colour role>,
+  direction: down|diagonal|across|glow }`, `videoSrc`, `focus` `{ x, y }`
+  (0–100), `overlap` (`none|sm|md|lg`), `headerOver` (boolean). A
+  Section without them renders byte-for-byte as before (test). Switching
+  kind keeps the other kinds' values, so trying Gradient and going back
+  to Photo loses nothing.
+- **Gradient:** from the style's colour to a site colour, written with
+  CSS variables so colour changes follow. Offered only if text, muted
+  text and links keep AA and a solid button keeps 3:1 at five points
+  along the gradient (mixing can be darker in the middle than at either
+  end; test). The renderer doesn't re-check, so a hand-edited or
+  imported page could hold a gradient that no longer reads after a
+  colour change; the builder flags it ("no longer reads well here") and
+  drops it from the preview. Proposal: F083's template check covers it.
+- **Video:** a web address (`https://` or a site path) of an .mp4/.webm;
+  the still photo is required. The `<video>` is `hidden`, muted, looping,
+  `preload="none"`, no `autoplay`; a 1 KB module script (only on pages
+  with one) starts it when motion is allowed and shows a real pause
+  button (44 px, labelled, `aria-pressed`; WCAG 2.2.2). Reduce motion or
+  no JavaScript: the photo shows and the video never downloads. Video
+  uploads to the media library left out (Git repo size); see Proposals.
+- **Width:** Wide = page width × 1.25; Full = no limit, gutter kept;
+  Left/Right edge keep the text on the page grid and run to one screen
+  edge (stack to normal gutters below 640 px).
+- **Pull up:** the section moves up by M, XL or 2×XL; its top is
+  see-through and its content starts that much higher; the section above
+  gets the same room at its foot (`:has()`, also through the anchor or
+  hide-on wrapper). What overlaps needs its own background, which the
+  field's note says; found when sample cards without one vanished on a
+  dark photo.
+- **Header on top:** only the page's first block, and not when it's
+  hidden on some screens (`headerOverStyle`); the renderer drops the flag
+  from any other section. The header takes the section's style class,
+  loses its background, and doesn't stick on that page (a sticky header
+  that changes on scroll is F076). The builder canvas shows it the same
+  way. Pages only, not posts (a post starts with its title).
+- check:layouts renders a Sections v2 page in all 12 looks (header on a
+  photo, pulled-up cards, a gradient per style, right edge, video);
+  check:builder adds three Section Style tab screens (the check can now
+  press buttons after selecting a block).
 
 ## 2026-11-02 — F072 Style library (Claude, reversible)
 
