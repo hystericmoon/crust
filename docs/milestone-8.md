@@ -59,7 +59,7 @@ milestone; F063 now depends on F084.
   pages that don't use an interactive block.
 - Free and open-source only. Fonts are mostly under the SIL Open Font
   License (OFL 1.1), which is not in CLAUDE.md's licence list: F070
-  waits for the owner's OK on OFL for fonts (asked 2026-11-02).
+  may use them: the owner said yes on 2026-11-02.
 
 ## Not in Milestone 8
 

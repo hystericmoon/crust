@@ -266,6 +266,11 @@ Features Claude suggests. They are not work until the owner adds them to
   Apache-2.0, BSD, ISC). It's free, allows bundling and selling sites,
   and forbids only selling the fonts on their own. F070 needs an OK to
   use OFL fonts; until then its design snapshot can go ahead.
+- Owner answered (2026-11-02): "Yes to OFL fonts, and yes to MPL and
+  BlueOak. Let's just throw everything the best we can do right now".
+  CLAUDE.md's licence list now adds MPL-2.0, BlueOak-1.0.0 and SIL OFL
+  1.1 (fonts). This also closes the open F056 question (minicbor,
+  Tauri's MPL packages).
 - Correction to `design/premium-gap-v1.html`: Crust's "Dramatic" type
   scale already reaches about 76 px; the gap there is tracking, light
   weights and real fonts, not size.
