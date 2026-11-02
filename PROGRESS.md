@@ -5,6 +5,13 @@ to "Log".
 
 ## Current
 
+- **2026-11-02: Milestone 8 "Premium design layer" approved** (owner:
+  "Let's go A"), docs/milestone-8.md, F070–F084. Came from the owner's
+  feedback that our templates don't feel premium; gap pages
+  https://claude.ai/artifact/FMb9QuLomsLCvQC9aZscf3 and
+  https://claude.ai/artifact/ULmnd4JZEKpGvyUHFg1Kpo. The store (F063)
+  waits until M8 is done. PRs #53 (F062) and #45 (F053) merged to main.
+  **Owner question:** OK to use fonts under the SIL Open Font License?
 - **F053 Signal and Corner with real photos: built, passes** (branch
   `f053-signal-corner-photos`, PR #45, not merged). Snapshot with both
   directions per template: https://claude.ai/artifact/B3dfAGM3m15EcN1n83oooB

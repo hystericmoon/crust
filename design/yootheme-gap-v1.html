@@ -1,0 +1,270 @@
+<title>YOOtheme Gap Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,500&family=Geist:wght@300;400;600&display=swap">
+<style>
+/* Layout: single column report; gap matrix as rows with three meters; mockups drawn as small UI tiles; roadmap as lanes */
+:root{
+  --bg:#F4F5F3;--panel:#FFFFFF;--fg:#15181A;--muted:#5B6166;--line:#D8DBD7;
+  --accent:#2F5D50;--accent-soft:#E1ECE6;--yt:#6B5BA8;--yt-soft:#ECE9F6;--warn:#8A5A00;--warn-soft:#F6EBD5;--bad:#9B2C2C;--bad-soft:#F6E1E1;
+  --display:"Schibsted Grotesk",ui-sans-serif,system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111315;--panel:#1A1D20;--fg:#ECEEEC;--muted:#A2A9A5;--line:#2D3236;--accent:#8CC5B1;--accent-soft:#1D2F28;--yt:#B3A6EC;--yt-soft:#262238;--warn:#E3B566;--warn-soft:#33281A;--bad:#F09A9A;--bad-soft:#3A2222;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111315;--panel:#1A1D20;--fg:#ECEEEC;--muted:#A2A9A5;--line:#2D3236;--accent:#8CC5B1;--accent-soft:#1D2F28;--yt:#B3A6EC;--yt-soft:#262238;--warn:#E3B566;--warn-soft:#33281A;--bad:#F09A9A;--bad-soft:#3A2222;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--display);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1100px;margin:0 auto;padding-block:48px 96px;display:grid;gap:64px}
+h1,h2,h3{text-wrap:balance;margin:0;letter-spacing:-.015em}
+h1{font-size:clamp(2rem,4.5vw,3rem);line-height:1.05;font-weight:600}
+h2{font-size:1.6rem;font-weight:600}h3{font-size:1.05rem;font-weight:600}
+p{margin:0;max-width:70ch}
+.eyebrow{font:500 .75rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.lede{font-size:1.15rem;color:var(--muted)}
+section{display:grid;gap:20px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px}
+/* summary tiles */
+.sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.sum{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sum .panel{padding:16px;display:grid;gap:4px}
+.sum strong{font:600 1.9rem/1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.sum span{font-size:.88rem;color:var(--muted)}
+/* matrix */
+.key{display:flex;gap:18px;flex-wrap:wrap;font-size:.88rem;color:var(--muted)}
+.key i{display:inline-block;width:18px;height:8px;border-radius:4px;margin-right:6px;vertical-align:middle}
+.rows{display:grid}
+.row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1.4fr);gap:20px;padding:16px 20px;border-bottom:1px solid var(--line);align-items:start}
+.row:last-child{border-bottom:0}
+.row.head{font:500 .72rem/1.2 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding-block:12px}
+@media (max-width:820px){.row{grid-template-columns:1fr;gap:10px}.row.head{display:none}}
+.row h3{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row .sub{font-size:.88rem;color:var(--muted);margin-top:2px}
+.meters{display:grid;gap:6px}
+.m{display:grid;grid-template-columns:72px 1fr;gap:8px;align-items:center;font:500 .7rem/1 var(--mono);color:var(--muted)}
+.track{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.track b{display:block;height:100%;border-radius:4px}
+.yt b{background:var(--yt)}.now b{background:var(--warn)}.next b{background:var(--accent)}
+.detail{font-size:.9rem;display:grid;gap:4px}
+.detail .gap{color:var(--fg)}
+.detail .plan{color:var(--accent)}
+.pill{display:inline-block;font:500 .68rem/1 var(--mono);padding:4px 7px;border-radius:99px;white-space:nowrap}
+.p1{background:var(--bad-soft);color:var(--bad)}.p2{background:var(--warn-soft);color:var(--warn)}.p3{background:var(--line);color:var(--muted)}.win{background:var(--accent-soft);color:var(--accent)}
+/* mockup gallery */
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:860px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.tiles{grid-template-columns:1fr}}
+.tile{padding:14px;display:grid;gap:10px;align-content:start}
+.tile p{font-size:.86rem;color:var(--muted)}
+.ui{border-radius:8px;overflow:hidden;border:1px solid var(--line);background:#fff;color:#16181A;aspect-ratio:16/10;max-width:100%;position:relative;font-family:"Geist",system-ui,sans-serif}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cmp figure{margin:0;display:grid;gap:4px}
+.cmp figcaption{font:500 .66rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+/* tile internals: fixed colours on purpose, they depict websites */
+.fontA{padding:10%;display:grid;align-content:center;gap:4px;font-family:Arial,Helvetica,sans-serif}
+.fontA b{font-size:clamp(14px,2.2vw,20px);font-weight:700;letter-spacing:0}
+.fontA span{font-size:9px;color:#555}
+.fontB{padding:10%;display:grid;align-content:center;gap:4px;background:#F3EFE8}
+.fontB b{font:300 clamp(16px,2.6vw,24px)/1 "Fraunces",serif;letter-spacing:-.03em}
+.fontB span{font:500 8px/1 "JetBrains Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:#6A5F52}
+.hdr{display:grid;gap:6px;padding:8px;align-content:start;background:#F7F7F5;height:100%}
+.hdr div{height:16px;border-radius:3px;background:#fff;border:1px solid #E1E1DC;display:flex;align-items:center;justify-content:space-between;padding:0 5px;font-size:6px;color:#666}
+.hdr div i{display:inline-block;width:18px;height:4px;border-radius:2px;background:#16181A}
+.hdr div em{display:flex;gap:3px}.hdr div em u{display:inline-block;width:8px;height:3px;background:#B8B8B2}
+.hdr .c{justify-content:center;gap:10px}
+.hdr .t{background:linear-gradient(90deg,#2A2622,#4A3C30);border-color:transparent}.hdr .t i{background:#fff}.hdr .t em u{background:#CFC6BB}
+.hdr .s{height:26px;flex-direction:column;justify-content:center;gap:3px}
+.sec{height:100%;display:grid;align-content:center;gap:5px;padding:8px;background:#F7F7F5}
+.sec div{height:12px;border-radius:2px;background:#C9D6CF;margin:0 auto}
+.motion{height:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:12%;align-content:center;background:#F7F7F5}
+.motion span{aspect-ratio:3/4;border-radius:4px;background:#D9CFC4;animation:rise 2.6s ease-out infinite}
+.motion span:nth-child(2){animation-delay:.18s}.motion span:nth-child(3){animation-delay:.36s}
+@keyframes rise{0%{opacity:0;transform:translateY(10px)}25%,100%{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.motion span{animation:none}}
+.blocks{height:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:8px;background:#F7F7F5;font-size:6.5px}
+.blocks div{background:#fff;border:1px solid #E1E1DC;border-radius:3px;display:grid;place-items:center;text-align:center;padding:2px}
+.blocks strong{font:400 13px/1 "Geist",sans-serif;letter-spacing:-.04em}
+.icons{height:100%;display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:10%;align-content:center;background:#F7F7F5}
+.icons svg{width:100%;height:auto;stroke:#16181A;fill:none;stroke-width:1.6}
+.lib{height:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px;background:#F7F7F5}
+.lib div{border-radius:3px;background:#E3E0DA}.lib div:nth-child(3n){background:#2A2622}.lib div:nth-child(4n){background:#C9D6CF}
+.callout{border-left:3px solid var(--accent);padding:4px 0 4px 14px;color:var(--muted);font-size:.95rem}
+/* wins */
+.wins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.wins{grid-template-columns:1fr}}
+.wins .panel{padding:16px;display:grid;gap:6px}
+.wins p{font-size:.9rem;color:var(--muted)}
+/* roadmap */
+.opts{display:grid;gap:20px}
+.opt{padding:20px;display:grid;gap:16px}
+.opt.rec{border:2px solid var(--accent)}
+.opt header{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.tag{font:600 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--accent);color:var(--panel);padding:6px 10px;border-radius:4px}
+.lanes{display:grid;gap:8px;overflow-x:auto}
+.lane{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:center;min-width:620px}
+.lane > span{font:500 .72rem/1.2 var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:.82rem;padding:6px 10px;border-radius:6px;background:var(--accent-soft);color:var(--fg);border:1px solid transparent;white-space:nowrap}
+.chip small{font:500 .68rem var(--mono);color:var(--muted);margin-right:6px}
+.chip.later{background:transparent;border:1px dashed var(--line);color:var(--muted)}
+.facts{display:flex;gap:24px;flex-wrap:wrap;font-size:.9rem;color:var(--muted)}
+.facts b{color:var(--fg)}
+ol.next{margin:0;padding-left:20px;display:grid;gap:6px}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<main>
+<header style="display:grid;gap:14px">
+  <span class="eyebrow">Crust · premium design layer · 2 Nov 2026</span>
+  <h1>YOOtheme Pro against Crust: the gap, and the plan to close it</h1>
+  <p class="lede">I read YOOtheme Pro's current docs and release notes (version 5.0.53, October 2026) and set each part against what Crust does today. Most of what makes YOOtheme sites look expensive sits in four places: fonts, the style editor, section and column settings, and header layouts. Elements come after those.</p>
+</header>
+
+<section aria-labelledby="sum">
+  <h2 id="sum" class="eyebrow" style="font-size:.75rem">At a glance</h2>
+  <div class="sum">
+    <div class="panel"><strong>39 · 16</strong><span>Elements: YOOtheme · Crust (WooCommerce and WordPress-only parts left out)</span></div>
+    <div class="panel"><strong>12 · 1</strong><span>Header layouts, plus 5 phone layouts in YOOtheme</span></div>
+    <div class="panel"><strong>Any · 6</strong><span>Fonts: any Google Font hosted locally · system fonts only</span></div>
+    <div class="panel"><strong>~40 · 0</strong><span>Motion settings: entrance, scroll and parallax effects · none</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="mx">
+  <span class="eyebrow">The gap, area by area</span>
+  <h2 id="mx">Ten areas, scored out of 5</h2>
+  <div class="key"><span><i style="background:var(--yt)"></i>YOOtheme Pro</span><span><i style="background:var(--warn)"></i>Crust today</span><span><i style="background:var(--accent)"></i>Crust after the plan</span><span><span class="pill p1">P1</span> needed for premium</span><span><span class="pill p2">P2</span> strong extra</span><span><span class="pill p3">P3</span> later</span></div>
+  <div class="panel rows">
+    <div class="row head"><span>Area</span><span>Score</span><span>What's missing → what the plan adds</span></div>
+
+    <div class="row"><div><h3>Fonts <span class="pill p1">P1</span></h3><p class="sub">The single biggest visual gap</p></div>
+      <div class="meters"><div class="m yt"><span>YOOtheme</span><div class="track"><b style="width:100%"></b></div></div><div class="m now"><span>Today</span><div class="track"><b style="width:25%"></b></div></div><div class="m next"><span>Plan</span><div class="track"><b style="width:90%"></b></div></div></div>
+      <div class="detail"><span class="gap">YOOtheme hosts any Google Font on your own server. Crust uses only the six fonts already on the visitor's computer.</span><span class="plan">→ About 30 open-licence fonts bundled with Crust, served from the site itself, in tested pairs. Only the weights a site uses get downloaded.</span></div></div>
+
+    <div class="row"><div><h3>Style editor <span class="pill p1">P1</span></h3><p class="sub">How text, buttons and cards look</p></div>
+      <div class="meters"><div class="m yt"><span>YOOtheme</span><div class="track"><b style="width:100%"></b></div></div><div class="m now"><span>Today</span><div class="track"><b style="width:40%"></b></div></div><div class="m next"><span>Plan</span><div class="track"><b style="width:80%"></b></div></div></div>
+      <div class="detail"><span class="gap">YOOtheme can style every component: headline styles and decorations, text stroke, borders, shadows, inverse colours. Crust has six options.</span><span class="plan">→ Display and headline styles (light weights, tracking down to −0.05 em), eyebrow and mono labels, more button and card styles, radius and shadow scales. Plus a Style library: about 12 complete looks with colour variations.</span></div></div>
+
+    <div class="row"><div><h3>Sections <span class="pill p1">P1</span></h3><p class="sub">Width, background, height, effects</p></div>
+      <div class="meters"><div class="m yt"><span>YOOtheme</span><div class="track"><b style="width:100%"></b></div></div><div class="m now"><span>Today</span><div class="track"><b style="width:40%"></b></div></div><div class="m next"><span>Plan</span><div class="track"><b style="width:85%"></b></div></div></div>
+      <div class="detail"><span class="gap">YOOtheme offers 7 widths plus expand-one-side, colour and gradient backgrounds, video backgrounds, image focal point, overlap with the next section, sticky cover and reveal, and side titles. Crust has 4 styles, 4 heights and a photo with tint.</span><span class="plan">→ Widths (narrow to full bleed, expand one side), colour and gradient backgrounds, muted video backgrounds with a still image under Reduce motion, focal point, overlap, transparent header over the first section.</span></div></div>
+
+    <div class="row"><div><h3>Rows and columns <span class="pill p1">P1</span></h3><p class="sub">Grids inside sections</p></div>
+      <div class="meters"><div class="m yt"><span>YOOtheme</span><div class="track"><b style="width:100%"></b></div></div><div class="m now"><span>Today</span><div class="track"><b style="width:50%"></b></div></div><div class="m next"><span>Plan</span><div class="track"><b style="width:85%"></b></div></div></div>
+      <div class="detail"><span class="gap">YOOtheme has up to 6 columns, a fixed-width column, order per device, gap sizes, dividers, column backgrounds, padding, rounded corners and sticky columns. Crust has per-device widths only.</span><span class="plan">→ Column background, padding and radius; vertical alignment; gap sizes; order on phone; dividers; sticky column (the "text stays while photos scroll" look).</span></div></div>
+
+    <div class="row"><div><h3>Motion <span class="pill p1">P1</span></h3><p class="sub">Entrance, scroll and hover effects</p></div>
+      <div class="meters"><div class="m yt"><span>YOOtheme</span><div class="track"><b style="width:100%"></b></div></div><div class="m now"><span>Today</span><div class="track"><b style="width:0%"></b></div></div><div class="m next"><span>Plan</span><div class="track"><b style="width:70%"></b></div></div></div>
+      <div class="detail"><span class="gap">YOOtheme has entrance animations, scroll-driven animations, parallax (move, scale, fade, blur) and Ken Burns slideshows. Crust has none.</span><span class="plan">→ Entrance effects per section with a gentle stagger, light parallax, hover lifts and a logo marquee. CSS only, no JavaScript. Content is visible even without them, and they switch off under Reduce motion.</span></div></div>
+
+    <div class="row"><div><h3>Header and footer <span class="pill p1">P1</span></h3><p class="sub">Navigation layouts</p></div>
+      <div class="meters"><div class="m yt"><span>YOOtheme</span><div class="track"><b style="width:100%"></b></div></div><div class="m now"><span>Today</span><div class="track"><b style="width:30%"></b></div></div><div class="m next"><span>Plan</span><div class="track"><b style="width:80%"></b></div></div></div>
+      <div class="detail"><span class="gap">YOOtheme has 12 header layouts, 5 phone layouts, sticky-on-scroll-up, a transparent header, dropdowns, mega menus, off-canvas and modal menus, a toolbar, and a footer built in the page builder. Crust has one layout, sticky, a phone menu and a fixed footer.</span><span class="plan">→ 6 header layouts, transparent over the hero, dropdown submenus, a slide-in phone menu, a top bar. The footer is built from blocks, as a linked section.</span></div></div>
+
+    <div class="row"><div><h3>Elements <span class="pill p1">P1</span> <span class="pill p2">P2</span></h3><p class="sub">39 against 16</p></div>
+      <div class="meters"><div class="m yt"><span>YOOtheme</span><div class="track"><b style="width:100%"></b></div></div><div class="m now"><span>Today</span><div class="track"><b style="width:45%"></b></div></div><div class="m next"><span>Plan</span><div class="track"><b style="width:85%"></b></div></div></div>
+      <div class="detail"><span class="gap">Missing in Crust: Video, Slideshow, Panel and Overlay sliders, Switcher (tabs), Icon, Divider, Social, Map, Table, Description list, Countdown, Popover, Newsletter. The references also use Stats and numbered lists.</span><span class="plan">→ P1: Stats, Icon (with an icon set), Divider, Social, Video (loads only when pressed, for privacy), Table and Pricing, numbered list style. P2: Slideshow, Card slider, Tabs, Lightbox, Map. These need a little JavaScript only on pages that use them.</span></div></div>
+
+    <div class="row"><div><h3>Libraries <span class="pill p1">P1</span></h3><p class="sub">Layouts and styles to start from</p></div>
+      <div class="meters"><div class="m yt"><span>YOOtheme</span><div class="track"><b style="width:100%"></b></div></div><div class="m now"><span>Today</span><div class="track"><b style="width:45%"></b></div></div><div class="m next"><span>Plan</span><div class="track"><b style="width:80%"></b></div></div></div>
+      <div class="detail"><span class="gap">YOOtheme has a growing cloud library of pages, sections, footers, mega menus and element presets, plus a Style library with 6 colour variations per style. Crust has 32 layouts and 9 colour presets.</span><span class="plan">→ About 60 premium sections and 10 page layouts rebuilt on the new layer, the Style library above, and saved element styles.</span></div></div>
+
+    <div class="row"><div><h3>Images <span class="pill p2">P2</span></h3><p class="sub">Formats and cropping</p></div>
+      <div class="meters"><div class="m yt"><span>YOOtheme</span><div class="track"><b style="width:100%"></b></div></div><div class="m now"><span>Today</span><div class="track"><b style="width:55%"></b></div></div><div class="m next"><span>Plan</span><div class="track"><b style="width:85%"></b></div></div></div>
+      <div class="detail"><span class="gap">YOOtheme has WebP and AVIF, a quality setting, focal-point cropping, and Unsplash and Pexels search. Crust makes resized JPG and PNG copies.</span><span class="plan">→ WebP and AVIF copies at publish (free Rust libraries), focal point. Photo search needs an API key from you, so it stays later.</span></div></div>
+
+    <div class="row"><div><h3>Templates for posts and lists <span class="pill p2">P2</span></h3><p class="sub">YOOtheme calls this Dynamic content</p></div>
+      <div class="meters"><div class="m yt"><span>YOOtheme</span><div class="track"><b style="width:100%"></b></div></div><div class="m now"><span>Today</span><div class="track"><b style="width:30%"></b></div></div><div class="m next"><span>Plan</span><div class="track"><b style="width:60%"></b></div></div></div>
+      <div class="detail"><span class="gap">YOOtheme lets you design the post, archive, search and 404 pages in the builder, with fields from any source. Crust's blog list, post page and 404 have fixed designs.</span><span class="plan">→ Design the post page, blog list and 404 in the builder. Collections such as Projects or Team, which portfolio templates need, are a follow-up proposal.</span></div></div>
+  </div>
+  <p class="callout">Left out on purpose: WooCommerce, comments, widgets, Joomla and custom PHP. Also cookie consent: Crust sites set no cookies and load no trackers, so they don't need a banner. YOOtheme doesn't publish counts for its fonts, icons or library, so those scores are judged from its docs.</p>
+</section>
+
+<section aria-labelledby="see">
+  <span class="eyebrow">What the gap looks like</span>
+  <h2 id="see">Six of the gaps, drawn</h2>
+  <div class="tiles">
+    <article class="panel tile"><h3>Fonts and display type</h3>
+      <div class="cmp"><figure><div class="ui fontA" aria-hidden="true"><b>Rooms that stay calm</b><span>System font, bold, no tracking</span></div><figcaption>Today</figcaption></figure>
+      <figure><div class="ui fontB" aria-hidden="true"><span>Studio · Since 2008</span><b>Rooms that stay calm</b></div><figcaption>Plan</figcaption></figure></div>
+      <p>A bundled serif at light weight with tight tracking, plus a mono label. The same words feel far more expensive.</p></article>
+
+    <article class="panel tile"><h3>Header layouts</h3>
+      <div class="ui" aria-hidden="true"><div class="hdr">
+        <div><i></i><em><u></u><u></u><u></u><u></u></em></div>
+        <div class="c"><em><u></u><u></u></em><i></i><em><u></u><u></u></em></div>
+        <div class="s"><i></i><em><u></u><u></u><u></u><u></u></em></div>
+        <div class="t"><i></i><em><u></u><u></u><u></u></em></div>
+      </div></div>
+      <p>Logo left, split around the logo, stacked and centred, transparent over the hero. Today Crust has only the first.</p></article>
+
+    <article class="panel tile"><h3>Section widths</h3>
+      <div class="ui" aria-hidden="true"><div class="sec"><div style="width:40%"></div><div style="width:62%"></div><div style="width:84%"></div><div style="width:100%;border-radius:0"></div><div style="width:92%;margin-left:8%;margin-right:0;border-radius:2px 0 0 2px"></div></div></div>
+      <p>Narrow, default, wide, full bleed, and expand one side: the photo runs to the screen edge while the text stays aligned.</p></article>
+
+    <article class="panel tile"><h3>Motion</h3>
+      <div class="ui" aria-hidden="true"><div class="motion"><span></span><span></span><span></span></div></div>
+      <p>Cards rise in one after another as you scroll. CSS only, off under Reduce motion, never hiding content.</p></article>
+
+    <article class="panel tile"><h3>New blocks</h3>
+      <div class="ui" aria-hidden="true"><div class="blocks">
+        <div><strong>140+</strong>Stats</div><div>▶<br>Video</div><div>⟷<br>Slider</div>
+        <div>Tab · Tab<br>Tabs</div><div>US$49<br>Pricing</div><div>01 —<br>Numbered</div>
+      </div></div>
+      <p>The sections premium templates are made of, which Crust can't build today.</p></article>
+
+    <article class="panel tile"><h3>Icon set</h3>
+      <div class="ui" aria-hidden="true"><div class="icons">
+        <svg viewBox="0 0 24 24"><path d="M3 12h18M12 3v18"/></svg><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><svg viewBox="0 0 24 24"><path d="M4 20V10l8-6 8 6v10z"/></svg><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><svg viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"/><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/></svg><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 10h16"/></svg><svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div></div>
+      <p>An open-licence set of about 1,500 line icons, such as Lucide (ISC licence), placed into the page as plain SVG. Today Crust has 6 list icons.</p></article>
+  </div>
+</section>
+
+<section aria-labelledby="wins">
+  <span class="eyebrow">Keep these</span>
+  <h2 id="wins">Where Crust is already ahead</h2>
+  <div class="wins">
+    <div class="panel"><h3>Nothing to hack</h3><p>YOOtheme needed four security releases in Aug–Oct 2026, the last for remote code execution through its image handler. A static Crust site has no server code to attack.</p></div>
+    <div class="panel"><h3>Accessibility enforced</h3><p>YOOtheme offers accessible parts. Crust refuses to publish missing alt text, skipped headings or low contrast, and every new piece in the plan keeps that rule.</p></div>
+    <div class="panel"><h3>Fast and free to run</h3><p>No JavaScript by default, $0 hosting, publishing from the desktop app, and templates as one file you can sell.</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="plan">
+  <span class="eyebrow">Your decision</span>
+  <h2 id="plan">Milestone 8 "Premium design layer": two sizes</h2>
+  <div class="opts">
+    <article class="panel opt rec">
+      <header><span class="tag">Recommended</span><h3>A · All in: 15 features, in this order</h3></header>
+      <div class="lanes" role="list" aria-label="Milestone 8, all in">
+        <div class="lane" role="listitem"><span>1 · Look</span><div class="chips"><span class="chip"><small>F070</small>Fonts</span><span class="chip"><small>F071</small>Type and detail styles</span><span class="chip"><small>F072</small>Style library</span></div></div>
+        <div class="lane" role="listitem"><span>2 · Layout</span><div class="chips"><span class="chip"><small>F073</small>Sections v2</span><span class="chip"><small>F074</small>Rows and columns v2</span><span class="chip"><small>F075</small>Motion</span></div></div>
+        <div class="lane" role="listitem"><span>3 · Frame</span><div class="chips"><span class="chip"><small>F076</small>Header and footer v2</span><span class="chip"><small>F077</small>Icons, Divider, Social</span></div></div>
+        <div class="lane" role="listitem"><span>4 · Blocks</span><div class="chips"><span class="chip"><small>F078</small>Stats, Video, Table/Pricing, Numbered list</span><span class="chip"><small>F079</small>Slideshow, Card slider, Tabs, Lightbox, Map</span></div></div>
+        <div class="lane" role="listitem"><span>5 · Content</span><div class="chips"><span class="chip"><small>F080</small>Layout library v2</span><span class="chip"><small>F081</small>Images: WebP, AVIF, focal point</span><span class="chip"><small>F082</small>Post, blog and 404 designs</span><span class="chip"><small>F083</small>Stricter template check</span></div></div>
+        <div class="lane" role="listitem"><span>6 · Proof</span><div class="chips"><span class="chip"><small>F084</small>Rebuild Harbour, Signal, Corner</span></div></div>
+      </div>
+      <div class="facts"><span><b>Covers</b> every P1 and P2 area above</span><span><b>Then</b> the store (F063 onward) resumes and shows the new templates</span></div>
+    </article>
+
+    <article class="panel opt">
+      <header><h3>B · Core first: 9 features, the rest later</h3></header>
+      <div class="lanes" role="list" aria-label="Milestone 8, core only">
+        <div class="lane" role="listitem"><span>Now</span><div class="chips"><span class="chip">Fonts</span><span class="chip">Type and detail styles</span><span class="chip">Sections v2</span><span class="chip">Rows and columns v2</span><span class="chip">Motion</span><span class="chip">Header and footer v2</span><span class="chip">Icons, Divider, Social</span><span class="chip">Stats, Video, Table/Pricing</span><span class="chip">Rebuild templates</span></div></div>
+        <div class="lane" role="listitem"><span>Later</span><div class="chips"><span class="chip later">Style library</span><span class="chip later">Sliders, Tabs, Lightbox, Map</span><span class="chip later">Layout library v2</span><span class="chip later">Images</span><span class="chip later">Post/blog designs</span><span class="chip later">Stricter check</span></div></div>
+      </div>
+      <div class="facts"><span><b>Faster</b> to rebuilt templates</span><span><b>Risk</b> the new templates have fewer section types and still repeat themselves</span></div>
+    </article>
+  </div>
+  <div class="panel" style="padding:20px;display:grid;gap:10px">
+    <h3>Why A</h3>
+    <p>You asked to go all in. The order puts the look first (fonts, type, sections, motion), because those four make most of the difference you saw. Every later feature is then built and tested on the new look. The template rebuild comes last, so it can use everything. The quality check comes just before it, so filler text and empty slots can't slip through again.</p>
+    <ol class="next">
+      <li>If you approve, I write <code>docs/milestone-8.md</code> and add the 15 features to the list, then start with F070 Fonts and its design sketch.</li>
+      <li>The store (F063–F068) waits until Milestone 8 is done. It's built with Crust, so it gets the new look too.</li>
+      <li>Accessibility for each piece: fonts keep readable sizes, mono labels at least 12 px with 4.5:1 contrast, motion never hides content, video never autoplays sound, and every slider and tab works by keyboard.</li>
+    </ol>
+  </div>
+</section>
+</main>

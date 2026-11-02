@@ -1,5 +1,5 @@
 {
-  "milestone": 4,
+  "milestone": 8,
   "rules": "One feature per session. passes=true only when done_check exits 0. needs_review items also need the owner to set reviewed=true after testing the preview. Only the owner adds or removes features.",
   "features": [
     {
@@ -486,7 +486,7 @@
       "id": "F045",
       "title": "Save a site as a template",
       "description": "Site settings → 'Save as template' downloads one .crust file with the whole site: design tokens, header and footer, pages, linked sections, saved layouts, a sample post and the photos. Builds on the theme pack file (F033) with kind 'template'; reading it checks everything and drops unknown fields. New file format: spec entry and DECISIONS.md entry. Added by the owner (approved Milestone 5, 2026-10-30).",
-      "depends_on": ["F033",  "F034",  "F035",  "F043"],
+      "depends_on": ["F033", "F034", "F035", "F043"],
       "done_check": "npm test -- template-file && npm run typecheck && npm run build",
       "passes": true,
       "needs_review": true,
@@ -497,7 +497,7 @@
       "id": "F046",
       "title": "Placeholder content",
       "description": "Text and photos in a template can be marked 'replace me'. The builder outlines them and shows a checklist of what's left; publishing stops with a plain-language list while any remain. Added by the owner (approved Milestone 5, 2026-10-30).",
-      "depends_on": ["F045",  "F002"],
+      "depends_on": ["F045", "F002"],
       "done_check": "npm test -- placeholders && npm run build && cargo test",
       "passes": true,
       "needs_review": true,
@@ -508,7 +508,7 @@
       "id": "F047",
       "title": "Template quality check",
       "description": "One command (npm run check:template) and a CI job that a template must pass: axe at three widths on every page, contrast in every section style, one h1 and heading order, alt text, Lighthouse >= 95 on the home page, every layout renders, no leftover placeholders. Writes a readable report page. Added by the owner (approved Milestone 5, 2026-10-30).",
-      "depends_on": ["F045",  "F046"],
+      "depends_on": ["F045", "F046"],
       "done_check": "npm test -- template-check && npm run check:template",
       "passes": true,
       "needs_review": true,
@@ -519,7 +519,7 @@
       "id": "F048",
       "title": "Start from a template",
       "description": "Pages screen → 'Start from a template' opens a gallery: thumbnail, page list and a live preview at desktop, tablet and phone widths. Applying asks first and says exactly what it replaces; the previous site stays in Git history and can be restored. Design snapshot first. Added by the owner (approved Milestone 5, 2026-10-30).",
-      "depends_on": ["F045",  "F046"],
+      "depends_on": ["F045", "F046"],
       "done_check": "npm test -- start-from-template && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
@@ -530,7 +530,7 @@
       "id": "F049",
       "title": "First starter template",
       "description": "One complete template designed with the owner: Home, About, Services, Work, Contact, a blog with one post, a linked contact strip. Passes the template quality check. Design snapshot with 2-3 directions first; the owner picks. Added by the owner (approved Milestone 5, 2026-10-30).",
-      "depends_on": ["F047",  "F048"],
+      "depends_on": ["F047", "F048"],
       "done_check": "npm test -- starter-template && npm run check:template",
       "passes": true,
       "needs_review": true,
@@ -674,7 +674,7 @@
       "id": "F063",
       "title": "Store site",
       "description": "Design snapshot first. The template store, built with Crust from its own content folder and published to its own Cloudflare Pages project: home, all templates, a page per template (live demo, price, what's included, licence), a download page for the free app, help. Publishing also writes the catalogue file the app reads (F062). Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
-      "depends_on": ["F062"],
+      "depends_on": ["F062", "F084"],
       "done_check": "npm test -- store && npm run check:a11y && npm run check:perf",
       "passes": false,
       "needs_review": true,
@@ -737,6 +737,156 @@
       "depends_on": ["F054"],
       "done_check": "npm test -- review-fixes && npm run typecheck && npm run build && npm run check:a11y",
       "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F070",
+      "title": "Fonts",
+      "description": "Design snapshot first. About 30 open-licence typefaces bundled with Crust in tested heading/body pairs, picked in Site settings, served from the site itself (woff2, only the weights and characters a site uses, font-display swap, preloaded). Templates and theme packs carry the choice. System stacks stay as an option. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
+      "depends_on": ["F028"],
+      "done_check": "npm test -- fonts && npm run check:a11y && npm run check:perf",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F071",
+      "title": "Type and detail styles",
+      "description": "Design snapshot first. Display and headline styles (light to heavy weights, tracking down to -0.05em, larger display sizes), eyebrow and mono label styles, tag chips, more button styles (outline, ghost, text with arrow) and card styles (tile, image cover), radius and shadow scales. Contrast and minimum label size checked. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
+      "depends_on": ["F070"],
+      "done_check": "npm test -- type-styles && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F072",
+      "title": "Style library",
+      "description": "Design snapshot first. About 12 complete looks (fonts, type, colours, buttons, cards, header style), each with colour variations, applied in Site settings with undo; replaces the 9 colour presets as the starting point. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
+      "depends_on": ["F071"],
+      "done_check": "npm test -- style-library && npm run check:builder",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F073",
+      "title": "Sections v2",
+      "description": "Design snapshot first. Section widths (narrow to full bleed, expand one side), colour and gradient backgrounds, muted background video with a still image under Reduce motion, image focal point, overlap with the next section, transparent header over the first section. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
+      "depends_on": ["F071"],
+      "done_check": "npm test -- sections-v2 && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F074",
+      "title": "Rows and columns v2",
+      "description": "Column background, padding and radius; vertical alignment; gap sizes; order on phone; dividers; sticky column. Keyboard and reading order unchanged. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
+      "depends_on": ["F073"],
+      "done_check": "npm test -- columns-v2 && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F075",
+      "title": "Motion",
+      "description": "Design snapshot first. Entrance effects per section and block with stagger, light parallax, hover lifts, logo marquee. CSS only, content visible without it, off under Reduce motion. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
+      "depends_on": ["F073"],
+      "done_check": "npm test -- motion && npm run check:a11y && npm run check:perf",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F076",
+      "title": "Header and footer v2",
+      "description": "Design snapshot first. Six header layouts, transparent over the hero, dropdown submenus, slide-in phone menu, top bar; the footer built from blocks as a linked section. Keyboard and screen reader tested. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
+      "depends_on": ["F071"],
+      "done_check": "npm test -- header-v2 && npm run check:a11y && npm run check:builder",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F077",
+      "title": "Icons, Divider, Social",
+      "description": "An open-licence icon set (Lucide, ISC) inlined as SVG at publish; Icon block, icons in lists, cards and buttons; Divider block; Social links block. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
+      "depends_on": ["F071"],
+      "done_check": "npm test -- icons && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F078",
+      "title": "Stats, Video, Table and Pricing, Numbered list",
+      "description": "New blocks: Stats, Video (file or YouTube/Vimeo, loads only when pressed, captions), Table and Pricing, numbered list style. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
+      "depends_on": ["F077"],
+      "done_check": "npm test -- blocks-v3 && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F079",
+      "title": "Slideshow, Card slider, Tabs, Lightbox, Map",
+      "description": "Interactive blocks with a little JavaScript only on pages that use them: Slideshow, Card slider (scroll snap), Tabs, Lightbox for galleries, Map (loads when pressed). All keyboard operable, no autoplay without a pause button. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
+      "depends_on": ["F078"],
+      "done_check": "npm test -- interactive && npm run check:a11y && npm run check:perf",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F080",
+      "title": "Layout library v2",
+      "description": "About 60 premium sections and 10 page layouts rebuilt on the new layer; saved element styles. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
+      "depends_on": ["F072", "F074", "F075", "F076", "F079"],
+      "done_check": "npm test -- layouts && npm run check:layouts",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F081",
+      "title": "Images: WebP, AVIF, focal point",
+      "description": "Publishing makes WebP and AVIF copies (free Rust libraries) next to JPG/PNG; focal point picked in the media library and used for crops. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
+      "depends_on": ["F034"],
+      "done_check": "npm test -- images && cargo test -p crust-publish && npm run check:perf",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F082",
+      "title": "Post, blog and 404 designs",
+      "description": "Design the post page, the blog list and the 404 page in the builder instead of fixed designs. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
+      "depends_on": ["F073"],
+      "done_check": "npm test -- page-designs && npm run check:a11y",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F083",
+      "title": "Stricter template check",
+      "description": "The template quality check also fails on filler text, empty slots (a card or slide without its photo), mismatched image crops in one row, and too few section types on Home. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
+      "depends_on": ["F047"],
+      "done_check": "npm test -- template-check && npm run check:template",
+      "passes": false,
+      "needs_review": false,
+      "reviewed": false
+    },
+    {
+      "id": "F084",
+      "title": "Rebuild Harbour, Signal and Corner",
+      "description": "Design snapshot first. Remake the three starter templates on the new layer with full-length pages and finished copy; they must pass the stricter check. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
+      "depends_on": ["F080", "F081", "F082", "F083"],
+      "done_check": "npm run check:template && npm test -- starter",
+      "passes": false,
       "needs_review": true,
       "reviewed": false
     }

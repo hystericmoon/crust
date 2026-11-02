@@ -8,6 +8,26 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
+- **Premium design layer (owner feedback 2026-11-02). Owner chose B (2026-11-02: "Let's go B, let's go all in in this. Compare yootheme features against us and tell me the gap. We should focus on that").** Next: a YOOtheme gap page and a milestone draft for approval; the milestone goes before the premium templates track. Gap page: https://claude.ai/artifact/ULmnd4JZEKpGvyUHFg1Kpo (`design/yootheme-gap-v1.html`, from YOOtheme Pro 5.0.53 docs and changelog, read 2026-11-01). Draft Milestone 8 "Premium design layer": A all in, 15 features F070–F084 (recommended), or B core 9. Waiting on the owner; F063 store paused until M8 is done (it's built with Crust, so it gets the new look). The owner
+  compared our templates with eliras/zorven/labzzy.webflow.io and found
+  ours not premium. Agreed, side by side:
+  https://claude.ai/artifact/FMb9QuLomsLCvQC9aZscf3
+  (`design/premium-gap-v1.html`). About 60% of the gap is the system
+  (system fonts only; display sizes/tracking stop short; no mono labels
+  or chips; one hero arrangement; no stats, numbered list, image strip,
+  pricing blocks; no motion), 40% the templates (3 of about 7–19
+  sections, filler copy, mismatched crops, an empty card in Signal).
+  Options: A polish templates only; **B (recommended)** upgrade the
+  design layer (bundled open-licence fonts served from the site, type
+  and detail options, three hero layouts, four new blocks, CSS-only
+  motion that respects Reduce motion, stricter template check), then
+  rebuild Harbour, Signal, Corner; C B plus a freeform canvas (not
+  recommended: reading order and phone layouts break). Learn principles
+  from the references, never copy their layouts, copy or photos. If the
+  owner approves B, write it up as a milestone before the premium
+  templates track. F063 (store) continues meanwhile; it doesn't depend
+  on this.
+
 - **Browser copies in the app (found with F060, 2026-11-01).** The
   builder keeps working copies in the window's storage (unsaved
   colours, header and footer, page and post drafts, "Bring back my
@@ -230,6 +250,25 @@ Features Claude suggests. They are not work until the owner adds them to
   found" page there. Publishing by FTP could write an `.htaccess` with
   the redirects and Crust's 404 page. Small (M). Only helps Apache hosts
   (most shared hosting); Nginx hosts ignore it, harmlessly.
+
+
+## 2026-11-02 — Milestone 8 approved (owner)
+
+- Owner: "Let's go A" on https://claude.ai/artifact/ULmnd4JZEKpGvyUHFg1Kpo.
+  Milestone 8 "Premium design layer", F070–F084, written in
+  `docs/milestone-8.md` and added to features.json (owner-approved
+  scope). The "Premium design layer" proposal is now this milestone.
+- The store waits: F063 now also depends on F084, as the approved plan
+  said ("Then the store resumes"). This keeps the session protocol from
+  picking F063 first.
+- Open question for the owner: most good open fonts are under the SIL
+  Open Font License 1.1, which is not in CLAUDE.md's licence list (MIT,
+  Apache-2.0, BSD, ISC). It's free, allows bundling and selling sites,
+  and forbids only selling the fonts on their own. F070 needs an OK to
+  use OFL fonts; until then its design snapshot can go ahead.
+- Correction to `design/premium-gap-v1.html`: Crust's "Dramatic" type
+  scale already reaches about 76 px; the gap there is tracking, light
+  weights and real fonts, not size.
 
 ## 2026-11-01 — F053 Signal and Corner with real photos (Claude, reversible)
 
