@@ -766,7 +766,7 @@
       "description": "Design snapshot first. About 12 complete looks (fonts, type, colours, buttons, cards, header style), each with colour variations, applied in Site settings with undo; replaces the 9 colour presets as the starting point. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F071"],
       "done_check": "npm test -- style-library && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

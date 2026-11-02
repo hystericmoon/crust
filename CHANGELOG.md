@@ -4,6 +4,16 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **A style library (F072).** Site settings → **Styles** now offers
+  12 complete looks, such as Atelier, Studio, Maison, Clinic and
+  Bistro, each in three colourways. A look sets fonts, headings, small
+  labels, buttons, cards, links and corners in one go; your pages,
+  spacing and page width stay as they are. Each card is drawn in its
+  own look, and the dots under it switch colourway. "Undo style" takes
+  you back to how the site looked before you started trying looks. The
+  looks replace the 9 colour presets; sites that used a preset keep
+  their colours.
+
 - **Display headings, small labels, more buttons and photo cards
   (F071).** A Heading can now be **Display** size, a step above H1, and
   can have a **small label above** it, like "ARCHITECTURE STUDIO".

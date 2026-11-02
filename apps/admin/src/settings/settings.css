@@ -182,11 +182,11 @@ body:has(.st) { margin: 0; }
 .st-look-btn { justify-self: start; margin-top: 4px; padding: 5px 11px; border: 1.5px solid; font-size: 0.75rem; font-weight: 500; }
 .st-look-name { font-weight: 600; }
 .st-look-suits { font-size: 0.8125rem; color: var(--st-muted); }
-.st-swatches { display: flex; align-items: center; gap: 8px; padding: 0 4px; }
+.st-cws { display: flex; align-items: center; gap: 8px; padding: 0 4px; }
 /* 24px targets with spacing (WCAG 2.5.8). */
-.st-swatch { width: 24px; height: 24px; padding: 0; border-radius: 50%; border: 1px solid var(--st-border); cursor: pointer; }
-.st-swatch[aria-checked="true"] { outline: 2px solid var(--st-action); outline-offset: 2px; }
-.st-swatch-name { font-size: 0.75rem; color: var(--st-muted); }
+.st-cw { width: 24px; height: 24px; padding: 0; border-radius: 50%; border: 1px solid var(--st-border); cursor: pointer; }
+.st-cw[aria-checked="true"] { outline: 2px solid var(--st-action); outline-offset: 2px; }
+.st-cw-name { font-size: 0.75rem; color: var(--st-muted); }
 
 /* F071: small label pictures */
 .st-label-pic { font-size: 0.75rem; font-weight: 600; }

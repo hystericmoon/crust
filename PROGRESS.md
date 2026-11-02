@@ -5,10 +5,14 @@ to "Log".
 
 ## Current
 
-- **F072 Style library: in progress, paused** (branch
-  `f072-style-library`, WIP PR). See HANDOVER.md for what's left (one
-  CSS class clash, docs). PRs #54 → #55 (F070) → #56 (F071) are green
-  and ready to merge in that order.
+- **F072 Style library: built, passes** (branch `f072-style-library`,
+  PR #57, stacked on F071's PR). Snapshot
+  https://claude.ai/artifact/GaX1QoHvVTp8S3bU1ybxsa, A built.
+  **To try** on the PR's preview link: Site settings → Styles, press a
+  few look cards and the colourway dots under them, then "Undo style".
+  Screenshots `design/f072-styles*.png`. Needs `reviewed: true`.
+  PRs #54 → #55 (F070) → #56 (F071) → #57 (F072) merge in that order.
+  Next: F073 Sections v2.
 - **F071 Type and detail styles: built, passes** (branch
   `f071-type-styles`, stacked on F070's PR). Snapshot
   https://claude.ai/artifact/H3pscypcAov3mFHwoMHAHS, A built. **To try:**
@@ -726,3 +730,4 @@ to "Log".
   #53 (F062) and #45 (F053, notes conflicts resolved by keeping both
   sides) once their CI was green. Main now has Milestones 1–6. Next:
   F063 Store site, from main.
+- 2026-11-02: F072 Style library finished (colourway dot class clash fixed, screenshots re-shot, DECISIONS "F072"); done_check exit 0.

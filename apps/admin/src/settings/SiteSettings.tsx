@@ -710,7 +710,7 @@ function StyleLibrary({ tokens, onPick }: { tokens: SiteTokens; onPick: (look: S
               <span className="st-look-name">{look.name}</span>
               <span className="st-look-suits">{look.suits}</span>
             </button>
-            <div className="st-swatches" role="radiogroup" aria-label={`${look.name} colourway`}>
+            <div className="st-cws" role="radiogroup" aria-label={`${look.name} colourway`}>
               {look.variations.map((v) => {
                 const checked = on && current!.variation.id === v.id;
                 return (
@@ -721,13 +721,13 @@ function StyleLibrary({ tokens, onPick }: { tokens: SiteTokens; onPick: (look: S
                     aria-checked={checked}
                     aria-label={v.name}
                     title={v.name}
-                    className="st-swatch"
+                    className="st-cw"
                     style={{ background: `linear-gradient(135deg, ${v.colors.background} 50%, ${v.colors.primary} 50%)` }}
                     onClick={() => onPick(look, v)}
                   />
                 );
               })}
-              <span className="st-swatch-name" aria-hidden="true">{on ? current!.variation.name : look.variations.map((v) => v.name).join(" · ")}</span>
+              <span className="st-cw-name" aria-hidden="true">{on ? current!.variation.name : look.variations.map((v) => v.name).join(" · ")}</span>
             </div>
           </li>
         );
