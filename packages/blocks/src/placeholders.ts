@@ -39,6 +39,10 @@ export const markableFields: Readonly<Record<string, readonly MarkableField[]>> 
   ImageOverlay: [photo("imageSrc"), text("title", "Title"), text("text", "Text")],
   Divider: [text("label", "Label")],
   SocialLinks: [list("links", "Profiles")],
+  Stats: [list("items", "Figures")],
+  Video: [text("src", "Video"), text("title", "Title"), photo("imageSrc", "Cover photo")],
+  Table: [text("caption", "Title"), list("rows", "Cells")],
+  Pricing: [list("plans", "Plans")],
 };
 
 /** Plain names of blocks, for the checklist and the publish check. */
@@ -59,6 +63,10 @@ const blockNames: Record<string, string> = {
   Icon: "Icon",
   Divider: "Divider",
   SocialLinks: "Social links",
+  Stats: "Stats",
+  Video: "Video",
+  Table: "Table",
+  Pricing: "Pricing",
 };
 export const blockName = (type: string): string => blockNames[type] ?? type;
 

@@ -114,7 +114,8 @@ export {
   hasH1,
 } from "./layouts";
 export type { LayoutCategory, SectionLayout, PageLayout } from "./layouts";
-export { itemLimits, listIcons, listIconNames, moreBlocks, ListIconSvg, isListIcon } from "./more-blocks";
+export { itemLimits, listIcons, listIconNames, moreBlocks, ListIconSvg, isListIcon, numberStyles, numberStyleNames, listNumber, NUMBERS } from "./more-blocks";
+export type { NumberStyle } from "./more-blocks";
 export {
   iconCategories,
   iconCategoryNames,
@@ -134,6 +135,33 @@ export {
 export type { IconCategory, SocialNetwork, SocialLink } from "./icons";
 export { iconBlocks, iconLooks, iconLookNames, iconSizes, iconSizeNames, dividerKinds, dividerKindNames, dividerWidths, socialLimit, IconMark } from "./icon-blocks";
 export type { IconProps, IconLook, IconSize, DividerProps, DividerKind, DividerWidth, SocialLinksProps } from "./icon-blocks";
+export {
+  blocksV3,
+  blocksV3Limits,
+  statLooks,
+  statLookNames,
+  statItems,
+  videoSourceOf,
+  videoServiceName,
+  videoEmbedUrl,
+  videoWatchUrl,
+  captionsAddress,
+  playLabel,
+  videoRatios,
+  videoRatioNames,
+  hasVideoEmbed,
+  VIDEO_EMBED_SCRIPT,
+  tableHeaders,
+  tableHeaderNames,
+  tableLooks,
+  tableLookNames,
+  tableCells,
+  isNumberCell,
+  featureLines,
+  planButtonLabel,
+} from "./blocks-v3";
+export type { StatItem, StatLook, StatsProps, VideoSource, VideoRatio, VideoProps, TableHeaders, TableLook, TableProps, Plan, PricingProps } from "./blocks-v3";
+export { BLOCKS_V3_CSS, needsBlocksV3Css } from "./blocks-v3-css";
 export type { GridItem, GridProps, GalleryImage, GalleryProps, AccordionItem, AccordionProps, ListIcon, IconListProps, Logo, LogoRowProps, QuoteProps, ImageOverlayProps } from "./more-blocks";
 export { PACK_FORMAT, PACK_VERSION, packLimits, makeThemePack, packFileName, readThemePack, freeLayoutName, packSummary } from "./theme-pack";
 export type { ThemePack, PackLayout, PackChrome, PackParts, PackCheck, BlockSpecs } from "./theme-pack";

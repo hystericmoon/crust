@@ -103,6 +103,49 @@ const blockSpecs: Record<string, { name: string; fields: QuickSpec[]; lists?: { 
     ],
   },
   IconList: { name: "Icon list", fields: [], lists: [{ key: "items", item: "Line", fields: [{ key: "text", label: "Text", kind: "text" }] }] },
+  // F078
+  Stats: {
+    name: "Stats",
+    fields: [],
+    lists: [
+      {
+        key: "items",
+        item: "Figure",
+        fields: [
+          { key: "value", label: "Figure", kind: "text" },
+          { key: "label", label: "What it counts", kind: "text" },
+          { key: "detail", label: "Extra line", kind: "text" },
+        ],
+      },
+    ],
+  },
+  Video: {
+    name: "Video",
+    fields: [
+      { key: "title", label: "What the video is", kind: "text" },
+      { key: "imageSrc", label: "Cover photo", kind: "image" },
+      { key: "caption", label: "Caption", kind: "text" },
+    ],
+  },
+  Table: { name: "Table", fields: [{ key: "caption", label: "Title", kind: "text" }] },
+  Pricing: {
+    name: "Pricing",
+    fields: [{ key: "badge", label: "Badge", kind: "text" }],
+    lists: [
+      {
+        key: "plans",
+        item: "Plan",
+        fields: [
+          { key: "name", label: "Plan name", kind: "text" },
+          { key: "price", label: "Price", kind: "text" },
+          { key: "period", label: "After the price", kind: "text" },
+          { key: "description", label: "Description", kind: "textarea" },
+          { key: "features", label: "What's included (one per line)", kind: "textarea" },
+          { key: "buttonLabel", label: "Button text", kind: "text" },
+        ],
+      },
+    ],
+  },
   LogoRow: {
     name: "Logo row",
     fields: [],

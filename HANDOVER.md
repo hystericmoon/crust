@@ -5,7 +5,30 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 ~19:00 (Jakarta). **F077 Icons, Divider,
+Last updated: 2026-11-02 ~20:30 (Jakarta). **F078 Stats, Video,
+Table and Pricing, Numbered list built, passes** (branch
+`ccr-d50f7e80-weuq18`, from main after F077 merged as PR #63;
+done_check exit 0; DECISIONS "F078"). Snapshot
+https://claude.ai/artifact/X3bMNKoE6MCU7EqbLJx2mk (A built for all
+three choices). How it fits: blocks in
+`packages/blocks/src/blocks-v3.tsx` (Stats, Video with
+`videoSourceOf`/`VIDEO_EMBED_SCRIPT`/`hasVideoEmbed`, Table with
+`tableCells`, Pricing), CSS in `blocks-v3-css.ts` (`BLOCKS_V3_CSS`, only
+on pages that use it via `needsBlocksV3Css`), numbered list is the Icon
+list's `icon: "numbers"` + `numberStyle` (more-blocks.tsx). Builder:
+`apps/admin/src/blocks-v3/` (`TableField.tsx`, `table-edit.ts`,
+`fields.tsx` with `withBlocksV3Fields`, `blockFieldShown`,
+`videoNotes`); Numbers option in `IconPicker` (`numbers` prop).
+render.tsx `videoTag` now also adds the embed script. check:builder
+seeds a post `check-blocks` (ids must start with the block type for
+`[data-puck-component^=…]`). Needs `reviewed: true`. **Next: F079
+Slideshow, Card slider, Tabs, Lightbox, Map** (design snapshot first;
+done_check `npm test -- interactive && npm run check:a11y && npm run
+check:perf`), on a new branch from main once F078 is merged, or stacked.
+Sessions: the owner starts them by hand ("Read HANDOVER.md on branch
+main and continue"); the new session archives the previous Crust one.
+
+Earlier (~19:00): **F077 Icons, Divider,
 Social built, passes** (branch `f077-icons`, from main; done_check
 `npm test -- icons && npm run check:a11y` exit 0; DECISIONS "F077").
 Direction A of https://claude.ai/artifact/8o1uPhHmTBd9hgkzmx1pU2 (owner

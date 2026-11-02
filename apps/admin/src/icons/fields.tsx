@@ -12,7 +12,7 @@ const usePuckSelector = createUsePuck();
 
 type Render = { value: string | undefined; onChange: (v: string) => void };
 
-const picker = (label: string, opts: { optional?: boolean; classic?: boolean } = {}) => ({
+const picker = (label: string, opts: { optional?: boolean; classic?: boolean; numbers?: boolean } = {}) => ({
   type: "custom" as const,
   label,
   render: ({ value, onChange }: Render) => <IconPicker label={label} value={value ?? ""} onChange={onChange} {...opts} />,
@@ -88,7 +88,7 @@ export function withIconFields(config: Config<Components>): Config<Components> {
         fields: {
           ...iconList.fields,
           items: { ...listItems, arrayFields: { ...listItems.arrayFields, icon: { type: "icon", label: "Own icon (optional)", classic: true } } },
-          icon: picker("Icon for every line", { classic: true }),
+          icon: picker("Icon for every line", { classic: true, numbers: true }),
         },
       },
       SocialLinks: { ...c.SocialLinks, fields: { ...c.SocialLinks.fields, help: { type: "custom", label: "", render: () => <SocialHelp /> } } },

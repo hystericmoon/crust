@@ -51,6 +51,9 @@ const sectionVariants = (["colour", "gradient", "photo", "video"] as const).map(
   return [{ props }, { appState: { data: { content: [{ type: "Section", props }] } }, parent: null }] as const;
 });
 
+/** F078: fields that show only with another setting (number look with Numbers, badge with a highlighted plan). */
+const blockVariants: Record<string, Record<string, unknown>[]> = { IconList: [{ icon: "numbers" }], Pricing: [{ highlight: "2" }] };
+
 describe("settings-tabs: where each setting lives", () => {
   it("puts wording and links in Content, looks in Style, and spacing, visibility and anchors in Advanced", () => {
     expect(tabOf("Heading", "text")).toBe("content");
@@ -71,6 +74,7 @@ describe("settings-tabs: where each setting lives", () => {
         setTab(t);
         for (const k of shown(name as keyof Components)) all.add(k);
         if (name === "Section") for (const [d, p] of sectionVariants) for (const k of shown("Section", d, p)) all.add(k);
+        for (const props of blockVariants[name] ?? []) for (const k of shown(name as keyof Components, { props })) all.add(k);
       }
       for (const k of Object.keys(comp.fields ?? {})) if (k !== "_empty") expect(all, `${name}.${k}`).toContain(k);
       setTab("advanced");

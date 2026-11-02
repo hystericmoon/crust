@@ -84,6 +84,56 @@ const sampleBlocks = (n: string): Content => [
   { type: "Divider", props: { id: `div1-${n}`, kind: "label", label: "Our menu", width: "full", space: "md", align: "center" } },
   { type: "Divider", props: { id: `div2-${n}`, kind: "dots", label: "", width: "short", space: "sm", align: "center" } },
   { type: "Divider", props: { id: `div3-${n}`, kind: "accent", label: "", width: "short", space: "sm", align: "left" } },
+  // F078: stats, numbered lists, a table, pricing and both kinds of video.
+  {
+    type: "Stats",
+    props: {
+      id: `stats-${n}`,
+      look: n === "surface" ? "boxes" : "lines",
+      size: "md",
+      colour: n === "background" ? "primary" : "text",
+      align: "left",
+      items: [
+        { value: "1,200+", label: "sites published", detail: "since 2024" },
+        { value: "98", label: "average speed score", detail: "" },
+        { value: "€0", label: "monthly running cost", detail: "" },
+      ],
+    },
+  },
+  { type: "IconList", props: { id: `steps-${n}`, icon: "numbers", numberStyle: "circle", iconColor: "primary", items: [{ text: "Pick a template" }, { text: "Press Publish" }] } },
+  { type: "IconList", props: { id: `steps2-${n}`, icon: "numbers", numberStyle: "large", iconColor: "primary", items: [{ text: "Book a call" }, { text: "Get a plan" }] } },
+  { type: "IconList", props: { id: `steps3-${n}`, icon: "numbers", numberStyle: "plain", iconColor: "text", items: [{ text: "Order" }, { text: "Collect" }] } },
+  {
+    type: "Table",
+    props: {
+      id: `table-${n}`,
+      caption: "Opening hours",
+      headers: "both",
+      look: n === "surface" ? "stripes" : "lines",
+      rows: [
+        ["", "Studio", "Shop"],
+        ["Monday to Friday", "9:00–18:00", "€12"],
+        ["Saturday", "10:00–16:00", "€9.50"],
+      ],
+    },
+  },
+  {
+    type: "Pricing",
+    props: {
+      id: `pricing-${n}`,
+      highlight: "2",
+      badge: "Most popular",
+      planStyle: "surface",
+      highlightStyle: n === "primary" ? "dark" : "primary",
+      titleLevel: "h3",
+      plans: [
+        { name: "Starter", price: "€19", period: "per month", description: "For a first site.", features: "1 site\nEmail help", buttonLabel: "", buttonHref: "/contact" },
+        { name: "Studio", price: "€49", period: "per month", description: "", features: "5 sites\nYour own domain", buttonLabel: "", buttonHref: "/contact" },
+      ],
+    },
+  },
+  { type: "Video", props: { id: `yt-${n}`, src: "https://youtu.be/aqz-KE-bpKQ", title: "A morning at the studio", imageSrc: "/sample.jpg", captionsSrc: "", caption: "Filmed in March.", ratio: "16:9" } },
+  { type: "Video", props: { id: `vid-${n}`, src: "/media/tour.mp4", title: "Studio tour", imageSrc: "", captionsSrc: "/media/tour.vtt", caption: "", ratio: "16:9" } },
   {
     type: "SocialLinks",
     props: {

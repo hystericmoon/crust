@@ -9,6 +9,7 @@ import { createUsePuck, useGetPuck, type ComponentData, type Config, type Data, 
 import { useEffect, useId, useState, useSyncExternalStore } from "react";
 import { RadioGroup } from "../sections/controls";
 import { sectionFieldShown } from "../sections/sections-v2-fields";
+import { blockFieldShown } from "../blocks-v3/fields";
 
 export const tabs = ["content", "style", "advanced"] as const;
 export type Tab = (typeof tabs)[number];
@@ -57,6 +58,11 @@ const styleFields = new Set([
   "iconAt",
   "show",
   "space",
+  // F078: Stats, Video, Table, Pricing, numbered list
+  "numberStyle",
+  "ratio",
+  "planStyle",
+  "highlightStyle",
   "logoSize",
   "grayscale",
   "position",
@@ -200,7 +206,8 @@ export function withSettingsTabs(config: Config<Components>): Config<Components>
         // F073: a Section shows only its background kind's fields, and "Header sits on this section" only when it's the page's first block.
         const props = (data?.props ?? {}) as Partial<SectionProps> & { id?: string };
         const isFirst = !params?.parent && params?.appState?.data?.content?.[0]?.props?.id === props.id;
-        const shown = (key: string) => name !== "Section" || sectionFieldShown(key, props, isFirst);
+        // F078: a few fields only matter with another setting (number look with Numbers, badge with a highlighted plan).
+        const shown = (key: string) => (name === "Section" ? sectionFieldShown(key, props, isFirst) : blockFieldShown(name, key, props as Record<string, unknown>));
         const picked = Object.entries(own).filter(
           ([key, f]) => key === "_tabs" || isSlot(f) || (key !== "_empty" && tabOf(name, key) === tab && shown(key)),
         );

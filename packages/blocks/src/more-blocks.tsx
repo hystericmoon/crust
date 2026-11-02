@@ -38,7 +38,15 @@ export const listIconNames: Record<ListIcon, string> = { check: "Check", arrow: 
  * `icon` is one of the classic list marks (`listIcons`) or, from F077, any
  * icon from the set (`iconNames`); a line may have its own `icon` (F077).
  */
-export type IconListProps = { items: { text: string; icon?: string }[]; icon: ListIcon | string; iconColor: "primary" | "text" };
+export type IconListProps = { items: { text: string; icon?: string }[]; icon: ListIcon | "numbers" | string; iconColor: "primary" | "text"; numberStyle?: NumberStyle };
+
+/** F078: `icon: "numbers"` makes the list numbered (an <ol>); `numberStyle` is how the numbers look (missing: in a circle). */
+export const numberStyles = ["circle", "large", "plain"] as const;
+export type NumberStyle = (typeof numberStyles)[number];
+export const numberStyleNames: Record<NumberStyle, string> = { circle: "In a circle", large: "Large (01)", plain: "Plain (1.)" };
+export const NUMBERS = "numbers";
+/** A line's number as shown: "1", "01" (large) or "1." (plain). */
+export const listNumber = (i: number, style: NumberStyle) => (style === "large" ? String(i + 1).padStart(2, "0") : style === "plain" ? `${i + 1}.` : String(i + 1));
 
 export type Logo = { src: string; alt: string; href: string };
 /** `moving` was added in F075 (missing: still). */
@@ -292,6 +300,12 @@ export const IconList: ComponentConfig<IconListProps> = {
     },
     // The builder swaps this for the icon picker (classic marks first).
     icon: { type: "text", label: "Icon" },
+    // F078: only shown with Numbers (apps/admin/src/blocks-v3).
+    numberStyle: {
+      type: "radio",
+      label: "Number look",
+      options: numberStyles.map((n) => ({ label: numberStyleNames[n], value: n })),
+    },
     iconColor: {
       type: "radio",
       label: "Icon colour",
@@ -305,8 +319,24 @@ export const IconList: ComponentConfig<IconListProps> = {
     items: [{ text: "Fast, static pages" }, { text: "Accessible by default" }, { text: "No monthly fees" }],
     icon: "check",
     iconColor: "primary",
+    numberStyle: "circle",
   },
-  render: ({ items, icon, iconColor }) => (
+  render: ({ items, icon, iconColor, numberStyle }) => {
+    if (icon === NUMBERS) {
+      const style: NumberStyle = numberStyles.includes(numberStyle as NumberStyle) ? (numberStyle as NumberStyle) : "circle";
+      // A real numbered list; role="list" keeps it a list in Safari without bullets.
+      return (
+        <ol className={`cr-icon-list cr-numbered cr-numbers-${style} cr-icon-${iconColor}`} role="list">
+          {(items ?? []).map((it, i) => (
+            <li key={i}>
+              <span className="cr-list-number">{listNumber(i, style)}</span>
+              <span>{it.text}</span>
+            </li>
+          ))}
+        </ol>
+      );
+    }
+    return (
     <ul className={`cr-icon-list cr-icon-${iconColor}`} role="list">
       {(items ?? []).map((it, i) => (
         <li key={i}>
@@ -315,7 +345,8 @@ export const IconList: ComponentConfig<IconListProps> = {
         </li>
       ))}
     </ul>
-  ),
+    );
+  },
 };
 
 export const LogoRow: ComponentConfig<LogoRowProps> = {
