@@ -25,15 +25,15 @@ Never show it while work is uncommitted or unpushed; finish that first.
 
 | Next feature | Model | Why |
 |---|---|---|
-| F063 Store site | Opus (suggested) | Design snapshot, the public face of the store |
-| F064 Live demos | Sonnet (suggested) | Follows F063's setup |
-| F065 Template versions | Sonnet (suggested) | Well-defined data and checks |
-| F066 Checkout | Opus (suggested) | Payments and security |
-| F067 Delivery and updates | Opus (suggested) | Licences, downloads, security |
-| F068 Licence, terms and refunds | Opus (suggested) | Legal wording for the owner to decide |
+| F063 Store site | Opus | Design snapshot, the public face of the store |
+| F064 Live demos | Sonnet | Follows F063's setup |
+| F065 Template versions | Sonnet | Well-defined data and checks |
+| F066 Checkout | Opus | Payments and security |
+| F067 Delivery and updates | Opus | Licences, downloads, security |
+| F068 Licence, terms and refunds | Opus | Legal wording for the owner to decide |
 
-"Suggested" rows are confirmed by the owner after F083 (he said he'd
-decide the store milestone then); until he has, ask before starting one.
+The owner confirmed all six rows as listed ("go ahead", 2026-11-03
+10:50 Jakarta); they are no longer just suggestions.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
@@ -50,9 +50,9 @@ reader `pickHeader`/`pickFooter` (template.ts) now keep F076 fields.
 serve `dist/template-check/<name>/site`. In the Studio look the "dark"
 section style is the light one (text colour as background): use
 `background` for dark tints there. Milestone 8 is complete (F070–F084).
-Needs `reviewed: true`. **Next: F063 Store site** (Milestone 7): the
-"suggested" models below need the owner's confirmation first; ask before
-starting.
+Needs `reviewed: true`. **Next: F063 Store site** (Milestone 7, Opus;
+models confirmed by the owner 10:50; design snapshot first). A
+scheduled message restarts the work at 11:15 (owner's request).
 
 Earlier (~08:30): **F083 Stricter template
 check built, passes** (branch `ccr-d50f7e80-weuq18`, stacked in PR #65;

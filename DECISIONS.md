@@ -3078,3 +3078,9 @@ Workers (100k requests/day), R2 (10 GB). Only optional cost: a custom domain.
   templates, including premium ones, are in Pages → Start from a
   template."
 - Same gallery on the web admin and in the app.
+
+## 2026-11-03 — Store milestone models confirmed (owner)
+
+The owner confirmed the model plan for Milestone 7 as listed in
+HANDOVER.md ("go ahead", 10:50 Jakarta): F063 Opus, F064 Sonnet, F065
+Sonnet, F066 Opus, F067 Opus, F068 Opus. F063 starts at 11:15.
