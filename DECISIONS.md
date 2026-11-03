@@ -13,6 +13,13 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
+- **Gallery shape in the layout library (found with F084, 2026-11-03).**
+  F080's layout helper gives Galleries `shape: "landscape"`, which isn't
+  one of the Gallery's shapes (`square`, `wide`, `original`), so those
+  layouts' galleries fall back to unstyled tiles, and a template made
+  from them is refused ("blocks Crust doesn't know"). One-line fix in
+  `layouts-v2.ts` (use `wide`). Size S.
+
 - **Premium design layer (owner feedback 2026-11-02). Owner chose B (2026-11-02: "Let's go B, let's go all in in this. Compare yootheme features against us and tell me the gap. We should focus on that").** Next: a YOOtheme gap page and a milestone draft for approval; the milestone goes before the premium templates track. Gap page: https://claude.ai/artifact/ULmnd4JZEKpGvyUHFg1Kpo (`design/yootheme-gap-v1.html`, from YOOtheme Pro 5.0.53 docs and changelog, read 2026-11-01). Draft Milestone 8 "Premium design layer": A all in, 15 features F070–F084 (recommended), or B core 9. Waiting on the owner; F063 store paused until M8 is done (it's built with Crust, so it gets the new look). The owner
   compared our templates with eliras/zorven/labzzy.webflow.io and found
   ours not premium. Agreed, side by side:
@@ -256,6 +263,58 @@ Features Claude suggests. They are not work until the owner adds them to
   the redirects and Crust's 404 page. Small (M). Only helps Apache hosts
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
+
+## 2026-11-03 — F084 Rebuild Harbour, Signal and Corner (Claude, reversible)
+
+Snapshot https://claude.ai/artifact/KhSZToRB3zEYzpXrCe5eVo
+(`design/f084-starter-rebuild-v1.html`). The owner's standing rule is to
+build the recommendation, so A was built for all three decisions.
+
+- **Look: A, the matching Style library look.** Harbour = Atelier ·
+  Stone, Signal = Studio · Signal, Corner = Bistro · Cream (`lookTokens`
+  in starter.ts, `applyLook` on the default tokens, plus motion: Subtle,
+  Lively, Subtle). Site settings recognises the look (`matchingLook`), so
+  the buyer sees which look they have and the other colourways are one
+  click away (recognition over recall). The colours stay close to each
+  template's old palette; Signal becomes a dark site. In this look the
+  "dark" section style is the light band (it uses the text colour), so
+  Signal's light bands are `dark` sections.
+- **Pages: A, pages that fit the business.** Harbour: Studio, Services,
+  Projects, Journal, Contact. Signal: Work, Services, Studio, Notes,
+  Contact, plus a "Start a project" button and a top bar. Corner: Menu
+  (four price tables), Workshops (a price list), Our story, News, Visit
+  us (opening hours, order ahead). Addresses `/about`, `/services`,
+  `/work`, `/contact` are kept where the page is the same kind, so links
+  people learned keep working.
+- **Copy: A, finished words for a made-up business, still marked to
+  replace.** Every made-up figure, quote, name, price, address and photo
+  is marked (F046), so publishing waits until each is replaced or kept on
+  purpose; generic labels ("How we work", button text) aren't. Contact
+  details use `.example` addresses (reserved, never a real inbox) and
+  555 phone numbers.
+- **Structure.** `scripts/starter-templates/`: `kit.ts` (block helpers,
+  ids counted per page so a rebuilt file is identical), `harbour.ts`,
+  `signal.ts`, `corner.ts` (pages, linked sections, two posts, blog
+  settings, header and footer, post/blog/404 designs), `parts.ts` (the
+  shape), `starter.ts` (specs and `buildStarter`). Home pages have 9–10
+  sections and 7–9 kinds of section; inner pages 4–7.
+- **Header and footer v2 in templates.** The template reader (F045) never
+  learned F076's fields, so a template file silently lost a header's
+  layout, "over the hero", top bar and dropdowns, and a footer made of
+  blocks. `pickHeader`/`pickFooter` in `template.ts` now copy them, the
+  existing `validateChrome` judges them, and a block footer's section
+  must be in the file. No format change: the fields were already in the
+  spec and in `site.json`.
+- **Photos.** Same CC0 photos the owner picked (F052/F053), used more
+  widely; Signal also carries the five made-up client logos drawn for
+  the layout library (`photos/signal/logo-*.png`, credited as ours).
+  Rows of photos keep one shape (the 1.6:1 wides together, the 0.8:1
+  talls together).
+- **Width.** Sections use the normal page width, so content lines up
+  with the header and footer; "wide" put text 16 px from the screen edge
+  at 1280 px while the logo sat on the page grid.
+- **`AWAITING_REBUILD` is empty.** The three templates are held to every
+  F083 rule; `npm run check:template` passes for all three.
 
 ## 2026-11-03 — F083 Stricter template check (Claude, reversible)
 
@@ -3019,3 +3078,179 @@ Workers (100k requests/day), R2 (10 GB). Only optional cost: a custom domain.
   templates, including premium ones, are in Pages → Start from a
   template."
 - Same gallery on the web admin and in the app.
+
+## 2026-11-03 — Store milestone models confirmed (owner)
+
+The owner confirmed the model plan for Milestone 7 as listed in
+HANDOVER.md ("go ahead", 10:50 Jakarta): F063 Opus, F064 Sonnet, F065
+Sonnet, F066 Opus, F067 Opus, F068 Opus. F063 starts at 11:15.
+
+## 2026-11-03 — F063 Store site (Claude, reversible)
+
+- **Snapshot** https://claude.ai/artifact/41A2H2RjXGJZTs3ubzRZQE
+  (`design/f063-store-site-v1.html`). A built on all three choices; the
+  owner hadn't picked when it was built.
+  1. **Look: Showroom** (Style library Studio · Paper: white, near-black,
+     Geist, mono labels). The templates are the product, so the store
+     frames them and stays out of their way: a neutral frame never clashes
+     with a warm (Harbour), dark (Signal) or cream (Corner) template, and
+     neutral surroundings make an item's own colours easier to judge.
+     Rejected: editorial paper and serif (competes with Harbour and
+     Corner, two templates per screen), dark launch (washes out light
+     templates, hides Signal, leads with the app instead of the templates).
+  2. **Template page: pictures left, details beside them and kept in
+     view** (Columns `sticky: 2`, F074; the details column has the surface
+     style). The price and the next step stay one glance away while people
+     look at the pictures. On phones the columns stack in reading order
+     (pictures first), so a phone-only price line and button sit under
+     the title instead (`hideOn` desktop and tablet); reordering the
+     columns visually would make the focus order differ from what's seen
+     (WCAG 2.4.3). Phone pictures sit in their own
+     row underneath (a Gallery that opens larger), because a phone picture
+     at a desktop column's width would be several screens tall.
+  3. **Free templates listed like any other, labelled "Free with Crust".**
+     The store is never empty (there are no premium templates yet), and
+     people judge quality on templates they can try at no cost.
+- **How it's made.** `store/list.json` (format `crust-store`, version 1)
+  says what's for sale: id, template file, kind, price, the pages to show,
+  and for a priced template a `buy` link and its `licence` (the list is
+  refused without them, so a paid template can't be published without a
+  way to buy it). `scripts/store/model.ts` writes the store's pages from
+  that list and the template files (`npm run build:store` →
+  `store/content/site.json` and `pages/`), so "What's included" is
+  counted from the file and can't drift. The store's words aren't marked
+  "to replace" (marks are taken off the kit's blocks).
+- **Pictures** (`npm run store:pictures`, needs Chromium and cargo): each
+  shown page published as a buyer would first publish it, then pictured
+  at 1280 (1600 tall, window 800), 768 (1536, window 1024) and 390 wide
+  (1170, window 844, at double sharpness like a phone screen; at single
+  sharpness Harbour's opening photo looked blurred). Motion off, lazy
+  photos scrolled into view first. 27 JPEGs in `store/content/media/`
+  with descriptions and focus at the top, so crops keep the header.
+- **Licence line for free templates**: "Free with Crust. Use it for as
+  many sites as you like." The free starters are part of the free app;
+  priced templates carry their own `licence` (F068 writes the full pages).
+- **Download page** links to the downloads site
+  (`https://crust-downloads.pages.dev`, F061). It only has files after the
+  first "Desktop installers" run with "Put on the downloads site"
+  (BLOCKED.md, update key).
+- **Publishing**: new workflow "Publish store" (by hand only), Cloudflare
+  Pages project `crust-store`, address `https://crust-store.pages.dev`.
+  It stops if Cloudflare gives the project another address, rebuilds the
+  pages and stops if the committed ones are out of date, runs
+  crust-publish and axe, writes `catalogue.json`, then deploys. Same
+  Cloudflare secrets as the site. The owner presses it (publishing is his
+  call).
+- **The app doesn't read the catalogue yet.** `STORE_CATALOGUE_ADDRESS`
+  is the store's catalogue address; `STORE_CATALOGUE_URL` stays off. Why:
+  the catalogue lists only priced templates and there are none, so
+  reading it would show nothing, and until the store is first published
+  the address isn't ours (anyone could claim `crust-store.pages.dev`).
+  The store test fails as soon as `store/list.json` gets a price while it
+  is still off, so it's switched on together with the first premium
+  template, by then after the store is published.
+- **Checks**: `check:a11y` and `check:perf` now also publish the store
+  (`npm run publish:store` → `dist/store`) and run axe on every store
+  page at desktop and phone width, and Lighthouse on its Home page.
+
+## 2026-11-03 — F064 Live demos (Claude, reversible)
+
+- **Snapshot `design/f064-demo-bar-v1.html`, A built:** a 48 px bar fixed to
+  the bottom ("Live demo of Harbour · Free", Back to store, Get this
+  template). B (strip at the top) scrolls away and collides with headers
+  that sit on the opening photo; C (floating pill) has no room for the
+  name or a way back. A sets its own colours (white on near-black), so any
+  template's palette leaves it readable. The page gets bottom padding and
+  scroll padding so the bar never hides the footer or a focused link
+  (WCAG 2.4.11).
+- **Under the store's address, not separate projects.** Published sites use
+  addresses from the root, so `demoFiles` (scripts/store/demos.ts) moves
+  every `href`, `src`, `srcset`, `action`, `url()` and the search page's
+  index address into `/demos/<id>/`. Each demo gets its own Pagefind
+  search index, built before the move; its results already carry the demo's
+  folder (tried in a browser).
+- **Demos are `noindex`, with no sitemap, robots or 404 of their own;**
+  canonical and share addresses name the demo. Built after the store's own
+  search index, so demos don't appear in the store's search.
+- **Both bar links go to the store's template page**, which has the price,
+  licence and, from F066, the buy button, so there is one place to change.
+- Demo photos are made with marks off, like a buyer's first publish, and
+  use the same photo cache as the store.
+
+## 2026-11-03 — F065 Template versions (Claude, reversible)
+
+- **Format change without a new format version.** Template files gain
+  optional `id` and `release`; `format`/`version` stay `crust-template` / 1
+  because older files must still open and a reader that ignores unknown
+  fields loses nothing. No migration is needed: a file without them is
+  simply "from before versions". The reader refuses a file that has only
+  one of the two, or a malformed one (id: lowercase letters, numbers,
+  dashes, up to 60; release: whole number 1–9999).
+- **The release is a plain whole number** (1, 2, 3), not 1.2.3: the owner
+  and buyers only need "is there a newer one", and it compares without
+  rules.
+- **The site remembers its template in `site.json` → `template`
+  `{ id, version }`**, written by the same commit that applies the
+  template, so "Bring back my previous site" restores the old record with
+  the rest. Applying a template without an id removes the record, so the
+  note never points at a template the site no longer uses. It is only
+  recorded when saving to GitHub; the browser-only mode has no
+  `site.json` to write to.
+- **The catalogue carries `version` and `changes`** (optional). `version`
+  comes from the template file; `changes` is written by the owner in
+  `store/list.json` for the current release (1–5 lines). The store refuses
+  a file listed under a different id, and a priced template whose file has
+  no release (without one the app could never tell buyers about updates).
+- **The note is quiet:** a section in the Templates screen (a heading, what
+  changed, a link to the template's store page), not an alert or a badge
+  elsewhere. It never changes the site: updating means downloading the new
+  file from the store and using it, which replaces the site (existing
+  confirm step). A merge of updates into a site the owner has since edited
+  is out of scope; it needs the owner's decision first (Proposals).
+- Only premium templates have catalogue entries, so only they get the
+  note; free starters come with the app and update with it.
+
+## 2026-11-03 — F066 Checkout (Claude, reversible; the provider is the owner's call)
+
+Snapshot https://claude.ai/artifact/6QAvaWHcuU26fgCfCrZVdw
+(`design/f066-checkout-v1.html`). Built A for both choices; the owner
+hadn't picked.
+
+- **Recommended provider: Polar** (merchant of record, 5% + US$0.50 per
+  sale for new accounts, no monthly fee). Deciding facts: Indonesia is on
+  Polar's own payout-country list (via Stripe Connect Express); its
+  "checkout links" are plain links, so the store needs no script; a
+  separate sandbox for test mode; `reference_id` on the link is copied to
+  the order, which F067's Worker reads. **Lemon Squeezy** is also
+  understood (same link idea, `checkout[custom][template]`), but Indonesian
+  payouts weren't confirmed and new sign-ups were reported as invite-gated
+  in 2026. **Paddle** left out: its checkout needs Paddle.js on the page or
+  a server creating each transaction, and seller approval is manual. Fees
+  are from the companies' pages and 2026 comparisons (searched
+  2026-11-03); the owner checks them when opening the account.
+- **The setting lives in `store/list.json`** as optional `"checkout":
+  { "provider", "mode" }` (format stays `crust-store` / 1; missing means
+  buy links are used as written, as in F063). Set now to Polar, test.
+  With it, every buy link must be that company's link for that mode, so a
+  sandbox link can't reach a live store or the other way round (Lemon
+  Squeezy links look the same in both modes; its test mode is a store
+  setting there).
+- **Real payments need two things:** `"mode": "live"` and the owner's
+  "Take real payments" switch on the Publish store workflow (off by
+  default). `scripts/store/checkout-check.ts` runs before rendering and
+  stops the publish when they disagree, or when something has a price but
+  no checkout setting.
+- **Test mode is said under each buy button** (bold "Test checkout.", no
+  real payment, the test card), in reading order after the button, on
+  desktop and in the phone summary. Live mode keeps only the quiet line
+  "Secure checkout by Polar. Tax is added where it applies, and you get a
+  receipt by email." Free templates' pages are unchanged.
+- **`/thanks` page** (only once something has a price; `noindex`): where
+  buyers land after paying. Its address is set as the "success URL" in
+  the provider's dashboard (a link can't carry it). Its wording promises
+  the emailed download link, which F067 builds; until then the store is
+  test-only anyway, and the test version of the page says so.
+- **Same tab, no `target="_blank"`**: going to checkout is the next step of
+  one task, and the provider returns to `/thanks`.
+- Not done here: the catalogue's buy flow in the app is unchanged (the
+  app's "Get" opens the store page, which holds the button).

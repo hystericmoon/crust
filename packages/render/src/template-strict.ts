@@ -242,11 +242,11 @@ export function gradientGroup(t: Template): CheckGroup {
 /** The stricter groups (F083) a template can be excused from while it waits to be rebuilt. */
 export const STRICT_GROUP_IDS = ["slots", "crops", "variety", "gradients"];
 /**
- * Templates built before F083 that F084 rebuilds. Their stricter findings
- * show as notes ("Not yet fixed: …") so the check can run in CI meanwhile.
- * F084 empties this list; a new template is never excused.
+ * Templates built before F083 that were waiting for F084's rebuild. Their
+ * stricter findings showed as notes so the check could run in CI meanwhile.
+ * F084 rebuilt them, so the list is empty; a new template is never excused.
  */
-export const AWAITING_REBUILD = ["Harbour", "Signal", "Corner"];
+export const AWAITING_REBUILD: string[] = [];
 
 /** The same group with its failures turned into notes, for a template that's waiting to be rebuilt. */
 export function excuseUntilRebuilt(g: CheckGroup): CheckGroup {

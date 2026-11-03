@@ -676,7 +676,7 @@
       "description": "Design snapshot first. The template store, built with Crust from its own content folder and published to its own Cloudflare Pages project: home, all templates, a page per template (live demo, price, what's included, licence), a download page for the free app, help. Publishing also writes the catalogue file the app reads (F062). Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
       "depends_on": ["F062", "F084"],
       "done_check": "npm test -- store && npm run check:a11y && npm run check:perf",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -686,7 +686,7 @@
       "description": "Each template in the store is published as a full live demo under the store's address, with a slim, accessible 'Get this template' bar that stays out of the template's own design. Demos are rebuilt whenever the template changes. Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
       "depends_on": ["F063"],
       "done_check": "npm test -- demos && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -696,7 +696,7 @@
       "description": "Template files carry an id and a version (format change: migration, spec and DECISIONS entry; older files still open). A site remembers which template and version it started from; the app shows a quiet note when the catalogue has a newer version, with what changed. Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
       "depends_on": ["F063"],
       "done_check": "npm test -- template-versions && npm test -- template-file && npm run typecheck",
-      "passes": false,
+      "passes": true,
       "needs_review": false,
       "reviewed": false
     },
@@ -706,7 +706,7 @@
       "description": "Buy buttons on the store open the payment provider's hosted checkout (a merchant of record that handles sales tax). Test mode first; live only after the owner's go-ahead. The provider and its account are the owner's (BLOCKED.md); Claude compares the options when this starts. Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
       "depends_on": ["F063"],
       "done_check": "npm test -- checkout",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -886,7 +886,7 @@
       "description": "Design snapshot first. Remake the three starter templates on the new layer with full-length pages and finished copy; they must pass the stricter check. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F080", "F081", "F082", "F083"],
       "done_check": "npm run check:template && npm test -- starter",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     }

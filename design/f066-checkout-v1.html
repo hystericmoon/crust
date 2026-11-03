@@ -1,0 +1,121 @@
+<title>Store Checkout Options</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: two decisions stacked; each drawn as small store mockups side by side, recommendation marked. */
+:root{--bg:#f3f4f6;--card:#fff;--fg:#15171c;--mute:#5b6270;--line:#d9dce3;--accent:#2f5bd8;--ok:#1d7a4a;--warn:#8a5a00;--warnbg:#fff4d6;--paper:#faf8f4;--ink:#1b1b1b;--btn:#1b1b1b;--btnfg:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101216;--card:#1a1d23;--fg:#eceef2;--mute:#9aa1af;--line:#2e333d;--accent:#8ab4ff;--ok:#5fcf93;--warn:#f3c969;--warnbg:#3a2f12;--paper:#22252b;--ink:#eceef2;--btn:#eceef2;--btnfg:#15171c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101216;--card:#1a1d23;--fg:#eceef2;--mute:#9aa1af;--line:#2e333d;--accent:#8ab4ff;--ok:#5fcf93;--warn:#f3c969;--warnbg:#3a2f12;--paper:#22252b;--ink:#eceef2;--btn:#eceef2;--btnfg:#15171c;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif;padding-block:32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1080px;margin:auto;display:grid;gap:28px}
+h1{font-size:26px;margin:0;text-wrap:balance}h2{font-size:19px;margin:0;text-wrap:balance}h3{font-size:16px;margin:0}
+p{margin:0;color:var(--mute);max-width:70ch}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
+.opt{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:12px;min-width:0;align-content:start}
+.opt.rec{border:2px solid var(--ok)}
+.tag{font:600 12px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ok)}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px;margin:0}
+.facts dt{color:var(--mute)}.facts dd{margin:0}
+.good{color:var(--ok)}.bad{color:var(--warn)}
+ul{margin:0;padding-left:18px;font-size:14px;display:grid;gap:4px}
+/* store mockups */
+.shop{background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:8px;font-size:13px;position:relative;overflow:hidden}
+.shop .eyebrow{font:600 10px system-ui;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.shop .price{font:400 24px/1 Georgia,serif}
+.shop .buy{background:var(--btn);color:var(--btnfg);border-radius:6px;padding:9px 12px;font-weight:600;text-align:center}
+.shop .ghost{border:1px solid var(--line);border-radius:6px;padding:8px 12px;text-align:center}
+.shop small{color:var(--mute);font-size:11px}
+.note{background:var(--warnbg);color:var(--warn);border-radius:6px;padding:7px 9px;font-size:11.5px;line-height:1.4}
+.strip{background:var(--warnbg);color:var(--warn);font-size:11px;padding:5px 10px;margin:-14px -14px 4px;text-align:center}
+.flow{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.flow .step{flex:1 1 200px;min-width:0}
+.arrow{align-self:center;color:var(--mute);font-size:20px}
+.ck{background:#fff;color:#15171c;border:1px solid #d9dce3;border-radius:8px;padding:14px;display:grid;gap:7px;font-size:12.5px}
+.ck .field{border:1px solid #d9dce3;border-radius:5px;padding:6px 8px;color:#5b6270}
+.ck .pay{background:#2f5bd8;color:#fff;border-radius:6px;padding:8px;text-align:center;font-weight:600}
+.ck .row2{display:flex;justify-content:space-between}
+.sum{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:8px}
+code{font:13px ui-monospace,monospace;background:var(--bg);padding:1px 5px;border-radius:4px}
+</style>
+<main>
+<header style="display:grid;gap:8px">
+<h1>F066 Checkout: two decisions</h1>
+<p>Buy buttons on the store open the payment company's own checkout page. They sell on your behalf, add sales tax or VAT for the buyer's country, send the receipt, and pay you out. Nothing runs on our side except a link, so the store stays a plain static site and works without JavaScript.</p>
+</header>
+
+<section style="display:grid;gap:14px">
+<h2>1. Which payment company</h2>
+<p>All three are "merchants of record" (they handle tax worldwide), charge per sale with no monthly fee, and have a test mode. What separates them for you is payouts to Indonesia and whether a plain link is enough.</p>
+<div class="row">
+<article class="opt rec"><span class="tag">Recommended · built first</span><h3>A. Polar</h3>
+<dl class="facts">
+<dt>Per sale</dt><dd>5% + US$0.50 (new accounts)</dd>
+<dt>Paid out to</dt><dd class="good">Indonesia is on Polar's own list (via Stripe), ~1% currency fee</dd>
+<dt>Buy button</dt><dd class="good">A plain "checkout link", no script</dd>
+<dt>Test mode</dt><dd class="good">Separate sandbox with test cards</dd>
+<dt>Order details</dt><dd class="good">Link carries the template id to the "order paid" message (F067)</dd>
+</dl>
+<ul><li>Open source and built for selling files and licences.</li><li>Younger company than Paddle.</li></ul>
+</article>
+<article class="opt"><h3>B. Lemon Squeezy</h3>
+<dl class="facts">
+<dt>Per sale</dt><dd>5% + US$0.50, plus 1.5% for cards from abroad and PayPal</dd>
+<dt>Paid out to</dt><dd class="bad">Not confirmed for Indonesia; reports of ~1% for non-US banks</dd>
+<dt>Buy button</dt><dd class="good">Plain link</dd>
+<dt>Test mode</dt><dd class="good">Yes</dd>
+<dt>Sign-up</dt><dd class="bad">Owned by Stripe since 2024; reports of a waiting list for new sellers in 2026</dd>
+</dl>
+</article>
+<article class="opt"><h3>C. Paddle</h3>
+<dl class="facts">
+<dt>Per sale</dt><dd>5% + US$0.50</dd>
+<dt>Paid out to</dt><dd>Most countries, monthly, from US$100</dd>
+<dt>Buy button</dt><dd class="bad">Needs Paddle's script on the page, or a server to make each checkout</dd>
+<dt>Test mode</dt><dd class="good">Sandbox</dd>
+<dt>Sign-up</dt><dd class="bad">Manual approval of your business; slower to start</dd>
+</dl>
+</article>
+</div>
+<p>Fees are from the companies' pages and 2026 comparisons; check the final numbers when you open the account. Whichever you pick, the store code takes any of the three (it's one setting), so switching later is cheap.</p>
+</section>
+
+<section style="display:grid;gap:14px">
+<h2>2. How the store shows test mode</h2>
+<p>Until you say "take real payments", the store's buttons go to the test checkout. Someone who finds the store meanwhile shouldn't think they've bought something. Drawn on a template page's price panel.</p>
+<div class="row">
+<article class="opt rec"><span class="tag">Recommended · built</span><h3>A. Note under the button</h3>
+<div class="shop"><span class="eyebrow">Price</span><span class="price">US$49</span><span class="buy">Get Olive · US$49</span>
+<div class="note"><b>Test checkout.</b> No real payment is taken. Use card 4242 4242 4242 4242.</div>
+<span class="ghost">Try the live demo</span><small>Secure checkout by Polar. Tax is added where it applies.</small></div>
+<ul><li>Said right where the decision happens (Nielsen: visibility of system status).</li><li>Goes away by itself in live mode; no other page changes.</li><li>Real text, AA contrast, read by screen readers after the button.</li></ul>
+</article>
+<article class="opt"><h3>B. Strip across every page</h3>
+<div class="shop"><div class="strip">Test store: no real payments yet</div><span class="eyebrow">Price</span><span class="price">US$49</span><span class="buy">Get Olive · US$49</span><span class="ghost">Try the live demo</span><small>Secure checkout by Polar. Tax is added where it applies.</small></div>
+<ul><li>Impossible to miss, but it's on pages with nothing to buy too.</li><li>Takes the top of the design the store snapshot (F063) chose.</li></ul>
+</article>
+<article class="opt"><h3>C. Hide prices until live</h3>
+<div class="shop"><span class="eyebrow">Price</span><span class="price">US$49</span><span class="ghost">Coming soon</span><span class="ghost">Try the live demo</span><small>&nbsp;</small></div>
+<ul><li>No confusion at all, but you can't try the full flow on the real store.</li><li>Test would only happen on preview links.</li></ul>
+</article>
+</div>
+</section>
+
+<section style="display:grid;gap:14px">
+<h2>The buyer's path (built with A + A)</h2>
+<div class="flow">
+<div class="step shop"><span class="eyebrow">1 · Store</span><span class="buy">Get Olive · US$49</span><small>Plain link, opens in the same tab.</small></div>
+<span class="arrow" aria-hidden="true">→</span>
+<div class="step ck"><b>Polar checkout</b><div class="row2"><span>Olive template</span><span>US$49.00</span></div><div class="row2"><span>VAT (DE 19%)</span><span>US$9.31</span></div><div class="field">Email</div><div class="field">Card</div><span class="pay">Pay US$58.31</span></div>
+<span class="arrow" aria-hidden="true">→</span>
+<div class="step shop"><span class="eyebrow">2 · Store "Thank you" page</span><b style="font:400 18px Georgia,serif">Thanks, it's yours</b><small>Your download link is on its way by email (F067). Then: Crust → Pages → Start from a template → Open a file.</small></div>
+</div>
+</section>
+
+<section class="sum">
+<h3>What only you can do</h3>
+<ul>
+<li>Open the Polar account (identity and bank checks), make one product per paid template in the sandbox, and paste each product's checkout link into the store list (or send it to me).</li>
+<li>Say "take real payments" when you're ready: the Publish store workflow has a switch for it and refuses live links without it.</li>
+</ul>
+<p>Cost: nothing until something sells. Then 5% + US$0.50 per sale, taken by Polar.</p>
+</section>
+</main>

@@ -1,0 +1,347 @@
+{
+  "path": "/",
+  "title": "Templates for Crust",
+  "description": "Whole websites for Crust, the free website builder: pick a template, open it in Crust and make it yours.",
+  "puck": {
+    "root": {
+      "props": {}
+    },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "id": "home-section-7",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "home-heading-1",
+                "text": "Whole websites, ready for your words.",
+                "level": "h1",
+                "align": "left",
+                "size": "display",
+                "eyebrow": "Templates for Crust"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "home-text-2",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Pick a template, open it in the free Crust app and make it yours. Every page, post and photo is ready to change."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "muted"
+              }
+            },
+            {
+              "type": "Spacer",
+              "props": {
+                "id": "home-spacer-3",
+                "size": "xs"
+              }
+            },
+            {
+              "type": "Columns",
+              "props": {
+                "id": "home-columns-6",
+                "count": "2",
+                "gap": "sm",
+                "column1": [
+                  {
+                    "type": "Button",
+                    "props": {
+                      "id": "home-button-4",
+                      "label": "See all templates",
+                      "href": "/templates",
+                      "variant": "primary",
+                      "align": "left"
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "Button",
+                    "props": {
+                      "id": "home-button-5",
+                      "label": "Download Crust",
+                      "href": "/download",
+                      "variant": "arrow",
+                      "align": "left"
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "one-three",
+                  "tablet": "one-three",
+                  "phone": "stack"
+                },
+                "valign": "middle"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "home-section-12",
+          "background": "background",
+          "paddingY": "md",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Columns",
+              "props": {
+                "id": "home-columns-10",
+                "count": "2",
+                "gap": "sm",
+                "column1": [
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "home-heading-8",
+                      "text": "The templates",
+                      "level": "h2",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": ""
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "home-text-9",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "All templates",
+                                "href": "/templates"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "right",
+                      "tone": "default"
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "two-one",
+                  "tablet": "two-one",
+                  "phone": "stack"
+                },
+                "valign": "bottom"
+              }
+            },
+            {
+              "type": "Grid",
+              "props": {
+                "id": "home-grid-11",
+                "columns": "3",
+                "titleLevel": "h3",
+                "background": "background",
+                "items": [
+                  {
+                    "title": "Harbour",
+                    "text": "Architects, interiors and studios. Free with Crust.",
+                    "imageSrc": "/media/harbour-home-desktop.jpg",
+                    "imageAlt": "The Harbour template's Home page on a computer screen",
+                    "linkLabel": "See Harbour",
+                    "linkHref": "/templates/harbour"
+                  },
+                  {
+                    "title": "Signal",
+                    "text": "Agencies, product studios and events. Free with Crust.",
+                    "imageSrc": "/media/signal-home-desktop.jpg",
+                    "imageAlt": "The Signal template's Home page on a computer screen",
+                    "linkLabel": "See Signal",
+                    "linkHref": "/templates/signal"
+                  },
+                  {
+                    "title": "Corner",
+                    "text": "Bakeries, cafés, shops and makers. Free with Crust.",
+                    "imageSrc": "/media/corner-home-desktop.jpg",
+                    "imageAlt": "The Corner template's Home page on a computer screen",
+                    "linkLabel": "See Corner",
+                    "linkHref": "/templates/corner"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "home-section-16",
+          "background": "surface",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Columns",
+              "props": {
+                "id": "home-columns-15",
+                "count": "2",
+                "gap": "xl",
+                "column1": [
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "home-heading-13",
+                      "text": "From template to live site",
+                      "level": "h2",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": "How it works"
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "IconList",
+                    "props": {
+                      "id": "home-iconlist-14",
+                      "icon": "numbers",
+                      "numberStyle": "large",
+                      "iconColor": "primary",
+                      "items": [
+                        {
+                          "text": "Choose a template here and look through its pages."
+                        },
+                        {
+                          "text": "Open it in Crust: Pages → Start from a template."
+                        },
+                        {
+                          "text": "Replace the words and photos with your own, then publish."
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "one-two",
+                  "tablet": "one-two",
+                  "phone": "stack"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "home-section-21",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Columns",
+              "props": {
+                "id": "home-columns-20",
+                "count": "2",
+                "gap": "lg",
+                "column1": [
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "home-heading-17",
+                      "text": "Crust is free",
+                      "level": "h2",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": ""
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "home-text-18",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "A website builder for Mac and Windows. Design with blocks, publish plain, fast pages to the host you choose. No account, no monthly fee."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted"
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "Button",
+                    "props": {
+                      "id": "home-button-19",
+                      "label": "Download Crust",
+                      "href": "/download",
+                      "variant": "primary",
+                      "align": "right"
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "two-one",
+                  "tablet": "two-one",
+                  "phone": "stack"
+                },
+                "valign": "middle"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

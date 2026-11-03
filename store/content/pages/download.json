@@ -1,0 +1,150 @@
+{
+  "path": "/download",
+  "title": "Download Crust",
+  "description": "Crust is a free website builder for Mac and Windows. Download it, then open any template from the store.",
+  "puck": {
+    "root": {
+      "props": {}
+    },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "id": "download-section-6",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "width": "narrow",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "download-heading-1",
+                "text": "Download Crust",
+                "level": "h1",
+                "align": "left",
+                "size": "display",
+                "eyebrow": "Free for Mac and Windows"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "download-text-2",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Crust is a website builder that runs on your computer. Your site stays in a folder you own, and you publish it when you're ready."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default"
+              }
+            },
+            {
+              "type": "Spacer",
+              "props": {
+                "id": "download-spacer-3",
+                "size": "xs"
+              }
+            },
+            {
+              "type": "Button",
+              "props": {
+                "id": "download-button-4",
+                "label": "Go to the downloads",
+                "href": "https://crust-downloads.pages.dev",
+                "variant": "primary",
+                "align": "left",
+                "icon": "download",
+                "iconAt": "after"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "download-text-5",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "The downloads page has the newest version for each kind of computer, with what's new."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "muted"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "download-section-9",
+          "background": "surface",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "width": "narrow",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "download-heading-7",
+                "text": "What you get",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "IconList",
+              "props": {
+                "id": "download-iconlist-8",
+                "icon": "check",
+                "iconColor": "primary",
+                "items": [
+                  {
+                    "text": "Design pages with blocks: sections, columns, photos, galleries, prices, maps and more."
+                  },
+                  {
+                    "text": "Set colours, fonts and spacing once in Site settings; every page follows."
+                  },
+                  {
+                    "text": "Publish plain, fast pages to Cloudflare Pages, Netlify, or any host by FTP or SFTP."
+                  },
+                  {
+                    "text": "Three free templates to start from, and every template from this store."
+                  },
+                  {
+                    "text": "No account and no monthly fee."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

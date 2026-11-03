@@ -205,6 +205,11 @@ section has a photo or video background), `header.topBar` (`show`,
 the footer is then that section's blocks, with the copyright line
 under them; a missing section stops the publish.
 
+`site.json` may carry `template` (optional, F065): `{ "id": "olive",
+"version": 2 }`, the template the site started from and its release then.
+Starting from a template with an id writes it (starting from one without
+removes it); nothing else reads it except the gallery's update note.
+
 `content/redirects.json` (optional, added with F015)
 ```json
 [{ "from": "/old-address", "to": "/new-address" }]
@@ -239,7 +244,10 @@ downloaded from Site settings → Template, never stored in `content/`:
   "blog": { "title": "…", "intro": "…" }, "posts": [ … ],
   "media": [{ "file": "harbour.jpg", "alt": "…", "width": 2400, "height": 1600, "data": "<base64>" }] }
 ```
-Only photos the template uses go in. Reading one (`readTemplate`) refuses
+F065 adds `id` (lowercase letters, numbers, dashes: its name in the
+store) and `release` (a whole number, 1, 2, …), both or neither; files
+made before have neither and open as always (`format` and `version: 1`
+are unchanged). Only photos the template uses go in. Reading one (`readTemplate`) refuses
 the whole file on any problem (unknown blocks, unsafe links, contrast,
 missing Home page, a photo or linked section used but not included) and
 drops unknown fields. The site's address, redirects and history never go
@@ -254,6 +262,9 @@ writes it from F063 on) lists premium templates for the gallery:
     "pages": [{ "title": "Home", "path": "/", "pictures": [
       { "width": "desktop", "src": "…/olive-home-desktop.jpg", "alt": "…" } ] }] } ] }
 ```
+F065: a template may also carry `version` (its current release, a whole
+number) and `changes` (up to 5 short lines on what changed in it); the
+store takes them from the template file and `changes` in `store/list.json`.
 `width` is `desktop`, `tablet` or `phone`. Links are `https://` (or on
 the catalogue's own site, relative to it). Reading it (`readCatalogue`)
 drops unknown fields and leaves out any template with a bad id, name,
@@ -261,6 +272,36 @@ price or link, any picture without `alt`, and templates with no
 picture at all. The app has no catalogue address until the store
 exists (`STORE_CATALOGUE_URL`); `#/templates?examples` shows a bundled
 example catalogue.
+
+The template store (F063) is a Crust site of its own in `store/`:
+`store/content/` is an ordinary content folder (site.json, pages,
+media), written by `npm run build:store` from `store/list.json`:
+```json
+{ "format": "crust-store", "version": 1, "templates": [
+  { "id": "harbour", "file": "templates/harbour.crust", "kind": "Architects, interiors and studios",
+    "price": "Free", "show": ["/", "/services", "/work"] } ] }
+```
+`price` is `"Free"` or like `"US$49"`; a priced template also needs
+`buy` (an `https://` link) and `licence` (one or two sentences).
+`show` lists 1–4 of the template's pages, Home first; their pictures
+(`<id>-<page>-desktop|tablet|phone.jpg`) come from `npm run
+store:pictures`. Publishing the store ("Publish store" workflow) also
+writes `catalogue.json` (the catalogue format above), priced templates
+only. F064: it also publishes every listed template as a full demo site
+at `/demos/<id>/` (addresses moved into that folder, `noindex`, own
+Pagefind index, a "Get this template" bar linking to `/templates/<id>/`);
+each template page's "Try the live demo" button opens it.
+F066: `store/list.json` may carry `"checkout": { "provider": "polar" |
+"lemonsqueezy", "mode": "test" | "live" }`. With it, each `buy` link must
+be that company's hosted checkout link for that mode (Polar live
+`https://buy.polar.sh/polar_cl_…`, sandbox
+`https://sandbox-api.polar.sh/v1/checkout-links/polar_cl_…/redirect`;
+Lemon Squeezy `https://<store>.lemonsqueezy.com/checkout/buy/…`); the
+button adds the template's id (`reference_id` / `checkout[custom][template]`),
+test mode shows a note under it, and `/thanks` (noindex) appears once
+something has a price. The Publish store workflow refuses a priced
+template without the setting, and live mode without its "Take real
+payments" switch.
 
 `content/media/<file>` and `content/media.json` (optional, added with F034):
 uploaded photos (JPG, PNG, WebP; at most 2400 px) and their details.

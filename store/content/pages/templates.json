@@ -1,0 +1,100 @@
+{
+  "path": "/templates",
+  "title": "All templates",
+  "description": "Every template for Crust, with who it's for and what it costs.",
+  "puck": {
+    "root": {
+      "props": {}
+    },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "id": "all-section-5",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "all-heading-1",
+                "text": "All templates",
+                "level": "h1",
+                "align": "left",
+                "size": "display",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "all-text-2",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "3 templates, each written for one kind of business. Free ones come with Crust; more are on the way."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "muted"
+              }
+            },
+            {
+              "type": "Spacer",
+              "props": {
+                "id": "all-spacer-3",
+                "size": "sm"
+              }
+            },
+            {
+              "type": "Grid",
+              "props": {
+                "id": "all-grid-4",
+                "columns": "3",
+                "titleLevel": "h2",
+                "background": "background",
+                "items": [
+                  {
+                    "title": "Harbour",
+                    "text": "Architects, interiors and studios. Free with Crust.",
+                    "imageSrc": "/media/harbour-home-desktop.jpg",
+                    "imageAlt": "The Harbour template's Home page on a computer screen",
+                    "linkLabel": "See Harbour",
+                    "linkHref": "/templates/harbour"
+                  },
+                  {
+                    "title": "Signal",
+                    "text": "Agencies, product studios and events. Free with Crust.",
+                    "imageSrc": "/media/signal-home-desktop.jpg",
+                    "imageAlt": "The Signal template's Home page on a computer screen",
+                    "linkLabel": "See Signal",
+                    "linkHref": "/templates/signal"
+                  },
+                  {
+                    "title": "Corner",
+                    "text": "Bakeries, cafés, shops and makers. Free with Crust.",
+                    "imageSrc": "/media/corner-home-desktop.jpg",
+                    "imageAlt": "The Corner template's Home page on a computer screen",
+                    "linkLabel": "See Corner",
+                    "linkHref": "/templates/corner"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -148,6 +148,7 @@ export function photoBatches<T extends { data: string }>(photos: T[], maxChars =
 /** The template without its photos' bytes: what the apply step sends. */
 export const templateContent = (t: Template) => ({
   name: t.name,
+  ...(t.id && t.release ? { id: t.id, release: t.release } : {}),
   site: { language: t.site.language, tokens: t.tokens, header: t.header, footer: t.footer },
   pages: t.pages,
   sections: t.sections,

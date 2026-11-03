@@ -162,6 +162,48 @@ describe("template-file: reading a template (F045)", () => {
   });
 });
 
+describe("template-file: header and footer v2 (F076, kept since F084)", () => {
+  const v2 = (site: ReturnType<typeof source>) => ({
+    header: {
+      ...site.chrome.header,
+      layout: "stacked" as const,
+      overHero: true,
+      menu: [{ label: "Shop", href: "/", children: [{ label: "About", href: "/about" }] }],
+      topBar: { show: true, text: "Open from 7:00", link: { label: "Menu", href: "/about" }, contact: "+353 1 555 0187", style: "primary" as const },
+    },
+    footer: { ...site.chrome.footer, kind: "blocks" as const, section: "contact-strip" },
+  });
+
+  it("keeps the layout, top bar, dropdowns and a footer made of blocks", async () => {
+    const chrome = v2(source());
+    const { template } = await made({ chrome });
+    const check = readTemplate(JSON.stringify(template), blocks);
+    expect(check.problems).toEqual([]);
+    expect(check.template!.header).toMatchObject({ layout: "stacked", overHero: true, topBar: chrome.header.topBar });
+    expect(check.template!.header.menu[0]!.children).toEqual([{ label: "About", href: "/about" }]);
+    expect(check.template!.footer).toMatchObject({ kind: "blocks", section: "contact-strip" });
+  });
+
+  it("refuses a footer section that isn't in the file, and an unsafe top bar link", async () => {
+    const chrome = v2(source());
+    const { template } = await made({ chrome });
+    const raw = JSON.parse(JSON.stringify(template));
+    raw.footer.section = "gone";
+    raw.header.topBar.link.href = "javascript:alert(1)";
+    const problems = readTemplate(JSON.stringify(raw), blocks).problems;
+    expect(problems).toContain("The linked section “gone” is used but isn't in the template.");
+    expect(problems.some((p) => p.startsWith("Top bar"))).toBe(true);
+  });
+
+  it("drops unknown fields inside the top bar and menu", async () => {
+    const { template } = await made({ chrome: v2(source()) });
+    const raw = JSON.parse(JSON.stringify(template));
+    raw.header.topBar.onclick = "x";
+    raw.header.menu[0].children[0].script = "alert(1)";
+    expect(JSON.stringify(readTemplate(JSON.stringify(raw), blocks).template)).not.toMatch(/onclick|alert/);
+  });
+});
+
 describe("template-file: page designs (F082)", () => {
   const blogDesign = { kind: "blog" as const, content: currentDesign("blog") };
   const photoPost = { kind: "post" as const, content: [...currentDesign("post"), { type: "Image", props: { id: "i-d", src: "/media/harbour.png", alt: "Boats", caption: "" } }] as never };
@@ -185,5 +227,38 @@ describe("template-file: page designs (F082)", () => {
     expect(readTemplate(JSON.stringify(twice), blocks).problems).toContain("The template has two Blog page designs.");
     const other = { kind: "notFound", content: [{ type: "Image", props: { id: "i-x", src: "/media/door.png", alt: "Door", caption: "" } }] };
     expect(readTemplate(JSON.stringify({ ...template, designs: [other] }), blocks).problems).toContain("The photo door.png is used but isn't in the template.");
+  });
+});
+
+describe("template-versions: a template's id and release (F065)", () => {
+  const withRelease = async (id?: string, release?: number) => (await makeTemplate({ name: "Olive", description: "", id, release }, source(), photo, new Date("2026-11-03T00:00:00Z"))).template;
+
+  it("carries an id and release number, and reads them back", async () => {
+    const t = await withRelease("olive", 3);
+    expect(t).toMatchObject({ format: "crust-template", version: 1, id: "olive", release: 3 });
+    const read = readTemplate(JSON.stringify(t), blocks);
+    expect(read.problems).toEqual([]);
+    expect(read.template).toMatchObject({ id: "olive", release: 3 });
+  });
+
+  it("still opens files made before ids and releases", async () => {
+    const t = await withRelease();
+    expect("id" in t || "release" in t).toBe(false);
+    const read = readTemplate(JSON.stringify(t), blocks);
+    expect(read.problems).toEqual([]);
+    expect(read.template?.id).toBeUndefined();
+  });
+
+  it("leaves both out unless both are valid", async () => {
+    expect("id" in (await withRelease("olive"))).toBe(false);
+    expect("release" in (await withRelease("Bad Id", 2))).toBe(false);
+  });
+
+  it("refuses a damaged id or release", async () => {
+    const t = await withRelease("olive", 3);
+    for (const bad of [{ id: "Olive!" }, { release: 0 }, { release: 1.5 }, { release: "2" }, { id: undefined }, { release: undefined }]) {
+      const file = JSON.stringify({ ...t, ...bad });
+      expect(readTemplate(file, blocks).template).toBeNull();
+    }
   });
 });

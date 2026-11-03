@@ -100,7 +100,7 @@ describe("catalogue: reading the file", () => {
   it("drops unknown fields and tidies text", () => {
     const c = readCatalogue(file([{ ...olive, name: "  Olive \n Grove ", secret: "x", onclick: "alert(1)" }]), BASE)!;
     expect(c.templates[0]!.name).toBe("Olive Grove");
-    expect(Object.keys(c.templates[0]!).sort()).toEqual(["description", "id", "kind", "name", "pages", "price", "url"]);
+    expect(Object.keys(c.templates[0]!).sort()).toEqual(["changes", "description", "id", "kind", "name", "pages", "price", "url"]);
   });
 
   it("keeps at most so many templates, one picture per width", () => {

@@ -25,20 +25,102 @@ Never show it while work is uncommitted or unpushed; finish that first.
 
 | Next feature | Model | Why |
 |---|---|---|
-| F084 Rebuild Harbour, Signal and Corner | **Opus** | Premium design and copy; judgment the checks can't measure |
-| F063 Store site | Opus (suggested) | Design snapshot, the public face of the store |
-| F064 Live demos | Sonnet (suggested) | Follows F063's setup |
-| F065 Template versions | Sonnet (suggested) | Well-defined data and checks |
-| F066 Checkout | Opus (suggested) | Payments and security |
-| F067 Delivery and updates | Opus (suggested) | Licences, downloads, security |
-| F068 Licence, terms and refunds | Opus (suggested) | Legal wording for the owner to decide |
+| F063 Store site | Opus | Design snapshot, the public face of the store |
+| F065 Template versions | Sonnet | Well-defined data and checks |
+| F066 Checkout | Opus | Payments and security |
+| F067 Delivery and updates | Opus | Licences, downloads, security |
+| F068 Licence, terms and refunds | Opus | Legal wording for the owner to decide |
 
-"Suggested" rows are confirmed by the owner after F083 (he said he'd
-decide the store milestone then); until he has, ask before starting one.
+The owner confirmed all six rows as listed ("go ahead", 2026-11-03
+10:50 Jakarta); they are no longer just suggestions.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-03 ~08:30 (Jakarta). **F083 Stricter template
+Last updated: 2026-11-03 ~13:45 (Jakarta). **F066 Checkout built,
+passes, test mode** (branch `ccr-d50f7e80-weuq18`, PR #66; DECISIONS
+"F066"). Snapshot https://claude.ai/artifact/6QAvaWHcuU26fgCfCrZVdw (A
+built: Polar; test note under the button). How it fits:
+`scripts/store/checkout.ts` (`PROVIDERS` polar/lemonsqueezy with link
+shapes per mode and how the template id is added, `readCheckout`,
+`buyLinkProblem`, `checkoutUrl`, `testNote`, `checkoutLine`,
+`checkoutGate`, `THANKS_PATH`), `store/list.json` `checkout` (Polar,
+test), model.ts `readStoreList` checks links, `templatePage` `afterBuy`,
+`thanksPage` (only with a priced template), `storePages(templates,
+checkout)`, load.ts returns `checkout`; gate script
+`scripts/store/checkout-check.ts`, run by Publish store before rendering
+with input `real_payments` → `CRUST_REAL_PAYMENTS`. Tests:
+`scripts/store/checkout.test.ts`. Polar link shapes are from its docs, not
+tried against a real sandbox yet (no account): the first real link may
+need a small fix in `PROVIDERS.polar.matches`. Needs `reviewed: true`.
+**Next: F067 Delivery and updates** (Opus): Worker checks the provider's
+signed "order paid" message (Polar uses Standard Webhooks signatures;
+template id in `reference_id` metadata), emails a personal download page
+(Resend), serves the file from Workers KV. Needs the owner's Polar account
+for real tests; build and test against fakes first.
+
+Earlier (~13:15). **F065 Template versions built,
+passes** (branch `ccr-d50f7e80-weuq18`, PR #66; DECISIONS "F065"). How it
+fits: `Template.id`/`release` (`packages/blocks/src/template.ts`, reader
+refuses id without release), `Site.template {id, version}` written by
+`applyChanges` (`apps/admin/server/template.ts`, checked in `checkSite`),
+catalogue `version`/`changes` (`catalogue.ts`, `templateUpdate`), store
+`changes` in `store/list.json` and checks in `readStoreTemplates`, quiet
+`UpdateNote` in TemplatesScreen (App passes `site.template`). Tests:
+`apps/admin/src/templates/template-versions.test.tsx`. No review needed.
+
+Earlier (~12:30). **F064 Live demos built,
+passes** (branch `ccr-d50f7e80-weuq18`, PR #66; DECISIONS "F064"). Snapshot
+https://claude.ai/artifact/4mSvQJVQaiwFYcDoKFNsN2 (A built). How it fits:
+`scripts/store/demos.ts` (pure: `moveAddresses`, `demoBar`, `demoPage`,
+`demoFiles`), `demos-build.ts` (unpack → render → crust-publish →
+Pagefind → copy to `dist/store/demos/<id>/`), run by `publish:store` and
+the Publish store workflow; `templatePage` in model.ts has the "Try the
+live demo" button. Needs `reviewed: true`. **Next: F065 Template
+versions** (Sonnet).
+
+Earlier (~11:45). **F063 Store site built,
+passes** (branch `ccr-d50f7e80-weuq18`, stacked on F084 in PR #66;
+done_check exit 0; DECISIONS "F063"). Snapshot
+https://claude.ai/artifact/41A2H2RjXGJZTs3ubzRZQE (A for all three). How
+it fits: `store/list.json` (format `crust-store`: id, file, kind, price,
+show, and `buy` + `licence` for priced ones) → `scripts/store/model.ts`
+(`readStoreList`, `readStoreTemplates`, `templateFacts`,
+`includedLines`, `storePages`, `storeSite`, `storeCatalogue`,
+`picturesNeeded`, `PICTURE_SIZES`; blocks via the starter kit with marks
+taken off) → `npm run build:store` (`build.ts`, `load.ts`) writes
+`store/content/site.json` + `pages/`. Pictures: `npm run store:pictures`
+(`pictures.ts`: unpack template → render → crust-publish → Playwright,
+27 JPEGs + media.json in `store/content/media/`). `npm run
+publish:store` → `dist/store` + Pagefind + `catalogue.json`
+(`catalogue.ts`). check:a11y and check:perf now include the store.
+Workflow `.github/workflows/publish-store.yml` (by hand; project
+`crust-store`; stops if the address differs or pages are stale). App:
+`STORE_CATALOGUE_ADDRESS` set, `STORE_CATALOGUE_URL` still null **on
+purpose** until the first priced template (store test enforces it).
+**F064 Live demos** builds on this: publish each listed template under
+the store (e.g. `/demos/<id>/`) inside publish:store and the workflow,
+add the slim bar, and a "Try the live demo" button on the template page
+(model.ts `templatePage`). Owner: press Publish store (BLOCKED.md).
+Needs `reviewed: true`. **Next: F064 Live demos** (Sonnet).
+
+Earlier (~10:30): **F084 Rebuild Harbour,
+Signal and Corner built, passes** (branch `ccr-d50f7e80-weuq18`, PR #66
+after #65 was merged; done_check exit 0; DECISIONS "F084"). Snapshot
+https://claude.ai/artifact/KhSZToRB3zEYzpXrCe5eVo (A for all three). How
+it fits: `scripts/starter-templates/kit.ts` (block helpers, per-page ids),
+`harbour.ts`, `signal.ts`, `corner.ts` (pages, linked sections, posts,
+chrome, designs), `parts.ts`, `starter.ts` (`lookTokens`, specs,
+`buildStarter`); Signal's logos in `photos/signal/logo-*.png`. Template
+reader `pickHeader`/`pickFooter` (template.ts) now keep F076 fields.
+`AWAITING_REBUILD` is empty. Screenshots for review: run the check and
+serve `dist/template-check/<name>/site`. In the Studio look the "dark"
+section style is the light one (text colour as background): use
+`background` for dark tints there. Milestone 8 is complete (F070–F084).
+Needs `reviewed: true`. **Next: F063 Store site** (Milestone 7, Opus;
+models confirmed by the owner 10:50; design snapshot first). A
+scheduled message restarts the work at 11:15 (owner's request).
+
+Earlier (~08:30): **F083 Stricter template
 check built, passes** (branch `ccr-d50f7e80-weuq18`, stacked in PR #65;
 done_check exit 0; DECISIONS "F083"). Model: `template-strict.ts`
 (`slotsGroup`, `cropsGroup`, `varietyGroup`, `gradientGroup`,

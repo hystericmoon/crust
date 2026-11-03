@@ -82,3 +82,7 @@
 .tp-shot { margin: 0 auto; max-height: 70dvh; overflow-y: auto; border: 1px solid var(--st-divider); border-radius: 8px; background: #fff; }
 .tp-shot img { display: block; width: 100%; height: auto; }
 .tp-no-picture { margin: 0; color: var(--st-muted); }
+
+/* F065: the quiet "a newer version is available" note: plain text, no alert colour. */
+.tp-update { margin: 1.5rem 0; padding: 0.75rem 1rem; border-left: 3px solid currentColor; }
+.tp-update ul { margin: 0.25rem 0 0.5rem 1.25rem; }

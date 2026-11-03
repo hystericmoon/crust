@@ -35,6 +35,10 @@ export interface CatalogueTemplate {
   price: string;
   /** The store's page for this template, where it's bought. */
   url: string;
+  /** F065: the template's current release number (missing in older catalogues). */
+  version?: number;
+  /** F065: what changed in the current release, a few short lines. */
+  changes: string[];
   pages: CataloguePage[];
 }
 
@@ -44,10 +48,15 @@ export interface Catalogue {
   examples?: boolean;
 }
 
+/** Where the Crust store (F063, scripts/store/) publishes its catalogue. */
+export const STORE_CATALOGUE_ADDRESS = "https://crust-store.pages.dev/catalogue.json";
+
 /**
- * The store's catalogue. None until the store exists (F063 sets it): an
- * address nobody controls yet could serve anything, so the app doesn't
- * guess one. Tests and the builder check set `__CRUST_CATALOGUE_URL__`.
+ * The catalogue the gallery reads. Off until the store sells its first
+ * priced template: until then the catalogue is empty (free templates are
+ * already in the app), and the store's address isn't ours until it's first
+ * published. The store test fails when store/list.json gets a price while
+ * this is still off. Tests and the builder check set `__CRUST_CATALOGUE_URL__`.
  */
 export const STORE_CATALOGUE_URL: string | null = null;
 
@@ -59,6 +68,7 @@ const MAX_PAGES = 12;
 const MAX_TEXT = 300;
 const MAX_NAME = 60;
 const MAX_PRICE = 20;
+const MAX_CHANGES = 5;
 
 const text = (v: unknown, max: number): string | null => {
   if (typeof v !== "string") return null;
@@ -118,7 +128,9 @@ function readTemplate(raw: unknown, base: string): CatalogueTemplate | null {
   // Nothing to look at: not worth a card.
   if (!pages.length) return null;
   pages.sort((a, b) => (a.path === "/" ? -1 : b.path === "/" ? 1 : 0));
-  return { id, name, price, url, description: text(t.description, MAX_TEXT) ?? "", kind: text(t.kind, MAX_NAME) ?? "", pages };
+  const version = Number.isInteger(t.version) && (t.version as number) >= 1 && (t.version as number) <= 9999 ? (t.version as number) : undefined;
+  const changes = (Array.isArray(t.changes) ? t.changes : []).map((c) => text(c, MAX_TEXT)).filter((c): c is string => !!c).slice(0, MAX_CHANGES);
+  return { id, name, price, url, ...(version ? { version } : {}), changes, description: text(t.description, MAX_TEXT) ?? "", kind: text(t.kind, MAX_NAME) ?? "", pages };
 }
 
 function readPage(raw: unknown, base: string): CataloguePage | null {
@@ -199,3 +211,21 @@ export function cardPicture(t: CatalogueTemplate): CataloguePicture | null {
 
 /** "Olive, premium, US$49": how a premium card is read out (its visible name first). */
 export const premiumLabel = (t: CatalogueTemplate) => `${t.name}, premium, ${t.price}`;
+
+/** F065: a newer release of the template this site started from. */
+export interface TemplateUpdate {
+  id: string;
+  name: string;
+  from: number;
+  to: number;
+  changes: string[];
+  url: string;
+}
+
+/** The quiet note: the catalogue has a newer release than the one the site started from; null when not. */
+export function templateUpdate(site: { id: string; version: number } | undefined, catalogue: Catalogue): TemplateUpdate | null {
+  if (!site) return null;
+  const t = catalogue.templates.find((x) => x.id === site.id);
+  if (!t || !t.version || t.version <= site.version) return null;
+  return { id: t.id, name: t.name, from: site.version, to: t.version, changes: t.changes, url: t.url };
+}

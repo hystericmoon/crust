@@ -83,3 +83,18 @@ angles, wood-spiral, home-office, shadows, window-tree, pool-house
 (Harbour), pottery-wheel, tool-wall, ceramic-bottles, moka-breakfast
 (Corner) and studio-lounge, atrium, copper-stair (Signal). Same licence
 (CC0). The five `sample-logo-*.png` are made-up names drawn for Crust.
+
+## F084 rebuild
+
+The rebuilt templates (F084) use the same photos, on more pages; the
+"Used for" columns above describe the F052/F053 versions. Signal also
+carries five client logos, `photos/signal/logo-*.png`: made-up names drawn
+for Crust (the layout library's `sample-logo-*.png`), so no licence applies.
+
+| File | Used for | Original title | Author | Licence | Source |
+|---|---|---|---|---|---|
+| logo-northfield.png | Signal, logo row | Northfield (made up) | Drawn for Crust | Ours | apps/admin/public/layout-photos/sample-logo-northfield.png |
+| logo-lumen.png | Signal, logo row | Lumen & Co (made up) | Drawn for Crust | Ours | apps/admin/public/layout-photos/sample-logo-lumen.png |
+| logo-atlas.png | Signal, logo row | Atlas (made up) | Drawn for Crust | Ours | apps/admin/public/layout-photos/sample-logo-atlas.png |
+| logo-kestrel.png | Signal, logo row | Kestrel (made up) | Drawn for Crust | Ours | apps/admin/public/layout-photos/sample-logo-kestrel.png |
+| logo-orbit.png | Signal, logo row | Orbit (made up) | Drawn for Crust | Ours | apps/admin/public/layout-photos/sample-logo-orbit.png |

@@ -323,7 +323,7 @@ export function App() {
 
   if (route.name === "templates") {
     if (githubOn === null) return <Loading />;
-    return <TemplatesScreen siteName={site.name} githubOn={githubOn} currentSite={() => currentSiteNow(githubOn, site.language)} />;
+    return <TemplatesScreen siteName={site.name} githubOn={githubOn} currentSite={() => currentSiteNow(githubOn, site.language)} startedFrom={site.template} />;
   }
 
   if (route.name === "posts") {

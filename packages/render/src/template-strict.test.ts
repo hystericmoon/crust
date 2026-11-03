@@ -119,7 +119,7 @@ describe("template check: until F084 (F083)", () => {
     const other = { ...g, id: "contrast" };
     expect(excuseUntilRebuilt(other)).toBe(other);
   });
-  it("only excuses the three templates built before F083", () => {
-    expect(AWAITING_REBUILD).toEqual(["Harbour", "Signal", "Corner"]);
+  it("excuses nobody now that F084 has rebuilt Harbour, Signal and Corner", () => {
+    expect(AWAITING_REBUILD).toEqual([]);
   });
 });

@@ -5,6 +5,81 @@ to "Log".
 
 ## Current
 
+- **F066 Checkout: built, passes, test mode** (branch
+  `ccr-d50f7e80-weuq18`, PR #66). Snapshot
+  https://claude.ai/artifact/6QAvaWHcuU26fgCfCrZVdw (A built for both:
+  Polar as the payment company; a "Test checkout" note under each buy
+  button). done_check `npm test -- checkout` exit 0; `npm test`,
+  typecheck, `cargo test` and clippy pass. A priced template's button is a
+  plain link to the company's hosted checkout (works without JavaScript),
+  tagged with the template's id for F067; test mode says so under the
+  button with the test card; a "Thank you" page (`/thanks`) appears once
+  something has a price; Publish store has a "Take real payments" switch
+  (off) and refuses live links without it (DECISIONS "F066"). **To try:**
+  nothing changes on the store yet (every template is free). Open the
+  comparison page, decide on the company, and open the account
+  (BLOCKED.md). Once you send a sandbox checkout link for a paid template,
+  you can buy it with the test card on the store. Needs `reviewed: true`.
+  **Next: F067 Delivery and updates** (Opus).
+
+- **F065 Template versions: built, passes** (branch `ccr-d50f7e80-weuq18`,
+  PR #66). done_check `npm test -- template-versions && npm test --
+  template-file && npm run typecheck` exit 0; `npm test`, `cargo test` and
+  clippy pass. Template files carry `id` + `release`; `site.json` remembers
+  `template {id, version}`; the catalogue has `version` + `changes`; the
+  Templates screen shows a quiet "A newer … is available" note with what
+  changed (DECISIONS "F065"). No design review needed. **To try (later,
+  once a premium template exists):** nothing visible yet, because the app
+  reads no catalogue until the first priced template (F063). `#/templates?
+  examples` shows the bundled example catalogue, but your site has no
+  template record, so no note appears there. **Next: F066 Checkout**
+  (Opus; needs your payment provider account, BLOCKED.md).
+
+- **F064 Live demos: built, passes** (branch `ccr-d50f7e80-weuq18`, PR
+  #66). Snapshot https://claude.ai/artifact/4mSvQJVQaiwFYcDoKFNsN2 (A
+  built: slim bar at the bottom; B top strip and C floating pill drawn).
+  done_check `npm test -- demos && npm run check:a11y` exit 0 (axe on
+  every demo page at two widths). `npm run publish:store` now also runs
+  `scripts/store/demos-build.ts` (each template unpacked, rendered,
+  checked by crust-publish, searched by Pagefind, then its addresses moved
+  under `/demos/<id>/`); the Publish store workflow does the same and
+  checks the live Harbour demo. **To try:** after you press Publish store
+  (BLOCKED.md), open a template page in the store, press "Try the live
+  demo", click around on your phone, and check the bar. Needs
+  `reviewed: true`. **Next: F065 Template versions** (Sonnet).
+
+- **F063 Store site: built, passes** (branch `ccr-d50f7e80-weuq18`,
+  stacked on F084's PR #66). Snapshot
+  https://claude.ai/artifact/41A2H2RjXGJZTs3ubzRZQE, A built on all
+  three choices (Showroom look, Studio · Paper; template page with the
+  details kept in view beside the pictures; free templates listed with
+  "Free with Crust"). done_check `npm test -- store && npm run check:a11y
+  && npm run check:perf` exit 0; the two checks now also publish the
+  store and check every store page (axe at two widths, Lighthouse on its
+  Home: 100). The store lives in `store/` (list of templates for sale +
+  its own content folder); pages: Home, All templates, Harbour, Signal,
+  Corner, Download Crust, Help. **To try:** nothing is online yet:
+  publishing the store is yours, Actions → **Publish store** → Run
+  workflow (claims `https://crust-store.pages.dev`; BLOCKED.md). The
+  app doesn't read the store's catalogue until the first priced template
+  is listed (DECISIONS "F063"). Needs `reviewed: true`. **Next: F064 Live
+  demos** (Sonnet).
+
+- **F084 Rebuild Harbour, Signal and Corner: built, passes** (branch
+  `ccr-d50f7e80-weuq18`, PR #66; F079–F083 were merged in #65). Snapshot
+  https://claude.ai/artifact/KhSZToRB3zEYzpXrCe5eVo, A built for all
+  three decisions (Style library look per template; pages that fit each
+  business; finished copy still marked to replace). done_check `npm run
+  check:template && npm test -- starter` exit 0: all three pass every
+  check, including F083's, with nobody excused. Also fixed: template
+  files now keep the header layout, top bar, dropdowns and block footer
+  (F076), which they used to drop. **To try** on the PR's preview link:
+  **Templates** → open Harbour, Signal and Corner and look through every
+  page at desktop and phone width; start a site from one and open **To
+  replace**. Needs `reviewed: true`. **Next: F063 Store site**
+  (Milestone 7; the owner decides the store milestone first, see
+  HANDOVER "Model plan").
+
 - **F083 Stricter template check: built, passes** (branch
   `ccr-d50f7e80-weuq18`, stacked on F079–F082, PR #65). No design, so no
   snapshot and nothing for the owner to review. done_check `npm test --

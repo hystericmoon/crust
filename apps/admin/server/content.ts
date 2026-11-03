@@ -185,6 +185,10 @@ export function checkSite(site: unknown): string[] {
     }
   }
   problems.push(...validateChrome(site).map((p) => p.message));
+  if (site.template !== undefined) {
+    const t = site.template;
+    if (!isObject(t) || typeof t.id !== "string" || !/^[a-z0-9][a-z0-9-]{0,59}$/.test(t.id) || !Number.isInteger(t.version) || (t.version as number) < 1 || (t.version as number) > 9999) problems.push("The site's template record is damaged.");
+  }
   return problems;
 }
 

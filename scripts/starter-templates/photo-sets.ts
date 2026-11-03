@@ -10,6 +10,8 @@ export interface Photo {
   alt: string;
   width: number;
   height: number;
+  /** F084: the point blocks that crop the photo keep in view (0–100). */
+  focus?: { x: number; y: number };
 }
 
 /**
@@ -62,3 +64,14 @@ export const cornerPhotos: Photo[] = inDir("corner", [
   { file: "lemon-loaf.jpg", alt: "An iced lemon and lavender loaf on a cooling rack, with lemons beside it", ...HERO },
   { file: "moka-pour.jpg", alt: "Coffee pouring from a moka pot into a blue-striped cup", ...HERO },
 ]);
+
+/** Signal's client logos (F084): made-up names drawn for Crust, the same files as the layout library's samples. */
+export const signalLogos: Photo[] = inDir("signal", [
+  { file: "logo-northfield.png", alt: "Northfield", width: 405, height: 79 },
+  { file: "logo-lumen.png", alt: "Lumen & Co", width: 684, height: 82 },
+  { file: "logo-atlas.png", alt: "Atlas", width: 220, height: 84 },
+  { file: "logo-kestrel.png", alt: "Kestrel", width: 270, height: 78 },
+  { file: "logo-orbit.png", alt: "Orbit", width: 315, height: 82 },
+]);
+
+export const allPhotos: Photo[] = [...harbourPhotos, ...signalPhotos, ...signalLogos, ...cornerPhotos];

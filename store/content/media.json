@@ -1,0 +1,326 @@
+[
+  {
+    "file": "harbour-home-desktop.jpg",
+    "alt": "The Harbour template's Home page on a computer screen",
+    "width": 1280,
+    "height": 1600,
+    "bytes": 101642,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "harbour-home-tablet.jpg",
+    "alt": "The Harbour template's Home page on a tablet",
+    "width": 768,
+    "height": 1536,
+    "bytes": 62221,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "harbour-home-phone.jpg",
+    "alt": "The Harbour template's Home page on a phone",
+    "width": 780,
+    "height": 2340,
+    "bytes": 110987,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "harbour-services-desktop.jpg",
+    "alt": "The Harbour template's Services page on a computer screen",
+    "width": 1280,
+    "height": 1600,
+    "bytes": 126848,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "harbour-services-tablet.jpg",
+    "alt": "The Harbour template's Services page on a tablet",
+    "width": 768,
+    "height": 1536,
+    "bytes": 94680,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "harbour-services-phone.jpg",
+    "alt": "The Harbour template's Services page on a phone",
+    "width": 780,
+    "height": 2340,
+    "bytes": 117063,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "harbour-work-desktop.jpg",
+    "alt": "The Harbour template's Projects page on a computer screen",
+    "width": 1280,
+    "height": 1600,
+    "bytes": 117462,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "harbour-work-tablet.jpg",
+    "alt": "The Harbour template's Projects page on a tablet",
+    "width": 768,
+    "height": 1536,
+    "bytes": 79868,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "harbour-work-phone.jpg",
+    "alt": "The Harbour template's Projects page on a phone",
+    "width": 780,
+    "height": 2340,
+    "bytes": 104536,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "signal-home-desktop.jpg",
+    "alt": "The Signal template's Home page on a computer screen",
+    "width": 1280,
+    "height": 1600,
+    "bytes": 117281,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "signal-home-tablet.jpg",
+    "alt": "The Signal template's Home page on a tablet",
+    "width": 768,
+    "height": 1536,
+    "bytes": 79714,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "signal-home-phone.jpg",
+    "alt": "The Signal template's Home page on a phone",
+    "width": 780,
+    "height": 2340,
+    "bytes": 112857,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "signal-work-desktop.jpg",
+    "alt": "The Signal template's Work page on a computer screen",
+    "width": 1280,
+    "height": 1600,
+    "bytes": 123519,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "signal-work-tablet.jpg",
+    "alt": "The Signal template's Work page on a tablet",
+    "width": 768,
+    "height": 1536,
+    "bytes": 108879,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "signal-work-phone.jpg",
+    "alt": "The Signal template's Work page on a phone",
+    "width": 780,
+    "height": 2340,
+    "bytes": 133865,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "signal-services-desktop.jpg",
+    "alt": "The Signal template's Services page on a computer screen",
+    "width": 1280,
+    "height": 1600,
+    "bytes": 117286,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "signal-services-tablet.jpg",
+    "alt": "The Signal template's Services page on a tablet",
+    "width": 768,
+    "height": 1536,
+    "bytes": 78745,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "signal-services-phone.jpg",
+    "alt": "The Signal template's Services page on a phone",
+    "width": 780,
+    "height": 2340,
+    "bytes": 103480,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "corner-home-desktop.jpg",
+    "alt": "The Corner template's Home page on a computer screen",
+    "width": 1280,
+    "height": 1600,
+    "bytes": 149487,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "corner-home-tablet.jpg",
+    "alt": "The Corner template's Home page on a tablet",
+    "width": 768,
+    "height": 1536,
+    "bytes": 85410,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "corner-home-phone.jpg",
+    "alt": "The Corner template's Home page on a phone",
+    "width": 780,
+    "height": 2340,
+    "bytes": 123133,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "corner-menu-desktop.jpg",
+    "alt": "The Corner template's Menu page on a computer screen",
+    "width": 1280,
+    "height": 1600,
+    "bytes": 113928,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "corner-menu-tablet.jpg",
+    "alt": "The Corner template's Menu page on a tablet",
+    "width": 768,
+    "height": 1536,
+    "bytes": 85405,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "corner-menu-phone.jpg",
+    "alt": "The Corner template's Menu page on a phone",
+    "width": 780,
+    "height": 2340,
+    "bytes": 102119,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "corner-visit-desktop.jpg",
+    "alt": "The Corner template's Visit us page on a computer screen",
+    "width": 1280,
+    "height": 1600,
+    "bytes": 128709,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "corner-visit-tablet.jpg",
+    "alt": "The Corner template's Visit us page on a tablet",
+    "width": 768,
+    "height": 1536,
+    "bytes": 88747,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "corner-visit-phone.jpg",
+    "alt": "The Corner template's Visit us page on a phone",
+    "width": 780,
+    "height": 2340,
+    "bytes": 169998,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  }
+]

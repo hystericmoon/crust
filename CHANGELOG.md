@@ -4,6 +4,59 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Checkout in the store (F066), test mode.** A template with a price gets
+  a "Get … · US$49" button that opens the payment company's own checkout
+  page (Polar, recommended; Lemon Squeezy also works). They add sales tax
+  or VAT, send the receipt and pay you out. The button is a plain link, so
+  it works without JavaScript. Until you switch to real payments, a note
+  under each button says "Test checkout. No real payment is taken" with the
+  test card to use. After paying, buyers land on a new "Thank you" page
+  with how to open the template in Crust. Real payments need two things
+  from you: live checkout links, and the "Take real payments" switch when
+  you run Publish store. Nothing changes on the store until a template has
+  a price.
+
+- **Template versions (F065).** A template file now has a name for the
+  store (its id) and a version number. When you start from a template, your
+  site remembers which one and which version. When the store has a newer
+  version of that template, the Templates screen shows a quiet note: "A newer
+  “Olive” is available", what changed, and a link to its store page. Nothing
+  changes on your site by itself. Template files made before this still open
+  as always.
+
+- **Live demos in the store (F064).** Each template page in the store now
+  has a "Try the live demo" button. It opens the whole template as a real
+  website, every page working (menu, blog, search), under the store's own
+  address (`/demos/harbour/`, `/demos/signal/`, `/demos/corner/`). A slim
+  dark bar at the bottom says "Live demo of Harbour" and offers "Back to
+  store" and "Get this template"; it never touches the template's own
+  design or header. Demos are rebuilt every time the store is published,
+  so they always match the template file. Search engines are told to list
+  the store's pages, not the demo copies.
+- **The Crust template store (F063).** A website of its own, made with
+  Crust: Home, all templates, a page per template (pictures of its pages
+  on a computer and a phone, the price, what's included, counted from
+  the template itself, and the licence), Download Crust and Help. It
+  lists Harbour, Signal and Corner, free with Crust; premium templates
+  join it with a price and a buy button. A new **Publish store** button
+  in GitHub Actions puts it online at crust-store.pages.dev and writes
+  the list of priced templates the app's gallery will read.
+- **Harbour, Signal and Corner, rebuilt (F084).** The three starter
+  templates now use the new design layer: each starts from a Style
+  library look (Harbour: Atelier · Stone; Signal: Studio · Signal, a dark
+  site; Corner: Bistro · Cream), with bundled fonts, display headings and
+  small labels, and gentle motion. Every page is full length with
+  finished words for a believable business: Harbour has a project
+  slider, prices and questions; Signal a top bar, client logos, named
+  work tiles, services as tabs and fixed prices; Corner a menu with
+  price tables, a workshop price list, opening hours and ordering ahead,
+  and its own pages (Menu, Workshops, Our story, News, Visit us). Each
+  comes with its own post, blog and "Page not found" design and two
+  posts. Made-up names, figures, prices and photos are marked "to
+  replace", so they can't go live by accident.
+- **Templates keep the new header and footer.** A template file now
+  keeps the header's layout, "over the photo", top bar and dropdown
+  menus, and a footer made of blocks; before, these were lost.
 - **A stricter check before a template is offered (F083).** The template
   check now also stops a template that has leftover builder words
   ("Heading", "Click here", the sample quote), a card, slide or picture

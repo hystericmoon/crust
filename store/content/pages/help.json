@@ -1,0 +1,101 @@
+{
+  "path": "/help",
+  "title": "Help",
+  "description": "Answers about Crust templates: opening one, changing it, and publishing your site.",
+  "puck": {
+    "root": {
+      "props": {}
+    },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "id": "help-section-5",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "width": "narrow",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "help-heading-1",
+                "text": "Help",
+                "level": "h1",
+                "align": "left",
+                "size": "display",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "help-text-2",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Short answers about templates and Crust."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "muted"
+              }
+            },
+            {
+              "type": "Spacer",
+              "props": {
+                "id": "help-spacer-3",
+                "size": "sm"
+              }
+            },
+            {
+              "type": "Accordion",
+              "props": {
+                "id": "help-accordion-4",
+                "anchor": "questions",
+                "firstOpen": "no",
+                "oneAtATime": "no",
+                "items": [
+                  {
+                    "question": "How do I open a template?",
+                    "answer": "In Crust, choose Pages → Start from a template. Free templates are listed there. A template you bought is a .crust file: choose Open a file and pick it."
+                  },
+                  {
+                    "question": "Will a template replace my site?",
+                    "answer": "Starting from a template replaces your pages, posts, look, header and footer with the template's. Your site's address stays. If you change your mind, Bring back my previous site undoes it in one step."
+                  },
+                  {
+                    "question": "Can I change everything?",
+                    "answer": "Yes: every word, photo, colour, font and page. The template's sample words and photos are marked To replace, and Crust won't publish while any are left, so nothing made up goes live by accident."
+                  },
+                  {
+                    "question": "Do I need to know code?",
+                    "answer": "No. You edit pages by clicking, with a panel of settings beside each block. Everything also works with the keyboard."
+                  },
+                  {
+                    "question": "Where does my site go live?",
+                    "answer": "Where you choose: Cloudflare Pages or Netlify (both have free plans), or any web host by FTP or SFTP. Crust publishes plain pages that load fast."
+                  },
+                  {
+                    "question": "Is Crust really free?",
+                    "answer": "Yes. The app and its free templates cost nothing. Some templates in this store will have a price; the free ones stay free."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
