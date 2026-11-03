@@ -33,6 +33,9 @@ import { commitChanges, commitFiles, filesAt, listFolder, readFile, recentCommit
 /** The parts of a template the apply step writes; photos were sent before. */
 export interface TemplateContent {
   name: string;
+  /** F065 (optional, both or neither): the template's id and release; the site remembers them. */
+  id?: string;
+  release?: number;
   site: Pick<Site, "language" | "tokens" | "header" | "footer">;
   pages: TemplatePage[];
   sections: Pick<LinkedSectionFile, "id" | "name" | "content">[];
@@ -75,6 +78,7 @@ export function checkTemplateContent(t: unknown): string[] {
   if (!isObject(t)) return ["The template is missing."];
   const problems: string[] = [];
   if (!cleanName(t.name)) problems.push("The template needs a name.");
+  if ((t.id === undefined) !== (t.release === undefined) || (t.id !== undefined && (typeof t.id !== "string" || !/^[a-z0-9][a-z0-9-]{0,59}$/.test(t.id) || !Number.isInteger(t.release) || (t.release as number) < 1 || (t.release as number) > 9999))) problems.push("The template's id or version number is damaged.");
   const pages = Array.isArray(t.pages) ? t.pages : [];
   if (!pages.length) problems.push("The template has no pages.");
   const paths = new Set<string>();
@@ -141,7 +145,8 @@ export function applyChanges(
     write.add(path);
     changes.push({ path, content });
   };
-  const site: Site = { ...current.site, language: t.site.language, tokens: t.site.tokens, header: t.site.header, footer: t.site.footer };
+  const { template: _before, ...kept } = current.site;
+  const site: Site = { ...kept, language: t.site.language, tokens: t.site.tokens, header: t.site.header, footer: t.site.footer, ...(t.id && t.release ? { template: { id: t.id, version: t.release } } : {}) };
   put("content/site.json", serialize(site));
   for (const p of t.pages) {
     const page: Page = { path: p.path, title: p.title, description: p.description, ...(p.seo ? { seo: p.seo } : {}), puck: p.puck };

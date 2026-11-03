@@ -13,6 +13,8 @@ export interface Site {
   header?: Partial<SiteHeader>;
   /** Site footer (F031). Optional, like header. */
   footer?: Partial<SiteFooter>;
+  /** F065 (optional): the template this site started from, and its release then. */
+  template?: { id: string; version: number };
 }
 
 /** content/pages/<slug>.json */

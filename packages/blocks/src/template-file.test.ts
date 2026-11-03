@@ -229,3 +229,36 @@ describe("template-file: page designs (F082)", () => {
     expect(readTemplate(JSON.stringify({ ...template, designs: [other] }), blocks).problems).toContain("The photo door.png is used but isn't in the template.");
   });
 });
+
+describe("template-versions: a template's id and release (F065)", () => {
+  const withRelease = async (id?: string, release?: number) => (await makeTemplate({ name: "Olive", description: "", id, release }, source(), photo, new Date("2026-11-03T00:00:00Z"))).template;
+
+  it("carries an id and release number, and reads them back", async () => {
+    const t = await withRelease("olive", 3);
+    expect(t).toMatchObject({ format: "crust-template", version: 1, id: "olive", release: 3 });
+    const read = readTemplate(JSON.stringify(t), blocks);
+    expect(read.problems).toEqual([]);
+    expect(read.template).toMatchObject({ id: "olive", release: 3 });
+  });
+
+  it("still opens files made before ids and releases", async () => {
+    const t = await withRelease();
+    expect("id" in t || "release" in t).toBe(false);
+    const read = readTemplate(JSON.stringify(t), blocks);
+    expect(read.problems).toEqual([]);
+    expect(read.template?.id).toBeUndefined();
+  });
+
+  it("leaves both out unless both are valid", async () => {
+    expect("id" in (await withRelease("olive"))).toBe(false);
+    expect("release" in (await withRelease("Bad Id", 2))).toBe(false);
+  });
+
+  it("refuses a damaged id or release", async () => {
+    const t = await withRelease("olive", 3);
+    for (const bad of [{ id: "Olive!" }, { release: 0 }, { release: 1.5 }, { release: "2" }, { id: undefined }, { release: undefined }]) {
+      const file = JSON.stringify({ ...t, ...bad });
+      expect(readTemplate(file, blocks).template).toBeNull();
+    }
+  });
+});

@@ -54,6 +54,8 @@ export interface StoreItem {
   buy?: string;
   /** Priced only: the licence in one or two plain sentences (F068 adds the full pages). */
   licence?: string;
+  /** F065 (optional): what changed in the template's current release, 1 to 5 short lines. */
+  changes?: string[];
 }
 
 export interface StoreList {
@@ -103,6 +105,12 @@ export function readStoreList(text: string): { list: StoreList | null; problems:
     if (show.length < 1 || show.length > 4 || show[0] !== "/") problems.push(`${where}: "show" should list 1 to 4 page addresses, starting with "/".`);
     if (new Set(show).size !== show.length) problems.push(`${where}: "show" lists a page twice.`);
     const item: StoreItem = { id, file, kind, price, show };
+    // F065: what changed in the current release, shown in the app's quiet update note.
+    if (x.changes !== undefined) {
+      const changes = Array.isArray(x.changes) ? x.changes : [];
+      if (!changes.length || changes.length > 5 || !changes.every((c) => typeof c === "string" && c.trim() && c.length <= 300)) problems.push(`${where}: "changes" should be 1 to 5 short lines (at most 300 characters each).`);
+      else item.changes = changes.map((c) => (c as string).trim());
+    }
     if (PRICE.test(price) && price !== FREE) {
       const buy = str("buy");
       const licence = str("licence");
@@ -140,6 +148,9 @@ export function readStoreTemplates(list: StoreList, readFile: (path: string) => 
     for (const path of item.show) {
       if (!read.template.pages.some((p) => p.path === path)) problems.push(`“${item.id}”: ${read.template.name} has no page at ${path}.`);
     }
+    // F065: a file that names its id must be listed under that id; a priced one needs a release so the app can tell buyers about updates.
+    if (read.template.id && read.template.id !== item.id) problems.push(`“${item.id}”: ${item.file} says it is “${read.template.id}”.`);
+    if (item.buy && !read.template.release) problems.push(`“${item.id}”: a priced template needs an id and release number in its file (see F065).`);
     templates.push({ item, template: read.template });
   }
   return { templates, problems };
@@ -463,6 +474,7 @@ export function storeCatalogue(templates: StoreTemplate[], baseUrl = STORE_URL) 
         kind: item.kind,
         price: item.price,
         url: `${baseUrl}${templatePath(item.id)}/`,
+        ...(template.release ? { version: template.release, changes: item.changes ?? [] } : {}),
         pages: item.show.map((path) => ({
           title: template.pages.find((p) => p.path === path)?.title ?? path,
           path,

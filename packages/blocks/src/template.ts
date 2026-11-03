@@ -21,6 +21,11 @@ import { validateTokens, type SiteTokens } from "./tokens";
 
 export const TEMPLATE_FORMAT = "crust-template";
 export const TEMPLATE_VERSION = 1;
+/** F065: a template's id (its name in the store) and release number. */
+export const TEMPLATE_ID = /^[a-z0-9][a-z0-9-]{0,59}$/;
+export const MAX_RELEASE = 9999;
+export const isTemplateRelease = (v: unknown): v is number => typeof v === "number" && Number.isInteger(v) && v >= 1 && v <= MAX_RELEASE;
+
 export const templateLimits = {
   /** The whole file, photos included (they're base64 text). */
   bytes: 60 * 1024 * 1024,
@@ -58,6 +63,9 @@ export interface Template {
   version: typeof TEMPLATE_VERSION;
   /** The template's name, e.g. "Studio". */
   name: string;
+  /** F065 (optional, both or neither): the template's id and release number (1, 2, …). Files made before have neither. */
+  id?: string;
+  release?: number;
   /** One or two lines for the gallery (F048). */
   description: string;
   exportedAt: string;
@@ -110,7 +118,7 @@ export function photosUsed(source: Pick<TemplateSource, "chrome" | "pages" | "se
  * named in `missing`, so the owner can fix the page before sharing it.
  */
 export async function makeTemplate(
-  details: { name: string; description: string },
+  details: { name: string; description: string; id?: string; release?: number },
   source: TemplateSource,
   photo: (file: string) => Promise<string | null>,
   now = new Date(),
@@ -129,6 +137,7 @@ export async function makeTemplate(
     version: TEMPLATE_VERSION,
     name: details.name.trim().slice(0, templateLimits.name) || source.site.name.slice(0, templateLimits.name) || "My template",
     description: details.description.trim().slice(0, templateLimits.description),
+    ...(details.id && TEMPLATE_ID.test(details.id) && isTemplateRelease(details.release) ? { id: details.id, release: details.release } : {}),
     exportedAt: now.toISOString(),
     site: { name: source.site.name, language: source.site.language },
     tokens: source.tokens,
@@ -277,6 +286,12 @@ export function readTemplate(fileText: string, blocks: BlockSpecs): TemplateChec
 
   const problems: string[] = [];
   const count = { blocks: 0 };
+  // F065: id and release come together, or the file is from before them.
+  const hasId = raw.id !== undefined;
+  const hasRelease = raw.release !== undefined;
+  const id = typeof raw.id === "string" && TEMPLATE_ID.test(raw.id) ? raw.id : null;
+  const release = isTemplateRelease(raw.release) ? raw.release : null;
+  if (hasId !== hasRelease || (hasId && (!id || !release))) problems.push("The template's id or version number is damaged.");
   const name = text(raw.name, 200)?.trim().slice(0, templateLimits.name) || "Template";
   const description = text(raw.description, 2000)?.trim().slice(0, templateLimits.description) ?? "";
   const site = isObject(raw.site) ? raw.site : {};
@@ -439,6 +454,7 @@ export function readTemplate(fileText: string, blocks: BlockSpecs): TemplateChec
       version: TEMPLATE_VERSION,
       name,
       description,
+      ...(id && release ? { id, release } : {}),
       exportedAt: text(raw.exportedAt, 40) ?? "",
       site: { name: siteName, language },
       tokens,

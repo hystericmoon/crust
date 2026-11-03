@@ -13,7 +13,7 @@ import { useEffect, useId, useMemo, useRef, useState, type ChangeEvent } from "r
 import { Dialog, focusAfterDialog } from "../pages/PageActions";
 import { setJustApplied } from "./local-site";
 import { sitesInvoke } from "../sites/sites";
-import { cardPicture, pictureFor, premiumTemplates, type CatalogueState, type CatalogueTemplate, type PreviewWidth } from "./catalogue";
+import { cardPicture, pictureFor, premiumTemplates, templateUpdate, type CatalogueState, type CatalogueTemplate, type PreviewWidth } from "./catalogue";
 import { gallerySources, readTemplateText, type GallerySource, type Template } from "./sources";
 import { applyLocally, applyOnGitHub, previewHtml, replacePlan, templateFacts, type ApplyStep, type CurrentSite, type PreviewTarget, type ReplacePlan } from "./start";
 import "./templates.css";
@@ -44,6 +44,8 @@ export interface TemplatesScreenProps {
   onApplied?: () => void;
   /** F062: the premium templates (the store's catalogue). */
   premium?: () => Promise<CatalogueState>;
+  /** F065: the template this site started from, and its release then. */
+  startedFrom?: { id: string; version: number };
 }
 
 const fromStore = () => premiumTemplates(location.hash, location.href);
@@ -53,7 +55,7 @@ const reload = () => {
   location.reload();
 };
 
-export function TemplatesScreen({ siteName, githubOn, currentSite, sources: given, onApplied = reload, premium = fromStore }: TemplatesScreenProps) {
+export function TemplatesScreen({ siteName, githubOn, currentSite, sources: given, onApplied = reload, premium = fromStore, startedFrom }: TemplatesScreenProps) {
   const [sources] = useState(() => given ?? gallerySources());
   const [catalogue, setCatalogue] = useState<CatalogueState>({ kind: "loading" });
   const [premiumChosen, setPremiumChosen] = useState<CatalogueTemplate | null>(null);
@@ -209,6 +211,7 @@ export function TemplatesScreen({ siteName, githubOn, currentSite, sources: give
             </ul>
           </div>
         ) : null}
+        <UpdateNote update={catalogue.kind === "ready" ? templateUpdate(startedFrom, catalogue.catalogue) : null} />
         <PremiumGroup
           state={catalogue}
           idPrefix={fileId}
@@ -220,6 +223,35 @@ export function TemplatesScreen({ siteName, githubOn, currentSite, sources: give
         />
       </main>
     </div>
+  );
+}
+
+/** F065: a quiet note (not an alert) when the store has a newer release of the template this site started from. */
+function UpdateNote({ update }: { update: ReturnType<typeof templateUpdate> }) {
+  if (!update) return null;
+  return (
+    <section className="tp-update" aria-labelledby="tp-update-h">
+      <h2 className="tp-group" id="tp-update-h">
+        A newer “{update.name}” is available
+      </h2>
+      <p className="tp-group-note">
+        Your site started from “{update.name}” version {update.from}; the store now has version {update.to}. Your site isn't changed.
+        {update.changes.length ? " What's new:" : ""}
+      </p>
+      {update.changes.length ? (
+        <ul>
+          {update.changes.map((c) => (
+            <li key={c}>{c}</li>
+          ))}
+        </ul>
+      ) : null}
+      <p className="tp-group-note">
+        <a href={update.url} target="_blank" rel="noopener noreferrer" onClick={(e) => openInBrowser(update.url, e)}>
+          Open its page in the store<span className="pg-sr"> (opens in a new tab)</span>
+        </a>
+        . Downloading it and using it replaces your site, so look it over first.
+      </p>
+    </section>
   );
 }
 
