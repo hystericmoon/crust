@@ -54,6 +54,7 @@ Public site: static HTML on Cloudflare Pages (later also FTP to any host)
 | Search | Pagefind (at publish time, F039) |
 | Hosting/CI | Cloudflare Pages, GitHub Actions |
 | Forms | Cloudflare Worker + Turnstile, email via Resend (free plan) |
+| Store delivery | Cloudflare Worker `packages/delivery` + Workers KV, email via Resend (F067) |
 
 ## Repo layout
 

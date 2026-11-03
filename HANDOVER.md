@@ -28,34 +28,22 @@ The owner confirmed all six rows as listed ("go ahead", 2026-11-03
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-03 ~17:30 (Jakarta), branch
-`ccr-d50f7e80-weuq18` (restarted from main after PR #68 merged, 2026-11-03
-~18:20 Jakarta). Latest round, at the owner's request ("do a, b and d" on
-https://claude.ai/artifact/D2h2rdzR4iQU6dQv7TyWqV): session routines are
-project skills in `.claude/skills/`, docs/spec.md no longer loads at
-start, `scripts/verify.sh` gives short check output, checkpoint and
-`/clear` at ~200k, unused skill packs hidden for this project
-(DECISIONS "Token saving"). Earlier: PR #66 merged, start-up files
-slimmed, review round page built. Last feature: **F066 Checkout built,
-passes, test mode** (merged in PR #66; DECISIONS "F066"). Snapshot https://claude.ai/artifact/6QAvaWHcuU26fgCfCrZVdw (A
-built: Polar; test note under the button). How it fits:
-`scripts/store/checkout.ts` (`PROVIDERS` polar/lemonsqueezy with link
-shapes per mode and how the template id is added, `readCheckout`,
-`buyLinkProblem`, `checkoutUrl`, `testNote`, `checkoutLine`,
-`checkoutGate`, `THANKS_PATH`), `store/list.json` `checkout` (Polar,
-test), model.ts `readStoreList` checks links, `templatePage` `afterBuy`,
-`thanksPage` (only with a priced template), `storePages(templates,
-checkout)`, load.ts returns `checkout`; gate script
-`scripts/store/checkout-check.ts`, run by Publish store before rendering
-with input `real_payments` → `CRUST_REAL_PAYMENTS`. Tests:
-`scripts/store/checkout.test.ts`. Polar link shapes are from its docs, not
-tried against a real sandbox yet (no account): the first real link may
-need a small fix in `PROVIDERS.polar.matches`. Needs `reviewed: true`.
-**Next: F067 Delivery and updates** (Opus): Worker checks the provider's
-signed "order paid" message (Polar uses Standard Webhooks signatures;
-template id in `reference_id` metadata), emails a personal download page
-(Resend), serves the file from Workers KV. Needs the owner's Polar account
-for real tests; build and test against fakes first.
+Last updated: 2026-11-03 ~21:45 (Jakarta), branch
+`ccr-d50f7e80-weuq18` (PR #69, F067 only; not merged). Last feature:
+**F067 Delivery and updates built, passes** (DECISIONS "F067"). How it
+fits: `packages/delivery/src/worker.ts` (`handle` routes `POST /webhook`,
+`GET /d/<token>` page and `/d/<token>/file`; `standardSigned` (Polar,
+Standard Webhooks) / `lemonSigned`; `readEvent`; KV `keys`: `template:`,
+`file:`, `order:`, `link:`; `deliveryEmail`, `downloadPage`); Publish
+store step `scripts/store/delivery-kv.ts upload` (`scripts/store/delivery.ts`
+`deliveryPairs`, `batches`, `namespaceId`, `upload`); deploy workflow
+`.github/workflows/delivery-worker.yml` (PROVIDER/MODE from
+`store/list.json` checkout). Owner steps: docs/setup-delivery.md
+(BLOCKED.md). Polar field names are from its docs, not tried against a
+real sandbox yet. Tests: `packages/delivery/src/delivery.test.ts`,
+`scripts/store/delivery.test.ts`. The FTPS test port fix shipped in the
+same PR (`passive_range()` in crates/crust-desktop/src/ftp/tests.rs).
+**Next: F068 Licence, terms and refunds** (Opus).
 
 
 
@@ -68,7 +56,7 @@ for real tests; build and test against fakes first.
   the owner publishes.
 - **Admin** https://crust-admin.pages.dev (main). Preview of the session
   branch: https://ccr-d50f7e80-weuq18.crust-admin.pages.dev (can't save).
-- **Store** (F063–F066) built, not online: the owner runs Actions →
+- **Store** (F063–F067) built, not online: the owner runs Actions →
   Publish store (BLOCKED.md).
 - **Desktop app** (F055–F062) built and tested in CI, never installed by
   the owner; installers cost ~150 Actions minutes (ask first).
@@ -84,24 +72,13 @@ for real tests; build and test against fakes first.
 
 ## Next
 
-**First, before F067 (owner, 2026-11-03: "fix the test at the start of
-F067"):** make `ftp::tests::ftps_connects_with_a_trusted_certificate`
-(crates/crust-desktop/src/ftp/tests.rs) reliable. It failed once in CI on
-PR #68 (`received corrupt message of type InvalidContentType` at the
-fourth publish) and passed on re-run and 25/25 locally. Likely cause: the
-parallel FTP and FTPS test servers share `passive_ports(50000..=60000)`,
-libunftp binds passive ports with SO_REUSEADDR, and `free_port()` takes
-control ports from the same ephemeral range. Fix: give each server its
-own passive range below the ephemeral ports (e.g. FTP `20000..=24999`,
-FTPS `25000..=29999`). Ship it in F067's PR, noted in DECISIONS "F067".
-
-**F067 Delivery and updates** (Opus): a Worker checks the provider's
-signed "order paid" message (Polar uses Standard Webhooks signatures;
-the template id is in `reference_id` metadata), emails a personal
-download page (Resend), serves the file from Workers KV. Build and test
-against fakes; real tests need the owner's Polar account (BLOCKED.md).
-Then **F068 Licence, terms and refunds** (Opus; drafts with options, the
-owner decides the wording).
+**F068 Licence, terms and refunds** (Opus; the last Milestone 7 feature).
+Claude drafts plain-language licence (for example one site vs unlimited
+sites for agencies), terms and refund pages for the store with options,
+in a snapshot; the owner decides the wording and prices (BLOCKED.md).
+Link them from checkout (`licence` in store/list.json, F063) and every
+template page. The refund wording should match F067: a full refund
+switches the download page off.
 
 ## Where to find things
 

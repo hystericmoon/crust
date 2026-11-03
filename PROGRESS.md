@@ -7,6 +7,19 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
+- **F067 Delivery and updates: built, passes** (branch
+  `ccr-d50f7e80-weuq18`, its own PR). done_check `npm test -- delivery`
+  exit 0; `npm test`, typecheck, `cargo test` and clippy pass. After a
+  paid order, the buyer gets an email with a personal download page
+  (Download button, what's new, how to open it in Crust). The same page
+  always has the newest release, so updates are free; a full refund
+  switches it off. Fake "order paid" messages are refused (signature
+  check). Also fixed: the desktop FTPS test that failed once on #68.
+  **To try:** nothing visible yet: it needs the one-time setup in
+  docs/setup-delivery.md (after the Polar account), then a test purchase
+  with your own email address. **Next: F068 Licence, terms and refunds**
+  (Opus).
+
 - **2026-11-03: token saving A, B and D done** (owner's pick on
   https://claude.ai/artifact/D2h2rdzR4iQU6dQv7TyWqV; DECISIONS "Token
   saving"). Nothing changes in Crust itself; sessions carry less. Long
@@ -15,24 +28,6 @@ later session must know; keep the newest 3 entries here.
 - **2026-11-03: PR #66 merged** (owner's request): F084, F063, F064,
   F065, F066 are on main. Start-up files slimmed (history in
   `docs/archive/`, `npm run next`); one PR per feature from now on.
-
-- **F066 Checkout: built, passes, test mode** (branch
-  `ccr-d50f7e80-weuq18`, PR #66, merged 2026-11-03). Snapshot
-  https://claude.ai/artifact/6QAvaWHcuU26fgCfCrZVdw (A built for both:
-  Polar as the payment company; a "Test checkout" note under each buy
-  button). done_check `npm test -- checkout` exit 0; `npm test`,
-  typecheck, `cargo test` and clippy pass. A priced template's button is a
-  plain link to the company's hosted checkout (works without JavaScript),
-  tagged with the template's id for F067; test mode says so under the
-  button with the test card; a "Thank you" page (`/thanks`) appears once
-  something has a price; Publish store has a "Take real payments" switch
-  (off) and refuses live links without it (DECISIONS "F066"). **To try:**
-  nothing changes on the store yet (every template is free). Open the
-  comparison page, decide on the company, and open the account
-  (BLOCKED.md). Once you send a sandbox checkout link for a paid template,
-  you can buy it with the test card on the store. Needs `reviewed: true`.
-  **Next: F067 Delivery and updates** (Opus).
-
 
 ## Waiting on the owner
 
