@@ -36,7 +36,29 @@ The owner confirmed all six rows as listed ("go ahead", 2026-11-03
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-03 ~13:15 (Jakarta). **F065 Template versions built,
+Last updated: 2026-11-03 ~13:45 (Jakarta). **F066 Checkout built,
+passes, test mode** (branch `ccr-d50f7e80-weuq18`, PR #66; DECISIONS
+"F066"). Snapshot https://claude.ai/artifact/6QAvaWHcuU26fgCfCrZVdw (A
+built: Polar; test note under the button). How it fits:
+`scripts/store/checkout.ts` (`PROVIDERS` polar/lemonsqueezy with link
+shapes per mode and how the template id is added, `readCheckout`,
+`buyLinkProblem`, `checkoutUrl`, `testNote`, `checkoutLine`,
+`checkoutGate`, `THANKS_PATH`), `store/list.json` `checkout` (Polar,
+test), model.ts `readStoreList` checks links, `templatePage` `afterBuy`,
+`thanksPage` (only with a priced template), `storePages(templates,
+checkout)`, load.ts returns `checkout`; gate script
+`scripts/store/checkout-check.ts`, run by Publish store before rendering
+with input `real_payments` → `CRUST_REAL_PAYMENTS`. Tests:
+`scripts/store/checkout.test.ts`. Polar link shapes are from its docs, not
+tried against a real sandbox yet (no account): the first real link may
+need a small fix in `PROVIDERS.polar.matches`. Needs `reviewed: true`.
+**Next: F067 Delivery and updates** (Opus): Worker checks the provider's
+signed "order paid" message (Polar uses Standard Webhooks signatures;
+template id in `reference_id` metadata), emails a personal download page
+(Resend), serves the file from Workers KV. Needs the owner's Polar account
+for real tests; build and test against fakes first.
+
+Earlier (~13:15). **F065 Template versions built,
 passes** (branch `ccr-d50f7e80-weuq18`, PR #66; DECISIONS "F065"). How it
 fits: `Template.id`/`release` (`packages/blocks/src/template.ts`, reader
 refuses id without release), `Site.template {id, version}` written by
@@ -45,9 +67,6 @@ catalogue `version`/`changes` (`catalogue.ts`, `templateUpdate`), store
 `changes` in `store/list.json` and checks in `readStoreTemplates`, quiet
 `UpdateNote` in TemplatesScreen (App passes `site.template`). Tests:
 `apps/admin/src/templates/template-versions.test.tsx`. No review needed.
-**Next: F066 Checkout** (Opus; test mode first, needs the owner's payment
-account, BLOCKED.md: compare providers first and ask before anything that
-costs money).
 
 Earlier (~12:30). **F064 Live demos built,
 passes** (branch `ccr-d50f7e80-weuq18`, PR #66; DECISIONS "F064"). Snapshot

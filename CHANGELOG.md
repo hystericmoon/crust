@@ -4,6 +4,18 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Checkout in the store (F066), test mode.** A template with a price gets
+  a "Get … · US$49" button that opens the payment company's own checkout
+  page (Polar, recommended; Lemon Squeezy also works). They add sales tax
+  or VAT, send the receipt and pay you out. The button is a plain link, so
+  it works without JavaScript. Until you switch to real payments, a note
+  under each button says "Test checkout. No real payment is taken" with the
+  test card to use. After paying, buyers land on a new "Thank you" page
+  with how to open the template in Crust. Real payments need two things
+  from you: live checkout links, and the "Take real payments" switch when
+  you run Publish store. Nothing changes on the store until a template has
+  a price.
+
 - **Template versions (F065).** A template file now has a name for the
   store (its id) and a version number. When you start from a template, your
   site remembers which one and which version. When the store has a newer

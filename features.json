@@ -706,7 +706,7 @@
       "description": "Buy buttons on the store open the payment provider's hosted checkout (a merchant of record that handles sales tax). Test mode first; live only after the owner's go-ahead. The provider and its account are the owner's (BLOCKED.md); Claude compares the options when this starts. Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
       "depends_on": ["F063"],
       "done_check": "npm test -- checkout",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

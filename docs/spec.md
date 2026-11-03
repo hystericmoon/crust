@@ -291,6 +291,17 @@ only. F064: it also publishes every listed template as a full demo site
 at `/demos/<id>/` (addresses moved into that folder, `noindex`, own
 Pagefind index, a "Get this template" bar linking to `/templates/<id>/`);
 each template page's "Try the live demo" button opens it.
+F066: `store/list.json` may carry `"checkout": { "provider": "polar" |
+"lemonsqueezy", "mode": "test" | "live" }`. With it, each `buy` link must
+be that company's hosted checkout link for that mode (Polar live
+`https://buy.polar.sh/polar_cl_…`, sandbox
+`https://sandbox-api.polar.sh/v1/checkout-links/polar_cl_…/redirect`;
+Lemon Squeezy `https://<store>.lemonsqueezy.com/checkout/buy/…`); the
+button adds the template's id (`reference_id` / `checkout[custom][template]`),
+test mode shows a note under it, and `/thanks` (noindex) appears once
+something has a price. The Publish store workflow refuses a priced
+template without the setting, and live mode without its "Take real
+payments" switch.
 
 `content/media/<file>` and `content/media.json` (optional, added with F034):
 uploaded photos (JPG, PNG, WebP; at most 2400 px) and their details.

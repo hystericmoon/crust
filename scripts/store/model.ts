@@ -14,11 +14,12 @@
  *
  * Nothing here touches the disk: build.ts, pictures.ts and catalogue.ts do.
  */
-import { readTemplate, type MediaItem, type Page, type Site, type Template, config } from "@crust/blocks";
+import { readTemplate, type MediaItem, type Page, type RichText, type Site, type Template, config } from "@crust/blocks";
 import { kit, type Block } from "../starter-templates/kit";
 import { lookTokens } from "../starter-templates/starter";
 import { DOWNLOADS_URL } from "../updates-site";
 import { demoPath } from "./demos";
+import { buyLinkProblem, checkoutLine, checkoutUrl, readCheckout, testNote, THANKS_PATH, type Checkout } from "./checkout";
 
 export const STORE_FORMAT = "crust-store";
 /** The store's own address: its free Cloudflare Pages project, "crust-store". */
@@ -60,6 +61,8 @@ export interface StoreItem {
 
 export interface StoreList {
   templates: StoreItem[];
+  /** F066 (optional): the payment company and test or live mode (checkout.ts). */
+  checkout?: Checkout;
 }
 
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -78,7 +81,7 @@ export function readStoreList(text: string): { list: StoreList | null; problems:
   } catch {
     return { list: null, problems: ["store/list.json isn't valid JSON."] };
   }
-  const r = raw as { format?: unknown; version?: unknown; templates?: unknown };
+  const r = raw as { format?: unknown; version?: unknown; templates?: unknown; checkout?: unknown };
   if (!r || typeof r !== "object" || r.format !== STORE_FORMAT || r.version !== 1) {
     return { list: null, problems: [`store/list.json should start with "format": "${STORE_FORMAT}", "version": 1.`] };
   }
@@ -87,6 +90,9 @@ export function readStoreList(text: string): { list: StoreList | null; problems:
   }
   const seen = new Set<string>();
   const templates: StoreItem[] = [];
+  // F066: with a checkout setting, every buy link must be that company's link for that mode.
+  const { checkout, problems: checkoutProblems } = readCheckout(r.checkout);
+  problems.push(...checkoutProblems);
   r.templates.forEach((t: unknown, i: number) => {
     const x = (t ?? {}) as Record<string, unknown>;
     const where = typeof x.id === "string" && x.id ? `“${x.id}”` : `Template ${i + 1}`;
@@ -115,13 +121,17 @@ export function readStoreList(text: string): { list: StoreList | null; problems:
       const buy = str("buy");
       const licence = str("licence");
       if (!/^https:\/\/[^\s"'<>]+$/.test(buy)) problems.push(`${where} has a price, so it needs a "buy" link (https://…) before the store can sell it.`);
+      else if (checkout) {
+        const problem = buyLinkProblem(where, buy, checkout);
+        if (problem) problems.push(problem);
+      }
       if (!licence || licence.length > 400) problems.push(`${where} has a price, so it needs its licence in "licence" (one or two sentences).`);
       item.buy = buy;
       item.licence = licence;
     }
     templates.push(item);
   });
-  return problems.length ? { list: null, problems } : { list: { templates }, problems: [] };
+  return problems.length ? { list: null, problems } : { list: { templates, ...(checkout ? { checkout } : {}) }, problems: [] };
 }
 
 /** A listed template with its file read. */
@@ -312,7 +322,17 @@ function allPage(templates: StoreTemplate[], pics: ReturnType<typeof picturesNee
   ]);
 }
 
-function templatePage(st: StoreTemplate, others: StoreTemplate[], pics: ReturnType<typeof picturesNeeded>): Page {
+/** F066: under a buy button, the test note (test mode only) and who takes the payment. */
+function afterBuy(k: ReturnType<typeof kit>, checkout: Checkout | null): Block[] {
+  if (!checkout) return [];
+  const note = testNote(checkout);
+  return [
+    ...(note ? [k.text({ rich: 1, blocks: [{ type: "p", children: [{ text: note[0], bold: true }, { text: note[1] }] }] } as RichText, { tone: "default" })] : []),
+    k.text(checkoutLine(checkout), { tone: "muted" }),
+  ];
+}
+
+function templatePage(st: StoreTemplate, others: StoreTemplate[], pics: ReturnType<typeof picturesNeeded>, checkout: Checkout | null = null): Page {
   const { item, template } = st;
   const k = kit(`t-${item.id}`);
   const mine = pics.filter((p) => p.id === item.id);
@@ -320,8 +340,10 @@ function templatePage(st: StoreTemplate, others: StoreTemplate[], pics: ReturnTy
   const titleOf = (path: string) => template.pages.find((p) => p.path === path)?.title ?? path;
   const desktop = item.show.map((path) => mine.find((p) => p.path === path && p.widthName === "desktop")!);
   const phone = item.show.map((path) => mine.find((p) => p.path === path && p.widthName === "phone")!);
+  // F066: the button goes to the payment company's checkout, tagged with the template's id.
+  const buyButton = () => k.button(`Get ${template.name} · ${item.price}`, checkoutUrl(item.buy!, item.id, checkout), "primary");
   const buy = isPriced(item)
-    ? [k.button(`Get ${template.name} · ${item.price}`, item.buy!, "primary")]
+    ? [buyButton(), ...afterBuy(k, checkout)]
     : [k.text("It's already in the app: open Crust and choose Pages → Start from a template.", { tone: "muted" }), k.button("How to open it", HELP_OPEN, "secondary")];
   // F064: the demo is published under the store by demos-build.ts.
   const demo = (): Block => k.button("Try the live demo", `${demoPath(item.id)}/`, "secondary", { icon: "external-link" });
@@ -333,7 +355,7 @@ function templatePage(st: StoreTemplate, others: StoreTemplate[], pics: ReturnTy
       // On phones the details column comes after the pictures, so the price and next step are also here.
       ...[
         k.text(isPriced(item) ? item.price : "Free with Crust", { tone: "default" }),
-        isPriced(item) ? k.button(`Get ${template.name} · ${item.price}`, item.buy!, "primary") : k.button("How to open it", HELP_OPEN, "secondary"),
+        ...(isPriced(item) ? [buyButton(), ...afterBuy(k, checkout)] : [k.button("How to open it", HELP_OPEN, "secondary")]),
         demo(),
       ].map((b) => ({ ...b, props: { ...b.props, hideOn: ["desktop", "tablet"] } }) as Block),
     ], { paddingY: "lg" }),
@@ -412,6 +434,43 @@ function helpPage(): Page {
   ]);
 }
 
+/**
+ * F066: where buyers land after paying (the "success" address set in the
+ * payment company's dashboard). Kept out of search engines: it's only
+ * useful straight after a purchase.
+ */
+function thanksPage(checkout: Checkout | null): Page {
+  const k = kit("thanks");
+  const note = testNote(checkout);
+  return {
+    ...page(THANKS_PATH, "Thank you", "Your template is on its way by email.", [
+      k.section("background", [
+        k.h1("Thanks, it's yours.", { eyebrow: note ? "Test order" : "Order complete", mark: false }),
+        k.text(
+          note
+            ? "That was a test order: no money was taken. In live mode, this is where buyers land after paying."
+            : "Your payment went through and the receipt is on its way. We're also emailing you a personal download link for your template. It can take a few minutes; if it doesn't arrive, check your spam folder.",
+          { tone: "default" },
+        ),
+        k.spacer("xs"),
+        k.heading("Then open it in Crust", { level: "h2", mark: false }),
+        k.raw("IconList", {
+          icon: "numbers",
+          numberStyle: "circle",
+          items: [
+            "Download the template file from the link in the email. The link keeps working, so you can come back for updates.",
+            "Open Crust and choose Pages → Start from a template → Open a file.",
+            "Pick the file. Replace the words and photos with your own, then publish.",
+          ].map((text) => ({ text })),
+        }),
+        k.spacer("xs"),
+        k.columns([[k.button("Download Crust", "/download", "primary")], [k.button("Help", "/help", "secondary")]], { gap: "sm", widths: "one-two", valign: "middle" }),
+      ], { paddingY: "xl", width: "narrow" }),
+    ]),
+    seo: { noindex: true },
+  };
+}
+
 /** The store's site.json. */
 export function storeSite(templates: StoreTemplate[]): Site {
   return {
@@ -444,15 +503,17 @@ export function storeSite(templates: StoreTemplate[]): Site {
   };
 }
 
-/** Every store page, from the list and the template files. */
-export function storePages(templates: StoreTemplate[]): Page[] {
+/** Every store page, from the list and the template files (F066: and the checkout setting). */
+export function storePages(templates: StoreTemplate[], checkout: Checkout | null = null): Page[] {
   const pics = picturesNeeded(templates);
   return [
     homePage(templates, pics),
     allPage(templates, pics),
-    ...templates.map((t) => templatePage(t, templates.filter((o) => o !== t), pics)),
+    ...templates.map((t) => templatePage(t, templates.filter((o) => o !== t), pics, checkout)),
     downloadPage(),
     helpPage(),
+    // F066: only once something is for sale.
+    ...(templates.some(({ item }) => isPriced(item)) ? [thanksPage(checkout)] : []),
   ];
 }
 

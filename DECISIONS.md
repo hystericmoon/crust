@@ -3209,3 +3209,48 @@ Sonnet, F066 Opus, F067 Opus, F068 Opus. F063 starts at 11:15.
   is out of scope; it needs the owner's decision first (Proposals).
 - Only premium templates have catalogue entries, so only they get the
   note; free starters come with the app and update with it.
+
+## 2026-11-03 — F066 Checkout (Claude, reversible; the provider is the owner's call)
+
+Snapshot https://claude.ai/artifact/6QAvaWHcuU26fgCfCrZVdw
+(`design/f066-checkout-v1.html`). Built A for both choices; the owner
+hadn't picked.
+
+- **Recommended provider: Polar** (merchant of record, 5% + US$0.50 per
+  sale for new accounts, no monthly fee). Deciding facts: Indonesia is on
+  Polar's own payout-country list (via Stripe Connect Express); its
+  "checkout links" are plain links, so the store needs no script; a
+  separate sandbox for test mode; `reference_id` on the link is copied to
+  the order, which F067's Worker reads. **Lemon Squeezy** is also
+  understood (same link idea, `checkout[custom][template]`), but Indonesian
+  payouts weren't confirmed and new sign-ups were reported as invite-gated
+  in 2026. **Paddle** left out: its checkout needs Paddle.js on the page or
+  a server creating each transaction, and seller approval is manual. Fees
+  are from the companies' pages and 2026 comparisons (searched
+  2026-11-03); the owner checks them when opening the account.
+- **The setting lives in `store/list.json`** as optional `"checkout":
+  { "provider", "mode" }` (format stays `crust-store` / 1; missing means
+  buy links are used as written, as in F063). Set now to Polar, test.
+  With it, every buy link must be that company's link for that mode, so a
+  sandbox link can't reach a live store or the other way round (Lemon
+  Squeezy links look the same in both modes; its test mode is a store
+  setting there).
+- **Real payments need two things:** `"mode": "live"` and the owner's
+  "Take real payments" switch on the Publish store workflow (off by
+  default). `scripts/store/checkout-check.ts` runs before rendering and
+  stops the publish when they disagree, or when something has a price but
+  no checkout setting.
+- **Test mode is said under each buy button** (bold "Test checkout.", no
+  real payment, the test card), in reading order after the button, on
+  desktop and in the phone summary. Live mode keeps only the quiet line
+  "Secure checkout by Polar. Tax is added where it applies, and you get a
+  receipt by email." Free templates' pages are unchanged.
+- **`/thanks` page** (only once something has a price; `noindex`): where
+  buyers land after paying. Its address is set as the "success URL" in
+  the provider's dashboard (a link can't carry it). Its wording promises
+  the emailed download link, which F067 builds; until then the store is
+  test-only anyway, and the test version of the page says so.
+- **Same tab, no `target="_blank"`**: going to checkout is the next step of
+  one task, and the provider returns to `/thanks`.
+- Not done here: the catalogue's buy flow in the app is unchanged (the
+  app's "Get" opens the store page, which holds the button).

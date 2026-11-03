@@ -8,6 +8,13 @@ name: Publish store
 
 on:
   workflow_dispatch:
+    inputs:
+      real_payments:
+        # F066: the owner's go-ahead for live checkout links. Off: the store
+        # must use test (sandbox) links; on: it must use live ones.
+        description: "Take real payments (only when the store's checkout is set to live)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -90,6 +97,11 @@ jobs:
             git diff --stat -- store/content
             exit 1
           fi
+
+      - name: Check the checkout (test or real payments)
+        env:
+          CRUST_REAL_PAYMENTS: ${{ inputs.real_payments && 'yes' || 'no' }}
+        run: npx tsx scripts/store/checkout-check.ts
 
       - name: Render pages
         env:

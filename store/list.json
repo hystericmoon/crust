@@ -1,6 +1,7 @@
 {
   "format": "crust-store",
   "version": 1,
+  "checkout": { "provider": "polar", "mode": "test" },
   "templates": [
     {
       "id": "harbour",

@@ -9,7 +9,7 @@ import { join } from "node:path";
 import { loadStore, ROOT, storeContentFiles } from "./load";
 
 const store = loadStore();
-const files = storeContentFiles(store.templates);
+const files = storeContentFiles(store.templates, store.checkout);
 const dir = join(ROOT, "store/content");
 await mkdir(join(dir, "pages"), { recursive: true });
 for (const old of await readdir(join(dir, "pages"))) await rm(join(dir, "pages", old));
