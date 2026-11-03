@@ -12,8 +12,16 @@ before any work: find out which model you are (`get_session`, its
 `session_context.model`) and compare it with the next feature's row. If
 it doesn't match, do nothing else: tell the owner, in one line, "Switch to
 <model>: type `/model`, pick <model>, then send the same message again."
-**At the end of every feature**, after the usual handover, tell the owner
-which model the next feature needs and the exact message to send.
+**At the end of every feature, and whenever the owner says he wants to
+clear**, after the usual handover, end the message with this reminder,
+filled in (the owner asked for it every time, 2026-11-03):
+
+> **Ready to clear.** Everything is saved and pushed.
+> 1. `/clear`
+> 2. `/model` → **<model for the next feature>** (next: <feature>)
+> 3. Paste: `Read HANDOVER.md on branch <branch> and continue`
+
+Never show it while work is uncommitted or unpushed; finish that first.
 
 | Next feature | Model | Why |
 |---|---|---|
