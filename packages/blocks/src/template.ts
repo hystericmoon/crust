@@ -7,7 +7,7 @@
  * Applying a template to a site is F048; this file only makes and reads.
  */
 import type { Data } from "@puckeditor/core";
-import { validateChrome, type SiteChrome, type SiteFooter, type SiteHeader } from "./chrome-model";
+import { validateChrome, type MenuLink, type SiteChrome, type SiteFooter, type SiteHeader, type TopBar } from "./chrome-model";
 import { checkContrast, formatRatio } from "./contrast";
 import { checkSectionContent, checkSectionName, isValidSectionId, linkedSectionIds, type LinkedSectionFile } from "./linked-sections";
 import { mediaFileOf, mediaFocus, mediaLimits, mediaTypes, mediaUsedIn, MAX_EDGE, sniffImage, type MediaExt } from "./media";
@@ -184,19 +184,31 @@ export function isTemplatePagePath(path: unknown): path is string {
 
 const text = (v: unknown, max: number): string | null => (typeof v === "string" && v.length <= max ? v : null);
 const link = (v: unknown) => (isObject(v) ? { label: String(v.label ?? ""), href: String(v.href ?? "") } : { label: "", href: "" });
+/** A menu item, with its dropdown (F076) when it has one. */
+const menuItem = (v: unknown): MenuLink => (isObject(v) && Array.isArray(v.children) ? { ...link(v), children: v.children.map(menuItem) } : link(v));
 
-/** Copies the header field by field (the checks below then judge the values). */
+/**
+ * Copies the header field by field (the checks below then judge the values).
+ * F084: also the F076 fields (layout, over the hero, top bar, dropdowns),
+ * which templates dropped before.
+ */
 function pickHeader(v: unknown): SiteHeader | null {
   if (!isObject(v) || !isObject(v.logo) || !Array.isArray(v.menu)) return null;
   const header: SiteHeader = {
     show: v.show === true,
     logo: { text: String(v.logo.text ?? ""), imageSrc: String(v.logo.imageSrc ?? ""), imageAlt: String(v.logo.imageAlt ?? "") },
-    menu: v.menu.map(link),
+    menu: v.menu.map(menuItem),
     cta: link(v.cta),
     sticky: v.sticky === true,
     style: v.style as SiteHeader["style"],
   };
   if (v.search === true) header.search = true;
+  if (v.layout !== undefined) header.layout = v.layout as SiteHeader["layout"];
+  if (v.overHero === true) header.overHero = true;
+  if (isObject(v.topBar)) {
+    const t = v.topBar;
+    header.topBar = { show: t.show === true, text: String(t.text ?? ""), link: link(t.link), contact: String(t.contact ?? ""), style: t.style as TopBar["style"] };
+  }
   return header;
 }
 
@@ -208,6 +220,8 @@ function pickFooter(v: unknown): SiteFooter | null {
     columns: v.columns.map((c) => (isObject(c) ? { title: String(c.title ?? ""), links: Array.isArray(c.links) ? c.links.map(link) : [] } : { title: "", links: [] })),
     copyright: String(v.copyright ?? ""),
     style: v.style as SiteFooter["style"],
+    // F084: a footer made of a linked section's blocks (F076).
+    ...(v.kind === "blocks" ? { kind: "blocks" as const, section: String(v.section ?? "") } : {}),
   };
 }
 
@@ -414,6 +428,7 @@ export function readTemplate(fileText: string, blocks: BlockSpecs): TemplateChec
     for (const file of photosUsed(source)) if (!have.has(file)) problems.push(`The photo ${file} is used but isn't in the template.`);
     const used = new Set<string>();
     for (const part of [...pages.map((p) => p.puck), ...posts.map((p) => p.puck), ...layouts.map((l) => l.content), ...designs.map((d) => d.content)]) for (const id of linkedSectionIds(part)) used.add(id);
+    if (footer.kind === "blocks") used.add(footer.section ?? "");
     for (const id of used) if (!sectionIds.has(id)) problems.push(`The linked section “${id}” is used but isn't in the template.`);
   }
 

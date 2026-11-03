@@ -1,36 +1,64 @@
-import { config, countPlaceholders, readTemplate, type Template } from "@crust/blocks";
+import { checkDesign, config, countPlaceholders, findBundledFont, findFontPair, matchingLook, readTemplate, type Template } from "@crust/blocks";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { gallerySources } from "../../apps/admin/src/templates/sources";
-import { buildStarter, harbour, signal, corner, starters } from "./starter";
+import { findFiller } from "../../packages/render/src/template-check";
+import { cropsGroup, gradientGroup, sectionKind, slotsGroup, varietyGroup } from "../../packages/render/src/template-strict";
+import { buildStarter, corner, harbour, signal, starters } from "./starter";
 import { png, standIn } from "./standins";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
 type Block = { type: string; props: Record<string, unknown> };
-/** A Text block that is nothing but one link. */
-const isLinkOnly = (text: unknown) => {
+/** A Text block that is nothing but links (a quiet link, or a footer's list of links). */
+const isLinksOnly = (text: unknown) => {
   const blocks = (text as { blocks?: { type: string; children?: { href?: string }[] }[] })?.blocks;
-  return blocks?.length === 1 && blocks[0]!.type === "p" && blocks[0]!.children?.length === 1 && !!blocks[0]!.children[0]!.href;
+  return !!blocks?.length && blocks.every((b) => b.type === "p" && b.children?.length === 1 && !!b.children[0]!.href);
 };
-/** Every block, nested ones included (sections and columns). */
-function allBlocks(content: unknown[]): Block[] {
+/** Every block, nested ones included (sections, columns, tabs…). */
+function allBlocks(content: unknown): Block[] {
   const out: Block[] = [];
   const walk = (list: unknown) => {
     if (!Array.isArray(list)) return;
     for (const b of list as Block[]) {
+      if (!b || typeof b !== "object" || typeof b.type !== "string") continue;
       out.push(b);
-      for (const key of ["content", "column1", "column2", "column3", "column4"]) walk(b.props?.[key]);
+      for (const v of Object.values(b.props ?? {})) if (Array.isArray(v) && v.some((x) => x && typeof x === "object" && "type" in x)) walk(v);
     }
   };
   walk(content);
   return out;
 }
 
-describe.each(starters)("starter template $name (F049–F051)", (spec) => {
+/** Blocks whose words or photos describe the made-up business, and the field that must be marked. */
+const MUST_MARK: Record<string, string> = {
+  Image: "src",
+  Gallery: "images",
+  Grid: "items",
+  CardSlider: "items",
+  Slideshow: "slides",
+  IconList: "items",
+  Accordion: "items",
+  Stats: "items",
+  Pricing: "plans",
+  Tabs: "tabs",
+  Table: "rows",
+  LogoRow: "logos",
+  Quote: "text",
+  ImageOverlay: "imageSrc",
+};
+
+const PAGES: Record<string, { paths: string[]; menu: string[]; contact: string; blog: string }> = {
+  harbour: { paths: ["/", "/about", "/services", "/work", "/contact"], menu: ["Studio", "Services", "Projects", "Journal", "Contact"], contact: "/contact", blog: "Journal" },
+  signal: { paths: ["/", "/work", "/services", "/about", "/contact"], menu: ["Work", "Services", "Studio", "Notes", "Contact"], contact: "/contact", blog: "Notes" },
+  corner: { paths: ["/", "/menu", "/workshops", "/about", "/visit"], menu: ["Menu", "Workshops", "Our story", "News", "Visit us"], contact: "/visit", blog: "News" },
+};
+
+describe.each(starters)("starter template $name (F049–F053, rebuilt in F084)", (spec) => {
   let template: Template;
+  const plan = PAGES[spec.id]!;
 
   it("the committed file is up to date and opens like any template", async () => {
     const text = await readFile(join(root, "templates", `${spec.id}.crust`), "utf8");
@@ -40,109 +68,129 @@ describe.each(starters)("starter template $name (F049–F051)", (spec) => {
     template = read.template!;
   });
 
-  it("has Home, About, Services, Work, Contact, a journal with one post, and the linked contact strip", () => {
-    expect(template.pages.map((p) => p.path)).toEqual(["/", "/about", "/services", "/work", "/contact"]);
-    expect(template.posts).toHaveLength(1);
-    expect(template.blog.title).toBe("Journal");
-    expect(template.sections.map((s) => s.id)).toEqual(["contact-strip"]);
-    for (const path of ["/", "/about", "/services", "/work"]) {
-      const blocks = allBlocks(template.pages.find((p) => p.path === path)!.puck.content);
-      expect(blocks.some((b) => b.type === "LinkedSection" && b.props.section === "contact-strip"), path).toBe(true);
+  it("has pages that fit the business, a journal with two posts and the linked contact strip (F084)", () => {
+    expect(template.pages.map((p) => p.path)).toEqual(plan.paths);
+    expect(template.header.menu.map((m) => m.label)).toEqual(plan.menu);
+    for (const m of template.header.menu) expect(m.href === "/blog" || plan.paths.includes(m.href), m.href).toBe(true);
+    expect(template.blog.title).toBe(plan.blog);
+    expect(template.posts).toHaveLength(2);
+    expect(template.sections.map((s) => s.id)).toContain("contact-strip");
+    for (const page of template.pages.filter((p) => p.path !== plan.contact)) {
+      expect(allBlocks(page.puck.content).some((b) => b.type === "LinkedSection" && b.props.section === "contact-strip"), page.path).toBe(true);
     }
-    expect(allBlocks(template.pages.find((p) => p.path === "/contact")!.puck.content).some((b) => b.type === "ContactForm")).toBe(true);
-    expect(template.header.menu.map((m) => m.href)).toEqual(["/about", "/services", "/work", "/blog", "/contact"]);
+    expect(allBlocks(template.pages.find((p) => p.path === plan.contact)!.puck.content).some((b) => b.type === "ContactForm")).toBe(true);
   });
 
-  it("marks every sample text and image Replace me, so nothing sample survives unnoticed", () => {
-    for (const part of [...template.pages, ...template.posts]) {
-      for (const b of allBlocks(part.puck.content)) {
-        // A quiet link ("See the work") says where it goes, so it isn't sample content (F052).
-        if (b.type === "Text" && !isLinkOnly(b.props.text)) expect(b.props.placeholder, `${part.title}: Text`).toContain("text");
-        if (b.type === "Image") expect(b.props.placeholder).toContain("src");
-        if (b.type === "Gallery" || b.type === "Grid" || b.type === "IconList" || b.type === "Accordion") expect(b.props.placeholder, b.type).toBeDefined();
+  it("uses its Style library look, with bundled fonts and motion (F084)", () => {
+    const match = matchingLook(template.tokens);
+    expect(match?.look.id).toBe(spec.look.id);
+    expect(match?.variation.id).toBe(spec.look.variation);
+    const pair = findFontPair(template.tokens.fonts)!;
+    expect(findBundledFont(pair.heading)).toBeDefined();
+    expect(template.tokens.style?.motion).toBe(spec.motion);
+  });
+
+  it("is full length: Home has 8 or more sections, other pages 3 or more", () => {
+    expect(template.pages[0]!.puck.content.length).toBeGreaterThanOrEqual(8);
+    for (const page of template.pages.slice(1).filter((p) => p.path !== plan.contact)) expect(page.puck.content.length, page.path).toBeGreaterThanOrEqual(4);
+    const kinds = new Set((template.pages[0]!.puck.content as Block[]).map((b, i) => sectionKind(b, i)));
+    expect(kinds.size).toBeGreaterThanOrEqual(6);
+  });
+
+  it("passes the stricter check (F083): no empty slots, matching crops, variety, readable gradients", () => {
+    for (const group of [slotsGroup(template), cropsGroup(template), varietyGroup(template), gradientGroup(template)]) {
+      expect(group.items.filter((i) => i.status === "fail"), group.title).toEqual([]);
+    }
+  });
+
+  it("has finished copy, no filler, and marks every made-up word and photo to replace", () => {
+    const parts = [...template.pages.map((p) => p.puck.content), ...template.posts.map((p) => p.puck.content), ...template.sections.map((s) => s.content)];
+    for (const content of parts) {
+      expect(findFiller(content)).toEqual([]);
+      for (const b of allBlocks(content)) {
+        if (b.type === "Text" && !isLinksOnly(b.props.text)) expect(b.props.placeholder, `Text ${b.props.id}`).toContain("text");
+        if (MUST_MARK[b.type]) expect(b.props.placeholder, `${b.type} ${b.props.id}`).toContain(MUST_MARK[b.type]);
+        if (b.type === "Section" && b.props.imageSrc) expect(b.props.placeholder, "Section photo").toContain("imageSrc");
       }
     }
-    expect(countPlaceholders(template.pages[0]!.puck.content)).toBeGreaterThanOrEqual(5);
+    const words = JSON.stringify(template.pages);
+    for (const old of ["One line on this service", "Project name, the client, the year", "A sentence a happy client said", "Replace me"]) expect(words).not.toContain(old);
+    expect(countPlaceholders(template.pages[0]!.puck.content)).toBeGreaterThanOrEqual(8);
   });
 
-  it.runIf(!spec.photos)("uses only its own stand-in images, each described as a stand-in", () => {
-    expect(template.media.length).toBe(7);
-    for (const m of template.media) {
-      expect(m.alt).toMatch(/^Stand-in image: replace with a photo of/);
-      expect(m.width).toBe(1200);
-      expect(Buffer.from(m.data, "base64").length).toBeLessThan(40_000);
-    }
+  it("ships its own post, blog and Page not found designs (F082)", () => {
+    expect((template.designs ?? []).map((d) => d.kind).sort()).toEqual(["blog", "notFound", "post"]);
+    for (const d of template.designs!) expect(checkDesign({ ...d, savedAt: "2026-11-03T00:00:00.000Z" }), d.kind).toEqual([]);
   });
 
-  it.runIf(!!spec.photos)("uses only its credited photos, described and marked Replace me wherever they're used (F052)", async () => {
+  it("uses only its credited photos, each described (F052, F053, F084)", async () => {
     const credits = await readFile(join(root, "scripts/starter-templates/photos/CREDITS.md"), "utf8");
-    expect(template.media.map((m) => m.file).sort()).toEqual(spec.photos!.map((p) => p.file).sort());
+    expect(template.media.map((m) => m.file).sort()).toEqual(spec.photos.map((p) => p.file).sort());
     for (const m of template.media) {
       expect(credits, `${m.file} credited`).toContain(`| ${m.file} |`);
       expect(m.alt).not.toMatch(/stand-in/i);
-      expect(m.alt.length).toBeGreaterThan(20);
       const bytes = Buffer.from(m.data, "base64");
-      expect([...bytes.subarray(0, 3)], `${m.file} is a JPEG`).toEqual([0xff, 0xd8, 0xff]);
+      if (m.file.endsWith(".png")) {
+        expect([...bytes.subarray(0, 4)], `${m.file} is a PNG`).toEqual([0x89, 0x50, 0x4e, 0x47]);
+        expect(m.alt.length).toBeGreaterThan(2);
+      } else {
+        expect([...bytes.subarray(0, 3)], `${m.file} is a JPEG`).toEqual([0xff, 0xd8, 0xff]);
+        expect(m.alt.length).toBeGreaterThan(20);
+      }
       expect(bytes.length, `${m.file} size`).toBeLessThan(400_000);
       expect(Math.max(m.width, m.height)).toBeLessThanOrEqual(1920);
     }
     for (const part of [...template.pages, ...template.posts]) {
-      for (const b of allBlocks(part.puck.content)) {
-        if (b.type === "Image") expect(String(b.props.src)).toMatch(/^\/media\/.+\.jpg$/);
-        if (b.type === "Section" && b.props.imageSrc) expect(b.props.placeholder, "Section photo").toContain("imageSrc");
-      }
+      for (const b of allBlocks(part.puck.content)) if (b.type === "Image") expect(String(b.props.src)).toMatch(/^\/media\/.+\.jpg$/);
+    }
+    for (const p of template.posts) {
+      expect(p.cover).toMatch(/^\/media\/.+\.jpg$/);
+      expect(p.coverAlt.length).toBeGreaterThan(20);
     }
   });
 
-  it.runIf(spec === harbour)("opens with a photo and shows the work as a tall photo beside two wide ones (F052)", () => {
-    const home = template.pages[0]!.puck.content as Block[];
-    expect(home[0]!.type).toBe("Section");
-    expect(home[0]!.props).toMatchObject({ imageSrc: "/media/terraces.jpg", tint: "light", valign: "bottom" });
-    const mosaic = allBlocks(home).find((b) => b.type === "Columns" && (b.props.column1 as Block[])[0]?.type === "Image")!;
-    expect((mosaic.props.column1 as Block[]).filter((b) => b.type === "Image")).toHaveLength(1);
-    expect((mosaic.props.column2 as Block[]).filter((b) => b.type === "Image")).toHaveLength(2);
-    expect(allBlocks(home).filter((b) => b.type === "Button")).toHaveLength(0);
-  });
-
-  it.runIf(spec === signal)("opens dark on a stage photo and shows the work as named photo tiles (F053)", () => {
-    const home = template.pages[0]!.puck.content as Block[];
-    expect(home[0]!.props).toMatchObject({ background: "dark", imageSrc: "/media/stage-crowd.jpg", height: "large", valign: "bottom" });
-    const tiles = allBlocks(home).filter((b) => b.type === "ImageOverlay");
-    expect(tiles).toHaveLength(4);
-    for (const t of tiles) {
-      expect(t.props).toMatchObject({ background: "dark", titleLevel: "h3" });
-      expect(t.props.placeholder).toEqual(["imageSrc", "title", "text"]);
-      expect(String(t.props.imageAlt).length).toBeGreaterThan(20);
-    }
-    expect(template.posts[0]!.cover).toBe("/media/spiral-amber.jpg");
-    expect(template.posts[0]!.coverAlt.length).toBeGreaterThan(20);
-  });
-
-  it.runIf(spec === corner)("opens split (words on yellow, photo beside) and shows products as cards with photos (F053)", () => {
-    const home = template.pages[0]!.puck.content as Block[];
-    expect(home[0]!.props).toMatchObject({ background: "surface", imageSrc: "" });
-    const split = (home[0]!.props.content as Block[])[0]!;
-    expect(split.type).toBe("Columns");
-    expect((split.props.column1 as Block[]).map((b) => b.type)).toEqual(["Heading", "Text", "Button"]);
-    expect((split.props.column2 as Block[]).map((b) => b.type)).toEqual(["Image"]);
-    const cards = allBlocks(home).find((b) => b.type === "Grid")!;
-    const items = cards.props.items as { imageSrc: string; imageAlt: string }[];
-    expect(items).toHaveLength(3);
-    for (const i of items) {
-      expect(i.imageSrc).toMatch(/^\/media\/.+\.jpg$/);
-      expect(i.imageAlt.length).toBeGreaterThan(20);
-    }
-    const contact = allBlocks(template.pages.find((p) => p.path === "/contact")!.puck.content);
-    expect(contact.some((b) => b.type === "Image" && b.props.src === "/media/flower-shop.jpg")).toBe(true);
-    expect(template.posts[0]!.cover).toBe("/media/moka-pour.jpg");
-  });
-
-  it.runIf(!!spec.photos)("puts text on a photo only under a tint (F053)", () => {
-    for (const part of template.pages) {
+  it("puts text on a photo only under a tint (F053)", () => {
+    for (const part of [...template.pages, ...template.sections.map((s) => ({ puck: { content: s.content } }))]) {
       for (const b of allBlocks(part.puck.content)) {
         if ((b.type === "Section" || b.type === "ImageOverlay") && b.props.imageSrc) expect(["light", "medium", "strong"]).toContain(b.props.tint);
       }
     }
+  });
+
+  it.runIf(spec === harbour)("opens on a full photo with the header over it, and shows projects in a slider (F084)", () => {
+    const home = template.pages[0]!.puck.content as Block[];
+    expect(home[0]!.props).toMatchObject({ imageSrc: "/media/terraces.jpg", bgKind: "photo", height: "full", valign: "bottom" });
+    expect(template.header).toMatchObject({ layout: "classic", overHero: true });
+    expect(allBlocks(home).some((b) => b.type === "CardSlider")).toBe(true);
+    expect(allBlocks(template.pages.find((p) => p.path === "/services")!.puck.content).some((b) => b.type === "Pricing")).toBe(true);
+  });
+
+  it.runIf(spec === signal)("is dark, with a top bar, client logos, named work tiles and a footer made of blocks (F084)", () => {
+    const home = template.pages[0]!.puck.content as Block[];
+    expect(home[0]!.props).toMatchObject({ imageSrc: "/media/stage-crowd.jpg", tint: "strong" });
+    expect(template.header.topBar?.show).toBe(true);
+    expect(template.header.cta.label).toBe("Start a project");
+    expect(template.footer).toMatchObject({ kind: "blocks", section: "site-footer" });
+    expect(template.sections.map((s) => s.id)).toContain("site-footer");
+    const tiles = allBlocks(home).filter((b) => b.type === "ImageOverlay");
+    expect(tiles).toHaveLength(4);
+    for (const t of tiles) expect(String(t.props.imageAlt).length).toBeGreaterThan(20);
+    const logos = allBlocks(home).find((b) => b.type === "LogoRow")!;
+    expect(logos.props.moving).toBe("yes");
+    expect((logos.props.logos as { src: string }[]).every((l) => l.src.endsWith(".png"))).toBe(true);
+  });
+
+  it.runIf(spec === corner)("opens split with the shop's photo, and has a menu with prices and opening hours (F084)", () => {
+    const home = template.pages[0]!.puck.content as Block[];
+    const split = (home[0]!.props.content as Block[])[0]!;
+    expect(split.type).toBe("Columns");
+    expect((split.props.column2 as Block[]).map((b) => b.type)).toEqual(["Image"]);
+    expect(template.header).toMatchObject({ layout: "stacked" });
+    expect(template.header.topBar?.text).toMatch(/7:00/);
+    const tables = allBlocks(template.pages.find((p) => p.path === "/menu")!.puck.content).filter((b) => b.type === "Table");
+    expect(tables.map((t) => t.props.caption)).toEqual(["Bread", "Pastry and cake", "Coffee", "Breakfast, until 11:30"]);
+    for (const t of tables) for (const row of (t.props.rows as string[][]).slice(1)) expect(row[1]).toMatch(/^€\d/);
+    expect(allBlocks(home).some((b) => b.type === "Table" && b.props.caption === "Opening hours")).toBe(true);
   });
 
   it("shows up in the Start from a template gallery", () => {
