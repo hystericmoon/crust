@@ -1,0 +1,146 @@
+<title>CI Minutes Choice</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column brief, then three option cards side by side, each a mock GitHub checks panel + monthly cost meter. */
+:root{
+  --bg:#f3f4f2; --surface:#ffffff; --ink:#1b1f1c; --muted:#5b625d; --line:#d9ddd8;
+  --accent:#2f5d50; --accent-soft:#e2ece8;
+  --ok:#1f7a3f; --bad:#c03a2b; --wait:#9a6a00; --skip:#7a817c;
+  --meter:#e6e9e5;
+  --f-display:"Instrument Sans",system-ui,sans-serif; --f-body:"Instrument Sans",system-ui,sans-serif; --f-mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121513; --surface:#1b1f1c; --ink:#eef1ee; --muted:#a9b0ab; --line:#313733;
+  --accent:#8cc5b2; --accent-soft:#203029; --ok:#5cc884; --bad:#ff7d6e; --wait:#e8b64c; --skip:#8e958f; --meter:#2a302c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121513; --surface:#1b1f1c; --ink:#eef1ee; --muted:#a9b0ab; --line:#313733;
+  --accent:#8cc5b2; --accent-soft:#203029; --ok:#5cc884; --bad:#ff7d6e; --wait:#e8b64c; --skip:#8e958f; --meter:#2a302c; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:40px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
+header{display:grid;gap:10px;max-width:68ch}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font:700 clamp(26px,3.4vw,36px)/1.15 var(--f-display);letter-spacing:-.02em;margin:0;text-wrap:balance}
+p{margin:0}
+.facts{display:flex;flex-wrap:wrap;gap:10px}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:grid;gap:2px;min-width:0}
+.fact b{font:600 20px/1.2 var(--f-mono);font-variant-numeric:tabular-nums}
+.fact span{color:var(--muted);font-size:13px}
+.options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+@media (max-width:880px){.options{grid-template-columns:1fr}}
+.opt{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
+.opt.rec{border:2px solid var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.opt-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.letter{font:600 13px/1 var(--f-mono);color:var(--muted)}
+.badge{font:600 12px/1 var(--f-body);background:var(--accent);color:var(--surface);padding:6px 10px;border-radius:999px}
+h2{font:600 19px/1.25 var(--f-display);margin:0;text-wrap:balance}
+.panel{border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px}
+.panel-top{padding:9px 12px;border-bottom:1px solid var(--line);font-weight:600;display:flex;justify-content:space-between;gap:8px}
+.panel-top em{font-style:normal;font-weight:500;color:var(--muted)}
+.row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.dot{width:16px;height:16px;border-radius:50%;flex:none;display:grid;place-items:center;font:700 10px/1 var(--f-mono);color:var(--surface)}
+.ok .dot{background:var(--ok)} .bad .dot{background:var(--bad)} .skip .dot{background:var(--skip)}
+.row .name{font-family:var(--f-mono);flex:1;min-width:0;overflow-wrap:anywhere}
+.row .t{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.merge{padding:10px 12px;font-weight:600;display:flex;gap:8px;align-items:center}
+.merge.yes{color:var(--ok)} .merge.no{color:var(--bad)}
+.cost{display:grid;gap:6px}
+.cost-line{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+.cost-line b{color:var(--ink);font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.meter{height:10px;border-radius:999px;background:var(--meter);overflow:hidden;display:flex}
+.meter i{display:block;height:100%}
+.meter .free{background:var(--accent)} .meter .paid{background:var(--wait)}
+ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.pros li::marker{color:var(--ok)} .cons li::marker{color:var(--bad)}
+.label{font:600 12px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.not{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:6px;max-width:80ch}
+.not h3{margin:0;font:600 16px/1.3 var(--f-display)}
+footer{color:var(--muted);font-size:13px;max-width:80ch}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Crust · GitHub Actions · 3 Nov 2026</span>
+    <h1>The free CI time ran out. How should we continue?</h1>
+    <p>PR #69 (F067) can't run its checks: your account used $13.75 of the $12.00 included this month, and the budget is $0, so GitHub won't start jobs. The code passes all checks in my cloud workspace. Crust alone used $11.79, because every push re-runs about 38 minutes of checks.</p>
+    <div class="facts" aria-label="Current usage">
+      <div class="fact"><b>~38 min</b><span>of checks per push today</span></div>
+      <div class="fact"><b>~$0.23</b><span>per push once free time is gone</span></div>
+      <div class="fact"><b>28 days</b><span>until the free time resets (≈ 1 Dec)</span></div>
+    </div>
+  </header>
+
+  <section class="options" aria-label="Options">
+    <!-- A -->
+    <article class="opt">
+      <div class="opt-head"><span class="letter">A · $0</span></div>
+      <h2>Wait for the reset</h2>
+      <div class="panel" aria-label="PR checks under option A">
+        <div class="panel-top">PR #69 checks <em>until ≈ 1 Dec</em></div>
+        <div class="row bad"><span class="dot" aria-hidden="true">×</span><span class="name">check</span><span class="t">0 s</span></div>
+        <div class="row bad"><span class="dot" aria-hidden="true">×</span><span class="name">site-checks</span><span class="t">0 s</span></div>
+        <div class="row bad"><span class="dot" aria-hidden="true">×</span><span class="name">template-check</span><span class="t">0 s</span></div>
+        <div class="merge no">Can't merge: checks red (not started)</div>
+      </div>
+      <div class="cost">
+        <div class="cost-line"><span>Cost this month</span><b>$0</b></div>
+        <div class="meter" aria-hidden="true"><i class="free" style="width:100%"></i></div>
+      </div>
+      <div class="label">Good</div>
+      <ul class="pros"><li>No money.</li><li>I keep building F068; each PR is checked in my workspace before it's pushed.</li></ul>
+      <div class="label">Not so good</div>
+      <ul class="cons"><li>Nothing reaches main for about 4 weeks (the "green CI" rule).</li><li>Admin preview links stop updating too.</li><li>Same problem next month unless the checks get lighter.</li></ul>
+    </article>
+
+    <!-- B -->
+    <article class="opt rec">
+      <div class="opt-head"><span class="letter">B · up to $5 / month</span><span class="badge">Recommended</span></div>
+      <h2>Lighter checks, push less, $5 cap</h2>
+      <div class="panel" aria-label="PR checks under option B">
+        <div class="panel-top">PR #69 checks <em>after the change</em></div>
+        <div class="row ok"><span class="dot" aria-hidden="true">✓</span><span class="name">check</span><span class="t">11 min</span></div>
+        <div class="row skip"><span class="dot" aria-hidden="true">–</span><span class="name">site-checks · only if the site changed</span><span class="t">skipped</span></div>
+        <div class="row skip"><span class="dot" aria-hidden="true">–</span><span class="name">template-check · only if templates changed</span><span class="t">skipped</span></div>
+        <div class="merge yes">Ready to merge</div>
+      </div>
+      <div class="cost">
+        <div class="cost-line"><span>Expected this month</span><b>≈ $1–3</b></div>
+        <div class="meter" aria-hidden="true"><i class="free" style="width:45%"></i><i class="paid" style="width:20%"></i></div>
+        <div class="cost-line"><span>Hard limit you set</span><b>$5</b></div>
+      </div>
+      <div class="label">Good</div>
+      <ul class="pros"><li>PR #69 goes green today; work keeps flowing.</li><li>About 15 min per push instead of 38: slow checks run only when their files change, no duplicate runs after a merge.</li><li>I push once per feature (plus a checkpoint if needed), not after every step.</li><li>GitHub stops at $5, so it can never cost more.</li></ul>
+      <div class="label">Not so good</div>
+      <ul class="cons"><li>Costs a little money.</li><li>A store-only change doesn't re-check the site (the site checks still run whenever site files change).</li></ul>
+    </article>
+
+    <!-- C -->
+    <article class="opt">
+      <div class="opt-head"><span class="letter">C · $0</span></div>
+      <h2>Lighter checks, merge on my checks until the reset</h2>
+      <div class="panel" aria-label="PR checks under option C">
+        <div class="panel-top">PR #69 checks <em>until ≈ 1 Dec</em></div>
+        <div class="row bad"><span class="dot" aria-hidden="true">×</span><span class="name">check</span><span class="t">0 s</span></div>
+        <div class="row ok"><span class="dot" aria-hidden="true">✓</span><span class="name">verify.sh in Claude's workspace</span><span class="t">posted on PR</span></div>
+        <div class="merge yes">You merge by hand, reading my check report</div>
+      </div>
+      <div class="cost">
+        <div class="cost-line"><span>Cost this month</span><b>$0</b></div>
+        <div class="meter" aria-hidden="true"><i class="free" style="width:100%"></i></div>
+      </div>
+      <div class="label">Good</div>
+      <ul class="pros"><li>No money, and work still reaches main.</li><li>Lighter checks from next month, as in B.</li></ul>
+      <div class="label">Not so good</div>
+      <ul class="cons"><li>Bends the "green CI before main" rule for 4 weeks.</li><li>My workspace doesn't run the accessibility and template checks that CI runs, so those wait until December.</li></ul>
+    </article>
+  </section>
+
+  <aside class="not">
+    <h3>Left out: making the repository public</h3>
+    <p>Public repositories get Actions for free, but everyone could read Crust's code and download the template files that the store will sell. Not worth it for a product with paid templates.</p>
+  </aside>
+
+  <footer>Prices: GitHub's Linux runner rate ($0.006 a minute; the $12 included = 2,000 minutes). Estimates assume about 2 features a day at 1–2 pushes each. Set the cap in GitHub: profile picture → Settings → Billing and licensing → Budgets and alerts → Actions → $5, with "Stop usage when budget limit is reached" on.</footer>
+</div>
