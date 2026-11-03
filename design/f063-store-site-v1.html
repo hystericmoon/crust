@@ -1,0 +1,272 @@
+<title>Crust Store Site</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&family=Fraunces:opsz,wght@9..144,500&family=Young+Serif&display=swap">
+<style>
+/* Layout: same language as the earlier Crust snapshots. Three looks for the store drawn as phone-width-safe page mockups, then two smaller decisions, then what gets built. */
+:root{
+  --bg:#f6f6f9; --panel:#ffffff; --ink:#15151d; --soft:#5d5d70; --line:#dcdce6; --field:#85858f;
+  --accent:#4338ca; --accent-ink:#ffffff; --accent-soft:#e7e6fb; --ok:#127a4b; --ok-soft:#e3f4ea;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  /* the three templates' own colours, used only inside the drawn previews */
+  --hb-bg:#F4F0E9; --hb-ink:#1D1A16; --hb-acc:#2F4A3A;
+  --sg-bg:#0E0F11; --sg-ink:#F2F2EF; --sg-acc:#FF6B4A;
+  --cn-bg:#FBF3E4; --cn-ink:#1E2A44; --cn-acc:#B5532E;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --ok-soft:#173326; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101016; --panel:#191922; --ink:#ececf3; --soft:#a3a3b8; --line:#2d2d3a; --field:#6e6e80; --accent:#9b94ff; --accent-ink:#101016; --accent-soft:#25234a; --ok:#5fd39a; --ok-soft:#173326; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body)}
+.wrap{max-width:1180px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:44px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,5vw,44px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:24px;font-weight:600}
+h3{font-size:18px;font-weight:600}
+p{margin:0;max-width:68ch}
+ul{margin:0;padding-left:20px}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.intro,section{display:grid;gap:16px}
+.lead{color:var(--soft);font-size:18px}
+.soft{color:var(--soft)}
+.dirs{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;align-items:start}
+.dir{display:grid;gap:12px;min-width:0}
+.dir header{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.pick{font:500 11px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-radius:999px;background:var(--accent);color:var(--accent-ink)}
+.dir.rec .win{outline:3px solid var(--accent);outline-offset:3px}
+.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.why div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:8px;align-content:start}
+.pros{font-size:14px;display:grid;gap:4px}
+.pros b{font-weight:600}
+.box{border-radius:10px;padding:14px 16px;display:grid;gap:8px;background:var(--ok-soft);border:1px solid var(--ok)}
+
+/* drawn browser windows: fixed colours on purpose, they show the store's own look */
+.win{border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid;min-width:0;background:var(--panel)}
+.chrome{display:flex;gap:6px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);font:500 11px/1 var(--f-mono);color:var(--soft)}
+.chrome i{width:9px;height:9px;border-radius:50%;background:var(--line);display:inline-block}
+.chrome span{margin-left:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pg{display:grid;gap:14px;padding:16px;min-width:0}
+.nav{display:flex;align-items:center;gap:10px;font-size:11px;flex-wrap:wrap}
+.nav b{font-size:14px;margin-right:auto}
+.nav .cta{padding:5px 9px;border-radius:999px;font-weight:600}
+.hero h4{margin:0;line-height:1.05;text-wrap:balance}
+.hero p{font-size:12px;margin-top:6px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tile{display:grid;gap:4px;font-size:10px;min-width:0}
+.tile b{font-size:11px}
+.shot{aspect-ratio:4/3;border-radius:6px;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;padding:6px;gap:4px;max-width:100%}
+.shot .l{height:4px;border-radius:2px;opacity:.85}
+.shot .big{font-size:10px;line-height:1.05;align-self:end}
+.shot .bar2{display:flex;gap:3px}
+.shot .bar2 span{flex:1;height:10px;border-radius:2px;opacity:.5}
+.hb{background:var(--hb-bg);color:var(--hb-ink)} .hb .l,.hb .bar2 span{background:var(--hb-acc)} .hb .big{font-family:Fraunces,Georgia,serif}
+.sg{background:var(--sg-bg);color:var(--sg-ink)} .sg .l,.sg .bar2 span{background:var(--sg-acc)} .sg .big{font-family:var(--f-display)}
+.cn{background:var(--cn-bg);color:var(--cn-ink)} .cn .l,.cn .bar2 span{background:var(--cn-acc)} .cn .big{font-family:"Young Serif",Georgia,serif}
+.price{font:500 10px/1 var(--f-mono);letter-spacing:.04em}
+.steps3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;font-size:10px}
+.steps3 div{border-top:1px solid currentColor;padding-top:6px;opacity:.85}
+
+/* A: showroom, white, neutral */
+.A{background:#ffffff;color:#111214}
+.A .cta{background:#111214;color:#fff}
+.A .hero h4{font:800 26px/1.02 var(--f-display);letter-spacing:-.02em}
+.A .hero p{color:#585C62}
+.A .lab{font:500 9px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:#585C62}
+.A .tile span{color:#585C62}
+/* B: editorial, warm paper, serif */
+.B{background:#FBFAF7;color:#161616}
+.B .cta{border:1px solid #161616}
+.B .hero h4{font:500 26px/1.05 Fraunces,Georgia,serif}
+.B .hero p{color:#555450}
+.B .row{display:grid;grid-template-columns:1.3fr 1fr;gap:10px;align-items:center;border-top:1px solid #d9d6cf;padding-top:10px}
+.B .row:nth-child(odd){grid-template-columns:1fr 1.3fr}
+.B .row:nth-child(odd) .shot{order:2}
+.B .row b{font:500 15px/1.1 Fraunces,Georgia,serif;display:block}
+.B .row p{font-size:10px;color:#555450;margin-top:4px}
+.B .num{font:500 9px/1 var(--f-mono);color:#B3261E}
+/* C: dark studio */
+.C{background:#0B0D12;color:#EEF1F7}
+.C .cta{background:#9B8CFF;color:#0B0D12}
+.C .hero{text-align:center}
+.C .hero h4{font:800 26px/1.02 var(--f-display);letter-spacing:-.02em}
+.C .hero p{color:#A3ABBD}
+.C .glow{border-radius:10px;padding:8px;background:radial-gradient(circle at 50% 0,#2a2550 0,#151924 70%)}
+.C .tile span{color:#A3ABBD}
+
+/* smaller decisions */
+.mini{display:grid;gap:10px;min-width:0}
+.tp{display:grid;grid-template-columns:2fr 1fr;gap:10px;align-items:start}
+.tp.stack{grid-template-columns:1fr}
+.facts{border:1px solid #d9dbe0;border-radius:8px;padding:10px;display:grid;gap:6px;font-size:10px;background:#fff;color:#111214}
+.facts b{font:800 16px/1 var(--f-display)}
+.facts .btn2{background:#111214;color:#fff;border-radius:999px;padding:6px 8px;text-align:center;font-weight:600}
+.facts .btn3{border:1px solid #111214;border-radius:999px;padding:6px 8px;text-align:center;font-weight:600}
+.facts ul{padding-left:14px}
+.pin{font:500 9px/1 var(--f-mono);color:#585C62}
+.shots{display:grid;grid-template-columns:3fr 1fr;gap:6px;align-items:end}
+.shots .shot{aspect-ratio:16/10}
+.shots .ph{aspect-ratio:9/17}
+.badge{font:600 9px/1 var(--f-mono);padding:3px 5px;border-radius:999px;background:#E3F4EA;color:#0B5E38;justify-self:start}
+.badge.p{background:#EEECFB;color:#3B2FA8}
+.split{display:grid;gap:8px}
+.split .grp{font:600 11px/1 var(--f-body);color:#111214}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th,table.t td{text-align:left;padding:8px;border-top:1px solid var(--line);vertical-align:top}
+table.t th{font-weight:600;width:28%}
+.tw{overflow-x:auto}
+@media (max-width:520px){.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3 .tile:nth-child(3){display:none}.B .row,.B .row:nth-child(odd){grid-template-columns:1fr}.B .row:nth-child(odd) .shot{order:0}}
+</style>
+
+<div class="wrap">
+  <div class="intro">
+    <span class="eyebrow">F063 · Store site · design snapshot</span>
+    <h1>How should the Crust template store look?</h1>
+    <p class="lead">The store is a Crust site of its own: Home, All templates, one page per template, Download the app, and Help. Publishing it also writes the catalogue file the app's gallery reads (F062). Three looks first, then two smaller choices. I'm building <b>A</b> on every choice now. If you pick another, I'll change it before you review.</p>
+  </div>
+
+  <section aria-labelledby="d1">
+    <h2 id="d1">1. The store's look (Home page)</h2>
+    <p class="soft">Each mockup shows the top of Home. The coloured tiles stand in for the template pictures: Harbour (stone and green), Signal (dark with an orange accent) and Corner (cream and navy).</p>
+    <div class="dirs">
+      <div class="dir rec">
+        <header><h3>A · Showroom</h3><span class="pick">Recommended</span></header>
+        <div class="win" role="img" aria-label="Mockup of direction A: a white page with a bold black headline, a black Download button, and three template pictures in a row, each with its name and price">
+          <div class="chrome"><i></i><i></i><i></i><span>crust-store.pages.dev</span></div>
+          <div class="pg A">
+            <div class="nav"><b>Crust</b><span>Templates</span><span>Help</span><span class="cta">Download Crust</span></div>
+            <div class="hero"><span class="lab">Templates for Crust</span><h4>Whole websites, ready for your words.</h4><p>Pick a template, open it in the free Crust app, make it yours.</p></div>
+            <div class="grid3">
+              <div class="tile"><div class="shot hb"><div class="l" style="width:40%"></div><div class="big">Spaces that hold a life</div><div class="bar2"><span></span><span></span></div></div><b>Harbour</b><span>Architects · Free</span></div>
+              <div class="tile"><div class="shot sg"><div class="l" style="width:30%"></div><div class="big">We ship brands</div><div class="bar2"><span></span><span></span><span></span></div></div><b>Signal</b><span>Agencies · Free</span></div>
+              <div class="tile"><div class="shot cn"><div class="l" style="width:50%"></div><div class="big">Bread, daily</div><div class="bar2"><span></span></div></div><b>Corner</b><span>Cafés · Free</span></div>
+            </div>
+            <div class="steps3"><div>Choose a template</div><div>Open it in Crust</div><div>Publish your site</div></div>
+          </div>
+        </div>
+        <div class="pros"><span><b>For:</b> the templates bring all the colour. White and black never clash with a warm, dark or cream template.</span><span><b>Against:</b> the store itself is quiet. Its personality comes from the type and the pictures.</span></div>
+      </div>
+
+      <div class="dir">
+        <header><h3>B · Editorial</h3></header>
+        <div class="win" role="img" aria-label="Mockup of direction B: a warm paper page with a serif headline and templates as alternating magazine rows, picture on one side and a short description on the other">
+          <div class="chrome"><i></i><i></i><i></i><span>crust-store.pages.dev</span></div>
+          <div class="pg B">
+            <div class="nav"><b>Crust</b><span>Templates</span><span>Help</span><span class="cta">Download</span></div>
+            <div class="hero"><h4>Websites with a point of view.</h4><p>Each template is written for one kind of business.</p></div>
+            <div style="display:grid;gap:10px">
+              <div class="row"><div class="shot hb"><div class="l" style="width:40%"></div><div class="big">Spaces that hold a life</div><div class="bar2"><span></span></div></div><div><span class="num">No. 1</span><b>Harbour</b><p>Calm and editorial, for architects and studios. Free.</p></div></div>
+              <div class="row"><div class="shot sg"><div class="l" style="width:30%"></div><div class="big">We ship brands</div><div class="bar2"><span></span><span></span></div></div><div><span class="num">No. 2</span><b>Signal</b><p>Dark and confident, for agencies. Free.</p></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="pros"><span><b>For:</b> each template gets room for a story, which suits a few well-made templates.</span><span><b>Against:</b> the serif and paper compete with Harbour and Corner. You see two templates per screen, so comparing is slow.</span></div>
+      </div>
+
+      <div class="dir">
+        <header><h3>C · Dark launch</h3></header>
+        <div class="win" role="img" aria-label="Mockup of direction C: a near-black page with a centred headline, a violet Download button, and template pictures on a glowing panel">
+          <div class="chrome"><i></i><i></i><i></i><span>crust-store.pages.dev</span></div>
+          <div class="pg C">
+            <div class="nav"><b>Crust</b><span>Templates</span><span>Help</span><span class="cta">Download</span></div>
+            <div class="hero"><h4>Build it. Publish it. Own it.</h4><p>The free website builder, and templates to start from.</p></div>
+            <div class="glow"><div class="grid3">
+              <div class="tile"><div class="shot hb"><div class="l" style="width:40%"></div><div class="big">Spaces that hold a life</div><div class="bar2"><span></span></div></div><b>Harbour</b><span>Free</span></div>
+              <div class="tile"><div class="shot sg"><div class="l" style="width:30%"></div><div class="big">We ship brands</div><div class="bar2"><span></span></div></div><b>Signal</b><span>Free</span></div>
+              <div class="tile"><div class="shot cn"><div class="l" style="width:50%"></div><div class="big">Bread, daily</div><div class="bar2"><span></span></div></div><b>Corner</b><span>Free</span></div>
+            </div></div>
+          </div>
+        </div>
+        <div class="pros"><span><b>For:</b> it feels like a product launch and sells the app strongly.</span><span><b>Against:</b> light templates look washed out on black, and Signal disappears into the background. It also leads with the app, so the templates come second.</span></div>
+      </div>
+    </div>
+    <div class="why">
+      <div><h3>Why A</h3><p>The templates are the product, so the store should frame them and stay out of their way. That's why shops for themes and photos use plain white (ThemeForest, Unsplash, Apple's app pages). Neutral surroundings make the item's own colours easier to judge, and that's what people buy on.</p></div>
+      <div><h3>Built with Crust</h3><p>A uses the Style library look <b>Studio · Paper</b> (white, near-black, Geist) with display headings and mono labels. Every page is ordinary Crust blocks, so the store also shows what Crust can do.</p></div>
+      <div><h3>Accessibility</h3><p>Black on white is 18:1. Every template picture needs a description, or publishing stops. Prices are text, not pictures, so they're readable without JavaScript. axe and Lighthouse run on every store page.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="d2">
+    <h2 id="d2">2. A template's own page</h2>
+    <div class="dirs">
+      <div class="dir rec mini">
+        <header><h3>A · Pictures left, details stay in view</h3><span class="pick">Recommended</span></header>
+        <div class="win" role="img" aria-label="Mockup: Harbour's page with large desktop and phone pictures on the left and a details box on the right with the price, a button, what's included and the licence line">
+          <div class="chrome"><i></i><i></i><i></i><span>/templates/harbour/</span></div>
+          <div class="pg A">
+            <div class="tp">
+              <div style="display:grid;gap:6px">
+                <span class="lab">Architects · interiors · studios</span>
+                <h4 style="font:800 20px/1 var(--f-display);margin:0">Harbour</h4>
+                <div class="shots"><div class="shot hb"><div class="l" style="width:40%"></div><div class="big">Spaces that hold a life</div><div class="bar2"><span></span><span></span></div></div><div class="shot ph hb"><div class="l"></div><div class="big">Spaces</div><div class="bar2"><span></span></div></div></div>
+                <div class="shots"><div class="shot hb"><div class="l" style="width:60%"></div><div class="big">Services</div><div class="bar2"><span></span><span></span><span></span></div></div><div class="shot ph hb"><div class="l"></div><div class="big">Services</div><div class="bar2"><span></span></div></div></div>
+              </div>
+              <div class="facts"><span class="pin">stays in view ↓</span><b>Free</b><span>Comes with Crust</span><span class="btn2">How to open it</span><ul><li>6 pages, 2 posts</li><li>Post, blog and 404 designs</li><li>Fraunces + Instrument Sans</li><li>27 photos (to replace)</li></ul><span>Use it for as many sites as you like.</span></div>
+            </div>
+          </div>
+        </div>
+        <p class="pros"><span><b>Why:</b> the price and the next step are always one glance away while people look at the pictures, which is the decision moment. Crust's Columns block already has a "stays in view" column (F074). On phones the box comes first and the pictures follow.</span></p>
+      </div>
+      <div class="dir mini">
+        <header><h3>B · Everything stacked</h3></header>
+        <div class="win" role="img" aria-label="Mockup: Harbour's page with the title, price and button on top, then the pictures one after another, then what's included at the bottom">
+          <div class="chrome"><i></i><i></i><i></i><span>/templates/harbour/</span></div>
+          <div class="pg A">
+            <div class="tp stack">
+              <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><h4 style="font:800 20px/1 var(--f-display);margin:0">Harbour</h4><span class="price">FREE</span><span class="cta" style="font-size:10px;padding:5px 9px;border-radius:999px">How to open it</span></div>
+              <div class="shots"><div class="shot hb"><div class="l" style="width:40%"></div><div class="big">Spaces that hold a life</div><div class="bar2"><span></span><span></span></div></div><div class="shot ph hb"><div class="l"></div><div class="big">Spaces</div><div class="bar2"><span></span></div></div></div>
+              <div class="facts"><ul><li>6 pages, 2 posts · designs · fonts · 27 photos</li></ul></div>
+            </div>
+          </div>
+        </div>
+        <p class="pros"><span><b>For:</b> simpler, and the same on every screen size. <b>Against:</b> after the first picture the price and button scroll away, and what's included sits at the very bottom.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="d3">
+    <h2 id="d3">3. Free templates on the store</h2>
+    <p class="soft">There are no premium templates yet, only the three free starters (Harbour, Signal, Corner) that come with the app. Premium ones join as you make them.</p>
+    <div class="dirs">
+      <div class="dir rec mini">
+        <header><h3>A · One list, a label on each</h3><span class="pick">Recommended</span></header>
+        <div class="win" role="img" aria-label="Mockup: one grid of templates, each with a Free or price label">
+          <div class="chrome"><i></i><i></i><i></i><span>/templates/</span></div>
+          <div class="pg A">
+            <div class="grid3">
+              <div class="tile"><div class="shot hb"><div class="big">Harbour</div></div><span class="badge">Free</span></div>
+              <div class="tile"><div class="shot sg"><div class="big">Signal</div></div><span class="badge">Free</span></div>
+              <div class="tile"><div class="shot cn"><div class="big">Corner</div></div><span class="badge">Free</span></div>
+            </div>
+          </div>
+        </div>
+        <p class="pros"><span><b>Why:</b> the store is never empty, people can judge quality on templates they can try at no cost, and later premium ones sit beside them with their price. Only <b>priced</b> templates go into the app's catalogue file, because the free ones are already in the app.</span></p>
+      </div>
+      <div class="dir mini">
+        <header><h3>B · Premium only; free ones on the Download page</h3></header>
+        <div class="win" role="img" aria-label="Mockup: a Premium heading over an empty grid with a 'coming soon' line, and the free templates mentioned only on the download page">
+          <div class="chrome"><i></i><i></i><i></i><span>/templates/</span></div>
+          <div class="pg A">
+            <div class="split"><span class="grp">Premium</span><span style="font-size:10px;color:#585C62">The first premium templates are coming soon.</span></div>
+          </div>
+        </div>
+        <p class="pros"><span><b>For:</b> a pure shop. <b>Against:</b> the store opens empty today, and an empty shop reads as a dead one.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="d4">
+    <h2 id="d4">What I'm building (A everywhere)</h2>
+    <div class="tw"><table class="t">
+      <tr><th>Pages</th><td>Home · All templates · one page per template · Download Crust · Help (questions as an accordion)</td></tr>
+      <tr><th>Template page</th><td>Desktop and phone pictures of three of its pages, the price, what's included (counted from the template file itself, so it's always right), and the licence line. "Try the live demo" arrives with F064, the buy button with F066, and the licence and refund pages with F068.</td></tr>
+      <tr><th>Where it lives</th><td><code>store/</code>: the list of templates for sale and the store's own content folder. Store pages are written from that list, so adding a template is one entry.</td></tr>
+      <tr><th>Publishing</th><td>A new "Publish store" button in GitHub Actions, run by you only. It goes to its own free Cloudflare Pages project, <code>crust-store</code>, and also writes <code>catalogue.json</code> for the app. The app reads the catalogue from that address.</td></tr>
+      <tr><th>Needs you</th><td>Pressing "Publish store" once when you're happy (it claims the address). Nothing to buy.</td></tr>
+    </table></div>
+    <div class="box"><b>To choose differently</b><span>Reply with something like "B for the look" or "stacked template page". The rest stays as built.</span></div>
+  </section>
+</div>
