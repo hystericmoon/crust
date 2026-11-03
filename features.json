@@ -686,7 +686,7 @@
       "description": "Each template in the store is published as a full live demo under the store's address, with a slim, accessible 'Get this template' bar that stays out of the template's own design. Demos are rebuilt whenever the template changes. Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
       "depends_on": ["F063"],
       "done_check": "npm test -- demos && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
