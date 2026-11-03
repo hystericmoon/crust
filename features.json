@@ -676,7 +676,7 @@
       "description": "Design snapshot first. The template store, built with Crust from its own content folder and published to its own Cloudflare Pages project: home, all templates, a page per template (live demo, price, what's included, licence), a download page for the free app, help. Publishing also writes the catalogue file the app reads (F062). Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
       "depends_on": ["F062", "F084"],
       "done_check": "npm test -- store && npm run check:a11y && npm run check:perf",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
