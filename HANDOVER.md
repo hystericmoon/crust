@@ -29,8 +29,8 @@ The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
 Last updated: 2026-11-03 ~17:30 (Jakarta), branch
-`ccr-d50f7e80-weuq18` (restarted from main after PR #66 merged; PR #68
-open). Latest round, at the owner's request ("do a, b and d" on
+`ccr-d50f7e80-weuq18` (restarted from main after PR #68 merged, 2026-11-03
+~18:20 Jakarta). Latest round, at the owner's request ("do a, b and d" on
 https://claude.ai/artifact/D2h2rdzR4iQU6dQv7TyWqV): session routines are
 project skills in `.claude/skills/`, docs/spec.md no longer loads at
 start, `scripts/verify.sh` gives short check output, checkpoint and
@@ -83,6 +83,17 @@ for real tests; build and test against fakes first.
   against a real host; F061 never tried with a real release.
 
 ## Next
+
+**First, before F067 (owner, 2026-11-03: "fix the test at the start of
+F067"):** make `ftp::tests::ftps_connects_with_a_trusted_certificate`
+(crates/crust-desktop/src/ftp/tests.rs) reliable. It failed once in CI on
+PR #68 (`received corrupt message of type InvalidContentType` at the
+fourth publish) and passed on re-run and 25/25 locally. Likely cause: the
+parallel FTP and FTPS test servers share `passive_ports(50000..=60000)`,
+libunftp binds passive ports with SO_REUSEADDR, and `free_port()` takes
+control ports from the same ephemeral range. Fix: give each server its
+own passive range below the ephemeral ports (e.g. FTP `20000..=24999`,
+FTPS `25000..=29999`). Ship it in F067's PR, noted in DECISIONS "F067".
 
 **F067 Delivery and updates** (Opus): a Worker checks the provider's
 signed "order paid" message (Polar uses Standard Webhooks signatures;
