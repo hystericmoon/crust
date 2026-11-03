@@ -1,0 +1,16 @@
+# Delivery Worker (F067). Deployed by .github/workflows/delivery-worker.yml
+# once the owner has done docs/setup-delivery.md (see BLOCKED.md).
+name = "crust-delivery"
+main = "src/worker.ts"
+compatibility_date = "2026-10-01"
+
+[vars]
+# Filled in by the deploy workflow from store/list.json "checkout".
+PROVIDER = ""
+MODE = ""
+STORE_URL = "https://crust-store.pages.dev"
+
+[[kv_namespaces]]
+binding = "FILES"
+# The "crust-delivery" namespace; the deploy workflow puts its id here.
+id = "SET_BY_DEPLOY"

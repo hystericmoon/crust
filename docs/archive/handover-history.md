@@ -7,6 +7,35 @@ touches an older area ("How it fits" notes per feature, newest first).
 
 ## Per-feature notes (F053–F065)
 
+F066 (from HANDOVER, 2026-11-03). Last updated: 2026-11-03 ~17:30 (Jakarta), branch
+`ccr-d50f7e80-weuq18` (restarted from main after PR #68 merged, 2026-11-03
+~18:20 Jakarta). Latest round, at the owner's request ("do a, b and d" on
+https://claude.ai/artifact/D2h2rdzR4iQU6dQv7TyWqV): session routines are
+project skills in `.claude/skills/`, docs/spec.md no longer loads at
+start, `scripts/verify.sh` gives short check output, checkpoint and
+`/clear` at ~200k, unused skill packs hidden for this project
+(DECISIONS "Token saving"). Earlier: PR #66 merged, start-up files
+slimmed, review round page built. Last feature: **F066 Checkout built,
+passes, test mode** (merged in PR #66; DECISIONS "F066"). Snapshot https://claude.ai/artifact/6QAvaWHcuU26fgCfCrZVdw (A
+built: Polar; test note under the button). How it fits:
+`scripts/store/checkout.ts` (`PROVIDERS` polar/lemonsqueezy with link
+shapes per mode and how the template id is added, `readCheckout`,
+`buyLinkProblem`, `checkoutUrl`, `testNote`, `checkoutLine`,
+`checkoutGate`, `THANKS_PATH`), `store/list.json` `checkout` (Polar,
+test), model.ts `readStoreList` checks links, `templatePage` `afterBuy`,
+`thanksPage` (only with a priced template), `storePages(templates,
+checkout)`, load.ts returns `checkout`; gate script
+`scripts/store/checkout-check.ts`, run by Publish store before rendering
+with input `real_payments` → `CRUST_REAL_PAYMENTS`. Tests:
+`scripts/store/checkout.test.ts`. Polar link shapes are from its docs, not
+tried against a real sandbox yet (no account): the first real link may
+need a small fix in `PROVIDERS.polar.matches`. Needs `reviewed: true`.
+**Next: F067 Delivery and updates** (Opus): Worker checks the provider's
+signed "order paid" message (Polar uses Standard Webhooks signatures;
+template id in `reference_id` metadata), emails a personal download page
+(Resend), serves the file from Workers KV. Needs the owner's Polar account
+for real tests; build and test against fakes first.
+
 Earlier (~13:15). **F065 Template versions built,
 passes** (branch `ccr-d50f7e80-weuq18`, PR #66; DECISIONS "F065"). How it
 fits: `Template.id`/`release` (`packages/blocks/src/template.ts`, reader

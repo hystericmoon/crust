@@ -4,6 +4,16 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Template delivery (F067).** After someone pays for a template, they
+  get an email with their own download page. The page has a Download
+  button, what's new in the latest release, and how to open the file in
+  Crust. The link keeps working, so when a template gets an update, buyers
+  come back to the same page for the new file at no charge. A full refund
+  switches the page off. The download Worker checks every "order paid"
+  message against the payment company's secret, so a fake message can't
+  get a template. Test orders say "Test order" in the email and on the
+  page. It needs a one-time setup from you (docs/setup-delivery.md).
+
 - **Checkout in the store (F066), test mode.** A template with a price gets
   a "Get … · US$49" button that opens the payment company's own checkout
   page (Polar, recommended; Lemon Squeezy also works). They add sales tax

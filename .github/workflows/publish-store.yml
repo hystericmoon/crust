@@ -137,6 +137,11 @@ jobs:
       - name: Accessibility check (stops the publish on serious issues)
         run: node scripts/check-a11y.mjs dist/store
 
+      # F067: priced templates' files for the delivery Worker's download
+      # pages (Workers KV "crust-delivery"). Skips while everything is free.
+      - name: Hand priced templates to delivery
+        run: npx tsx scripts/store/delivery-kv.ts upload
+
       - name: Deploy to Cloudflare Pages
         run: |
           npx --yes "wrangler@$WRANGLER_VERSION" pages deploy dist/store \

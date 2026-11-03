@@ -3313,3 +3313,71 @@ container would have to install and rebuild it each session.
   four built-ins (dataviz, claude-api, plugin-authoring,
   keybindings-help) to `user-invocable-only`: Claude no longer sees them
   listed, the owner can still type `/name`. Undo by deleting entries.
+
+## 2026-11-03 — F067 Delivery and updates (Claude, reversible)
+
+No design snapshot: the only screens are a plain email and a one-card
+download page, styled to stay quiet (system font, card, one primary
+button, light and dark). `needs_review` is false for this feature.
+
+- **One Worker, `packages/delivery`**, routes `POST /webhook` and
+  `GET /d/<link>` (page) and `/d/<link>/file` (download). Company and
+  test/live mode come from `store/list.json` `checkout` at deploy, so the
+  Worker and the buy buttons can't disagree.
+- **Signatures.** Polar: Standard Webhooks (`webhook-id`,
+  `webhook-timestamp`, `webhook-signature: v1,<base64>`), messages older or
+  newer than 5 minutes refused. The key is the dashboard secret's own bytes
+  (Polar's SDKs base64 it before Standard Webhooks); a `whsec_…` secret is
+  also accepted. Lemon Squeezy: hex HMAC in `X-Signature`. Comparison is
+  constant-time. **Not yet tried against a real Polar sandbox** (no
+  account): the first real test may need a small fix in `readEvent`
+  (fields read: `type`, `data.id`, `data.customer.email`,
+  `data.metadata.reference_id`, refund `data.status === "refunded"`).
+- **Workers KV keys:** `template:<id>` (name, release, changes) and
+  `file:<id>` written by Publish store (`scripts/store/delivery-kv.ts
+  upload`, skipped while nothing has a price; files before records, bulk
+  requests under 60 MB); `order:<company>:<order id>` → `{token, emailed}`
+  and `link:<token>` → `{template, order, company, test, at}` written by
+  the Worker. **The buyer's email is not stored**: it's only used to send.
+  Templates taken off sale keep their keys so buyers can still download.
+- **Links:** 32 random bytes (43 URL-safe characters). Pages send
+  `Referrer-Policy: no-referrer`, `noindex`, `no-store` and a strict CSP
+  (no scripts). The file is served as an attachment named
+  `<id>-release-<n>.crust`.
+- **Repeats and failures:** one link per order; a repeated message sends
+  nothing (200). If the email fails, the Worker answers 502 so the company
+  retries, and the retry sends the same link. Two retries arriving at the
+  same instant could send the email twice (KV isn't transactional);
+  accepted, harmless.
+- **Refunds:** only a full refund (`refunded`) switches the link off;
+  partial refunds keep it.
+- **Unknown template** in an order: 422, so it shows as failed in the
+  company's webhook log for the owner to see.
+- **Resend's free sender** only mails the account's own address: test
+  orders work, real buyers need a verified domain (F044; BLOCKED.md).
+- **Deploy:** `.github/workflows/delivery-worker.yml` (skips until
+  `RESEND_API_KEY`, `DELIVERY_WEBHOOK_SECRET` and the Cloudflare secrets
+  exist), creates the `crust-delivery` KV namespace when missing and puts
+  its id into `wrangler.toml`. The Cloudflare token needs Workers KV
+  Storage: Edit. Owner steps: docs/setup-delivery.md.
+- **Also in this PR:** the FTPS desktop test that failed once on #68.
+  Parallel FTP/FTPS test servers shared passive ports 50000–60000 inside
+  Linux's ephemeral range; each test server now gets its own 400-port
+  range from 20000 (below every OS's ephemeral ports). 10/10 runs pass.
+
+## 2026-11-03 — Repository public for now (owner: "Made it public")
+
+The free GitHub Actions time ran out ($13.75 of $12 used, budget $0), so
+CI couldn't start. Options page: https://claude.ai/artifact/2HT771j6YsmYuDnQmhfkR8
+(`design/ci-minutes-v1.html`). The owner chose D: make the repository
+public (Actions free) and private again later. Before the switch the
+history was scanned: no keys or passwords; commits use the GitHub
+no-reply address.
+
+- **No paid template files may be committed while it's public** (the three
+  in `templates/` are free on the store). Premium templates wait until the
+  repository is private again, or live in a separate private repository.
+- **Before going private again:** make CI lighter (site-checks and
+  template-check only when their files change, no duplicate runs after a
+  merge, one push per feature), so it fits the $12 included each month.
+- Copies made while public stay public; the owner accepted that.

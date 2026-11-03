@@ -5,6 +5,23 @@ short. Older "Current" entries (newest first) and the older log.
 
 ## Earlier "Current" entries (F065 back to Milestone 1)
 
+- **F066 Checkout: built, passes, test mode** (branch
+  `ccr-d50f7e80-weuq18`, PR #66, merged 2026-11-03). Snapshot
+  https://claude.ai/artifact/6QAvaWHcuU26fgCfCrZVdw (A built for both:
+  Polar as the payment company; a "Test checkout" note under each buy
+  button). done_check `npm test -- checkout` exit 0; `npm test`,
+  typecheck, `cargo test` and clippy pass. A priced template's button is a
+  plain link to the company's hosted checkout (works without JavaScript),
+  tagged with the template's id for F067; test mode says so under the
+  button with the test card; a "Thank you" page (`/thanks`) appears once
+  something has a price; Publish store has a "Take real payments" switch
+  (off) and refuses live links without it (DECISIONS "F066"). **To try:**
+  nothing changes on the store yet (every template is free). Open the
+  comparison page, decide on the company, and open the account
+  (BLOCKED.md). Once you send a sandbox checkout link for a paid template,
+  you can buy it with the test card on the store. Needs `reviewed: true`.
+  **Next: F067 Delivery and updates** (Opus).
+
 - **F065 Template versions: built, passes** (branch `ccr-d50f7e80-weuq18`,
   PR #66). done_check `npm test -- template-versions && npm test --
   template-file && npm run typecheck` exit 0; `npm test`, `cargo test` and

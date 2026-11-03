@@ -1,0 +1,96 @@
+# F067: deploys the delivery Worker (packages/delivery) to Cloudflare.
+# Runs when the Worker or the store's checkout setting changes on main, or by
+# hand. Skips cleanly until the owner has done docs/setup-delivery.md (see
+# BLOCKED.md). The payment company and test/live mode come from
+# store/list.json "checkout", the same setting the store's buy buttons use.
+name: Delivery Worker
+
+on:
+  push:
+    branches: [main]
+    paths: ["packages/delivery/**", "store/list.json", ".github/workflows/delivery-worker.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: delivery-worker
+  cancel-in-progress: false
+
+env:
+  WRANGLER_VERSION: 4.145.0
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      WEBHOOK_SECRET: ${{ secrets.DELIVERY_WEBHOOK_SECRET }}
+      FROM_EMAIL: ${{ vars.DELIVERY_FROM_EMAIL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the delivery setup
+        id: setup
+        run: |
+          missing=""
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID RESEND_API_KEY WEBHOOK_SECRET; do
+            if [ -z "${!name}" ]; then missing="$missing $name"; fi
+          done
+          provider=$(jq -r '.checkout.provider // ""' store/list.json)
+          mode=$(jq -r '.checkout.mode // ""' store/list.json)
+          if [ -z "$provider" ]; then missing="$missing store-checkout-setting"; fi
+          if [ -n "$missing" ]; then
+            echo "Delivery not set up yet (missing:$missing). See docs/setup-delivery.md." >> "$GITHUB_STEP_SUMMARY"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            {
+              echo "ready=true"
+              echo "provider=$provider"
+              echo "mode=$mode"
+            } >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.setup.outputs.ready == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        if: steps.setup.outputs.ready == 'true'
+        run: npm ci
+
+      - name: Find or create the delivery storage
+        if: steps.setup.outputs.ready == 'true'
+        run: |
+          id=$(npx tsx scripts/store/delivery-kv.ts namespace)
+          sed -i "s/^id = \"SET_BY_DEPLOY\"$/id = \"$id\"/" packages/delivery/wrangler.toml
+          grep -q "id = \"$id\"" packages/delivery/wrangler.toml
+
+      - name: Deploy the Worker
+        if: steps.setup.outputs.ready == 'true'
+        working-directory: packages/delivery
+        env:
+          PROVIDER: ${{ steps.setup.outputs.provider }}
+          MODE: ${{ steps.setup.outputs.mode }}
+        run: |
+          npx --yes "wrangler@$WRANGLER_VERSION" deploy --var "PROVIDER:$PROVIDER" --var "MODE:$MODE" | tee deploy.log
+          url=$(grep -oE 'https://[a-z0-9.-]+\.workers\.dev' deploy.log | head -n 1)
+          rm deploy.log
+          {
+            echo "Delivery Worker deployed ($PROVIDER, $MODE mode)."
+            echo "In your payment company's dashboard, add a webhook to: ${url:-the workers.dev address shown above}/webhook"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Give the Worker its secrets
+        if: steps.setup.outputs.ready == 'true'
+        working-directory: packages/delivery
+        run: |
+          jq -n --arg w "$WEBHOOK_SECRET" --arg r "$RESEND_API_KEY" --arg f "$FROM_EMAIL" \
+            '{WEBHOOK_SECRET: $w, RESEND_API_KEY: $r} + (if $f == "" then {} else {FROM_EMAIL: $f} end)' \
+            | npx --yes "wrangler@$WRANGLER_VERSION" secret bulk
