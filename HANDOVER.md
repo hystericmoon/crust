@@ -25,7 +25,6 @@ Never show it while work is uncommitted or unpushed; finish that first.
 
 | Next feature | Model | Why |
 |---|---|---|
-| F084 Rebuild Harbour, Signal and Corner | **Opus** | Premium design and copy; judgment the checks can't measure |
 | F063 Store site | Opus (suggested) | Design snapshot, the public face of the store |
 | F064 Live demos | Sonnet (suggested) | Follows F063's setup |
 | F065 Template versions | Sonnet (suggested) | Well-defined data and checks |
@@ -38,7 +37,24 @@ decide the store milestone then); until he has, ask before starting one.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-03 ~08:30 (Jakarta). **F083 Stricter template
+Last updated: 2026-11-03 ~10:30 (Jakarta). **F084 Rebuild Harbour,
+Signal and Corner built, passes** (branch `ccr-d50f7e80-weuq18`, stacked
+in PR #65; done_check exit 0; DECISIONS "F084"). Snapshot
+https://claude.ai/artifact/KhSZToRB3zEYzpXrCe5eVo (A for all three). How
+it fits: `scripts/starter-templates/kit.ts` (block helpers, per-page ids),
+`harbour.ts`, `signal.ts`, `corner.ts` (pages, linked sections, posts,
+chrome, designs), `parts.ts`, `starter.ts` (`lookTokens`, specs,
+`buildStarter`); Signal's logos in `photos/signal/logo-*.png`. Template
+reader `pickHeader`/`pickFooter` (template.ts) now keep F076 fields.
+`AWAITING_REBUILD` is empty. Screenshots for review: run the check and
+serve `dist/template-check/<name>/site`. In the Studio look the "dark"
+section style is the light one (text colour as background): use
+`background` for dark tints there. Milestone 8 is complete (F070–F084).
+Needs `reviewed: true`. **Next: F063 Store site** (Milestone 7): the
+"suggested" models below need the owner's confirmation first; ask before
+starting.
+
+Earlier (~08:30): **F083 Stricter template
 check built, passes** (branch `ccr-d50f7e80-weuq18`, stacked in PR #65;
 done_check exit 0; DECISIONS "F083"). Model: `template-strict.ts`
 (`slotsGroup`, `cropsGroup`, `varietyGroup`, `gradientGroup`,

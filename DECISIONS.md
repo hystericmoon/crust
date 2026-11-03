@@ -13,6 +13,13 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
+- **Gallery shape in the layout library (found with F084, 2026-11-03).**
+  F080's layout helper gives Galleries `shape: "landscape"`, which isn't
+  one of the Gallery's shapes (`square`, `wide`, `original`), so those
+  layouts' galleries fall back to unstyled tiles, and a template made
+  from them is refused ("blocks Crust doesn't know"). One-line fix in
+  `layouts-v2.ts` (use `wide`). Size S.
+
 - **Premium design layer (owner feedback 2026-11-02). Owner chose B (2026-11-02: "Let's go B, let's go all in in this. Compare yootheme features against us and tell me the gap. We should focus on that").** Next: a YOOtheme gap page and a milestone draft for approval; the milestone goes before the premium templates track. Gap page: https://claude.ai/artifact/ULmnd4JZEKpGvyUHFg1Kpo (`design/yootheme-gap-v1.html`, from YOOtheme Pro 5.0.53 docs and changelog, read 2026-11-01). Draft Milestone 8 "Premium design layer": A all in, 15 features F070–F084 (recommended), or B core 9. Waiting on the owner; F063 store paused until M8 is done (it's built with Crust, so it gets the new look). The owner
   compared our templates with eliras/zorven/labzzy.webflow.io and found
   ours not premium. Agreed, side by side:
@@ -256,6 +263,58 @@ Features Claude suggests. They are not work until the owner adds them to
   the redirects and Crust's 404 page. Small (M). Only helps Apache hosts
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
+
+## 2026-11-03 — F084 Rebuild Harbour, Signal and Corner (Claude, reversible)
+
+Snapshot https://claude.ai/artifact/KhSZToRB3zEYzpXrCe5eVo
+(`design/f084-starter-rebuild-v1.html`). The owner's standing rule is to
+build the recommendation, so A was built for all three decisions.
+
+- **Look: A, the matching Style library look.** Harbour = Atelier ·
+  Stone, Signal = Studio · Signal, Corner = Bistro · Cream (`lookTokens`
+  in starter.ts, `applyLook` on the default tokens, plus motion: Subtle,
+  Lively, Subtle). Site settings recognises the look (`matchingLook`), so
+  the buyer sees which look they have and the other colourways are one
+  click away (recognition over recall). The colours stay close to each
+  template's old palette; Signal becomes a dark site. In this look the
+  "dark" section style is the light band (it uses the text colour), so
+  Signal's light bands are `dark` sections.
+- **Pages: A, pages that fit the business.** Harbour: Studio, Services,
+  Projects, Journal, Contact. Signal: Work, Services, Studio, Notes,
+  Contact, plus a "Start a project" button and a top bar. Corner: Menu
+  (four price tables), Workshops (a price list), Our story, News, Visit
+  us (opening hours, order ahead). Addresses `/about`, `/services`,
+  `/work`, `/contact` are kept where the page is the same kind, so links
+  people learned keep working.
+- **Copy: A, finished words for a made-up business, still marked to
+  replace.** Every made-up figure, quote, name, price, address and photo
+  is marked (F046), so publishing waits until each is replaced or kept on
+  purpose; generic labels ("How we work", button text) aren't. Contact
+  details use `.example` addresses (reserved, never a real inbox) and
+  555 phone numbers.
+- **Structure.** `scripts/starter-templates/`: `kit.ts` (block helpers,
+  ids counted per page so a rebuilt file is identical), `harbour.ts`,
+  `signal.ts`, `corner.ts` (pages, linked sections, two posts, blog
+  settings, header and footer, post/blog/404 designs), `parts.ts` (the
+  shape), `starter.ts` (specs and `buildStarter`). Home pages have 9–10
+  sections and 7–9 kinds of section; inner pages 4–7.
+- **Header and footer v2 in templates.** The template reader (F045) never
+  learned F076's fields, so a template file silently lost a header's
+  layout, "over the hero", top bar and dropdowns, and a footer made of
+  blocks. `pickHeader`/`pickFooter` in `template.ts` now copy them, the
+  existing `validateChrome` judges them, and a block footer's section
+  must be in the file. No format change: the fields were already in the
+  spec and in `site.json`.
+- **Photos.** Same CC0 photos the owner picked (F052/F053), used more
+  widely; Signal also carries the five made-up client logos drawn for
+  the layout library (`photos/signal/logo-*.png`, credited as ours).
+  Rows of photos keep one shape (the 1.6:1 wides together, the 0.8:1
+  talls together).
+- **Width.** Sections use the normal page width, so content lines up
+  with the header and footer; "wide" put text 16 px from the screen edge
+  at 1280 px while the logo sat on the page grid.
+- **`AWAITING_REBUILD` is empty.** The three templates are held to every
+  F083 rule; `npm run check:template` passes for all three.
 
 ## 2026-11-03 — F083 Stricter template check (Claude, reversible)
 

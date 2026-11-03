@@ -4,6 +4,22 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Harbour, Signal and Corner, rebuilt (F084).** The three starter
+  templates now use the new design layer: each starts from a Style
+  library look (Harbour: Atelier · Stone; Signal: Studio · Signal, a dark
+  site; Corner: Bistro · Cream), with bundled fonts, display headings and
+  small labels, and gentle motion. Every page is full length with
+  finished words for a believable business: Harbour has a project
+  slider, prices and questions; Signal a top bar, client logos, named
+  work tiles, services as tabs and fixed prices; Corner a menu with
+  price tables, a workshop price list, opening hours and ordering ahead,
+  and its own pages (Menu, Workshops, Our story, News, Visit us). Each
+  comes with its own post, blog and "Page not found" design and two
+  posts. Made-up names, figures, prices and photos are marked "to
+  replace", so they can't go live by accident.
+- **Templates keep the new header and footer.** A template file now
+  keeps the header's layout, "over the photo", top bar and dropdown
+  menus, and a footer made of blocks; before, these were lost.
 - **A stricter check before a template is offered (F083).** The template
   check now also stops a template that has leftover builder words
   ("Heading", "Click here", the sample quote), a card, slide or picture

@@ -5,6 +5,21 @@ to "Log".
 
 ## Current
 
+- **F084 Rebuild Harbour, Signal and Corner: built, passes** (branch
+  `ccr-d50f7e80-weuq18`, stacked on F079–F083, PR #65). Snapshot
+  https://claude.ai/artifact/KhSZToRB3zEYzpXrCe5eVo, A built for all
+  three decisions (Style library look per template; pages that fit each
+  business; finished copy still marked to replace). done_check `npm run
+  check:template && npm test -- starter` exit 0: all three pass every
+  check, including F083's, with nobody excused. Also fixed: template
+  files now keep the header layout, top bar, dropdowns and block footer
+  (F076), which they used to drop. **To try** on the PR's preview link:
+  **Templates** → open Harbour, Signal and Corner and look through every
+  page at desktop and phone width; start a site from one and open **To
+  replace**. Needs `reviewed: true`. **Next: F063 Store site**
+  (Milestone 7; the owner decides the store milestone first, see
+  HANDOVER "Model plan").
+
 - **F083 Stricter template check: built, passes** (branch
   `ccr-d50f7e80-weuq18`, stacked on F079–F082, PR #65). No design, so no
   snapshot and nothing for the owner to review. done_check `npm test --
