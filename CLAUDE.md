@@ -14,16 +14,22 @@ reasoning on UX decisions.
 ## Session protocol (one feature per session)
 
 1. Read `HANDOVER.md` first (current state, next step, how sessions hand
-   over), then `PROGRESS.md`, `features.json`, and `git log --oneline -20`.
+   over), run `npm run next` (next feature, model, done_check, review
+   queue), then read `PROGRESS.md` "Current" and `git log --oneline -10`.
+   Search `features.json`, `DECISIONS.md` and `docs/archive/` by feature
+   id instead of reading them whole (owner, 2026-11-03).
 2. Pick the first feature with `"passes": false` whose `depends_on` all pass
    and that is not listed in `BLOCKED.md`.
 3. Build it, with tests.
 4. Run its `done_check` command. It must exit 0. Never set `passes: true`
    because something "looks done".
 5. Commit, then update `PROGRESS.md` (what was done, what's next, anything
-   the owner should test) and `CHANGELOG.md`.
+   the owner should test) and `CHANGELOG.md`. Move the previous
+   feature's notes from `PROGRESS.md` and `HANDOVER.md` to `docs/archive/`
+   so both stay short. One PR per feature.
 6. Visual/UX items also have `needs_review: true`; only the owner sets
-   `reviewed: true` after testing the preview link.
+   `reviewed: true` after testing the preview link (his Pass on the
+   review round page counts; Claude records it).
 7. Update `HANDOVER.md`, then hand over: one session works at a time,
    and between features its context is reset with `/clear` (owner,
    2026-11-02), not by starting a new session. After a clear the owner
@@ -64,6 +70,7 @@ reasoning on UX decisions.
 
 ```
 scripts/init.sh              # install deps, first build (run at session start)
+npm run next                 # next feature, its model, review queue
 npm test                     # JS tests (vitest)
 npm run typecheck            # TypeScript
 npm run build                # build admin app

@@ -93,8 +93,10 @@ jobs:
 
   site-checks:
     # F009: axe on every published page, Lighthouse on the sample page.
+    # 35 min: since F063/F064 it also builds the store and three demos
+    # (AVIF/WebP copies), 13-20 min on a cold photo cache.
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
 

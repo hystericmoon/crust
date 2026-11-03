@@ -1,0 +1,127 @@
+<title>Crust Review Round</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: a checklist in sittings; each feature a row with what to try and Pass / Needs fixing. Answers save to the page's shared store for Claude to read. */
+:root{--bg:#f4f5f7;--card:#fff;--fg:#15171c;--mute:#5b6270;--line:#d9dce3;--accent:#2f5bd8;--ok:#1d7a4a;--okbg:#e3f3ea;--warn:#8a5a00;--warnbg:#fff1cf;--focus:#2f5bd8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101216;--card:#1a1d23;--fg:#eceef2;--mute:#9aa1af;--line:#2e333d;--accent:#8ab4ff;--ok:#5fcf93;--okbg:#173326;--warn:#f3c969;--warnbg:#3a2f12;--focus:#8ab4ff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101216;--card:#1a1d23;--fg:#eceef2;--mute:#9aa1af;--line:#2e333d;--accent:#8ab4ff;--ok:#5fcf93;--okbg:#173326;--warn:#f3c969;--warnbg:#3a2f12;--focus:#8ab4ff;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif;padding-block:28px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:860px;margin:auto;display:grid;gap:24px}
+h1{font-size:26px;margin:0;text-wrap:balance}h2{font-size:19px;margin:0;text-wrap:balance}h3{font-size:16px;margin:0}
+p{margin:0;max-width:70ch}.mute{color:var(--mute)}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,textarea:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.top{display:grid;gap:10px}
+.meter{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.track{flex:1 1 200px;height:10px;background:var(--line);border-radius:99px;overflow:hidden}
+.fill{height:100%;background:var(--ok);width:0;transition:width .3s}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+.count{font-variant-numeric:tabular-nums;font-weight:600}
+.status{font-size:13px;color:var(--mute)}
+.callout{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:4px;font-size:14px}
+.sitting{display:grid;gap:10px}
+.sitting header{display:grid;gap:2px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:10px;min-width:0}
+.item[data-v="pass"]{border-color:var(--ok)}
+.item[data-v="fix"]{border-color:var(--warn)}
+.head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.id{font:600 12px ui-monospace,monospace;color:var(--mute);margin-right:6px}
+ol{margin:0;padding-left:20px;font-size:14px;display:grid;gap:3px}
+.links{font-size:13px;display:flex;gap:14px;flex-wrap:wrap}
+.acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button{font:600 14px system-ui;border-radius:8px;padding:9px 14px;min-height:44px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
+button[aria-pressed="true"].pass{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+button[aria-pressed="true"].fix{background:var(--warnbg);border-color:var(--warn);color:var(--warn)}
+.note{display:grid;gap:4px}
+.note label{font-size:13px;color:var(--mute)}
+textarea{font:14px/1.4 system-ui;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--bg);color:var(--fg);min-height:60px;resize:vertical;width:100%;box-sizing:border-box}
+.saved{font-size:12px;color:var(--mute)}
+</style>
+<main>
+<section class="top">
+<h1>Review round: 26 features</h1>
+<p class="mute">For each feature, try the 2–3 steps, then press <b>Pass</b> or <b>Needs fixing</b>. If it needs fixing, add a line about what. Your answers save as you go, and I read them from here, so you don't need to copy anything into chat. Do it in sittings, in any order.</p>
+<div class="meter"><div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div><span class="count" id="count" aria-live="polite">0 of 26 checked</span></div>
+<p class="status" id="status">Connecting…</p>
+<div class="callout"><b>Where to try things</b><span>Use the preview admin: <a href="https://ccr-d50f7e80-weuq18.crust-admin.pages.dev">ccr-d50f7e80-weuq18.crust-admin.pages.dev</a>. It has everything that's merged, and it can't save, so nothing you try reaches your real site. The live admin at crust-admin.pages.dev saves for real.</span></div>
+</section>
+<div id="list"></div>
+</main>
+<script>
+const P="https://ccr-d50f7e80-weuq18.crust-admin.pages.dev";
+const A=id=>"https://claude.ai/artifact/"+id;
+const SITTINGS=[
+{title:"1 · Design layer",time:"about 25 min, Mac",items:[
+["F070","Fonts","Site settings → Typography: press a few font pair cards and watch the preview.","Change one font from the list.",null],
+["F071","Type and detail styles","Site settings → Typography: Display weight, spacing, Small labels.","Builder: a Heading → Style → Size: Display; Content → Small label. A Card → Layout: Cover.",null],
+["F072","Style library","Site settings → Styles: press a few looks and the colour dots under them.","Press Undo style.","GaX1QoHvVTp8S3bU1ybxsa"],
+["F073","Sections v2","Select a Section → Style: try the width pictures, Background → Gradient, then Photo (click the photo to set its focus).","On the first section, tick “Header sits on this section”.","NK9TwfBQMN6s6LHuEAuWQi"],
+["F074","Rows and columns v2","Click a Card, then “Columns” at the top of the panel → Style: Line up Middle, Box behind each column, Highlight 2, Dividers.","Narrow to phone width and check “Last column first on phones”.","9mia2cufYDWGXjSPr3zYbn"],
+["F075","Motion","Site settings → Motion → Subtle, scroll the preview; then Lively.","With Reduce motion on (Mac: Accessibility → Display) the preview stays still.",null],
+["F076","Header and footer v2","Site settings → Header & menu: press the layout pictures; make a dropdown with “Put under above”.","Narrow the window and open the menu panel. Footer → Built from blocks.",null]]},
+{title:"2 · New blocks and media",time:"about 30 min, Mac",items:[
+["F077","Icons, Divider, Social","Builder: add an Icon, search “phone”, try In a circle. Give it a link: it asks for a name.","Add a Divider and Social links. Keyboard: Tab into the icon grid, arrows, Enter.","8o1uPhHmTBd9hgkzmx1pU2"],
+["F078","Stats, Video, Table, Pricing","Add Stats and switch its Look; add Pricing and highlight a plan.","Add a Table and paste a few cells from Numbers; add a Video with a YouTube link.","X3bMNKoE6MCU7EqbLJx2mk"],
+["F079","Slideshow, Card slider, Tabs, Map","Add Tabs and try the three looks; add a Card slider and press its arrows.","Add a Map, type an address, press Find on the map.","FNRagTiH9MLL4iTdDgHeje"],
+["F080","Layout library v2","Press Layouts (or + between sections): browse the 16 categories; add a whole page “Studio home”.","Select a Button → Style → Saved styles: save one, apply it to another button.","VpbNu8K34npejqHXQpiYnj"],
+["F081","Focal point on photos","Any image field → Choose image → press the subject in Focal point, watch Wide/Square/Tall.","Use that photo in a Card: it crops around your point.","Qp4rkNmxNn3AKWKxDTr9hB"],
+["F082","Post, blog and 404 designs","Posts → Design the post page → Layouts → Starting designs → “On the photo”, Save design.","Open a post: it shows inside your design. Pages → Page not found → “Helpful”.","6DUK8yisbSiBT5LuYuhUND"]]},
+{title:"3 · Templates and fixes",time:"about 20 min, Mac and phone",items:[
+["F084","Harbour, Signal and Corner rebuilt","Templates → open each of the three, look through every page at desktop and phone width.","Start a site from one and open To replace.","KhSZToRB3zEYzpXrCe5eVo"],
+["F053","Signal and Corner photos","While in Signal and Corner: do the photos fit the businesses?","(Covered by F084's look-through.)","B3dfAGM3m15EcN1n83oooB"],
+["F062","Premium templates in the gallery","Open "+P+"/#/templates?examples: the example premium group.","Open one: pictures, price, and the button to buy it.","B53eSPBXNaCJmAL6DNUeQs"],
+["F069","Review fixes (from 1 Nov)","In the builder, press Tab from the top: “Skip to page” and Blocks/Outline are reachable.","Rename a page that's in the menu: it says how many links it updated.","53YM8oVKV9XrECZJSNHo1J"]]},
+{title:"4 · The store",time:"about 15 min, phone is fine",note:"First put the store online (free): GitHub → Actions → Publish store → Run workflow, with “Take real payments” left off. Then open crust-store.pages.dev.",items:[
+["F063","Store site","Open crust-store.pages.dev: Home, All templates, a template page, Download, Help.","On a phone, check the price and button sit under the title.","41A2H2RjXGJZTs3ubzRZQE"],
+["F064","Live demos","On a template page press Try the live demo; click around.","Check the slim bar at the bottom: Back to store, Get this template.","4mSvQJVQaiwFYcDoKFNsN2"],
+["F066","Checkout","Nothing to see until a template has a price. Pass means: Polar and the “Test checkout” note look right on the snapshot.","Opening the Polar account is a separate step (BLOCKED.md).","6QAvaWHcuU26fgCfCrZVdw"]]},
+{title:"5 · The desktop app",time:"needs the app installed first",note:"These six can only be tried in the installed app. Building the installers takes about 150 GitHub Actions minutes; tell me in chat when you want it. Until then, Pass means “the screenshots on its snapshot look right”, or leave them unanswered.",items:[
+["F055","Desktop app shell","Open Crust on your Mac: it opens your site's folder.","Pages, builder and Site settings work as on the web.",null],
+["F056","Publish on your computer","Publish: the site is built on your computer, with a preview to open.","Export as a folder.","JdsQXqRu8kTu5KwQQ8qcb9"],
+["F057","Several sites","All sites: create, rename, duplicate, delete, then bring one back from Recently deleted.","",  "7nKCuGhkAuhTJ5gMEXxfw3"],
+["F058","Publish to Cloudflare Pages or Netlify","Connect a host with a token, publish.","",  "DMXMZc8NdDTNRXSFEBBuah"],
+["F059","Publish by FTP or SFTP","Connect an FTP/SFTP host, publish; only changed files are sent again.","",null],
+["F060","First run","On first open: the welcome screen, Blank or a template, then straight into the builder.","",  "Lx5SeC9B1GmSN3ztFebA3t"]]}];
+const ALL=SITTINGS.flatMap(s=>s.items.map(i=>i[0]));
+let state={},db=null,col=null;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function render(){
+  const list=document.getElementById("list");
+  list.innerHTML=SITTINGS.map(s=>`<section class="sitting"><header><h2>${esc(s.title)}</h2><span class="mute" style="font-size:14px">${esc(s.time)}</span>${s.note?`<p class="mute" style="font-size:14px">${esc(s.note)}</p>`:""}</header>${s.items.map(([id,t,a,b,snap])=>`
+<article class="item" id="i-${id}"><div class="head"><h3><span class="id">${id}</span>${esc(t)}</h3>${snap?`<a href="${A(snap)}" style="font-size:13px">Design snapshot</a>`:""}</div>
+<ol><li>${esc(a)}</li>${b?`<li>${esc(b)}</li>`:""}</ol>
+<div class="acts" role="group" aria-label="${id} verdict"><button class="pass" data-id="${id}" data-v="pass" aria-pressed="false">Pass</button><button class="fix" data-id="${id}" data-v="fix" aria-pressed="false">Needs fixing</button><span class="saved" id="s-${id}"></span></div>
+<div class="note"><label for="n-${id}">What needs fixing (optional for Pass)</label><textarea id="n-${id}" data-id="${id}"></textarea></div></article>`).join("")}</section>`).join("");
+  paint();
+}
+function paint(){
+  let n=0;
+  for(const id of ALL){
+    const r=state[id]||{};const el=document.getElementById("i-"+id);if(!el)continue;
+    el.dataset.v=r.verdict||"";if(r.verdict)n++;
+    el.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===r.verdict)));
+    const ta=document.getElementById("n-"+id);if(document.activeElement!==ta)ta.value=r.note||"";
+  }
+  document.getElementById("count").textContent=`${n} of ${ALL.length} checked`;
+  document.getElementById("fill").style.width=(100*n/ALL.length)+"%";
+}
+async function save(id,patch){
+  state[id]={...(state[id]||{}),...patch,updatedAt:new Date().toISOString()};paint();
+  const s=document.getElementById("s-"+id);
+  if(col){try{await col.doc(id).set(state[id]);s.textContent="Saved";}catch(e){s.textContent="Not saved: "+(e&&e.message||"try again");}}
+  else{try{localStorage.setItem("crust-review",JSON.stringify(state));}catch{}s.textContent="Saved in this browser only";}
+}
+document.addEventListener("click",e=>{const b=e.target.closest("button[data-v]");if(!b)return;const id=b.dataset.id;const cur=(state[id]||{}).verdict;save(id,{verdict:cur===b.dataset.v?null:b.dataset.v});});
+const timers={};
+document.addEventListener("input",e=>{const t=e.target;if(t.tagName!=="TEXTAREA")return;clearTimeout(timers[t.dataset.id]);timers[t.dataset.id]=setTimeout(()=>save(t.dataset.id,{note:t.value.slice(0,1000)}),700);});
+try{state=JSON.parse(localStorage.getItem("crust-review")||"{}")||{};}catch{state={};}
+render();
+(async()=>{
+  const st=document.getElementById("status");
+  const timer=setTimeout(()=>{st.textContent="Couldn't reach the saved answers. Your choices stay in this browser; tell me in chat if that keeps happening.";},10000);
+  db=window.claude?await window.claude.use("db"):null;
+  if(!db){clearTimeout(timer);st.textContent="Answers save in this browser only here. Open the page on claude.ai, signed in, so I can read them.";return;}
+  col=db.collection("reviews");
+  col.onSnapshot(snap=>{clearTimeout(timer);for(const d of snap.docs){const v=d.data();if(v)state[d.id]=v;}paint();st.textContent="Answers save as you go, and Claude can read them.";},()=>{clearTimeout(timer);st.textContent="Couldn't reach the saved answers just now; reload the page to try again.";});
+})();
+</script>
