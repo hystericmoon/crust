@@ -5,6 +5,11 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
+**Model plan (owner, 2026-11-03): F083 is built with Sonnet, F084 with
+Opus.** A session running on Sonnet builds F083 only: when it passes,
+commit, push, update this file, then stop and tell the owner to switch to
+Opus (`/model`) and `/clear` before F084. Don't start F084 on Sonnet.
+
 Last updated: 2026-11-03 ~07:30 (Jakarta). **F082 Post, blog and 404
 designs built, passes** (branch `ccr-d50f7e80-weuq18`, stacked on
 F079–F081 in PR #65; done_check exit 0; DECISIONS "F082"). Snapshot
