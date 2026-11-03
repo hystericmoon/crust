@@ -262,6 +262,22 @@ picture at all. The app has no catalogue address until the store
 exists (`STORE_CATALOGUE_URL`); `#/templates?examples` shows a bundled
 example catalogue.
 
+The template store (F063) is a Crust site of its own in `store/`:
+`store/content/` is an ordinary content folder (site.json, pages,
+media), written by `npm run build:store` from `store/list.json`:
+```json
+{ "format": "crust-store", "version": 1, "templates": [
+  { "id": "harbour", "file": "templates/harbour.crust", "kind": "Architects, interiors and studios",
+    "price": "Free", "show": ["/", "/services", "/work"] } ] }
+```
+`price` is `"Free"` or like `"US$49"`; a priced template also needs
+`buy` (an `https://` link) and `licence` (one or two sentences).
+`show` lists 1–4 of the template's pages, Home first; their pictures
+(`<id>-<page>-desktop|tablet|phone.jpg`) come from `npm run
+store:pictures`. Publishing the store ("Publish store" workflow) also
+writes `catalogue.json` (the catalogue format above), priced templates
+only.
+
 `content/media/<file>` and `content/media.json` (optional, added with F034):
 uploaded photos (JPG, PNG, WebP; at most 2400 px) and their details.
 ```json

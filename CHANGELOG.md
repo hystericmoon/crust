@@ -4,6 +4,14 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **The Crust template store (F063).** A website of its own, made with
+  Crust: Home, all templates, a page per template (pictures of its pages
+  on a computer and a phone, the price, what's included, counted from
+  the template itself, and the licence), Download Crust and Help. It
+  lists Harbour, Signal and Corner, free with Crust; premium templates
+  join it with a price and a buy button. A new **Publish store** button
+  in GitHub Actions puts it online at crust-store.pages.dev and writes
+  the list of priced templates the app's gallery will read.
 - **Harbour, Signal and Corner, rebuilt (F084).** The three starter
   templates now use the new design layer: each starts from a Style
   library look (Harbour: Atelier · Stone; Signal: Studio · Signal, a dark

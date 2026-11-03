@@ -37,7 +37,32 @@ The owner confirmed all six rows as listed ("go ahead", 2026-11-03
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-03 ~10:30 (Jakarta). **F084 Rebuild Harbour,
+Last updated: 2026-11-03 ~11:45 (Jakarta). **F063 Store site built,
+passes** (branch `ccr-d50f7e80-weuq18`, stacked on F084 in PR #66;
+done_check exit 0; DECISIONS "F063"). Snapshot
+https://claude.ai/artifact/41A2H2RjXGJZTs3ubzRZQE (A for all three). How
+it fits: `store/list.json` (format `crust-store`: id, file, kind, price,
+show, and `buy` + `licence` for priced ones) → `scripts/store/model.ts`
+(`readStoreList`, `readStoreTemplates`, `templateFacts`,
+`includedLines`, `storePages`, `storeSite`, `storeCatalogue`,
+`picturesNeeded`, `PICTURE_SIZES`; blocks via the starter kit with marks
+taken off) → `npm run build:store` (`build.ts`, `load.ts`) writes
+`store/content/site.json` + `pages/`. Pictures: `npm run store:pictures`
+(`pictures.ts`: unpack template → render → crust-publish → Playwright,
+27 JPEGs + media.json in `store/content/media/`). `npm run
+publish:store` → `dist/store` + Pagefind + `catalogue.json`
+(`catalogue.ts`). check:a11y and check:perf now include the store.
+Workflow `.github/workflows/publish-store.yml` (by hand; project
+`crust-store`; stops if the address differs or pages are stale). App:
+`STORE_CATALOGUE_ADDRESS` set, `STORE_CATALOGUE_URL` still null **on
+purpose** until the first priced template (store test enforces it).
+**F064 Live demos** builds on this: publish each listed template under
+the store (e.g. `/demos/<id>/`) inside publish:store and the workflow,
+add the slim bar, and a "Try the live demo" button on the template page
+(model.ts `templatePage`). Owner: press Publish store (BLOCKED.md).
+Needs `reviewed: true`. **Next: F064 Live demos** (Sonnet).
+
+Earlier (~10:30): **F084 Rebuild Harbour,
 Signal and Corner built, passes** (branch `ccr-d50f7e80-weuq18`, PR #66
 after #65 was merged; done_check exit 0; DECISIONS "F084"). Snapshot
 https://claude.ai/artifact/KhSZToRB3zEYzpXrCe5eVo (A for all three). How

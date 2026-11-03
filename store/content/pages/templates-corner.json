@@ -1,0 +1,411 @@
+{
+  "path": "/templates/corner",
+  "title": "Corner template",
+  "description": "Corner: Warm and local, for bakeries, cafés, shops and makers: a menu with prices, workshops, opening hours and ordering ahead. Young Serif, navy on cream.",
+  "puck": {
+    "root": {
+      "props": {}
+    },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "id": "t-corner-section-7",
+          "background": "background",
+          "paddingY": "lg",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "t-corner-heading-3",
+                "text": "Corner",
+                "level": "h1",
+                "align": "left",
+                "size": "display",
+                "eyebrow": "Bakeries, cafés, shops and makers"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "t-corner-text-4",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Warm and local, for bakeries, cafés, shops and makers: a menu with prices, workshops, opening hours and ordering ahead. Young Serif, navy on cream."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "t-corner-text-5",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Free with Crust"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default",
+                "hideOn": [
+                  "desktop",
+                  "tablet"
+                ]
+              }
+            },
+            {
+              "type": "Button",
+              "props": {
+                "id": "t-corner-button-6",
+                "label": "How to open it",
+                "href": "/help#questions",
+                "variant": "secondary",
+                "align": "left",
+                "hideOn": [
+                  "desktop",
+                  "tablet"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "t-corner-section-20",
+          "background": "background",
+          "paddingY": "sm",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Columns",
+              "props": {
+                "id": "t-corner-columns-19",
+                "count": "2",
+                "gap": "xl",
+                "column1": [
+                  {
+                    "type": "Image",
+                    "props": {
+                      "id": "t-corner-image-8",
+                      "src": "/media/corner-home-desktop.jpg",
+                      "alt": "The Corner template's Home page on a computer screen",
+                      "caption": "Home page"
+                    }
+                  },
+                  {
+                    "type": "Spacer",
+                    "props": {
+                      "id": "t-corner-spacer-9",
+                      "size": "sm"
+                    }
+                  },
+                  {
+                    "type": "Image",
+                    "props": {
+                      "id": "t-corner-image-10",
+                      "src": "/media/corner-menu-desktop.jpg",
+                      "alt": "The Corner template's Menu page on a computer screen",
+                      "caption": "Menu page"
+                    }
+                  },
+                  {
+                    "type": "Spacer",
+                    "props": {
+                      "id": "t-corner-spacer-11",
+                      "size": "sm"
+                    }
+                  },
+                  {
+                    "type": "Image",
+                    "props": {
+                      "id": "t-corner-image-12",
+                      "src": "/media/corner-visit-desktop.jpg",
+                      "alt": "The Corner template's Visit us page on a computer screen",
+                      "caption": "Visit us page"
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "t-corner-heading-13",
+                      "text": "Free",
+                      "level": "h2",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": "Price"
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "t-corner-text-1",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "It's already in the app: open Crust and choose Pages → Start from a template."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted"
+                    }
+                  },
+                  {
+                    "type": "Button",
+                    "props": {
+                      "id": "t-corner-button-2",
+                      "label": "How to open it",
+                      "href": "/help#questions",
+                      "variant": "secondary",
+                      "align": "left"
+                    }
+                  },
+                  {
+                    "type": "Divider",
+                    "props": {
+                      "id": "t-corner-divider-14",
+                      "kind": "line",
+                      "label": "",
+                      "width": "full",
+                      "space": "sm",
+                      "align": "left"
+                    }
+                  },
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "t-corner-heading-15",
+                      "text": "What's included",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": ""
+                    }
+                  },
+                  {
+                    "type": "IconList",
+                    "props": {
+                      "id": "t-corner-iconlist-16",
+                      "icon": "check",
+                      "iconColor": "primary",
+                      "items": [
+                        {
+                          "text": "5 pages: Home, Menu, Workshops, Our story and Visit us"
+                        },
+                        {
+                          "text": "A blog with 2 finished posts"
+                        },
+                        {
+                          "text": "Designs for the post page, blog page and “Page not found”"
+                        },
+                        {
+                          "text": "Fonts: Young Serif and Work Sans, included with Crust"
+                        },
+                        {
+                          "text": "11 photos to swap for your own"
+                        },
+                        {
+                          "text": "1 shared section, edited once for every page"
+                        },
+                        {
+                          "text": "Header, footer and colours set up in Site settings"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "t-corner-heading-17",
+                      "text": "Licence",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": ""
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "t-corner-text-18",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "Free with Crust. Use it for as many sites as you like."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted"
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "two-one",
+                  "tablet": "two-one",
+                  "phone": "stack"
+                },
+                "box": {
+                  "style": "none",
+                  "padding": "md",
+                  "rounded": true
+                },
+                "highlight": {
+                  "column": 2,
+                  "style": "surface"
+                },
+                "sticky": 2
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "t-corner-section-23",
+          "background": "surface",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "t-corner-heading-21",
+                "text": "On a phone",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Gallery",
+              "props": {
+                "id": "t-corner-gallery-22",
+                "columns": "3",
+                "shape": "original",
+                "lightbox": "yes",
+                "images": [
+                  {
+                    "src": "/media/corner-home-phone.jpg",
+                    "alt": "The Corner template's Home page on a phone",
+                    "caption": "Home page"
+                  },
+                  {
+                    "src": "/media/corner-menu-phone.jpg",
+                    "alt": "The Corner template's Menu page on a phone",
+                    "caption": "Menu page"
+                  },
+                  {
+                    "src": "/media/corner-visit-phone.jpg",
+                    "alt": "The Corner template's Visit us page on a phone",
+                    "caption": "Visit us page"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "t-corner-section-26",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "t-corner-heading-24",
+                "text": "Other templates",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Grid",
+              "props": {
+                "id": "t-corner-grid-25",
+                "columns": "3",
+                "titleLevel": "h3",
+                "background": "background",
+                "items": [
+                  {
+                    "title": "Harbour",
+                    "text": "Architects, interiors and studios. Free with Crust.",
+                    "imageSrc": "/media/harbour-home-desktop.jpg",
+                    "imageAlt": "The Harbour template's Home page on a computer screen",
+                    "linkLabel": "See Harbour",
+                    "linkHref": "/templates/harbour"
+                  },
+                  {
+                    "title": "Signal",
+                    "text": "Agencies, product studios and events. Free with Crust.",
+                    "imageSrc": "/media/signal-home-desktop.jpg",
+                    "imageAlt": "The Signal template's Home page on a computer screen",
+                    "linkLabel": "See Signal",
+                    "linkHref": "/templates/signal"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

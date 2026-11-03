@@ -5,6 +5,23 @@ to "Log".
 
 ## Current
 
+- **F063 Store site: built, passes** (branch `ccr-d50f7e80-weuq18`,
+  stacked on F084's PR #66). Snapshot
+  https://claude.ai/artifact/41A2H2RjXGJZTs3ubzRZQE, A built on all
+  three choices (Showroom look, Studio · Paper; template page with the
+  details kept in view beside the pictures; free templates listed with
+  "Free with Crust"). done_check `npm test -- store && npm run check:a11y
+  && npm run check:perf` exit 0; the two checks now also publish the
+  store and check every store page (axe at two widths, Lighthouse on its
+  Home: 100). The store lives in `store/` (list of templates for sale +
+  its own content folder); pages: Home, All templates, Harbour, Signal,
+  Corner, Download Crust, Help. **To try:** nothing is online yet:
+  publishing the store is yours, Actions → **Publish store** → Run
+  workflow (claims `https://crust-store.pages.dev`; BLOCKED.md). The
+  app doesn't read the store's catalogue until the first priced template
+  is listed (DECISIONS "F063"). Needs `reviewed: true`. **Next: F064 Live
+  demos** (Sonnet).
+
 - **F084 Rebuild Harbour, Signal and Corner: built, passes** (branch
   `ccr-d50f7e80-weuq18`, PR #66; F079–F083 were merged in #65). Snapshot
   https://claude.ai/artifact/KhSZToRB3zEYzpXrCe5eVo, A built for all

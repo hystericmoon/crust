@@ -1,0 +1,27 @@
+{
+  "format": "crust-store",
+  "version": 1,
+  "templates": [
+    {
+      "id": "harbour",
+      "file": "templates/harbour.crust",
+      "kind": "Architects, interiors and studios",
+      "price": "Free",
+      "show": ["/", "/services", "/work"]
+    },
+    {
+      "id": "signal",
+      "file": "templates/signal.crust",
+      "kind": "Agencies, product studios and events",
+      "price": "Free",
+      "show": ["/", "/work", "/services"]
+    },
+    {
+      "id": "corner",
+      "file": "templates/corner.crust",
+      "kind": "Bakeries, cafés, shops and makers",
+      "price": "Free",
+      "show": ["/", "/menu", "/visit"]
+    }
+  ]
+}

@@ -44,10 +44,15 @@ export interface Catalogue {
   examples?: boolean;
 }
 
+/** Where the Crust store (F063, scripts/store/) publishes its catalogue. */
+export const STORE_CATALOGUE_ADDRESS = "https://crust-store.pages.dev/catalogue.json";
+
 /**
- * The store's catalogue. None until the store exists (F063 sets it): an
- * address nobody controls yet could serve anything, so the app doesn't
- * guess one. Tests and the builder check set `__CRUST_CATALOGUE_URL__`.
+ * The catalogue the gallery reads. Off until the store sells its first
+ * priced template: until then the catalogue is empty (free templates are
+ * already in the app), and the store's address isn't ours until it's first
+ * published. The store test fails when store/list.json gets a price while
+ * this is still off. Tests and the builder check set `__CRUST_CATALOGUE_URL__`.
  */
 export const STORE_CATALOGUE_URL: string | null = null;
 

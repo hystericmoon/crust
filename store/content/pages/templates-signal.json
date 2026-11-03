@@ -1,0 +1,411 @@
+{
+  "path": "/templates/signal",
+  "title": "Signal template",
+  "description": "Signal: Dark and confident, for agencies, product studios and events: a stage photo, client logos, named work tiles, services as tabs and fixed prices. Geist with mono labels and one hot accent.",
+  "puck": {
+    "root": {
+      "props": {}
+    },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "id": "t-signal-section-7",
+          "background": "background",
+          "paddingY": "lg",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "t-signal-heading-3",
+                "text": "Signal",
+                "level": "h1",
+                "align": "left",
+                "size": "display",
+                "eyebrow": "Agencies, product studios and events"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "t-signal-text-4",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Dark and confident, for agencies, product studios and events: a stage photo, client logos, named work tiles, services as tabs and fixed prices. Geist with mono labels and one hot accent."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "t-signal-text-5",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Free with Crust"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default",
+                "hideOn": [
+                  "desktop",
+                  "tablet"
+                ]
+              }
+            },
+            {
+              "type": "Button",
+              "props": {
+                "id": "t-signal-button-6",
+                "label": "How to open it",
+                "href": "/help#questions",
+                "variant": "secondary",
+                "align": "left",
+                "hideOn": [
+                  "desktop",
+                  "tablet"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "t-signal-section-20",
+          "background": "background",
+          "paddingY": "sm",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Columns",
+              "props": {
+                "id": "t-signal-columns-19",
+                "count": "2",
+                "gap": "xl",
+                "column1": [
+                  {
+                    "type": "Image",
+                    "props": {
+                      "id": "t-signal-image-8",
+                      "src": "/media/signal-home-desktop.jpg",
+                      "alt": "The Signal template's Home page on a computer screen",
+                      "caption": "Home page"
+                    }
+                  },
+                  {
+                    "type": "Spacer",
+                    "props": {
+                      "id": "t-signal-spacer-9",
+                      "size": "sm"
+                    }
+                  },
+                  {
+                    "type": "Image",
+                    "props": {
+                      "id": "t-signal-image-10",
+                      "src": "/media/signal-work-desktop.jpg",
+                      "alt": "The Signal template's Work page on a computer screen",
+                      "caption": "Work page"
+                    }
+                  },
+                  {
+                    "type": "Spacer",
+                    "props": {
+                      "id": "t-signal-spacer-11",
+                      "size": "sm"
+                    }
+                  },
+                  {
+                    "type": "Image",
+                    "props": {
+                      "id": "t-signal-image-12",
+                      "src": "/media/signal-services-desktop.jpg",
+                      "alt": "The Signal template's Services page on a computer screen",
+                      "caption": "Services page"
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "t-signal-heading-13",
+                      "text": "Free",
+                      "level": "h2",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": "Price"
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "t-signal-text-1",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "It's already in the app: open Crust and choose Pages → Start from a template."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted"
+                    }
+                  },
+                  {
+                    "type": "Button",
+                    "props": {
+                      "id": "t-signal-button-2",
+                      "label": "How to open it",
+                      "href": "/help#questions",
+                      "variant": "secondary",
+                      "align": "left"
+                    }
+                  },
+                  {
+                    "type": "Divider",
+                    "props": {
+                      "id": "t-signal-divider-14",
+                      "kind": "line",
+                      "label": "",
+                      "width": "full",
+                      "space": "sm",
+                      "align": "left"
+                    }
+                  },
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "t-signal-heading-15",
+                      "text": "What's included",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": ""
+                    }
+                  },
+                  {
+                    "type": "IconList",
+                    "props": {
+                      "id": "t-signal-iconlist-16",
+                      "icon": "check",
+                      "iconColor": "primary",
+                      "items": [
+                        {
+                          "text": "5 pages: Home, Work, Services, Studio and Contact"
+                        },
+                        {
+                          "text": "A blog with 2 finished posts"
+                        },
+                        {
+                          "text": "Designs for the post page, blog page and “Page not found”"
+                        },
+                        {
+                          "text": "Font: Geist, included with Crust"
+                        },
+                        {
+                          "text": "15 photos to swap for your own"
+                        },
+                        {
+                          "text": "2 shared sections, edited once for every page"
+                        },
+                        {
+                          "text": "Header, footer and colours set up in Site settings"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "t-signal-heading-17",
+                      "text": "Licence",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": ""
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "t-signal-text-18",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "Free with Crust. Use it for as many sites as you like."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted"
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "two-one",
+                  "tablet": "two-one",
+                  "phone": "stack"
+                },
+                "box": {
+                  "style": "none",
+                  "padding": "md",
+                  "rounded": true
+                },
+                "highlight": {
+                  "column": 2,
+                  "style": "surface"
+                },
+                "sticky": 2
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "t-signal-section-23",
+          "background": "surface",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "t-signal-heading-21",
+                "text": "On a phone",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Gallery",
+              "props": {
+                "id": "t-signal-gallery-22",
+                "columns": "3",
+                "shape": "original",
+                "lightbox": "yes",
+                "images": [
+                  {
+                    "src": "/media/signal-home-phone.jpg",
+                    "alt": "The Signal template's Home page on a phone",
+                    "caption": "Home page"
+                  },
+                  {
+                    "src": "/media/signal-work-phone.jpg",
+                    "alt": "The Signal template's Work page on a phone",
+                    "caption": "Work page"
+                  },
+                  {
+                    "src": "/media/signal-services-phone.jpg",
+                    "alt": "The Signal template's Services page on a phone",
+                    "caption": "Services page"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "t-signal-section-26",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "t-signal-heading-24",
+                "text": "Other templates",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Grid",
+              "props": {
+                "id": "t-signal-grid-25",
+                "columns": "3",
+                "titleLevel": "h3",
+                "background": "background",
+                "items": [
+                  {
+                    "title": "Harbour",
+                    "text": "Architects, interiors and studios. Free with Crust.",
+                    "imageSrc": "/media/harbour-home-desktop.jpg",
+                    "imageAlt": "The Harbour template's Home page on a computer screen",
+                    "linkLabel": "See Harbour",
+                    "linkHref": "/templates/harbour"
+                  },
+                  {
+                    "title": "Corner",
+                    "text": "Bakeries, cafés, shops and makers. Free with Crust.",
+                    "imageSrc": "/media/corner-home-desktop.jpg",
+                    "imageAlt": "The Corner template's Home page on a computer screen",
+                    "linkLabel": "See Corner",
+                    "linkHref": "/templates/corner"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

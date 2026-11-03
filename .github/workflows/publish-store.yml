@@ -1,0 +1,149 @@
+# F063: publish the template store. Runs only when started by hand
+# (Actions → Publish store → Run workflow), so nothing goes live by accident.
+# Renders store/content/ to static HTML, runs crust-publish, writes
+# catalogue.json (the file the app's gallery reads, F062), and deploys to the
+# Cloudflare Pages project "crust-store". Uses the same Cloudflare secrets as
+# the site.
+name: Publish store
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-store
+  cancel-in-progress: false
+
+env:
+  STORE_PROJECT: crust-store
+  # The app reads the catalogue here (apps/admin/src/templates/catalogue.ts).
+  STORE_URL: https://crust-store.pages.dev
+  PRODUCTION_BRANCH: main
+  WRANGLER_VERSION: 4.145.0
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install
+        run: npm ci
+
+      - name: Check Cloudflare secrets
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID is not set."
+            exit 1
+          fi
+
+      - name: Create Pages project if missing
+        id: project
+        run: |
+          api="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects"
+          auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          status=$(curl -sS -o project.json -w '%{http_code}' -H "$auth" "$api/$STORE_PROJECT")
+          if [ "$status" = "404" ]; then
+            echo "Creating Pages project $STORE_PROJECT"
+            body=$(jq -n --arg n "$STORE_PROJECT" --arg b "$PRODUCTION_BRANCH" '{name: $n, production_branch: $b}')
+            status=$(curl -sS -o project.json -w '%{http_code}' -X POST -H "$auth" \
+              -H "Content-Type: application/json" --data "$body" "$api")
+          fi
+          if [ "$status" != "200" ]; then
+            echo "::error::Cloudflare API returned $status. Check that the token has 'Cloudflare Pages: Edit'."
+            jq -c '.errors' project.json || true
+            exit 1
+          fi
+          echo "subdomain=$(jq -r '.result.subdomain' project.json)" >> "$GITHUB_OUTPUT"
+          rm project.json
+
+      # The app looks for the catalogue at STORE_URL, so the store must be there.
+      - name: Check the store's address
+        env:
+          SUBDOMAIN: ${{ steps.project.outputs.subdomain }}
+        run: |
+          if [ "https://$SUBDOMAIN" != "$STORE_URL" ]; then
+            echo "::error::Cloudflare gave the store https://$SUBDOMAIN, but the app looks for it at $STORE_URL. Nothing was published; ask Claude to change the store's address in the app and here."
+            exit 1
+          fi
+
+      - name: Check the store's pages are up to date
+        run: |
+          npx tsx scripts/store/build.ts
+          if ! git diff --quiet -- store/content; then
+            echo "::error::store/content is out of date with store/list.json or the template files. Run npm run build:store and commit."
+            git diff --stat -- store/content
+            exit 1
+          fi
+
+      - name: Render pages
+        env:
+          BASE_URL: ${{ env.STORE_URL }}
+        run: npx tsx packages/render/src/cli.ts store/content dist/store
+
+      - name: Photo copies from the last publish
+        uses: actions/cache@v4
+        with:
+          path: .crust-cache/photos
+          key: store-photos-v1-${{ hashFiles('store/content/media/**') }}
+          restore-keys: store-photos-v1-
+
+      - name: Check and finish the store (crust-publish)
+        run: cargo run -q -p crust-publish -- dist/store --base-url "$STORE_URL" --media store/content/media --photo-cache .crust-cache/photos --fonts packages/blocks/fonts
+
+      - name: Build the store's search index (Pagefind)
+        run: npx pagefind --site dist/store
+
+      - name: Write the catalogue for the app
+        env:
+          BASE_URL: ${{ env.STORE_URL }}
+        run: npx tsx scripts/store/catalogue.ts dist/store
+
+      - name: Install Chromium for the accessibility check
+        run: npx playwright-core install --with-deps chromium
+
+      - name: Accessibility check (stops the publish on serious issues)
+        run: node scripts/check-a11y.mjs dist/store
+
+      - name: Deploy to Cloudflare Pages
+        run: |
+          npx --yes "wrangler@$WRANGLER_VERSION" pages deploy dist/store \
+            --project-name="$STORE_PROJECT" \
+            --branch="$PRODUCTION_BRANCH" \
+            --commit-hash="$GITHUB_SHA"
+
+      - name: Check the live store
+        run: |
+          for attempt in $(seq 1 12); do
+            if curl -fsSL --max-time 10 "$STORE_URL/catalogue.json" | grep -q '"crust-catalogue"'; then
+              echo "Store is live: $STORE_URL"
+              exit 0
+            fi
+            echo "Attempt $attempt: not ready yet, waiting 15s"
+            sleep 15
+          done
+          echo "::error::$STORE_URL did not serve the new store within 3 minutes."
+          exit 1
+
+      - name: Write job summary
+        run: |
+          {
+            echo "### Store published"
+            echo ""
+            echo "Live at $STORE_URL"
+          } >> "$GITHUB_STEP_SUMMARY"
