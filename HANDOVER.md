@@ -5,10 +5,31 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-**Model plan (owner, 2026-11-03): F083 is built with Sonnet, F084 with
-Opus.** A session running on Sonnet builds F083 only: when it passes,
-commit, push, update this file, then stop and tell the owner to switch to
-Opus (`/model`) and `/clear` before F084. Don't start F084 on Sonnet.
+## Model plan (owner, 2026-11-03)
+
+The owner picks the model per feature. **First thing every session**,
+before any work: find out which model you are (`get_session`, its
+`session_context.model`) and compare it with the next feature's row. If
+it doesn't match, do nothing else: tell the owner, in one line, "Switch to
+<model>: type `/model`, pick <model>, then send the same message again."
+**At the end of every feature**, after the usual handover, tell the owner
+which model the next feature needs and the exact message to send.
+
+| Next feature | Model | Why |
+|---|---|---|
+| F083 Stricter template check | **Sonnet** | Clear rules, a checklist, no design choices |
+| F084 Rebuild Harbour, Signal and Corner | **Opus** | Premium design and copy; judgment the checks can't measure |
+| F063 Store site | Opus (suggested) | Design snapshot, the public face of the store |
+| F064 Live demos | Sonnet (suggested) | Follows F063's setup |
+| F065 Template versions | Sonnet (suggested) | Well-defined data and checks |
+| F066 Checkout | Opus (suggested) | Payments and security |
+| F067 Delivery and updates | Opus (suggested) | Licences, downloads, security |
+| F068 Licence, terms and refunds | Opus (suggested) | Legal wording for the owner to decide |
+
+"Suggested" rows are confirmed by the owner after F083 (he said he'd
+decide the store milestone then); until he has, ask before starting one.
+The message after every `/clear` stays the same: "Read HANDOVER.md on
+branch <branch> and continue" (branch below, under "Last updated").
 
 Last updated: 2026-11-03 ~07:30 (Jakarta). **F082 Post, blog and 404
 designs built, passes** (branch `ccr-d50f7e80-weuq18`, stacked on
