@@ -716,7 +716,7 @@
       "description": "A Cloudflare Worker (free plan) checks the provider's signed 'order paid' message, emails the buyer a personal download page (Resend), and serves the template file from Workers KV. The page always offers the newest version, so updates are free re-downloads. No buyer accounts, no database. Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
       "depends_on": ["F065", "F066"],
       "done_check": "npm test -- delivery",
-      "passes": false,
+      "passes": true,
       "needs_review": false,
       "reviewed": false
     },
