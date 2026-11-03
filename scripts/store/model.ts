@@ -18,6 +18,7 @@ import { readTemplate, type MediaItem, type Page, type Site, type Template, conf
 import { kit, type Block } from "../starter-templates/kit";
 import { lookTokens } from "../starter-templates/starter";
 import { DOWNLOADS_URL } from "../updates-site";
+import { demoPath } from "./demos";
 
 export const STORE_FORMAT = "crust-store";
 /** The store's own address: its free Cloudflare Pages project, "crust-store". */
@@ -311,6 +312,8 @@ function templatePage(st: StoreTemplate, others: StoreTemplate[], pics: ReturnTy
   const buy = isPriced(item)
     ? [k.button(`Get ${template.name} · ${item.price}`, item.buy!, "primary")]
     : [k.text("It's already in the app: open Crust and choose Pages → Start from a template.", { tone: "muted" }), k.button("How to open it", HELP_OPEN, "secondary")];
+  // F064: the demo is published under the store by demos-build.ts.
+  const demo = (): Block => k.button("Try the live demo", `${demoPath(item.id)}/`, "secondary", { icon: "external-link" });
   const licence = isPriced(item) ? item.licence! : "Free with Crust. Use it for as many sites as you like.";
   return page(templatePath(item.id), `${template.name} template`, `${template.name}: ${template.description}`.slice(0, 300), [
     k.section("background", [
@@ -320,6 +323,7 @@ function templatePage(st: StoreTemplate, others: StoreTemplate[], pics: ReturnTy
       ...[
         k.text(isPriced(item) ? item.price : "Free with Crust", { tone: "default" }),
         isPriced(item) ? k.button(`Get ${template.name} · ${item.price}`, item.buy!, "primary") : k.button("How to open it", HELP_OPEN, "secondary"),
+        demo(),
       ].map((b) => ({ ...b, props: { ...b.props, hideOn: ["desktop", "tablet"] } }) as Block),
     ], { paddingY: "lg" }),
     k.section("background", [
@@ -331,6 +335,7 @@ function templatePage(st: StoreTemplate, others: StoreTemplate[], pics: ReturnTy
         [
           k.heading(item.price === FREE ? "Free" : item.price, { eyebrow: "Price", mark: false }),
           ...buy,
+          demo(),
           k.divider("line", { space: "sm" }),
           k.heading("What's included", { level: "h3", mark: false }),
           k.raw("IconList", { icon: "check", iconColor: "primary", items: includedLines(facts).map((text) => ({ text })) }),

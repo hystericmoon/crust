@@ -10,7 +10,7 @@
       {
         "type": "Section",
         "props": {
-          "id": "t-signal-section-7",
+          "id": "t-signal-section-8",
           "background": "background",
           "paddingY": "lg",
           "height": "auto",
@@ -88,6 +88,22 @@
                   "tablet"
                 ]
               }
+            },
+            {
+              "type": "Button",
+              "props": {
+                "id": "t-signal-button-7",
+                "label": "Try the live demo",
+                "href": "/demos/signal/",
+                "variant": "secondary",
+                "align": "left",
+                "icon": "external-link",
+                "iconAt": "after",
+                "hideOn": [
+                  "desktop",
+                  "tablet"
+                ]
+              }
             }
           ]
         }
@@ -95,7 +111,7 @@
       {
         "type": "Section",
         "props": {
-          "id": "t-signal-section-20",
+          "id": "t-signal-section-22",
           "background": "background",
           "paddingY": "sm",
           "height": "auto",
@@ -106,14 +122,14 @@
             {
               "type": "Columns",
               "props": {
-                "id": "t-signal-columns-19",
+                "id": "t-signal-columns-21",
                 "count": "2",
                 "gap": "xl",
                 "column1": [
                   {
                     "type": "Image",
                     "props": {
-                      "id": "t-signal-image-8",
+                      "id": "t-signal-image-9",
                       "src": "/media/signal-home-desktop.jpg",
                       "alt": "The Signal template's Home page on a computer screen",
                       "caption": "Home page"
@@ -122,14 +138,14 @@
                   {
                     "type": "Spacer",
                     "props": {
-                      "id": "t-signal-spacer-9",
+                      "id": "t-signal-spacer-10",
                       "size": "sm"
                     }
                   },
                   {
                     "type": "Image",
                     "props": {
-                      "id": "t-signal-image-10",
+                      "id": "t-signal-image-11",
                       "src": "/media/signal-work-desktop.jpg",
                       "alt": "The Signal template's Work page on a computer screen",
                       "caption": "Work page"
@@ -138,14 +154,14 @@
                   {
                     "type": "Spacer",
                     "props": {
-                      "id": "t-signal-spacer-11",
+                      "id": "t-signal-spacer-12",
                       "size": "sm"
                     }
                   },
                   {
                     "type": "Image",
                     "props": {
-                      "id": "t-signal-image-12",
+                      "id": "t-signal-image-13",
                       "src": "/media/signal-services-desktop.jpg",
                       "alt": "The Signal template's Services page on a computer screen",
                       "caption": "Services page"
@@ -156,7 +172,7 @@
                   {
                     "type": "Heading",
                     "props": {
-                      "id": "t-signal-heading-13",
+                      "id": "t-signal-heading-14",
                       "text": "Free",
                       "level": "h2",
                       "align": "left",
@@ -196,9 +212,21 @@
                     }
                   },
                   {
+                    "type": "Button",
+                    "props": {
+                      "id": "t-signal-button-15",
+                      "label": "Try the live demo",
+                      "href": "/demos/signal/",
+                      "variant": "secondary",
+                      "align": "left",
+                      "icon": "external-link",
+                      "iconAt": "after"
+                    }
+                  },
+                  {
                     "type": "Divider",
                     "props": {
-                      "id": "t-signal-divider-14",
+                      "id": "t-signal-divider-16",
                       "kind": "line",
                       "label": "",
                       "width": "full",
@@ -209,7 +237,7 @@
                   {
                     "type": "Heading",
                     "props": {
-                      "id": "t-signal-heading-15",
+                      "id": "t-signal-heading-17",
                       "text": "What's included",
                       "level": "h3",
                       "align": "left",
@@ -220,7 +248,7 @@
                   {
                     "type": "IconList",
                     "props": {
-                      "id": "t-signal-iconlist-16",
+                      "id": "t-signal-iconlist-18",
                       "icon": "check",
                       "iconColor": "primary",
                       "items": [
@@ -251,7 +279,7 @@
                   {
                     "type": "Heading",
                     "props": {
-                      "id": "t-signal-heading-17",
+                      "id": "t-signal-heading-19",
                       "text": "Licence",
                       "level": "h3",
                       "align": "left",
@@ -262,7 +290,7 @@
                   {
                     "type": "Text",
                     "props": {
-                      "id": "t-signal-text-18",
+                      "id": "t-signal-text-20",
                       "text": {
                         "rich": 1,
                         "blocks": [
@@ -306,7 +334,7 @@
       {
         "type": "Section",
         "props": {
-          "id": "t-signal-section-23",
+          "id": "t-signal-section-25",
           "background": "surface",
           "paddingY": "xl",
           "height": "auto",
@@ -317,7 +345,7 @@
             {
               "type": "Heading",
               "props": {
-                "id": "t-signal-heading-21",
+                "id": "t-signal-heading-23",
                 "text": "On a phone",
                 "level": "h2",
                 "align": "left",
@@ -328,7 +356,7 @@
             {
               "type": "Gallery",
               "props": {
-                "id": "t-signal-gallery-22",
+                "id": "t-signal-gallery-24",
                 "columns": "3",
                 "shape": "original",
                 "lightbox": "yes",
@@ -357,7 +385,7 @@
       {
         "type": "Section",
         "props": {
-          "id": "t-signal-section-26",
+          "id": "t-signal-section-28",
           "background": "background",
           "paddingY": "xl",
           "height": "auto",
@@ -368,7 +396,7 @@
             {
               "type": "Heading",
               "props": {
-                "id": "t-signal-heading-24",
+                "id": "t-signal-heading-26",
                 "text": "Other templates",
                 "level": "h2",
                 "align": "left",
@@ -379,7 +407,7 @@
             {
               "type": "Grid",
               "props": {
-                "id": "t-signal-grid-25",
+                "id": "t-signal-grid-27",
                 "columns": "3",
                 "titleLevel": "h3",
                 "background": "background",

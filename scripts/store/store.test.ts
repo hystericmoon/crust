@@ -152,6 +152,7 @@ describe("the store's pages", () => {
     for (const href of links) {
       if (href.startsWith("https://")) expect(href).toBe(DOWNLOADS_URL);
       else if (href.includes("#")) expect(href).toBe("/help#questions");
+      else if (/^\/demos\/[a-z-]+\/$/.test(href)) expect(templates.some(({ item }) => href === `/demos/${item.id}/`), href).toBe(true); // F064
       else expect(paths.has(href), href).toBe(true);
     }
     expect(JSON.stringify(pages.find((p) => p.path === "/help"))).toContain('"anchor":"questions"');
@@ -170,7 +171,7 @@ describe("the store's pages", () => {
     expect(cols.props).toMatchObject({ sticky: 2, widths: { desktop: "two-one", phone: "stack" } });
     // On phones the details come after the pictures, so the price and button are also under the title, phones only.
     const top = blocksOf(page.puck.content.slice(0, 1));
-    expect(top.filter((b) => JSON.stringify(b.props.hideOn) === '["desktop","tablet"]').map((b) => b.type)).toEqual(["Text", "Button"]);
+    expect(top.filter((b) => JSON.stringify(b.props.hideOn) === '["desktop","tablet"]').map((b) => b.type)).toEqual(["Text", "Button", "Button"]); // price, next step, live demo (F064)
     // The other templates are offered underneath.
     expect(text).toContain("/templates/signal");
     expect(text).toContain("/templates/corner");

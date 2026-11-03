@@ -114,6 +114,11 @@ jobs:
           BASE_URL: ${{ env.STORE_URL }}
         run: npx tsx scripts/store/catalogue.ts dist/store
 
+      # F064: every listed template as a full demo under /demos/<id>/. After the
+      # store's own search index, so demos don't show up in the store's search.
+      - name: Build the live demos
+        run: npx tsx scripts/store/demos-build.ts dist/store
+
       - name: Install Chromium for the accessibility check
         run: npx playwright-core install --with-deps chromium
 
@@ -132,6 +137,7 @@ jobs:
           for attempt in $(seq 1 12); do
             if curl -fsSL --max-time 10 "$STORE_URL/catalogue.json" | grep -q '"crust-catalogue"'; then
               echo "Store is live: $STORE_URL"
+              curl -fsSL --max-time 10 "$STORE_URL/demos/harbour/" | grep -q 'crust-demo-bar' || { echo "::error::The live demo is missing."; exit 1; }
               exit 0
             fi
             echo "Attempt $attempt: not ready yet, waiting 15s"
