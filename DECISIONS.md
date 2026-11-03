@@ -3281,3 +3281,8 @@ Page: https://claude.ai/artifact/XYA5nqaqQCfjb9oM6VuMq9.
   can't save, so trying things never touches the real site. Desktop
   features (F055–F060) wait for installers (~150 Actions minutes, his
   call); store features wait for Publish store.
+- **CI: site-checks limit 20 → 35 minutes.** On PR #67 the job finished
+  every check (axe, Lighthouse, store, three demos) and was cancelled at
+  exactly 20 minutes during cleanup. The store and demo builds added with
+  F063/F064 put it at 13–20 minutes. Uses free Actions minutes only when
+  the job really runs that long.
