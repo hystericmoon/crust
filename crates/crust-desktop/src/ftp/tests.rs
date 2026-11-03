@@ -214,10 +214,24 @@ fn certs() -> Certs {
     Certs { dir, ca_der: ca.der().to_vec() }
 }
 
+/// Each test server gets its own passive (data) port range, below the
+/// ephemeral ports every OS hands out for `free_port()` and outgoing
+/// connections (Linux 32768+, macOS and Windows 49152+). A shared range
+/// let two parallel servers hand a client the same data port, so a TLS
+/// handshake could meet the wrong server (F067, DECISIONS).
+fn passive_range() -> std::ops::RangeInclusive<u16> {
+    static NEXT: std::sync::atomic::AtomicU16 = std::sync::atomic::AtomicU16::new(0);
+    let slot = NEXT.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+    let start = 20000 + slot * 400;
+    assert!(start + 399 < 32768, "too many FTP test servers for the passive port ranges");
+    start..=start + 399
+}
+
 /// A real FTP server for one person (rina / secret) serving `root`;
 /// with `certs` it also offers FTPS.
 fn ftp_server(root: &Path, certs: Option<&Certs>) -> u16 {
     let port = free_port();
+    let passive = passive_range();
     let root = root.to_path_buf();
     let tls = certs.map(|c| (c.dir.path().join("cert.pem"), c.dir.path().join("key.pem")));
     std::thread::spawn(move || {
@@ -225,7 +239,7 @@ fn ftp_server(root: &Path, certs: Option<&Certs>) -> u16 {
         runtime.block_on(async move {
             let mut builder = libunftp::ServerBuilder::with_authenticator(Box::new(move || unftp_sbe_fs::Filesystem::new(root.clone()).unwrap()), Arc::new(OnePerson))
                 .greeting("test server")
-                .passive_ports(50000..=60000);
+                .passive_ports(passive);
             if let Some((cert, key)) = tls {
                 builder = builder.ftps(cert, key);
             }
