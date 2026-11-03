@@ -205,6 +205,11 @@ section has a photo or video background), `header.topBar` (`show`,
 the footer is then that section's blocks, with the copyright line
 under them; a missing section stops the publish.
 
+`site.json` may carry `template` (optional, F065): `{ "id": "olive",
+"version": 2 }`, the template the site started from and its release then.
+Starting from a template with an id writes it (starting from one without
+removes it); nothing else reads it except the gallery's update note.
+
 `content/redirects.json` (optional, added with F015)
 ```json
 [{ "from": "/old-address", "to": "/new-address" }]
@@ -239,7 +244,10 @@ downloaded from Site settings → Template, never stored in `content/`:
   "blog": { "title": "…", "intro": "…" }, "posts": [ … ],
   "media": [{ "file": "harbour.jpg", "alt": "…", "width": 2400, "height": 1600, "data": "<base64>" }] }
 ```
-Only photos the template uses go in. Reading one (`readTemplate`) refuses
+F065 adds `id` (lowercase letters, numbers, dashes: its name in the
+store) and `release` (a whole number, 1, 2, …), both or neither; files
+made before have neither and open as always (`format` and `version: 1`
+are unchanged). Only photos the template uses go in. Reading one (`readTemplate`) refuses
 the whole file on any problem (unknown blocks, unsafe links, contrast,
 missing Home page, a photo or linked section used but not included) and
 drops unknown fields. The site's address, redirects and history never go
@@ -254,6 +262,9 @@ writes it from F063 on) lists premium templates for the gallery:
     "pages": [{ "title": "Home", "path": "/", "pictures": [
       { "width": "desktop", "src": "…/olive-home-desktop.jpg", "alt": "…" } ] }] } ] }
 ```
+F065: a template may also carry `version` (its current release, a whole
+number) and `changes` (up to 5 short lines on what changed in it); the
+store takes them from the template file and `changes` in `store/list.json`.
 `width` is `desktop`, `tablet` or `phone`. Links are `https://` (or on
 the catalogue's own site, relative to it). Reading it (`readCatalogue`)
 drops unknown fields and leaves out any template with a bad id, name,

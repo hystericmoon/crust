@@ -5,6 +5,19 @@ to "Log".
 
 ## Current
 
+- **F065 Template versions: built, passes** (branch `ccr-d50f7e80-weuq18`,
+  PR #66). done_check `npm test -- template-versions && npm test --
+  template-file && npm run typecheck` exit 0; `npm test`, `cargo test` and
+  clippy pass. Template files carry `id` + `release`; `site.json` remembers
+  `template {id, version}`; the catalogue has `version` + `changes`; the
+  Templates screen shows a quiet "A newer … is available" note with what
+  changed (DECISIONS "F065"). No design review needed. **To try (later,
+  once a premium template exists):** nothing visible yet, because the app
+  reads no catalogue until the first priced template (F063). `#/templates?
+  examples` shows the bundled example catalogue, but your site has no
+  template record, so no note appears there. **Next: F066 Checkout**
+  (Opus; needs your payment provider account, BLOCKED.md).
+
 - **F064 Live demos: built, passes** (branch `ccr-d50f7e80-weuq18`, PR
   #66). Snapshot https://claude.ai/artifact/4mSvQJVQaiwFYcDoKFNsN2 (A
   built: slim bar at the bottom; B top strip and C floating pill drawn).

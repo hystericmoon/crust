@@ -36,7 +36,20 @@ The owner confirmed all six rows as listed ("go ahead", 2026-11-03
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-03 ~12:30 (Jakarta). **F064 Live demos built,
+Last updated: 2026-11-03 ~13:15 (Jakarta). **F065 Template versions built,
+passes** (branch `ccr-d50f7e80-weuq18`, PR #66; DECISIONS "F065"). How it
+fits: `Template.id`/`release` (`packages/blocks/src/template.ts`, reader
+refuses id without release), `Site.template {id, version}` written by
+`applyChanges` (`apps/admin/server/template.ts`, checked in `checkSite`),
+catalogue `version`/`changes` (`catalogue.ts`, `templateUpdate`), store
+`changes` in `store/list.json` and checks in `readStoreTemplates`, quiet
+`UpdateNote` in TemplatesScreen (App passes `site.template`). Tests:
+`apps/admin/src/templates/template-versions.test.tsx`. No review needed.
+**Next: F066 Checkout** (Opus; test mode first, needs the owner's payment
+account, BLOCKED.md: compare providers first and ask before anything that
+costs money).
+
+Earlier (~12:30). **F064 Live demos built,
 passes** (branch `ccr-d50f7e80-weuq18`, PR #66; DECISIONS "F064"). Snapshot
 https://claude.ai/artifact/4mSvQJVQaiwFYcDoKFNsN2 (A built). How it fits:
 `scripts/store/demos.ts` (pure: `moveAddresses`, `demoBar`, `demoPage`,

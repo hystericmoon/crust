@@ -3176,3 +3176,36 @@ Sonnet, F066 Opus, F067 Opus, F068 Opus. F063 starts at 11:15.
   licence and, from F066, the buy button, so there is one place to change.
 - Demo photos are made with marks off, like a buyer's first publish, and
   use the same photo cache as the store.
+
+## 2026-11-03 — F065 Template versions (Claude, reversible)
+
+- **Format change without a new format version.** Template files gain
+  optional `id` and `release`; `format`/`version` stay `crust-template` / 1
+  because older files must still open and a reader that ignores unknown
+  fields loses nothing. No migration is needed: a file without them is
+  simply "from before versions". The reader refuses a file that has only
+  one of the two, or a malformed one (id: lowercase letters, numbers,
+  dashes, up to 60; release: whole number 1–9999).
+- **The release is a plain whole number** (1, 2, 3), not 1.2.3: the owner
+  and buyers only need "is there a newer one", and it compares without
+  rules.
+- **The site remembers its template in `site.json` → `template`
+  `{ id, version }`**, written by the same commit that applies the
+  template, so "Bring back my previous site" restores the old record with
+  the rest. Applying a template without an id removes the record, so the
+  note never points at a template the site no longer uses. It is only
+  recorded when saving to GitHub; the browser-only mode has no
+  `site.json` to write to.
+- **The catalogue carries `version` and `changes`** (optional). `version`
+  comes from the template file; `changes` is written by the owner in
+  `store/list.json` for the current release (1–5 lines). The store refuses
+  a file listed under a different id, and a priced template whose file has
+  no release (without one the app could never tell buyers about updates).
+- **The note is quiet:** a section in the Templates screen (a heading, what
+  changed, a link to the template's store page), not an alert or a badge
+  elsewhere. It never changes the site: updating means downloading the new
+  file from the store and using it, which replaces the site (existing
+  confirm step). A merge of updates into a site the owner has since edited
+  is out of scope; it needs the owner's decision first (Proposals).
+- Only premium templates have catalogue entries, so only they get the
+  note; free starters come with the app and update with it.

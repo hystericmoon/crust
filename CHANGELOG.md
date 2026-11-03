@@ -4,6 +4,14 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Template versions (F065).** A template file now has a name for the
+  store (its id) and a version number. When you start from a template, your
+  site remembers which one and which version. When the store has a newer
+  version of that template, the Templates screen shows a quiet note: "A newer
+  “Olive” is available", what changed, and a link to its store page. Nothing
+  changes on your site by itself. Template files made before this still open
+  as always.
+
 - **Live demos in the store (F064).** Each template page in the store now
   has a "Try the live demo" button. It opens the whole template as a real
   website, every page working (menu, blog, search), under the store's own
