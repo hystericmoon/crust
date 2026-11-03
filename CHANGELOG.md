@@ -4,6 +4,15 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Live demos in the store (F064).** Each template page in the store now
+  has a "Try the live demo" button. It opens the whole template as a real
+  website, every page working (menu, blog, search), under the store's own
+  address (`/demos/harbour/`, `/demos/signal/`, `/demos/corner/`). A slim
+  dark bar at the bottom says "Live demo of Harbour" and offers "Back to
+  store" and "Get this template"; it never touches the template's own
+  design or header. Demos are rebuilt every time the store is published,
+  so they always match the template file. Search engines are told to list
+  the store's pages, not the demo copies.
 - **The Crust template store (F063).** A website of its own, made with
   Crust: Home, all templates, a page per template (pictures of its pages
   on a computer and a phone, the price, what's included, counted from

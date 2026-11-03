@@ -276,7 +276,10 @@ media), written by `npm run build:store` from `store/list.json`:
 (`<id>-<page>-desktop|tablet|phone.jpg`) come from `npm run
 store:pictures`. Publishing the store ("Publish store" workflow) also
 writes `catalogue.json` (the catalogue format above), priced templates
-only.
+only. F064: it also publishes every listed template as a full demo site
+at `/demos/<id>/` (addresses moved into that folder, `noindex`, own
+Pagefind index, a "Get this template" bar linking to `/templates/<id>/`);
+each template page's "Try the live demo" button opens it.
 
 `content/media/<file>` and `content/media.json` (optional, added with F034):
 uploaded photos (JPG, PNG, WebP; at most 2400 px) and their details.

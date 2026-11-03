@@ -26,7 +26,6 @@ Never show it while work is uncommitted or unpushed; finish that first.
 | Next feature | Model | Why |
 |---|---|---|
 | F063 Store site | Opus | Design snapshot, the public face of the store |
-| F064 Live demos | Sonnet | Follows F063's setup |
 | F065 Template versions | Sonnet | Well-defined data and checks |
 | F066 Checkout | Opus | Payments and security |
 | F067 Delivery and updates | Opus | Licences, downloads, security |
@@ -37,7 +36,17 @@ The owner confirmed all six rows as listed ("go ahead", 2026-11-03
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-03 ~11:45 (Jakarta). **F063 Store site built,
+Last updated: 2026-11-03 ~12:30 (Jakarta). **F064 Live demos built,
+passes** (branch `ccr-d50f7e80-weuq18`, PR #66; DECISIONS "F064"). Snapshot
+https://claude.ai/artifact/4mSvQJVQaiwFYcDoKFNsN2 (A built). How it fits:
+`scripts/store/demos.ts` (pure: `moveAddresses`, `demoBar`, `demoPage`,
+`demoFiles`), `demos-build.ts` (unpack → render → crust-publish →
+Pagefind → copy to `dist/store/demos/<id>/`), run by `publish:store` and
+the Publish store workflow; `templatePage` in model.ts has the "Try the
+live demo" button. Needs `reviewed: true`. **Next: F065 Template
+versions** (Sonnet).
+
+Earlier (~11:45). **F063 Store site built,
 passes** (branch `ccr-d50f7e80-weuq18`, stacked on F084 in PR #66;
 done_check exit 0; DECISIONS "F063"). Snapshot
 https://claude.ai/artifact/41A2H2RjXGJZTs3ubzRZQE (A for all three). How

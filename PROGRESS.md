@@ -5,6 +5,19 @@ to "Log".
 
 ## Current
 
+- **F064 Live demos: built, passes** (branch `ccr-d50f7e80-weuq18`, PR
+  #66). Snapshot https://claude.ai/artifact/4mSvQJVQaiwFYcDoKFNsN2 (A
+  built: slim bar at the bottom; B top strip and C floating pill drawn).
+  done_check `npm test -- demos && npm run check:a11y` exit 0 (axe on
+  every demo page at two widths). `npm run publish:store` now also runs
+  `scripts/store/demos-build.ts` (each template unpacked, rendered,
+  checked by crust-publish, searched by Pagefind, then its addresses moved
+  under `/demos/<id>/`); the Publish store workflow does the same and
+  checks the live Harbour demo. **To try:** after you press Publish store
+  (BLOCKED.md), open a template page in the store, press "Try the live
+  demo", click around on your phone, and check the bar. Needs
+  `reviewed: true`. **Next: F065 Template versions** (Sonnet).
+
 - **F063 Store site: built, passes** (branch `ccr-d50f7e80-weuq18`,
   stacked on F084's PR #66). Snapshot
   https://claude.ai/artifact/41A2H2RjXGJZTs3ubzRZQE, A built on all

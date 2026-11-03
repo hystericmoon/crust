@@ -3152,3 +3152,27 @@ Sonnet, F066 Opus, F067 Opus, F068 Opus. F063 starts at 11:15.
 - **Checks**: `check:a11y` and `check:perf` now also publish the store
   (`npm run publish:store` → `dist/store`) and run axe on every store
   page at desktop and phone width, and Lighthouse on its Home page.
+
+## 2026-11-03 — F064 Live demos (Claude, reversible)
+
+- **Snapshot `design/f064-demo-bar-v1.html`, A built:** a 48 px bar fixed to
+  the bottom ("Live demo of Harbour · Free", Back to store, Get this
+  template). B (strip at the top) scrolls away and collides with headers
+  that sit on the opening photo; C (floating pill) has no room for the
+  name or a way back. A sets its own colours (white on near-black), so any
+  template's palette leaves it readable. The page gets bottom padding and
+  scroll padding so the bar never hides the footer or a focused link
+  (WCAG 2.4.11).
+- **Under the store's address, not separate projects.** Published sites use
+  addresses from the root, so `demoFiles` (scripts/store/demos.ts) moves
+  every `href`, `src`, `srcset`, `action`, `url()` and the search page's
+  index address into `/demos/<id>/`. Each demo gets its own Pagefind
+  search index, built before the move; its results already carry the demo's
+  folder (tried in a browser).
+- **Demos are `noindex`, with no sitemap, robots or 404 of their own;**
+  canonical and share addresses name the demo. Built after the store's own
+  search index, so demos don't appear in the store's search.
+- **Both bar links go to the store's template page**, which has the price,
+  licence and, from F066, the buy button, so there is one place to change.
+- Demo photos are made with marks off, like a buyer's first publish, and
+  use the same photo cache as the store.
