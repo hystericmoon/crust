@@ -6,7 +6,7 @@ to "Log".
 ## Current
 
 - **F084 Rebuild Harbour, Signal and Corner: built, passes** (branch
-  `ccr-d50f7e80-weuq18`, stacked on F079–F083, PR #65). Snapshot
+  `ccr-d50f7e80-weuq18`, PR #66; F079–F083 were merged in #65). Snapshot
   https://claude.ai/artifact/KhSZToRB3zEYzpXrCe5eVo, A built for all
   three decisions (Style library look per template; pages that fit each
   business; finished copy still marked to replace). done_check `npm run

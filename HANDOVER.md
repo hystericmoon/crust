@@ -38,8 +38,8 @@ The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
 Last updated: 2026-11-03 ~10:30 (Jakarta). **F084 Rebuild Harbour,
-Signal and Corner built, passes** (branch `ccr-d50f7e80-weuq18`, stacked
-in PR #65; done_check exit 0; DECISIONS "F084"). Snapshot
+Signal and Corner built, passes** (branch `ccr-d50f7e80-weuq18`, PR #66
+after #65 was merged; done_check exit 0; DECISIONS "F084"). Snapshot
 https://claude.ai/artifact/KhSZToRB3zEYzpXrCe5eVo (A for all three). How
 it fits: `scripts/starter-templates/kit.ts` (block helpers, per-page ids),
 `harbour.ts`, `signal.ts`, `corner.ts` (pages, linked sections, posts,
