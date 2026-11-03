@@ -27,8 +27,8 @@ p{margin:0}
 .fact{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:grid;gap:2px;min-width:0}
 .fact b{font:600 20px/1.2 var(--f-mono);font-variant-numeric:tabular-nums}
 .fact span{color:var(--muted);font-size:13px}
-.options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
-@media (max-width:880px){.options{grid-template-columns:1fr}}
+.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+@media (max-width:760px){.options{grid-template-columns:1fr}}
 .opt{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
 .opt.rec{border:2px solid var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
 .opt-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
@@ -135,12 +135,27 @@ footer{color:var(--muted);font-size:13px;max-width:80ch}
       <div class="label">Not so good</div>
       <ul class="cons"><li>Bends the "green CI before main" rule for 4 weeks.</li><li>My workspace doesn't run the accessibility and template checks that CI runs, so those wait until December.</li></ul>
     </article>
+    <!-- D -->
+    <article class="opt">
+      <div class="opt-head"><span class="letter">D · $0</span><span class="letter">Your idea</span></div>
+      <h2>Public now, private again before paid templates</h2>
+      <div class="panel" aria-label="PR checks under option D">
+        <div class="panel-top">PR #69 checks <em>while public</em></div>
+        <div class="row ok"><span class="dot" aria-hidden="true">✓</span><span class="name">check</span><span class="t">11 min · free</span></div>
+        <div class="row ok"><span class="dot" aria-hidden="true">✓</span><span class="name">site-checks</span><span class="t">20 min · free</span></div>
+        <div class="row ok"><span class="dot" aria-hidden="true">✓</span><span class="name">template-check</span><span class="t">5 min · free</span></div>
+        <div class="merge yes">Ready to merge</div>
+      </div>
+      <div class="cost">
+        <div class="cost-line"><span>Cost while public</span><b>$0, no limit</b></div>
+        <div class="meter" aria-hidden="true"><i class="free" style="width:100%"></i></div>
+      </div>
+      <div class="label">Good</div>
+      <ul class="pros"><li>Every check runs today, all of them, for free.</li><li>Checked: no keys or passwords anywhere in the history; your commits use GitHub's private no-reply address.</li><li>The 3 templates in the repo are already free on the store.</li></ul>
+      <div class="label">Not so good</div>
+      <ul class="cons"><li>Going private later doesn't take it back: copies, forks and code archives made meanwhile stay public. Treat the code and history (including DECISIONS and BLOCKED notes) as published for good.</li><li>Paid templates must never be added while public.</li><li>When private again, the $12 monthly limit returns, so the lighter checks from B are still needed.</li></ul>
+    </article>
   </section>
-
-  <aside class="not">
-    <h3>Left out: making the repository public</h3>
-    <p>Public repositories get Actions for free, but everyone could read Crust's code and download the template files that the store will sell. Not worth it for a product with paid templates.</p>
-  </aside>
 
   <footer>Prices: GitHub's Linux runner rate ($0.006 a minute; the $12 included = 2,000 minutes). Estimates assume about 2 features a day at 1–2 pushes each. Set the cap in GitHub: profile picture → Settings → Billing and licensing → Budgets and alerts → Actions → $5, with "Stop usage when budget limit is reached" on.</footer>
 </div>
