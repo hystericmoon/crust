@@ -3254,3 +3254,30 @@ hadn't picked.
   one task, and the provider returns to `/thanks`.
 - Not done here: the catalogue's buy flow in the app is unchanged (the
   app's "Get" opens the store page, which holds the button).
+
+## 2026-11-03 — Faster sessions and a review round (owner: "Do B and build the review page for A, merge pr")
+
+Page: https://claude.ai/artifact/XYA5nqaqQCfjb9oM6VuMq9.
+
+- **PR #66 merged** (merge commit, CI green on 08aeb3c), at the owner's
+  request. The session branch restarted from main. One PR per feature
+  from now on (option C, follows from the merge).
+- **B: start-up reading cut from ~45k to ~10k tokens.** Finished
+  features' notes moved from HANDOVER.md (37 KB → ~9 KB) and PROGRESS.md
+  (64 KB → ~4 KB) to `docs/archive/handover-history.md` and
+  `docs/archive/progress-history.md`, unchanged. `npm run next`
+  (`scripts/next-feature.ts`, tested) prints the next feature, its model
+  from HANDOVER's model plan, its done_check, BLOCKED.md rows naming it,
+  and the review queue, so features.json (63 KB) isn't read whole.
+  CLAUDE.md's step 1 and 5 say so. docs/spec.md stays loaded with
+  CLAUDE.md (the content contract is needed in most features).
+- **A: review round page** `design/review-2026-11-03.html`
+  (https://claude.ai/artifact/C3czUd4fpf5Qz6t2WqAkwZ): 26 features in
+  five sittings, two steps to try each, Pass / Needs fixing and a note,
+  saved in the page's database (`reviews`, one doc per feature id) so
+  Claude reads the answers without the owner copying them. The owner's
+  Pass is recorded as `reviewed: true`; a fix becomes rework only when
+  he asks. Steps point to the session branch's preview admin, which
+  can't save, so trying things never touches the real site. Desktop
+  features (F055–F060) wait for installers (~150 Actions minutes, his
+  call); store features wait for Publish store.

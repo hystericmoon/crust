@@ -10,6 +10,7 @@
     "dev": "npm run dev -w @crust/admin",
     "build": "npm run build -w @crust/admin",
     "test": "vitest run",
+    "next": "tsx scripts/next-feature.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint:workflows": "docker run --rm -v \"$PWD:/repo\" --workdir /repo rhysd/actionlint:1.7.7 -color",
     "render": "tsx packages/render/src/cli.ts content dist/site",
