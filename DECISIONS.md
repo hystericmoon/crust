@@ -3364,3 +3364,20 @@ button, light and dark). `needs_review` is false for this feature.
   Parallel FTP/FTPS test servers shared passive ports 50000–60000 inside
   Linux's ephemeral range; each test server now gets its own 400-port
   range from 20000 (below every OS's ephemeral ports). 10/10 runs pass.
+
+## 2026-11-03 — Repository public for now (owner: "Made it public")
+
+The free GitHub Actions time ran out ($13.75 of $12 used, budget $0), so
+CI couldn't start. Options page: https://claude.ai/artifact/2HT771j6YsmYuDnQmhfkR8
+(`design/ci-minutes-v1.html`). The owner chose D: make the repository
+public (Actions free) and private again later. Before the switch the
+history was scanned: no keys or passwords; commits use the GitHub
+no-reply address.
+
+- **No paid template files may be committed while it's public** (the three
+  in `templates/` are free on the store). Premium templates wait until the
+  repository is private again, or live in a separate private repository.
+- **Before going private again:** make CI lighter (site-checks and
+  template-check only when their files change, no duplicate runs after a
+  merge, one push per feature), so it fits the $12 included each month.
+- Copies made while public stay public; the owner accepted that.

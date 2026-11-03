@@ -58,6 +58,9 @@ same PR (`passive_range()` in crates/crust-desktop/src/ftp/tests.rs).
   branch: https://ccr-d50f7e80-weuq18.crust-admin.pages.dev (can't save).
 - **Store** (F063–F067) built, not online: the owner runs Actions →
   Publish store (BLOCKED.md).
+- **Repository is public** since 2026-11-03 (owner; free CI). Never commit
+  paid template files while public; make CI lighter before it goes
+  private again (DECISIONS "Repository public for now").
 - **Desktop app** (F055–F062) built and tested in CI, never installed by
   the owner; installers cost ~150 Actions minutes (ask first).
 - **Review round** for 26 features:
