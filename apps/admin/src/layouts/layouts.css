@@ -186,3 +186,7 @@ body:hover .lg-insert { opacity: 0.85; }
   background: #18181b; color: #fff; font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
   box-shadow: 0 8px 24px rgb(0 0 0 / 0.2);
 }
+
+/* F080: the "Simple" group after the new layouts. */
+.lg-subhead { margin: 28px 4px 0; padding-top: 16px; border-top: 1px solid #e4e4e7; font-size: 0.9375rem; font-weight: 600; display: flex; gap: 8px; align-items: baseline; }
+.lg-subhead + .lg-side-note { margin-bottom: 12px; }

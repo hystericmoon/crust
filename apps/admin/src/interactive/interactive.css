@@ -1,0 +1,5 @@
+/* Map pin field (F079). Uses the Table field's buttons and hints (blocks-v3.css). */
+.mp-paste { display: flex; gap: 6px; }
+.mp-paste .tv-cell { flex: 1; }
+.mp-link { display: inline-flex; align-items: center; text-decoration: none; }
+.mp-field .ic-note:empty { display: none; }

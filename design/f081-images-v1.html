@@ -1,0 +1,215 @@
+<title>F081 Photo Focus</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: report column; the problem as two crops; three pickers drawn as the media library's details panel, recommendation outlined */
+:root{--bg:#F2F3F1;--panel:#FFFFFF;--fg:#17191B;--muted:#5C6267;--line:#D9DCD8;--accent:#3949AB;--soft:#E8EAF6;--bad:#A3361F;--good:#2E6B3F;
+--ui:"Schibsted Grotesk",ui-sans-serif,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;
+--photo:url("data:image/jpeg;base64,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")}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;--bad:#F09A84;--good:#8FD0A0;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;--bad:#F09A84;--good:#8FD0A0;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--ui);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1160px;margin:0 auto;padding-block:48px 96px;display:grid;gap:56px}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.015em}h1{font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.05;font-weight:600}h2{font-size:1.5rem;font-weight:600}h3{font-size:1.02rem;font-weight:600}
+p{margin:0;max-width:70ch}.eyebrow{font:500 .75rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.lede{font-size:1.1rem;color:var(--muted)}
+section{display:grid;gap:18px}
+.tag{justify-self:start;font:600 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--accent);color:var(--panel);padding:6px 10px;border-radius:4px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:12px;align-content:start;min-width:0}
+.card p{font-size:.92rem;color:var(--muted)}
+.card.rec{border:2px solid var(--accent)}
+
+/* formats */
+.sizes{display:grid;gap:10px}
+.size{display:grid;grid-template-columns:5.5rem 1fr 4.5rem;gap:12px;align-items:center;font:500 .85rem/1 var(--mono)}
+.size b{font-weight:500;text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:14px;border-radius:3px;background:var(--muted)}
+.bar.webp{background:color-mix(in srgb,var(--accent) 55%,var(--muted))}.bar.avif{background:var(--accent)}
+
+/* crops */
+.crops{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:700px){.crops{grid-template-columns:1fr}}
+.pair{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.ph{background-image:var(--photo);background-size:cover;border-radius:6px;flex:none}
+.ph.sq{width:150px;aspect-ratio:1}.ph.tall{width:110px;aspect-ratio:3/4}.ph.wide{width:200px;aspect-ratio:16/9}
+.lbl{font:500 .72rem/1.3 var(--mono);color:var(--muted);margin-top:6px}
+.verdict{font-weight:600;font-size:.9rem}.verdict.bad{color:var(--bad)}.verdict.good{color:var(--good)}
+
+/* options */
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:980px){.opts{grid-template-columns:1fr}}
+.panel{background:#FAFAFA;border:1px solid #E4E4E7;border-radius:10px;padding:14px;display:grid;gap:10px;color:#18181B}
+.panel .cap{font:600 .8rem/1.2 var(--ui)}
+.panel .hint{font-size:.78rem;color:#52525B}
+.stage{position:relative;border-radius:8px;overflow:hidden;background-image:var(--photo);background-size:cover;aspect-ratio:16/10;cursor:crosshair;outline:none}
+.stage:focus-visible{box-shadow:0 0 0 3px #3949AB}
+.dot{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px #18181B,0 2px 6px rgba(0,0,0,.4);pointer-events:none}
+.dot::after{content:"";position:absolute;inset:6px;border-radius:50%;background:#fff}
+.mini{display:flex;gap:8px;align-items:flex-end}
+.mini .ph{border-radius:4px}.mini .w{width:96px;aspect-ratio:16/9}.mini .s{width:54px;aspect-ratio:1}.mini .t{width:42px;aspect-ratio:3/4}
+.mini span{display:block;font:500 .66rem/1.2 var(--mono);color:#52525B;margin-top:3px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{font:500 .8rem/1 var(--ui);border:1px solid #D4D4D8;background:#fff;color:#18181B;border-radius:6px;padding:8px 10px;cursor:pointer}
+.btn:focus-visible{outline:3px solid #3949AB;outline-offset:1px}
+.grid9{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;width:132px}
+.grid9 button{aspect-ratio:1;border:1px solid #D4D4D8;background:#fff;border-radius:5px;display:grid;place-items:center;cursor:pointer;padding:0}
+.grid9 button::after{content:"";width:8px;height:8px;border-radius:50%;background:#A1A1AA}
+.grid9 button[aria-pressed="true"]{background:#3949AB;border-color:#3949AB}.grid9 button[aria-pressed="true"]::after{background:#fff}
+.grid9 button:focus-visible{outline:3px solid #3949AB;outline-offset:1px}
+.split{display:flex;gap:12px;align-items:center}
+.split .stage{flex:1;cursor:default}
+.sl{display:grid;gap:4px;font-size:.78rem}
+.sl input{width:100%;accent-color:#3949AB}
+.pros{margin:0;padding-left:1.1em;font-size:.88rem;display:grid;gap:4px}
+.pros li::marker{color:var(--muted)}
+.a11y{font-size:.85rem;border-top:1px solid var(--line);padding-top:10px;color:var(--muted)}
+.a11y b{color:var(--fg);font-weight:600}
+.sum{background:var(--soft);border-radius:12px;padding:20px;display:grid;gap:10px}
+.sum ul{margin:0;padding-left:1.1em;display:grid;gap:6px}
+code{font:500 .85em var(--mono)}
+</style>
+<main>
+  <header style="display:grid;gap:14px">
+    <span class="eyebrow">Crust · F081 · design snapshot · 2 Nov 2026</span>
+    <h1>Lighter photos, and crops that keep the subject</h1>
+    <p class="lede">Two things in this feature. Publishing makes AVIF and WebP copies of every photo, with nothing to set. And each photo in the library gets a focal point, so when a card, gallery or hero crops it, the important part stays in frame. Only the focal point picker has a visible design choice; it's below.</p>
+  </header>
+
+  <section>
+    <span class="eyebrow">1 · Automatic, nothing to choose</span>
+    <h2>The same photo, three formats</h2>
+    <p>Real numbers from Corner's <code>carnations.jpg</code> (1280 × 1600), made by the new publish step. Browsers that read AVIF (over 90% of visitors) get the smallest; older ones get WebP, then the JPEG. Every smaller copy for phones gets the same treatment.</p>
+    <div class="card">
+      <div class="sizes" role="img" aria-label="JPEG 233 KB, WebP 156 KB, AVIF 104 KB">
+        <div class="size"><span>JPEG</span><div class="bar" style="width:100%"></div><b>233 KB</b></div>
+        <div class="size"><span>WebP</span><div class="bar webp" style="width:67%"></div><b>156 KB</b></div>
+        <div class="size"><span>AVIF</span><div class="bar avif" style="width:45%"></div><b>104 KB</b></div>
+      </div>
+      <p>Across all eleven Corner photos the AVIF copies weigh 41% of the JPEGs. Making them takes about two seconds a photo the first time; after that, publishing reuses them until the photo changes.</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">2 · The problem the focal point fixes</span>
+    <h2>Crops cut from the middle today</h2>
+    <div class="crops">
+      <div class="card">
+        <span class="verdict bad">Today: centred crop</span>
+        <div class="pair">
+          <div><div class="ph sq" style="background-position:50% 50%"></div><div class="lbl">Card, square</div></div>
+          <div><div class="ph tall" style="background-position:50% 50%"></div><div class="lbl">Phone hero, 3:4</div></div>
+        </div>
+        <p>The guitarist stands at the left edge, so both crops show smoke and the keyboard player.</p>
+      </div>
+      <div class="card">
+        <span class="verdict good">With a focal point on the guitarist</span>
+        <div class="pair">
+          <div><div class="ph sq" style="background-position:18% 45%"></div><div class="lbl">Card, square</div></div>
+          <div><div class="ph tall" style="background-position:18% 45%"></div><div class="lbl">Phone hero, 3:4</div></div>
+        </div>
+        <p>Set once on the photo in the library; every block that uses it crops around that point. A Section's own "Focus" (F073) still wins for that section.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">3 · Decision · how to pick the point</span>
+    <h2>In the media library's photo details</h2>
+    <p>Each option replaces the large preview in the details panel (right side of the library, under the photo grid on a phone). Try them: they work.</p>
+    <div class="opts">
+      <div class="card rec">
+        <span class="tag">A · Recommended</span>
+        <h3>Press on the photo, see the crops</h3>
+        <div class="panel">
+          <span class="cap">Focal point</span>
+          <div class="stage" id="a-stage" tabindex="0" role="application" aria-roledescription="focal point picker" aria-label="Focal point: 18% from the left, 45% from the top. Arrow keys move it." aria-describedby="a-hint">
+            <div class="dot" id="a-dot" style="left:18%;top:45%"></div>
+          </div>
+          <span class="hint" id="a-hint">Press the part that must stay in view. Arrow keys move the point; Shift moves it further.</span>
+          <div class="mini" aria-hidden="true">
+            <div><div class="ph w" data-crop></div><span>Wide</span></div>
+            <div><div class="ph s" data-crop></div><span>Square</span></div>
+            <div><div class="ph t" data-crop></div><span>Tall</span></div>
+          </div>
+          <div class="row"><button class="btn" type="button" id="a-reset">Centre</button></div>
+        </div>
+        <ul class="pros">
+          <li>Direct: you point at the subject, the way Figma and Squarespace do it.</li>
+          <li>The three small crops answer "what will a card or phone show?" before you leave the library.</li>
+          <li>Any point, not just nine.</li>
+        </ul>
+        <p class="a11y"><b>Access:</b> one tab stop; arrows move 5% (Shift 20%); the label reads the position as text. Pressing a spot is a single click, so no dragging is needed (WCAG 2.5.7). The dot has a white ring and a dark ring, visible on light and dark photos (3:1, WCAG 1.4.11).</p>
+      </div>
+
+      <div class="card">
+        <span class="tag" style="background:var(--muted)">B</span>
+        <h3>Nine positions</h3>
+        <div class="panel">
+          <span class="cap">Focal point</span>
+          <div class="split">
+            <div class="stage" id="b-stage" aria-hidden="true"><div class="dot" id="b-dot" style="left:16.7%;top:50%"></div></div>
+            <div class="grid9" role="radiogroup" aria-label="Focal point" id="b-grid"></div>
+          </div>
+          <span class="hint">Pick which part of the photo matters most.</span>
+        </div>
+        <ul class="pros">
+          <li>Simplest to understand, nothing to aim.</li>
+          <li>Coarse: a subject between two positions gets clipped (here the guitarist sits between left-middle and centre).</li>
+          <li>No preview of the crops unless we add them.</li>
+        </ul>
+        <p class="a11y"><b>Access:</b> a radio group, arrows move between the nine; easy for screen readers ("Left, middle, selected"). Targets are 40 px, above the 24 px minimum.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag" style="background:var(--muted)">C</span>
+        <h3>Two sliders</h3>
+        <div class="panel">
+          <span class="cap">Focal point</span>
+          <div class="stage" id="c-stage" aria-hidden="true" style="cursor:default"><div class="dot" id="c-dot" style="left:18%;top:45%"></div></div>
+          <label class="sl" for="c-x">Across · <span id="c-xv">18%</span><input id="c-x" type="range" min="0" max="100" step="1" value="18"></label>
+          <label class="sl" for="c-y">Down · <span id="c-yv">45%</span><input id="c-y" type="range" min="0" max="100" step="1" value="45"></label>
+        </div>
+        <ul class="pros">
+          <li>Precise, and standard controls.</li>
+          <li>Indirect: you move two bars to steer a dot, the opposite of "point at it".</li>
+          <li>Takes the most room in a panel that also holds alt text.</li>
+        </ul>
+        <p class="a11y"><b>Access:</b> native sliders, so keyboard and screen readers work with no extra code.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sum">
+    <h2>What I'll build: A</h2>
+    <ul>
+      <li><b>Focal point in the library:</b> option A, in the photo details, saved with the alt text. Photos without one crop from the centre, as today.</li>
+      <li><b>Used everywhere a photo is cropped:</b> cards, galleries, sliders, section and overlay backgrounds, post covers, quote portraits. Shown in the builder too, so the canvas matches the site.</li>
+      <li><b>AVIF and WebP:</b> automatic at publish, on GitHub and in the desktop app, kept between publishes.</li>
+      <li>If you prefer B or C, say "B for F081" and I'll swap the control; the rest stays.</li>
+    </ul>
+  </section>
+</main>
+<script>
+(function(){
+  const clamp=v=>Math.max(0,Math.min(100,Math.round(v)));
+  // A
+  const st=document.getElementById("a-stage"),dot=document.getElementById("a-dot"),crops=[...document.querySelectorAll("[data-crop]")];
+  let p={x:18,y:45};
+  const drawA=()=>{dot.style.left=p.x+"%";dot.style.top=p.y+"%";crops.forEach(c=>c.style.backgroundPosition=p.x+"% "+p.y+"%");st.setAttribute("aria-label","Focal point: "+p.x+"% from the left, "+p.y+"% from the top. Arrow keys move it.");};
+  st.addEventListener("click",e=>{const r=st.getBoundingClientRect();p={x:clamp((e.clientX-r.left)/r.width*100),y:clamp((e.clientY-r.top)/r.height*100)};drawA();});
+  st.addEventListener("keydown",e=>{const s=e.shiftKey?20:5,m={ArrowLeft:[-s,0],ArrowRight:[s,0],ArrowUp:[0,-s],ArrowDown:[0,s]}[e.key];if(!m)return;e.preventDefault();p={x:clamp(p.x+m[0]),y:clamp(p.y+m[1])};drawA();});
+  document.getElementById("a-reset").addEventListener("click",()=>{p={x:50,y:50};drawA();});
+  drawA();
+  // B
+  const g=document.getElementById("b-grid"),bd=document.getElementById("b-dot"),names=["Top left","Top","Top right","Left","Centre","Right","Bottom left","Bottom","Bottom right"];
+  let sel=3;
+  const drawB=(focus)=>{[...g.children].forEach((b,i)=>{b.setAttribute("aria-checked",i===sel);b.setAttribute("aria-pressed",i===sel);b.tabIndex=i===sel?0:-1;});bd.style.left=(16.7+33.3*(sel%3))+"%";bd.style.top=(16.7+33.3*Math.floor(sel/3))+"%";if(focus)g.children[sel].focus();};
+  names.forEach((n,i)=>{const b=document.createElement("button");b.type="button";b.setAttribute("role","radio");b.setAttribute("aria-label",n);b.addEventListener("click",()=>{sel=i;drawB();});g.appendChild(b);});
+  g.addEventListener("keydown",e=>{const m={ArrowLeft:-1,ArrowRight:1,ArrowUp:-3,ArrowDown:3}[e.key];if(m===undefined)return;e.preventDefault();sel=Math.max(0,Math.min(8,sel+m));drawB(true);});
+  drawB();
+  // C
+  const cx=document.getElementById("c-x"),cy=document.getElementById("c-y"),cd=document.getElementById("c-dot");
+  const drawC=()=>{cd.style.left=cx.value+"%";cd.style.top=cy.value+"%";document.getElementById("c-xv").textContent=cx.value+"%";document.getElementById("c-yv").textContent=cy.value+"%";};
+  cx.addEventListener("input",drawC);cy.addEventListener("input",drawC);
+})();
+</script>

@@ -10,7 +10,7 @@ import { layoutCategories, sectionLayouts, type LayoutCategory } from "@crust/bl
 import { renderPreview } from "@crust/render";
 import { sectionHtml, useInSectionEditor, useLinkedSections } from "../linked/store";
 import { createUsePuck, useGetPuck, type ComponentData, type Config, type Data } from "@puckeditor/core";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { announce, focusBlock, select } from "../keyboard/KeyboardEditing";
 import { RadioGroup } from "../sections/controls";
@@ -21,12 +21,15 @@ import {
   firstHeading,
   insertionPoint,
   openLayoutGallery,
+  splitSimple,
   planLayoutInsert,
   registerGalleryOpener,
   type LayoutItem,
   type LayoutKind,
 } from "./library";
 import { MAX_NAME, useMyLayouts } from "./mine";
+import { SiteStyleContext } from "../sections/site-style";
+import { DesignKindContext } from "../designs/context";
 
 const usePuckSelector = createUsePuck();
 
@@ -86,10 +89,11 @@ type BuiltIn = Exclude<LayoutItem, { kind: "mine" } | { kind: "linked" }>;
 function Card({ item, onPick }: { item: BuiltIn; onPick: (item: LayoutItem) => void }) {
   const { layout } = item;
   const descId = `lg-desc-${item.kind}-${layout.id}`;
-  const meta = item.kind === "page" ? `${item.layout.sections.length} sections` : item.layout.category;
+  const meta =
+    item.kind === "page" ? `${item.layout.sections.length} sections` : item.kind === "design" ? (item.layout.current ? "Today's look" : "Starting design") : item.layout.category;
   return (
     <li className="lg-card">
-      <Thumb item={item} maxHeight={item.kind === "page" ? 300 : 190} />
+      <Thumb item={item} maxHeight={item.kind === "page" || item.kind === "design" ? 300 : 190} />
       <div className="lg-card-text">
         <button type="button" className="lg-card-button" aria-describedby={descId} onClick={() => onPick(item)}>
           <span className="lg-card-name">{layout.name}</span>
@@ -344,6 +348,42 @@ function SavePage({ onSaved }: { onSaved: () => void }) {
   );
 }
 
+function ItemList({ items, kind, onPick, labelledBy }: { items: LayoutItem[]; kind: LayoutKind; onPick: (item: LayoutItem) => void; labelledBy?: string }) {
+  return (
+    <ul className={kind === "section" ? "lg-grid" : "lg-grid is-pages"} aria-labelledby={labelledBy}>
+      {items.map((item) =>
+        item.kind === "mine" ? (
+          <MineCard key={`mine:${item.layout.id}`} item={item} onPick={onPick} />
+        ) : item.kind === "linked" ? (
+          <LinkedCard key={`linked:${item.layout.id}`} item={item} onPick={onPick} />
+        ) : (
+          <Card key={`${item.kind}:${item.layout.id}`} item={item} onPick={onPick} />
+        ),
+      )}
+    </ul>
+  );
+}
+
+/**
+ * F080: the new layouts first; the first library's plainer ones after them,
+ * under "Simple", so the finished-looking ones are what you meet first
+ * (fewer choices up front, Hick's law) and nothing you knew disappears.
+ */
+function ItemGrid({ items, kind, onPick }: { items: LayoutItem[]; kind: LayoutKind; onPick: (item: LayoutItem) => void }) {
+  const { main, simple } = splitSimple(items);
+  if (!simple.length) return <ItemList items={items} kind={kind} onPick={onPick} />;
+  return (
+    <>
+      {main.length ? <ItemList items={main} kind={kind} onPick={onPick} /> : null}
+      <h3 className="lg-subhead" id="lg-simple">
+        Simple <span className="lg-cat-count">{simple.length}</span>
+      </h3>
+      <p className="lg-side-note">Plainer layouts from the first library, for quiet pages.</p>
+      <ItemList items={simple} kind={kind} onPick={onPick} labelledBy="lg-simple" />
+    </>
+  );
+}
+
 const categoryCount = (c: LayoutCategory | "All") =>
   c === "All" ? sectionLayouts.length : sectionLayouts.filter((l) => l.category === c).length;
 
@@ -379,14 +419,21 @@ export function LayoutGallery() {
   const linked = useLinkedSections();
   // A linked section can't hold another one, so its own editor doesn't offer them.
   const linkedOn = !useInSectionEditor();
-  const items = useMemo(() => filterLayouts(kind, category, query, mine.layouts ?? [], linked.sections ?? []), [kind, category, query, mine.layouts, linked.sections]);
-  const mineCount = mine.layouts?.length ?? 0;
+  // F082: in a post, blog or "Page not found" design, whole pages are its starting designs.
+  const design = useContext(DesignKindContext);
+  const items = useMemo(
+    () => filterLayouts(kind, category, query, mine.layouts ?? [], linked.sections ?? [], design),
+    [kind, category, query, mine.layouts, linked.sections, design],
+  );
+  const mineCount = mine.layouts?.filter((l) => l.kind !== "element").length ?? 0;
+  const siteStyle = useContext(SiteStyleContext);
   const linkedCount = linked.sections?.length ?? 0;
   const where = open ? describeInsertion(getPuck().config as Config, (getPuck().appState.data as Data).content, index) : "";
 
   const pick = (item: LayoutItem) => {
     const puck = getPuck();
-    const plan = planLayoutInsert(puck.appState.data as Data, item, index);
+    // F080: a gradient that wouldn't read in this site's colours is swapped for one that does.
+    const plan = planLayoutInsert(puck.appState.data as Data, item, index, siteStyle?.tokens);
     close();
     if (!plan) return;
     // setData skips the undo history unless asked; one Undo removes the whole layout.
@@ -414,7 +461,7 @@ export function LayoutGallery() {
             <div className="lg-head-text">
               <h2 id="lg-title">Add a layout</h2>
               <p id="lg-where" className="lg-where">
-                {where}
+                {design && kind === "page" ? "A starting design replaces the whole design. Undo brings it back." : where}
               </p>
             </div>
             <RadioGroup<LayoutKind>
@@ -425,7 +472,7 @@ export function LayoutGallery() {
               onChange={setKind}
               options={[
                 { value: "section", label: "Sections" },
-                { value: "page", label: "Whole pages" },
+                { value: "page", label: design ? "Starting designs" : "Whole pages" },
                 { value: "mine", label: mineCount ? `My layouts (${mineCount})` : "My layouts" },
                 ...(linkedOn ? [{ value: "linked" as const, label: linkedCount ? `Linked (${linkedCount})` : "Linked" }] : []),
               ]}
@@ -448,7 +495,11 @@ export function LayoutGallery() {
                   ))}
                 </ul>
               ) : kind === "page" ? (
-                <p className="lg-side-note">A whole page adds all its sections at once. Change or remove any of them after.</p>
+                <p className="lg-side-note">
+                  {design
+                    ? "Each one is a whole design to start from, in your site's colours and fonts. Change anything after."
+                    : "A whole page adds all its sections at once. Change or remove any of them after."}
+                </p>
               ) : kind === "linked" ? (
                 <p className="lg-side-note">
                   Sections shown on many pages, kept in {linked.where}. Adding one adds a link: edit it once and every page that shows it
@@ -480,7 +531,7 @@ export function LayoutGallery() {
                       `${items.length === 1 ? "1 layout" : `${items.length} layouts`}`
                     : kind === "linked"
                       ? `${items.length} linked section${items.length === 1 ? "" : "s"}`
-                    : `${items.length} ${kind === "page" ? "page layout" : "section"}${items.length === 1 ? "" : "s"}${
+                    : `${items.length} ${kind === "page" ? (design ? "starting design" : "page layout") : "section"}${items.length === 1 ? "" : "s"}${
                         kind === "section" && category !== "All" ? ` in ${category}` : ""
                       }`}
               </p>
@@ -517,17 +568,7 @@ export function LayoutGallery() {
                   </p>
                 </div>
               ) : items.length ? (
-                <ul className={kind === "section" ? "lg-grid" : "lg-grid is-pages"}>
-                  {items.map((item) =>
-                    item.kind === "mine" ? (
-                      <MineCard key={`mine:${item.layout.id}`} item={item} onPick={pick} />
-                    ) : item.kind === "linked" ? (
-                      <LinkedCard key={`linked:${item.layout.id}`} item={item} onPick={pick} />
-                    ) : (
-                      <Card key={`${item.kind}:${item.layout.id}`} item={item} onPick={pick} />
-                    ),
-                  )}
-                </ul>
+                <ItemGrid items={items} kind={kind} onPick={pick} />
               ) : (
                 <div className="lg-empty">
                   <p>

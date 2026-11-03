@@ -10,6 +10,7 @@
  */
 import { SECTIONS_FOLDER, checkSectionContent, checkSectionName, isValidSectionId, sectionFileFor, type LinkedSectionFile } from "@crust/blocks/linked-sections";
 import { MEDIA_FOLDER, MEDIA_INDEX, mediaLimits, parseMediaIndex, type MediaItem } from "@crust/blocks/media";
+import { DESIGNS_FOLDER, checkDesign, cleanDesign, designFile, designKinds, designNames, type PageDesign } from "@crust/blocks/page-designs";
 import { BLOG_FILE, POSTS_FOLDER, checkBlog, checkPost, postFileFor, type BlogSettings, type Post } from "@crust/blocks/posts";
 import { readTemplatePhoto, type TemplatePage } from "@crust/blocks/template";
 import type { Page, SavedLayout, Site } from "@crust/blocks";
@@ -40,6 +41,8 @@ export interface TemplateContent {
   posts: Post[];
   /** Photo files the template uses; they must be in the library by now. */
   photos: string[];
+  /** F082 (optional): post page, blog page and "Page not found" designs. */
+  designs?: Pick<PageDesign, "kind" | "title" | "content">[];
 }
 
 export const APPLY_SUBJECT = /^Start from template "(.*)"$/;
@@ -104,6 +107,17 @@ export function checkTemplateContent(t: unknown): string[] {
       slugs.add(p.slug);
     }
   }
+  // F082: designs, one of each kind at most.
+  const kinds = new Set<string>();
+  for (const d of Array.isArray(t.designs) ? t.designs : []) {
+    const problems2 = checkDesign(d);
+    problems.push(...problems2);
+    if (!problems2.length) {
+      const kind = (d as PageDesign).kind;
+      if (kinds.has(kind)) problems.push(`The template has two ${designNames[kind]} designs.`);
+      kinds.add(kind);
+    }
+  }
   if (!Array.isArray(t.photos) || !t.photos.every((f) => typeof f === "string")) problems.push("The template's photo list is damaged.");
   if (!isObject(t.site)) problems.push("The template's style, header and footer are missing.");
   return problems;
@@ -118,7 +132,7 @@ export function checkTemplateContent(t: unknown): string[] {
  */
 export function applyChanges(
   t: TemplateContent,
-  current: { site: Site; pageFiles: string[]; sectionFiles: string[]; postFiles: string[]; layoutIds: string[]; redirects: string | null },
+  current: { site: Site; pageFiles: string[]; sectionFiles: string[]; postFiles: string[]; layoutIds: string[]; redirects: string | null; designFiles?: string[] },
   now: Date,
 ): FileChange[] {
   const changes: FileChange[] = [];
@@ -137,7 +151,9 @@ export function applyChanges(
   for (const s of t.sections) put(sectionFileFor(s.id), text({ id: s.id, name: s.name.trim(), savedAt, content: s.content }));
   put(BLOG_FILE, text(t.blog));
   for (const p of t.posts) put(postFileFor(p.slug), text(p));
-  for (const path of [...current.pageFiles, ...current.sectionFiles, ...current.postFiles]) if (!write.has(path)) changes.push({ path, content: null });
+  // F082: the template's designs replace the site's; a design it doesn't have goes back to the built-in look.
+  for (const d of t.designs ?? []) put(designFile(d.kind), text(cleanDesign({ kind: d.kind, title: d.title, content: d.content, savedAt })));
+  for (const path of [...current.pageFiles, ...current.sectionFiles, ...current.postFiles, ...(current.designFiles ?? [])]) if (!write.has(path)) changes.push({ path, content: null });
   const taken = [...current.layoutIds];
   for (const l of t.layouts) {
     const id = layoutIdFor(l.name, taken);
@@ -222,7 +238,7 @@ export async function handleTemplate(request: Request, env: Env, fetchFn: typeof
       const kept = items.filter((i) => !incoming.has(i.file));
       if (kept.length + photos.length > mediaLimits.photos) return fail(422, `The photo library would be over ${mediaLimits.photos} photos. Delete photos you no longer use.`);
       const uploadedAt = new Date().toISOString();
-      const added: MediaItem[] = photos.map((p) => ({ file: p.file, alt: p.alt, width: p.width, height: p.height, bytes: Math.floor((p.data.length * 3) / 4), uploadedAt }));
+      const added: MediaItem[] = photos.map((p) => ({ file: p.file, alt: p.alt, width: p.width, height: p.height, bytes: Math.floor((p.data.length * 3) / 4), uploadedAt, ...(p.focus ? { focus: p.focus } : {}) }));
       const result = await commitFiles(
         cfg,
         [
@@ -240,7 +256,7 @@ export async function handleTemplate(request: Request, env: Env, fetchFn: typeof
       const problems = checkTemplateContent(body.template);
       if (problems.length) return fail(422, `Not applied. ${[...new Set(problems)].slice(0, 8).join(" ")}`);
       const t = body.template as TemplateContent;
-      const [siteText, mediaText, pageList, sectionList, postList, layoutList, redirects] = await Promise.all([
+      const [siteText, mediaText, pageList, sectionList, postList, layoutList, redirects, designList] = await Promise.all([
         readFile(cfg, "content/site.json", fetchFn),
         readFile(cfg, MEDIA_INDEX, fetchFn),
         listFolder(cfg, PAGES_FOLDER, fetchFn),
@@ -248,6 +264,7 @@ export async function handleTemplate(request: Request, env: Env, fetchFn: typeof
         listFolder(cfg, POSTS_FOLDER, fetchFn),
         listFolder(cfg, LAYOUTS_FOLDER, fetchFn),
         readFile(cfg, REDIRECTS_FILE, fetchFn),
+        listFolder(cfg, DESIGNS_FOLDER, fetchFn),
       ]);
       if (!siteText) return fail(409, "Couldn't read your Site settings, so nothing was changed.");
       const site = { ...(JSON.parse(siteText) as Site), language: t.site.language, tokens: t.site.tokens, header: t.site.header, footer: t.site.footer };
@@ -263,6 +280,7 @@ export async function handleTemplate(request: Request, env: Env, fetchFn: typeof
         postFiles: jsonFiles(postList, POSTS_FOLDER),
         layoutIds: layoutList.map((f) => layoutIdForFile(f.path)).filter((id): id is string => id !== null),
         redirects,
+        designFiles: designList.filter((f) => designKinds.some((k) => designFile(k) === f.path)).map((f) => f.path),
       };
       const result = await commitFiles(cfg, applyChanges(t, current, new Date()), applyMessage(t, current, user.email), fetchFn);
       return json(200, { ok: true, commit: result.commit, url: result.url, site });

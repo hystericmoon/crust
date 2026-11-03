@@ -67,7 +67,8 @@ export function TemplateGroup({
     }
     setBusy(true);
     try {
-      const layouts: PackLayout[] = (mine.layouts ?? []).map(({ name, kind, content }) => ({ name, kind, content: content as PackLayout["content"] }));
+      // F080: saved element styles stay out (a template carries sections and pages).
+      const layouts: PackLayout[] = (mine.layouts ?? []).flatMap(({ name, kind, content }) => (kind === "element" ? [] : [{ name, kind, content: content as PackLayout["content"] }]));
       const result = await collectTemplate({ name, description }, { ...site, tokens, chrome, layouts }, loader, (step) => setStatus(stepLabels[step]));
       if (!result.text || !result.template) {
         setStatus("Not saved. This site can't be a template yet:");

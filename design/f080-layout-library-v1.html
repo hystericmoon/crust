@@ -1,0 +1,191 @@
+<title>F080 Layout Library v2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,400&display=swap">
+<style>
+/* Layout: report column; the catalogue as category chips with counts; three decisions drawn as UI, recommendation outlined */
+:root{--bg:#F2F3F1;--panel:#FFFFFF;--fg:#17191B;--muted:#5C6267;--line:#D9DCD8;--accent:#3949AB;--soft:#E8EAF6;--warn:#9A4A12;
+--ui:"Schibsted Grotesk",ui-sans-serif,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;--serif:"Fraunces",Georgia,serif;
+/* the sample site (Atelier Stone): fixed, it is a picture of a published page */
+--s-bg:#F4F1EC;--s-surface:#E9E4DC;--s-text:#1E2420;--s-muted:#5A615C;--s-primary:#2F4A3A;--s-on:#FFFFFF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;--warn:#F0A672;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;--warn:#F0A672;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--ui);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1160px;margin:0 auto;padding-block:48px 96px;display:grid;gap:56px}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.015em}h1{font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.05;font-weight:600}h2{font-size:1.5rem;font-weight:600}h3{font-size:1.02rem;font-weight:600}
+p{margin:0;max-width:70ch}.eyebrow{font:500 .75rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.lede{font-size:1.1rem;color:var(--muted)}
+section{display:grid;gap:18px}
+.tag{font:600 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--accent);color:var(--panel);padding:6px 10px;border-radius:4px}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.trio{grid-template-columns:1fr}}
+.opt{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:10px;align-content:start;min-width:0}
+.opt.rec{border:2px solid var(--accent);background:color-mix(in srgb,var(--soft) 45%,var(--panel))}
+.opt h3{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+ul.pros{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.88rem}
+ul.pros li::marker{color:var(--muted)}
+.warn{color:var(--warn)}
+.note{color:var(--muted);font-size:.9rem}
+
+/* catalogue */
+.cats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.cats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.cats{grid-template-columns:1fr}}
+.cat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:6px;align-content:start;min-width:0}
+.cat h3{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.cat h3 span{font:500 .78rem var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.cat ul{margin:0;padding:0;list-style:none;display:grid;gap:2px;font-size:.82rem;color:var(--muted)}
+.pages{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.pages{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.pg{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;display:grid;gap:6px;min-width:0}
+.pg b{font-size:.88rem}.pg span{font-size:.76rem;color:var(--muted)}
+.strip{display:grid;gap:2px}.strip i{display:block;height:9px;border-radius:2px;background:var(--s-surface)}
+.strip i.d{background:var(--s-primary)}.strip i.p{background:linear-gradient(150deg,#B9C2B4,#56645A)}.strip i.t{height:16px}
+
+/* sample page pieces */
+.page{border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,.08);background:var(--s-bg);color:var(--s-text);position:relative}
+.ph{background:linear-gradient(150deg,#B9C2B4,#6F7D6E 55%,#36423A);border-radius:4px}
+.ph.b{background:linear-gradient(150deg,#D7C7B0,#9C856A 55%,#4F4134)}
+.ph.c{background:linear-gradient(150deg,#AFC0C8,#5F7781 55%,#2E3D44)}
+.empty{border:1.5px dashed color-mix(in srgb,var(--s-text) 35%,transparent);border-radius:4px;display:grid;place-items:center;font:500 9px var(--mono);color:var(--s-muted);background:var(--s-surface)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px;align-items:center}
+.split .ph,.split .empty{aspect-ratio:4/5}
+.ey{font:500 8px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--s-muted)}
+.dsp{font:300 20px/1.02 var(--serif);letter-spacing:-.03em}
+.ln{font-size:9px;color:var(--s-muted);line-height:1.4}
+.bt{justify-self:start;font:600 9px var(--ui);background:var(--s-primary);color:var(--s-on);border-radius:99px;padding:4px 9px}
+.txt{display:grid;gap:6px;align-content:center}
+.mark{position:absolute;top:6px;left:6px;font:600 8px var(--mono);background:#FFF3C4;color:#5A4500;border-radius:3px;padding:2px 5px}
+.typo{padding:18px 14px;display:grid;gap:8px;background:linear-gradient(160deg,var(--s-bg),var(--s-surface))}
+.typo .dsp{font-size:26px}
+.rule{height:1px;background:color-mix(in srgb,var(--s-text) 25%,transparent)}
+
+/* gallery dialog */
+.dlg{border:1px solid var(--line);border-radius:8px;background:var(--panel);display:grid;grid-template-columns:96px 1fr;font-size:.74rem;overflow:hidden;min-width:0}
+.dlg nav{border-right:1px solid var(--line);padding:8px;display:grid;gap:3px;align-content:start}
+.dlg nav span{padding:3px 6px;border-radius:4px;color:var(--muted);display:flex;justify-content:space-between}
+.dlg nav span.on{background:var(--soft);color:var(--fg);font-weight:600}
+.dlg .tiles{padding:8px;display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:start}
+.tile{display:grid;gap:3px}.tile .th{aspect-ratio:16/10;border-radius:4px;background:var(--s-surface);border:1px solid var(--line);overflow:hidden;display:grid}
+.tile small{font-size:.66rem;color:var(--muted)}
+.th .a{background:linear-gradient(150deg,#B9C2B4,#56645A)}.th .d{background:var(--s-primary)}.th .s{background:var(--s-bg)}
+.chip{font:500 .62rem var(--mono);border:1px solid var(--line);border-radius:99px;padding:1px 6px;color:var(--muted);justify-self:start}
+.sub{grid-column:1/-1;font:500 .66rem var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding-top:4px}
+
+/* element styles */
+.pnl{border:1px solid var(--line);border-radius:8px;padding:10px;display:grid;gap:8px;font-size:.78rem;background:var(--panel)}
+.pnl .l{font-size:.72rem;color:var(--muted)}
+.sel{border:1px solid var(--line);border-radius:6px;padding:5px 8px;display:flex;justify-content:space-between}
+.menu{border:1px solid var(--line);border-radius:6px;display:grid;font-size:.74rem;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.menu span{padding:5px 8px;display:flex;justify-content:space-between;gap:6px}.menu span+span{border-top:1px solid var(--line)}
+.menu span.on{background:var(--soft)}
+.sbtn{border:1px solid var(--line);border-radius:6px;padding:5px 8px;justify-self:start;font-weight:600}
+.linkd{font:500 .66rem var(--mono);color:var(--accent)}
+.prev{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:10px;border-radius:6px;background:var(--s-bg);color:var(--s-text)}
+.pill{font:600 9px var(--ui);border-radius:99px;padding:4px 10px;background:var(--s-primary);color:var(--s-on)}
+.pill.o{background:transparent;color:var(--s-primary);border:1px solid var(--s-primary)}
+.a11y{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.a11y{grid-template-columns:1fr}}
+.a11y div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:6px}
+.a11y p{font-size:.88rem;color:var(--muted)}
+</style>
+
+<main>
+<header style="display:grid;gap:14px">
+  <span class="eyebrow">Crust · Milestone 8 · F080 design snapshot</span>
+  <h1>Layout library v2</h1>
+  <p class="lede">About 60 new sections and 10 whole pages, built with everything Milestone 8 added: display type and eyebrows, photo and gradient backgrounds, boxed and highlighted columns, icons, stats, sliders, tabs and maps. They take their colours and fonts from your site's look, as layouts do today. Plus a new thing: saving a block's style to reuse it. Three choices need a direction; the recommended one is outlined.</p>
+</header>
+
+<section>
+  <h2>What's in it</h2>
+  <div class="cats">
+    <div class="cat"><h3>Hero <span>8</span></h3><ul><li>Full photo, header on top</li><li>Text and photo side by side</li><li>Big statement, soft glow</li><li>Muted video background</li><li>Slideshow</li><li>Photo with a card over it</li><li>Headline with figures</li><li>Narrow column on a photo</li></ul></div>
+    <div class="cat"><h3>Intro and story <span>7</span></h3><ul><li>One large sentence</li><li>Label left, text right</li><li>Story with photo</li><li>Values with icons</li><li>Milestones table</li><li>…</li></ul></div>
+    <div class="cat"><h3>Features and services <span>11</span></h3><ul><li>Icons in three or four</li><li>Boxed features</li><li>Photo, text, alternating</li><li>Sticky heading with a list</li><li>Services as divided rows</li><li>Middle column highlighted</li><li>Tabs</li><li>…</li></ul></div>
+    <div class="cat"><h3>Work and gallery <span>8</span></h3><ul><li>Cover cards grid</li><li>Card slider</li><li>One big, two small</li><li>Case study with figures</li><li>Lightbox gallery</li><li>Photo mosaic</li><li>…</li></ul></div>
+    <div class="cat"><h3>Proof <span>9</span></h3><ul><li>Large quote with photo</li><li>Three quote cards</li><li>Moving logo row</li><li>Logos with intro</li><li>Figures with lines</li><li>Figures on dark</li><li>…</li></ul></div>
+    <div class="cat"><h3>Process and pricing <span>6</span></h3><ul><li>Large numbered steps</li><li>Steps with dividers</li><li>Three plans, one highlighted</li><li>Two plans</li><li>Comparison table</li><li>…</li></ul></div>
+    <div class="cat"><h3>Team and FAQ <span>6</span></h3><ul><li>Cover cards team</li><li>Team slider</li><li>Questions, heading stays put</li><li>Centred questions</li><li>Questions in tabs</li><li>…</li></ul></div>
+    <div class="cat"><h3>Call to action and contact <span>8</span></h3><ul><li>Gradient band</li><li>Photo band</li><li>Boxed split</li><li>Form beside details</li><li>Map and opening hours</li><li>Contact cards with icons</li><li>…</li></ul></div>
+  </div>
+  <h3>10 whole pages</h3>
+  <div class="pages">
+    <div class="pg"><div class="strip"><i class="p t"></i><i></i><i class="d"></i><i></i></div><b>Studio home</b><span>Photo hero, work, figures, quote, call</span></div>
+    <div class="pg"><div class="strip"><i class="p t"></i><i></i><i class="p"></i><i></i></div><b>Restaurant home</b><span>Slideshow, menu tabs, gallery, map</span></div>
+    <div class="pg"><div class="strip"><i class="t"></i><i class="d"></i><i></i><i></i></div><b>Product landing</b><span>Statement, features, pricing, FAQ</span></div>
+    <div class="pg"><div class="strip"><i class="t"></i><i></i><i></i><i class="d"></i></div><b>Services</b><span>Divided rows, steps, plans</span></div>
+    <div class="pg"><div class="strip"><i class="p t"></i><i></i><i></i><i></i></div><b>About</b><span>Story, values, team, timeline</span></div>
+    <div class="pg"><div class="strip"><i class="t"></i><i class="p"></i><i class="p"></i><i></i></div><b>Work</b><span>Big and small, cover cards</span></div>
+    <div class="pg"><div class="strip"><i class="p t"></i><i></i><i class="p"></i><i></i></div><b>Case study</b><span>Figures, story, gallery, quote</span></div>
+    <div class="pg"><div class="strip"><i class="t"></i><i></i><i></i><i></i></div><b>Pricing</b><span>Plans, comparison, questions</span></div>
+    <div class="pg"><div class="strip"><i class="t"></i><i></i><i class="p"></i><i></i></div><b>Contact</b><span>Form, map, contact cards</span></div>
+    <div class="pg"><div class="strip"><i class="p t"></i><i></i><i></i><i class="d"></i></div><b>Venue or event</b><span>Video hero, schedule, map</span></div>
+  </div>
+  <p class="note">Every section is tested like today's: on every look in the Style library, with axe, one h1 per page, heading levels in order, contrast checked against your colours.</p>
+</section>
+
+<section>
+  <h2>Choice 1 · Photos in layouts</h2>
+  <p class="note">About half of the new sections are made around a photo. What should you get when you insert one?</p>
+  <div class="trio">
+    <div class="opt rec"><h3><span class="tag">Recommended</span>A · Sample photos, marked “to replace”</h3>
+      <div class="page"><div class="split"><div class="txt"><span class="ey">Studio</span><span class="dsp">Rooms that hold the light</span><span class="ln">Interiors for small homes.</span><span class="bt">See the work</span></div><div class="ph" style="position:relative"><span class="mark">To replace</span></div></div></div>
+      <ul class="pros"><li>The section looks finished the moment it lands, so you judge the layout, not a grey box.</li><li>The photos (public domain, from our templates) are copied into your Media library; the builder lists them under “To replace”.</li><li>Publishing waits until each is replaced or you press “Keep as is”: no stock photo goes live by accident.</li></ul></div>
+    <div class="opt"><h3>B · Empty photo frames</h3>
+      <div class="page"><div class="split"><div class="txt"><span class="ey">Studio</span><span class="dsp">Rooms that hold the light</span><span class="ln">Interiors for small homes.</span><span class="bt">See the work</span></div><div class="empty">Add a photo</div></div></div>
+      <ul class="pros"><li>Nothing added to your Media library.</li><li class="warn">Photo-led layouts look unfinished in the gallery and on the page, which hides how they'll really look (the gap you saw against the Webflow sites).</li></ul></div>
+    <div class="opt"><h3>C · Type-led layouts, photos optional</h3>
+      <div class="page"><div class="typo"><span class="ey">Studio</span><span class="dsp">Rooms that hold the light</span><div class="rule"></div><span class="ln">Interiors for small homes, since 2014.</span></div></div>
+      <ul class="pros"><li>No photo problem at all.</li><li class="warn">Throws away most of what makes premium sites feel premium: big imagery. Fewer layouts would be worth having.</li></ul></div>
+  </div>
+</section>
+
+<section>
+  <h2>Choice 2 · Today's 32 layouts</h2>
+  <p class="note">The new sections cover everything the old ones do, better. Saved pages never change either way: a layout is copied in when you insert it.</p>
+  <div class="trio">
+    <div class="opt rec"><h3><span class="tag">Recommended</span>A · New first, old ones under “Simple”</h3>
+      <div class="dlg"><nav><span class="on">Hero <b>8</b></span><span>Intro <b>7</b></span><span>Features <b>11</b></span><span>Work <b>8</b></span><span>…</span></nav>
+        <div class="tiles"><div class="tile"><div class="th"><div class="a"></div></div><small>Full photo</small></div><div class="tile"><div class="th" style="grid-template-columns:1fr 1fr"><div class="s"></div><div class="a"></div></div><small>Side by side</small></div><div class="sub">Simple · 4</div><div class="tile"><div class="th"><div class="s"></div></div><small>Centered hero</small></div><div class="tile"><div class="th"><div class="d"></div></div><small>Dark hero</small></div></div></div>
+      <ul class="pros"><li>The best options are what you see first; nothing you knew disappears.</li><li>“Simple” is honest: the old ones are plainer and still useful for quiet pages.</li></ul></div>
+    <div class="opt"><h3>B · Mixed together</h3>
+      <div class="dlg"><nav><span class="on">Hero <b>12</b></span><span>Intro <b>7</b></span><span>…</span></nav>
+        <div class="tiles"><div class="tile"><div class="th"><div class="s"></div></div><small>Centered hero</small></div><div class="tile"><div class="th"><div class="a"></div></div><small>Full photo</small></div><div class="tile"><div class="th"><div class="d"></div></div><small>Dark hero</small></div><div class="tile"><div class="th" style="grid-template-columns:1fr 1fr"><div class="s"></div><div class="a"></div></div><small>Side by side</small></div></div></div>
+      <ul class="pros"><li>One list, no extra heading.</li><li class="warn">~92 layouts in one gallery: choice overload (Hick's law), and the plain ones pull the eye away from the finished ones.</li></ul></div>
+    <div class="opt"><h3>C · Retire the old ones</h3>
+      <div class="dlg"><nav><span class="on">Hero <b>8</b></span><span>Intro <b>7</b></span><span>…</span></nav>
+        <div class="tiles"><div class="tile"><div class="th"><div class="a"></div></div><small>Full photo</small></div><div class="tile"><div class="th" style="grid-template-columns:1fr 1fr"><div class="s"></div><div class="a"></div></div><small>Side by side</small></div></div></div>
+      <ul class="pros"><li>Cleanest gallery.</li><li class="warn">Removes layouts you may already reach for; the whole-page layouts that use them would need rewriting.</li></ul></div>
+  </div>
+</section>
+
+<section>
+  <h2>Choice 3 · Saved element styles</h2>
+  <p class="note">Example: you set a Button to soft, with an arrow icon and large text, and want the same look on other buttons without redoing four settings. Only style settings are saved, never words, links or photos.</p>
+  <div class="trio">
+    <div class="opt rec"><h3><span class="tag">Recommended</span>A · Save a style, apply it as a copy</h3>
+      <div class="pnl"><span class="l">Button · Style tab</span><div class="sel"><span>Saved styles</span><span>▾</span></div>
+        <div class="menu"><span class="on">Soft with arrow <small>✓</small></span><span>Quiet outline</span><span>Save this button's style…</span></div></div>
+      <div class="prev"><span class="pill">Book a table →</span><span class="pill">See the menu →</span></div>
+      <ul class="pros"><li>Same idea as “My layouts”, one block at a time: pick, and the settings are copied in (one undo step).</li><li>Changing one button later never surprises you on another page.</li><li>Saved with your layouts; Rename and Delete in the same menu.</li></ul></div>
+    <div class="opt"><h3>B · Linked styles, change once</h3>
+      <div class="pnl"><span class="l">Button · Style tab</span><div class="sel"><span>Style: Soft with arrow</span><span class="linkd">linked · 14 uses</span></div><span class="sbtn">Edit everywhere</span></div>
+      <div class="prev"><span class="pill">Book a table →</span><span class="pill">See the menu →</span></div>
+      <ul class="pros"><li>Powerful for big sites: one change updates 14 buttons.</li><li class="warn">Changes the page format and the renderer; a block's settings no longer tell the whole story, which makes the Style tab harder to read (what's mine, what's linked?).</li><li>Your Style library already does “change once” for the whole site.</li></ul></div>
+    <div class="opt"><h3>C · A default per block type</h3>
+      <div class="pnl"><span class="l">Site settings · Styles</span><div class="sel"><span>New buttons start as</span><span>Soft with arrow ▾</span></div><div class="sel"><span>New cards start as</span><span>Cover ▾</span></div></div>
+      <div class="prev"><span class="pill">Book a table →</span><span class="pill o">Old button</span></div>
+      <ul class="pros"><li>Simple: set once, every new block follows.</li><li class="warn">Only one look per block type; doesn't touch blocks already on pages, so mixed results.</li></ul></div>
+  </div>
+</section>
+
+<section>
+  <h2>Accessibility</h2>
+  <div class="a11y">
+    <div><h3>Headings stay in order</h3><p>A layout's h1 becomes h2 when the page already has one (as now). Each section starts at h2 and goes down from there; whole pages are checked for one h1 and no skipped levels.</p></div>
+    <div><h3>Text on photos</h3><p>Every photo section has a scrim, and its contrast is checked against the worst pixel, as Sections v2 does. Sample photos carry real descriptions; replacing a photo asks for yours.</p></div>
+    <div><h3>Keyboard</h3><p>The gallery keeps its Layouts button, arrow keys between tiles and the “Adds between …” line. Saved styles are a normal menu button with a list.</p></div>
+    <div><h3>Speed</h3><p>A layout with a slider or a map adds its small script only to pages that use it (as F079). Sample photos are published in the same resized copies as your own.</p></div>
+  </div>
+</section>
+</main>

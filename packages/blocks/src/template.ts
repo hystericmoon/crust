@@ -10,7 +10,8 @@ import type { Data } from "@puckeditor/core";
 import { validateChrome, type SiteChrome, type SiteFooter, type SiteHeader } from "./chrome-model";
 import { checkContrast, formatRatio } from "./contrast";
 import { checkSectionContent, checkSectionName, isValidSectionId, linkedSectionIds, type LinkedSectionFile } from "./linked-sections";
-import { mediaFileOf, mediaLimits, mediaTypes, mediaUsedIn, MAX_EDGE, sniffImage, type MediaExt } from "./media";
+import { mediaFileOf, mediaFocus, mediaLimits, mediaTypes, mediaUsedIn, MAX_EDGE, sniffImage, type MediaExt } from "./media";
+import { checkDesign, designKinds, designLimits, designNames, isDesignKind, type PageDesign } from "./page-designs";
 import { checkBlog, checkPost, isBlogPath, isSearchPath, type BlogSettings, type Post } from "./posts";
 import { richTextProblems } from "./rich-text";
 import { sectionStyleWarnings } from "./section-styles";
@@ -48,6 +49,8 @@ export interface TemplatePhoto {
   height: number;
   /** The photo itself, base64. */
   data: string;
+  /** F081: the photo's focal point, when it isn't the middle. */
+  focus?: { x: number; y: number };
 }
 
 export interface Template {
@@ -68,7 +71,11 @@ export interface Template {
   blog: BlogSettings;
   posts: Post[];
   media: TemplatePhoto[];
+  /** F082 (optional): the post page, blog page and "Page not found" designs. */
+  designs?: TemplateDesign[];
 }
+
+export type TemplateDesign = Pick<PageDesign, "kind" | "title" | "content">;
 
 /** Everything a template is made from, as the builder has it. */
 export interface TemplateSource {
@@ -80,14 +87,16 @@ export interface TemplateSource {
   layouts: PackLayout[];
   blog: BlogSettings;
   posts: Post[];
+  /** F082: the site's designs (missing ones use the built-in look). */
+  designs?: TemplateDesign[];
   /** The photo library; only photos the template uses are fetched and kept. */
-  media: { file: string; alt: string; width: number; height: number }[];
+  media: { file: string; alt: string; width: number; height: number; focus?: { x: number; y: number } }[];
 }
 
 /** The photos (file names) a template's pages, posts, sections, layouts and header use. */
-export function photosUsed(source: Pick<TemplateSource, "chrome" | "pages" | "sections" | "layouts" | "posts">): string[] {
+export function photosUsed(source: Pick<TemplateSource, "chrome" | "pages" | "sections" | "layouts" | "posts" | "designs">): string[] {
   const found = new Set<string>();
-  mediaUsedIn([source.pages, source.sections, source.layouts, source.posts, source.chrome.header.logo], found);
+  mediaUsedIn([source.pages, source.sections, source.layouts, source.posts, source.designs ?? [], source.chrome.header.logo], found);
   for (const post of source.posts) {
     const cover = mediaFileOf(post.cover);
     if (cover) found.add(cover);
@@ -113,7 +122,7 @@ export async function makeTemplate(
     const item = library.get(file);
     const data = item ? await photo(file) : null;
     if (!item || !data) missing.push(file);
-    else media.push({ file, alt: item.alt, width: item.width, height: item.height, data });
+    else media.push({ file, alt: item.alt, width: item.width, height: item.height, data, ...(item.focus ? { focus: item.focus } : {}) });
   }
   const template: Template = {
     format: TEMPLATE_FORMAT,
@@ -131,6 +140,7 @@ export async function makeTemplate(
     blog: { title: source.blog.title, intro: source.blog.intro },
     posts: source.posts.map((p) => ({ slug: p.slug, title: p.title, description: p.description, date: p.date, cover: p.cover, coverAlt: p.coverAlt, puck: { root: { props: {} }, content: p.puck.content } })),
     media,
+    ...(source.designs?.length ? { designs: source.designs.map(({ kind, title, content }) => ({ kind, ...(title ? { title } : {}), content })) } : {}),
   };
   return { template, missing };
 }
@@ -229,7 +239,8 @@ export function readTemplatePhoto(m: unknown): TemplatePhoto | string {
   if (bytes.length > mediaLimits.uploadBytes) return `${label} is bigger than ${mediaLimits.uploadBytes / 1024 / 1024} MB.`;
   if (sniffed.width > MAX_EDGE || sniffed.height > MAX_EDGE) return `${label} is bigger than ${MAX_EDGE} pixels.`;
   if (!alt) return `${label} needs a description (alt text).`;
-  return { file, alt, width: sniffed.width, height: sniffed.height, data: (m as { data: string }).data };
+  const focus = mediaFocus((m as { focus?: unknown }).focus);
+  return { file, alt, width: sniffed.width, height: sniffed.height, data: (m as { data: string }).data, ...(focus ? { focus } : {}) };
 }
 
 /**
@@ -364,6 +375,26 @@ export function readTemplate(fileText: string, blocks: BlockSpecs): TemplateChec
     if (postProblems.length) problems.push(...postProblems.map((m) => `Post “${String(p.title ?? "").slice(0, 60)}”: ${m}`));
     else posts.push(post as Post);
   }
+  // F082: designs, each at most once and publishable.
+  const designs: TemplateDesign[] = [];
+  const rawDesigns = Array.isArray(raw.designs) ? raw.designs : [];
+  for (const d of rawDesigns.slice(0, designKinds.length)) {
+    const kind = isObject(d) && isDesignKind(d.kind) ? d.kind : null;
+    const content = kind && isObject(d) ? cleanBlocks(d.content, blocks, count, templateLimits.blocks) : null;
+    if (!kind || !content) {
+      problems.push("A page design in the template is damaged.");
+      continue;
+    }
+    if (designs.some((x) => x.kind === kind)) {
+      problems.push(`The template has two ${designNames[kind]} designs.`);
+      continue;
+    }
+    const title = kind === "notFound" && isObject(d) ? text(d.title, designLimits.title)?.trim() : undefined;
+    const design = { kind, content: content as PageDesign["content"], ...(title ? { title } : {}) };
+    const designProblems = [...checkDesign(design), ...richTextProblems(content)];
+    if (designProblems.length) problems.push(...designProblems.map((m) => `${designNames[kind]} design: ${m}`));
+    else designs.push(design);
+  }
   if (count.blocks > templateLimits.blocks) problems.push("The template has too many blocks.");
 
   // Photos: real images, with alt text, and every photo the template uses is in it.
@@ -378,11 +409,11 @@ export function readTemplate(fileText: string, blocks: BlockSpecs): TemplateChec
   }
 
   if (header && footer && tokens) {
-    const source = { chrome: { header, footer }, pages, sections, layouts, posts };
+    const source = { chrome: { header, footer }, pages, sections, layouts, posts, designs };
     const have = new Set(media.map((m) => m.file));
     for (const file of photosUsed(source)) if (!have.has(file)) problems.push(`The photo ${file} is used but isn't in the template.`);
     const used = new Set<string>();
-    for (const part of [...pages.map((p) => p.puck), ...posts.map((p) => p.puck), ...layouts.map((l) => l.content)]) for (const id of linkedSectionIds(part)) used.add(id);
+    for (const part of [...pages.map((p) => p.puck), ...posts.map((p) => p.puck), ...layouts.map((l) => l.content), ...designs.map((d) => d.content)]) for (const id of linkedSectionIds(part)) used.add(id);
     for (const id of used) if (!sectionIds.has(id)) problems.push(`The linked section “${id}” is used but isn't in the template.`);
   }
 
@@ -404,6 +435,7 @@ export function readTemplate(fileText: string, blocks: BlockSpecs): TemplateChec
       blog,
       posts,
       media,
+      ...(designs.length ? { designs } : {}),
     },
     problems: [],
   };

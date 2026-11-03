@@ -155,6 +155,7 @@ export const templateContent = (t: Template) => ({
   blog: t.blog,
   posts: t.posts,
   photos: t.media.map((m) => m.file),
+  ...(t.designs?.length ? { designs: t.designs } : {}),
 });
 
 /** The template's look becomes this browser's working copy of Site settings. */
@@ -169,7 +170,7 @@ export async function applyOnGitHub(t: Template, onStep: (step: ApplyStep, done?
   let sent = 0;
   for (const batch of batches) {
     onStep("photos", sent, t.media.length);
-    const res = await sendTemplatePhotos(t.name, batch.map(({ file, alt, data }) => ({ file, alt, data })));
+    const res = await sendTemplatePhotos(t.name, batch.map(({ file, alt, data, focus }) => ({ file, alt, data, ...(focus ? { focus } : {}) })));
     if (!res.ok) return `Nothing was replaced. Adding the photos stopped: ${res.error}${sent ? ` ${plural(sent, "photo")} already joined your photo library.` : ""}`;
     sent += batch.length;
   }
@@ -210,6 +211,8 @@ export function applyLocally(t: Template, now = new Date()): string | null {
     localStorage.setItem(BASE_KEY, JSON.stringify(base));
     localStorage.setItem("crust:sections", JSON.stringify(t.sections.map((s) => ({ ...s, savedAt }))));
     localStorage.setItem("crust:my-layouts", JSON.stringify([...previous, ...added]));
+    // F082: the template's designs, as this browser's copies (the site's own were set aside above).
+    for (const d of t.designs ?? []) localStorage.setItem(`crust:design:${d.kind}`, JSON.stringify({ design: { ...d, savedAt }, savedToGitHub: false }));
     if (original) localStorage.setItem("crust:before-template", JSON.stringify({ ...original, name: t.name }));
   } catch {
     bringBackBrowserSite();

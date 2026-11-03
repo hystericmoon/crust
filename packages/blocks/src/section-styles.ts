@@ -81,6 +81,10 @@ export interface ResolvedSectionStyle {
   button: { bg: string; fg: string; border: string; look: ButtonLook };
   /** Contrast of ink on bg; below AA only when no token colour reads on this background. */
   inkRatio: number;
+  /** F080: the label of a Soft button block (accent on a 14% accent tint), the text colour when the accent won't read there. */
+  softFg: string;
+  /** F080: and its background: the 14% tint, lighter when the label wouldn't read on it. */
+  softBg: string;
 }
 
 /** Works out every colour a style needs from the tokens. */
@@ -113,7 +117,12 @@ export function resolveSectionStyle(tokens: SiteTokens, id: SectionStyleId): Res
           ? { bg: softBg, fg: contrastRatio(c.primary, softBg) >= AA ? c.primary : ink, border: softBg, look }
           : { bg: "transparent", fg: ink, border: ink, look };
 
-  return { id, bg, ink, muted, accent, button, inkRatio };
+  // The label is the accent where it reads on the 14% tint, else the text colour; when even that
+  // doesn't read (an accent that is the text colour), the tint gets lighter until it does.
+  const readsOn = (fg: string) => (t: number) => contrastRatio(fg, mixHex(accent, bg, t)) >= AA;
+  const softFg = readsOn(accent)(0.14) ? accent : ink;
+  const softTint = [0.14, 0.1, 0.07, 0.04, 0].find(readsOn(softFg)) ?? 0;
+  return { id, bg, ink, muted, accent, button, inkRatio, softFg, softBg: mixHex(accent, bg, softTint) };
 }
 
 // --- Background images ------------------------------------------------------
@@ -162,6 +171,8 @@ export function sectionStylesCss(tokens: SiteTokens, scope = ""): string {
         `--cr-sec-ink: ${s.ink};`,
         `--cr-sec-muted: ${s.muted};`,
         `--cr-sec-accent: ${s.accent};`,
+        `--cr-sec-soft-fg: ${s.softFg};`,
+        `--cr-sec-soft-bg: ${s.softBg};`,
         `--cr-btn-bg: ${s.button.bg};`,
         `--cr-btn-fg: ${s.button.fg};`,
         `--cr-btn-border: ${s.button.border};`,

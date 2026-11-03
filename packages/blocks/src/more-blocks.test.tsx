@@ -20,8 +20,8 @@ describe("more blocks: in the builder", () => {
   it("are all in the block list, under Layout, Content or Media", () => {
     const listed = Object.values(config.categories ?? {}).flatMap((c) => c.components ?? []);
     for (const name of newBlocks) expect(listed).toContain(name);
-    // F078 added Video.
-    expect(config.categories?.media?.components).toEqual(["Gallery", "Video", "ImageOverlay", "LogoRow"]);
+    // F078 added Video; F079 Slideshow, Card slider and Map.
+    expect(config.categories?.media?.components).toEqual(["Gallery", "Slideshow", "CardSlider", "Video", "ImageOverlay", "LogoRow", "Map"]);
   });
 
   it("render with their defaults, with no script and no inline handlers", () => {
@@ -63,7 +63,8 @@ describe("Gallery", () => {
     { src: "", alt: "", caption: "" },
   ];
   it("publishes only photos with an address, as figures with captions", () => {
-    const out = html("Gallery", { images, shape: "wide" });
+    // Without the F079 lightbox (galleries made before it have none).
+    const out = html("Gallery", { images, shape: "wide", lightbox: "no" });
     expect(out).toContain('class="cr-gallery cr-grid-3 cr-shape-wide" role="list"');
     expect(out).toContain('<figure class="cr-gallery-item"><img src="/a.jpg" alt="A desk" loading="lazy" decoding="async"/><figcaption>Our desk</figcaption></figure>');
     expect(out.match(/<li>/g)).toHaveLength(1);

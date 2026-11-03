@@ -48,8 +48,8 @@ describe("review-fixes 3: post body inside the page column (F035)", () => {
 
 describe("review-fixes 10: search results and the posts list (F035, F039)", () => {
   it("styles search results and post titles with the site's link style", () => {
-    const rule = styles.slice(styles.indexOf(".cr-post-item h2 a, .cr-search-results a {"));
-    expect(rule).toMatch(/^\.cr-post-item h2 a, \.cr-search-results a \{[^}]*text-decoration-thickness: var\(--cr-link-thickness, auto\);[^}]*background: var\(--cr-link-bg, none\)/);
+    const rule = styles.slice(styles.indexOf(".cr-post-item :is(h2, h3) a, .cr-search-results a {"));
+    expect(rule).toMatch(/^\.cr-post-item :is\(h2, h3\) a, \.cr-search-results a \{[^}]*text-decoration-thickness: var\(--cr-link-thickness, auto\);[^}]*background: var\(--cr-link-bg, none\)/);
     expect(styles).toContain(".cr-search-results a { color: var(--cr-sec-accent, var(--cr-color-primary)); }");
   });
 

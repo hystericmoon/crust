@@ -257,6 +257,312 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-03 — F083 Stricter template check (Claude, reversible)
+
+- **Where.** `packages/render/src/template-strict.ts` (four new groups:
+  `slotsGroup`, `cropsGroup`, `varietyGroup`, `gradientGroup`), the
+  filler list in `template-check.ts` (`FILLER_EXACT`), wired in
+  `scripts/check-template.ts`. Tests in `template-strict.test.ts`.
+- **Empty slots.** A Slideshow slide, Gallery picture, Logo or Image block
+  with no photo always fails. A Grid, Card slider or row of Cards fails
+  only when some have a photo (or icon) and others don't: a grid of
+  words-only cards is a design, a hole in a row is a defect. A "Replace
+  me" mark doesn't excuse an empty slot.
+- **Crops.** Photos in one row (Grid, Card slider, Slideshow, Gallery
+  with "original" shape, the first Image or Card of each column) must be
+  within 1.3× of each other in width÷height (`MAX_CROP_MISMATCH`). Square
+  and wide galleries are skipped: they crop every picture the same.
+  Photos that aren't the template's own (web addresses) can't be
+  measured and are skipped.
+- **Variety.** Home needs at least 5 different kinds of section
+  (`MIN_HOME_SECTION_TYPES`): Hero, one per feature block (card grid,
+  stats, quote, logos, slideshow, pricing…), Image and text, Columns,
+  Text. Linked sections on Home count.
+- **Filler.** Builder default words ("Heading", "Your text here", "Click
+  here", "Alex Rivera", the sample quote) fail as whole-string matches,
+  so ordinary sentences containing "heading" pass.
+- **Gradients.** Closes the F073 proposal: a Section gradient that fails
+  `gradientReads` after a colour change fails the check.
+- **Harbour, Signal, Corner are excused until F084.** They fail the new
+  checks (Home has 4 kinds of section; Harbour and Signal mix a portrait
+  and a landscape in a row). `done_check` runs `check:template` on them,
+  so their findings from the four new groups show as notes ("Waiting
+  for F084's rebuild") through `AWAITING_REBUILD`. **F084 must empty
+  that list** (`template-strict.ts`) and the check then holds the
+  rebuilt templates to every rule. A new template is never excused.
+
+## 2026-11-03 — F082 Post, blog and 404 designs (Claude, reversible)
+
+Snapshot https://claude.ai/artifact/6DUK8yisbSiBT5LuYuhUND
+(`design/f082-page-designs-v1.html`); the owner said "Go ahead and run",
+so the recommendations were built: A for all three decisions.
+
+- **How: A, a design with blocks that fill themselves in.** One way of
+  working for pages, posts and designs (consistency, Jakob's law inside
+  the product); anything can be added around the post (sign-up strip,
+  linked section, "More posts"); premium templates (F084) can ship
+  designed post and blog pages. B (layout switches) couldn't hold extra
+  sections; C (fixed top, blocks around it) left the most visible part
+  fixed.
+- **Format.** `content/designs/{post,blog,404}.json`, `{ kind, title?,
+  savedAt, content }` (spec, `page-designs.ts`). New optional files, so
+  no migration: a missing file keeps the old renderer path exactly (the
+  tests compare the output byte for byte). A damaged file stops the
+  publish with its name, rather than quietly using the built-in look.
+- **Rules (`checkDesign`).** The post design needs exactly one "Post
+  content", at the top level (it holds the post's own full-width
+  sections; inside a section it would nest sections). The builder keeps
+  it, and "Cover with title", out of slots (`disallow`, also inside the
+  settings tabs' `resolveFields`); saving checks again. The blog design
+  needs a Post list. Self-filling blocks only go in their own designs;
+  outside a design they publish nothing. One h1 stays the publish
+  check's job: every starting design has exactly one.
+- **Starting designs: all nine**, today's look first and marked. Post:
+  Classic (today's), Split (title beside a tall cover, cropped to the
+  photo's focal point), On the photo (`PostHero`: the cover fills a dark
+  section with a strong tint, 4.5:1 kept; without a cover it's a plain
+  dark section). Blog: Cards (today's), List, Featured. 404: Simple
+  (today's), Helpful (home and site search, which every site has),
+  Statement (big heading on dark). In the layout gallery "Whole pages"
+  becomes "Starting designs"; picking one replaces the design (one Undo
+  brings it back), because two designs on top of each other would mean
+  two "Post content" blocks.
+- **Where: A.** Posts screen cards "Blog page design" and "Post page
+  design" with "Now: Built-in look / Your design", and "Page not found"
+  as its own row after the pages (hidden while searching the list).
+  Route `#/design?kind=post|blog|notFound`.
+- **Builder canvas.** The design editor shows the newest post (its own
+  blocks drawn read-only where "Post content" is) and the real list of
+  posts; without posts, sample words. The post editor shows the post
+  inside the saved post design (`StaticBlocks` from @crust/render around
+  Puck's own blocks). Known gap: a "More posts" list in the post editor
+  shows "No posts yet" (the editor doesn't load the other posts).
+- **Saving** like posts: a copy in this browser wins until it's saved
+  (`crust:design:<kind>`), so preview links without saving work; "Use
+  the built-in look" deletes the file (`/api/designs` action `reset`).
+  Photos used in a design count as used in the media library.
+- **Templates** carry `designs` (optional; old files read as before);
+  starting from a template replaces the site's designs and removes ones
+  it doesn't have; the template check publishes them.
+- **Search.** A post's design blocks are inside the post's searchable
+  `<main>`, so text the design adds (a sign-up strip) is indexed with
+  every post. Small; a later fix could mark them `data-pagefind-ignore`.
+- **Checks.** check:layouts publishes the nine designs in every other
+  style look (54 pages, axe at desktop and phone); check:builder has
+  four new screens.
+
+## 2026-11-03 — F081 Images: WebP, AVIF, focal point (Claude, reversible)
+
+Snapshot https://claude.ai/artifact/Qp4rkNmxNn3AKWKxDTr9hB
+(`design/f081-images-v1.html`). Only the focal point picker had a
+visible choice; the owner was away, so the recommendation was built: A.
+
+- **Copies, not conversion.** crust-publish writes `<file>.avif` and
+  `<file>.webp` beside every library photo and every resized copy
+  (`harbour.jpg.avif`, `harbour-480w.jpg.webp`); a WebP photo gets only
+  AVIF. The original's extension stays in the name so `harbour.jpg` and
+  an uploaded `harbour.webp` never share a copy. Pages list them in a
+  `<picture>` (AVIF, then WebP, then the original `<img>`, which keeps
+  srcset, size, alt and loading). Nothing is stored in `content/`.
+- **Encoders.** AVIF: `ravif`/`rav1e` (BSD-3/BSD-2), pure Rust, built
+  without assembly so no NASM is needed on Mac/Windows. WebP: `webp`
+  (MIT/Apache) over libwebp (BSD-3), built from source by libwebp-sys
+  (needs a C compiler, which every build already has). The `image`
+  crate's own WebP writer is lossless only, which makes photos larger
+  than the JPEG. Settings: AVIF quality 60 at speed 10, WebP 78. On
+  Corner's eleven photos AVIF weighs 41% of the JPEGs, WebP 68%; slower
+  AVIF speeds saved a few percent for 2–3× the time.
+- **Speed.** Rust builds generic code inside the crate that uses it, so
+  rav1e's encoder is compiled inside crust-publish; `cargo run` (a dev
+  build) made a photo take ~5 s. `[profile.dev.package.crust-publish]
+  opt-level = 2` brings it to ~0.4 s. Photos are encoded on a few
+  threads at once.
+- **Cache.** `--photo-cache <dir>` (crust-publish) keeps each photo's
+  copies under `<file>-<fingerprint>/` (FNV-1a of its bytes and a
+  settings version, `COPIES_VERSION`); an unchanged photo is copied from
+  there, changed or deleted photos' entries are removed. The publish
+  workflow keeps `.crust-cache/photos` with `actions/cache` (keyed on
+  `content/media/**`, restoring the last one); the desktop app keeps it
+  in the site's `.crust/photo-cache`. A cache that can't be written only
+  makes the next publish slower.
+- **`<picture>` doesn't change layouts.** It's `display: contents`
+  (`.cr-picture`), so the `<img>` lays out as before; the three CSS rules
+  that used `>` to reach a section photo also match through it. Checked
+  in Chromium on the published Corner template at desktop and phone
+  width: every photo loads its AVIF copy, and every photo's box is
+  identical with and without the `<picture>`.
+- **Focal point: A, press on the photo.** In the media library's photo
+  details: press (or drag) on the photo, arrow keys move 5% (Shift 20%),
+  "Centre" resets; three small crops (wide, square, tall) show what
+  blocks will keep. Direct manipulation over B's nine positions (too
+  coarse: a subject between two positions is clipped) and C's sliders
+  (indirect: two controls to steer one point). Keyboard: one tab stop,
+  `role="application"` so screen readers pass the arrows through, the
+  label reads the position as words and a polite live region repeats it
+  after each move. No dragging is needed (a single press works, WCAG
+  2.5.7). The dot is a white ring inside a dark ring, visible on light
+  and dark photos.
+- **Saving.** "Save changes" (or "Use this photo") saves alt text and
+  focal point in one commit (new `details` action on `/api/media`). A
+  focal point can be saved before the photo has alt text. The middle is
+  stored as no focus at all.
+- **Format (contract).** `content/media.json` items may carry `focus`
+  `{ "x": 0–100, "y": 0–100 }` (optional; missing means the middle, as
+  before), so no migration is needed. Template files' photos may carry
+  it too, and it comes along when a template is applied.
+- **Where it's used.** Every library photo shown through `Img`, i.e. all
+  of them: cards, galleries, sliders, slideshows, section and overlay
+  backgrounds, post covers and thumbnails, quote portraits, video and
+  map covers. Uncropped photos ignore it. A Section's own Focus (F073)
+  wins when it isn't the middle. The builder's canvas gets the focal
+  points too (`MediaFocusProvider`, which loads the library once), so
+  the canvas crops like the site.
+- **check:builder** has a "media library, focal point" screen (the
+  library is faked with Playwright routes). Screenshot
+  `design/f081-focal-point-picker.png`.
+
+## 2026-11-03 — F080 Layout library v2 (Claude, reversible)
+
+Snapshot https://claude.ai/artifact/VpbNu8K34npejqHXQpiYnj
+(`design/f080-layout-library-v1.html`); the owner was asleep, so the
+recommendations were built: A for all three choices. Built from 01:15
+Jakarta, the time the owner asked to continue.
+
+- **64 new sections, 10 new whole pages** (`packages/blocks/src/layouts-v2.ts`),
+  on the Milestone 8 layer: display headings with labels, photo and
+  gradient backgrounds, section widths, boxed, highlighted, divided and
+  sticky columns, icons, figures, tables, pricing, sliders, tabs, maps,
+  the lightbox. Only section styles and tokens, never colours of their
+  own. Categories grew to Hero, Intro, About, Features, Services, Work,
+  Gallery, Testimonials, Logos, Numbers, Process, Pricing, FAQ, Team,
+  Call to action, Contact (and Content, from the first library). Words are
+  written for a small design studio/workshop so a layout reads as a real
+  page; "Step 1" labels appear only where the content is a sequence.
+- **Photos: A, sample photos marked "to replace".** 15 public-domain
+  photos from our own templates (CREDITS.md), resized to 1600 px, plus
+  five made-up logos drawn for Crust (PNG, Liberation/DejaVu fonts),
+  served by the builder at `/layout-photos/` (`apps/admin/public`,
+  3 MB). `LayoutPhotoWatcher` copies each one into the site's Media
+  library the first time a page uses it (one upload at a time, with its
+  description as alt; a photo already there under its name is reused),
+  then points the blocks at `/media/…` without an undo step. It watches
+  the page, not the insert, so a page saved before the copy finished is
+  put right next time. Every sample photo is marked (F046), so
+  publishing waits until it's replaced or kept with "Keep as is"; the
+  builder's own swap to the library copy keeps the mark
+  (`isSampleCopy`). Safety net: a block still pointing at
+  `/layout-photos/` (copy failed, then "Keep as is") renders with
+  `data-crust-placeholder` and stops publishing
+  (`uncopiedSampleLabel`). B (empty frames) was turned down because
+  photo-led layouts looked unfinished; C (type-only) because big imagery
+  is most of what makes the reference sites feel premium.
+- **No team portraits.** We have no public-domain portraits; team
+  layouts use workplace photos (marked to replace) or names only.
+- **Old layouts: A, under "Simple".** The first library (26 sections, 5
+  pages) is kept and listed after the new ones in each category under a
+  "Simple" heading (its own named list for screen readers), and found by
+  searching "simple". Fewer finished-looking choices first (Hick's law)
+  without taking away layouts the owner knows. No ids changed.
+- **Gradients fit the site.** A layout's gradient ends in a colour role
+  that may not read in every look; on insert `fitLayoutToTokens` swaps
+  it for one that keeps AA (or a plain colour). check:layouts renders all
+  64 sections on every look (one colourway each, in turn) the same way.
+- **Saved element styles: A, copy on apply.** "Saved styles" sits at the
+  top of every block's Style tab: "Save this button's style…" stores the
+  block's Style-tab settings (never words, links or photos; a Section's
+  photo, video and focus are left out) as a saved layout of kind
+  `"element"` in `content/layouts/` (or the browser until saving is on).
+  Pressing a saved style copies its settings in, one undo step; "In use"
+  shows when the block already matches. Rename and Delete in the same
+  list, delete asks first. Only styles from the same kind of block are
+  offered. B (linked styles) was turned down: it changes the page format
+  and renderer, and the Style library already does "change once
+  everywhere". C (one default per block type) allows only one look.
+  Element styles stay out of theme packs and templates for now (Proposal
+  below).
+- **Content format:** `SavedLayout.kind` may be `"element"` (one block).
+  Additive; pages are untouched. The server accepts it only with exactly
+  one block.
+- **Soft button fix (found by the new check).** In the Bistro and
+  Playground looks a Soft button's label (the accent) was under 4.5:1 on
+  its own tint. Each section style now works out `--cr-sec-soft-fg` (the
+  accent, or the text colour) and `--cr-sec-soft-bg` (the 14% tint,
+  lighter until the label reads); hover now outlines instead of
+  darkening. Existing Soft buttons only gain contrast.
+- **Proposal:** carry saved element styles in theme packs (small, S).
+
+## 2026-11-02 — F079 Slideshow, Card slider, Tabs, Lightbox, Map (Claude, reversible)
+
+Snapshot https://claude.ai/artifact/FNRagTiH9MLL4iTdDgHeje
+(`design/f079-interactive-v1.html`); the owner hadn't picked, so the
+recommendations were built: A for all four choices.
+
+- **Plain HTML first, a small script second.** Slides and cards sit in a
+  row that scrolls and snaps (swipe works with no script); every tab's
+  text is on the page under its own heading; "Show map" is a link to
+  OpenStreetMap; a gallery photo is a link to the photo. A script (each
+  2.5 KB at most, unminified) is added only to pages that use the block
+  (`interactiveTags`) and turns on the buttons. So the M1 rule "pages
+  display with no JavaScript" still holds, search engines see every tab,
+  and a page without these blocks gets no script and none of their CSS
+  (`needsInteractiveCss`).
+- **Slideshow: control row under the photo (A).** Buttons never sit on
+  the photo, so they read on any picture without a scrim; "2 / 5" is
+  written (and read out as "Slide 2 of 5"); 44 px targets (WCAG 2.5.8 asks
+  24). B (dots on the photo) was turned down for tiny targets and
+  colour-only state; C (thumbnails) for loading every photo up front.
+  Following the WAI carousel pattern: a named region ("Slideshow: Our
+  rooms", `aria-roledescription="carousel"`), slides labelled "2 of 5".
+  Off by default, playing on its own needs "Yes, with a pause button";
+  then the pause button comes first, rotation stops while the pointer or
+  keyboard focus is inside (WCAG 2.2.2), the count isn't announced while
+  it plays (`aria-live="off"`), and under Reduce motion it never plays on
+  its own and slides without animation. The slideshow wraps from the last
+  slide to the first; the card slider stops at the ends (buttons marked
+  `aria-disabled`, not `disabled`, so focus isn't lost).
+- **Card slider: arrows above the row, on the right (A)**, with the next
+  card peeking in. Cards use the Grid's card look, so they match.
+- **Tabs:** the WAI tabs pattern with automatic activation (arrow keys
+  move and show; Home/End; the side look uses Up/Down). Looks: underline,
+  pills, side (left on desktop, underline on phones). The tab row scrolls
+  sideways on phones instead of turning into an accordion: changing
+  widget type by screen width confuses people and screen readers. A link
+  to `#<panel id>` opens that tab. Texts are plain paragraphs (like the
+  Accordion's answers), not rich text, to keep the block small.
+- **Lightbox: dark, the whole screen (A).** A real `<dialog>`
+  (`showModal`): focus moves in and back to the pressed photo, Esc closes
+  (the browser does that), arrow keys go through the gallery, the photo
+  keeps its description. Fixed colours (#EDEFEC on #141614, 16:1), so it
+  needs no per-site check. It's a Gallery switch, "Open photos larger
+  when pressed": on for new galleries, off (missing) for galleries made
+  before, so published sites don't change. Not in the builder, where
+  pressing a photo selects the block.
+- **Map: a drawn map card (A), OpenStreetMap on press.** The card is CSS
+  in the section's colours; a cover photo can replace it (B, built as an
+  option). Nothing is asked from a map service until "Show map" is
+  pressed (privacy, speed score); C (map shown straight away) was turned
+  down for that and because a map in the page traps scrolling on phones.
+  OpenStreetMap's embed needs no account or key; Google's keyless embed
+  isn't a documented API and could stop working. "Directions" uses
+  Google Maps' documented link (`maps/dir/?api=1`, no key), which opens
+  the visitor's maps app on phones. The press reuses the F078
+  press-to-load script (`VIDEO_EMBED_SCRIPT`, now also filling a
+  `data-cr-embed-box` frame). The address is always written out in an
+  `<address>` (a map tells a screen reader nothing).
+- **Finding the pin:** the builder's "Find on the map" asks OpenStreetMap's
+  free search (Nominatim) once per press, from the owner's browser only
+  (its usage policy allows this; never from published sites). Or paste a
+  Google Maps, Apple Maps or OpenStreetMap link, or coordinates
+  (`pinFromText`; a Google place's own pin `!3d…!4d…` wins over the map
+  centre `@…`). Short links (maps.app.goo.gl) can't be read without
+  following them, so the field explains how to copy a full one. The pin
+  is stored as `pin: { lat, lng }` (6 decimals).
+- **Content format:** all additive and optional (see docs/spec.md, F079);
+  no migration. `Gallery.lightbox` missing means off.
+- **Speed:** check:perf measures the Home page, which has none of these
+  blocks; the scripts are small, deferred (`type="module"`), and slides
+  after the first load lazily.
+
 ## 2026-11-02 — F078 Stats, Video, Table and Pricing, Numbered list (Claude, reversible)
 
 Snapshot https://claude.ai/artifact/X3bMNKoE6MCU7EqbLJx2mk

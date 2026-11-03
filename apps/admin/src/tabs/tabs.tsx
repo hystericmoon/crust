@@ -10,6 +10,8 @@ import { useEffect, useId, useState, useSyncExternalStore } from "react";
 import { RadioGroup } from "../sections/controls";
 import { sectionFieldShown } from "../sections/sections-v2-fields";
 import { blockFieldShown } from "../blocks-v3/fields";
+import { interactiveFieldShown } from "../interactive/fields";
+import { SavedStyles, styleKeys } from "./element-styles";
 
 export const tabs = ["content", "style", "advanced"] as const;
 export type Tab = (typeof tabs)[number];
@@ -17,6 +19,8 @@ export const tabNames: Record<Tab, string> = { content: "Content", style: "Style
 
 /** Where each field lives. Anything not listed is Content. */
 const styleFields = new Set([
+  // F080: saved element styles, at the top of the Style tab
+  "_styles",
   "align",
   "tone",
   "variant",
@@ -63,6 +67,12 @@ const styleFields = new Set([
   "ratio",
   "planStyle",
   "highlightStyle",
+  // F079: Slideshow, Card slider, Map, Gallery lightbox
+  "autoplay",
+  "speed",
+  "visible",
+  "zoom",
+  "lightbox",
   "logoSize",
   "grayscale",
   "position",
@@ -195,8 +205,11 @@ const isSlot = (f: Field | undefined) => f?.type === "slot";
 export function withSettingsTabs(config: Config<Components>): Config<Components> {
   const components = Object.fromEntries(
     Object.entries(config.components).map(([name, comp]) => {
+      const keys = styleKeys(Object.keys((comp.fields ?? {}) as Fields), (k) => tabOf(name, k) === "style");
+      const label = (comp as { label?: string }).label ?? name;
       const own: Fields = {
         _tabs: { type: "custom", label: "Settings to show", render: () => <TabBar /> },
+        ...(keys.length ? { _styles: { type: "custom", label: "Saved styles", render: () => <SavedStyles component={name} label={label} keys={keys} /> } as Field } : {}),
         ...(comp.fields as Fields),
         anchor: { type: "custom", label: "Anchor name", render: ({ value, onChange }) => <AnchorField value={value as string} onChange={onChange} /> },
         _empty: { type: "custom", label: "", render: () => <EmptyTab component={name} /> },
@@ -207,11 +220,11 @@ export function withSettingsTabs(config: Config<Components>): Config<Components>
         const props = (data?.props ?? {}) as Partial<SectionProps> & { id?: string };
         const isFirst = !params?.parent && params?.appState?.data?.content?.[0]?.props?.id === props.id;
         // F078: a few fields only matter with another setting (number look with Numbers, badge with a highlighted plan).
-        const shown = (key: string) => (name === "Section" ? sectionFieldShown(key, props, isFirst) : blockFieldShown(name, key, props as Record<string, unknown>));
+        const shown = (key: string) => (name === "Section" ? sectionFieldShown(key, props, isFirst) : blockFieldShown(name, key, props as Record<string, unknown>) && interactiveFieldShown(name, key, props as Record<string, unknown>));
         const picked = Object.entries(own).filter(
           ([key, f]) => key === "_tabs" || isSlot(f) || (key !== "_empty" && tabOf(name, key) === tab && shown(key)),
         );
-        const visible = picked.filter(([key, f]) => key !== "_tabs" && !isSlot(f));
+        const visible = picked.filter(([key, f]) => key !== "_tabs" && key !== "_styles" && !isSlot(f));
         if (!visible.length) picked.push(["_empty", own._empty!]);
         return Object.fromEntries(picked) as Fields;
       };

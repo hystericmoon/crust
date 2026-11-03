@@ -123,7 +123,7 @@ export function MyLayoutsProvider({ githubOn, children }: { githubOn: boolean; c
       if (!writeLocalLayouts(next)) return "This browser wouldn't store the layout. Try again.";
       setLayouts(next.sort(newest));
     }
-    tell(`Saved “${clean}” to My layouts.`);
+    tell(kind === "element" ? `Saved the style “${clean}”. Apply it from the Style tab of any ${content[0]?.type ?? "block"}.` : `Saved “${clean}” to My layouts.`);
     return null;
   };
 
@@ -151,7 +151,11 @@ export function MyLayoutsProvider({ githubOn, children }: { githubOn: boolean; c
       return "This browser wouldn't store the change. Try again.";
     }
     setLayouts((list) => (list ?? []).filter((l) => l.id !== id));
-    tell(`Deleted “${gone?.name ?? "the layout"}”. Pages that use it are unchanged.`);
+    tell(
+      gone?.kind === "element"
+        ? `Deleted the style “${gone.name}”. Blocks that use it keep their look.`
+        : `Deleted “${gone?.name ?? "the layout"}”. Pages that use it are unchanged.`,
+    );
     return null;
   };
 

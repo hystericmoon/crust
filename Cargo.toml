@@ -11,3 +11,10 @@ publish = false
 # optimised dependencies keep that fast.
 [profile.dev.package."*"]
 opt-level = 2
+
+
+# F081: the AVIF encoder's code is built inside crust-publish (Rust compiles
+# generic code where it's used), so it's optimised too: a photo takes about
+# 0.4 s instead of 5 s.
+[profile.dev.package.crust-publish]
+opt-level = 2

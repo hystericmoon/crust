@@ -1,0 +1,252 @@
+<title>F079 Interactive Blocks</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,400&display=swap">
+<style>
+/* Layout: report column; five published-page thumbnails; three decisions drawn as UI, recommendation outlined */
+:root{--bg:#F2F3F1;--panel:#FFFFFF;--fg:#17191B;--muted:#5C6267;--line:#D9DCD8;--accent:#3949AB;--soft:#E8EAF6;--warn:#9A4A12;
+--ui:"Schibsted Grotesk",ui-sans-serif,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;--serif:"Fraunces",Georgia,serif;
+/* the sample site (Atelier Stone): fixed, it is a picture of a published page */
+--s-bg:#F4F1EC;--s-surface:#E9E4DC;--s-text:#1E2420;--s-muted:#5A615C;--s-primary:#2F4A3A;--s-on:#FFFFFF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;--warn:#F0A672;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111315;--panel:#1B1E21;--fg:#ECEEEC;--muted:#A3AAA6;--line:#2F3438;--accent:#9FAAF0;--soft:#262B45;--warn:#F0A672;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--ui);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1160px;margin:0 auto;padding-block:48px 96px;display:grid;gap:56px}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.015em}h1{font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.05;font-weight:600}h2{font-size:1.5rem;font-weight:600}h3{font-size:1.02rem;font-weight:600}
+p{margin:0;max-width:70ch}.eyebrow{font:500 .75rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.lede{font-size:1.1rem;color:var(--muted)}
+section{display:grid;gap:18px}
+.tag{font:600 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--accent);color:var(--panel);padding:6px 10px;border-radius:4px}
+.lands{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.lands{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.lands{grid-template-columns:1fr}}
+.land{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:10px;align-content:start;min-width:0}
+.land p{font-size:.88rem;color:var(--muted)}
+.page{border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,.08);background:var(--s-bg);color:var(--s-text);position:relative;padding:14px}
+.page.dark{background:var(--s-primary);color:var(--s-on)}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.stats div{display:grid;gap:2px;padding:0 10px}
+.stats.lines div+div{border-left:1px solid color-mix(in srgb,currentColor 25%,transparent)}
+.stats.boxes{gap:6px}.stats.boxes div{background:var(--s-surface);border-radius:6px;padding:10px}
+.num{font:300 26px/1 var(--serif);letter-spacing:-.02em}
+.lab{font-size:10px;color:var(--s-muted);line-height:1.3}
+.page.dark .lab{color:#DCE5DF}
+/* video */
+.vid{position:relative;aspect-ratio:16/9;border-radius:4px;overflow:hidden;background:linear-gradient(160deg,#9AA59B,#56645A 55%,#2C362F);display:grid;place-items:center;color:#fff}
+.vid.yt{background:linear-gradient(160deg,#6C6C6C,#2B2B2B)}
+.play{width:46px;height:46px;border-radius:50%;background:#fff;color:#17191B;display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.vcap{position:absolute;left:8px;bottom:8px;right:8px;display:flex;justify-content:space-between;font-size:9px;background:linear-gradient(transparent,rgba(0,0,0,.55));padding:14px 4px 0}
+.cc{font:500 8px var(--mono);border:1px solid #fff;border-radius:2px;padding:1px 3px}
+/* table */
+.tbl{width:100%;border-collapse:collapse;font-size:10px}
+.tbl caption{text-align:left;font-weight:600;font-size:11px;padding-bottom:6px}
+.tbl th,.tbl td{text-align:left;padding:5px 6px;border-bottom:1px solid color-mix(in srgb,var(--s-text) 18%,transparent)}
+.tbl thead th{font-weight:600;border-bottom:1.5px solid var(--s-text)}
+.tbl tbody th{font-weight:600}
+.tbl.stripes tbody tr:nth-child(odd){background:var(--s-surface)}
+.tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+/* pricing */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;align-items:stretch}
+.plan{background:var(--s-surface);border-radius:6px;padding:9px;display:grid;gap:5px;align-content:start;font-size:9px;position:relative}
+.plan.hi{background:var(--s-primary);color:var(--s-on)}
+.plan b{font-size:10px}.price{font:300 20px/1 var(--serif)}.per{font-size:8px;opacity:.8}
+.plan ul{margin:0;padding:0;list-style:none;display:grid;gap:2px}.plan li::before{content:"✓ ";opacity:.8}
+.pbtn{margin-top:4px;text-align:center;border-radius:99px;padding:4px;font-weight:600;border:1px solid currentColor}
+.plan.hi .pbtn{background:var(--s-on);color:var(--s-primary);border-color:var(--s-on)}
+.badge{justify-self:start;font:600 7px var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--s-on);color:var(--s-primary);padding:2px 5px;border-radius:99px}
+/* numbered list */
+.steps{margin:0;padding:0;list-style:none;display:grid;gap:8px;font-size:10px}
+.steps li{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center}
+.circ{width:20px;height:20px;border-radius:50%;background:var(--s-primary);color:var(--s-on);display:grid;place-items:center;font:600 9px var(--ui)}
+.big{font:300 22px/1 var(--serif);color:var(--s-primary);min-width:28px;font-variant-numeric:tabular-nums}
+.pl{font:600 10px var(--ui);min-width:12px}
+
+/* directions */
+.dir{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:16px}
+.dir.rec{border:2px solid var(--accent)}
+.dirhead{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.trio{grid-template-columns:1fr}}
+.opt{border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:10px;align-content:start;min-width:0}
+.opt.rec{border:2px solid var(--accent);background:color-mix(in srgb,var(--soft) 45%,var(--panel))}
+.opt h3{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.opt p{font-size:.86rem;color:var(--muted)}
+.opt .warn{color:var(--warn)}
+.pnl{border:1px solid var(--line);border-radius:8px;padding:10px;display:grid;gap:8px;font-size:.78rem;background:var(--panel)}
+.pnl .l{font-size:.72rem;color:var(--muted)}
+.grid-ed{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
+.grid-ed span{border:1px solid var(--line);border-radius:4px;padding:4px 5px;font:.7rem var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grid-ed span.h{font-weight:600;background:var(--soft)}
+.grid-ed span.f{outline:2px solid var(--accent);outline-offset:-1px}
+.btns{display:flex;gap:4px;flex-wrap:wrap}.btns span{border:1px solid var(--line);border-radius:6px;padding:3px 7px;font-size:.7rem}
+.ta{border:1px solid var(--line);border-radius:6px;padding:6px;font:.7rem/1.5 var(--mono);white-space:pre;overflow:hidden}
+.items{display:grid;gap:4px}.items span{border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:.72rem;display:flex;justify-content:space-between}
+.phone{width:150px;justify-self:center;border:6px solid #2A2D30;border-radius:18px;background:var(--s-bg);color:var(--s-text);padding:10px 8px;overflow:hidden}
+.scrollr{overflow:hidden;border:1px dashed color-mix(in srgb,var(--s-text) 35%,transparent);border-radius:4px;position:relative}
+.scrollr .tbl{width:200px}
+.scrollr::after{content:"→ scroll";position:absolute;right:3px;bottom:2px;font:500 7px var(--mono);background:var(--s-bg);padding:1px 3px}
+.stack{display:grid;gap:5px;font-size:9px}.stack div{background:var(--s-surface);border-radius:4px;padding:5px;display:grid;gap:1px}
+ul.pros{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.88rem}
+ul.pros li::marker{color:var(--muted)}
+.a11y{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.a11y{grid-template-columns:1fr}}
+.a11y div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:6px}
+.a11y p{font-size:.88rem;color:var(--muted)}
+.looks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.looks{grid-template-columns:1fr}}
+.looks .lk{display:grid;gap:6px;min-width:0}.looks .lk span{font-size:.8rem;color:var(--muted)}
+</style>
+/* F079 parts */
+.ph{position:relative;border-radius:4px;overflow:hidden;background:linear-gradient(150deg,#B9C2B4,#6F7D6E 55%,#36423A)}
+.ph.b{background:linear-gradient(150deg,#D7C7B0,#9C856A 55%,#4F4134)}
+.ph.c{background:linear-gradient(150deg,#AFC0C8,#5F7781 55%,#2E3D44)}
+.r169{aspect-ratio:16/9}.r43{aspect-ratio:4/3}.r11{aspect-ratio:1/1}
+.ctl{display:flex;align-items:center;gap:6px;font-size:9px;margin-top:6px}
+.cb{width:22px;height:22px;border-radius:50%;border:1px solid color-mix(in srgb,var(--s-text) 40%,transparent);display:grid;place-items:center;font:600 10px/1 var(--ui);flex:none}
+.cb.fill{background:var(--s-primary);color:var(--s-on);border-color:var(--s-primary)}
+.cnt{font:500 9px var(--mono);font-variant-numeric:tabular-nums}
+.sp{flex:1}
+.capx{font-size:9px;margin-top:6px;display:grid;gap:1px}.capx b{font-size:10px}
+.dots{display:flex;gap:4px;justify-content:center;position:absolute;left:0;right:0;bottom:6px}
+.dots i{width:5px;height:5px;border-radius:50%;background:#fff;opacity:.6}.dots i:first-child{opacity:1}
+.ovarr{position:absolute;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.9);color:#17191B;display:grid;place-items:center;font:600 10px/1 var(--ui)}
+.thumbs{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-top:4px}.thumbs .ph{aspect-ratio:1}.thumbs .ph.on{outline:2px solid var(--s-primary);outline-offset:1px}
+.cards{display:flex;gap:6px;overflow:hidden}
+.card{flex:0 0 40%;background:var(--s-surface);border-radius:5px;overflow:hidden;font-size:9px}
+.card .ph{aspect-ratio:4/3;border-radius:0}.card div.t{padding:6px;display:grid;gap:2px}.card b{font-size:10px}
+.chead{display:flex;align-items:end;gap:6px;margin-bottom:6px}.chead b{font:400 14px/1.1 var(--serif);flex:1}
+.tabsu{display:flex;gap:12px;border-bottom:1px solid color-mix(in srgb,var(--s-text) 22%,transparent);font-size:10px}
+.tabsu span{padding:5px 0}.tabsu span.on{font-weight:600;box-shadow:inset 0 -2px 0 var(--s-primary)}
+.tabsp{display:flex;gap:4px;font-size:10px;background:var(--s-surface);padding:3px;border-radius:99px;width:max-content}
+.tabsp span{padding:4px 9px;border-radius:99px}.tabsp span.on{background:var(--s-primary);color:var(--s-on);font-weight:600}
+.tabsv{display:grid;grid-template-columns:70px 1fr;gap:10px;font-size:10px}.tabsv .l{display:grid;gap:2px;align-content:start;border-left:1px solid color-mix(in srgb,var(--s-text) 22%,transparent)}
+.tabsv .l span{padding:4px 7px}.tabsv .l span.on{font-weight:600;box-shadow:inset 2px 0 0 var(--s-primary)}
+.pan{font-size:9px;line-height:1.5;margin-top:7px;color:var(--s-muted)}
+.lbox{border-radius:6px;padding:10px;display:grid;gap:6px;font-size:9px;position:relative}
+.lbox.dk{background:#141614;color:#EDEFEC}.lbox.lt{background:color-mix(in srgb,var(--s-text) 45%,transparent)}
+.lbox.lt .in{background:var(--s-bg);color:var(--s-text);border-radius:6px;padding:8px;display:grid;gap:6px}
+.lrow{display:flex;align-items:center;gap:6px}.lrow .ph{flex:1}
+.lb{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:600 10px/1 var(--ui);flex:none;border:1px solid currentColor}
+.ltop{display:flex;justify-content:space-between;align-items:center;font:500 9px var(--mono)}
+.mapd{position:relative;aspect-ratio:16/9;border-radius:4px;overflow:hidden;background:
+ linear-gradient(90deg,transparent 47%,color-mix(in srgb,var(--s-text) 14%,transparent) 47% 50%,transparent 50%),
+ linear-gradient(0deg,transparent 60%,color-mix(in srgb,var(--s-text) 14%,transparent) 60% 63%,transparent 63%),
+ linear-gradient(115deg,transparent 30%,color-mix(in srgb,var(--s-text) 10%,transparent) 30% 32%,transparent 32%),
+ var(--s-surface);display:grid;place-items:center}
+.pin{width:16px;height:16px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--s-primary)}
+.mbtn{position:absolute;left:8px;bottom:8px;background:var(--s-primary);color:var(--s-on);border-radius:99px;padding:4px 9px;font:600 9px var(--ui)}
+.addr{font-size:9px;margin-top:6px;display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap}.addr u{text-underline-offset:2px}
+.osm{aspect-ratio:16/9;border-radius:4px;background:repeating-linear-gradient(35deg,#EEE9DF 0 9px,#E3DDD0 9px 10px),#EEE9DF;position:relative}
+.osm .pin{position:absolute;left:48%;top:40%;background:#C0392B}
+</style>
+
+<main>
+<header style="display:grid;gap:14px">
+  <span class="eyebrow">Crust · Milestone 8 · F079 design snapshot</span>
+  <h1>Slideshow, Card slider, Tabs, Lightbox and Map</h1>
+  <p class="lede">The first blocks that move or open. Each works as plain HTML first (photos you can swipe, all tab texts on the page, links to the photo and the map), and a small script, added only to pages that use the block, turns it into the interactive version. Four choices need a direction; the recommended one is outlined.</p>
+</header>
+
+<section>
+  <h2>Where each lands</h2>
+  <div class="lands">
+    <div class="land"><h3>Slideshow</h3>
+      <div class="page"><div class="ph r169"></div><div class="ctl"><span class="cb">‹</span><span class="cb">›</span><span class="cnt">2 / 5</span><span class="sp"></span><span>Harbour at dawn</span></div></div>
+      <p>Up to 10 photos, one at a time, each with an optional title, line and link. Swipe on phones. Plays on its own only if you switch it on, and then always shows a pause button.</p></div>
+    <div class="land"><h3>Card slider</h3>
+      <div class="page"><div class="chead"><b>This season</b><span class="cb">‹</span><span class="cb fill">›</span></div><div class="cards"><div class="card"><div class="ph"></div><div class="t"><b>Rye loaf</b><span>Slow, dark crust</span></div></div><div class="card"><div class="ph b"></div><div class="t"><b>Pear tart</b><span>Fridays only</span></div></div><div class="card"><div class="ph c"></div><div class="t"><b>Focaccia</b><span>Rosemary</span></div></div></div></div>
+      <p>A row of cards that scrolls sideways and snaps to a card, with the next one peeking in. Up to 12 cards; 2, 3 or 4 visible on a desktop.</p></div>
+    <div class="land"><h3>Tabs</h3>
+      <div class="page"><div class="tabsu"><span class="on">Weddings</span><span>Events</span><span>Workshops</span></div><p class="pan">From the first call to the last dance: one planner, one plan, written down in a shared document you can open any time.</p></div>
+      <p>Two to eight tabs with a short text each. Looks: underline or pills. Without the script all texts show one after another, each with its title.</p></div>
+    <div class="land"><h3>Lightbox (Gallery option)</h3>
+      <div class="page" style="padding:6px"><div class="lbox dk"><div class="ltop"><span>3 / 12</span><span class="lb">✕</span></div><div class="lrow"><span class="lb">‹</span><div class="ph b r43"></div><span class="lb">›</span></div><span>The bakery's back room before opening</span></div></div>
+      <p>A switch on the Gallery: “Open photos larger when pressed”. Arrows, Esc to close, the caption under the photo.</p></div>
+    <div class="land"><h3>Map</h3>
+      <div class="page"><div class="mapd"><span class="pin"></span><span class="mbtn">Show map</span></div><div class="addr"><span>Jl. Kemang Raya 12, Jakarta</span><u>Directions</u></div></div>
+      <p>Your address in words, a “Show map” button and a directions link. The map itself (OpenStreetMap) loads only when pressed.</p></div>
+    <div class="land"><h3>On a Primary section</h3>
+      <div class="page dark"><div class="tabsp" style="background:rgba(255,255,255,.14)"><span class="on" style="background:var(--s-on);color:var(--s-primary)">Menu</span><span>Hours</span><span>Find us</span></div><p class="pan" style="color:#DCE5DF">Bread from 7, coffee from 8, closed on Mondays.</p></div>
+      <p>Like F078, every block takes its colours from its section style; buttons and tabs are checked for contrast there.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Choice 1 · Slideshow controls</h2>
+  <div class="trio">
+    <div class="opt rec"><h3><span class="tag">Recommended</span>A · A control row under the photo</h3>
+      <div class="page"><div class="ph r169"></div><div class="ctl"><span class="cb">‹</span><span class="cb">›</span><span class="cnt">2 / 5</span><span class="sp"></span><span class="cb">❚❚</span></div><div class="capx"><b>Harbour at dawn</b><span>Boats leave at six.</span></div></div>
+      <ul class="pros"><li>Buttons never sit on the photo, so they're readable on any picture (no scrim needed).</li><li>“2 / 5” says where you are, in words a screen reader reads too.</li><li>24 px+ targets (WCAG 2.5.8); the pause button comes first in keyboard order when it plays on its own.</li></ul></div>
+    <div class="opt"><h3>B · Arrows and dots on the photo</h3>
+      <div class="page"><div class="ph r169" style="position:relative"><span class="ovarr" style="left:6px">‹</span><span class="ovarr" style="right:6px">›</span><div class="dots"><i></i><i></i><i></i><i></i><i></i></div></div></div>
+      <ul class="pros"><li>The look most sites use; photo stays big.</li><li class="warn">Dots are tiny targets (under 24 px) and only say “where” by colour.</li><li class="warn">Arrows need a white plate to read on light photos, covering part of the picture.</li></ul></div>
+    <div class="opt"><h3>C · Thumbnails under the photo</h3>
+      <div class="page"><div class="ph r169"></div><div class="thumbs"><div class="ph"></div><div class="ph b on"></div><div class="ph c"></div><div class="ph"></div><div class="ph b"></div></div></div>
+      <ul class="pros"><li>Good for a product or a room: you see what's coming.</li><li class="warn">Loads every photo up front (slower page), and is cramped on phones.</li><li>Could come later as a look of the same block.</li></ul></div>
+  </div>
+  <p style="color:var(--muted);font-size:.9rem">All three: swipe on touch screens, arrow keys when the slideshow has focus, and with Reduce motion on the slides change without sliding and never play on their own.</p>
+</section>
+
+<section>
+  <h2>Choice 2 · Card slider arrows</h2>
+  <div class="trio" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+    <div class="opt rec"><h3><span class="tag">Recommended</span>A · Arrows above the row, on the right</h3>
+      <div class="page"><div class="chead"><b>This season</b><span class="cb">‹</span><span class="cb fill">›</span></div><div class="cards"><div class="card"><div class="ph"></div><div class="t"><b>Rye loaf</b></div></div><div class="card"><div class="ph b"></div><div class="t"><b>Pear tart</b></div></div><div class="card"><div class="ph c"></div><div class="t"><b>Focaccia</b></div></div></div></div>
+      <ul class="pros"><li>Arrows sit by the title, where the eye starts; nothing covers the cards.</li><li>The peeking card already says “there's more”; the arrows grey out at either end.</li></ul></div>
+    <div class="opt"><h3>B · Arrows over the cards' edges</h3>
+      <div class="page"><div class="cards" style="position:relative"><div class="card"><div class="ph"></div><div class="t"><b>Rye loaf</b></div></div><div class="card"><div class="ph b"></div><div class="t"><b>Pear tart</b></div></div><div class="card"><div class="ph c"></div><div class="t"><b>Focaccia</b></div></div><span class="ovarr" style="right:4px;top:35%">›</span></div></div>
+      <ul class="pros"><li>Arrow right where the row continues.</li><li class="warn">Covers part of a card and its photo; needs a plate for contrast.</li></ul></div>
+  </div>
+</section>
+
+<section>
+  <h2>Choice 3 · Lightbox</h2>
+  <div class="trio" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+    <div class="opt rec"><h3><span class="tag">Recommended</span>A · Dark, the whole screen</h3>
+      <div class="lbox dk"><div class="ltop"><span>3 / 12</span><span class="lb">✕</span></div><div class="lrow"><span class="lb">‹</span><div class="ph b r43"></div><span class="lb">›</span></div><span>The bakery's back room before opening</span></div>
+      <ul class="pros"><li>Photos look their best on near-black; works for any site style.</li><li>Fixed colours, checked once: white controls on #141614 (17:1).</li></ul></div>
+    <div class="opt"><h3>B · The site's colours, a framed panel</h3>
+      <div class="lbox lt"><div class="in"><div class="ltop"><span>3 / 12</span><span class="lb">✕</span></div><div class="lrow"><span class="lb">‹</span><div class="ph b r43"></div><span class="lb">›</span></div><span>The bakery's back room before opening</span></div></div>
+      <ul class="pros"><li>Feels part of the site.</li><li class="warn">A light frame competes with the photo, and the photo gets smaller.</li></ul></div>
+  </div>
+</section>
+
+<section>
+  <h2>Choice 4 · Map before it's pressed</h2>
+  <div class="trio">
+    <div class="opt rec"><h3><span class="tag">Recommended</span>A · A drawn map card</h3>
+      <div class="page"><div class="mapd"><span class="pin"></span><span class="mbtn">Show map</span></div><div class="addr"><span>Jl. Kemang Raya 12, Jakarta</span><u>Directions</u></div></div>
+      <ul class="pros"><li>Drawn in the section's colours with CSS: nothing is asked from a map service until “Show map” is pressed (privacy, speed score).</li><li>Then OpenStreetMap loads in place; no account or key needed.</li><li>“Directions” opens the visitor's maps app (Google Maps link).</li></ul></div>
+    <div class="opt"><h3>B · Your photo of the place</h3>
+      <div class="page"><div class="ph c r169" style="position:relative"><span class="mbtn" style="background:#fff;color:#17191B">Show map</span></div><div class="addr"><span>Jl. Kemang Raya 12, Jakarta</span><u>Directions</u></div></div>
+      <ul class="pros"><li>Shows the shopfront people look for.</li><li>Built as an option of A: add a cover photo and it replaces the drawing.</li></ul></div>
+    <div class="opt"><h3>C · Map shown straight away</h3>
+      <div class="page"><div class="osm"><span class="pin"></span></div><div class="addr"><span>Jl. Kemang Raya 12, Jakarta</span><u>Directions</u></div></div>
+      <ul class="pros"><li>No press needed.</li><li class="warn">Every visit loads the map service (slower page, tells the service who visited).</li><li class="warn">A map in the page traps scrolling on phones.</li></ul></div>
+  </div>
+  <p style="color:var(--muted);font-size:.9rem">Finding the spot: in the builder you type the address and press <b>Find on the map</b>; Crust looks it up on OpenStreetMap and fills in the pin. You can also paste a Google Maps link and Crust reads the pin from it.</p>
+</section>
+
+<section>
+  <h2>Looks inside the blocks (no choice needed)</h2>
+  <div class="dir">
+    <h3>Tabs</h3>
+    <div class="looks">
+      <div class="lk"><div class="page"><div class="tabsu"><span class="on">Menu</span><span>Hours</span><span>Find us</span></div><p class="pan">Bread from 7, coffee from 8.</p></div><span>Underline</span></div>
+      <div class="lk"><div class="page"><div class="tabsp"><span class="on">Menu</span><span>Hours</span><span>Find us</span></div><p class="pan">Bread from 7, coffee from 8.</p></div><span>Pills</span></div>
+      <div class="lk"><div class="page"><div class="tabsv"><div class="l"><span class="on">Menu</span><span>Hours</span><span>Find us</span></div><p class="pan" style="margin:0">Bread from 7, coffee from 8.</p></div></div><span>Side (left on desktop, underline on phones)</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Accessibility built in</h2>
+  <div class="a11y">
+    <div><h3>Slideshow and Card slider</h3><p>Named regions (“Slideshow: Our rooms”), each slide labelled “2 of 5”, real buttons with names (“Next slide”). Playing on its own is off by default; when on, a pause button is always there and it stops while the pointer or keyboard is inside (WCAG 2.2.2). Reduce motion: no sliding, no autoplay.</p></div>
+    <div><h3>Tabs</h3><p>The WAI tabs pattern: arrow keys move between tabs, Tab goes into the text, Home/End jump. Without the script, every text is on the page under its own heading, so nothing is ever hidden from search engines or people without JavaScript.</p></div>
+    <div><h3>Lightbox</h3><p>A real dialog: focus moves in and comes back to the photo you pressed, Esc closes, arrow keys go through photos, the photo keeps its description. Without the script, pressing a photo opens the photo itself.</p></div>
+    <div><h3>Map</h3><p>The address is always written out (a map alone tells a screen reader nothing). The “Show map” button names the place; the map frame gets a title. Directions works without the map.</p></div>
+  </div>
+</section>
+</main>

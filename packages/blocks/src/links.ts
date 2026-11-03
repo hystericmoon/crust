@@ -12,7 +12,7 @@ export const LINK_PROPS: Record<string, string> = { Button: "href", Card: "linkH
 export const RICH_TEXT_PROPS: Record<string, string> = { Text: "text" };
 
 /** Lists of items with a link in each (F032): block type → [list prop, link prop]. */
-export const ITEM_LINK_PROPS: Record<string, [string, string]> = { Grid: ["items", "linkHref"], LogoRow: ["logos", "href"], Pricing: ["plans", "buttonHref"] };
+export const ITEM_LINK_PROPS: Record<string, [string, string]> = { Grid: ["items", "linkHref"], LogoRow: ["logos", "href"], Pricing: ["plans", "buttonHref"], Slideshow: ["slides", "linkHref"], CardSlider: ["items", "linkHref"] };
 
 /**
  * The new link if `href` points at the page `from` ("/about", "/about/",

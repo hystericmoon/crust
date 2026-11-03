@@ -64,7 +64,7 @@ function download(name: string, text: string) {
 export function ThemePackGroup({ siteName, tokens, chrome, canExport, onPreview, onApply }: Props) {
   const id = useId();
   const mine = useMyLayouts();
-  const saved = mine.layouts ?? [];
+  const saved = (mine.layouts ?? []).filter((l) => l.kind !== "element");
   const [name, setName] = useState(`${siteName} look`);
   const [parts, setParts] = useState<PackParts>({ tokens: true, chrome: true, layouts: true });
   const [exportMessage, setExportMessage] = useState("");
@@ -90,7 +90,8 @@ export function ThemePackGroup({ siteName, tokens, chrome, canExport, onPreview,
       setExportMessage("Fix the fields marked in red first, so the pack doesn't carry the mistake.");
       return;
     }
-    const layouts = saved.map((l) => ({ name: l.name, kind: l.kind, content: l.content as never }));
+    // F080: saved element styles stay out of packs for now (DECISIONS F080).
+    const layouts = saved.flatMap((l) => (l.kind === "element" ? [] : [{ name: l.name, kind: l.kind, content: l.content as never }]));
     const pack = makeThemePack(name, parts, { tokens, chrome: chromeLook(chrome), layouts });
     const file = packFileName(pack.name);
     download(file, `${JSON.stringify(pack, null, 2)}\n`);

@@ -35,7 +35,8 @@ impl Tag {
 /// Library photos (`/media/<file>`) a page shows, from `src` and `srcset`, in order, without repeats (F034).
 pub fn media_refs(html: &str) -> Vec<String> {
     let mut refs: Vec<String> = Vec::new();
-    for tag in scan(html).iter().filter(|t| !t.closing && t.name == "img") {
+    // F081: <picture> lists the AVIF/WebP copies in <source srcset>.
+    for tag in scan(html).iter().filter(|t| !t.closing && (t.name == "img" || t.name == "source")) {
         let src = tag.attr("src").into_iter();
         let srcset = tag.attr("srcset").into_iter().flat_map(|s| s.split(',').filter_map(|c| c.split_whitespace().next()));
         for url in src.chain(srcset) {

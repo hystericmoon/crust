@@ -4,7 +4,7 @@
  */
 import type { MediaItem } from "@crust/blocks";
 import { useSyncExternalStore } from "react";
-import { deleteMedia, listMedia, setMediaAlt, uploadMedia, type MediaUse } from "../api-client";
+import { deleteMedia, listMedia, setMediaAlt, setMediaDetails, uploadMedia, type MediaUse } from "../api-client";
 import { prepareUpload } from "./shrink";
 
 export interface MediaState {
@@ -51,6 +51,11 @@ export async function loadMedia(force = false): Promise<void> {
   else set({ status: res.notConfigured ? "off" : "error", error: res.error });
 }
 
+/** F080: a photo uploaded elsewhere (a layout's sample photo) joins the list. */
+export function rememberUploaded(item: MediaItem) {
+  if (!state.items.some((i) => i.file === item.file)) set({ items: [item, ...state.items] });
+}
+
 /** Shrinks and uploads one photo; the new item comes first in the library. */
 export async function addPhoto(file: File): Promise<{ ok: true; item: MediaItem } | { ok: false; error: string }> {
   const prepared = await prepareUpload(file);
@@ -63,6 +68,14 @@ export async function addPhoto(file: File): Promise<{ ok: true; item: MediaItem 
 
 export async function describePhoto(file: string, alt: string): Promise<{ ok: true } | { ok: false; error: string }> {
   const res = await setMediaAlt(file, alt);
+  if (!res.ok) return res;
+  set({ items: state.items.map((i) => (i.file === file ? res.item : i)) });
+  return { ok: true };
+}
+
+/** F081: saves alt text and focal point in one go. */
+export async function savePhotoDetails(file: string, alt: string, focus: { x: number; y: number } | null): Promise<{ ok: true } | { ok: false; error: string }> {
+  const res = await setMediaDetails(file, alt, focus);
   if (!res.ok) return res;
   set({ items: state.items.map((i) => (i.file === file ? res.item : i)) });
   return { ok: true };

@@ -157,6 +157,20 @@ Vimeo video is published as a link to the video with the cover; a
 small script, only on pages that have one, swaps in the player
 (youtube-nocookie.com, Vimeo with "do not track") when it's pressed.
 
+F079 adds four blocks (all props optional): `Slideshow` (`name`;
+`slides` [{ imageSrc, imageAlt, title, text, linkLabel, linkHref }], up
+to 10; `ratio`: `16:9`, `3:2`, `4:3`, `21:9`; `autoplay`: `no`, `yes`;
+`speed`: `5`, `8`, `12` seconds; `titleLevel`), `CardSlider` (`name`;
+`items`, cards like the Grid's, up to 12; `visible`: `2`–`4`;
+`titleLevel`; `background`), `Tabs` (`tabs` [{ label, text }], up to 8,
+text in plain paragraphs; `look`: `underline`, `pills`, `side`;
+`titleLevel`, the headings shown without the script) and `Map` (`place`,
+`address`, `pin` { lat, lng }, `zoom`: `street`, `area`, `city`;
+`ratio`; `imageSrc`, a photo shown before the map). A Gallery may carry
+`lightbox` (`"yes"`: a photo opens larger when pressed; missing means
+no). Each block's small script is added only to pages that use it; the
+map loads from OpenStreetMap only when "Show map" is pressed.
+
 `tokens.style.motion` (optional, F075): `off`, `subtle` or `lively`;
 missing means Off. A Section may carry `entrance` (`rise`, `zoom`,
 `slide`, `none`; missing means Rise) and `parallax` (`true`: its photo
@@ -258,7 +272,12 @@ Pages use a photo by its address, `/media/<file>`, in any image field
 (web addresses still work). `alt` is the library's description, copied
 into a block's alt field when picked. Publishing copies the photos into
 the site with resized copies (`<name>-480w.jpg`, `-960w`, `-1440w`) for
-`srcset`; those are never stored in `content/`.
+`srcset`; those are never stored in `content/`. F081: each photo and
+resized copy also gets AVIF and WebP copies (`harbour.jpg.avif`,
+`harbour-480w.jpg.webp`; a WebP photo only AVIF), which pages offer first
+in a `<picture>`. A media.json item may carry `focus` `{ "x": 0–100,
+"y": 0–100 }` (optional; missing means the middle): blocks that crop the
+photo keep that point in view. Template photos may carry it too.
 
 A page may carry `seo` (optional, added with F036): `{ "title": "…",
 "image": "/media/…", "imageAlt": "…", "noindex": true }`, each optional.
@@ -309,6 +328,29 @@ editing a marked word or photo field drops its mark, lists (`items`,
 `images`, `logos`) are cleared with "Keep as is". Marked blocks render
 with `data-crust-placeholder`, and publishing stops while any page has one.
 
+`content/designs/post.json`, `blog.json` and `404.json` (optional, added
+with F082): the post page, blog page and "Page not found" designed in the
+builder. A missing file means the built-in look.
+```json
+{ "kind": "post", "savedAt": "…", "content": [ … ] }
+```
+`kind` is `post`, `blog` or `notFound`; a `notFound` design may carry
+`title` (the browser tab's title, "Page not found" when missing).
+`content` is top-level blocks, like a page's `puck.content`, and may use
+blocks that fill themselves in: in the post design `PostTitle`
+(`size`, `align`), `PostDetails` (`show`: `both`, `date`, `blog`;
+`align`), `PostSummary` (`align`), `PostCover` (`ratio`: `auto`,
+`wide`, `cinema`, `square`, `tall`), `PostHero` (the cover with the
+title on it: `height`, `tint`, `align`, `summary`) and `PostContent`
+(where each post's own blocks go: exactly one, never inside a section or
+column); in the blog design `BlogTitle`, `BlogIntro`; in both
+`PostList` (`look`: `cards`, `list`, `featured`; `columns`: `auto`, `2`,
+`3`; `count`: `all`, `3`, `6`, `12`; `photo`, `date`, `summary`:
+`yes`/`no`; `titleLevel`; on a post it leaves out that post). A blog
+design needs a `PostList`. A damaged design stops the publish. Template
+files may carry `designs` [{ kind, title?, content }], one per kind;
+starting from a template replaces the site's designs.
+
 `content/sections/<id>.json` (optional, added with F043): a linked section,
 shown on many pages and edited once.
 ```json
@@ -320,11 +362,21 @@ section's current blocks into each page; a missing section stops the
 publish with the page's name. A linked section holds no h1 and no other
 linked section, and can't be deleted while a page uses it.
 
+F080: a saved layout's `kind` may also be `"element"`: a saved element
+style, `content` holding exactly one block whose props are only its
+Style-tab settings (no words, links or photos, no id). The builder
+copies them into a block of the same type when applied; they're never
+published, and theme packs and templates leave them out. Layouts from
+the library may use the builder's sample photos (`/layout-photos/…`);
+the builder copies them into `content/media/` and the blocks then use
+`/media/…`. A block still pointing at `/layout-photos/` stops the
+publish.
+
 `content/layouts/<id>.json` (optional, added with F027)
 ```json
 { "id": "studio-intro", "name": "Studio intro", "kind": "section", "savedAt": "…", "content": [ … ] }
 ```
-A section or whole page the owner saved to reuse. `content` is top-level
+A section or whole page the owner saved to reuse (or, from F080, a saved element style). `content` is top-level
 blocks, like a page's `puck.content`. Only the builder reads these; they are
 never published.
 

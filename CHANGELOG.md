@@ -4,6 +4,73 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **A stricter check before a template is offered (F083).** The template
+  check now also stops a template that has leftover builder words
+  ("Heading", "Click here", the sample quote), a card, slide or picture
+  with no photo while its neighbours have one, photos of very different
+  shapes side by side (a portrait next to a landscape), a Home page with
+  fewer than five kinds of section, or a section gradient that makes the
+  text hard to read. The report says where each one is. Harbour, Signal
+  and Corner fail the new checks; they show as notes until they're rebuilt
+  (F084).
+- **Design the post page, the blog page and "Page not found" (F082).**
+  These three now open in the builder like any page. On the **Posts**
+  screen, press **Design the blog page** or **Design the post page**;
+  "Page not found" is at the end of the **Pages** list. Blue blocks fill
+  themselves in: the post's title, date, summary and cover, **Post
+  content** (each post's own blocks), the blog's title and intro, and a
+  **Post list** (cards, a list, or the newest large; also as "More
+  posts" under a post). Add any other blocks around them, like a sign-up
+  strip. **Layouts → Starting designs** offers three looks for each
+  (nine in all), in your site's colours and fonts. Until you save a
+  design, your site keeps today's look, and **Use the built-in look**
+  takes you back to it. While you write a post, the canvas shows it
+  inside your post design. Templates carry their designs.
+
+- **Lighter photos and a focal point (F081).** Publishing now makes
+  **AVIF and WebP** copies of every photo in your Media library (and of
+  each smaller copy for phones). Browsers that can read them get those:
+  about 40% of the JPEG's size for AVIF, so pages load faster, with
+  nothing to set. Unchanged photos aren't made again on the next
+  publish. In the media library, each photo now has a **Focal point**:
+  press the part of the photo that must stay in view (or use the arrow
+  keys), and the three small previews show what a wide, square and tall
+  block will keep. Cards, galleries, sliders, section backgrounds and
+  every other block that crops the photo keep that part in view, in the
+  builder and on the site.
+
+- **Layout library v2 and saved styles (F080).** The layout library has
+  **64 new sections** (heroes on full photos, text beside a photo, big
+  statements, services as rows, project grids and sliders, figures,
+  steps, pricing with a highlighted plan, questions with a heading that
+  stays in view, maps with opening hours, and more) and **10 new whole
+  pages** (Studio home, Restaurant or shop home, Product landing,
+  Services, About, Work, Case study, Pricing, Contact, Venue or event).
+  They follow your site's look. Layouts with photos come with sample
+  photos that are copied into your Media library and marked "to
+  replace", so they can't go live by accident. The first library's
+  layouts are still there, under **Simple** in each category. New in
+  every block's **Style** tab: **Saved styles**. Save a block's look
+  under a name and apply it to another block of the same kind in one
+  press. Also: Soft buttons now always keep readable contrast.
+
+- **Slideshow, Card slider, Tabs, Map and a Gallery lightbox (F079).** A
+  **Slideshow** shows up to ten photos one at a time, each with an
+  optional title, line and link, with back/next buttons and "2 / 5"
+  under the photo; swipe on phones. It plays on its own only if you
+  switch that on, and then always has a pause button (and never plays
+  for visitors who turned on Reduce motion). A **Card slider** is a row
+  of up to twelve cards that scrolls sideways, with the next card
+  peeking in and arrows above it. **Tabs** show two to eight short texts
+  one at a time (underline, pills, or a list on the left). A **Map**
+  shows your address, a drawn map in your colours and a "Show map"
+  button; the real map (OpenStreetMap) loads only when pressed, and
+  "Directions" opens the visitor's maps app. In the builder, type the
+  address and press **Find on the map**, or paste a Google Maps link.
+  **Galleries** can open photos larger when pressed (on for new
+  galleries). Pages without these blocks stay script-free; each block
+  works without JavaScript too.
+
 - **Stats, Video, Table, Pricing and numbered lists (F078).** A **Stats**
   block shows two to six big figures with what they count ("300+
   projects finished"), plain, with lines between, or in boxes. A

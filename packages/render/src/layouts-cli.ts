@@ -5,13 +5,14 @@
  * whole-page layout with every theme preset, plus one page of the F032
  * blocks per preset.
  */
-import { applyLook, applyPreset, buildPageLayout, fitHeadings, footerStarter, headerLayouts, migrateChrome, newPost, pageLayouts, sectionLayouts, styleLooks, themePresets, type Page, type Site } from "@crust/blocks";
+import { designLayouts, type PageDesign } from "@crust/blocks";
+import { applyLook, applyPreset, buildPageLayout, fitHeadings, fitLayoutToTokens, sectionLayoutsV2, footerStarter, headerLayouts, migrateChrome, newPost, pageLayouts, sectionLayouts, styleLooks, themePresets, type Page, type Site } from "@crust/blocks";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { blockSamples, columnsV2Samples, motionSamples, sectionsV2Samples } from "./block-samples";
 import { renderBlogIndex, renderPost } from "./blog";
-import { renderPage } from "./render";
+import { renderNotFound, renderPage } from "./render";
 
 const [contentDir = "content", outDir = "dist/layout-check"] = process.argv.slice(2);
 const stylesPath = join(dirname(fileURLToPath(import.meta.url)), "../../blocks/src/styles.css");
@@ -31,6 +32,12 @@ for (const preset of themePresets) {
   for (const layout of pageLayouts) await write(`${layout.id}-${preset.id}`, themed, `${layout.name} (${preset.name})`, buildPageLayout(layout));
   // F032: the new blocks, on every section style, in every preset.
   await write(`blocks-${preset.id}`, themed, `New blocks (${preset.name})`, blockSamples());
+}
+// F080: the new sections, all on one page per look of the style library (and every colourway in turn), fitted to that look as the builder does on insert.
+for (const [i, look] of styleLooks.entries()) {
+  const looked: Site = { ...site, tokens: applyLook(site.tokens, look, look.variations[i % look.variations.length]) };
+  const all = sectionLayoutsV2.flatMap((l) => l.build());
+  await write(`library-v2-${look.id}`, looked, `Layout library v2 (${look.name})`, fitHeadings(fitLayoutToTokens(all, looked.tokens), false));
 }
 // F073: Sections v2 in every look of the style library (first colourway).
 for (const look of styleLooks) {
@@ -75,6 +82,29 @@ for (const preset of themePresets) {
   await mkdir(join(outDir, `blog-${preset.id}`, "post"), { recursive: true });
   await writeFile(join(outDir, `blog-${preset.id}`, "index.html"), renderBlogIndex(themed, posts, blog, baseCss));
   await writeFile(join(outDir, `blog-${preset.id}`, "post", "index.html"), renderPost(themed, posts[0]!, blog, baseCss));
+}
+// F082: the nine starting designs (post, blog, "Page not found") in every other look (CI time), with a cover photo and a "More posts" list.
+{
+  const withCover = [{ ...posts[0]!, cover: "/sample.jpg", coverAlt: "Coffee cups on a counter" }, posts[1]!, { ...newPost("Winter loaves", "winter-loaves", "2026-11-02"), description: "Rye and spelt from Friday." }];
+  const more = { type: "Section", props: { id: "more", background: "surface", paddingY: "lg", content: [
+    { type: "Heading", props: { id: "more-h", text: "More news", level: "h2", align: "left" } },
+    { type: "PostList", props: { id: "more-list", look: "cards", columns: "3", count: "3", photo: "yes", date: "yes", summary: "no", titleLevel: "h3" } },
+  ] } };
+  for (const look of styleLooks.filter((_, i) => i % 2 === 0)) {
+    const s: Site = { ...site, tokens: applyLook(site.tokens, look) };
+    for (const d of designLayouts) {
+      const slug = `design-${d.id}-${look.id}`;
+      const design = { kind: d.kind, savedAt: "", content: d.kind === "post" ? [...d.build(), more] : d.build() } as PageDesign;
+      await mkdir(join(outDir, slug), { recursive: true });
+      const html =
+        d.kind === "post"
+          ? renderPost(s, withCover[0]!, blog, baseCss, { designs: { post: design }, posts: withCover })
+          : d.kind === "blog"
+            ? renderBlogIndex(s, withCover, blog, baseCss, { designs: { blog: design } })
+            : renderNotFound(s, baseCss, { designs: { notFound: design } });
+      await writeFile(join(outDir, slug, "index.html"), html);
+    }
+  }
 }
 // F037: a contact form, connected and not yet, in every preset.
 const contact: Page["puck"]["content"] = [

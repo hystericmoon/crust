@@ -836,7 +836,7 @@
       "description": "Interactive blocks with a little JavaScript only on pages that use them: Slideshow, Card slider (scroll snap), Tabs, Lightbox for galleries, Map (loads when pressed). All keyboard operable, no autoplay without a pause button. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F078"],
       "done_check": "npm test -- interactive && npm run check:a11y && npm run check:perf",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -846,7 +846,7 @@
       "description": "About 60 premium sections and 10 page layouts rebuilt on the new layer; saved element styles. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F072", "F074", "F075", "F076", "F079"],
       "done_check": "npm test -- layouts && npm run check:layouts",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -856,7 +856,7 @@
       "description": "Publishing makes WebP and AVIF copies (free Rust libraries) next to JPG/PNG; focal point picked in the media library and used for crops. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F034"],
       "done_check": "npm test -- images && cargo test -p crust-publish && npm run check:perf",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -866,7 +866,7 @@
       "description": "Design the post page, the blog list and the 404 page in the builder instead of fixed designs. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F073"],
       "done_check": "npm test -- page-designs && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
@@ -876,7 +876,7 @@
       "description": "The template quality check also fails on filler text, empty slots (a card or slide without its photo), mismatched image crops in one row, and too few section types on Home. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F047"],
       "done_check": "npm test -- template-check && npm run check:template",
-      "passes": false,
+      "passes": true,
       "needs_review": false,
       "reviewed": false
     },

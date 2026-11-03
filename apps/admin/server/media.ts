@@ -7,8 +7,10 @@
 import {
   MEDIA_FOLDER,
   MEDIA_INDEX,
+  isFocalPoint,
   isMediaFile,
   mediaFileFor,
+  mediaFocus,
   mediaLimits,
   mediaTypes,
   mediaUsedIn,
@@ -16,6 +18,7 @@ import {
   sniffImage,
   type MediaItem,
 } from "@crust/blocks/media";
+import { designFile, designKinds, designNames, parseDesign } from "@crust/blocks/page-designs";
 import { fail, gate, githubFailure, repoFor, json, readPages, type Env } from "./api";
 import { commitFiles, readFile, readRaw, type Repo } from "./github";
 
@@ -39,6 +42,11 @@ async function usage(cfg: Repo, fetchFn: typeof fetch): Promise<Record<string, M
   };
   for (const { page } of [...pages].sort((a, b) => a.page.path.localeCompare(b.page.path))) {
     add(mediaUsedIn(page.puck), { path: page.path, title: page.title });
+  }
+  // F082: a photo in a post, blog or "Page not found" design is in use too.
+  for (const kind of designKinds) {
+    const design = parseDesign(await readFile(cfg, designFile(kind), fetchFn), kind);
+    if (design) add(mediaUsedIn(design.content), { path: `design:${kind}`, title: `${designNames[kind]} design` });
   }
   if (siteText) {
     try {
@@ -72,6 +80,7 @@ const checkAlt = (alt: unknown): string | null =>
  * GET /api/media: every photo, newest first, with where it's used.
  * POST /api/media { action: "upload", name, data (base64), alt }
  *               | { action: "alt", file, alt } | { action: "delete", file }
+ *               | { action: "details", file, alt, focus } (F081: focus { x, y } or null for the middle)
  */
 export async function handleMedia(request: Request, env: Env, fetchFn: typeof fetch = fetch): Promise<Response> {
   const write = request.method === "POST";
@@ -146,6 +155,22 @@ export async function handleMedia(request: Request, env: Env, fetchFn: typeof fe
         cfg,
         [{ path: MEDIA_INDEX, content: serializeIndex(items.map((i) => (i.file === item.file ? item : i))) }],
         `Describe photo ${item.file} from the builder\n\nSaved by ${user.email}`,
+        fetchFn,
+      );
+      return json(200, { ok: true, item, commit: result.commit });
+    }
+
+    if (body.action === "details") {
+      const altProblem = checkAlt(body.alt);
+      if (altProblem) return fail(422, `Not saved. ${altProblem}`);
+      if (body.focus !== null && body.focus !== undefined && !isFocalPoint(body.focus)) return fail(400, "Not saved. The focal point isn't a position on the photo.");
+      const focus = mediaFocus(body.focus);
+      const { focus: _old, ...rest } = current;
+      const item: MediaItem = { ...rest, alt: (body.alt as string).trim(), ...(focus ? { focus } : {}) };
+      const result = await commitFiles(
+        cfg,
+        [{ path: MEDIA_INDEX, content: serializeIndex(items.map((i) => (i.file === item.file ? item : i))) }],
+        `Edit photo ${item.file} from the builder\n\nSaved by ${user.email}`,
         fetchFn,
       );
       return json(200, { ok: true, item, commit: result.commit });

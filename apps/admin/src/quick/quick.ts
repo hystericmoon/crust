@@ -160,6 +160,59 @@ const blockSpecs: Record<string, { name: string; fields: QuickSpec[]; lists?: { 
       },
     ],
   },
+  // F079
+  Slideshow: {
+    name: "Slideshow",
+    fields: [],
+    lists: [
+      {
+        key: "slides",
+        item: "Slide",
+        fields: [
+          { key: "imageSrc", label: "Photo", kind: "image", altKey: "imageAlt" },
+          { key: "imageAlt", label: "Photo description", kind: "text" },
+          { key: "title", label: "Title", kind: "text" },
+          { key: "text", label: "Line under it", kind: "text" },
+        ],
+      },
+    ],
+  },
+  CardSlider: {
+    name: "Card slider",
+    fields: [],
+    lists: [
+      {
+        key: "items",
+        item: "Card",
+        fields: [
+          { key: "title", label: "Title", kind: "text" },
+          { key: "text", label: "Text", kind: "textarea" },
+          { key: "imageSrc", label: "Photo", kind: "image", altKey: "imageAlt" },
+        ],
+      },
+    ],
+  },
+  Tabs: {
+    name: "Tabs",
+    fields: [],
+    lists: [
+      {
+        key: "tabs",
+        item: "Tab",
+        fields: [
+          { key: "label", label: "Tab name", kind: "text" },
+          { key: "text", label: "Text", kind: "textarea" },
+        ],
+      },
+    ],
+  },
+  Map: {
+    name: "Map",
+    fields: [
+      { key: "place", label: "Place name", kind: "text" },
+      { key: "address", label: "Address", kind: "textarea" },
+    ],
+  },
 };
 
 /** One editable value. `list`/`index` point into a block's list (e.g. a Gallery photo). */

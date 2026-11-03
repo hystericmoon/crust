@@ -2,7 +2,7 @@
  * Browser side of the admin API (apps/admin/server). Every call resolves to
  * a plain result; it never throws, so the UI always has a message to show.
  */
-import type { BlogSettings, LinkedSectionFile, MediaItem, Page, Post, SavedLayout, Site } from "@crust/blocks";
+import type { BlogSettings, DesignKind, LinkedSectionFile, MediaItem, Page, PageDesign, PageDesigns, Post, SavedLayout, Site } from "@crust/blocks";
 
 export type ApiResult<T = Record<string, never>> =
   | ({ ok: true } & T)
@@ -113,7 +113,15 @@ export interface MediaUse {
 export const listMedia = () => call<{ items: MediaItem[]; usage: Record<string, MediaUse[]> }>("/api/media");
 export const uploadMedia = (photo: { name: string; data: string; alt: string }) => call<{ item: MediaItem }>("/api/media", post({ action: "upload", ...photo }));
 export const setMediaAlt = (file: string, alt: string) => call<{ item: MediaItem }>("/api/media", post({ action: "alt", file, alt }));
+/** F081: alt text and focal point together (null focus = the middle). */
+export const setMediaDetails = (file: string, alt: string, focus: { x: number; y: number } | null) =>
+  call<{ item: MediaItem }>("/api/media", post({ action: "details", file, alt, focus }));
 export const deleteMedia = (file: string) => call<{ usedOn?: MediaUse[] }>("/api/media", post({ action: "delete", file }));
+
+/** Post, blog and "Page not found" designs (F082): content/designs/. */
+export const listDesigns = () => call<{ designs: PageDesigns }>("/api/designs");
+export const saveDesign = (design: Pick<PageDesign, "kind" | "content" | "title">) => call<{ design: PageDesign }>("/api/designs", post({ action: "save", design }));
+export const resetDesign = (kind: DesignKind) => call<{ commit: string | null }>("/api/designs", post({ action: "reset", kind }));
 
 /** Blog posts (F035): content/posts/<slug>.json; list page title and intro in content/blog.json. */
 export type PostSummary = Omit<Post, "puck">;
@@ -142,7 +150,7 @@ export interface AppliedTemplate {
   date: string;
 }
 export const lastTemplate = () => call<{ last: AppliedTemplate | null }>("/api/template");
-export const sendTemplatePhotos = (name: string, photos: { file: string; alt: string; data: string }[]) =>
+export const sendTemplatePhotos = (name: string, photos: { file: string; alt: string; data: string; focus?: { x: number; y: number } }[]) =>
   call<{ files: string[] }>("/api/template", post({ action: "photos", name, photos }));
 export const applyTemplateContent = (template: unknown) => call<{ commit: string; site: Site }>("/api/template", post({ action: "apply", template }));
 export const undoTemplate = (commit: string) => call<{ commit: string; site: Site | null }>("/api/template", post({ action: "undo", commit }));

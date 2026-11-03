@@ -40,9 +40,21 @@ import type { SpacingStep } from "./tokens";
 import { ContactForm, type ContactFormProps } from "./contact-form";
 import { IconMark, iconBlocks, type DividerProps, type IconProps, type SocialLinksProps } from "./icon-blocks";
 import { blocksV3, type PricingProps, type StatsProps, type TableProps, type VideoProps } from "./blocks-v3";
+import { interactiveBlocks, type CardSliderProps, type MapProps, type SlideshowProps, type TabsProps } from "./interactive";
+import {
+  pageDesignBlocks,
+  type BlogIntroProps,
+  type BlogTitleProps,
+  type PostCoverProps,
+  type PostDetailsProps,
+  type PostHeroProps,
+  type PostListProps,
+  type PostSummaryProps,
+  type PostTitleProps,
+} from "./page-design-blocks";
 import { IconSvg, isIconName } from "./icons";
 import { LinkedSection, type LinkedSectionProps } from "./linked-section-block";
-import { placeholderBadge, placeholderLabel } from "./placeholders";
+import { placeholderBadge, placeholderLabel, uncopiedSampleLabel } from "./placeholders";
 import { Img } from "./media-img";
 import { safeUrl } from "./url";
 import { entranceNames, entrances, sectionMotionClasses, type Entrance } from "./motion";
@@ -151,7 +163,21 @@ export type Components = {
   Video: VideoProps & Visibility;
   Table: TableProps & Visibility;
   Pricing: PricingProps & Visibility;
+  Slideshow: SlideshowProps & Visibility;
+  CardSlider: CardSliderProps & Visibility;
+  Tabs: TabsProps & Visibility;
+  Map: MapProps & Visibility;
   LinkedSection: LinkedSectionProps & Visibility;
+  /** F082: blocks that fill themselves in, only in the post, blog and "Page not found" designs. */
+  PostTitle: PostTitleProps & Visibility;
+  PostDetails: PostDetailsProps & Visibility;
+  PostSummary: PostSummaryProps & Visibility;
+  PostCover: PostCoverProps & Visibility;
+  PostHero: PostHeroProps & Visibility;
+  PostContent: Visibility;
+  BlogTitle: BlogTitleProps & Visibility;
+  BlogIntro: BlogIntroProps & Visibility;
+  PostList: PostListProps & Visibility;
 };
 
 const backgroundField = {
@@ -181,11 +207,14 @@ const blocks: Config<Components> = {
   },
   categories: {
     layout: { title: "Layout", components: ["Section", "Columns", "Grid", "Spacer", "Divider"] },
-    content: { title: "Content", components: ["Heading", "Text", "Image", "Button", "Card", "Icon", "IconList", "Stats", "Table", "Pricing", "Quote", "Accordion", "SocialLinks"] },
-    media: { title: "Media", components: ["Gallery", "Video", "ImageOverlay", "LogoRow"] },
+    content: { title: "Content", components: ["Heading", "Text", "Image", "Button", "Card", "Icon", "IconList", "Stats", "Table", "Pricing", "Quote", "Accordion", "Tabs", "SocialLinks"] },
+    media: { title: "Media", components: ["Gallery", "Slideshow", "CardSlider", "Video", "ImageOverlay", "LogoRow", "Map"] },
     forms: { title: "Forms", components: ["ContactForm"] },
     // F043: added through Layouts → Linked sections, not from the block list.
     linked: { title: "Linked", components: ["LinkedSection"], visible: false },
+    // F082: shown only in the design editors (apps/admin/src/designs).
+    post: { title: "Post", components: ["PostTitle", "PostDetails", "PostSummary", "PostCover", "PostHero", "PostContent", "PostList"], visible: false },
+    blog: { title: "Blog", components: ["BlogTitle", "BlogIntro", "PostList"], visible: false },
   },
   components: {
     Section: {
@@ -607,7 +636,9 @@ const blocks: Config<Components> = {
     ContactForm: ContactForm as unknown as Config<Components>["components"]["ContactForm"],
     ...(iconBlocks as unknown as Pick<Config<Components>["components"], keyof typeof iconBlocks>),
     ...(blocksV3 as unknown as Pick<Config<Components>["components"], keyof typeof blocksV3>),
+    ...(interactiveBlocks as unknown as Pick<Config<Components>["components"], keyof typeof interactiveBlocks>),
     LinkedSection: LinkedSection as unknown as Config<Components>["components"]["LinkedSection"],
+    ...(pageDesignBlocks as unknown as Pick<Config<Components>["components"], keyof typeof pageDesignBlocks>),
   },
 };
 
@@ -630,7 +661,7 @@ function withVisibility(c: Config<Components>): Config<Components> {
         const classes = hideClasses(props.hideOn);
         const anchor = cleanAnchor(props.anchor);
         // F046: sample content still to replace. Publishing stops on this attribute; the builder outlines it.
-        const sample = placeholderLabel(name, props);
+        const sample = placeholderLabel(name, props) || uncopiedSampleLabel(name, props);
         if (!classes && !anchor && !sample) return out;
         return (
           <div

@@ -5,6 +5,84 @@ to "Log".
 
 ## Current
 
+- **F083 Stricter template check: built, passes** (branch
+  `ccr-d50f7e80-weuq18`, stacked on F079–F082, PR #65). No design, so no
+  snapshot and nothing for the owner to review. done_check `npm test --
+  template-check && npm run check:template` exit 0 (38 tests; the
+  check runs on Harbour, Signal and Corner). New checks: filler words
+  from the builder's defaults, empty slots, mismatched photo crops in a
+  row, at least 5 kinds of section on Home, section gradients that keep
+  text readable. Harbour, Signal and Corner fail them today; their
+  findings show as notes until F084 rebuilds them (DECISIONS "F083",
+  `AWAITING_REBUILD`). **Next: F084 Rebuild Harbour, Signal and Corner**
+  (Opus); it must empty `AWAITING_REBUILD`.
+
+- **F082 Post, blog and 404 designs: built, passes** (branch
+  `ccr-d50f7e80-weuq18`, stacked on F079–F081, PR #65 still open).
+  Snapshot https://claude.ai/artifact/6DUK8yisbSiBT5LuYuhUND, A built for
+  all three decisions. done_check `npm test -- page-designs && npm run
+  check:a11y` exit 0. **To try** on the PR's preview link: **Posts** →
+  **Design the post page**. Press **Layouts → Starting designs** and
+  pick "On the photo" or "Split", change anything (add a Section with a
+  sign-up line under "Post content"), **Save design**. Then open a post:
+  it shows inside your design. Back on Posts, **Design the blog page**:
+  try the "List" and "Featured" starting designs, or select the **Post
+  list** and switch its Look. **Pages** list → **Page not found** (last
+  row): try "Helpful". **Use the built-in look** goes back to today's
+  look. On preview links designs are kept in your browser; on
+  crust-admin.pages.dev they're saved to GitHub. Needs `reviewed: true`.
+  Next: F083 Stricter template check.
+
+- **F081 Images: WebP, AVIF, focal point: built, passes** (branch
+  `ccr-d50f7e80-weuq18`, stacked on F079/F080, PR #65 still open).
+  Snapshot https://claude.ai/artifact/Qp4rkNmxNn3AKWKxDTr9hB, A built.
+  done_check `npm test -- images && cargo test -p crust-publish && npm
+  run check:perf` exit 0; Corner's template check passes, and in
+  Chromium every Corner photo loads its AVIF copy with an unchanged
+  layout. **To try** on the PR's preview link: open any image field →
+  Choose image, pick a photo with the subject off to one side, press on
+  the subject in **Focal point** (or Tab to it and use the arrow keys),
+  watch the Wide/Square/Tall previews, press **Save changes**. Put that
+  photo in a Card or a Section background: the canvas crops around your
+  point. The AVIF/WebP copies show only on a published site (you'll see
+  them on the next Publish: in the browser's developer tools the photos
+  end in `.avif`). Screenshot `design/f081-focal-point-picker.png`.
+  Needs `reviewed: true`. Next: F082 Post, blog and 404 designs.
+
+- **F080 Layout library v2: built, passes** (branch
+  `ccr-d50f7e80-weuq18`, stacked on F079, PR #65 still open). Snapshot
+  https://claude.ai/artifact/VpbNu8K34npejqHXQpiYnj, A built for all
+  three choices. done_check `npm test -- layouts && npm run
+  check:layouts` exit 0. **To try** on the PR's preview link: in the
+  builder press **Layouts** (or a "+" between sections): 64 new sections
+  in 16 categories, the old ones under **Simple** at the end of each;
+  switch to **Whole pages** and add "Studio home" to an empty page. The
+  sample photos are copied into your Media library (Media shows them as
+  `sample-…`) and the "To replace" list names each one; publishing waits
+  until you replace them or press Keep as is. Then select a Button (or
+  any block), open the **Style** tab: **Saved styles** at the top. Save
+  its style, select another button and press the saved style; Undo puts
+  it back. Screenshots `design/f080-*.png`. Needs `reviewed: true`.
+  Next: F081 Images: WebP, AVIF, focal point.
+
+- **F079 Slideshow, Card slider, Tabs, Lightbox, Map: built, passes**
+  (branch `ccr-d50f7e80-weuq18`, from main after F078 was merged as PR
+  #64). Snapshot https://claude.ai/artifact/FNRagTiH9MLL4iTdDgHeje, A
+  built for all four choices. done_check `npm test -- interactive && npm
+  run check:a11y && npm run check:perf` exit 0. **To try** on the PR's
+  preview link: in the builder add a **Slideshow** (Media), add photos,
+  then Style tab → "Play on its own: Yes"; add a **Card slider** (Media)
+  and press its arrows in the canvas; add **Tabs** (Content) and click
+  between them, try the three looks; add a **Map** (Media), type an
+  address, press **Find on the map**, then "Check on OpenStreetMap" to
+  see it's right (or paste a Google Maps link); on a **Gallery**, Style
+  tab → "Open photos larger when pressed". The scripts only run on the
+  published page: use Preview/Publish to press "Show map", open a photo,
+  or let the slideshow play. Keyboard: arrow keys move between tabs and
+  through photos in the lightbox; Esc closes it. Screenshots
+  `design/f079-*.png`. Needs `reviewed: true`. Next: F080 Layout library
+  v2.
+
 - **F078 Stats, Video, Table and Pricing, Numbered list: built, passes**
   (branch `ccr-d50f7e80-weuq18`, from main after F077 was merged as PR
   #63). Snapshot https://claude.ai/artifact/X3bMNKoE6MCU7EqbLJx2mk, A
@@ -270,6 +348,21 @@ to "Log".
   but can't save (different Access app). Intended.
 
 ## Log
+
+- 2026-11-03 (Jakarta) — CI on PR #65 went red after F081: the desktop
+  app's link step died with "Bus error" (runner disk full with the new
+  AVIF/WebP encoders). ci.yml now removes unused preinstalled toolkits
+  (~25 GB) first. F082 built on the same branch.
+
+- 2026-11-03 (Jakarta) — F081 built on `ccr-d50f7e80-weuq18`. The AVIF
+  encoder took ~5 s a photo in `cargo run` builds (Rust compiles its
+  generic code inside crust-publish); crust-publish is now optimised in
+  dev builds too (~0.4 s). Photo copies are cached between publishes.
+
+- 2026-11-02 (evening, Jakarta) — F079 built on `ccr-d50f7e80-weuq18`
+  after F078 merged (PR #64). axe on the sample pages caught the slide
+  link and Directions link using the card link colour on Dark sections;
+  they now use the section's accent colour, like text links.
 
 - 2026-11-02 (15:15–, Jakarta) — F075 Motion built on `f075-motion`
   (one site-wide level, Section entrance and parallax, moving logo row

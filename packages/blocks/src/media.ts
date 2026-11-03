@@ -6,6 +6,7 @@
  *
  * Deep-importable (no React) so the server functions can use it.
  */
+import { cleanFocus, type FocalPoint } from "./sections-v2";
 
 /** One photo in content/media.json. */
 export interface MediaItem {
@@ -18,6 +19,11 @@ export interface MediaItem {
   bytes: number;
   /** ISO date. */
   uploadedAt: string;
+  /**
+   * F081: the part of the photo that must stay in view when a block crops
+   * it, in percent from the left and top. Missing means the middle.
+   */
+  focus?: FocalPoint;
 }
 
 export const MEDIA_FOLDER = "content/media";
@@ -63,6 +69,27 @@ export const mediaSrc = (file: string) => `${MEDIA_PREFIX}${file}`;
 export function variantFile(file: string, width: number): string {
   const dot = file.lastIndexOf(".");
   return `${file.slice(0, dot)}-${width}w${file.slice(dot)}`;
+}
+
+/**
+ * F081: the newer formats publishing copies a photo (and each resized copy)
+ * into, best first, with their types. A WebP photo only gets AVIF.
+ */
+export function modernFormats(file: string): { ext: "avif" | "webp"; type: string }[] {
+  const avif = { ext: "avif" as const, type: "image/avif" };
+  return file.endsWith(".webp") ? [avif] : [avif, { ext: "webp" as const, type: "image/webp" }];
+}
+
+/** "harbour-480w.jpg", "avif" → "harbour-480w.jpg.avif" (crust-publish `modern_file`). */
+export const modernFile = (file: string, ext: string) => `${file}.${ext}`;
+
+/** True for `{ x, y }` with numbers (clamped to 0–100 when read). */
+export const isFocalPoint = (value: unknown): boolean => cleanFocus(value) !== null;
+
+/** A library photo's focal point, or null for the middle (nothing to store). */
+export function mediaFocus(value: unknown): FocalPoint | null {
+  const f = cleanFocus(value);
+  return f && (f.x !== 50 || f.y !== 50) ? f : null;
 }
 
 /** The resized copies a photo of this width gets, smallest first. */
@@ -160,6 +187,7 @@ export function parseMediaIndex(text: string | null | undefined): MediaItem[] {
       const n = (v: unknown) => (typeof v === "number" && Number.isFinite(v) && v > 0 ? Math.round(v) : 0);
       if (!n(m.width) || !n(m.height)) return [];
       seen.add(m.file);
+      const focus = mediaFocus(m.focus);
       return [
         {
           file: m.file,
@@ -168,6 +196,7 @@ export function parseMediaIndex(text: string | null | undefined): MediaItem[] {
           height: n(m.height),
           bytes: n(m.bytes),
           uploadedAt: typeof m.uploadedAt === "string" ? m.uploadedAt : "",
+          ...(focus ? { focus } : {}),
         },
       ];
     });

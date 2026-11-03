@@ -108,7 +108,7 @@ export function motionCss(tokens: Pick<SiteTokens, "style">): string {
   .cr-columns > :nth-child(4n+3), .cr-grid > :nth-child(4n+3), .cr-gallery > :nth-child(4n+3) { --cr-i: 2; }
   .cr-columns > :nth-child(4n+4), .cr-grid > :nth-child(4n+4), .cr-gallery > :nth-child(4n+4) { --cr-i: 3; }
   /* Light parallax: the photo moves a little slower than the page; the words don't move. */
-  .cr-parallax > .cr-section-media { animation: cr-parallax linear both; animation-timeline: view(); animation-range: cover; }
+  .cr-parallax > .cr-section-media, .cr-parallax > .cr-picture > .cr-section-media { animation: cr-parallax linear both; animation-timeline: view(); animation-range: cover; }
 }
 /* Hover lift: only cards and buttons that link somewhere, so it tells what can be pressed. */
 .cr-card:has(a[href]) { transition: transform 0.25s ${ease}, box-shadow 0.25s ease; }

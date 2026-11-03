@@ -114,6 +114,9 @@ export {
   hasH1,
 } from "./layouts";
 export type { LayoutCategory, SectionLayout, PageLayout } from "./layouts";
+export { fitLayoutToTokens, sectionLayoutsV2, pageLayoutsV2 } from "./layouts-v2";
+export { LAYOUT_PHOTO_PREFIX, layoutPhotos, layoutLogos, layoutPhotoSrc, layoutPhotoOf, layoutPhotoSrcs, swapLayoutPhotos } from "./layout-photos";
+export type { LayoutPhoto, LayoutPhotoId } from "./layout-photos";
 export { itemLimits, listIcons, listIconNames, moreBlocks, ListIconSvg, isListIcon, numberStyles, numberStyleNames, listNumber, NUMBERS } from "./more-blocks";
 export type { NumberStyle } from "./more-blocks";
 export {
@@ -162,6 +165,37 @@ export {
 } from "./blocks-v3";
 export type { StatItem, StatLook, StatsProps, VideoSource, VideoRatio, VideoProps, TableHeaders, TableLook, TableProps, Plan, PricingProps } from "./blocks-v3";
 export { BLOCKS_V3_CSS, needsBlocksV3Css } from "./blocks-v3-css";
+export {
+  interactiveBlocks,
+  interactiveLimits,
+  slideRatios,
+  slideRatioNames,
+  slideSpeeds,
+  slideList,
+  slideshowLabel,
+  cardSliderLabel,
+  sliderVisible,
+  tabLooks,
+  tabLookNames,
+  tabList,
+  mapZooms,
+  mapZoomNames,
+  mapRatios,
+  mapRatioNames,
+  cleanPin,
+  pinFromText,
+  mapEmbedUrl,
+  mapPageUrl,
+  directionsUrl,
+  hasMapEmbed,
+  interactiveNeeds,
+  interactiveTags,
+  SLIDER_SCRIPT,
+  TABS_SCRIPT,
+  LIGHTBOX_SCRIPT,
+} from "./interactive";
+export type { Slide, SlideRatio, SlideSpeed, SlideshowProps, SliderCard, CardSliderProps, TabItem, TabLook, TabsProps, MapPin, MapZoom, MapRatio, MapProps } from "./interactive";
+export { INTERACTIVE_CSS, needsInteractiveCss } from "./interactive-css";
 export type { GridItem, GridProps, GalleryImage, GalleryProps, AccordionItem, AccordionProps, ListIcon, IconListProps, Logo, LogoRowProps, QuoteProps, ImageOverlayProps } from "./more-blocks";
 export { PACK_FORMAT, PACK_VERSION, packLimits, makeThemePack, packFileName, readThemePack, freeLayoutName, packSummary } from "./theme-pack";
 export type { ThemePack, PackLayout, PackChrome, PackParts, PackCheck, BlockSpecs } from "./theme-pack";
@@ -178,6 +212,10 @@ export {
   mediaSrc,
   variantFile,
   variantWidths,
+  modernFormats,
+  modernFile,
+  mediaFocus,
+  isFocalPoint,
   mediaFileFor,
   fitWithin,
   sniffImage,
@@ -186,7 +224,7 @@ export {
   formatBytes,
 } from "./media";
 export type { MediaItem, MediaExt } from "./media";
-export { Img, MediaContext, imageSizes } from "./media-img";
+export { Img, MediaContext, MediaFocusContext, imageSizes } from "./media-img";
 export {
   POSTS_FOLDER,
   BLOG_FILE,
@@ -269,7 +307,7 @@ export {
   isTemplatePagePath,
   photoType,
 } from "./template";
-export type { Template, TemplatePage, TemplatePhoto, TemplateSource, TemplateCheck } from "./template";
+export type { Template, TemplateDesign, TemplatePage, TemplatePhoto, TemplateSource, TemplateCheck } from "./template";
 export {
   blockName,
   cleanPlaceholder,
@@ -325,3 +363,28 @@ export {
   rowExtras,
 } from "./columns-v2";
 export type { BoxPadding, ColumnAlign, ColumnBox, ColumnHighlight } from "./columns-v2";
+// F082: post, blog and "Page not found" designs.
+export {
+  DESIGNS_FOLDER,
+  NOT_FOUND_TITLE,
+  allBlocks,
+  blockLabel,
+  checkDesign,
+  cleanDesign,
+  currentDesign,
+  designBlocks,
+  designBlocksFor,
+  designFile,
+  designFileInContent,
+  designKinds,
+  designLayouts,
+  designLayoutsFor,
+  designLimits,
+  designNames,
+  isDesignBlock,
+  isDesignKind,
+  parseDesign,
+} from "./page-designs";
+export type { DesignKind, DesignLayout, PageDesign, PageDesigns } from "./page-designs";
+export { PageDesignContext, coverRatios, pageDesignBlocks, postListLooks } from "./page-design-blocks";
+export type { DesignPost, PageDesignData } from "./page-design-blocks";

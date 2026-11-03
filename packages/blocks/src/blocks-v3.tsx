@@ -293,12 +293,14 @@ export function hasVideoEmbed(value: unknown): boolean {
 
 /**
  * Swaps a pressed video cover for the player (YouTube or Vimeo), so nothing
- * loads from those services before the visitor asks. Without this script the
- * cover is a link to the video's own page. Focus moves into the player.
+ * loads from those services before the visitor asks. Without this script
+ * the cover is a link to the video's own page. Focus moves into the player.
+ * F079: a Map's "Show map" works the same way (its frame, marked
+ * `data-cr-embed-box`, gets the map).
  */
 export const VIDEO_EMBED_SCRIPT = `for(const a of document.querySelectorAll("a[data-cr-embed]")){
 a.setAttribute("role","button");
-const go=e=>{e.preventDefault();const f=document.createElement("iframe");f.src=a.dataset.crEmbed;f.title=a.dataset.crVideoTitle||"Video";f.allow="autoplay; fullscreen; picture-in-picture; encrypted-media";f.allowFullscreen=true;f.className="cr-video-player";a.replaceWith(f);f.focus();};
+const go=e=>{e.preventDefault();const f=document.createElement("iframe");f.src=a.dataset.crEmbed;f.title=a.dataset.crEmbedTitle||a.dataset.crVideoTitle||"Video";f.allow="autoplay; fullscreen; picture-in-picture; encrypted-media";f.allowFullscreen=true;f.className=a.dataset.crEmbedClass||"cr-video-player";const b=a.closest("[data-cr-embed-box]");if(b)b.replaceChildren(f);else a.replaceWith(f);f.focus();};
 a.addEventListener("click",go);
 a.addEventListener("keydown",e=>{if(e.key===" ")go(e);});}`;
 

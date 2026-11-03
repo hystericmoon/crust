@@ -17,6 +17,9 @@ struct Args {
     /// The media library folder (content/media): copied in, with resized copies. Optional.
     #[arg(long)]
     media: Option<PathBuf>,
+    /// Keeps each photo's resized and AVIF/WebP copies here between publishes (F081). Optional.
+    #[arg(long)]
+    photo_cache: Option<PathBuf>,
     /// Crust's bundled fonts (packages/blocks/fonts): the ones the pages use are copied in. Optional.
     #[arg(long)]
     fonts: Option<PathBuf>,
@@ -31,7 +34,7 @@ fn main() -> ExitCode {
             return ExitCode::FAILURE;
         }
     };
-    let photos = match args.media.as_deref().map(|dir| crust_publish::publish_media(dir, &args.site_dir)).transpose() {
+    let photos = match args.media.as_deref().map(|dir| crust_publish::publish_media_cached(dir, &args.site_dir, args.photo_cache.as_deref())).transpose() {
         Ok(report) => report.unwrap_or_default(),
         Err(err) => {
             eprintln!("publish failed: {err:#}");
@@ -49,7 +52,7 @@ fn main() -> ExitCode {
         Ok(report) => {
             println!("publish: {} page(s) ready", report.pages.len());
             if photos.photos > 0 {
-                println!("  {} photo(s), {} resized copies", photos.photos, photos.copies);
+                println!("  {} photo(s), {} resized copies, {} AVIF/WebP copies", photos.photos, photos.copies, photos.modern);
             }
             if !fonts.files.is_empty() {
                 println!("  {} font file(s)", fonts.files.len());

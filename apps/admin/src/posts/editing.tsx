@@ -3,7 +3,10 @@
  * details (title, summary, date, cover photo) in the page settings, and the
  * top of the post on the canvas as it will be published.
  */
-import { PostHeaderView, defaultBlog, type BlogSettings, type Components } from "@crust/blocks";
+import { PageDesignContext, PostHeaderView, defaultBlog, migrateRichTextBlocks, type BlogSettings, type Components } from "@crust/blocks";
+import { StaticBlocks } from "@crust/render";
+import { useEffect } from "react";
+import { loadDesigns, useDesigns } from "../designs/store";
 import type { Config } from "@puckeditor/core";
 import { createContext, useContext, useId, type ReactNode } from "react";
 import { fillAltText } from "../media/fields";
@@ -38,6 +41,36 @@ function PostTop(props: RootProps) {
 }
 
 /**
+ * The post on the canvas: the top as published, or (F082) inside the
+ * owner's post page design, its own blocks where "Post content" stands.
+ * The design's blocks are a picture here; they're edited in the design.
+ */
+function PostFrame(props: RootProps & { children: ReactNode }) {
+  const { blog, language } = useContext(BlogContext);
+  const { designs } = useDesigns();
+  useEffect(() => {
+    void loadDesigns();
+  }, []);
+  const design = designs.post;
+  if (!design) {
+    return (
+      <article className="cr-post">
+        <PostTop {...props} />
+        {props.children}
+      </article>
+    );
+  }
+  const post = { slug: "", title: props.title || "Untitled post", description: props.description ?? "", date: props.date ?? "", cover: props.cover ?? "", coverAlt: props.coverAlt ?? "" };
+  return (
+    <article className="cr-post">
+      <PageDesignContext.Provider value={{ post, posts: [], blog, language, body: props.children }}>
+        <StaticBlocks items={migrateRichTextBlocks(design.content)} />
+      </PageDesignContext.Provider>
+    </article>
+  );
+}
+
+/**
  * Turns a page builder config into the post builder: post fields in the
  * page settings, the post's top above its blocks. `config` is the page
  * builder's (its root render adds the site header and footer).
@@ -66,12 +99,7 @@ export function withPostEditing(config: Config<Components>): Config<Components> 
         return props === data.props ? data : { ...data, props };
       },
       render: (props: RootProps & { children: ReactNode }) => {
-        const inner = (
-          <article className="cr-post">
-            <PostTop {...props} />
-            {props.children}
-          </article>
-        );
+        const inner = <PostFrame {...props} />;
         return outer ? outer({ children: inner }) : <div className="cr-page">{inner}</div>;
       },
     },

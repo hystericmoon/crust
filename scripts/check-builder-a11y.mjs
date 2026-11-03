@@ -37,6 +37,10 @@ const blocksPost = {
       { type: "Table", props: { id: "Table-check", caption: "Opening hours", headers: "both", look: "lines", rows: [["", "Studio"], ["Saturday", "10–16"]] } },
       { type: "Video", props: { id: "Video-check", src: "/media/tour.mp4", title: "", imageSrc: "", captionsSrc: "", caption: "", ratio: "16:9" } },
       { type: "Pricing", props: { id: "Pricing-check", highlight: "1", badge: "Most popular", planStyle: "surface", highlightStyle: "primary", titleLevel: "h2", plans: [{ name: "Studio", price: "€49", period: "per month", description: "", features: "5 sites", buttonLabel: "", buttonHref: "/contact" }] } },
+      // F079
+      { type: "Map", props: { id: "Map-check", place: "Crust Bakery", address: "Harbour street 12", pin: { lat: 52.3731, lng: 4.8922 }, zoom: "street", ratio: "16:9", imageSrc: "" } },
+      { type: "Tabs", props: { id: "Tabs-check", look: "pills", titleLevel: "h2", tabs: [{ label: "Menu", text: "Bread." }, { label: "Hours", text: "From 7." }] } },
+      { type: "Slideshow", props: { id: "Slideshow-check", name: "Rooms", ratio: "16:9", autoplay: "yes", speed: "8", titleLevel: "h2", slides: [{ imageSrc: "", imageAlt: "", title: "One", text: "", linkLabel: "", linkHref: "" }, { imageSrc: "", imageAlt: "", title: "Two", text: "", linkLabel: "", linkHref: "" }] } },
       { type: "Stats", props: { id: "Stats-check", look: "lines", size: "md", colour: "text", align: "left", items: [{ value: "12", label: "years", detail: "" }] } },
     ],
   },
@@ -44,7 +48,8 @@ const blocksPost = {
 // [label, address, post to seed, block to select first (F042: the rich text editor), buttons to press (F048),
 //  F073: { then: buttons to press after selecting the block },
 //  F058: { app: run as the desktop app (scripts/fake-tauri.js) with this host state, wait: what to wait for instead of the canvas,
-//  F060: firstRun: a brand new Crust (the welcome screen), F061: update: "available" }]
+//  F060: firstRun: a brand new Crust (the welcome screen), F061: update: "available",
+//  F081: media: a media library (two photos, one with a focal point) behind /api/media }]
 const screens = [
   ["page builder", "/#/edit?path=/", null, null],
   ["page builder, Text block selected", "/#/edit?path=/", null, '[data-puck-component^="Text"]'],
@@ -80,15 +85,29 @@ const screens = [
   ["Section Style tab", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible'] }],
   ["Section Style tab, gradient", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible', '[aria-label="Background"] .sx-seg-option:has-text("Gradient"):visible'] }],
   ["Section Style tab, video", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible', '[aria-label="Background"] .sx-seg-option:has-text("Video"):visible'] }],
+  // F080: saving a section's style (the name form), and the layout gallery with the new layouts and the "Simple" group.
+  ["Section Style tab, saving a style", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible', ".es-save:visible"] }],
+  ["layout gallery, Hero", "/#/edit?path=/", null, null, ['button:text-is("Layouts")', '.lg-cat:has-text("Hero")']],
   // F078: the Table's cells, the Video's notes, Pricing's Style tab, an Icon list switched to Numbers.
   ["Table cells", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Table"]'],
   ["Video notes", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Video"]'],
   ["Pricing Style tab", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Pricing"]', [], { then: ['.tb-tab:has-text("Style"):visible'] }],
+  // F079: the Map's pin field, the Tabs working in the canvas, the Slideshow's Style tab (speed shows with autoplay).
+  ["Map pin field", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Map"]'],
+  ["Tabs selected", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Tabs"]'],
+  ["Slideshow Style tab", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Slideshow"]', [], { then: ['.tb-tab:has-text("Style"):visible'] }],
   // F077: a Card's icon picker (Content tab), then a category picked.
   ["Card icon picker", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { then: ['.ic-chip:has-text("Food"):visible'] }],
   // F074: a Columns row's Style tab, then boxes and a highlighted column picked.
   ["Columns Style tab", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { then: ['button:text-is("Columns"):visible', '.tb-tab:has-text("Style"):visible'] }],
   ["Columns Style tab, boxes and highlight", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { then: ['button:text-is("Columns"):visible', '.tb-tab:has-text("Style"):visible', '[aria-label="Box behind each column"] [aria-label="Muted"]:visible', '[aria-label="Highlight a column"] [aria-label="Column 2"]:visible'] }],
+  // F082: the post page design with its Post title block selected, the blog design's starting designs, and the Posts screen's design cards.
+  ["post page design, title selected", "/#/design?kind=post", null, '[data-puck-component^="PostTitle"]', []],
+  ["blog page design, starting designs", "/#/design?kind=blog", null, null, ['button:has-text("Layouts")', '.lg-kind-option:has-text("Starting designs")']],
+  ["Page not found design", "/#/design?kind=notFound", null, null, []],
+  ["posts screen with designs", "/#/posts", null, null, [], { wait: ".dz-status" }],
+  // F081: the media library's photo details with the focal point picker.
+  ["media library, focal point", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { media: true, then: ['button:has-text("Choose image"):visible', '.mp-photo[data-file="stage.jpg"]'] }],
   ["app welcome screen, Blank picked", "/", null, null, ['label:has-text("Blank")'], { app: "none", firstRun: true, wait: ".fr-card iframe" }],
 ];
 const fakeApp = await readFile(new URL("./fake-tauri.js", import.meta.url), "utf8");
@@ -97,8 +116,18 @@ const server = await serve(distDir);
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 let failures = 0;
 try {
-  for (const [label, hash, post, select, clicks = [], { app, wait, firstRun, update, then = [] } = {}] of screens) {
+  for (const [label, hash, post, select, clicks = [], { app, wait, firstRun, update, media, then = [] } = {}] of screens) {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    if (media) {
+      const items = [
+        { file: "stage.jpg", alt: "The band on stage", width: 1920, height: 1200, bytes: 400000, uploadedAt: "2026-11-02T10:00:00Z", focus: { x: 18, y: 45 } },
+        { file: "door.jpg", alt: "", width: 1920, height: 1280, bytes: 300000, uploadedAt: "2026-11-01T10:00:00Z" },
+      ];
+      await page.route("**/api/media", (r) => r.fulfill({ json: { ok: true, items, usage: {} } }));
+      await page.route("**/media/*.jpg", async (r) =>
+        r.fulfill({ contentType: "image/jpeg", body: await readFile(new URL(`./starter-templates/photos/${r.request().url().includes("stage") ? "signal/guitarist" : "corner/tool-wall"}.jpg`, import.meta.url)) }),
+      );
+    }
     if (app) await page.addInitScript(`window.__FAKE_TAURI__ = ${JSON.stringify({ host: app, firstRun, update })};\n${fakeApp}`);
     if (post) {
       await page.addInitScript((p) => {

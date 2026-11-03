@@ -134,6 +134,51 @@ const sampleBlocks = (n: string): Content => [
   },
   { type: "Video", props: { id: `yt-${n}`, src: "https://youtu.be/aqz-KE-bpKQ", title: "A morning at the studio", imageSrc: "/sample.jpg", captionsSrc: "", caption: "Filmed in March.", ratio: "16:9" } },
   { type: "Video", props: { id: `vid-${n}`, src: "/media/tour.mp4", title: "Studio tour", imageSrc: "", captionsSrc: "/media/tour.vtt", caption: "", ratio: "16:9" } },
+  // F079: Slideshow (playing on its own, so the pause button is checked), Card slider, Tabs, Map, lightbox Gallery.
+  {
+    type: "Slideshow",
+    props: {
+      id: `slides-${n}`,
+      name: "Our rooms",
+      ratio: "16:9",
+      autoplay: n === "surface" ? "yes" : "no",
+      speed: "8",
+      titleLevel: "h3",
+      slides: [
+        { imageSrc: "/sample.jpg", imageAlt: "The harbour room", title: "Harbour room", text: "Sea view, two beds.", linkLabel: "Book the harbour room", linkHref: "/book" },
+        { imageSrc: "/alex.jpg", imageAlt: "The garden room", title: "Garden room", text: "", linkLabel: "", linkHref: "" },
+      ],
+    },
+  },
+  {
+    type: "CardSlider",
+    props: {
+      id: `cards-${n}`,
+      name: "This season",
+      visible: "3",
+      titleLevel: "h3",
+      background: n === "primary" ? "background" : "surface",
+      items: ["Rye loaf", "Pear tart", "Focaccia", "Babka"].map((title) => ({ title, text: "Baked every morning.", imageSrc: "", imageAlt: "", linkLabel: `Order the ${title.toLowerCase()}`, linkHref: "/order" })),
+    },
+  },
+  {
+    type: "Tabs",
+    props: {
+      id: `tabs-${n}`,
+      look: n === "background" ? "underline" : n === "surface" ? "pills" : "side",
+      titleLevel: "h3",
+      tabs: [
+        { label: "Menu", text: "Bread from 7, coffee from 8." },
+        { label: "Hours", text: "Closed on Mondays." },
+        { label: "Find us", text: "Next to the harbour." },
+      ],
+    },
+  },
+  { type: "Map", props: { id: `map-${n}`, place: "Crust Bakery", address: "Harbour street 12\nAmsterdam", pin: { lat: 52.3731, lng: 4.8922 }, zoom: "street", ratio: "16:9", imageSrc: "" } },
+  {
+    type: "Gallery",
+    props: { id: `lightbox-${n}`, lightbox: "yes", columns: "3", shape: "square", images: [{ src: "/sample.jpg", alt: "The bakery's back room", caption: "Before opening" }, { src: "/alex.jpg", alt: "Alex at the oven", caption: "" }] },
+  },
   {
     type: "SocialLinks",
     props: {

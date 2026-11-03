@@ -3,7 +3,9 @@
  * offered: it opens, every text colour reads in every section style, pages
  * have one h1 and headings in order with alt text, axe finds no serious
  * issue at three widths, the home page scores 95+ for speed, every saved
- * layout renders, and no sample content slipped through unmarked.
+ * layout renders, and no sample content slipped through unmarked. F083
+ * adds empty slots, mismatched crops, Home variety and gradients
+ * (template-strict.ts) and stand-in words from the builder's defaults.
  *
  * This file holds the parts that don't need a browser: unpacking a
  * template into a content folder, the checks on its data, and the report
@@ -11,6 +13,7 @@
  * axe, Lighthouse) and puts it together.
  */
 import {
+  designFileInContent,
   AA,
   blockName,
   checkContrast,
@@ -31,6 +34,8 @@ import {
   type Template,
 } from "@crust/blocks";
 import { renderPage } from "./render";
+
+export * from "./template-strict";
 
 export type Status = "pass" | "fail" | "note";
 export interface CheckItem {
@@ -105,6 +110,8 @@ export function unpackTemplate(t: Template): Map<string, string | Uint8Array> {
     files.set("blog.json", json(t.blog));
     for (const p of stripPlaceholders(t.posts)) files.set(`posts/${p.slug}.json`, json(p));
   }
+  // F082: the template's designs, published like the site's.
+  for (const d of t.designs ?? []) files.set(designFileInContent(d.kind), json({ kind: d.kind, ...(d.title ? { title: d.title } : {}), savedAt: "", content: d.content }));
   if (t.media.length) {
     files.set("media.json", json(mediaOf(t)));
     for (const m of t.media) files.set(`media/${m.file}`, new Uint8Array(Buffer.from(m.data, "base64")));
@@ -247,6 +254,12 @@ export function renderLayouts(t: Template, baseCss: string): { pages: { slug: st
 
 /** Filler words a finished template shouldn't show unmarked. */
 const FILLER = [/lorem ipsum/i, /dolor sit amet/i, /\b(TODO|TBD|FIXME|XXX)\b/, /\[(your|insert|add|enter)\b[^\]]*\]/i, /\{\{[^}]*\}\}/];
+/**
+ * F083: stand-in words from the builder's own defaults or a sketch, whole-string matches
+ * ("Heading", "Click here"; not a sentence that merely contains the word).
+ */
+const FILLER_EXACT = [/^(heading|your (text|title|heading|headline|name) here|click here|text goes here|sample (text|title)|card title|item \d+|feature \d+|button text|alex rivera)$/i, /crust made our site faster and easier to change/i];
+const isFiller = (s: string) => FILLER.some((re) => re.test(s)) || FILLER_EXACT.some((re) => re.test(s.trim()));
 /** Placeholder-image services: fine while sketching, never in a template. */
 const FILLER_PHOTOS = /\b(placehold\.co|placeholder\.com|placehold\.it|dummyimage\.com|picsum\.photos|placekitten\.com|loremflickr\.com|fakeimg\.pl)\b/i;
 /** Props that hold settings, not words or photos. */
@@ -281,7 +294,7 @@ export function findFiller(blocks: unknown): string[] {
         else strings(v, texts);
       }
       for (const s of texts) {
-        if (FILLER.some((re) => re.test(s))) found.push(`${blockName(b.type)} block: “${shorten(s)}”`);
+        if (isFiller(s)) found.push(`${blockName(b.type)} block: “${shorten(s)}”`);
         else if (FILLER_PHOTOS.test(s)) found.push(`${blockName(b.type)} block: a stand-in photo (${shorten(s)})`);
       }
     }

@@ -5,7 +5,151 @@ current: update "Where things stand" and "Next" every time a feature is
 finished and before a session ends. Details live in the files linked
 below; this file says where to look and what to do.
 
-Last updated: 2026-11-02 ~20:30 (Jakarta). **F078 Stats, Video,
+## Model plan (owner, 2026-11-03)
+
+The owner picks the model per feature. **First thing every session**,
+before any work: find out which model you are (`get_session`, its
+`session_context.model`) and compare it with the next feature's row. If
+it doesn't match, do nothing else: tell the owner, in one line, "Switch to
+<model>: type `/model`, pick <model>, then send the same message again."
+**At the end of every feature, and whenever the owner says he wants to
+clear**, after the usual handover, end the message with this reminder,
+filled in (the owner asked for it every time, 2026-11-03):
+
+> **Ready to clear.** Everything is saved and pushed.
+> 1. `/clear`
+> 2. `/model` → **<model for the next feature>** (next: <feature>)
+> 3. Paste: `Read HANDOVER.md on branch <branch> and continue`
+
+Never show it while work is uncommitted or unpushed; finish that first.
+
+| Next feature | Model | Why |
+|---|---|---|
+| F084 Rebuild Harbour, Signal and Corner | **Opus** | Premium design and copy; judgment the checks can't measure |
+| F063 Store site | Opus (suggested) | Design snapshot, the public face of the store |
+| F064 Live demos | Sonnet (suggested) | Follows F063's setup |
+| F065 Template versions | Sonnet (suggested) | Well-defined data and checks |
+| F066 Checkout | Opus (suggested) | Payments and security |
+| F067 Delivery and updates | Opus (suggested) | Licences, downloads, security |
+| F068 Licence, terms and refunds | Opus (suggested) | Legal wording for the owner to decide |
+
+"Suggested" rows are confirmed by the owner after F083 (he said he'd
+decide the store milestone then); until he has, ask before starting one.
+The message after every `/clear` stays the same: "Read HANDOVER.md on
+branch <branch> and continue" (branch below, under "Last updated").
+
+Last updated: 2026-11-03 ~08:30 (Jakarta). **F083 Stricter template
+check built, passes** (branch `ccr-d50f7e80-weuq18`, stacked in PR #65;
+done_check exit 0; DECISIONS "F083"). Model: `template-strict.ts`
+(`slotsGroup`, `cropsGroup`, `varietyGroup`, `gradientGroup`,
+`MAX_CROP_MISMATCH` 1.3, `MIN_HOME_SECTION_TYPES` 5), filler
+`FILLER_EXACT` in template-check.ts, wired in scripts/check-template.ts.
+Harbour, Signal and Corner fail the new rules and are excused through
+`AWAITING_REBUILD`; **F084 must empty that list** and make them pass.
+No owner review needed. **Next: F084 Rebuild Harbour, Signal and
+Corner** (Opus; design snapshot first), stacked on this branch or from
+main once #65 is merged.
+
+Earlier (~07:30): **F082 Post, blog and 404
+designs built, passes** (branch `ccr-d50f7e80-weuq18`, stacked on
+F079–F081 in PR #65; done_check exit 0; DECISIONS "F082"). Snapshot
+https://claude.ai/artifact/6DUK8yisbSiBT5LuYuhUND (A for all three).
+How it fits: model `packages/blocks/src/page-designs.ts` (files
+`content/designs/{post,blog,404}.json`, `checkDesign`, `parseDesign`,
+nine `designLayouts`, `currentDesign`), blocks
+`page-design-blocks.tsx` (`PageDesignContext`, PostTitle, PostDetails,
+PostSummary, PostCover, PostHero, PostContent, BlogTitle, BlogIntro,
+PostList; config categories `post`/`blog`, hidden in page editors), CSS
+"F082" in styles.css. Render: `renderDesignBody` (render.tsx),
+`renderDesignedPost`/blog in blog.tsx, `renderNotFound` with
+`options.designs`; site.ts reads designs (damaged one stops publish).
+Server `apps/admin/server/designs.ts` (`/api/designs`, function +
+local-api). Admin `apps/admin/src/designs/` (`store.ts` with browser
+copies, `DesignEditor.tsx` with `withDesignEditing`, `DesignLinks.tsx`
+cards + Pages row, `context.ts` for the gallery's "Starting designs");
+post editor draws the design (`PostFrame` in posts/editing.tsx,
+`StaticBlocks` from @crust/render). Templates carry `designs`
+(template.ts, server template.ts apply, collect.ts, content-template.ts,
+template-check.ts). CI fix in this round: ci.yml "Make room on the
+runner" (F081's encoders filled the disk; link died with Bus error).
+Needs `reviewed: true`. **Next: F083 Stricter template check**
+(done_check in features.json), stacked on this branch or from main once
+#65 is merged.
+
+Earlier (~05:00): **F081 Images: WebP, AVIF,
+focal point built, passes** (branch `ccr-d50f7e80-weuq18`, stacked on
+F079/F080 in PR #65; done_check exit 0; DECISIONS "F081"). Snapshot
+https://claude.ai/artifact/Qp4rkNmxNn3AKWKxDTr9hB (A built). How it
+fits: crust-publish `media.rs` (`modern_formats`, `modern_file`,
+`publish_media_cached` with `--photo-cache`, FNV fingerprint +
+`COPIES_VERSION`, threads), `validate.rs` reads `<source srcset>`;
+Cargo.toml `[profile.dev.package.crust-publish] opt-level = 2` (AVIF is
+~12× slower without it); publish.yml caches `.crust-cache/photos`;
+desktop `publish.rs` uses `.crust/photo-cache`, `.avif` MIME in
+preview.rs/hosts.rs. Blocks: `media.ts` (`focus` on MediaItem,
+`mediaFocus`, `modernFormats`, `modernFile`), `media-img.tsx` (`Img`
+renders `<picture class="cr-picture">`, `MediaFocusContext`),
+`.cr-picture { display: contents }` + three `>` selectors in
+styles.css/motion.ts. Admin: `media/FocusPicker.tsx` (`FocusPicker`,
+`MediaFocusProvider` in App.tsx `BuilderCanvas`), MediaPicker "Save
+changes", server `/api/media` action `details`; template photos carry
+`focus`. check:builder screen "media library, focal point" (fakes
+/api/media with page.route). Needs `reviewed: true`. **Next: F082
+Post, blog and 404 designs** (design snapshot first; done_check `npm
+test -- page-designs && npm run check:a11y`), stacked on this branch
+or from main once #65 is merged.
+
+Earlier (~02:30): **F080 Layout library v2
+built, passes** (branch `ccr-d50f7e80-weuq18`, stacked on F079: PR #65
+is still open and now holds F079 and F080; done_check exit 0;
+DECISIONS "F080"). Started at 01:15 by a scheduled message the owner
+asked for. Snapshot https://claude.ai/artifact/VpbNu8K34npejqHXQpiYnj
+(A built for all three choices). How it fits: sections and pages in
+`packages/blocks/src/layouts-v2.ts` (`sectionLayoutsV2`,
+`pageLayoutsV2`, `fitLayoutToTokens`), merged in layouts.ts
+(`sectionLayouts` = new first, then the first library with `simple:
+true`); sample photos `layout-photos.ts` + files in
+`apps/admin/public/layout-photos/`; builder copy into Media
+`apps/admin/src/layouts/photos.tsx` (`LayoutPhotoWatcher` in App.tsx
+`BuilderRoot`, `adoptLayoutPhotos`); mark kept by `isSampleCopy`,
+publish stop `uncopiedSampleLabel` (placeholders.ts, used in config.tsx
+`withVisibility`); gallery "Simple" group `ItemGrid`/`splitSimple`.
+Saved element styles: `apps/admin/src/tabs/element-styles.tsx`
+(`SavedStyles`, `_styles` field added in tabs.tsx), stored as
+SavedLayout kind `"element"` (server content.ts `checkLayout`). Soft
+button fix: section-styles.ts `softFg`/`softBg`. check:layouts renders
+`library-v2-<look>`; check:builder has "Section Style tab, saving a
+style" and "layout gallery, Hero". Needs `reviewed: true`. **Next:
+F081 Images: WebP, AVIF, focal point** (design snapshot first if it has
+visible choices; done_check `npm test -- images && cargo test -p
+crust-publish && npm run check:perf`), on this branch (stacked) or a new
+branch from main once #65 is merged.
+
+Earlier (~23:00): **F079 Slideshow, Card
+slider, Tabs, Lightbox, Map built, passes** (branch
+`ccr-d50f7e80-weuq18`, restarted from main after F078 merged as PR #64;
+done_check exit 0; DECISIONS "F079"). Snapshot
+https://claude.ai/artifact/FNRagTiH9MLL4iTdDgHeje (A built for all
+four choices). How it fits: blocks in
+`packages/blocks/src/interactive.tsx` (Slideshow, CardSlider, Tabs,
+`MapBlock` registered as `Map`; `pinFromText`, `mapEmbedUrl`,
+`directionsUrl`; scripts `SLIDER_SCRIPT`, `TABS_SCRIPT`,
+`LIGHTBOX_SCRIPT`, picked per page by `interactiveTags`, which
+render.tsx `videoTag` appends); CSS `interactive-css.ts`
+(`INTERACTIVE_CSS`, `needsInteractiveCss`); the Gallery's `lightbox`
+switch in more-blocks.tsx; "Show map" reuses `VIDEO_EMBED_SCRIPT` (now
+fills a `data-cr-embed-box`). Tabs in the builder are a working React
+version (the published page uses the script). Builder:
+`apps/admin/src/interactive/` (`MapPinField.tsx` with Nominatim search
+in `geocode.ts`, `fields.tsx` `withInteractiveFields`,
+`interactiveFieldShown`). Samples in block-samples.ts; check:builder
+screens "Map pin field", "Tabs selected", "Slideshow Style tab".
+Needs `reviewed: true`. **Next: F080 Layout library v2** (design
+snapshot first; done_check `npm test -- layouts && npm run
+check:layouts`), on a new branch from main once F079 is merged, or
+stacked.
+
+Earlier (~20:30): **F078 Stats, Video,
 Table and Pricing, Numbered list built, passes** (branch
 `ccr-d50f7e80-weuq18`, from main after F077 merged as PR #63;
 done_check exit 0; DECISIONS "F078"). Snapshot

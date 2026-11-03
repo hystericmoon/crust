@@ -4,6 +4,10 @@
  * template check uses it when there's no .crust file to check.
  */
 import {
+  designFileInContent,
+  designKinds,
+  parseDesign,
+  type TemplateDesign,
   defaultBlog,
   makeTemplate,
   migrateChrome,
@@ -44,6 +48,12 @@ export async function templateFromContent(contentDir: string, details = { name: 
   }
   const blog = posts.length ? parseBlog(await read("blog.json").catch(() => null)) : defaultBlog;
   const media = parseMediaIndex(await read("media.json").catch(() => null));
+  // F082: the post page, blog page and "Page not found" designs.
+  const designs: TemplateDesign[] = [];
+  for (const kind of designKinds) {
+    const d = parseDesign(await read(designFileInContent(kind)).catch(() => null), kind);
+    if (d) designs.push({ kind, ...(d.title ? { title: d.title } : {}), content: d.content });
+  }
   return makeTemplate(
     { name: details.name || site.name, description: details.description },
     {
@@ -56,6 +66,7 @@ export async function templateFromContent(contentDir: string, details = { name: 
       blog,
       posts,
       media,
+      designs,
     },
     async (file) => readFile(join(contentDir, "media", file)).then((b) => b.toString("base64"), () => null),
   );

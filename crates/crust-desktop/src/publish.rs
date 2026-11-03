@@ -7,7 +7,7 @@
 //! photos, then the search index (Pagefind as a library). The result is a
 //! plain folder that can be exported or previewed in a browser.
 
-use crust_publish::{Checks, finish, load_redirects, publish_fonts, publish_media, search::build_search_index};
+use crust_publish::{Checks, finish, load_redirects, publish_fonts, publish_media_cached, search::build_search_index};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -51,7 +51,9 @@ pub fn build_site(site: &SiteFolder, files: &[RenderedFile], base_url: &str, che
         target.write(&file.path, file.content.as_bytes()).map_err(|e| e.to_string())?;
     }
     fs::create_dir_all(&staging).map_err(|e| format!("Couldn't make the site folder: {e}"))?;
-    let photos = publish_media(&site.root().join("content").join("media"), &staging).map_err(fail)?;
+    // F081: unchanged photos reuse their AVIF/WebP copies from the last publish.
+    let cache = site.root().join(".crust").join("photo-cache");
+    let photos = publish_media_cached(&site.root().join("content").join("media"), &staging, Some(&cache)).map_err(fail)?;
     if let Err(e) = publish_fonts(&staging, fonts) {
         let _ = fs::remove_dir_all(&staging);
         return Err(fail(e));

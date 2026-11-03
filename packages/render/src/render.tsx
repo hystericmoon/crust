@@ -1,4 +1,4 @@
-import { config, HEADER_V2_CSS, needsHeaderV2Css, ICONS_CSS, needsIconCss, BLOCKS_V3_CSS, needsBlocksV3Css, hasVideoEmbed, VIDEO_EMBED_SCRIPT, motionCss, heroStyle, hasDropdowns, DROPDOWN_SCRIPT, layoutOf, CONTACT_FORM_SCRIPT, hasBackgroundVideo, headerOverStyle, onlyFirstHeaderOver, VIDEO_SCRIPT, type SectionStyleId, fontPreloads, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
+import { config, HEADER_V2_CSS, needsHeaderV2Css, ICONS_CSS, needsIconCss, BLOCKS_V3_CSS, needsBlocksV3Css, hasVideoEmbed, VIDEO_EMBED_SCRIPT, INTERACTIVE_CSS, needsInteractiveCss, hasMapEmbed, interactiveTags, motionCss, heroStyle, hasDropdowns, DROPDOWN_SCRIPT, layoutOf, CONTACT_FORM_SCRIPT, hasBackgroundVideo, headerOverStyle, onlyFirstHeaderOver, VIDEO_SCRIPT, type SectionStyleId, fontPreloads, FormsContext, MissingLinkedSection, resolveLinkedSections, type LinkedSectionFile, hasContactForm, MediaContext, mediaFileOf, migrateChrome, variantFile, PageDesignContext, NOT_FOUND_TITLE, type PageDesignData, type PageDesigns, type FormsSetup, SiteFooterView, SiteHeaderView, tokensToCss, type MediaItem, type Page, type Site } from "@crust/blocks";
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -36,7 +36,7 @@ export const withMedia = (node: ReactNode, media: MediaItem[] | undefined) =>
   media ? <MediaContext.Provider value={new Map(media.map((m) => [m.file, m]))}>{node}</MediaContext.Provider> : node;
 
 /** Blocks that span the whole width themselves; everything else needs the page column. */
-const FULL_WIDTH = new Set(["Section", "LinkedSection"]);
+const FULL_WIDTH = new Set(["Section", "LinkedSection", "PostHero", "PostContent"]);
 
 /**
  * F069: page-level blocks outside a Section (a post's body text, a block
@@ -73,6 +73,21 @@ export function renderBody(data: Data, media?: MediaItem[], forms?: FormsSetup):
 }
 
 /**
+ * F082: a post, blog or "Page not found" design. Its self-filling blocks
+ * read `data`; `inner` (a post's own blocks) goes where "Post content" is.
+ */
+export function renderDesignBody(design: Data, data: Omit<PageDesignData, "body">, inner: Data | null, media?: MediaItem[], forms?: FormsSetup): string {
+  const value: PageDesignData = inner ? { ...data, body: <>{pageLevel(inner.content)}</> } : data;
+  const blocks = withMedia(<PageDesignContext.Provider value={value}>{pageLevel(onlyFirstHeaderOver(design.content))}</PageDesignContext.Provider>, media);
+  return renderToStaticMarkup(forms ? <FormsContext.Provider value={forms}>{blocks}</FormsContext.Provider> : blocks);
+}
+
+/** F082: blocks drawn as in the builder, as React (the post editor draws the post design around the post). */
+export function StaticBlocks({ items }: { items: ComponentData[] }) {
+  return <>{pageLevel(items, true)}</>;
+}
+
+/**
  * Blocks as the builder draws them, for previews such as the layout
  * gallery's cards (F041): photos without an address show as placeholders
  * instead of being left out. Never used for publishing.
@@ -93,8 +108,10 @@ export const turnstileTag = (options: RenderOptions, puck: unknown) => {
 /** F073: starts background videos, only on pages that have one. */
 export const videoTag = (puck: unknown) =>
   (hasBackgroundVideo(puck) ? `<script type="module">${VIDEO_SCRIPT}</script>\n` : "") +
-  // F078: a YouTube or Vimeo player is put in only when its cover is pressed.
-  (hasVideoEmbed(puck) ? `<script type="module">${VIDEO_EMBED_SCRIPT}</script>\n` : "");
+  // F078: a YouTube or Vimeo player is put in only when its cover is pressed; F079: a map too.
+  (hasVideoEmbed(puck) || hasMapEmbed(puck) ? `<script type="module">${VIDEO_EMBED_SCRIPT}</script>\n` : "") +
+  // F079: sliders, tabs and the gallery lightbox, each only on pages that use it.
+  interactiveTags(puck);
 
 export const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -112,6 +129,8 @@ export interface RenderOptions {
   forms?: { endpoint: string; siteKey: string };
   /** content/sections (F043): linked sections are built into each page that uses them. */
   linkedSections?: ReadonlyMap<string, LinkedSectionFile>;
+  /** content/designs (F082): the post, blog and "Page not found" designs; missing ones use the built-in look. */
+  designs?: PageDesigns;
 }
 
 /** A page's or post's blocks with linked sections built in (F043). Says which page uses a missing one. */
@@ -277,7 +296,9 @@ export function renderDocument(site: Site, doc: DocumentParts, baseCss: string, 
   const iconCss = needsIconCss(top + doc.body + bottom) ? `\n${ICONS_CSS}` : "";
   // F078: stats, video, table, pricing and numbered-list CSS only on pages that show one.
   const v3Css = needsBlocksV3Css(top + doc.body + bottom) ? `\n${BLOCKS_V3_CSS}` : "";
-  const css = minifyCss(`${tokensToCss(site.tokens)}\n${baseCss}${chromeCss}${iconCss}${v3Css}${motion ? `\n${motion}` : ""}`);
+  // F079: slideshow, card slider, tabs, map and lightbox CSS only on pages that show one.
+  const interactiveCss = needsInteractiveCss(top + doc.body + bottom) ? `\n${INTERACTIVE_CSS}` : "";
+  const css = minifyCss(`${tokensToCss(site.tokens)}\n${baseCss}${chromeCss}${iconCss}${v3Css}${interactiveCss}${motion ? `\n${motion}` : ""}`);
   const title = doc.share?.searchTitle?.trim() || (doc.path === "/" ? doc.title : `${doc.title} | ${site.name}`);
   return `<!doctype html>
 <html lang="${escapeHtml(site.language)}"${htmlClass}${htmlStyle}>
@@ -304,6 +325,12 @@ ${bottom}
  * the home page with status 200.
  */
 export function renderNotFound(site: Site, baseCss: string, options: RenderOptions = {}): string {
+  // F082: a designed "Page not found" is published like a page.
+  const design = options.designs?.notFound;
+  if (design) {
+    const puck = withLinkedSections({ root: { props: {} }, content: design.content } as Page["puck"], options, "The “Page not found” design");
+    return renderPage(site, { path: "/404", title: design.title ?? NOT_FOUND_TITLE, description: "This page doesn't exist.", puck }, baseCss, options);
+  }
   const page: Page = {
     path: "/404",
     title: "Page not found",

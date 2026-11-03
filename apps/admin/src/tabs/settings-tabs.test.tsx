@@ -52,7 +52,7 @@ const sectionVariants = (["colour", "gradient", "photo", "video"] as const).map(
 });
 
 /** F078: fields that show only with another setting (number look with Numbers, badge with a highlighted plan). */
-const blockVariants: Record<string, Record<string, unknown>[]> = { IconList: [{ icon: "numbers" }], Pricing: [{ highlight: "2" }] };
+const blockVariants: Record<string, Record<string, unknown>[]> = { IconList: [{ icon: "numbers" }], Pricing: [{ highlight: "2" }], Slideshow: [{ autoplay: "yes" }] };
 
 describe("settings-tabs: where each setting lives", () => {
   it("puts wording and links in Content, looks in Style, and spacing, visibility and anchors in Advanced", () => {
@@ -86,7 +86,8 @@ describe("settings-tabs: where each setting lives", () => {
     setTab("content");
     expect(shown("Heading")).toEqual(["_tabs", "text", "level", "eyebrow"]);
     setTab("style");
-    expect(shown("Heading")).toEqual(["_tabs", "align", "size"]);
+    // F080: saved element styles sit at the top of the Style tab.
+    expect(shown("Heading")).toEqual(["_tabs", "_styles", "align", "size"]);
     setTab("advanced");
     expect(shown("Columns")).toEqual(["_tabs", "gap", "rowGap", "column1", "column2", "column3", "column4", "hideOn", "anchor"]);
   });

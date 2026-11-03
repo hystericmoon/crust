@@ -46,8 +46,9 @@ describe("layouts for the new blocks (F041)", () => {
   it("adds Gallery and Logos to the categories, each with a layout", () => {
     expect(layoutCategories).toContain("Gallery");
     expect(layoutCategories).toContain("Logos");
-    expect(filterLayouts("section", "Gallery", "").map((i) => i.layout.id)).toEqual(["gallery-grid"]);
-    expect(filterLayouts("section", "Logos", "").map((i) => i.layout.id)).toEqual(["logos-strip"]);
+    // F080: the new layouts come first; the first library's are last, as "Simple".
+    expect(filterLayouts("section", "Gallery", "").map((i) => i.layout.id).at(-1)).toBe("gallery-grid");
+    expect(filterLayouts("section", "Logos", "").map((i) => i.layout.id).at(-1)).toBe("logos-strip");
     expect(filterLayouts("section", "All", "logo").map((i) => i.layout.id)).toContain("logos-strip");
   });
 

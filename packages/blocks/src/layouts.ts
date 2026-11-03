@@ -9,23 +9,29 @@ import type { ComponentData } from "@puckeditor/core";
 import type { SectionStyleId } from "./section-styles";
 import type { SpacingStep } from "./tokens";
 import { richParagraphs } from "./rich-text";
+import { pageLayoutsV2, sectionLayoutsV2 } from "./layouts-v2";
 
 type Align = "left" | "center" | "right";
 type Level = "h1" | "h2" | "h3" | "h4";
 
 export const layoutCategories = [
   "Hero",
+  "Intro",
+  "About",
   "Features",
-  "Content",
+  "Services",
+  "Work",
   "Gallery",
-  "Logos",
   "Testimonials",
+  "Logos",
+  "Numbers",
+  "Process",
   "Pricing",
   "FAQ",
   "Team",
-  "Numbers",
   "Call to action",
   "Contact",
+  "Content",
 ] as const;
 export type LayoutCategory = (typeof layoutCategories)[number];
 
@@ -36,6 +42,8 @@ export interface SectionLayout {
   /** One line about when to use it. */
   description: string;
   build: () => ComponentData[];
+  /** F080: one of the first library's plainer layouts, listed under "Simple" after the new ones. */
+  simple?: boolean;
 }
 
 export interface PageLayout {
@@ -44,6 +52,8 @@ export interface PageLayout {
   description: string;
   /** Section layout ids, top to bottom. */
   sections: string[];
+  /** F080: from the first library (see SectionLayout.simple). */
+  simple?: boolean;
 }
 
 // --- Block helpers -----------------------------------------------------------
@@ -93,7 +103,8 @@ const card = (title: string, body: string, background: "background" | "surface" 
 
 // --- Sections ------------------------------------------------------------------
 
-export const sectionLayouts: SectionLayout[] = [
+/** The first library (F026, F041): kept, listed under "Simple" since F080. */
+const simpleSectionLayouts: SectionLayout[] = [
   {
     id: "hero-centered",
     name: "Centered hero",
@@ -546,13 +557,17 @@ export const sectionLayouts: SectionLayout[] = [
 
 // --- Whole pages -----------------------------------------------------------------
 
-export const pageLayouts: PageLayout[] = [
+const simplePageLayouts: PageLayout[] = [
   { id: "page-landing", name: "Landing page", description: "Hero, features, quote and a call to action.", sections: ["hero-centered", "features-3", "quote", "cta-primary"] },
   { id: "page-about", name: "About", description: "Your story, numbers and team.", sections: ["hero-left", "text-two-columns", "numbers-3", "team-3"] },
   { id: "page-services", name: "Services", description: "What you offer, how it works, prices and questions.", sections: ["hero-primary", "features-4", "steps-3", "pricing-3", "faq"] },
   { id: "page-contact", name: "Contact", description: "A short hero, contact details and questions.", sections: ["hero-centered", "contact", "faq-two-columns"] },
   { id: "page-simple", name: "Simple page", description: "A heading and text, ready to write.", sections: ["hero-centered", "text-block"] },
 ];
+
+/** Every section layout: the new ones (F080) first, then the simple ones. */
+export const sectionLayouts: SectionLayout[] = [...sectionLayoutsV2, ...simpleSectionLayouts.map((l) => ({ ...l, simple: true }))];
+export const pageLayouts: PageLayout[] = [...pageLayoutsV2, ...simplePageLayouts.map((l) => ({ ...l, simple: true }))];
 
 export const findSectionLayout = (id: string) => sectionLayouts.find((l) => l.id === id);
 

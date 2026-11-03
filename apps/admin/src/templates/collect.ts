@@ -16,16 +16,20 @@ import {
   type SiteChrome,
   type SiteTokens,
   type Template,
+  type TemplateDesign,
   type TemplatePage,
 } from "@crust/blocks";
 import { getPage, getPost, listMedia, listPages, listPosts, listSections } from "../api-client";
+import { getDesignsState, loadDesigns } from "../designs/store";
 import { bundledPages } from "../pages/store";
 
 export interface TemplateLoader {
   pages: () => Promise<TemplatePage[]>;
   sections: () => Promise<Pick<LinkedSectionFile, "id" | "name" | "content">[]>;
   blog: () => Promise<{ blog: BlogSettings; posts: Post[] }>;
-  media: () => Promise<Pick<MediaItem, "file" | "alt" | "width" | "height">[]>;
+  media: () => Promise<Pick<MediaItem, "file" | "alt" | "width" | "height" | "focus">[]>;
+  /** F082: the post page, blog page and "Page not found" designs. */
+  designs?: () => Promise<TemplateDesign[]>;
   /** One photo's bytes as base64; null when it can't be read. */
   photo: (file: string) => Promise<string | null>;
 }
@@ -45,6 +49,12 @@ export function blobToBase64(blob: Blob): Promise<string> {
   });
 }
 
+/** F082: the designs as the builder has them (saved, or kept in this browser). */
+async function savedDesigns(): Promise<TemplateDesign[]> {
+  await loadDesigns();
+  return Object.values(getDesignsState().designs).map(({ kind, title, content }) => ({ kind, ...(title ? { title } : {}), content }));
+}
+
 export const githubLoader: TemplateLoader = {
   pages: async () => {
     const list = must(await listPages(), "the pages").pages;
@@ -60,6 +70,7 @@ export const githubLoader: TemplateLoader = {
     return { blog: res.blog, posts };
   },
   media: async () => must(await listMedia(), "the photo library").items,
+  designs: savedDesigns,
   photo: async (file) => {
     const res = await fetch(`/media/${encodeURIComponent(file)}`);
     return res.ok ? blobToBase64(await res.blob()) : null;
@@ -72,6 +83,7 @@ export const bundledLoader: TemplateLoader = {
   sections: async () => [],
   blog: async () => ({ blog: defaultBlog, posts: [] }),
   media: async () => [],
+  designs: savedDesigns,
   photo: async () => null,
 };
 
@@ -103,11 +115,12 @@ export async function collectTemplate(
   const sections = await loader.sections();
   onStep("blog");
   const { blog, posts } = await loader.blog();
+  const designs = loader.designs ? await loader.designs() : [];
   onStep("photos");
   const media = await loader.media();
   const { template, missing } = await makeTemplate(
     details,
-    { site: { name: site.name, language: site.language }, tokens: site.tokens, chrome: site.chrome, pages, sections, layouts: site.layouts, blog, posts, media },
+    { site: { name: site.name, language: site.language }, tokens: site.tokens, chrome: site.chrome, pages, sections, layouts: site.layouts, blog, posts, media, designs },
     loader.photo,
   );
   onStep("checking");
