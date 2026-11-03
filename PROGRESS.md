@@ -7,18 +7,20 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
-- **F067 Delivery and updates: built, passes** (branch
-  `ccr-d50f7e80-weuq18`, its own PR). done_check `npm test -- delivery`
-  exit 0; `npm test`, typecheck, `cargo test` and clippy pass. After a
-  paid order, the buyer gets an email with a personal download page
-  (Download button, what's new, how to open it in Crust). The same page
-  always has the newest release, so updates are free; a full refund
-  switches it off. Fake "order paid" messages are refused (signature
-  check). Also fixed: the desktop FTPS test that failed once on #68.
-  **To try:** nothing visible yet: it needs the one-time setup in
-  docs/setup-delivery.md (after the Polar account), then a test purchase
-  with your own email address. **Next: F068 Licence, terms and refunds**
-  (Opus).
+- **F068 Licence, terms and refunds: built, passes, wording is a draft**
+  (branch `ccr-d50f7e80-weuq18`, its own PR). done_check `npm test --
+  store-legal && npm run check:a11y` exit 0. Snapshot
+  https://claude.ai/artifact/DAmwsHC4W4CcGXzH4DDCij (A built on all
+  three: one price for unlimited sites; full refund within 14 days for
+  any reason; three short pages). The store has Licence, Terms and
+  Refunds pages, a "Buying" footer column, "Read the full licence" on
+  every template page, and a line under every buy button linking all
+  three. Each page says "Draft" until you approve the wording, and the
+  store refuses real payments until then. **To try:** after Publish
+  store, open https://crust-store.pages.dev/licence (and /terms,
+  /refunds); read the wording; tell Claude your changes, the name to
+  sell under and the contact email. **Milestone 7 is complete; no
+  unbuilt features remain.**
 
 - **2026-11-03: token saving A, B and D done** (owner's pick on
   https://claude.ai/artifact/D2h2rdzR4iQU6dQv7TyWqV; DECISIONS "Token

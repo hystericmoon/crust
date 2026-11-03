@@ -4,12 +4,14 @@
  * owner's "Take real payments" switch (CRUST_REAL_PAYMENTS=yes) disagree.
  */
 import { checkoutGate, PROVIDERS } from "./checkout";
+import { legalGate } from "./legal";
 import { loadStore } from "./load";
 import { isPriced } from "./model";
 
 const { templates, checkout } = loadStore();
 const priced = templates.filter(({ item }) => isPriced(item)).length;
-const problems = checkoutGate(priced, checkout, process.env.CRUST_REAL_PAYMENTS === "yes");
+// F068: live mode also needs the owner's approved licence, terms and refund wording.
+const problems = [...checkoutGate(priced, checkout, process.env.CRUST_REAL_PAYMENTS === "yes"), ...legalGate(priced, checkout)];
 if (problems.length) {
   for (const p of problems) console.error(`::error::${p}`);
   process.exit(1);

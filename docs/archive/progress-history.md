@@ -5,6 +5,19 @@ short. Older "Current" entries (newest first) and the older log.
 
 ## Earlier "Current" entries (F065 back to Milestone 1)
 
+- **F067 Delivery and updates: built, passes** (branch
+  `ccr-d50f7e80-weuq18`, PR #69, merged 2026-11-03). done_check `npm test -- delivery`
+  exit 0; `npm test`, typecheck, `cargo test` and clippy pass. After a
+  paid order, the buyer gets an email with a personal download page
+  (Download button, what's new, how to open it in Crust). The same page
+  always has the newest release, so updates are free; a full refund
+  switches it off. Fake "order paid" messages are refused (signature
+  check). Also fixed: the desktop FTPS test that failed once on #68.
+  **To try:** nothing visible yet: it needs the one-time setup in
+  docs/setup-delivery.md (after the Polar account), then a test purchase
+  with your own email address. **Next: F068 Licence, terms and refunds**
+  (Opus).
+
 - **F066 Checkout: built, passes, test mode** (branch
   `ccr-d50f7e80-weuq18`, PR #66, merged 2026-11-03). Snapshot
   https://claude.ai/artifact/6QAvaWHcuU26fgCfCrZVdw (A built for both:

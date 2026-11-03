@@ -118,6 +118,23 @@
             "href": "/templates/corner"
           }
         ]
+      },
+      {
+        "title": "Buying",
+        "links": [
+          {
+            "label": "Licence",
+            "href": "/licence"
+          },
+          {
+            "label": "Terms",
+            "href": "/terms"
+          },
+          {
+            "label": "Refunds",
+            "href": "/refunds"
+          }
+        ]
       }
     ],
     "copyright": "© {year} {name}",

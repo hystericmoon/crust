@@ -111,7 +111,7 @@
       {
         "type": "Section",
         "props": {
-          "id": "t-corner-section-22",
+          "id": "t-corner-section-23",
           "background": "background",
           "paddingY": "sm",
           "height": "auto",
@@ -122,7 +122,7 @@
             {
               "type": "Columns",
               "props": {
-                "id": "t-corner-columns-21",
+                "id": "t-corner-columns-22",
                 "count": "2",
                 "gap": "xl",
                 "column1": [
@@ -307,6 +307,28 @@
                       "align": "left",
                       "tone": "muted"
                     }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "t-corner-text-21",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "Read the full licence",
+                                "href": "/licence"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "default"
+                    }
                   }
                 ],
                 "column3": [],
@@ -334,7 +356,7 @@
       {
         "type": "Section",
         "props": {
-          "id": "t-corner-section-25",
+          "id": "t-corner-section-26",
           "background": "surface",
           "paddingY": "xl",
           "height": "auto",
@@ -345,7 +367,7 @@
             {
               "type": "Heading",
               "props": {
-                "id": "t-corner-heading-23",
+                "id": "t-corner-heading-24",
                 "text": "On a phone",
                 "level": "h2",
                 "align": "left",
@@ -356,7 +378,7 @@
             {
               "type": "Gallery",
               "props": {
-                "id": "t-corner-gallery-24",
+                "id": "t-corner-gallery-25",
                 "columns": "3",
                 "shape": "original",
                 "lightbox": "yes",
@@ -385,7 +407,7 @@
       {
         "type": "Section",
         "props": {
-          "id": "t-corner-section-28",
+          "id": "t-corner-section-29",
           "background": "background",
           "paddingY": "xl",
           "height": "auto",
@@ -396,7 +418,7 @@
             {
               "type": "Heading",
               "props": {
-                "id": "t-corner-heading-26",
+                "id": "t-corner-heading-27",
                 "text": "Other templates",
                 "level": "h2",
                 "align": "left",
@@ -407,7 +429,7 @@
             {
               "type": "Grid",
               "props": {
-                "id": "t-corner-grid-27",
+                "id": "t-corner-grid-28",
                 "columns": "3",
                 "titleLevel": "h3",
                 "background": "background",

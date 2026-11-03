@@ -20,6 +20,7 @@ import { lookTokens } from "../starter-templates/starter";
 import { DOWNLOADS_URL } from "../updates-site";
 import { demoPath } from "./demos";
 import { buyLinkProblem, checkoutLine, checkoutUrl, readCheckout, testNote, THANKS_PATH, type Checkout } from "./checkout";
+import { buyLegalLine, legalPages, LICENCE_PATH, REFUNDS_PATH, TERMS_PATH } from "./legal";
 
 export const STORE_FORMAT = "crust-store";
 /** The store's own address: its free Cloudflare Pages project, "crust-store". */
@@ -53,7 +54,7 @@ export interface StoreItem {
   show: string[];
   /** Priced only: where "Get this template" goes (the checkout, F066). */
   buy?: string;
-  /** Priced only: the licence in one or two plain sentences (F068 adds the full pages). */
+  /** Priced only: the licence in one or two plain sentences (F068: the full pages link from it; legal.ts LICENCE_SUMMARY is the standard one). */
   licence?: string;
   /** F065 (optional): what changed in the template's current release, 1 to 5 short lines. */
   changes?: string[];
@@ -322,13 +323,13 @@ function allPage(templates: StoreTemplate[], pics: ReturnType<typeof picturesNee
   ]);
 }
 
-/** F066: under a buy button, the test note (test mode only) and who takes the payment. */
+/** F066: under a buy button, the test note (test mode only) and who takes the payment. F068: then the licence, terms and refunds. */
 function afterBuy(k: ReturnType<typeof kit>, checkout: Checkout | null): Block[] {
-  if (!checkout) return [];
   const note = testNote(checkout);
   return [
     ...(note ? [k.text({ rich: 1, blocks: [{ type: "p", children: [{ text: note[0], bold: true }, { text: note[1] }] }] } as RichText, { tone: "default" })] : []),
-    k.text(checkoutLine(checkout), { tone: "muted" }),
+    ...(checkout ? [k.text(checkoutLine(checkout), { tone: "muted" })] : []),
+    buyLegalLine(k),
   ];
 }
 
@@ -374,6 +375,8 @@ function templatePage(st: StoreTemplate, others: StoreTemplate[], pics: ReturnTy
           k.raw("IconList", { icon: "check", iconColor: "primary", items: includedLines(facts).map((text) => ({ text })) }),
           k.heading("Licence", { level: "h3", mark: false }),
           k.text(licence),
+          // F068: every template page links to the full licence.
+          k.link("Read the full licence", LICENCE_PATH),
         ],
       ], { widths: "two-one", gap: "xl", sticky: 2, highlight: { column: 2, style: "surface" }, box: { style: "none", padding: "md", rounded: true } }),
     ], { paddingY: "sm" }),
@@ -496,6 +499,8 @@ export function storeSite(templates: StoreTemplate[]): Site {
       columns: [
         { title: "Store", links: [{ label: "All templates", href: "/templates" }, { label: "Download Crust", href: "/download" }, { label: "Help", href: "/help" }] },
         { title: "Templates", links: templates.map(({ item, template }) => ({ label: template.name, href: templatePath(item.id) })) },
+        // F068
+        { title: "Buying", links: [{ label: "Licence", href: LICENCE_PATH }, { label: "Terms", href: TERMS_PATH }, { label: "Refunds", href: REFUNDS_PATH }] },
       ],
       copyright: "© {year} {name}",
       style: "surface",
@@ -514,6 +519,8 @@ export function storePages(templates: StoreTemplate[], checkout: Checkout | null
     helpPage(),
     // F066: only once something is for sale.
     ...(templates.some(({ item }) => isPriced(item)) ? [thanksPage(checkout)] : []),
+    // F068: the licence covers the free templates too, so these are always there.
+    ...legalPages(checkout).map((p) => ({ ...p, puck: { ...p.puck, content: unmark(p.puck.content) } })),
   ];
 }
 

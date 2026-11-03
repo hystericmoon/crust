@@ -1,0 +1,152 @@
+<title>Store Licence and Refunds</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: three decisions stacked, each drawn as small store mockups side by side with the recommendation marked; then the draft wording. Same series as the F066 checkout snapshot. */
+:root{--bg:#f3f4f6;--card:#fff;--fg:#15171c;--mute:#5b6270;--line:#d9dce3;--accent:#2f5bd8;--ok:#1d7a4a;--warn:#8a5a00;--warnbg:#fff4d6;--paper:#faf8f4;--ink:#1b1b1b;--btn:#1b1b1b;--btnfg:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101216;--card:#1a1d23;--fg:#eceef2;--mute:#9aa1af;--line:#2e333d;--accent:#8ab4ff;--ok:#5fcf93;--warn:#f3c969;--warnbg:#3a2f12;--paper:#22252b;--ink:#eceef2;--btn:#eceef2;--btnfg:#15171c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101216;--card:#1a1d23;--fg:#eceef2;--mute:#9aa1af;--line:#2e333d;--accent:#8ab4ff;--ok:#5fcf93;--warn:#f3c969;--warnbg:#3a2f12;--paper:#22252b;--ink:#eceef2;--btn:#eceef2;--btnfg:#15171c;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif;padding-block:32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1080px;margin:auto;display:grid;gap:32px}
+h1{font-size:26px;margin:0;text-wrap:balance}h2{font-size:19px;margin:0;text-wrap:balance}h3{font-size:16px;margin:0}
+p{margin:0;color:var(--mute);max-width:70ch}
+section{display:grid;gap:14px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
+.opt{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:12px;min-width:0;align-content:start}
+.opt.rec{border:2px solid var(--ok)}
+.tag{font:600 12px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ok)}
+ul{margin:0;padding-left:18px;font-size:14px;display:grid;gap:4px}
+.good{color:var(--ok)}.bad{color:var(--warn)}
+.shop{background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:8px;font-size:13px;min-width:0}
+.shop .eyebrow{font:600 10px system-ui;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.shop .price{font:400 24px/1 Georgia,serif}
+.shop .buy{background:var(--btn);color:var(--btnfg);border-radius:6px;padding:9px 12px;font-weight:600;text-align:center}
+.shop .ghost{border:1px solid var(--line);border-radius:6px;padding:8px 12px;text-align:center}
+.shop small{color:var(--mute);font-size:11px;line-height:1.45}
+.shop u{text-underline-offset:2px}
+.shop hr{border:0;border-top:1px solid var(--line);margin:2px 0}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.pick div{border:1px solid var(--line);border-radius:6px;padding:7px 8px;display:grid;gap:2px}
+.pick div.on{border:2px solid var(--ink)}
+.pick b{font-size:12px}.pick span{font-size:11px;color:var(--mute)}
+.foot{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11px;color:var(--mute);border-top:1px solid var(--line);padding-top:8px}
+.draft{background:var(--warnbg);color:var(--warn);border-radius:6px;padding:7px 9px;font-size:11.5px;line-height:1.4}
+.doc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:10px;min-width:0}
+.doc h3{font:400 22px/1.2 Georgia,serif}
+.doc h4{margin:6px 0 0;font-size:15px}
+.doc p{color:var(--fg)}
+.doc .fill{background:var(--warnbg);color:var(--warn);border-radius:4px;padding:0 4px;white-space:nowrap}
+.docs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.sum{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:8px}
+.cost{font-variant-numeric:tabular-nums}
+</style>
+<main>
+<header style="display:grid;gap:8px">
+<h1>F068 Licence, terms and refunds: three decisions</h1>
+<p>Before anything has a price, the store needs to say what a buyer may do with a template, what happens if they change their mind, and who they're buying from. I've written plain-language drafts. You decide the wording and prices, and whether a lawyer reads them first. This isn't legal advice. Mockups use a made-up priced template called "Olive".</p>
+</header>
+
+<section>
+<h2>1. What one purchase allows</h2>
+<p>Nothing technical can stop a template being reused: Crust sites are plain files. So the licence is an honour system, and the real question is how much you ask honest buyers to count.</p>
+<div class="row">
+<article class="opt rec"><span class="tag">Recommended · built</span><h3>A. One price, unlimited sites</h3>
+<div class="shop"><span class="eyebrow">Price</span><span class="price">US$49</span><span class="buy">Get Olive · US$49</span><small>Use it for as many sites as you like, your own or your clients'. Don't resell or share the template file. <u>Full licence</u></small></div>
+<ul><li class="good">One button, no choice to make at the moment of paying. Each extra option slows a decision (Hick's law), and a comparison at checkout is where people stall.</li><li class="good">Nothing for an agency to count or report.</li><li class="bad">An agency pays the same as someone making one site.</li><li>An agency tier can be added later without changing what earlier buyers got.</li></ul>
+</article>
+<article class="opt"><h3>B. Personal and Agency</h3>
+<div class="shop"><span class="eyebrow">Price</span><div class="pick"><div class="on"><b>Personal · US$49</b><span>1 site</span></div><div><b>Agency · US$149</b><span>Unlimited sites</span></div></div><span class="buy">Get Olive · US$49</span><small>Personal: one site. Agency: unlimited sites, for clients too. <u>Compare licences</u></small></div>
+<ul><li class="good">Charges agencies for the value they get out of it.</li><li class="bad">Two products and two links per template in Polar, a picker on every template page, and a change to the store list format.</li><li class="bad">"One site" needs defining (staging copies? a redesign of the same business?).</li></ul>
+</article>
+<article class="opt"><h3>C. One site per purchase</h3>
+<div class="shop"><span class="eyebrow">Price</span><span class="price">US$49</span><span class="buy">Get Olive · US$49</span><small>One licence covers one site. Making another? Buy it again. <u>Full licence</u></small></div>
+<ul><li class="good">Simple to say, and each site pays.</li><li class="bad">Same "what is one site" problem as B, with no unlimited option for agencies.</li><li class="bad">Asks buyers to come back and pay for something they already have on their computer.</li></ul>
+</article>
+</div>
+<p>All three share the same rules: the sites you make are yours; you can't resell or give away the template file, or sell it as your own template; fonts and sample photos keep their own free licences.</p>
+</section>
+
+<section>
+<h2>2. Refunds</h2>
+<p>Two facts shape this. Polar sells on your behalf and may refund a buyer within 60 days on its own to head off a card dispute, whatever your policy says. Polar also keeps its fee on a refunded order: about <span class="cost">US$2.95</span> on a <span class="cost">US$49</span> sale. Since F067, a full refund switches the buyer's download page off. A file they already downloaded stays on their computer.</p>
+<div class="row">
+<article class="opt rec"><span class="tag">Recommended · built</span><h3>A. 14 days, any reason</h3>
+<div class="shop"><span class="buy">Get Olive · US$49</span><small>Secure checkout by Polar. <b>Not right for you? Full refund within 14 days.</b> <u>Refunds</u></small></div>
+<ul><li class="good">A promise people can believe without reading. Lowering the risk of a first purchase matters most for a new, unknown store.</li><li class="good">The live demo and three free templates let people judge before paying, so refunds should be rare.</li><li class="bad">Someone could download, then refund. They'd lose updates, and the cost to you is the fee.</li></ul>
+</article>
+<article class="opt"><h3>B. 14 days, if it doesn't work</h3>
+<div class="shop"><span class="buy">Get Olive · US$49</span><small>Secure checkout by Polar. Refunds within 14 days if the template doesn't work as described. <u>Refunds</u></small></div>
+<ul><li class="good">Rules out "changed my mind after downloading".</li><li class="bad">Every request becomes a conversation you have to judge, by email.</li><li class="bad">Polar can refund anyway, so the stricter rule mostly adds work.</li></ul>
+</article>
+<article class="opt"><h3>C. 30 days, any reason</h3>
+<div class="shop"><span class="buy">Get Olive · US$49</span><small>Secure checkout by Polar. <b>Full refund within 30 days, no questions.</b> <u>Refunds</u></small></div>
+<ul><li class="good">The strongest trust signal.</li><li class="bad">A whole site can be built and published inside 30 days, so it becomes a free trial of the paid file.</li></ul>
+</article>
+</div>
+</section>
+
+<section>
+<h2>3. Where the words live, and how buyers reach them</h2>
+<p>The feature asks for links from checkout (under every buy button) and from every template page. The question is whether that's three short pages or one longer one.</p>
+<div class="row">
+<article class="opt rec"><span class="tag">Recommended · built</span><h3>A. Three short pages</h3>
+<div class="shop"><span class="eyebrow">Licence</span><small>Use it for as many sites as you like… <u>Read the full licence</u></small><hr><span class="buy">Get Olive · US$49</span><small>By buying you agree to the <u>licence</u> and <u>terms</u>. Full refund within 14 days: <u>refunds</u>.</small><div class="foot"><span>Licence</span><span>Terms</span><span>Refunds</span></div></div>
+<ul><li class="good">Each link lands on exactly the page it names (match between link text and destination).</li><li class="good">Pages a phone can read in one sitting. Polar can link its own receipt to the refund page.</li><li>Footer gets a fourth column, "Buying".</li></ul>
+</article>
+<article class="opt"><h3>B. One "Legal" page</h3>
+<div class="shop"><span class="eyebrow">Licence</span><small>Use it for as many sites as you like… <u>Read the licence</u></small><hr><span class="buy">Get Olive · US$49</span><small>By buying you agree to our <u>legal terms</u>.</small><div class="foot"><span>Legal</span></div></div>
+<ul><li class="good">One place to keep up to date.</li><li class="bad">The refund promise, the part buyers look for, is buried under the licence and terms.</li></ul>
+</article>
+<article class="opt"><h3>C. Inside Help</h3>
+<div class="shop"><span class="eyebrow">Licence</span><small>Use it for as many sites as you like… <u>Questions</u></small><hr><span class="buy">Get Olive · US$49</span><small>Questions about licences and refunds: <u>Help</u>.</small><div class="foot"><span>Help</span></div></div>
+<ul><li class="good">No new pages.</li><li class="bad">Terms you agree to by buying shouldn't sit in a closed accordion: the answer is hidden until opened, and the link can't point to the exact words.</li></ul>
+</article>
+</div>
+</section>
+
+<section>
+<h2>The draft wording (A + A + A)</h2>
+<p>This is the text built into the store pages. Highlighted bits are yours to fill in. Until you approve the wording, each page says "Draft" at the top, and the store refuses to take real payments.</p>
+<div class="docs">
+<article class="doc"><h3>Licence</h3>
+<p>When you buy a template from this store, you get a licence to use it. In short: make as many sites with it as you like, and don't pass the template itself on.</p>
+<h4>You can</h4>
+<p>Use the template for any number of websites, for yourself or for clients, paid or unpaid. Change anything in it. Keep the sites up for as long as you like, including after the licence ends for any reason.</p>
+<h4>You can't</h4>
+<p>Sell, share or give away the template file, or a copy of it with small changes. Offer it, or something made mainly from it, as a template of your own, in this store or anywhere else.</p>
+<h4>Fonts and photos</h4>
+<p>Fonts and sample photos come with their own free licences, which allow use on your sites.</p>
+<h4>Free templates</h4>
+<p>The templates that come with Crust are free. Use them for as many sites as you like.</p>
+</article>
+<article class="doc"><h3>Terms</h3>
+<h4>Who you're buying from</h4>
+<p>Templates are made by <span class="fill">your name or business</span>. Payments are handled by Polar, which sells them on our behalf as the merchant of record. Polar adds tax where it applies and sends your receipt; Polar's buyer terms cover the payment.</p>
+<h4>What you get</h4>
+<p>A template file to open in Crust, the free app, and a personal download page. Updates to the template are free and appear on the same page.</p>
+<h4>If something is wrong</h4>
+<p>If a template doesn't open or doesn't match its store page, tell us and we'll fix it or refund you. Beyond that, templates come as they are, and we're not liable for more than you paid.</p>
+<h4>Changes and contact</h4>
+<p>If these terms change, the new version applies to purchases after the change. Questions: <span class="fill">contact email</span>.</p>
+</article>
+<article class="doc"><h3>Refunds</h3>
+<p>Not right for you? You can have a full refund within 14 days of buying, for any reason.</p>
+<h4>How</h4>
+<p>Reply to your receipt email, or write to <span class="fill">contact email</span> with your order number. The refund goes back to how you paid, usually within 5 to 10 working days.</p>
+<h4>What happens next</h4>
+<p>Your download page stops working, and the licence ends for any new sites. Sites you've already published can stay up.</p>
+<h4>After 14 days</h4>
+<p>If the template doesn't open or doesn't match its store page, we'll still fix it or refund you.</p>
+</article>
+</div>
+</section>
+
+<section class="sum">
+<h3>What only you can do</h3>
+<ul>
+<li>Pick A, B or C for each of the three choices (or reply "go with your recommendations").</li>
+<li>Read the three drafts and change any wording. Tell me the name to sell under and the contact email.</li>
+<li>Decide whether a lawyer checks them before real payments. Your country's consumer law and Polar's own rules apply whatever the pages say.</li>
+<li>Set prices when you add the first paid template. Nothing in the store has a price yet.</li>
+</ul>
+</section>
+</main>
