@@ -1,7 +1,9 @@
 # Crust
 
-Visual website builder + CMS that publishes static sites. Product spec,
-architecture and stack: @docs/spec.md
+Visual website builder + CMS that publishes static sites. Product,
+architecture, stack and the content format (contract) are in
+`docs/spec.md`; it is not loaded at start: use the `crust-content-format`
+skill to read the part you need (owner, 2026-11-03).
 
 ## Owner
 
@@ -13,28 +15,22 @@ reasoning on UX decisions.
 
 ## Session protocol (one feature per session)
 
-1. Read `HANDOVER.md` first (current state, next step, how sessions hand
-   over), run `npm run next` (next feature, model, done_check, review
-   queue), then read `PROGRESS.md` "Current" and `git log --oneline -10`.
-   Search `features.json`, `DECISIONS.md` and `docs/archive/` by feature
-   id instead of reading them whole (owner, 2026-11-03).
-2. Pick the first feature with `"passes": false` whose `depends_on` all pass
-   and that is not listed in `BLOCKED.md`.
-3. Build it, with tests.
-4. Run its `done_check` command. It must exit 0. Never set `passes: true`
-   because something "looks done".
-5. Commit, then update `PROGRESS.md` (what was done, what's next, anything
-   the owner should test) and `CHANGELOG.md`. Move the previous
-   feature's notes from `PROGRESS.md` and `HANDOVER.md` to `docs/archive/`
-   so both stay short. One PR per feature.
-6. Visual/UX items also have `needs_review: true`; only the owner sets
-   `reviewed: true` after testing the preview link (his Pass on the
-   review round page counts; Claude records it).
-7. Update `HANDOVER.md`, then hand over: one session works at a time,
-   and between features its context is reset with `/clear` (owner,
-   2026-11-02), not by starting a new session. After a clear the owner
-   sends "Read HANDOVER.md on branch <branch> and continue" (see
-   `HANDOVER.md`, "How sessions work").
+Each step is a project skill in `.claude/skills/` (if a skill isn't listed,
+read its `SKILL.md` directly):
+
+1. **Start:** `crust-start` (init, HANDOVER.md, `npm run next`, model
+   check, review answers, pick the feature). Always, also after `/clear`.
+2. **Build** it, with tests, following `crust-lean` (helper agents for
+   wide searches, quiet output, checkpoint and `/clear` at ~200k).
+3. **Finish:** `crust-finish` (done_check must exit 0, checks, commit,
+   PROGRESS/CHANGELOG/HANDOVER, archive, one PR per feature, the
+   ready-to-clear message).
+
+Visual/UX items have `needs_review: true`; only the owner sets
+`reviewed: true` (his Pass on the review round page counts; Claude
+records it). One session works at a time, cleared between features with
+`/clear`; after a clear the owner sends "Read HANDOVER.md on branch
+<branch> and continue".
 
 ## Decision policy
 
@@ -71,6 +67,7 @@ reasoning on UX decisions.
 ```
 scripts/init.sh              # install deps, first build (run at session start)
 npm run next                 # next feature, its model, review queue
+scripts/verify.sh            # all pre-push checks, short output
 npm test                     # JS tests (vitest)
 npm run typecheck            # TypeScript
 npm run build                # build admin app

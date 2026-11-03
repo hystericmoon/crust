@@ -7,6 +7,11 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
+- **2026-11-03: token saving A, B and D done** (owner's pick on
+  https://claude.ai/artifact/D2h2rdzR4iQU6dQv7TyWqV; DECISIONS "Token
+  saving"). Nothing changes in Crust itself; sessions carry less. Long
+  features may now stop once for a checkpoint `/clear`.
+
 - **2026-11-03: PR #66 merged** (owner's request): F084, F063, F064,
   F065, F066 are on main. Start-up files slimmed (history in
   `docs/archive/`, `npm run next`); one PR per feature from now on.

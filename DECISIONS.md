@@ -3286,3 +3286,30 @@ Page: https://claude.ai/artifact/XYA5nqaqQCfjb9oM6VuMq9.
   exactly 20 minutes during cleanup. The store and demo builds added with
   F063/F064 put it at 13–20 minutes. Uses free Actions minutes only when
   the job really runs that long.
+
+## 2026-11-03 — Token saving (owner: "do a, b and d")
+
+Page: https://claude.ai/artifact/D2h2rdzR4iQU6dQv7TyWqV
+(`design/token-saving-options.html`). Every step re-reads the whole
+context, so cost follows the size of what's carried. Graphify (C) not
+adopted: features are well pointed by HANDOVER.md, and a fresh cloud
+container would have to install and rebuild it each session.
+
+- **A: slim start.** CLAUDE.md no longer auto-loads docs/spec.md (~6k
+  tokens on every step); the `crust-content-format` skill says how to read
+  the part needed. Session routines moved to project skills
+  `.claude/skills/crust-start`, `crust-lean`, `crust-finish` (content
+  unchanged, from CLAUDE.md and HANDOVER.md "How sessions work", "The
+  owner", "Rules that always apply"). CLAUDE.md names the skill files so
+  they work even if the skill list doesn't show them.
+- **B: lean work.** `crust-lean`: Explore agents for wide searches,
+  `scripts/verify.sh` (one line per check, log tail on failure, logs in
+  `.crust-cache/verify/`), quiet `scripts/init.sh`, and a checkpoint
+  (commit, Checkpoint section in HANDOVER.md, owner `/clear`s) when the
+  context passes ~200k at a green point.
+- **D: unused skill packs hidden for this project only.**
+  `.claude/settings.json` `skillOverrides` sets 25 account skills
+  (Office files, slides, Swift, banners, browser/computer use, …) and
+  four built-ins (dataviz, claude-api, plugin-authoring,
+  keybindings-help) to `user-invocable-only`: Claude no longer sees them
+  listed, the owner can still type `/name`. Undo by deleting entries.
