@@ -5,6 +5,18 @@ to "Log".
 
 ## Current
 
+- **F083 Stricter template check: built, passes** (branch
+  `ccr-d50f7e80-weuq18`, stacked on F079–F082, PR #65). No design, so no
+  snapshot and nothing for the owner to review. done_check `npm test --
+  template-check && npm run check:template` exit 0 (38 tests; the
+  check runs on Harbour, Signal and Corner). New checks: filler words
+  from the builder's defaults, empty slots, mismatched photo crops in a
+  row, at least 5 kinds of section on Home, section gradients that keep
+  text readable. Harbour, Signal and Corner fail them today; their
+  findings show as notes until F084 rebuilds them (DECISIONS "F083",
+  `AWAITING_REBUILD`). **Next: F084 Rebuild Harbour, Signal and Corner**
+  (Opus); it must empty `AWAITING_REBUILD`.
+
 - **F082 Post, blog and 404 designs: built, passes** (branch
   `ccr-d50f7e80-weuq18`, stacked on F079–F081, PR #65 still open).
   Snapshot https://claude.ai/artifact/6DUK8yisbSiBT5LuYuhUND, A built for

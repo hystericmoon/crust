@@ -22,15 +22,21 @@ import {
   CHECK_BASE_URL,
   axeGroup,
   contrastGroup,
+  cropsGroup,
   fileGroup,
+  AWAITING_REBUILD,
+  excuseUntilRebuilt,
+  gradientGroup,
   placeholderGroup,
   publishGroup,
   renderLayouts,
   reportFails,
   reportHtml,
   reportText,
+  slotsGroup,
   speedGroup,
   unpackTemplate,
+  varietyGroup,
   type CheckGroup,
   type TemplateReport,
 } from "../packages/render/src/template-check";
@@ -89,7 +95,8 @@ async function check(text: string, source: string, missing: string[] = []): Prom
     console.log("  axe on the saved layouts…");
     groups.push(axeGroup(await axeSite(layoutDir, [...allSizes]), "layout"));
   }
-  groups.push(placeholderGroup(t));
+  const strict = [slotsGroup(t), cropsGroup(t), varietyGroup(t), gradientGroup(t)];
+  groups.push(placeholderGroup(t), ...(AWAITING_REBUILD.includes(t.name) ? strict.map(excuseUntilRebuilt) : strict));
   return { name: t.name, source, groups };
 }
 

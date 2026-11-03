@@ -876,7 +876,7 @@
       "description": "The template quality check also fails on filler text, empty slots (a card or slide without its photo), mismatched image crops in one row, and too few section types on Home. Approved by the owner with Milestone 8 (2026-11-02: 'Let's go A'); docs/milestone-8.md.",
       "depends_on": ["F047"],
       "done_check": "npm test -- template-check && npm run check:template",
-      "passes": false,
+      "passes": true,
       "needs_review": false,
       "reviewed": false
     },

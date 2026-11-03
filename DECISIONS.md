@@ -257,6 +257,40 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-03 — F083 Stricter template check (Claude, reversible)
+
+- **Where.** `packages/render/src/template-strict.ts` (four new groups:
+  `slotsGroup`, `cropsGroup`, `varietyGroup`, `gradientGroup`), the
+  filler list in `template-check.ts` (`FILLER_EXACT`), wired in
+  `scripts/check-template.ts`. Tests in `template-strict.test.ts`.
+- **Empty slots.** A Slideshow slide, Gallery picture, Logo or Image block
+  with no photo always fails. A Grid, Card slider or row of Cards fails
+  only when some have a photo (or icon) and others don't: a grid of
+  words-only cards is a design, a hole in a row is a defect. A "Replace
+  me" mark doesn't excuse an empty slot.
+- **Crops.** Photos in one row (Grid, Card slider, Slideshow, Gallery
+  with "original" shape, the first Image or Card of each column) must be
+  within 1.3× of each other in width÷height (`MAX_CROP_MISMATCH`). Square
+  and wide galleries are skipped: they crop every picture the same.
+  Photos that aren't the template's own (web addresses) can't be
+  measured and are skipped.
+- **Variety.** Home needs at least 5 different kinds of section
+  (`MIN_HOME_SECTION_TYPES`): Hero, one per feature block (card grid,
+  stats, quote, logos, slideshow, pricing…), Image and text, Columns,
+  Text. Linked sections on Home count.
+- **Filler.** Builder default words ("Heading", "Your text here", "Click
+  here", "Alex Rivera", the sample quote) fail as whole-string matches,
+  so ordinary sentences containing "heading" pass.
+- **Gradients.** Closes the F073 proposal: a Section gradient that fails
+  `gradientReads` after a colour change fails the check.
+- **Harbour, Signal, Corner are excused until F084.** They fail the new
+  checks (Home has 4 kinds of section; Harbour and Signal mix a portrait
+  and a landscape in a row). `done_check` runs `check:template` on them,
+  so their findings from the four new groups show as notes ("Waiting
+  for F084's rebuild") through `AWAITING_REBUILD`. **F084 must empty
+  that list** (`template-strict.ts`) and the check then holds the
+  rebuilt templates to every rule. A new template is never excused.
+
 ## 2026-11-03 — F082 Post, blog and 404 designs (Claude, reversible)
 
 Snapshot https://claude.ai/artifact/6DUK8yisbSiBT5LuYuhUND

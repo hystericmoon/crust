@@ -25,7 +25,6 @@ Never show it while work is uncommitted or unpushed; finish that first.
 
 | Next feature | Model | Why |
 |---|---|---|
-| F083 Stricter template check | **Sonnet** | Clear rules, a checklist, no design choices |
 | F084 Rebuild Harbour, Signal and Corner | **Opus** | Premium design and copy; judgment the checks can't measure |
 | F063 Store site | Opus (suggested) | Design snapshot, the public face of the store |
 | F064 Live demos | Sonnet (suggested) | Follows F063's setup |
@@ -39,7 +38,19 @@ decide the store milestone then); until he has, ask before starting one.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-03 ~07:30 (Jakarta). **F082 Post, blog and 404
+Last updated: 2026-11-03 ~08:30 (Jakarta). **F083 Stricter template
+check built, passes** (branch `ccr-d50f7e80-weuq18`, stacked in PR #65;
+done_check exit 0; DECISIONS "F083"). Model: `template-strict.ts`
+(`slotsGroup`, `cropsGroup`, `varietyGroup`, `gradientGroup`,
+`MAX_CROP_MISMATCH` 1.3, `MIN_HOME_SECTION_TYPES` 5), filler
+`FILLER_EXACT` in template-check.ts, wired in scripts/check-template.ts.
+Harbour, Signal and Corner fail the new rules and are excused through
+`AWAITING_REBUILD`; **F084 must empty that list** and make them pass.
+No owner review needed. **Next: F084 Rebuild Harbour, Signal and
+Corner** (Opus; design snapshot first), stacked on this branch or from
+main once #65 is merged.
+
+Earlier (~07:30): **F082 Post, blog and 404
 designs built, passes** (branch `ccr-d50f7e80-weuq18`, stacked on
 F079–F081 in PR #65; done_check exit 0; DECISIONS "F082"). Snapshot
 https://claude.ai/artifact/6DUK8yisbSiBT5LuYuhUND (A for all three).

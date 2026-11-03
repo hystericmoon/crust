@@ -4,6 +4,15 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **A stricter check before a template is offered (F083).** The template
+  check now also stops a template that has leftover builder words
+  ("Heading", "Click here", the sample quote), a card, slide or picture
+  with no photo while its neighbours have one, photos of very different
+  shapes side by side (a portrait next to a landscape), a Home page with
+  fewer than five kinds of section, or a section gradient that makes the
+  text hard to read. The report says where each one is. Harbour, Signal
+  and Corner fail the new checks; they show as notes until they're rebuilt
+  (F084).
 - **Design the post page, the blog page and "Page not found" (F082).**
   These three now open in the builder like any page. On the **Posts**
   screen, press **Design the blog page** or **Design the post page**;
