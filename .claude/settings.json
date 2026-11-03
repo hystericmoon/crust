@@ -14,5 +14,36 @@
       "Bash(wrangler pages deploy:*)",
       "Bash(npx wrangler pages deploy:*)"
     ]
+  },
+  "skillOverrides": {
+    "anthropic-skills:animate-expo": "user-invocable-only",
+    "anthropic-skills:animation-vocabulary": "user-invocable-only",
+    "anthropic-skills:apple-design": "user-invocable-only",
+    "anthropic-skills:ask-sonner": "user-invocable-only",
+    "anthropic-skills:banner-design": "user-invocable-only",
+    "anthropic-skills:brand": "user-invocable-only",
+    "anthropic-skills:built-in-browser": "user-invocable-only",
+    "anthropic-skills:chrome-browser": "user-invocable-only",
+    "anthropic-skills:computer-use": "user-invocable-only",
+    "anthropic-skills:deep-research": "user-invocable-only",
+    "anthropic-skills:design": "user-invocable-only",
+    "anthropic-skills:design-system": "user-invocable-only",
+    "anthropic-skills:docs": "user-invocable-only",
+    "anthropic-skills:docx": "user-invocable-only",
+    "anthropic-skills:find-animation-opportunities": "user-invocable-only",
+    "anthropic-skills:google-workspace": "user-invocable-only",
+    "anthropic-skills:import-memory": "user-invocable-only",
+    "anthropic-skills:improve-animations": "user-invocable-only",
+    "anthropic-skills:morning": "user-invocable-only",
+    "anthropic-skills:pdf": "user-invocable-only",
+    "anthropic-skills:pptx": "user-invocable-only",
+    "anthropic-skills:prototype": "user-invocable-only",
+    "anthropic-skills:skill-creator": "user-invocable-only",
+    "anthropic-skills:write-swift": "user-invocable-only",
+    "anthropic-skills:xlsx": "user-invocable-only",
+    "dataviz": "user-invocable-only",
+    "claude-api": "user-invocable-only",
+    "plugin-authoring": "user-invocable-only",
+    "keybindings-help": "user-invocable-only"
   }
 }

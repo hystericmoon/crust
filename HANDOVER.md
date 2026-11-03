@@ -5,29 +5,15 @@ short (under ~150 lines): update "Where things stand" and "Next" when a
 feature is finished, and move the finished feature's notes to
 docs/archive/handover-history.md.
 
-**Start of every session:** `scripts/init.sh`, read this file, run
-`npm run next` (next feature, its model, done_check, BLOCKED notes,
-review queue), read PROGRESS.md "Current", `git log --oneline -10`.
-Don't read features.json, DECISIONS.md or the archive whole: search them
-(`grep -n "F0xx"`) when a feature touches an older area.
+**Start of every session (and after every `/clear`):** the `crust-start`
+skill (`.claude/skills/crust-start/SKILL.md`). While building:
+`crust-lean`. Finishing: `crust-finish` (it holds the "Ready to clear"
+message the owner asked for every time). Content JSON: `crust-content-format`.
 
 ## Model plan (owner, 2026-11-03)
 
-The owner picks the model per feature. **First thing every session**,
-before any work: find out which model you are (`get_session`, its
-`session_context.model`) and compare it with the next feature's row. If
-it doesn't match, do nothing else: tell the owner, in one line, "Switch to
-<model>: type `/model`, pick <model>, then send the same message again."
-**At the end of every feature, and whenever the owner says he wants to
-clear**, after the usual handover, end the message with this reminder,
-filled in (the owner asked for it every time, 2026-11-03):
-
-> **Ready to clear.** Everything is saved and pushed.
-> 1. `/clear`
-> 2. `/model` → **<model for the next feature>** (next: <feature>)
-> 3. Paste: `Read HANDOVER.md on branch <branch> and continue`
-
-Never show it while work is uncommitted or unpushed; finish that first.
+The owner picks the model per feature; `crust-start` checks it before
+any work.
 
 | Next feature | Model | Why |
 |---|---|---|
@@ -42,11 +28,15 @@ The owner confirmed all six rows as listed ("go ahead", 2026-11-03
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-03 ~14:30 (Jakarta), branch
-`ccr-d50f7e80-weuq18` (restarted from main after PR #66 merged). This
-round, at the owner's request: PR #66 merged, start-up files slimmed
-(option B of https://claude.ai/artifact/XYA5nqaqQCfjb9oM6VuMq9), review
-round page built (option A). Last feature: **F066 Checkout built,
+Last updated: 2026-11-03 ~17:30 (Jakarta), branch
+`ccr-d50f7e80-weuq18` (restarted from main after PR #66 merged; PR #68
+open). Latest round, at the owner's request ("do a, b and d" on
+https://claude.ai/artifact/D2h2rdzR4iQU6dQv7TyWqV): session routines are
+project skills in `.claude/skills/`, docs/spec.md no longer loads at
+start, `scripts/verify.sh` gives short check output, checkpoint and
+`/clear` at ~200k, unused skill packs hidden for this project
+(DECISIONS "Token saving"). Earlier: PR #66 merged, start-up files
+slimmed, review round page built. Last feature: **F066 Checkout built,
 passes, test mode** (merged in PR #66; DECISIONS "F066"). Snapshot https://claude.ai/artifact/6QAvaWHcuU26fgCfCrZVdw (A
 built: Polar; test note under the button). How it fits:
 `scripts/store/checkout.ts` (`PROVIDERS` polar/lemonsqueezy with link
@@ -67,58 +57,6 @@ template id in `reference_id` metadata), emails a personal download page
 (Resend), serves the file from Workers KV. Needs the owner's Polar account
 for real tests; build and test against fakes first.
 
-
-## How sessions work (owner's rule, updated 2026-11-02)
-
-The owner said (2026-11-02): "Let's use clear instead of creating new
-sessions moving forward." So the work stays in **one Crust session**,
-and its context is reset with `/clear` instead of starting new sessions:
-
-1. **One session, cleared between features.** Don't call
-   `create_session` to hand over, and don't archive the current session.
-   (The old rule chained new sessions; the chain stopped at depth 8.)
-2. **Write first, then clear.** After each finished feature (or when the
-   context is getting long): commit and push, update this file,
-   PROGRESS.md and CHANGELOG.md, so a cleared context can pick up from
-   here. Then tell the owner it's ready for `/clear`.
-3. **After a clear,** the owner sends "Read HANDOVER.md on branch
-   <branch> and continue" in the same session; the session starts from
-   this file as before.
-4. **Tell the owner** in plain language what was finished and what he
-   can try. Never stop without doing 2 and 4. "Keep on continuing,
-   don't stop."
-
-## The owner
-
-Hosni (GitHub `hystericmoon`), senior product designer, not a developer.
-Tests as a user from a browser (office Mac, phone); never runs commands.
-Write to him in plain language, from a user's point of view. Peer-level on
-visual design; explain the reasoning behind UX choices (heuristics,
-research). Always flag accessibility.
-
-Standing instructions:
-- "Keep on continuing, don't stop": keep building the current milestone
-  without waiting for him.
-- Don't merge feature PRs to main, and don't press Publish on the live
-  site, unless he says so in his own words.
-- Scope is his: never add items to features.json. Proposals go in
-  DECISIONS.md → Proposals.
-- Design snapshots (Artifacts with 2–3 directions) before visual features;
-  build Claude's recommended direction unless the feature says the owner
-  must pick first.
-
-## Rules that always apply
-
-CLAUDE.md (session protocol, decision policy, engineering rules) and
-docs/spec.md (the product and the content format). In short: one feature
-at a time, tests for everything, its `done_check` must exit 0 before
-`passes: true`, WCAG 2.2 AA, free open-source dependencies only, no
-secrets in code or chat, work on branches, no force-push.
-
-Start of every session: see the top of this file.
-
-Before every push: `npm test`, `npm run typecheck`, `cargo test`,
-`cargo clippy -- -D warnings`.
 
 
 ## Where things stand
@@ -158,7 +96,8 @@ owner decides the wording).
 
 | What | File |
 |---|---|
-| Product, architecture, content format | docs/spec.md |
+| Product, architecture, content format | docs/spec.md (skill `crust-content-format`) |
+| Session routines | .claude/skills/crust-*/SKILL.md |
 | Milestone plans | docs/milestone-7.md, docs/milestone-8.md (earlier: docs/milestone-*.md) |
 | Next feature, model, review queue | `npm run next` (scripts/next-feature.ts) |
 | Every feature, its done_check and status | features.json |
