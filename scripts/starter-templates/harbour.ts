@@ -36,7 +36,7 @@ function home(): Page {
           k.text("Houses, studios and public rooms, designed to stay calm for decades.", { tone: "default" }),
           k.spacer("xs"),
           k.columns([[k.button("See the projects", "/work")], [k.button("Start a project", "/contact", "arrow")]], { gap: "sm", widths: "one-three", valign: "middle" }),
-        ], { photo: "terraces.jpg", height: "full", valign: "bottom", tint: "light", focus: { x: 50, y: 55 } }),
+        ], { photo: "terraces.jpg", height: "full", valign: "bottom", tint: "medium", focus: { x: 50, y: 55 } }),
         k.section("background", [
           k.heading("We take on eight projects a year and see each one through, from the first walk around the site to the last shelf.", { eyebrow: "The studio" }),
           k.link("About the studio", "/about"),

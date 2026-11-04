@@ -97,6 +97,8 @@ export const HEADER_V2_CSS = `/* Header and footer v2 (F076) */
 .cr-topbar { background: var(--cr-sec-bg); color: var(--cr-sec-ink); font-size: 0.875rem; }
 .cr-topbar-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 var(--cr-space-sm); min-height: 36px; }
 .cr-topbar-text { margin: 0; }
+/* F084 review: a sticky header on a phone would carry this bar on every screen (about 90px), so there it is left out. */
+@media (max-width: 40rem) { .cr-sticky .cr-topbar { display: none; } }
 .cr-topbar a { color: inherit; text-decoration: underline; text-underline-offset: 0.2em; display: inline-flex; align-items: center; min-height: 24px; }
 .cr-topbar a:focus-visible { outline: 3px solid currentColor; outline-offset: 2px; border-radius: 2px; }
 .cr-topbar-contact { margin-left: auto; }
