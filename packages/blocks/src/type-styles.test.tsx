@@ -132,7 +132,7 @@ describe("type-styles: published CSS rules", () => {
   it("puts photo-card words on a dark scrim and turns motion off when asked", async () => {
     const s = await css;
     expect(s).toContain(".cr-card-cover::after");
-    expect(s).toContain("rgb(0 0 0 / 0.72)");
+    expect(s).toContain("rgb(0 0 0 / 0.62) 48%, rgb(0 0 0 / 0.82) 100%");
     // The body must not grow (it would sit at the top, away from the fade), and its link is 44px high.
     expect(s).toMatch(/\.cr-card-cover \.cr-card-body \{[^}]*flex-grow: 0;/);
     expect(s).toMatch(/\.cr-card-cover \.cr-card-link \{[^}]*min-height: 44px;/);

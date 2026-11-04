@@ -643,7 +643,8 @@ main[tabindex="-1"]:focus { outline: none; }
 /* F071: "Photo fills the card": the words sit on a dark scrim over the photo, so they read on any photo. */
 .cr-card.cr-card-cover { position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; min-height: 18rem; padding: 0; border: 0; background: #1a1a1a; color: #fff; }
 .cr-card-cover .cr-card-media { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; }
-.cr-card-cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(0 0 0 / 0) 25%, rgb(0 0 0 / 0.72) 100%); }
+.cr-card-cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(0 0 0 / 0) 15%, rgb(0 0 0 / 0.62) 48%, rgb(0 0 0 / 0.82) 100%); }
+.cr-card-cover .cr-card-body { text-shadow: 0 1px 2px rgb(0 0 0 / 0.45); }
 .cr-card-cover .cr-card-body { position: relative; z-index: 1; flex-grow: 0; padding: var(--cr-space-md); }
 /* F071 review: the body must not grow, or the words sit at the top of the card, away from the dark fade at the bottom. */
 .cr-card-cover .cr-card-link { min-height: 44px; display: inline-flex; align-items: center; }

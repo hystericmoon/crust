@@ -160,9 +160,15 @@ describe("audit F063/F066 polish", () => {
     expect(phone[0]!.props).toMatchObject({ text: "US$49", eyebrow: "Price" });
     expect(phone[1]!.type).toBe("Button");
   });
-  it("shows two big template cards per row", () => {
+  it("shows big template cards, never one alone on a half row", () => {
     const home = storePages(templates).find((p) => p.path === "/")!;
-    expect(blocksOf(home.puck.content).find((b) => b.type === "Grid")!.props.columns).toBe("2");
+    const n = templates.length;
+    expect(blocksOf(home.puck.content).find((b) => b.type === "Grid")!.props.columns).toBe(n <= 2 || n % 2 === 0 ? "2" : "3");
+  });
+  it("stacks the two home buttons instead of putting them in 1/4 + 3/4 columns", () => {
+    const home = storePages(templates).find((p) => p.path === "/")!;
+    const hero = home.puck.content[0] as { props: { content: { type: string }[] } };
+    expect(hero.props.content.filter((b) => b.type === "Button")).toHaveLength(2);
   });
 });
 

@@ -61,7 +61,7 @@
               "type": "Grid",
               "props": {
                 "id": "all-grid-4",
-                "columns": "2",
+                "columns": "3",
                 "titleLevel": "h2",
                 "background": "background",
                 "items": [

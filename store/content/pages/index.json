@@ -58,43 +58,30 @@
               }
             },
             {
-              "type": "Columns",
+              "type": "Button",
               "props": {
-                "id": "home-columns-6",
-                "count": "2",
-                "gap": "sm",
-                "column1": [
-                  {
-                    "type": "Button",
-                    "props": {
-                      "id": "home-button-4",
-                      "label": "See all templates",
-                      "href": "/templates",
-                      "variant": "primary",
-                      "align": "left"
-                    }
-                  }
-                ],
-                "column2": [
-                  {
-                    "type": "Button",
-                    "props": {
-                      "id": "home-button-5",
-                      "label": "Download Crust",
-                      "href": "/download",
-                      "variant": "arrow",
-                      "align": "left"
-                    }
-                  }
-                ],
-                "column3": [],
-                "column4": [],
-                "widths": {
-                  "desktop": "one-three",
-                  "tablet": "one-three",
-                  "phone": "stack"
-                },
-                "valign": "middle"
+                "id": "home-button-4",
+                "label": "See all templates",
+                "href": "/templates",
+                "variant": "primary",
+                "align": "left"
+              }
+            },
+            {
+              "type": "Spacer",
+              "props": {
+                "id": "home-spacer-5",
+                "size": "xs"
+              }
+            },
+            {
+              "type": "Button",
+              "props": {
+                "id": "home-button-6",
+                "label": "Download Crust",
+                "href": "/download",
+                "variant": "arrow",
+                "align": "left"
               }
             }
           ]
@@ -168,7 +155,7 @@
               "type": "Grid",
               "props": {
                 "id": "home-grid-11",
-                "columns": "2",
+                "columns": "3",
                 "titleLevel": "h3",
                 "background": "background",
                 "items": [

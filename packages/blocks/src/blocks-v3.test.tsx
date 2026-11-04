@@ -157,6 +157,10 @@ describe("F078 blocks-v3: Table", () => {
     expect(out).toContain('<th scope="col">Day</th><th scope="col" class="cr-num">Shop</th><th scope="col">Hours</th>');
     expect(out).toContain('<td class="cr-nowrap">10:00–16:00</td>');
     expect(out).toContain("<td>Closed</td>");
+    // A mixed column (figures and words) stays left-aligned, heading included.
+    const mixed = html("Table", { caption: "", headers: "top", rows: [["Plan", "Price"], ["Free", "€0"], ["Team", "Ask us"]] });
+    expect(mixed).toContain('<th scope="col">Price</th>');
+    expect(mixed).toContain("<td>€0</td>");
   });
   it("without headers or a title", () => {
     const out = html("Table", { caption: "", headers: "none", rows: [["a", "b"]] });
