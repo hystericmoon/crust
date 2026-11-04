@@ -151,10 +151,10 @@ const gridItem = (title: string, body: string, photo?: LayoutPhotoId, link?: [st
 });
 const grid = (items: ReturnType<typeof gridItem>[], cols: "2" | "3" | "4" = "3", background: SectionStyleId = "surface") =>
   block("Grid", { columns: cols, titleLevel: "h3", background, items, ...(items.some((i) => i.imageSrc) ? { placeholder: ["items"] } : {}) });
-const gallery = (ids: LayoutPhotoId[], o: { columns?: "2" | "3" | "4"; shape?: "square" | "landscape" | "portrait" | "natural"; lightbox?: boolean } = {}) =>
+const gallery = (ids: LayoutPhotoId[], o: { columns?: "2" | "3" | "4"; shape?: "square" | "wide" | "original"; lightbox?: boolean } = {}) =>
   block("Gallery", {
     columns: o.columns ?? "3",
-    shape: o.shape ?? "landscape",
+    shape: o.shape ?? "wide",
     ...(o.lightbox ? { lightbox: "yes" } : {}),
     images: ids.map((id) => ({ src: src(id), alt: alt(id), caption: "" })),
     placeholder: ["images"],
@@ -567,7 +567,7 @@ export const sectionLayoutsV2: SectionLayout[] = [
     section("background", [
       heading("Inside the studio", { eyebrow: "Gallery" }),
       spacer("sm"),
-      gallery(["office", "shadows", "tools", "pottery", "bottles", "breakfast"], { columns: "3", shape: "landscape", lightbox: true }),
+      gallery(["office", "shadows", "tools", "pottery", "bottles", "breakfast"], { columns: "3", shape: "wide", lightbox: true }),
     ], { width: "wide" }),
   ]),
   L("gallery-mosaic", "Photo mosaic", "Gallery", "One tall photo beside two wide ones, edge to edge.", () => [
