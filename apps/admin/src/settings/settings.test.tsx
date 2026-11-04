@@ -1,4 +1,6 @@
 // @vitest-environment happy-dom
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { defaultTokens, type Page, type Site, type SiteTokens } from "@crust/blocks";
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { useState } from "react";
@@ -226,5 +228,22 @@ describe("saved tokens (settings)", () => {
     expect(loadSavedTokens(defaultTokens)).toBe(defaultTokens);
     localStorage.setItem(TOKENS_KEY, "{not json");
     expect(loadSavedTokens(defaultTokens)).toBe(defaultTokens);
+  });
+});
+
+describe("audit fixes (F072)", () => {
+  it("starts the preview collapsed on a phone-width screen", () => {
+    vi.stubGlobal("matchMedia", (q: string) => ({ matches: q.includes("599px"), media: q, addEventListener() {}, removeEventListener() {} }));
+    try {
+      setup();
+      expect(screen.getByRole("button", { name: "Show preview" }).getAttribute("aria-expanded")).toBe("false");
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("gives the colourway dots a 44px tall tap area on narrow screens", () => {
+    const css = readFileSync(join(__dirname, "settings.css"), "utf8");
+    expect(css).toMatch(/@media \(max-width: 899px\) \{ \.st-cw::after \{[^}]*inset: -10px -4px/);
   });
 });

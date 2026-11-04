@@ -139,7 +139,7 @@ export function SiteSettings({
 }: SiteSettingsProps) {
   const [status, setStatus] = useState("");
   const [invalid, setInvalid] = useState<ReadonlySet<string>>(new Set());
-  const [previewOpen, setPreviewOpen] = useState(true);
+  const [previewOpen, setPreviewOpen] = useState(() => !(typeof matchMedia === "function" && matchMedia("(max-width: 599px)").matches));
   const [group, setGroup] = useState<GroupId>("presets");
   /** After switching groups: what to focus once the group is shown. */
   const [pendingFocus, setPendingFocus] = useState<string | null>(null);
