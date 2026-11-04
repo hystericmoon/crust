@@ -33,7 +33,7 @@ later session must know; keep the newest 3 entries here.
 
 ## Waiting on the owner
 
-- **Review round:** 26 built features (F070 passed 2026-11-04) wait for `reviewed: true`. One
+- **Review round:** 7 built features still wait for `reviewed: true` (F055, F062, F063, F071, F075, F078, F080); 20 are passed (the owner's word: follow the impeccable skill). One
   page, in sittings, with what to try and Pass / Needs fixing:
   https://claude.ai/artifact/C3czUd4fpf5Qz6t2WqAkwZ
   (`design/review-2026-11-03.html`). Answers are stored in the page's

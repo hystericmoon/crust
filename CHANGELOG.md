@@ -4,6 +4,16 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Review round fixes (2026-11-04).** Cover cards read on light photos;
+  "Undo style" sits right under the Styles intro; the colour dots and
+  Sites buttons are easier to tap; tables line figures up under their
+  heading and keep opening hours on one line; the Publish screens, FTP
+  dialog and first run are calmer and clearer; the store shows bigger
+  cards, a calmer heading size and the refund line right under the buy
+  button; Harbour's hero text is easier to read and Signal's top bar no
+  longer fills a phone screen; images skip a WebP that is bigger than the
+  original; the background-video button says Pause or Play.
+
 - **Licence, terms and refunds in the store (F068), as drafts.** Three
   short pages: Licence (use a template for as many sites as you like,
   yours or clients'; don't resell or share the file), Terms (who sells,
