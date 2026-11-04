@@ -340,6 +340,8 @@ export function tableCells(rows: unknown): string[][] {
 }
 
 /** Figures line up on the right: "€49", "1,200", "12.5%", "-3". */
+/** A time range such as 10:00–16:00 stays on one line. */
+export const isTimeRange = (cell: string) => /^\d{1,2}[:.]\d{2}\s?[–—-]\s?\d{1,2}[:.]\d{2}$/.test(cell.trim());
 export const isNumberCell = (cell: string) => /^[-+−]?\s?\p{Sc}?\s?\d[\d.,\s]*\s?(%|\p{Sc}|[kKmM])?$/u.test(cell.trim());
 
 export const Table: ComponentConfig<TableProps & { id?: string }> = {
@@ -371,10 +373,12 @@ export const Table: ComponentConfig<TableProps & { id?: string }> = {
     const head = top ? cells[0]! : null;
     const body = top ? cells.slice(1) : cells;
     const captionId = `${id ?? "table"}-title`;
+    // A column of figures gets its heading right-aligned too, so the two line up.
+    const numberColumns = (head ?? []).map((_, i) => body.length > 0 && body.every((r) => !(r[i] ?? "").trim() || isNumberCell(r[i] ?? "")) && body.some((r) => isNumberCell(r[i] ?? "")));
     const cell = (text: string, col: number, key: number) => {
       if (h === "both" && col === 0 && text) return <th key={key} scope="row">{text}</th>;
       return (
-        <td key={key} className={isNumberCell(text) ? "cr-num" : undefined}>
+        <td key={key} className={[isNumberCell(text) ? "cr-num" : "", isTimeRange(text) ? "cr-nowrap" : ""].filter(Boolean).join(" ") || undefined}>
           {text}
         </td>
       );
@@ -390,7 +394,7 @@ export const Table: ComponentConfig<TableProps & { id?: string }> = {
                 {/* An empty corner cell isn't a header. */}
                 {head.map((c, i) =>
                   c ? (
-                    <th key={i} scope="col" className={isNumberCell(c) ? "cr-num" : undefined}>
+                    <th key={i} scope="col" className={numberColumns[i] ? "cr-num" : undefined}>
                       {c}
                     </th>
                   ) : (

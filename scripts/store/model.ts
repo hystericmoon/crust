@@ -323,13 +323,18 @@ function allPage(templates: StoreTemplate[], pics: ReturnType<typeof picturesNee
   ]);
 }
 
-/** F066: under a buy button, the test note (test mode only) and who takes the payment. F068: then the licence, terms and refunds. */
-function afterBuy(k: ReturnType<typeof kit>, checkout: Checkout | null): Block[] {
+/**
+ * Under a buy button (F066 review): first the licence, terms and refund line (F068), so the refund promise is
+ * in view next to the button; then the live demo, then the small print: the test note (test mode only) and who
+ * takes the payment.
+ */
+function afterBuy(k: ReturnType<typeof kit>, checkout: Checkout | null, demo?: Block): Block[] {
   const note = testNote(checkout);
   return [
+    buyLegalLine(k),
+    ...(demo ? [demo] : []),
     ...(note ? [k.text({ rich: 1, blocks: [{ type: "p", children: [{ text: note[0], bold: true }, { text: note[1] }] }] } as RichText, { tone: "default" })] : []),
     ...(checkout ? [k.text(checkoutLine(checkout), { tone: "muted" })] : []),
-    buyLegalLine(k),
   ];
 }
 
@@ -343,11 +348,11 @@ function templatePage(st: StoreTemplate, others: StoreTemplate[], pics: ReturnTy
   const phone = item.show.map((path) => mine.find((p) => p.path === path && p.widthName === "phone")!);
   // F066: the button goes to the payment company's checkout, tagged with the template's id.
   const buyButton = () => k.button(`Get ${template.name} · ${item.price}`, checkoutUrl(item.buy!, item.id, checkout), "primary");
-  const buy = isPriced(item)
-    ? [buyButton(), ...afterBuy(k, checkout)]
-    : [k.text("It's already in the app: open Crust and choose Pages → Start from a template.", { tone: "muted" }), k.button("How to open it", HELP_OPEN, "secondary")];
   // F064: the demo is published under the store by demos-build.ts.
   const demo = (): Block => k.button("Try the live demo", `${demoPath(item.id)}/`, "secondary", { icon: "external-link" });
+  const buy = isPriced(item)
+    ? [buyButton(), ...afterBuy(k, checkout, demo())]
+    : [k.text("It's already in the app: open Crust and choose Pages → Start from a template.", { tone: "muted" }), k.button("How to open it", HELP_OPEN, "secondary")];
   const licence = isPriced(item) ? item.licence! : "Free with Crust. Use it for as many sites as you like.";
   return page(templatePath(item.id), `${template.name} template`, `${template.name}: ${template.description}`.slice(0, 300), [
     k.section("background", [
@@ -356,8 +361,7 @@ function templatePage(st: StoreTemplate, others: StoreTemplate[], pics: ReturnTy
       // On phones the details column comes after the pictures, so the price and next step are also here.
       ...[
         k.text(isPriced(item) ? item.price : "Free with Crust", { tone: "default" }),
-        ...(isPriced(item) ? [buyButton(), ...afterBuy(k, checkout)] : [k.button("How to open it", HELP_OPEN, "secondary")]),
-        demo(),
+        ...(isPriced(item) ? [buyButton(), ...afterBuy(k, checkout, demo())] : [k.button("How to open it", HELP_OPEN, "secondary"), demo()]),
       ].map((b) => ({ ...b, props: { ...b.props, hideOn: ["desktop", "tablet"] } }) as Block),
     ], { paddingY: "lg" }),
     k.section("background", [
@@ -369,7 +373,7 @@ function templatePage(st: StoreTemplate, others: StoreTemplate[], pics: ReturnTy
         [
           k.heading(item.price === FREE ? "Free" : item.price, { eyebrow: "Price", mark: false }),
           ...buy,
-          demo(),
+          ...(isPriced(item) ? [] : [demo()]),
           k.divider("line", { space: "sm" }),
           k.heading("What's included", { level: "h3", mark: false }),
           k.raw("IconList", { icon: "check", iconColor: "primary", items: includedLines(facts).map((text) => ({ text })) }),
