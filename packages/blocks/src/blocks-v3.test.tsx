@@ -149,8 +149,14 @@ describe("F078 blocks-v3: Table", () => {
   it("is a real table: caption, column and row headers with scope, a named scroll area", () => {
     const out = html("Table", { caption: "Opening hours", headers: "both", rows: [["", "Studio"], ["Saturday", "€12"]] });
     expect(out).toContain('<div class="cr-table-wrap" role="region" tabindex="0" aria-labelledby="Table-1-title"><table class="cr-table cr-table-lines cr-table-headers-both"><caption id="Table-1-title">Opening hours</caption>');
-    expect(out).toContain('<thead><tr><td></td><th scope="col">Studio</th></tr></thead>');
+    expect(out).toContain('<thead><tr><td></td><th scope="col" class="cr-num">Studio</th></tr></thead>');
     expect(out).toContain('<tbody><tr><th scope="row">Saturday</th><td class="cr-num">€12</td></tr></tbody>');
+  });
+  it("right-aligns the heading over a column of figures, and keeps a time range on one line (F078 review)", () => {
+    const out = html("Table", { caption: "", headers: "top", rows: [["Day", "Shop", "Hours"], ["Mon", "€12", "10:00–16:00"], ["Tue", "€9", "Closed"]] });
+    expect(out).toContain('<th scope="col">Day</th><th scope="col" class="cr-num">Shop</th><th scope="col">Hours</th>');
+    expect(out).toContain('<td class="cr-nowrap">10:00–16:00</td>');
+    expect(out).toContain("<td>Closed</td>");
   });
   it("without headers or a title", () => {
     const out = html("Table", { caption: "", headers: "none", rows: [["a", "b"]] });
@@ -218,5 +224,24 @@ describe("F078 blocks-v3: CSS only where used", () => {
     expect(needsBlocksV3Css(html("IconList"))).toBe(false);
     expect(needsBlocksV3Css('<div class="cr-section-video">')).toBe(false);
     expect(BLOCKS_V3_CSS).toContain(".cr-plan-badge");
+  });
+});
+
+describe("review fixes F078, F057, F062 (2026-11-04)", () => {
+  it("styles: badge in sentence case at 14px, stats line up on phones, time ranges don't wrap", async () => {
+    const { readFileSync } = await import("node:fs");
+    const css = readFileSync("packages/blocks/src/blocks-v3-css.ts", "utf8");
+    expect(css).toMatch(/\.cr-plan-badge \{[^}]*font-size: 0\.875rem;(?![^}]*uppercase)/);
+    expect(css).toContain(".cr-stats.cr-align-left .cr-stat:nth-child(2n+1) { padding-left: 0; }");
+    expect(css).toContain(".cr-table .cr-nowrap { white-space: nowrap; }");
+  });
+  it("admin: Sites row buttons and site-name link are 44px; the template file button is styled", async () => {
+    const { readFileSync } = await import("node:fs");
+    const pages = readFileSync("apps/admin/src/pages/pages.css", "utf8");
+    expect(pages).toContain(".sites-table .pg-small { min-height: 44px; }");
+    expect(pages).toMatch(/\.sites-open \{\s*min-height: 44px;/);
+    const tp = readFileSync("apps/admin/src/templates/templates.css", "utf8");
+    expect(tp).toContain(".tp-card-file input::file-selector-button");
+    expect(tp).toMatch(/\.tp-get \{[^}]*gap: 0\.4em;/);
   });
 });

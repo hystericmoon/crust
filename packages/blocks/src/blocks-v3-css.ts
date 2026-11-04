@@ -35,6 +35,8 @@ export const BLOCKS_V3_CSS = `/* --- F078: Stats, Video, Table, Pricing, numbere
 .cr-stats-lines .cr-stat:first-child, .cr-stats-lines .cr-stat:nth-child(2n+1) { border-left: 0; }
 @media (min-width: 768px) { .cr-stats-lines .cr-stat:nth-child(2n+1) { border-left: 1px solid color-mix(in srgb, currentColor 25%, transparent); } .cr-stats-lines .cr-stat:first-child { border-left: 0; } }
 .cr-stats-lines.cr-align-left .cr-stat:first-child, .cr-stats-plain.cr-align-left .cr-stat:first-child { padding-left: 0; }
+/* F078 review: on a phone, the first figure of each wrapped row lines up with the first one. */
+@media (max-width: 767px) { .cr-stats.cr-align-left .cr-stat:nth-child(2n+1) { padding-left: 0; } }
 .cr-stats-boxes { gap: var(--cr-space-sm); }
 .cr-stats-boxes .cr-stat {
   padding: var(--cr-space-sm); border-radius: var(--cr-radius);
@@ -79,6 +81,7 @@ export const BLOCKS_V3_CSS = `/* --- F078: Stats, Video, Table, Pricing, numbere
 .cr-table thead th { font-weight: 600; border-bottom: 2px solid currentColor; vertical-align: bottom; }
 .cr-table tbody th { font-weight: 600; }
 .cr-table .cr-num { text-align: right; }
+.cr-table .cr-nowrap { white-space: nowrap; }
 .cr-table-stripes th:first-child, .cr-table-stripes td:first-child { padding-left: 0.875rem; }
 .cr-table-stripes tbody tr:nth-child(odd) > * { background-image: linear-gradient(color-mix(in srgb, currentColor 6%, transparent), color-mix(in srgb, currentColor 6%, transparent)); }
 .cr-table-stripes th, .cr-table-stripes td { border-bottom: 0; }
@@ -106,7 +109,7 @@ export const BLOCKS_V3_CSS = `/* --- F078: Stats, Video, Table, Pricing, numbere
 .cr-plan-badge {
   order: -1; align-self: flex-start; margin: 0; padding: 0.25rem 0.625rem; border-radius: 999px;
   background: var(--cr-btn-bg, var(--cr-color-primary)); color: var(--cr-btn-fg, var(--cr-color-onPrimary));
-  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+  font-size: 0.875rem; font-weight: 600;
 }
 .cr-plan-price { margin: var(--cr-space-xs) 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.375rem; }
 .cr-plan-amount {
