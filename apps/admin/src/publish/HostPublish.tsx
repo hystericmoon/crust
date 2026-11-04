@@ -153,14 +153,16 @@ export function HostPublish({
           </div>
           <p className="st-help dp-help">
             {connection.lastPublished ? `Last published ${whenPublished(connection.lastPublished)}.` : "Not published here yet."}{" "}
-            <button type="button" className="hp-link" onClick={() => setOpen({ mode: "change" })}>
+            <button type="button" className="st-button pg-small hp-link" onClick={() => setOpen({ mode: "change" })}>
               Change or disconnect
             </button>
           </p>
           {ftp?.protocol === "ftp" ? (
-            <p className="st-help hp-plain">
-              <span aria-hidden="true">⚠ </span>Plain FTP: your password and files travel unencrypted.
-            </p>
+            <div className="dp-box dp-warn hp-plain" role="note">
+              <p>
+                <strong>Warning, not encrypted.</strong> Plain FTP: your password and files travel unencrypted.
+              </p>
+            </div>
           ) : null}
           {!connection.hasToken && run.kind !== "failed" ? (
             <div className="dp-box dp-warn">
@@ -533,7 +535,7 @@ function ConnectDialog({
 
 function Steps({ step }: { step: 1 | 2 }) {
   return (
-    <ol className="hp-steps" aria-label="Steps">
+    <ol className="hp-steps" aria-label="Steps" data-status-only>
       <li className={step === 1 ? "hp-on" : "hp-done"} aria-current={step === 1 ? "step" : undefined}>
         {step === 1 ? "1 · Token" : "✓ Token"}
       </li>
