@@ -66,7 +66,7 @@
                 "text": "Terms",
                 "level": "h1",
                 "align": "left",
-                "size": "display",
+                "size": "normal",
                 "eyebrow": ""
               }
             },
@@ -113,7 +113,7 @@
                       "type": "p",
                       "children": [
                         {
-                          "text": "Templates are made by the maker of Crust. Polar handles the payment and sells the templates on our behalf as the merchant of record. Polar adds tax where it applies and sends your receipt, and its buyer terms cover the payment itself."
+                          "text": "Templates are made by the maker of Crust. Polar handles the payment and sells the templates on our behalf as the merchant of record, the company that takes your payment and deals with tax. Polar adds tax where it applies and sends your receipt, and its buyer terms cover the payment itself."
                         }
                       ]
                     }

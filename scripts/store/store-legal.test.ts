@@ -110,8 +110,8 @@ describe("links to them", () => {
     const json = JSON.stringify(p);
     const line = '"text":"By buying you agree to the "},{"text":"licence","href":"/licence"},{"text":" and "},{"text":"terms","href":"/terms"},{"text":". Not right for you? "},{"text":"Full refund within 14 days","href":"/refunds"}';
     expect(json.split(line).length - 1).toBe(2);
-    // In reading order: button, test note, who takes the payment, then the legal line.
-    const order = ["Get Harbour · US$49", "Test checkout.", "Secure checkout by Polar", "By buying you agree"].map((s) => json.indexOf(s));
+    // In reading order (F066 review): button, the legal and refund line, the live demo, the test note, then who takes the payment.
+    const order = ["Get Harbour · US$49", "By buying you agree", "Try the live demo", "Test checkout.", "Secure checkout by Polar"].map((s) => json.indexOf(s));
     expect([...order].sort((a, b) => a - b)).toEqual(order);
   });
 

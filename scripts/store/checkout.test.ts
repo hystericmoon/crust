@@ -104,8 +104,11 @@ describe("the buy button", () => {
     // The note comes straight after the button it belongs to, in reading order.
     for (const b of buy) {
       const i = blocks.indexOf(b);
-      expect(words(blocks[i + 1]!)).toContain("Test checkout.");
-      expect(words(blocks[i + 2]!)).toContain("Secure checkout by Polar");
+      // F066 review: the licence and refund line first, then the live demo, then the small print.
+      expect(words(blocks[i + 1]!)).toContain("By buying you agree");
+      expect(blocks[i + 2]!.type).toBe("Button");
+      expect(words(blocks[i + 3]!)).toContain("Test checkout.");
+      expect(words(blocks[i + 4]!)).toContain("Secure checkout by Polar");
     }
     // The phone copy hides on bigger screens like the rest of the phone summary.
     expect(notes.some((n) => JSON.stringify(n.props.hideOn) === '["desktop","tablet"]')).toBe(true);

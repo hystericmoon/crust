@@ -78,7 +78,8 @@ function legalPage(prefix: string, path: string, title: string, description: str
       ? []
       : [k.section("surface", [k.text(rich([{ text: "Draft.", bold: true }, { text: " This wording hasn't been approved yet and may change before the store sells anything." }]), { tone: "default" })], { paddingY: "sm", width: "narrow" })]),
     k.section("background", [
-      k.h1(title, { mark: false, ...(legal.approved ? { eyebrow: `Updated ${legal.approved}` } : {}) }),
+      // F068 review: a normal-size title (not Display), so a short legal page doesn't shout.
+      k.heading(title, { level: "h1", mark: false, ...(legal.approved ? { eyebrow: `Updated ${legal.approved}` } : {}) }),
       k.text(intro, { tone: "default" }),
       ...parts.flatMap(([heading, paragraphs]) => [k.heading(heading, { level: "h2", mark: false }), ...paragraphs.map(para)]),
     ], { paddingY: "xl", width: "narrow" }),
@@ -116,7 +117,7 @@ export function termsPage(checkout: Checkout | null, legal: LegalSettings = LEGA
     "These terms apply when you buy a template from this store.",
     [
       ["Who you're buying from", [
-        `Templates are made by ${legal.seller ?? "the maker of Crust"}. ${company} handles the payment and sells the templates on our behalf as the merchant of record. ${checkout ? company : "It"} adds tax where it applies and sends your receipt, and its buyer terms cover the payment itself.`,
+        `Templates are made by ${legal.seller ?? "the maker of Crust"}. ${company} handles the payment and sells the templates on our behalf as the merchant of record, the company that takes your payment and deals with tax. ${checkout ? company : "It"} adds tax where it applies and sends your receipt, and its buyer terms cover the payment itself.`,
       ]],
       ["What you get", [
         [{ text: "A template file to open in Crust, the free app, and a personal download page. Updates to the template are free and appear on the same page. What you may do with the template is in the " }, { text: "licence", href: LICENCE_PATH }, { text: "." }],
