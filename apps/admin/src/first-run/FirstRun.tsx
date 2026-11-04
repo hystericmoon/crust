@@ -123,7 +123,7 @@ export function FirstRun({ context, sources: given, onDone = landInBuilder }: Fi
                       </span>
                       {s.template ? (
                         <>
-                          <span className="fr-desc">{s.template.description}</span>
+                          <span className="fr-desc">{oneLine(s.template.description)}</span>
                           <span className="fr-facts">{templateFacts(s.template)}</span>
                         </>
                       ) : null}
@@ -195,4 +195,12 @@ export function FirstRun({ context, sources: given, onDone = landInBuilder }: Fi
       </main>
     </div>
   );
+}
+
+/** F060: the welcome card shows one plain line; the gallery keeps the full text. */
+export function oneLine(text: string, max = 80): string {
+  const first = (text.trim().split(/(?<=[.!?])\s/)[0] ?? "").replace(/\s+/g, " ");
+  if (first.length <= max) return first;
+  const cut = first.slice(0, max - 1).replace(/[\s,;:–-]+\S*$/, "");
+  return `${cut}…`;
 }

@@ -3434,6 +3434,12 @@ a lawyer reads it (BLOCKED.md).
 
 - **F066/F068 review fixes (2026-11-04, owner: "Yes, fix F066 and F068").** F066: under a buy button the order is now button, the licence/refund line, the live demo link, then the small print (test note, "Secure checkout by …"); on priced templates the demo sits there instead of after the whole column. F068: legal page titles are normal-size headings (not Display). The section headings (h2) keep the store's dramatic type scale: shrinking them for three pages needs a per-heading size or a store-wide change, the owner's call. Terms explain "merchant of record". Not done: seller name and contact (owner adds them in `LEGAL` on approval), Thank-you page button gap, a larger phone price.
 
+## 2026-11-04: audit-desktop batch (F056-F060)
+- Publish heading focus is a quiet inset bar; real controls keep the 3px ring. "Change or disconnect" is a 44px button; step pills are plain "1 / 2" labels.
+- FTP dialog scrolls with a sticky action row; radios 20px in 44px rows; connected plain-FTP warning is a boxed note (2px red border, normal text colour).
+- Sites: Delete uses the danger colour (#b42318, above 4.5:1 on white); other sites get an explicit Open button (current site keeps its Open badge).
+- First run: descriptions cut to the first sentence (80 chars max, 2 lines clamped); 2 columns from 480 to 1000px so Blank is not alone.
+
 ## 2026-11-04: store audit polish (F063, F066)
 - Store cards (home, All templates, "Other templates") show two bigger cards per row on desktop instead of three; no dimming or overlay existed in the card CSS, so image treatment is unchanged. Phone stays one column.
 - Thank-you page: the two buttons are stacked in one column instead of two far-apart columns.
