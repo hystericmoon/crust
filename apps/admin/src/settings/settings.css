@@ -165,7 +165,7 @@ body:has(.st) { margin: 0; }
 .st-preset-swatches span { width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--st-divider); }
 .st-preset-name { font-weight: 600; font-size: 1.0625rem; }
 .st-current { font-size: 0.8125rem; font-weight: 600; }
-.st-undo { margin-top: 12px; }
+.st-undo { margin: 0 0 16px; min-height: 44px; }
 
 /* F072: Style library */
 .st-looks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 12px; }

@@ -167,6 +167,11 @@ describe("review-fixes 2: focus returns when a dialog closes (F022, F015, F013)"
     expect(undo).toContain(`#presets .st-look[aria-pressed='true']`);
     expect(undo).toContain(`document.getElementById("presets-h")`);
   });
+
+  it("puts Undo style above the 12 looks, next to the message that mentions it (F072 review)", () => {
+    const source = readFileSync("apps/admin/src/settings/SiteSettings.tsx", "utf8");
+    expect(source.indexOf("Undo style ({beforePreset.name})")).toBeLessThan(source.indexOf("<StyleLibrary\n"));
+  });
 });
 
 describe("review-fixes 5: no sideways canvas jump (F025, F027, F043)", () => {

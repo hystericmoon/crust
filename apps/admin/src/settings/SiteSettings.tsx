@@ -272,17 +272,7 @@ export function SiteSettings({
               A complete look: fonts, headings, labels, buttons, cards, links and corners, in one of three colourways. Spacing,
               page width and your pages stay as they are. Every colourway passes the contrast checks.
             </p>
-            <StyleLibrary
-              tokens={draft}
-              onPick={(look, variation) => {
-                const now = matchingLook(draft);
-                if (now?.look.id === look.id && now.variation.id === variation.id) return;
-                if (!beforePreset) setBeforePreset({ tokens: draft, name: `${look.name} ${variation.name}` });
-                else setBeforePreset({ ...beforePreset, name: `${look.name} ${variation.name}` });
-                onChange(applyLook(draft, look, variation));
-                setStatus(`${look.name}, ${variation.name} applied. Use "Undo style" to go back.`);
-              }}
-            />
+            {/* F072 review: Undo sits right under the intro, where the status message points to it, not after 12 cards. */}
             {beforePreset ? (
               <button
                 type="button"
@@ -302,6 +292,17 @@ export function SiteSettings({
                 Undo style ({beforePreset.name})
               </button>
             ) : null}
+            <StyleLibrary
+              tokens={draft}
+              onPick={(look, variation) => {
+                const now = matchingLook(draft);
+                if (now?.look.id === look.id && now.variation.id === variation.id) return;
+                if (!beforePreset) setBeforePreset({ tokens: draft, name: `${look.name} ${variation.name}` });
+                else setBeforePreset({ ...beforePreset, name: `${look.name} ${variation.name}` });
+                onChange(applyLook(draft, look, variation));
+                setStatus(`${look.name}, ${variation.name} applied. Use "Undo style" to go back.`);
+              }}
+            />
           </section>
 
           <div hidden={group !== "colours"}>
