@@ -84,3 +84,9 @@ describe("responsive: show on", () => {
     expect(styles).toMatch(/@media \(min-width: 1024px\) \{\s*\.cr-hide-desktop \{ display: none; \}/);
   });
 });
+
+describe("F074 review: dividers on dark sections", () => {
+  it("draws a stronger line on a Primary section", () => {
+    expect(styles).toMatch(/\.cr-bg-primary \.cr-dividers > \.cr-column \+ \.cr-column::before[^}]*opacity: 0\.4/);
+  });
+});

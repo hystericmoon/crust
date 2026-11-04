@@ -63,7 +63,7 @@
 }
 .cr-video-toggle > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .cr-video-toggle::before { content: ""; width: 12px; height: 14px; border-inline: 4px solid currentColor; box-sizing: border-box; }
-.cr-video-toggle[aria-pressed="true"]::before { width: 0; height: 0; border-style: solid; border-width: 7px 0 7px 12px; border-color: transparent transparent transparent currentColor; }
+.cr-video-toggle.cr-is-paused::before { width: 0; height: 0; border-style: solid; border-width: 7px 0 7px 12px; border-color: transparent transparent transparent currentColor; }
 .cr-video-toggle:focus-visible { outline: 3px solid var(--cr-sec-ink); outline-offset: 2px; }
 .cr-video-toggle[hidden] { display: none; }
 /* Pull up over the section above: the top of this section is see-through and its content starts that much higher. */
@@ -226,6 +226,8 @@
 /* Dividers: a line in the middle of the gap, vertical beside, horizontal above; per screen, from the chosen widths. */
 .cr-dividers > .cr-column { position: relative; }
 .cr-dividers > .cr-column + .cr-column::before { content: ""; position: absolute; display: none; background: currentColor; opacity: 0.2; pointer-events: none; }
+/* F074 review: on a dark (Primary) section the lines are a little stronger; still decorative. */
+.cr-bg-primary.cr-dividers > .cr-column + .cr-column::before, .cr-bg-primary .cr-dividers > .cr-column + .cr-column::before { opacity: 0.4; }
 @media (max-width: 639.98px) {
   .cr-div-p-v > .cr-column + .cr-column::before { display: block; top: 0; bottom: 0; width: 1px; left: calc(var(--cr-columns-gap, var(--cr-space-md)) / -2); }
   .cr-div-p-h > .cr-column + .cr-column::before { display: block; left: 0; right: 0; height: 1px; top: calc(var(--cr-columns-row-gap, var(--cr-columns-gap, var(--cr-space-md))) / -2); }

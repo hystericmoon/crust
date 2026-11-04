@@ -161,7 +161,7 @@ export function hasBackgroundVideo(value: unknown): boolean {
  * the video stays hidden and never downloads; the still photo shows.
  */
 export const VIDEO_SCRIPT = `const still=matchMedia("(prefers-reduced-motion: reduce)");
-const label=(b,v)=>{b.setAttribute("aria-pressed",v.paused?"true":"false");b.querySelector("span").textContent=v.paused?"Play background video":"Pause background video";};
+const label=(b,v)=>{b.classList.toggle("cr-is-paused",v.paused);b.querySelector("span").textContent=v.paused?"Play background video":"Pause background video";};
 for(const v of document.querySelectorAll("video[data-cr-video]")){
 const b=v.parentElement.querySelector(".cr-video-toggle");if(!b)continue;
 let stopped=false;

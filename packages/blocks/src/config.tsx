@@ -344,7 +344,7 @@ const blocks: Config<Components> = {
               <Content />
             </div>
             {video ? (
-              <button className="cr-video-toggle" type="button" aria-pressed="false" hidden>
+              <button className="cr-video-toggle" type="button" hidden>
                 <span>Pause background video</span>
               </button>
             ) : null}

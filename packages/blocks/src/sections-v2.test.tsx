@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -140,8 +142,18 @@ describe("sections v2: video", () => {
     expect(html).toContain('<img class="cr-section-media" src="/media/still.jpg"');
     expect(html).toMatch(/<video class="cr-section-media cr-section-video" data-cr-video="" muted="" loop="" playsInline="" preload="none" aria-hidden="true" tabindex="-1" hidden="">/);
     expect(html).toContain('<source src="https://cdn.example.com/loop.mp4" type="video/mp4"/>');
-    expect(html).toContain('<button class="cr-video-toggle" type="button" aria-pressed="false" hidden=""><span>Pause background video</span></button>');
+    expect(html).toContain('<button class="cr-video-toggle" type="button" hidden=""><span>Pause background video</span></button>');
     expect(html).not.toContain("autoplay");
+  });
+
+  it("switches the pause button's name and icon with a class, not aria-pressed (F073 review)", () => {
+    const s = readFileSync(join(__dirname, "sections-v2.ts"), "utf8");
+    expect(s).toContain('"Play background video":"Pause background video"');
+    expect(s).toContain('classList.toggle("cr-is-paused"');
+    expect(s).not.toContain("aria-pressed");
+    const css = readFileSync(join(__dirname, "styles.css"), "utf8");
+    expect(css).toContain(".cr-video-toggle.cr-is-paused::before");
+    expect(css).not.toContain("cr-video-toggle[aria-pressed");
   });
 
   it("needs the still photo: no photo, no video", () => {

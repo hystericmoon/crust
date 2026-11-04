@@ -129,7 +129,63 @@ pub fn publish_media_cached(media_dir: &Path, site_dir: &Path, cache: Option<&Pa
     if let Some(cache) = cache {
         prune_cache(cache, &kept);
     }
+    drop_missing_webp_sources(site_dir)?;
     Ok(report)
+}
+
+/// F081 review: a WebP copy that was skipped for being bigger than its JPEG
+/// isn't in the site, so the pages' `<source type="image/webp">` must not
+/// list it (a browser that picks that source doesn't fall back to the JPEG).
+/// Listed copies that are gone are dropped from the `srcset`; a source left
+/// with none is removed, so the `<img>` (the JPEG) is what shows.
+fn drop_missing_webp_sources(site_dir: &Path) -> Result<()> {
+    for entry in walkdir::WalkDir::new(site_dir).into_iter().filter_map(|e| e.ok()) {
+        if !entry.file_type().is_file() || entry.path().extension().is_none_or(|e| e != "html") {
+            continue;
+        }
+        let html = fs::read_to_string(entry.path()).with_context(|| format!("Couldn't read {}", entry.path().display()))?;
+        let fixed = fix_webp_sources(&html, &|file| site_dir.join("media").join(file).is_file());
+        if fixed != html {
+            fs::write(entry.path(), fixed).with_context(|| format!("Couldn't write {}", entry.path().display()))?;
+        }
+    }
+    Ok(())
+}
+
+/// The page with its WebP `<source>` tags limited to the copies `exists` knows.
+fn fix_webp_sources(html: &str, exists: &dyn Fn(&str) -> bool) -> String {
+    let mut out = String::with_capacity(html.len());
+    let mut rest = html;
+    while let Some(start) = rest.find("<source ") {
+        out.push_str(&rest[..start]);
+        let Some(len) = rest[start..].find('>') else { break };
+        let tag = &rest[start..start + len + 1];
+        rest = &rest[start + len + 1..];
+        out.push_str(&limit_webp_source(tag, exists).unwrap_or_default());
+    }
+    out.push_str(rest);
+    out
+}
+
+/// `Some(tag)` (maybe with a shorter srcset) to keep, `None` to remove it.
+fn limit_webp_source(tag: &str, exists: &dyn Fn(&str) -> bool) -> Option<String> {
+    if !tag.contains("type=\"image/webp\"") {
+        return Some(tag.to_string());
+    }
+    let key = "srcSet=\"";
+    let key = if tag.contains(key) { key } else { "srcset=\"" };
+    let Some(at) = tag.find(key) else { return Some(tag.to_string()) };
+    let from = at + key.len();
+    let to = from + tag[from..].find('"')?;
+    let kept: Vec<&str> = tag[from..to]
+        .split(',')
+        .map(str::trim)
+        .filter(|c| c.split_whitespace().next().and_then(|u| u.strip_prefix("/media/")).is_none_or(exists))
+        .collect();
+    if kept.is_empty() {
+        return None;
+    }
+    Some(format!("{}{}{}", &tag[..from], kept.join(", "), &tag[to..]))
 }
 
 /// One photo's resized copies, AVIF/WebP copies, and its cache entry's name.
@@ -232,30 +288,43 @@ fn write_variants(bytes: &[u8], out: &Path, name: &str) -> Result<(usize, usize)
         .decode()
         .with_context(|| format!("The photo {name} is damaged. Delete it from the media library and upload it again."))?;
     let mut count = 0;
-    let mut modern = write_modern(&img, out, name)?;
+    let mut modern = write_modern(&img, out, name, Some(bytes.len()))?;
     for width in VARIANT_WIDTHS.into_iter().filter(|w| *w < img.width()) {
         let height = ((u64::from(img.height()) * u64::from(width) + u64::from(img.width()) / 2) / u64::from(img.width())).max(1) as u32;
         let small = img.resize_exact(width, height, FilterType::CatmullRom);
         let file = variant_file(name, width);
         save(&small, &out.join(&file), name).with_context(|| format!("Couldn't write a resized copy of {name}"))?;
         count += 1;
-        modern += write_modern(&small, out, &file)?;
+        let source_len = fs::metadata(out.join(&file)).ok().map(|m| m.len() as usize);
+        modern += write_modern(&small, out, &file, source_len)?;
     }
     Ok((count, modern))
 }
 
 /// Writes `<file>.avif` (and `<file>.webp` for JPG/PNG) next to `file`; returns how many.
-fn write_modern(img: &DynamicImage, out: &Path, file: &str) -> Result<usize> {
+/// A WebP copy bigger than its source (`source_len` bytes) is skipped, so the
+/// original stays the fallback; the page's `<picture>` is built from what exists.
+fn write_modern(img: &DynamicImage, out: &Path, file: &str, source_len: Option<usize>) -> Result<usize> {
     let formats = modern_formats(file);
+    let mut written = 0;
     for format in formats {
         let bytes = match *format {
             "avif" => encode_avif(img),
             _ => encode_webp(img),
         }
         .with_context(|| format!("Couldn't make the {} copy of {file}", format.to_uppercase()))?;
+        if !keep_copy(format, bytes.len(), source_len) {
+            continue;
+        }
         fs::write(out.join(modern_file(file, format)), bytes).with_context(|| format!("Couldn't write the {} copy of {file}", format.to_uppercase()))?;
+        written += 1;
     }
-    Ok(formats.len())
+    Ok(written)
+}
+
+/// F081 review: only a WebP can be dropped for being bigger than its source.
+fn keep_copy(format: &str, copy_len: usize, source_len: Option<usize>) -> bool {
+    format != "webp" || source_len.is_none_or(|source| copy_len <= source)
 }
 
 /// Photos without see-through parts are encoded without an alpha channel (smaller files).
@@ -322,5 +391,25 @@ mod tests {
         assert_eq!(modern_formats("a.jpg"), ["avif", "webp"]);
         assert_eq!(modern_formats("a.png"), ["avif", "webp"]);
         assert_eq!(modern_formats("a.webp"), ["avif"]);
+    }
+
+    #[test]
+    fn pages_stop_listing_webp_copies_that_were_skipped() {
+        let html = r#"<picture><source type="image/avif" srcset="/media/a.jpg.avif 960w"/><source type="image/webp" srcset="/media/a-480w.jpg.webp 480w, /media/a.jpg.webp 960w" sizes="100vw"/><img src="/media/a.jpg"/></picture>"#;
+        let only_480 = fix_webp_sources(html, &|f| f != "a.jpg.webp");
+        assert!(only_480.contains(r#"srcset="/media/a-480w.jpg.webp 480w" sizes"#), "{only_480}");
+        assert!(only_480.contains("image/avif") && only_480.contains(r#"<img src="/media/a.jpg"/>"#));
+        let none = fix_webp_sources(html, &|f| !f.ends_with(".webp"));
+        assert!(!none.contains("image/webp") && none.contains("image/avif") && none.contains("<img"), "{none}");
+        assert_eq!(fix_webp_sources(html, &|_| true), html);
+    }
+
+    #[test]
+    fn a_webp_bigger_than_its_source_is_skipped() {
+        assert!(!keep_copy("webp", 1001, Some(1000)));
+        assert!(keep_copy("webp", 1000, Some(1000)));
+        assert!(keep_copy("webp", 900, Some(1000)));
+        assert!(keep_copy("avif", 5000, Some(1000)));
+        assert!(keep_copy("webp", 5000, None));
     }
 }
