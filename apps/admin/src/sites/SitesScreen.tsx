@@ -141,8 +141,13 @@ export function SitesScreen({ api, openName }: SitesScreenProps) {
                     </td>
                     <td className="pg-actions-cell">
                       <div className="pg-row-actions">
+                        {site.open ? null : (
+                          <button type="button" className="st-button pg-small" data-site-action={`open:${site.id}`} onClick={() => void open(site)} aria-disabled={opening !== null || undefined}>
+                            Open site<span className="pg-sr">: {site.name}</span>
+                          </button>
+                        )}
                         {(["rename", "duplicate", "delete"] as const).map((kind) => (
-                          <button key={kind} type="button" className="st-button pg-small" data-site-action={`${kind}:${site.id}`} onClick={() => setAction({ kind, site })}>
+                          <button key={kind} type="button" className={`st-button pg-small${kind === "delete" ? " sites-delete" : ""}`} data-site-action={`${kind}:${site.id}`} onClick={() => setAction({ kind, site })}>
                             {kind === "rename" ? "Rename" : kind === "duplicate" ? "Duplicate" : "Delete"}
                             <span className="pg-sr"> {site.name}</span>
                           </button>

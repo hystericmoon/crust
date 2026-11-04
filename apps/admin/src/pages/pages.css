@@ -159,6 +159,7 @@
   min-height: 44px; padding: 0; border: 0; background: none; font: inherit; font-weight: 600;
   color: var(--st-text); text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; text-align: left;
 }
+.sites-delete { color: var(--st-danger); border-color: var(--st-danger); }
 .sites-open:focus-visible { outline: 2px solid var(--st-focus); outline-offset: 2px; }
 .sites-open[aria-disabled="true"] { cursor: progress; }
 .sites-here {
@@ -179,22 +180,33 @@
 .hp-where { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
 .hp-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--st-ok); margin-right: -6px; }
 .hp-account { color: var(--st-muted); }
-.hp-link { background: none; border: 0; padding: 0; font: inherit; color: var(--st-text); text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; min-height: 24px; }
+.st-button.hp-link { min-height: 44px; font-weight: 600; }
+/* A heading that script focuses (Publish shortcut) gets a quiet inset mark, not a full-width box. */
+#publish-h:focus { outline: none; }
+#publish-h:focus-visible { outline: none; box-shadow: inset 3px 0 0 var(--st-focus); padding-left: 8px; }
 .hp-progress { width: 100%; max-width: 28rem; height: 8px; accent-color: var(--st-text); }
 .hp-sub { font-size: 1rem; margin: 20px 0 8px; padding-top: 16px; border-top: 1px solid var(--st-divider); }
 .hp-how { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
 .hp-token { font-family: ui-monospace, Menlo, Consolas, monospace; }
 .hp-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.8125rem; }
-.hp-steps li { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--st-border); color: var(--st-muted); }
-.hp-steps li.hp-on { border-color: var(--st-text); color: var(--st-text); font-weight: 600; }
+.hp-steps { color: var(--st-muted); }
+.hp-steps li { padding: 0; border: 0; border-radius: 0; color: var(--st-muted); }
+.hp-steps li + li::before { content: "/"; margin-right: 6px; }
+.hp-steps li.hp-on { color: var(--st-text); font-weight: 600; }
 .hp-steps li.hp-done { color: var(--st-ok); }
 .hp-accounts { border: 0; margin: 0; padding: 0; display: grid; gap: 6px; }
 .hp-account-choice { display: flex; align-items: center; gap: 8px; min-height: 32px; }
+.hp-ftp .hp-account-choice { min-height: 44px; }
+.hp-ftp .hp-account-choice input[type="radio"] { width: 20px; height: 20px; margin: 0; flex: none; accent-color: var(--st-action); }
+.hp-ftp .hp-account-choice input[type="radio"]:focus-visible { outline: 3px solid var(--st-focus); outline-offset: 2px; }
+/* Short windows: the form scrolls, the buttons stay in view. */
+.pg-dialog:has(.hp-ftp) { max-height: calc(100dvh - 32px); overflow-y: auto; }
+.hp-ftp > .pg-form-actions { position: sticky; bottom: -24px; background: var(--st-panel); padding: 12px 0 24px; margin-bottom: -24px; border-top: 1px solid var(--st-divider); }
 .hp-change { flex-wrap: wrap; }
 /* F059: your own web host (FTP or SFTP). */
 .hp-ftp .hp-account-choice { flex-wrap: wrap; align-items: baseline; }
 .hp-choice-help { flex-basis: 100%; padding-left: 24px; margin-top: -2px; font-size: 0.8125rem; }
 .hp-row { display: grid; grid-template-columns: minmax(0, 1fr) 6.5rem; gap: 12px; align-items: start; }
 .hp-port { width: 100%; }
-.hp-plain { color: var(--st-text); }
+.hp-plain { color: var(--st-text); border: 2px solid var(--st-danger); background: var(--st-panel); }
 @media (max-width: 30rem) { .hp-row { grid-template-columns: 1fr; } }

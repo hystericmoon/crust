@@ -3436,6 +3436,12 @@ a lawyer reads it (BLOCKED.md).
 
 - **F072/F073/F074/F081 small audit fixes (2026-11-04).** F072: colourway dots keep their 24px look but get a 44px tall tap area on screens up to 899px (invisible `::after`); the Style preview starts collapsed on phone-width screens (up to 599px), its Show preview button opens it. F074: dividers on a Primary (dark) section use 40% line strength instead of 20%. F073: the background-video button switches its name Pause/Play and its icon with a class, `aria-pressed` removed (a changing name plus pressed state read as "Pause, pressed"). F081: a WebP copy larger than its source is not written; publish then drops that file from the pages' WebP `<source srcset>` (or the whole source), so the JPEG shows and no link is dead. Not done (owner's call): Full-width section heading alignment (F073), motion (F075).
 
+## 2026-11-04: audit-desktop batch (F056-F060)
+- Publish heading focus is a quiet inset bar; real controls keep the 3px ring. "Change or disconnect" is a 44px button; step pills are plain "1 / 2" labels.
+- FTP dialog scrolls with a sticky action row; radios 20px in 44px rows; connected plain-FTP warning is a boxed note (2px red border, normal text colour).
+- Sites: Delete uses the danger colour (#b42318, above 4.5:1 on white); other sites get an explicit Open button (current site keeps its Open badge).
+- First run: descriptions cut to the first sentence (80 chars max, 2 lines clamped); 2 columns from 480 to 1000px so Blank is not alone.
+
 ## 2026-11-04: store audit polish (F063, F066)
 - Store cards (home, All templates, "Other templates") show two bigger cards per row on desktop instead of three; no dimming or overlay existed in the card CSS, so image treatment is unchanged. Phone stays one column.
 - Thank-you page: the two buttons are stacked in one column instead of two far-apart columns.
