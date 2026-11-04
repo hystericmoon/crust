@@ -3439,3 +3439,9 @@ a lawyer reads it (BLOCKED.md).
 - FTP dialog scrolls with a sticky action row; radios 20px in 44px rows; connected plain-FTP warning is a boxed note (2px red border, normal text colour).
 - Sites: Delete uses the danger colour (#b42318, above 4.5:1 on white); other sites get an explicit Open button (current site keeps its Open badge).
 - First run: descriptions cut to the first sentence (80 chars max, 2 lines clamped); 2 columns from 480 to 1000px so Blank is not alone.
+
+## 2026-11-04: store audit polish (F063, F066)
+- Store cards (home, All templates, "Other templates") show two bigger cards per row on desktop instead of three; no dimming or overlay existed in the card CSS, so image treatment is unchanged. Phone stays one column.
+- Thank-you page: the two buttons are stacked in one column instead of two far-apart columns.
+- Template page phone price is now an h2 heading labelled "Price" (same as the desktop column) instead of small plain text.
+- Skipped: F063's "hero template with tall crop / category label" and heading scale (decided separately). No shared block CSS touched.

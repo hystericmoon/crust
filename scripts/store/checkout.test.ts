@@ -146,6 +146,26 @@ describe("the Thank you page", () => {
   });
 });
 
+describe("audit F063/F066 polish", () => {
+  it("keeps the two Thank you buttons together, with no Columns block between them", () => {
+    const thanks = storePages([...templates, priced(POLAR_TEST)], test).find((p) => p.path === THANKS_PATH)!;
+    const blocks = blocksOf(thanks.puck.content);
+    expect(blocks.some((b) => b.type === "Columns")).toBe(false);
+    expect(blocks.filter((b) => b.type === "Button").map((b) => b.props.label)).toEqual(["Download Crust", "Help"]);
+  });
+  it("shows the phone price as a labelled heading above the Get button", () => {
+    const page = storePages([priced(POLAR_TEST)], test).find((p) => p.path === "/templates/harbour-plus")!;
+    const phone = blocksOf(page.puck.content).filter((b) => Array.isArray(b.props.hideOn) && b.props.hideOn.includes("desktop"));
+    expect(phone[0]!.type).toBe("Heading");
+    expect(phone[0]!.props).toMatchObject({ text: "US$49", eyebrow: "Price" });
+    expect(phone[1]!.type).toBe("Button");
+  });
+  it("shows two big template cards per row", () => {
+    const home = storePages(templates).find((p) => p.path === "/")!;
+    expect(blocksOf(home.puck.content).find((b) => b.type === "Grid")!.props.columns).toBe("2");
+  });
+});
+
 describe("published, the buy button works without JavaScript", () => {
   it("renders a plain link to the checkout, the note and the Thank you page", async () => {
     const dir = join(ROOT, "store/content");

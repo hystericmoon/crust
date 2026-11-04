@@ -51,24 +51,14 @@
               }
             },
             {
-              "type": "Text",
+              "type": "Heading",
               "props": {
-                "id": "t-harbour-text-5",
-                "text": {
-                  "rich": 1,
-                  "blocks": [
-                    {
-                      "type": "p",
-                      "children": [
-                        {
-                          "text": "Free with Crust"
-                        }
-                      ]
-                    }
-                  ]
-                },
+                "id": "t-harbour-heading-5",
+                "text": "Free",
+                "level": "h2",
                 "align": "left",
-                "tone": "default",
+                "size": "normal",
+                "eyebrow": "Price",
                 "hideOn": [
                   "desktop",
                   "tablet"
@@ -430,7 +420,7 @@
               "type": "Grid",
               "props": {
                 "id": "t-harbour-grid-28",
-                "columns": "3",
+                "columns": "2",
                 "titleLevel": "h3",
                 "background": "background",
                 "items": [

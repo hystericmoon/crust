@@ -260,7 +260,7 @@ const HELP_OPEN = "/help#questions";
 
 function cards(k: ReturnType<typeof kit>, templates: StoreTemplate[], all: ReturnType<typeof picturesNeeded>, level: "h2" | "h3" = "h3"): Block {
   return k.raw("Grid", {
-    columns: "3",
+    columns: "2", // F063: two bigger cards per row on desktop (was three small ones)
     titleLevel: level,
     background: "background",
     items: templates.map(({ item, template }) => {
@@ -360,7 +360,8 @@ function templatePage(st: StoreTemplate, others: StoreTemplate[], pics: ReturnTy
       k.text(template.description, { tone: "default" }),
       // On phones the details column comes after the pictures, so the price and next step are also here.
       ...[
-        k.text(isPriced(item) ? item.price : "Free with Crust", { tone: "default" }),
+        // F066: the phone price is a real heading with the same "Price" label as the desktop column, not small plain text.
+        k.heading(isPriced(item) ? item.price : "Free", { eyebrow: "Price", level: "h2", mark: false }),
         ...(isPriced(item) ? [buyButton(), ...afterBuy(k, checkout, demo())] : [k.button("How to open it", HELP_OPEN, "secondary"), demo()]),
       ].map((b) => ({ ...b, props: { ...b.props, hideOn: ["desktop", "tablet"] } }) as Block),
     ], { paddingY: "lg" }),
@@ -471,7 +472,9 @@ function thanksPage(checkout: Checkout | null): Page {
           ].map((text) => ({ text })),
         }),
         k.spacer("xs"),
-        k.columns([[k.button("Download Crust", "/download", "primary")], [k.button("Help", "/help", "secondary")]], { gap: "sm", widths: "one-two", valign: "middle" }),
+        // F066: both buttons in one column, so there is no wide gap between them.
+        k.button("Download Crust", "/download", "primary"),
+        k.button("Help", "/help", "secondary"),
       ], { paddingY: "xl", width: "narrow" }),
     ]),
     seo: { noindex: true },
