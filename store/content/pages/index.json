@@ -168,7 +168,7 @@
               "type": "Grid",
               "props": {
                 "id": "home-grid-11",
-                "columns": "3",
+                "columns": "2",
                 "titleLevel": "h3",
                 "background": "background",
                 "items": [

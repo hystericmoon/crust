@@ -171,7 +171,7 @@ describe("the store's pages", () => {
     expect(cols.props).toMatchObject({ sticky: 2, widths: { desktop: "two-one", phone: "stack" } });
     // On phones the details come after the pictures, so the price and button are also under the title, phones only.
     const top = blocksOf(page.puck.content.slice(0, 1));
-    expect(top.filter((b) => JSON.stringify(b.props.hideOn) === '["desktop","tablet"]').map((b) => b.type)).toEqual(["Text", "Button", "Button"]); // price, next step, live demo (F064)
+    expect(top.filter((b) => JSON.stringify(b.props.hideOn) === '["desktop","tablet"]').map((b) => b.type)).toEqual(["Heading", "Button", "Button"]); // price, next step, live demo (F064)
     // The other templates are offered underneath.
     expect(text).toContain("/templates/signal");
     expect(text).toContain("/templates/corner");
