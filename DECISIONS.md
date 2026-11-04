@@ -3425,3 +3425,7 @@ a lawyer reads it (BLOCKED.md).
   payment company from the checkout setting, so the "committed as
   written" store test now builds with the checkout setting, as
   `build:store` does.
+
+- **F071/F072 review fixes (2026-11-04, owner: "Fix F071 and F072 first").** From the pre-review audit: the Cover card's text body no longer grows, so title and text sit over the dark fade at the bottom, and its "Read more" link is 44px high; "Undo style" moved above the 12 looks, right under the intro, 44px high. Focus after Undo already moves to the current look or the heading (F069). Colourway dot size and the phone preview height were left alone (minor, owner's call).
+
+- **F074/F084 review fixes (2026-11-04, owner: "Yes, go ahead").** A row with boxed columns leaves the same space below as between its boxes (`:has()`). Phones: a post list in "list" layout puts the photo above the title (≤30rem); a sticky header's top bar is hidden (≤40rem), since it took ~90px of every screen (Signal). Harbour's home hero tint Light → Medium: white text on it measures 6.2:1 (subtitle) and 6.7:1 (logo), was 3.9 and 4.5. Not done: Harbour/Signal Studio photos, stock-template devices (taste calls); desktop divider line strength (minor).
