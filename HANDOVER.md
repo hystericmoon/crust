@@ -23,7 +23,18 @@ Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-03 ~23:45 (Jakarta), branch
+Last updated: 2026-11-04 (Jakarta), branch `ccr-d50f7e80-weuq18` (restarted
+from main after PR #75). **Review-round audit fixes are all merged to main**
+(PRs #70–#75): Claude ran the impeccable and taste skills over all 27
+features (pre-check page https://claude.ai/artifact/8dZtVHYbMurMgcgXhYauJb)
+and fixed F071, F072, F073 (video button), F074, F078, F057, F056, F058,
+F059, F060, F062, F063, F066, F068 (titles), F081, F084 (see DECISIONS
+"review fixes"). Nothing is `reviewed: true` except F070; the owner still
+Passes or flags each on the review round page. Left for the owner: F073 Full-
+width heading alignment, F075 motion feel, F068 section-heading scale and
+wording approval, thin Studio photos, F078 video poster field (needs a new
+builder field), publishing the store (Actions → Publish store) and the site.
+Earlier: 2026-11-03 ~23:45 (Jakarta), branch
 `ccr-d50f7e80-weuq18` (restarted from main after PR #69 merged; F068
 only). Last feature: **F068 Licence, terms and refunds built, passes,
 wording is a draft** (DECISIONS "F068"). How it fits:
