@@ -578,7 +578,8 @@
       "done_check": "npm test -- starter-template && npm run check:template",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's audit at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): signal and corner pages render with real photos in every slot, no filler."
     },
     {
       "id": "F054",
@@ -648,7 +649,8 @@
       "done_check": "npm test -- first-run && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's audit at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): first-run flow is clear; descriptions shortened and the grid no longer leaves Blank alone (fixed in PR 73)."
     },
     {
       "id": "F061",
@@ -688,7 +690,8 @@
       "done_check": "npm test -- demos && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's audit at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): live demos open from the template pages; keyboard and phone layouts hold."
     },
     {
       "id": "F065",
@@ -738,7 +741,8 @@
       "done_check": "npm test -- review-fixes && npm run typecheck && npm run build && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's audit at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): the review fixes hold: focus, labels and targets checked."
     },
     {
       "id": "F070",
@@ -808,7 +812,8 @@
       "done_check": "npm test -- header-v2 && npm run check:a11y && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's audit at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): six header layouts, dropdowns and the phone menu work by keyboard; reduced motion respected."
     },
     {
       "id": "F077",
@@ -818,7 +823,8 @@
       "done_check": "npm test -- icons && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's audit at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): icons, divider and social links render and are named for screen readers."
     },
     {
       "id": "F078",
@@ -838,7 +844,8 @@
       "done_check": "npm test -- interactive && npm run check:a11y && npm run check:perf",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's audit at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): slideshow, card slider, tabs, lightbox and map work by keyboard with correct names."
     },
     {
       "id": "F080",
@@ -858,7 +865,8 @@
       "done_check": "npm test -- images && cargo test -p crust-publish && npm run check:perf",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's audit at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): AVIF, WebP and srcset work; an oversized WebP is now skipped (PR 75)."
     },
     {
       "id": "F082",
@@ -868,7 +876,8 @@
       "done_check": "npm test -- page-designs && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's audit at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): post, blog and 404 designs render and read well."
     },
     {
       "id": "F083",
