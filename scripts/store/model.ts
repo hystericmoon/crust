@@ -481,13 +481,22 @@ function thanksPage(checkout: Checkout | null): Page {
   };
 }
 
+/**
+ * The store's look (Studio, Paper) with a calmer heading scale: Studio's "dramatic" scale puts section headings
+ * at 50px and titles at 76px, too loud over the short legal pages (F068 review). Display headings are unaffected.
+ */
+function storeTokens() {
+  const t = lookTokens({ look: { id: "studio", variation: "paper" }, motion: "subtle" });
+  return { ...t, style: { ...t.style, typeScale: "balanced" as const } };
+}
+
 /** The store's site.json. */
 export function storeSite(templates: StoreTemplate[]): Site {
   return {
     name: "Crust",
     baseUrl: STORE_URL,
     language: "en",
-    tokens: lookTokens({ look: { id: "studio", variation: "paper" }, motion: "subtle" }),
+    tokens: storeTokens(),
     header: {
       show: true,
       logo: { text: "Crust", imageSrc: "", imageAlt: "" },

@@ -25,6 +25,7 @@ import {
   readStoreTemplates,
   storeCatalogue,
   storePages,
+  storeSite,
   STORE_PROJECT,
   STORE_URL,
   templateFacts,
@@ -310,5 +311,11 @@ describe("the Publish store workflow", () => {
 
   it("never puts expressions straight into shell scripts", () => {
     for (const s of steps) expect(s.run ?? "").not.toMatch(/\$\{\{/);
+  });
+});
+
+describe("the store's look (F068 review)", () => {
+  it("uses a calmer heading scale than Studio's dramatic one, so legal pages don't shout", () => {
+    expect(storeSite([]).tokens.style?.typeScale).toBe("balanced");
   });
 });

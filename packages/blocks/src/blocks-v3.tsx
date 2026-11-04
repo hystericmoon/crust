@@ -222,7 +222,7 @@ export const Video: ComponentConfig<VideoProps> = {
   fields: {
     src: { type: "text", label: "Video (YouTube or Vimeo link, or an .mp4 address)" },
     title: { type: "text", label: "What the video is (read out as “Play video: …”)" },
-    imageSrc: { type: "text", label: "Cover photo URL (shown before it plays)" },
+    imageSrc: { type: "text", label: "Cover photo URL (recommended: shown before it plays)" },
     captionsSrc: { type: "text", label: "Captions file (.vtt, for .mp4 videos)" },
     caption: { type: "text", label: "Caption under the video (optional)" },
     ratio: { type: "radio", label: "Shape", options: videoRatios.map((r) => ({ label: videoRatioNames[r], value: r })) },
