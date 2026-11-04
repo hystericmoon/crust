@@ -17,47 +17,41 @@ any work.
 
 | Next feature | Model | Why |
 |---|---|---|
-| F063 Store site | Opus | Design snapshot, the public face of the store |
-| F065 Template versions | Sonnet | Well-defined data and checks |
-| F066 Checkout | Opus | Payments and security |
-| F067 Delivery and updates | Opus | Licences, downloads, security |
-| F068 Licence, terms and refunds | Opus | Legal wording for the owner to decide |
+| (none yet) | — | Milestone 7 is complete; the owner picks what's next |
 
-The owner confirmed all six rows as listed ("go ahead", 2026-11-03
-10:50 Jakarta); they are no longer just suggestions.
+Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-03 ~21:45 (Jakarta), branch
-`ccr-d50f7e80-weuq18` (PR #69, F067 only; not merged). Last feature:
-**F067 Delivery and updates built, passes** (DECISIONS "F067"). How it
-fits: `packages/delivery/src/worker.ts` (`handle` routes `POST /webhook`,
-`GET /d/<token>` page and `/d/<token>/file`; `standardSigned` (Polar,
-Standard Webhooks) / `lemonSigned`; `readEvent`; KV `keys`: `template:`,
-`file:`, `order:`, `link:`; `deliveryEmail`, `downloadPage`); Publish
-store step `scripts/store/delivery-kv.ts upload` (`scripts/store/delivery.ts`
-`deliveryPairs`, `batches`, `namespaceId`, `upload`); deploy workflow
-`.github/workflows/delivery-worker.yml` (PROVIDER/MODE from
-`store/list.json` checkout). Owner steps: docs/setup-delivery.md
-(BLOCKED.md). Polar field names are from its docs, not tried against a
-real sandbox yet. Tests: `packages/delivery/src/delivery.test.ts`,
-`scripts/store/delivery.test.ts`. The FTPS test port fix shipped in the
-same PR (`passive_range()` in crates/crust-desktop/src/ftp/tests.rs).
-**Next: F068 Licence, terms and refunds** (Opus).
+Last updated: 2026-11-03 ~23:45 (Jakarta), branch
+`ccr-d50f7e80-weuq18` (restarted from main after PR #69 merged; F068
+only). Last feature: **F068 Licence, terms and refunds built, passes,
+wording is a draft** (DECISIONS "F068"). How it fits:
+`scripts/store/legal.ts` (`LEGAL` settings: `approved`, `seller`,
+`contact`, `refundDays`; `licencePage`/`termsPage`/`refundsPage`;
+`buyLegalLine` under every buy button via `afterBuy` in model.ts;
+`legalGate` in `checkout-check.ts` refuses live mode until approved);
+footer column "Buying"; "Read the full licence" on template pages. Tests:
+`scripts/store/store-legal.test.ts`. When the owner approves: set `LEGAL`
+(date, seller, contact), run `npm run build:store`, commit the pages.
+**Next: nothing unbuilt.** Ask the owner what comes next (Milestone 8
+plan is docs/milestone-8.md; check `npm run next`).
 
 
 
 ## Where things stand
 
-- **main** has everything through F066 (PR #66 merged 2026-11-03, owner's
-  request). From now on: **one PR per feature**, new branch or the
+- **main** has everything through F067 (PR #69 merged 2026-11-03, owner's
+  request; F068 is in its own PR). From now on: **one PR per feature**, new branch or the
   session branch restarted from main after each merge.
 - **Live site** https://crust-site.pages.dev, published 2026-10-31. Only
   the owner publishes.
 - **Admin** https://crust-admin.pages.dev (main). Preview of the session
   branch: https://ccr-d50f7e80-weuq18.crust-admin.pages.dev (can't save).
-- **Store** (F063–F067) built, not online: the owner runs Actions →
-  Publish store (BLOCKED.md).
+- **Store** (F063–F068) built, not online: the owner runs Actions →
+  Publish store (BLOCKED.md). Licence/terms/refund wording is a draft
+  until the owner approves it (snapshot
+  https://claude.ai/artifact/DAmwsHC4W4CcGXzH4DDCij).
 - **Repository is public** since 2026-11-03 (owner; free CI). Never commit
   paid template files while public; make CI lighter before it goes
   private again (DECISIONS "Repository public for now").
@@ -75,13 +69,9 @@ same PR (`passive_range()` in crates/crust-desktop/src/ftp/tests.rs).
 
 ## Next
 
-**F068 Licence, terms and refunds** (Opus; the last Milestone 7 feature).
-Claude drafts plain-language licence (for example one site vs unlimited
-sites for agencies), terms and refund pages for the store with options,
-in a snapshot; the owner decides the wording and prices (BLOCKED.md).
-Link them from checkout (`licence` in store/list.json, F063) and every
-template page. The refund wording should match F067: a full refund
-switches the download page off.
+**No unbuilt features.** Milestone 7 (store) is complete. Ask the owner
+what to build next; scope is his. Waiting on him: the F068 wording
+choices, the review round, and the store/delivery setup in BLOCKED.md.
 
 ## Where to find things
 

@@ -188,3 +188,21 @@ describe("Soft button label (F080 fix)", () => {
     }
   });
 });
+
+describe("Gallery shapes in the layout library", () => {
+  it("only use shapes the Gallery block knows", () => {
+    const found: string[] = [];
+    const walk = (v: unknown) => {
+      if (Array.isArray(v)) return v.forEach(walk);
+      if (v && typeof v === "object") {
+        const o = v as Record<string, unknown>;
+        if (o.type === "Gallery") found.push(String((o.props as { shape?: unknown } | undefined)?.shape));
+        Object.values(o).forEach(walk);
+      }
+    };
+    walk(sectionLayoutsV2.map((l) => l.build?.() ?? l));
+    walk(pageLayoutsV2);
+    expect(found.length).toBeGreaterThan(0);
+    for (const s of found) expect(["square", "wide", "original"]).toContain(s);
+  });
+});

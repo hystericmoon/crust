@@ -726,7 +726,7 @@
       "description": "Plain-language licence (for example one site, or unlimited sites for agencies), terms and refund pages on the store, linked from checkout and every template page. Claude drafts with options; the owner decides the wording and prices (BLOCKED.md). Approved by the owner with Milestone 7 (2026-10-31: 'm7: yes go ahead'); docs/milestone-7.md.",
       "depends_on": ["F063"],
       "done_check": "npm test -- store-legal && npm run check:a11y",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

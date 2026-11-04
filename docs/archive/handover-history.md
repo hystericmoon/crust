@@ -7,6 +7,23 @@ touches an older area ("How it fits" notes per feature, newest first).
 
 ## Per-feature notes (F053–F065)
 
+F067 (from HANDOVER, 2026-11-03). Last updated: 2026-11-03 ~21:45 (Jakarta), branch
+`ccr-d50f7e80-weuq18` (PR #69, merged 2026-11-03). Last feature:
+**F067 Delivery and updates built, passes** (DECISIONS "F067"). How it
+fits: `packages/delivery/src/worker.ts` (`handle` routes `POST /webhook`,
+`GET /d/<token>` page and `/d/<token>/file`; `standardSigned` (Polar,
+Standard Webhooks) / `lemonSigned`; `readEvent`; KV `keys`: `template:`,
+`file:`, `order:`, `link:`; `deliveryEmail`, `downloadPage`); Publish
+store step `scripts/store/delivery-kv.ts upload` (`scripts/store/delivery.ts`
+`deliveryPairs`, `batches`, `namespaceId`, `upload`); deploy workflow
+`.github/workflows/delivery-worker.yml` (PROVIDER/MODE from
+`store/list.json` checkout). Owner steps: docs/setup-delivery.md
+(BLOCKED.md). Polar field names are from its docs, not tried against a
+real sandbox yet. Tests: `packages/delivery/src/delivery.test.ts`,
+`scripts/store/delivery.test.ts`. The FTPS test port fix shipped in the
+same PR (`passive_range()` in crates/crust-desktop/src/ftp/tests.rs).
+**Next: F068 Licence, terms and refunds** (Opus).
+
 F066 (from HANDOVER, 2026-11-03). Last updated: 2026-11-03 ~17:30 (Jakarta), branch
 `ccr-d50f7e80-weuq18` (restarted from main after PR #68 merged, 2026-11-03
 ~18:20 Jakarta). Latest round, at the owner's request ("do a, b and d" on

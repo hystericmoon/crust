@@ -121,7 +121,7 @@ describe("what's included, counted from the template file", () => {
 
 describe("the store's pages", () => {
   it("has Home, All templates, a page per template, Download and Help", () => {
-    expect(pages.map((p) => p.path)).toEqual(["/", "/templates", "/templates/harbour", "/templates/signal", "/templates/corner", "/download", "/help"]);
+    expect(pages.map((p) => p.path)).toEqual(["/", "/templates", "/templates/harbour", "/templates/signal", "/templates/corner", "/download", "/help", "/licence", "/terms", "/refunds"]);
     for (const p of pages) {
       expect(p.title.length).toBeGreaterThan(0);
       expect(p.description.length).toBeGreaterThan(20);
@@ -194,7 +194,7 @@ describe("the store's pages", () => {
   });
 
   it("is committed as written (run npm run build:store after changing the list or a template)", () => {
-    const files = storeContentFiles(templates);
+    const files = storeContentFiles(templates, loadStore().checkout);
     for (const [path, text] of files) expect(readFileSync(join(ROOT, "store/content", path), "utf8"), path).toBe(text);
     const pagesOnDisk = readdirSync(join(ROOT, "store/content/pages")).sort();
     expect(pagesOnDisk).toEqual([...files.keys()].filter((f) => f.startsWith("pages/")).map((f) => f.slice(6)).sort());

@@ -4,6 +4,16 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Licence, terms and refunds in the store (F068), as drafts.** Three
+  short pages: Licence (use a template for as many sites as you like,
+  yours or clients'; don't resell or share the file), Terms (who sells,
+  what you get, what happens if something's wrong) and Refunds (full
+  refund within 14 days, for any reason; the download page then switches
+  off). Every template page links to the full licence, every buy button
+  has a line linking all three, and the footer has a "Buying" column.
+  Until you approve the wording, each page says "Draft" at the top and
+  the store won't take real payments.
+
 - **Template delivery (F067).** After someone pays for a template, they
   get an email with their own download page. The page has a Download
   button, what's new in the latest release, and how to open the file in

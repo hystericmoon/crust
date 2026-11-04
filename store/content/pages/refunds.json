@@ -1,0 +1,198 @@
+{
+  "path": "/refunds",
+  "title": "Refunds",
+  "description": "Not right for you? A full refund within 14 days of buying a template, for any reason.",
+  "puck": {
+    "root": {
+      "props": {}
+    },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "id": "refunds-section-2",
+          "background": "surface",
+          "paddingY": "sm",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "width": "narrow",
+          "content": [
+            {
+              "type": "Text",
+              "props": {
+                "id": "refunds-text-1",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Draft.",
+                          "bold": true
+                        },
+                        {
+                          "text": " This wording hasn't been approved yet and may change before the store sells anything."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "refunds-section-11",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "width": "narrow",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "refunds-heading-3",
+                "text": "Refunds",
+                "level": "h1",
+                "align": "left",
+                "size": "display",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "refunds-text-4",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Not right for you? You can have a full refund within 14 days of buying, for any reason."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default"
+              }
+            },
+            {
+              "type": "Heading",
+              "props": {
+                "id": "refunds-heading-5",
+                "text": "How",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "refunds-text-6",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "To ask for one, reply to your receipt email"
+                        },
+                        {
+                          "text": " with your order number. The money goes back the way you paid, usually within 5 to 10 working days."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default"
+              }
+            },
+            {
+              "type": "Heading",
+              "props": {
+                "id": "refunds-heading-7",
+                "text": "What happens next",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "refunds-text-8",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Your download page stops working, and the licence ends for any new sites. Sites you've already published can stay up."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default"
+              }
+            },
+            {
+              "type": "Heading",
+              "props": {
+                "id": "refunds-heading-9",
+                "text": "After 14 days",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "refunds-text-10",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "If the template doesn't open or doesn't match its store page, we'll still fix it or refund you."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

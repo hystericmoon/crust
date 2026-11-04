@@ -13,12 +13,7 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 Features Claude suggests. They are not work until the owner adds them to
 `features.json`.
 
-- **Gallery shape in the layout library (found with F084, 2026-11-03).**
-  F080's layout helper gives Galleries `shape: "landscape"`, which isn't
-  one of the Gallery's shapes (`square`, `wide`, `original`), so those
-  layouts' galleries fall back to unstyled tiles, and a template made
-  from them is refused ("blocks Crust doesn't know"). One-line fix in
-  `layouts-v2.ts` (use `wide`). Size S.
+- **Gallery shape in the layout library: fixed 2026-11-04** (owner: "go with your recommendations"). `layouts-v2.ts` now uses `wide`; a test checks every layout Gallery uses a known shape. A bug fix, not a new feature.
 
 - **Premium design layer (owner feedback 2026-11-02). Owner chose B (2026-11-02: "Let's go B, let's go all in in this. Compare yootheme features against us and tell me the gap. We should focus on that").** Next: a YOOtheme gap page and a milestone draft for approval; the milestone goes before the premium templates track. Gap page: https://claude.ai/artifact/ULmnd4JZEKpGvyUHFg1Kpo (`design/yootheme-gap-v1.html`, from YOOtheme Pro 5.0.53 docs and changelog, read 2026-11-01). Draft Milestone 8 "Premium design layer": A all in, 15 features F070–F084 (recommended), or B core 9. Waiting on the owner; F063 store paused until M8 is done (it's built with Crust, so it gets the new look). The owner
   compared our templates with eliras/zorven/labzzy.webflow.io and found
@@ -3381,3 +3376,52 @@ no-reply address.
   template-check only when their files change, no duplicate runs after a
   merge, one push per feature), so it fits the $12 included each month.
 - Copies made while public stay public; the owner accepted that.
+
+## 2026-11-03 — F068 Licence, terms and refunds (Claude drafts; the wording is the owner's call)
+
+Snapshot https://claude.ai/artifact/DAmwsHC4W4CcGXzH4DDCij
+(`design/f068-legal-v1.html`). Built A on all three choices; the owner
+hadn't picked. Not legal advice: the owner decides the wording and whether
+a lawyer reads it (BLOCKED.md).
+
+1. **Licence: one price, unlimited sites** (yours or clients'; no
+   reselling or sharing the template file, no selling it as your own
+   template). Nothing can enforce a per-site count on plain files, so
+   tiers would mostly make honest agencies count; one button means no
+   comparison at the moment of paying (Hick's law). Rejected for now:
+   B Personal/Agency (two products and links per template, a picker,
+   a store list format change, "what is one site"), C one site per
+   purchase. An agency tier can be added later without changing what
+   earlier buyers got. `LICENCE_SUMMARY` in `scripts/store/legal.ts` is
+   the standard one-sentence `licence` for a priced template.
+2. **Refunds: full refund within 14 days, any reason.** Polar may refund
+   within 60 days on its own to head off chargebacks whatever the policy
+   says, and keeps its fee on a refund (~US$2.95 on US$49), so a stricter
+   rule (B: only if it doesn't work) mostly adds email work; 30 days (C)
+   is long enough to build and publish a whole site. Matches F067: a full
+   refund switches the download page off; published sites may stay up.
+3. **Three short pages**, `/licence`, `/terms`, `/refunds` (not one
+   "Legal" page, not inside Help): each link lands on the page it names,
+   and the refund promise isn't buried. Linked from a footer column
+   "Buying", "Read the full licence" under every template page's Licence
+   (free ones too: the licence page covers free templates), the other
+   legal pages, and a line under every buy button (desktop and the phone
+   summary, after the test note and the payment line): "By buying you
+   agree to the licence and terms. Not right for you? Full refund within
+   14 days."
+- **The owner's settings live in code** (`LEGAL` in
+  `scripts/store/legal.ts`: `approved` date, `seller`, `contact`,
+  `refundDays`), not in store/list.json, so the store list format is
+  unchanged. Claude changes them only when the owner says so.
+- **Draft safety:** until `approved` is set, each legal page starts with
+  "Draft. This wording hasn't been approved yet…", and the Publish store
+  checkout step (`legalGate` in `checkout-check.ts`) refuses live mode
+  while the wording is unapproved or the seller or contact is missing.
+  Test mode and a store with nothing priced are unaffected. Until then
+  the terms say "the maker of Crust" and the refund page says "reply to
+  your receipt email"; with a contact they link `mailto:`.
+- The pages are always built (the licence covers free templates), so
+  `store/content/pages/` gains three files. The Terms page names the
+  payment company from the checkout setting, so the "committed as
+  written" store test now builds with the checkout setting, as
+  `build:store` does.

@@ -120,8 +120,10 @@ describe("the buy button", () => {
   });
 
   it("leaves the free templates' pages as they were", () => {
-    const before = storePages(templates);
-    expect(storePages(templates, test)).toEqual(before);
+    // F068: only the Terms page names the payment company once one is set.
+    const notTerms = (ps: ReturnType<typeof storePages>) => ps.filter((p) => p.path !== "/terms");
+    const before = notTerms(storePages(templates));
+    expect(notTerms(storePages(templates, test))).toEqual(before);
     expect(JSON.stringify(before)).not.toContain("checkout");
   });
 });
