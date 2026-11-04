@@ -748,7 +748,7 @@
       "done_check": "npm test -- fonts && npm run check:a11y && npm run check:perf",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "F071",
