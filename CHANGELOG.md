@@ -4,6 +4,10 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **The store launches free (2026-11-05).** All three templates are free
+  to download. The store has one short Licence page ("free to use, on as
+  many sites as you like, please don't resell the file"); the Terms and
+  Refunds pages and the "Draft" banner are gone until something is priced.
 - **Review round fixes (2026-11-04).** Cover cards read on light photos;
   "Undo style" sits right under the Styles intro; the colour dots and
   Sites buttons are easier to tap; tables line figures up under their
