@@ -7,6 +7,20 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
+- **2026-11-05: store launches free.** Everything is free for now (owner:
+  "later on we can do something about the paid template"). The store has
+  three templates (Harbour, Signal, Corner), all Free; none was ever
+  priced. With nothing for sale it shows one short **Licence** page (free
+  to use, on as many sites as you like; don't resell the file) and a
+  footer column "Licence"; the Terms and Refunds pages and the "Draft"
+  banner are gone. The paid-store pages and the F068 live-payment check
+  stay in the code and come back as soon as any template gets a price
+  (PR #79; DECISIONS "Store launches free"). Publish store was run on
+  main with real payments off. **To try:** open
+  https://crust-store.pages.dev, a template page, and /licence; the
+  "Download" buttons should open each template's file. The licence
+  wording is plain and short, not lawyer-reviewed.
+
 - **F068 Licence, terms and refunds: built, passes, wording is a draft**
   (branch `ccr-d50f7e80-weuq18`, its own PR). done_check `npm test --
   store-legal && npm run check:a11y` exit 0. Snapshot
