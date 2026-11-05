@@ -120,19 +120,11 @@
         ]
       },
       {
-        "title": "Buying",
+        "title": "Licence",
         "links": [
           {
-            "label": "Licence",
+            "label": "Free to use",
             "href": "/licence"
-          },
-          {
-            "label": "Terms",
-            "href": "/terms"
-          },
-          {
-            "label": "Refunds",
-            "href": "/refunds"
           }
         ]
       }
