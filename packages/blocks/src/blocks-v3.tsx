@@ -374,11 +374,11 @@ export const Table: ComponentConfig<TableProps & { id?: string }> = {
     const body = top ? cells.slice(1) : cells;
     const captionId = `${id ?? "table"}-title`;
     // A column of figures gets its heading right-aligned too, so the two line up.
-    const numberColumns = (head ?? []).map((_, i) => body.length > 0 && body.every((r) => !(r[i] ?? "").trim() || isNumberCell(r[i] ?? "")) && body.some((r) => isNumberCell(r[i] ?? "")));
+    const numberColumns = Array.from({ length: Math.max(0, ...cells.map((r) => r.length)) }, (_, i) => body.length > 0 && body.every((r) => !(r[i] ?? "").trim() || isNumberCell(r[i] ?? "")) && body.some((r) => isNumberCell(r[i] ?? "")));
     const cell = (text: string, col: number, key: number) => {
       if (h === "both" && col === 0 && text) return <th key={key} scope="row">{text}</th>;
       return (
-        <td key={key} className={[isNumberCell(text) ? "cr-num" : "", isTimeRange(text) ? "cr-nowrap" : ""].filter(Boolean).join(" ") || undefined}>
+        <td key={key} className={[numberColumns[col] ? "cr-num" : "", isTimeRange(text) ? "cr-nowrap" : ""].filter(Boolean).join(" ") || undefined}>
           {text}
         </td>
       );

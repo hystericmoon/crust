@@ -609,7 +609,8 @@
       "done_check": "cargo test -p crust-desktop && cargo test -p crust-publish && npm test -- local-publish",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's re-check after the fixes, at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): Both findings are fixed in the browser; how it looks in the real desktop window is not part of this check."
     },
     {
       "id": "F057",
@@ -619,7 +620,8 @@
       "done_check": "cargo test -p crust-desktop && npm test -- sites && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's re-check after the fixes, at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): All three findings are resolved and measured."
     },
     {
       "id": "F058",
@@ -629,7 +631,8 @@
       "done_check": "cargo test -p crust-desktop && npm test -- hosts && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's re-check after the fixes, at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): Both findings are fixed."
     },
     {
       "id": "F059",
@@ -639,7 +642,8 @@
       "done_check": "cargo test -p crust-desktop && npm test -- hosts",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's re-check after the fixes, at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): All three findings are resolved at 1440x700."
     },
     {
       "id": "F060",
@@ -711,7 +715,8 @@
       "done_check": "npm test -- checkout",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's re-check after the fixes, at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): Refund promise and demo are now seen before the small print; checked on a priced Harbour built from the repo's own store code."
     },
     {
       "id": "F067",
@@ -731,7 +736,8 @@
       "done_check": "npm test -- store-legal && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's re-check after the fixes, at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): Heading scale is calmer and the Polar wording is explained; seller and contact are deliberately left to the owner."
     },
     {
       "id": "F069",
@@ -772,7 +778,8 @@
       "done_check": "npm test -- style-library && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's re-check after the fixes, at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): Undo is now next to the message and the phone preview no longer takes a third of the screen."
     },
     {
       "id": "F073",
@@ -782,7 +789,8 @@
       "done_check": "npm test -- sections-v2 && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's re-check after the fixes, at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): The ambiguous toggle announcement is fixed; Full-width heading alignment is a deliberate choice and not counted."
     },
     {
       "id": "F074",
@@ -792,7 +800,8 @@
       "done_check": "npm test -- columns-v2 && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's re-check after the fixes, at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): The phone collision is gone; row gaps are equal."
     },
     {
       "id": "F075",
@@ -897,7 +906,8 @@
       "done_check": "npm run check:template && npm test -- starter",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Passed by the impeccable skill's re-check after the fixes, at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): Both majors and the Signal bar are fixed; Studio photos and stock-template devices were left as taste calls."
     }
   ]
 }

@@ -18,7 +18,8 @@
 .tp-card-file { gap: 12px; padding: 16px; cursor: default; border-style: dashed; align-content: center; min-height: 160px; }
 .tp-file-label { display: grid; gap: 4px; cursor: pointer; min-width: 0; overflow-wrap: anywhere; }
 .tp-file-label span { color: var(--st-muted); font-size: 0.9375rem; }
-.tp-card-file input { max-width: 100%; min-height: 44px; font: inherit; color: var(--st-muted); }
+.tp-card-file { min-width: 0; }
+.tp-card-file input { width: 100%; min-width: 0; max-width: 100%; min-height: 44px; font: inherit; color: var(--st-muted); }
 /* F062 review: the native file button looks like the other buttons. */
 .tp-card-file input::file-selector-button {
   min-height: 44px; margin-right: 12px; padding: 4px 16px; font: inherit; font-weight: 600; cursor: pointer;

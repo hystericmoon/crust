@@ -260,7 +260,8 @@ const HELP_OPEN = "/help#questions";
 
 function cards(k: ReturnType<typeof kit>, templates: StoreTemplate[], all: ReturnType<typeof picturesNeeded>, level: "h2" | "h3" = "h3"): Block {
   return k.raw("Grid", {
-    columns: "2", // F063: two bigger cards per row on desktop (was three small ones)
+    // F063: two bigger cards per row on desktop, but three when the count is odd and more than two, so no card sits alone on a half row.
+    columns: templates.length <= 2 || templates.length % 2 === 0 ? "2" : "3",
     titleLevel: level,
     background: "background",
     items: templates.map(({ item, template }) => {
@@ -286,7 +287,10 @@ function homePage(templates: StoreTemplate[], pics: ReturnType<typeof picturesNe
       k.h1("Whole websites, ready for your words.", { eyebrow: "Templates for Crust", mark: false }),
       k.text("Pick a template, open it in the free Crust app and make it yours. Every page, post and photo is ready to change.", { tone: "muted" }),
       k.spacer("xs"),
-      k.columns([[k.button("See all templates", "/templates")], [k.button("Download Crust", "/download", "arrow")]], { gap: "sm", widths: "one-three", valign: "middle" }),
+      // Stacked, not in two columns: in 1/4 + 3/4 columns the buttons sat about 100px apart.
+      k.button("See all templates", "/templates"),
+      k.spacer("xs"),
+      k.button("Download Crust", "/download", "arrow"),
     ], { paddingY: "xl" }),
     k.section("background", [
       k.columns([[k.heading("The templates", { mark: false })], [k.link("All templates", "/templates", "right")]], { widths: "two-one", valign: "bottom", gap: "sm" }),
@@ -511,7 +515,7 @@ export function storeSite(templates: StoreTemplate[]): Site {
     },
     footer: {
       show: true,
-      text: "Crust is a free website builder that publishes plain, fast pages. These templates are made for it.",
+      text: "Crust is a free website builder that publishes plain, fast pages. These templates are made for\u00A0it.",
       columns: [
         { title: "Store", links: [{ label: "All templates", href: "/templates" }, { label: "Download Crust", href: "/download" }, { label: "Help", href: "/help" }] },
         { title: "Templates", links: templates.map(({ item, template }) => ({ label: template.name, href: templatePath(item.id) })) },
