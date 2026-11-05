@@ -149,7 +149,29 @@ export function refundsPage(legal: LegalSettings = LEGAL): Page {
   );
 }
 
-/** The three pages, in the order the footer lists them. */
-export function legalPages(checkout: Checkout | null, legal: LegalSettings = LEGAL): Page[] {
+/**
+ * Owner, 2026-11-05: everything is free for now. With nothing for sale there are
+ * no terms, refunds or draft banner, just one short licence page.
+ */
+export function freeLicencePage(): Page {
+  return legalPage(
+    "licence",
+    LICENCE_PATH,
+    "Licence",
+    "Every template in the Crust store is free to use, for yourself or for clients, on as many sites as you like.",
+    "Every template in this store is free. Use it for as many sites as you like, your own or your clients'.",
+    [
+      ["You can", ["Use the templates for any number of websites, for yourself or for clients, paid or unpaid.", "Change anything in them: words, photos, colours, fonts and pages.", "Keep the sites you've published up for as long as you like."]],
+      ["Please don't", ["Sell the template file, or a copy of it with small changes.", "Present a template, or something made mainly from it, as a template of your own."]],
+      ["Fonts and photos", ["Fonts and sample photos come with their own free licences, which allow use on your sites."]],
+      ["As they are", ["Templates are provided as they are, free of charge, without any promise that they suit a particular purpose."]],
+    ],
+    { ...LEGAL, approved: "2026-11-05" },
+  );
+}
+
+/** The pages, in the order the footer lists them: one free licence while nothing is for sale. */
+export function legalPages(checkout: Checkout | null, legal: LegalSettings = LEGAL, free = false): Page[] {
+  if (free) return [freeLicencePage()];
   return [licencePage(legal), termsPage(checkout, legal), refundsPage(legal)];
 }

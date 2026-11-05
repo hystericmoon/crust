@@ -122,7 +122,7 @@ describe("what's included, counted from the template file", () => {
 
 describe("the store's pages", () => {
   it("has Home, All templates, a page per template, Download and Help", () => {
-    expect(pages.map((p) => p.path)).toEqual(["/", "/templates", "/templates/harbour", "/templates/signal", "/templates/corner", "/download", "/help", "/licence", "/terms", "/refunds"]);
+    expect(pages.map((p) => p.path)).toEqual(["/", "/templates", "/templates/harbour", "/templates/signal", "/templates/corner", "/download", "/help", "/licence"]);
     for (const p of pages) {
       expect(p.title.length).toBeGreaterThan(0);
       expect(p.description.length).toBeGreaterThan(20);

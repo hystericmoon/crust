@@ -520,7 +520,10 @@ export function storeSite(templates: StoreTemplate[]): Site {
         { title: "Store", links: [{ label: "All templates", href: "/templates" }, { label: "Download Crust", href: "/download" }, { label: "Help", href: "/help" }] },
         { title: "Templates", links: templates.map(({ item, template }) => ({ label: template.name, href: templatePath(item.id) })) },
         // F068
-        { title: "Buying", links: [{ label: "Licence", href: LICENCE_PATH }, { label: "Terms", href: TERMS_PATH }, { label: "Refunds", href: REFUNDS_PATH }] },
+        // Owner, 2026-11-05: while everything is free there's just the licence.
+        templates.some(({ item }) => isPriced(item))
+          ? { title: "Buying", links: [{ label: "Licence", href: LICENCE_PATH }, { label: "Terms", href: TERMS_PATH }, { label: "Refunds", href: REFUNDS_PATH }] }
+          : { title: "Licence", links: [{ label: "Free to use", href: LICENCE_PATH }] },
       ],
       copyright: "© {year} {name}",
       style: "surface",
@@ -540,7 +543,7 @@ export function storePages(templates: StoreTemplate[], checkout: Checkout | null
     // F066: only once something is for sale.
     ...(templates.some(({ item }) => isPriced(item)) ? [thanksPage(checkout)] : []),
     // F068: the licence covers the free templates too, so these are always there.
-    ...legalPages(checkout).map((p) => ({ ...p, puck: { ...p.puck, content: unmark(p.puck.content) } })),
+    ...legalPages(checkout, undefined, !templates.some(({ item }) => isPriced(item))).map((p) => ({ ...p, puck: { ...p.puck, content: unmark(p.puck.content) } })),
   ];
 }
 

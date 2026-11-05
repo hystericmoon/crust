@@ -13,10 +13,12 @@ import { loadStore, ROOT } from "./load";
 import { storePages, storeSite, STORE_URL, type StoreTemplate } from "./model";
 
 const { templates, checkout } = loadStore();
-const pages = storePages(templates, checkout);
 const harbour = templates.find((t) => t.item.id === "harbour")!;
 const olive = (t: StoreTemplate): StoreTemplate => ({ ...t, item: { ...t.item, id: "olive", price: "US$49", buy: "https://sandbox.polar.sh/checkout/olive", licence: LICENCE_SUMMARY } });
 const polarTest: Checkout = { provider: "polar", mode: "test" };
+// The paid-store wording (draft pages, Buying footer) shows once something has a price.
+const paidTemplates = [...templates, olive(harbour)];
+const pages = storePages(paidTemplates, polarTest);
 const polarLive: Checkout = { provider: "polar", mode: "live" };
 const approved: LegalSettings = { approved: "2026-11-10", seller: "Studio Example", contact: "hello@example.com", refundDays: 14 };
 
@@ -97,7 +99,7 @@ describe("links to them", () => {
   });
 
   it("the footer has a Buying column with all three", () => {
-    const footer = storeSite(templates).footer!.columns!.find((c) => c.title === "Buying")!;
+    const footer = storeSite(paidTemplates).footer!.columns!.find((c) => c.title === "Buying")!;
     expect(footer.links).toEqual([
       { label: "Licence", href: "/licence" },
       { label: "Terms", href: "/terms" },
@@ -145,7 +147,9 @@ describe("real payments wait for approved wording", () => {
 describe("rendered", () => {
   it("each page is a real page with its links, and the committed store has them", async () => {
     const dir = join(ROOT, "store/content");
-    for (const f of ["licence.json", "terms.json", "refunds.json"]) expect(existsSync(join(dir, "pages", f)), f).toBe(true);
+    // Owner, 2026-11-05: everything is free, so the committed store has just the licence.
+    expect(existsSync(join(dir, "pages", "licence.json"))).toBe(true);
+    for (const f of ["terms.json", "refunds.json"]) expect(existsSync(join(dir, "pages", f)), f).toBe(false);
     const content = await readSiteContent({
       read: async (p) => (existsSync(join(dir, p)) ? readFileSync(join(dir, p), "utf8") : null),
       list: async (sub) => (existsSync(join(dir, sub)) ? readdirSync(join(dir, sub)) : []),
@@ -154,9 +158,25 @@ describe("rendered", () => {
     const files = renderSite(content, css, { baseUrl: STORE_URL });
     const html = (path: string) => files.find((f) => f.path === path)!.content;
     expect(html("licence/index.html")).toMatch(/<h1[^>]*>[\s\S]*Licence/);
-    expect(html("licence/index.html")).toContain('href="/refunds"');
-    expect(html("refunds/index.html")).toContain("14 days");
-    expect(html("terms/index.html")).toContain('href="/licence"');
+    expect(html("licence/index.html")).not.toContain("Draft");
+    expect(html("licence/index.html")).toContain("free");
     expect(html("templates/corner/index.html")).toContain('href="/licence"');
+  });
+});
+
+describe("while everything is free (owner, 2026-11-05)", () => {
+  const free = storePages(templates, checkout);
+  it("has one licence page and no terms, refunds or draft banner", () => {
+    expect(free.map((p) => p.path).filter((x) => ["/licence", "/terms", "/refunds"].includes(x))).toEqual(["/licence"]);
+    const text = textOf(free.find((p) => p.path === "/licence")!);
+    expect(text).not.toContain("Draft");
+    expect(text).toContain("free");
+  });
+  it("the footer links only the licence, and no template page mentions buying or refunds", () => {
+    const cols = storeSite(templates).footer!.columns!;
+    expect(cols.find((c) => c.title === "Buying")).toBeUndefined();
+    expect(cols.find((c) => c.title === "Licence")!.links).toEqual([{ label: "Free to use", href: "/licence" }]);
+    expect(JSON.stringify(free)).not.toContain("/refunds");
+    expect(JSON.stringify(free)).not.toContain("By buying");
   });
 });

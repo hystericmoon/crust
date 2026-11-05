@@ -1,7 +1,7 @@
 {
   "path": "/licence",
   "title": "Licence",
-  "description": "What you may do with a template from the Crust store: as many sites as you like, for yourself or for clients.",
+  "description": "Every template in the Crust store is free to use, for yourself or for clients, on as many sites as you like.",
   "puck": {
     "root": {
       "props": {}
@@ -10,47 +10,7 @@
       {
         "type": "Section",
         "props": {
-          "id": "licence-section-2",
-          "background": "surface",
-          "paddingY": "sm",
-          "height": "auto",
-          "valign": "center",
-          "imageSrc": "",
-          "tint": "medium",
-          "width": "narrow",
-          "content": [
-            {
-              "type": "Text",
-              "props": {
-                "id": "licence-text-1",
-                "text": {
-                  "rich": 1,
-                  "blocks": [
-                    {
-                      "type": "p",
-                      "children": [
-                        {
-                          "text": "Draft.",
-                          "bold": true
-                        },
-                        {
-                          "text": " This wording hasn't been approved yet and may change before the store sells anything."
-                        }
-                      ]
-                    }
-                  ]
-                },
-                "align": "left",
-                "tone": "default"
-              }
-            }
-          ]
-        }
-      },
-      {
-        "type": "Section",
-        "props": {
-          "id": "licence-section-18",
+          "id": "licence-section-14",
           "background": "background",
           "paddingY": "xl",
           "height": "auto",
@@ -62,9 +22,41 @@
             {
               "type": "Heading",
               "props": {
-                "id": "licence-heading-3",
+                "id": "licence-heading-1",
                 "text": "Licence",
                 "level": "h1",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": "Updated 2026-11-05"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "licence-text-2",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Every template in this store is free. Use it for as many sites as you like, your own or your clients'."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default"
+              }
+            },
+            {
+              "type": "Heading",
+              "props": {
+                "id": "licence-heading-3",
+                "text": "You can",
+                "level": "h2",
                 "align": "left",
                 "size": "normal",
                 "eyebrow": ""
@@ -81,7 +73,7 @@
                       "type": "p",
                       "children": [
                         {
-                          "text": "When you buy a template from this store, you get a licence to use it. In short: make as many sites with it as you like, and don't pass the template itself on."
+                          "text": "Use the templates for any number of websites, for yourself or for clients, paid or unpaid."
                         }
                       ]
                     }
@@ -92,62 +84,30 @@
               }
             },
             {
-              "type": "Heading",
+              "type": "Text",
               "props": {
-                "id": "licence-heading-5",
-                "text": "You can",
-                "level": "h2",
+                "id": "licence-text-5",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Change anything in them: words, photos, colours, fonts and pages."
+                        }
+                      ]
+                    }
+                  ]
+                },
                 "align": "left",
-                "size": "normal",
-                "eyebrow": ""
+                "tone": "default"
               }
             },
             {
               "type": "Text",
               "props": {
                 "id": "licence-text-6",
-                "text": {
-                  "rich": 1,
-                  "blocks": [
-                    {
-                      "type": "p",
-                      "children": [
-                        {
-                          "text": "Use the template for any number of websites, for yourself or for clients, paid or unpaid."
-                        }
-                      ]
-                    }
-                  ]
-                },
-                "align": "left",
-                "tone": "default"
-              }
-            },
-            {
-              "type": "Text",
-              "props": {
-                "id": "licence-text-7",
-                "text": {
-                  "rich": 1,
-                  "blocks": [
-                    {
-                      "type": "p",
-                      "children": [
-                        {
-                          "text": "Change anything in it: words, photos, colours, fonts and pages."
-                        }
-                      ]
-                    }
-                  ]
-                },
-                "align": "left",
-                "tone": "default"
-              }
-            },
-            {
-              "type": "Text",
-              "props": {
-                "id": "licence-text-8",
                 "text": {
                   "rich": 1,
                   "blocks": [
@@ -168,8 +128,8 @@
             {
               "type": "Heading",
               "props": {
-                "id": "licence-heading-9",
-                "text": "You can't",
+                "id": "licence-heading-7",
+                "text": "Please don't",
                 "level": "h2",
                 "align": "left",
                 "size": "normal",
@@ -179,7 +139,7 @@
             {
               "type": "Text",
               "props": {
-                "id": "licence-text-10",
+                "id": "licence-text-8",
                 "text": {
                   "rich": 1,
                   "blocks": [
@@ -187,7 +147,7 @@
                       "type": "p",
                       "children": [
                         {
-                          "text": "Sell, share or give away the template file, or a copy of it with small changes."
+                          "text": "Sell the template file, or a copy of it with small changes."
                         }
                       ]
                     }
@@ -200,7 +160,7 @@
             {
               "type": "Text",
               "props": {
-                "id": "licence-text-11",
+                "id": "licence-text-9",
                 "text": {
                   "rich": 1,
                   "blocks": [
@@ -208,7 +168,7 @@
                       "type": "p",
                       "children": [
                         {
-                          "text": "Offer the template, or something made mainly from it, as a template of your own, in this store or anywhere else."
+                          "text": "Present a template, or something made mainly from it, as a template of your own."
                         }
                       ]
                     }
@@ -221,7 +181,7 @@
             {
               "type": "Heading",
               "props": {
-                "id": "licence-heading-12",
+                "id": "licence-heading-10",
                 "text": "Fonts and photos",
                 "level": "h2",
                 "align": "left",
@@ -232,7 +192,7 @@
             {
               "type": "Text",
               "props": {
-                "id": "licence-text-13",
+                "id": "licence-text-11",
                 "text": {
                   "rich": 1,
                   "blocks": [
@@ -253,8 +213,8 @@
             {
               "type": "Heading",
               "props": {
-                "id": "licence-heading-14",
-                "text": "Free templates",
+                "id": "licence-heading-12",
+                "text": "As they are",
                 "level": "h2",
                 "align": "left",
                 "size": "normal",
@@ -264,7 +224,7 @@
             {
               "type": "Text",
               "props": {
-                "id": "licence-text-15",
+                "id": "licence-text-13",
                 "text": {
                   "rich": 1,
                   "blocks": [
@@ -272,46 +232,7 @@
                       "type": "p",
                       "children": [
                         {
-                          "text": "The templates that come with Crust are free. Use them for as many sites as you like, under the same rules."
-                        }
-                      ]
-                    }
-                  ]
-                },
-                "align": "left",
-                "tone": "default"
-              }
-            },
-            {
-              "type": "Heading",
-              "props": {
-                "id": "licence-heading-16",
-                "text": "If you're refunded",
-                "level": "h2",
-                "align": "left",
-                "size": "normal",
-                "eyebrow": ""
-              }
-            },
-            {
-              "type": "Text",
-              "props": {
-                "id": "licence-text-17",
-                "text": {
-                  "rich": 1,
-                  "blocks": [
-                    {
-                      "type": "p",
-                      "children": [
-                        {
-                          "text": "A refund ends the licence for new sites; sites you've already published can stay up. See "
-                        },
-                        {
-                          "text": "Refunds",
-                          "href": "/refunds"
-                        },
-                        {
-                          "text": "."
+                          "text": "Templates are provided as they are, free of charge, without any promise that they suit a particular purpose."
                         }
                       ]
                     }
