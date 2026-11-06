@@ -1159,3 +1159,19 @@ short. Older "Current" entries (newest first) and the older log.
 - 2026-11-02: F074 Rows and columns v2 built (snapshot, direction A); done_check `npm test -- columns-v2 && npm run check:a11y` exit 0.
 
 - 2026-11-02: PRs #54–#59 merged to main in order (owner asked). Next: F075 Motion.
+
+- **2026-11-06: F088 Add section, by picture (built, waiting for your review).**
+  The **Add** button on the left now opens **pictures of whole sections**
+  (hero, features, pricing…) next to your page, with a search box and
+  category buttons. Click a picture and the section lands **after the one
+  you selected** (or at the end); a line at the top says where. The
+  **"+ Add section" bars** between sections pick the spot first and open the
+  same panel. Single things (heading, text, image) are under **Add an
+  element**; **See larger** opens the old big gallery for whole pages and
+  linked sections. One Undo removes what you added. Snapshot:
+  https://claude.ai/artifact/Cx8c5fTfFkxfZYBMBnQs2A.
+  **To try:** open the preview
+  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, press Add on the left,
+  click a picture. Then hover between two sections, press the purple
+  "+ Add section" and pick one. Try it by keyboard too: Tab to a picture,
+  Enter. Next: F089 One-row section toolbar.

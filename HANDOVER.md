@@ -33,8 +33,8 @@ Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-06 ~20:00 (Jakarta), F088 built; branch `ccr-d50f7e80-weuq18`. **PR #81
-open** (review fixes, Mac app fix, F085, F086, F087, now F088 too: same branch, so
+Last updated: 2026-11-06 ~20:00 (Jakarta), F089 built; branch `ccr-d50f7e80-weuq18`. **PR #81
+open** (review fixes, Mac app fix, F085, F086, F087, now F088 and F089 too: same branch, so
 one PR until he merges); the owner merges.
 The Mac app opens on the owner's Mac (ad-hoc signed; DECISIONS
 2026-11-06). Milestone 9 "Friendly app" is under way (see Next).
@@ -85,11 +85,10 @@ React Bits code can't be used (MIT + Commons Clause): aesthetic only
 **F086 built**: `apps/admin/src/app-frame/` (top bar, `EditorBar`,
 `railPlugins`, `useAutosave`); DECISIONS "F086".
 **F087 built**: `apps/admin/src/page-first/` (see DECISIONS "F087").
-**F088 built (2026-11-06)**: `apps/admin/src/layouts/AddSectionPanel.tsx`
-is the Add panel (pictures, search, categories, "Add an element" under it);
-the "+" bars call `setAddAt` then switch to the Add plugin; the dialog
-stays as "See larger". DECISIONS "F088".
-Next: **F089 One-row section toolbar** (Sonnet), design snapshot first.
+**F088 built**: Add panel with layout pictures (DECISIONS "F088").
+**F089 built (2026-11-06)**: `SectionToolbar` in `apps/admin/src/sections/editing.tsx`
+is one row (Section, Style, Layout, Move, More); DECISIONS "F089".
+Next: **F090 Type on the page** (Opus), design snapshot first.
 PR #81 (review fixes, Mac app fix, redesign research, F085–F088) is
 still open for the owner to merge; after the merge, restart the branch
 from main.

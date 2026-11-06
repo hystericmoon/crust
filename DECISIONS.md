@@ -3645,3 +3645,23 @@ a lawyer reads it (BLOCKED.md).
   with the dialog (`insertLayout`), so Undo, focus and the spoken message
   behave the same in both.
 
+
+## 2026-11-06 — F089 One-row section toolbar (Claude, reversible)
+
+- Built direction A from the snapshot (https://claude.ai/artifact/G8y8XJd5qEpki25JdHbUSU):
+  labelled row, one menu open at a time (`SectionToolbar` in `sections/editing.tsx`).
+- The spec's five names needed contents: **Section** = background picture
+  (with focus and tint), **Style** = the four named colours, **Layout** =
+  height, **Move** = the existing arrow buttons (now inside the row for
+  sections; other blocks keep their plain bar), **More** = change everywhere,
+  make linked, save as layout.
+- The "This section / Whole site" switch left the bar. The site-wide edit is
+  reached from More through a confirmation step; the panel's "Edit everywhere"
+  still works (same shared scope).
+- The step says "N sections on this page, and every <style> section on other
+  pages": the editor has no cheap count of other pages, so no page number is
+  claimed.
+- `SaveLayoutAction` and `MakeLinkedAction` stay as exports; their forms are now
+  `SaveLayoutForm` and `MakeLinkedForm`, shared with the More menu.
+- Row uses `role="toolbar"` with ← → between buttons; Escape returns focus to
+  the button that opened the menu.

@@ -12,8 +12,11 @@ import {
   type SectionStyleId,
   type TintLevel,
 } from "@crust/blocks";
-import { ActionBar, createUsePuck, useGetPuck, type Config, type Data } from "@puckeditor/core";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { ActionBar, createUsePuck, useGetPuck, type ComponentData, type Config, type Data } from "@puckeditor/core";
+import { useEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent, type ReactNode } from "react";
+import { SaveLayoutForm } from "../layouts/SaveLayoutAction";
+import { MakeLinkedForm } from "../linked/fields";
+import { useInSectionEditor } from "../linked/store";
 import { HeightPicker, SectionStyleEditor, StyleSwatch, StyleTiles, TintPicker, RadioGroup } from "./controls";
 import { countSectionStyles, useSiteStyle } from "./site-style";
 import { ImageField } from "../media/ImageField";
@@ -197,83 +200,81 @@ export function withSectionEditing(config: Config<Components>): Config<Component
 
 // --- Canvas toolbar ---------------------------------------------------------------------
 
-type Pop = "height" | "image" | "global" | null;
+type Pop = "section" | "style" | "layout" | "more" | "everywhere" | "global" | "keep" | "link" | null;
 
-/** The quick bar on a selected section; lives inside the canvas action bar. */
-export function SectionToolbar() {
+/**
+ * The quick bar on a selected section; lives inside the canvas action bar (F089).
+ * One row: Section (background picture), Style (named colours), Layout (height),
+ * Move (the arrow buttons, passed in), More (site-wide and keeping actions).
+ */
+export function SectionToolbar({ moves }: { moves?: ReactNode }) {
+  const getPuck = useGetPuck();
   const section = useSelectedSection();
+  const item = usePuckSelector((s) => s.selectedItem) as ComponentData | null;
   const site = useSiteStyle();
   const counts = useCounts();
   const patch = usePatchSelected();
+  const inEditor = useInSectionEditor();
   const [current, setCurrent] = useScope();
   const [pop, setPop] = useState<Pop>(null);
-  const popRef = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
 
   // A different section: start closed.
   const id = section ? (section as SectionProps & { id?: string }).id : undefined;
   useEffect(() => setPop(current === "global" ? "global" : null), [id, current]);
 
-  if (!section) return null;
+  if (!section || !item) return null;
   const style = section.background ?? "background";
   const n = counts[style] ?? 0;
   const toggle = (p: Exclude<Pop, null>) => setPop(pop === p ? null : p);
+  const shown = (p: Exclude<Pop, null>) => (p === "more" ? pop === "more" || pop === "everywhere" || pop === "keep" || pop === "link" || pop === "global" : pop === p);
+  const close = () => {
+    setPop(null);
+    if (current === "global") setCurrent("local");
+  };
+  const buttons = () => Array.from(rowRef.current?.querySelectorAll<HTMLButtonElement>("button") ?? []);
+
+  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Escape" && pop) {
+      e.stopPropagation();
+      const opener = rowRef.current?.querySelector<HTMLButtonElement>('button[aria-expanded="true"]');
+      close();
+      opener?.focus();
+      return;
+    }
+    // Arrow keys move along the row (a toolbar is one tab stop's worth of choices, not nine).
+    const step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+    const target = e.target as HTMLElement;
+    if (!step || !rowRef.current?.contains(target) || target.tagName !== "BUTTON") return;
+    const all = buttons();
+    const i = all.indexOf(target as HTMLButtonElement);
+    if (i < 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+    all[(i + step + all.length) % all.length]!.focus();
+  };
+
+  const tab = (p: "section" | "style" | "layout", label: string) => (
+    <button type="button" className="sx-tbtn" aria-expanded={shown(p)} onClick={() => toggle(p)}>
+      {label} <span aria-hidden="true">▾</span>
+    </button>
+  );
 
   return (
     <ActionBar.Group>
-      <div
-        className={`sx-toolbar is-${current}`}
-        onKeyDown={(e) => {
-          if (e.key === "Escape" && pop) {
-            e.stopPropagation();
-            setPop(null);
-          }
-        }}
-      >
-        <RadioGroup<"local" | "global">
-          label="What to change"
-          className="sx-scope"
-          optionClass="sx-scope-option"
-          value={current}
-          onChange={(s) => {
-            setCurrent(s);
-            setPop(s === "global" ? "global" : null);
-          }}
-          options={[
-            { value: "local", label: "This section" },
-            { value: "global", label: "Whole site" },
-          ]}
-        />
-        {current === "local" ? (
-          <>
-            <RadioGroup<SectionStyleId>
-              label="Section style"
-              className="sx-dots"
-              optionClass="sx-dot-option"
-              value={style}
-              onChange={(background) => patch({ background })}
-              options={(["background", "surface", "primary", "dark"] as const).map((sid) => ({
-                value: sid,
-                label: `${sectionStyleNames[sid]} style`,
-                content: <StyleSwatch tokens={site.tokens} id={sid} size="dot" />,
-              }))}
-            />
-            <button type="button" className="sx-tbtn" aria-expanded={pop === "height"} onClick={() => toggle("height")}>
-              Height
-            </button>
-            <button type="button" className="sx-tbtn" aria-expanded={pop === "image"} onClick={() => toggle("image")}>
-              Image{section.imageSrc?.trim() ? " ✓" : ""}
-            </button>
-          </>
-        ) : (
-          <button type="button" className="sx-tbtn sx-tbtn-global" aria-expanded={pop === "global"} onClick={() => toggle("global")}>
-            Edit “{sectionStyleNames[style]}” · {n} section{n === 1 ? "" : "s"}
-          </button>
-        )}
+      <div ref={rowRef} className={`sx-toolbar is-${current}`} role="toolbar" aria-label="Section" onKeyDown={onKeyDown}>
+        {tab("section", "Section")}
+        {tab("style", "Style")}
+        {tab("layout", "Layout")}
+        {moves}
+        <button type="button" className="sx-tbtn" aria-expanded={shown("more")} onClick={() => (shown("more") ? close() : setPop("more"))}>
+          More <span aria-hidden="true">⋯</span>
+        </button>
       </div>
       {pop ? (
-        <div ref={popRef} className={pop === "global" ? "sx-pop is-global" : "sx-pop"} role="group" aria-label={popLabel(pop, style)}>
-          {pop === "height" ? <HeightPicker value={section.height ?? "auto"} onChange={(height) => patch({ height })} /> : null}
-          {pop === "image" ? (
+        <div className={pop === "global" || pop === "everywhere" ? "sx-pop is-global" : "sx-pop"} role="group" aria-label={popLabel(pop, style)} onKeyDown={onKeyDown}>
+          {pop === "layout" ? <HeightPicker value={section.height ?? "auto"} onChange={(height) => patch({ height })} /> : null}
+          {pop === "section" ? (
             <div className="sx-stack">
               <ImageField
                 label={backgroundKindOf(section) === "video" ? "Still photo" : "Background image"}
@@ -289,12 +290,71 @@ export function SectionToolbar() {
               ) : null}
             </div>
           ) : null}
+          {pop === "style" ? (
+            <>
+              <RadioGroup<SectionStyleId>
+                label="Section style"
+                className="sx-named"
+                optionClass="sx-named-option"
+                value={style}
+                onChange={(background) => patch({ background })}
+                options={(["background", "surface", "primary", "dark"] as const).map((sid) => ({
+                  value: sid,
+                  label: `${sectionStyleNames[sid]} style`,
+                  content: (
+                    <>
+                      <StyleSwatch tokens={site.tokens} id={sid} size="dot" />
+                      <span>{sectionStyleNames[sid]}</span>
+                    </>
+                  ),
+                }))}
+              />
+              <p className="sx-note">Changes this section only.</p>
+            </>
+          ) : null}
+          {pop === "more" ? (
+            <div className="sx-menu">
+              <button type="button" className="sx-menu-item" onClick={() => setPop("everywhere")}>
+                Change “{sectionStyleNames[style]}” everywhere…
+              </button>
+              {inEditor ? null : (
+                <button type="button" className="sx-menu-item" onClick={() => setPop("link")}>
+                  Make linked (use on many pages)…
+                </button>
+              )}
+              <button type="button" className="sx-menu-item" onClick={() => setPop("keep")}>
+                Save as layout…
+              </button>
+            </div>
+          ) : null}
+          {pop === "everywhere" ? (
+            <>
+              <strong>Change “{sectionStyleNames[style]}” everywhere?</strong>
+              <p className="sx-note">
+                This changes {n} section{n === 1 ? "" : "s"} on this page, and every {sectionStyleNames[style]} section on the site’s other pages. You can undo
+                before you save.
+              </p>
+              <div className="sx-step-buttons">
+                <button type="button" className="sx-button sx-button-global" onClick={() => setCurrent("global")}>
+                  Change everywhere
+                </button>
+                <button type="button" className="sx-button" onClick={() => setPop("more")}>
+                  Cancel
+                </button>
+              </div>
+            </>
+          ) : null}
           {pop === "global" ? (
             <>
               <SectionStyleEditor tokens={site.tokens} id={style} onChange={site.setTokens} usedOnPage={n} />
               <SaveSiteStyle onMessage={() => undefined} />
+              <button type="button" className="sx-button" onClick={close}>
+                Done editing everywhere
+              </button>
             </>
           ) : null}
+          {pop === "keep" ? <SaveLayoutForm item={item} onDone={() => setPop(null)} /> : null}
+          {pop === "link" ? <MakeLinkedForm item={item} onDone={() => setPop(null)} /> : null}
         </div>
       ) : null}
     </ActionBar.Group>
@@ -302,4 +362,13 @@ export function SectionToolbar() {
 }
 
 const popLabel = (pop: Exclude<Pop, null>, style: SectionStyleId) =>
-  pop === "height" ? "Section height" : pop === "image" ? "Background image" : `Edit the ${sectionStyleNames[style]} style for the whole site`;
+  ({
+    section: "Section background",
+    style: "Section style",
+    layout: "Section height",
+    more: "More for this section",
+    everywhere: `Change the ${sectionStyleNames[style]} style everywhere`,
+    global: `Edit the ${sectionStyleNames[style]} style for the whole site`,
+    keep: "Save this section as a layout",
+    link: "Make this section a linked section",
+  })[pop];

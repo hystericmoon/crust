@@ -960,7 +960,7 @@
       "description": "Design snapshot first. The section toolbar becomes one row: Section, Style, Layout, Move, More. Site-wide actions (change everywhere, make linked, save as layout) move under More, with a step that says how many sections and pages a change affects. Colour choices named and at least 24px. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
       "depends_on": ["F087"],
       "done_check": "npm test -- section-toolbar && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

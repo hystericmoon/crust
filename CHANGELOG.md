@@ -4,6 +4,14 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **One-row section toolbar (2026-11-06).** Select a section and its bar is
+  now a single row: **Section** (background picture), **Style** (the four
+  colours, each with its name), **Layout** (height), the move arrows, and
+  **More**. Arrow keys travel along the row; Escape closes a menu. The
+  site-wide actions (change a style everywhere, make linked, save as
+  layout) are under More. "Change everywhere" asks first and says how
+  many sections it touches. The "This section / Whole site" switch is gone
+  from the bar.
 - **Add a section by picture (2026-11-06).** The Add button on the left now
   shows small pictures of whole sections (hero, features, pricing…) next to
   your page, with search and categories, so you can see where the section

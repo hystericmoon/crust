@@ -661,3 +661,9 @@ No hash → Home in the editor; `#/` is still the Pages list. DECISIONS "F087".
 Next: **F088 Add section, by picture** (Sonnet), design snapshot first:
 "+ Add section" opens the layout gallery in the Add panel, single blocks
 under it as "Add an element", keyboard alternative for every drag.
+
+**F088 built (2026-11-06)**: `apps/admin/src/layouts/AddSectionPanel.tsx`
+is the Add panel (pictures, search, categories, "Add an element" under it);
+the "+" bars call `setAddAt` then switch to the Add plugin; the dialog
+stays as "See larger". DECISIONS "F088".
+Next: **F089 One-row section toolbar** (Sonnet), design snapshot first.

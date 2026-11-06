@@ -7,21 +7,17 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
-- **2026-11-06: F088 Add section, by picture (built, waiting for your review).**
-  The **Add** button on the left now opens **pictures of whole sections**
-  (hero, features, pricing…) next to your page, with a search box and
-  category buttons. Click a picture and the section lands **after the one
-  you selected** (or at the end); a line at the top says where. The
-  **"+ Add section" bars** between sections pick the spot first and open the
-  same panel. Single things (heading, text, image) are under **Add an
-  element**; **See larger** opens the old big gallery for whole pages and
-  linked sections. One Undo removes what you added. Snapshot:
-  https://claude.ai/artifact/Cx8c5fTfFkxfZYBMBnQs2A.
+- **2026-11-06: F089 One-row section toolbar (built, waiting for your review).**
+  Click a section: its bar is one row, **Section · Style · Layout · move
+  arrows · More**. Section is the background picture, Style shows the four
+  colours with their names (bigger, easier to hit), Layout is the height.
+  Under **More** are "Change <style> everywhere…" (asks first, says how many
+  sections it changes), "Make linked…" and "Save as layout…". Snapshot:
+  https://claude.ai/artifact/G8y8XJd5qEpki25JdHbUSU.
   **To try:** open the preview
-  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, press Add on the left,
-  click a picture. Then hover between two sections, press the purple
-  "+ Add section" and pick one. Try it by keyboard too: Tab to a picture,
-  Enter. Next: F089 One-row section toolbar.
+  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, click a section, open
+  each menu. Try the keyboard: Tab to the bar, ← → along it, Enter opens,
+  Esc closes. Next: F090 Type on the page (Opus).
 
 ## Waiting on the owner
 
