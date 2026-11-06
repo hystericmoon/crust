@@ -1,13 +1,13 @@
 /* Site header and footer on the canvas (F031): a dashed outline and a label
    say they're edited elsewhere. Puck copies this into the canvas iframe. */
-.cc-chrome { position: relative; outline: 1px dashed rgb(67 56 202 / 0.45); outline-offset: -1px; }
+.cc-chrome { position: relative; outline: 1px dashed var(--app-acc); outline-offset: -1px; }
 .cc-chrome > [inert] { opacity: 0.92; }
 /* F069: the label is a thin strip above the header or footer, in the flow,
    so it never covers the Home link or the phone Menu button. */
 .cc-chrome::before {
   content: attr(data-part); display: block; padding: 2px 8px; text-align: right;
-  background: #eef2ff; color: #3730a3;
-  font: 600 12px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; pointer-events: none;
+  background: var(--app-acc-soft); color: var(--app-acc);
+  font: 600 12px/1.5 var(--app-font); pointer-events: none;
 }
 
 /* F069: page-level blocks outside a Section sit in the page column on the

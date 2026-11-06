@@ -48,6 +48,7 @@ import { migrateChrome, validateChrome, type SiteChrome } from "@crust/blocks";
 import { SiteAddressGroup } from "./SiteAddress";
 import { TemplateGroup } from "./TemplateGroup";
 import { bundledLoader, type TemplateLoader } from "../templates/collect";
+import { ThemeToggle } from "../app-theme/ThemeToggle";
 
 export interface SiteSettingsProps {
   site: Site;
@@ -242,6 +243,7 @@ export function SiteSettings({
             {saving ? "Saving…" : "Save"}
           </button>
         </div>
+        <ThemeToggle />
       </header>
       <p className="st-status" role="status" aria-live="polite">
         {status}

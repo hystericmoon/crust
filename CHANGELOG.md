@@ -4,6 +4,11 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **The app in dark and light (2026-11-06).** Crust has a new look: dark
+  violet-black or clean white, with the Geist font and violet only on
+  what you've selected. It follows your computer's light/dark setting;
+  the sun/moon button at the top right switches it and Crust remembers.
+  Your site's own colours don't change.
 - **The Mac app opens (2026-11-06).** It used to bounce in the Dock and
   never show a window. The app is now signed as one app, so macOS knows
   it is Crust and can ask about the Documents folder; if that folder

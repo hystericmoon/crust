@@ -7,6 +7,23 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
+- **2026-11-06: F085 the app in dark and light (built, waiting for your
+  review).** The app itself (not your site) now has the React Bits-style
+  "Violet night" look: violet-tinted near-black in dark mode, white in
+  light mode, Geist font, thin borders, and violet only on what's
+  selected or active. It follows your computer's light/dark setting; the
+  sun/moon button at the top right of every screen switches it, and Crust
+  remembers. Pressing it back to your computer's mode makes it follow the
+  computer again. Your site on the canvas keeps its own colours in both.
+  Every text colour passes the contrast check in both modes, and the
+  builder accessibility check now runs in both. Snapshot:
+  https://claude.ai/artifact/KE4fZPZSFQJE8keiH4DwsA. **To try:** open the
+  preview https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, press the
+  sun/moon button on the pages list, the editor and Site settings; switch
+  your Mac or phone to dark mode and reload. Next: F086 (one app frame and
+  top bar, Opus). The screen layouts are still today's; they change in
+  F086–F092.
+
 - **2026-11-06: the Mac app opens.** The Mac installer's app wasn't
   signed as one app, so macOS couldn't tell it was Crust and it hung at
   start-up (long bounce, then nothing). It is now signed (free "ad-hoc"
@@ -17,20 +34,6 @@ later session must know; keep the newest 3 entries here.
   Privacy & Security (only a $99/year Apple Developer ID removes that; the
   owner's call). The CI launch test (Actions → Desktop launch test) stays
   for future Mac checks.
-
-- **2026-11-05: store launches free.** Everything is free for now (owner:
-  "later on we can do something about the paid template"). The store has
-  three templates (Harbour, Signal, Corner), all Free; none was ever
-  priced. With nothing for sale it shows one short **Licence** page (free
-  to use, on as many sites as you like; don't resell the file) and a
-  footer column "Licence"; the Terms and Refunds pages and the "Draft"
-  banner are gone. The paid-store pages and the F068 live-payment check
-  stay in the code and come back as soon as any template gets a price
-  (PR #79; DECISIONS "Store launches free"). Publish store was run on
-  main with real payments off. **To try:** open
-  https://crust-store.pages.dev, a template page, and /licence; the
-  "Download" buttons should open each template's file. The licence
-  wording is plain and short, not lawyer-reviewed.
 
 ## Waiting on the owner
 

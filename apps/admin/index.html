@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
     <title>Crust builder</title>
+    <!-- F085: the app's light or dark look, set before anything paints (see src/app-theme/theme.ts). -->
+    <meta name="color-scheme" content="light dark" />
+    <script>(function(){var t=null;try{t=localStorage.getItem("crust:app-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t="light";try{if(matchMedia("(prefers-color-scheme: dark)").matches)t="dark"}catch(e){}}document.documentElement.setAttribute("data-app-theme",t);var m=document.querySelector('meta[name="color-scheme"]');if(m)m.content=t})()</script>
   </head>
   <body>
     <div id="root"></div>

@@ -463,7 +463,7 @@ describe("review-fixes 10: polish", () => {
 
   it("the rich text field fits the side panel, with its focus ring inside it (F042)", () => {
     const css = readFileSync("apps/admin/src/rich-text/rich-text.css", "utf8");
-    expect(css).toContain(".rt-field:focus-within { outline: 3px solid #18181b; outline-offset: -1px; }");
+    expect(css).toContain(".rt-field:focus-within { outline: 3px solid var(--app-acc); outline-offset: -1px; }");
     expect(css).toContain(".rt-field, .rt-link { min-width: 0; max-width: 100%; box-sizing: border-box; }");
     expect(readFileSync("apps/admin/src/keyboard/keyboard.css", "utf8")).toContain('.Puck [class*="_Sidebar_"] { scrollbar-gutter: stable; }');
   });
@@ -482,7 +482,7 @@ describe("review-fixes 10: polish", () => {
 
   it("Puck's field labels look like Crust's (F030)", () => {
     const css = readFileSync("apps/admin/src/keyboard/keyboard.css", "utf8");
-    expect(css).toContain("--puck-field-label-color-text: #18181b;");
+    expect(css).toContain("--puck-field-label-color-text: var(--app-ink);");
     expect(css).toContain("--puck-field-label-font-weight: 600;");
     expect(css).toContain('.Puck [class*="_Input-labelIcon_"] { display: none; }');
   });

@@ -8,6 +8,7 @@ import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { deletePost, saveBlog, savePost } from "../api-client";
 import { DesignCard } from "../designs/DesignLinks";
 import { loadPostRows, removeLocalPost, saveLocalPost, type PostRow } from "./store";
+import { ThemeToggle } from "../app-theme/ThemeToggle";
 
 export const postEditHref = (slug: string) => `#/post?slug=${encodeURIComponent(slug)}`;
 
@@ -89,6 +90,7 @@ export function PostList({ siteName, githubOn, language }: { siteName: string; g
             New post
           </button>
         </div>
+        <ThemeToggle />
       </header>
       <main className="pg">
         {creating ? (

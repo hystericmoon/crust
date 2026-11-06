@@ -17,6 +17,7 @@ import { cardPicture, pictureFor, premiumTemplates, templateUpdate, type Catalog
 import { gallerySources, readTemplateText, type GallerySource, type Template } from "./sources";
 import { applyLocally, applyOnGitHub, previewHtml, replacePlan, templateFacts, type ApplyStep, type CurrentSite, type PreviewTarget, type ReplacePlan } from "./start";
 import "./templates.css";
+import { ThemeToggle } from "../app-theme/ThemeToggle";
 
 /**
  * F069: each preview has a real screen height too, and the page scrolls
@@ -158,6 +159,7 @@ export function TemplatesScreen({ siteName, githubOn, currentSite, sources: give
           <span aria-hidden="true">←</span> Pages
         </a>
         <h1 className="st-title">{siteName}: start from a template</h1>
+        <ThemeToggle />
       </header>
       <main className="pg">
         <p className="st-lede">
@@ -337,6 +339,7 @@ function PremiumDetail({ template: t, examples, onBack, onOpenFile }: { template
             <span aria-hidden="true"> ↗</span>
           </a>
         </div>
+        <ThemeToggle />
       </header>
       <main className="tp-detail">
         <nav className="tp-pages" aria-label={`Pages in ${t.name}`}>
@@ -451,6 +454,7 @@ function TemplateDetail({
             Use this template
           </button>
         </div>
+        <ThemeToggle />
       </header>
       <main className="tp-detail">
         <nav className="tp-pages" aria-label={`Pages in ${t.name}`}>

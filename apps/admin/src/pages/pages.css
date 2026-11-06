@@ -8,7 +8,7 @@
 .pg-table thead th { border-top: 0; color: var(--st-muted); font-size: 0.875rem; font-weight: 500; }
 .pg-table tbody th { font-weight: 600; }
 .pg-table tbody th a { display: inline-flex; align-items: center; min-height: 24px; color: var(--st-text); text-underline-offset: 0.2em; }
-.pg-path { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.9375rem; overflow-wrap: anywhere; }
+.pg-path { font-family: var(--app-mono); font-size: 0.9375rem; overflow-wrap: anywhere; }
 /* F069: in the list, addresses wrap only after "/" or "-" (see breakablePath). */
 .pg-table .pg-path-cell { overflow-wrap: normal; word-break: normal; }
 .pg-form { display: grid; gap: 16px; }
@@ -16,7 +16,7 @@
 .pg-field .st-help, .pg-field .st-error { margin: 0; }
 .pg-field .st-input { width: 100%; max-width: 32rem; }
 .pg-address { display: flex; align-items: center; gap: 4px; max-width: 32rem; }
-.pg-prefix { font-family: ui-monospace, Menlo, Consolas, monospace; color: var(--st-muted); }
+.pg-prefix { font-family: var(--app-mono); color: var(--st-muted); }
 .pg-textarea { min-height: 88px; padding: 10px 12px; resize: vertical; }
 .pg-form-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 
@@ -30,14 +30,14 @@
 .st-status-inline { margin: 12px 0 0; }
 .st-button[aria-disabled="true"] { opacity: 0.7; cursor: progress; }
 
-.crust-loading { margin: 0; padding: 24px; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.crust-loading { margin: 0; padding: 24px; font: 16px/1.5 var(--app-font); }
 
 @media (max-width: 640px) {
   .pg { padding: 16px; }
   .pg-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .pg-table tr { display: grid; padding: 12px 0; border-top: 1px solid var(--st-divider); }
   .pg-table th, .pg-table td { display: block; padding: 2px 0; border: 0; }
-  .pg-table td::before { content: attr(data-label) ": "; color: var(--st-muted); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .pg-table td::before { content: attr(data-label) ": "; color: var(--st-muted); font-family: var(--app-font); }
 }
 
 /* F015: rename and delete */
@@ -45,17 +45,17 @@
 .pg-actions-cell { text-align: right; white-space: nowrap; }
 .pg-row-actions { display: inline-flex; flex-wrap: nowrap; justify-content: flex-end; gap: 8px; }
 .pg-small { min-height: 32px; padding: 4px 12px; font-size: 0.875rem; }
-.pg-danger { border-color: var(--st-danger); background: var(--st-danger); color: #ffffff; }
+.pg-danger { border-color: var(--st-danger); background: var(--st-danger); color: var(--app-danger-fg); }
 .pg-danger:hover { background: var(--st-danger-hover); border-color: var(--st-danger-hover); }
 .pg-dialog {
   width: min(32rem, calc(100vw - 32px)); padding: 24px;
   border: 1px solid var(--st-border); border-radius: 12px;
   background: var(--st-panel); color: var(--st-text);
-  box-shadow: 0 16px 48px rgb(0 0 0 / 0.2);
+  box-shadow: 0 16px 48px var(--app-shadow);
 }
 /* The dialog lives in the actions cell; don't inherit its one-line layout. */
 .pg-dialog { white-space: normal; text-align: left; line-height: 1.5; }
-.pg-dialog::backdrop { background: rgb(24 24 27 / 0.5); }
+.pg-dialog::backdrop { background: var(--app-backdrop); }
 .pg-dialog h2 { margin: 0; font-size: 1.25rem; }
 .pg-dialog p { margin: 0; }
 .pg-dialog-body { display: grid; gap: 8px; }
@@ -187,7 +187,7 @@
 .hp-progress { width: 100%; max-width: 28rem; height: 8px; accent-color: var(--st-text); }
 .hp-sub { font-size: 1rem; margin: 20px 0 8px; padding-top: 16px; border-top: 1px solid var(--st-divider); }
 .hp-how { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
-.hp-token { font-family: ui-monospace, Menlo, Consolas, monospace; }
+.hp-token { font-family: var(--app-mono); }
 .hp-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.8125rem; }
 .hp-steps { color: var(--st-muted); }
 .hp-steps li { padding: 0; border: 0; border-radius: 0; color: var(--st-muted); }

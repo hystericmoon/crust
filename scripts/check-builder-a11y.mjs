@@ -116,8 +116,11 @@ const server = await serve(distDir);
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 let failures = 0;
 try {
-  for (const [label, hash, post, select, clicks = [], { app, wait, firstRun, update, media, then = [] } = {}] of screens) {
-    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  // F085: every screen in the app's light look and in its dark look (the computer's setting, which the app follows).
+  for (const scheme of ["light", "dark"])
+  for (const [name, hash, post, select, clicks = [], { app, wait, firstRun, update, media, then = [] } = {}] of screens) {
+    const label = `${name} (${scheme})`;
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, colorScheme: scheme });
     if (media) {
       const items = [
         { file: "stage.jpg", alt: "The band on stage", width: 1920, height: 1200, bytes: 400000, uploadedAt: "2026-11-02T10:00:00Z", focus: { x: 18, y: 45 } },

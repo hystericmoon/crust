@@ -17,7 +17,6 @@ any work.
 
 | Next feature | Model | Why |
 |---|---|---|
-| F085 App look: dark and light themes | Opus | Design judgement; tokens for everything after |
 | F086 One app frame and top bar | Opus | Autosave and the app shell |
 | F087 Page first | Opus | Editor behaviour |
 | F088 Add section, by picture | Sonnet | Reuses the layout gallery |
@@ -34,7 +33,7 @@ Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-06 (Jakarta), branch `ccr-d50f7e80-weuq18`. **PR #81
+Last updated: 2026-11-06 ~17:30 (Jakarta), F085 built; branch `ccr-d50f7e80-weuq18`. **PR #81
 open** (review fixes, Mac launch test, Mac app fix); CI green; the owner
 merges. **The Mac app opens on the owner's Mac** (Apple chip, macOS 27.2)
 with the installer from desktop-release run 42159771953 (artifact
@@ -86,22 +85,14 @@ snapshot of the direction: https://claude.ai/artifact/EHnrnPwVaMRv9GRGpaXWLx.
 React Bits code can't be used (MIT + Commons Clause): aesthetic only
 (DECISIONS 2026-11-06).
 
-### Checkpoint (2026-11-06 ~16:30 Jakarta): F085 snapshot published
-
-- [x] F085 snapshot: https://claude.ai/artifact/KE4fZPZSFQJE8keiH4DwsA
-  (`design/f085-app-themes-v1.html`). Takes: **A Violet night (pick,
-  build it)**, B Graphite, C Aurora. Exact take-A tokens (dark and light)
-  are the `.tA.dark` / `.tA.light` rules in that file; contrast all pass.
-  React Bits measured with Playwright: bg #120f17, surfaces #221e29,
-  Geist, radius 10–13px, white primary in dark.
-- [ ] Build F085 (Opus): app colour tokens (dark/light) replacing the
-  stray accents, follow system + remembered toggle with no start-up
-  flash, bundle Geist + Geist Mono (OFL; add to licence notes), canvas
-  (site) untouched, test `app-theme` checking every text pair >= 4.5:1 in
-  both modes, check:builder in both modes. Default: follow the computer
-  (owner can ask for always-dark).
-- Branch: PR #81 is still open; if the owner hasn't merged it, F085 code
-  lands in the same PR (say so in the PR body) unless he merges first.
+**F085 built (2026-11-06)**: Violet night in dark and light, tokens in
+`apps/admin/src/app-theme/app-theme.css` (use `--app-*` for every new
+colour; the guard test fails on raw colours), switch in every header.
+Next: **F086 One app frame and top bar** (Opus), design snapshot first;
+build on the F085 tokens and the direction-A drawings in
+`design/app-redesign-v1.html`. F086 removes "Save draft" (autosave:
+desktop to disk, browser grouped every few seconds) — see the F086 entry
+in features.json.
 PR #81 (review fixes, Mac app fix, redesign research) is still open for
 the owner to merge; after the merge, restart the branch from main.
 Still waiting on him: F075 (phone test) and F078 (his call) from review

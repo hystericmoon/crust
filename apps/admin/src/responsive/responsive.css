@@ -2,25 +2,25 @@
    canvas. Puck copies these styles into the canvas iframe; the published
    site never loads them, so there hidden blocks are simply not shown. */
 .rs-widths, .rs-show { display: flex; flex-direction: column; gap: 8px; }
-.rs-label { font-weight: 600; font-size: 0.875rem; color: #18181b; }
+.rs-label { font-weight: 600; font-size: 0.875rem; color: var(--app-ink); }
 .rs-row { display: flex; flex-direction: column; gap: 2px; }
 .rs-device {
   display: inline-flex; align-self: flex-start; align-items: center; gap: 5px; min-height: 32px; padding: 0 2px;
-  border: 0; background: none; color: #3730a3; font: inherit; font-size: 0.8125rem; font-weight: 600;
+  border: 0; background: none; color: var(--app-acc); font: inherit; font-size: 0.8125rem; font-weight: 600;
   text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; text-align: left;
 }
 .rs-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .rs-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
 .rs-tile {
   display: flex; flex-direction: column; gap: 4px; min-height: 44px; padding: 5px 4px 4px;
-  border: 1.5px solid #d4d4d8; border-radius: 8px; background: #fff; color: #3f3f46;
+  border: 1.5px solid var(--app-line); border-radius: 8px; background: var(--app-panel); color: var(--app-mute);
   font: inherit; font-size: 0.6875rem; cursor: pointer;
 }
-.rs-tile[aria-checked="true"] { border: 2px solid #4338ca; padding: 4.5px 3.5px 3.5px; color: #3730a3; font-weight: 600; }
+.rs-tile[aria-checked="true"] { border: 2px solid var(--app-acc); padding: 4.5px 3.5px 3.5px; color: var(--app-acc); font-weight: 600; }
 .rs-tile-name { text-align: center; line-height: 1.2; overflow-wrap: anywhere; }
 .rs-bars { display: flex; gap: 2px; height: 14px; }
-.rs-bars i { display: block; flex: 1 1 0; border-radius: 2px; background: #a1a1aa; }
-.rs-tile[aria-checked="true"] .rs-bars i { background: #4338ca; }
+.rs-bars i { display: block; flex: 1 1 0; border-radius: 2px; background: var(--app-line-strong); }
+.rs-tile[aria-checked="true"] .rs-bars i { background: var(--app-acc); }
 .rs-bars.is-stack { flex-direction: column; height: 18px; }
 .rs-bars.is-wrap { flex-wrap: wrap; height: 18px; }
 .rs-bars.is-wrap i { flex: 1 1 40%; }
@@ -28,13 +28,13 @@
 .rs-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .rs-chip {
   display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px;
-  border: 1.5px solid #d4d4d8; border-radius: 999px; background: #fff; color: #52525b;
+  border: 1.5px solid var(--app-line); border-radius: 999px; background: var(--app-panel); color: var(--app-mute);
   font: inherit; font-size: 0.8125rem; cursor: pointer; text-decoration: line-through;
 }
-.rs-chip[aria-pressed="true"] { border-color: #4338ca; color: #3730a3; font-weight: 600; text-decoration: none; }
-.rs-note { margin: 0; font-size: 0.8125rem; color: #52525b; }
+.rs-chip[aria-pressed="true"] { border-color: var(--app-acc); color: var(--app-acc); font-weight: 600; text-decoration: none; }
+.rs-note { margin: 0; font-size: 0.8125rem; color: var(--app-mute); }
 .rs-note:empty { display: none; }
-:is(.rs-tile, .rs-chip, .rs-device):focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
+:is(.rs-tile, .rs-chip, .rs-device):focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
 
 /* On the canvas, a block hidden on the device being previewed stays selectable: faded, striped, labelled. */
 @media (max-width: 639.98px) { .cr-show.cr-hide-phone[data-hidden] { display: block; } }
@@ -45,5 +45,5 @@
 @media (min-width: 1024px) { .cr-hide-desktop[data-hidden] { position: relative; opacity: 0.45; background-image: repeating-linear-gradient(45deg, transparent 0 8px, rgb(0 0 0 / 0.08) 8px 16px); } .cr-hide-desktop[data-hidden]::before { content: attr(data-hidden); } }
 .cr-show[data-hidden]::before {
   position: absolute; top: 4px; left: 4px; z-index: 2; padding: 2px 8px; border-radius: 4px;
-  background: #18181b; color: #fff; font: 600 12px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--app-pri); color: var(--app-pri-fg); font: 600 12px/1.4 var(--app-font);
 }

@@ -9,6 +9,7 @@ import { focusAfterDialog, PageActions, type LinkingPage, type PageAction } from
 import type { PageRow } from "./store";
 import { UpdateBanner } from "../updates/UpdateNotice";
 import { designHref, useDesignStatus } from "../designs/DesignLinks";
+import { ThemeToggle } from "../app-theme/ThemeToggle";
 
 /**
  * F069: an address may wrap after a "/" or "-", never mid-word
@@ -161,6 +162,7 @@ export function PageList({ allSites = false, siteName, rows, sourceNote, loadErr
           {/* F069: last, after a divider, away from New page. */}
           <SignOutLink className="st-button st-link-button" />
         </div>
+        <ThemeToggle />
       </header>
 
       <main className="pg">

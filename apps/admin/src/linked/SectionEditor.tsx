@@ -10,6 +10,7 @@ import { MyLayoutsProvider } from "../layouts/mine";
 import { SectionEditorContext, useLinkedSections } from "./store";
 import { PlaceholderChecklist } from "../placeholders/Checklist";
 import { SaveStatus, useSaveStatus } from "../save-status";
+import { ThemeToggle } from "../app-theme/ThemeToggle";
 
 interface Props {
   id: string;
@@ -101,6 +102,7 @@ export function SectionEditor({ id, back, githubOn, config, overrides }: Props) 
                   Back
                 </a>
                 <PlaceholderChecklist />
+                <ThemeToggle />
                 <SaveButton label={used.length > 1 ? `Save for all ${used.length} pages` : "Save linked section"} onSave={save} />
               </>
             ),

@@ -92,7 +92,7 @@ describe("tidy-up: Puck's builder chrome (F040)", () => {
 
   it("gives the block-list headings readable contrast", () => {
     const css = readFileSync("apps/admin/src/keyboard/keyboard.css", "utf8");
-    expect(css).toMatch(/\.Puck \[class\*="_ComponentList-title_"\] \{ color: #52525b; \}/);
+    expect(css).toMatch(/\.Puck \[class\*="_ComponentList-title_"\] \{ color: var\(--app-mute\); \}/);
   });
 
   it("runs the builder's own axe check with the published-page checks", () => {

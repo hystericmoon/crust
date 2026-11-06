@@ -8,6 +8,7 @@ import { Dialog, focusAfterDialog } from "../pages/PageActions";
 import { AboutCrust, UpdateBanner } from "../updates/UpdateNotice";
 import { Icon } from "../settings/icons";
 import { copyName, siteNameProblem, tidyName, type DeletedSite, type SiteSummary, type SitesApi } from "./sites";
+import { ThemeToggle } from "../app-theme/ThemeToggle";
 
 const formatDate = (ms: number | null) =>
   ms === null ? "Not saved yet" : new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(ms));
@@ -88,6 +89,7 @@ export function SitesScreen({ api, openName }: SitesScreenProps) {
             New site
           </button>
         </div>
+        <ThemeToggle />
       </header>
 
       <main className="pg sites">

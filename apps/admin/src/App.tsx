@@ -78,6 +78,7 @@ import { sitesApi, sitesInvoke } from "./sites/sites";
 import { SitesScreen } from "./sites/SitesScreen";
 import { withMediaFields } from "./media/fields";
 import { MediaPicker } from "./media/MediaPicker";
+import { ThemeToggle } from "./app-theme/ThemeToggle";
 import { MediaFocusProvider } from "./media/FocusPicker";
 import { DesignEditor } from "./designs/DesignEditor";
 import { BlogContext, withPostEditing } from "./posts/editing";
@@ -650,6 +651,7 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
                 {shortcut}
                 <SaveDraftButton onSave={saveDraft} />
                 {/* F069: at the far end, after a divider, away from Save draft. */}
+                <ThemeToggle />
                 <SignOutLink />
               </>
             ),
@@ -736,6 +738,7 @@ function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boo
                 {shortcut}
                 <SaveDraftButton onSave={saveDraft} />
                 {/* F069: at the far end, after a divider, away from Save draft. */}
+                <ThemeToggle />
                 <SignOutLink />
               </>
             ),

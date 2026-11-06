@@ -261,6 +261,41 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-06 — F085 App look: dark and light themes (Claude, reversible)
+
+- Built take A "Violet night" from the snapshot
+  https://claude.ai/artifact/KE4fZPZSFQJE8keiH4DwsA (owner had approved
+  the React Bits look; A was the recommended take).
+- Tokens live in `apps/admin/src/app-theme/app-theme.css`: light on
+  `:root`, dark on `:root[data-app-theme="dark"]`. The old `--st-*`
+  variables point at them. 27 CSS files now use tokens only; a guard test
+  (`app-theme-guard.test.ts`) fails on new raw colours, with an allowlist
+  for site-side paint (search result preview, white paper behind site
+  previews, focal-point rings on photos, hidden-block stripes).
+- Light mute text is #5f5a68 (the mockup's #625d6b was short of 4.5:1 on
+  the raised grey); the light violet tint was lightened after
+  check:builder found the selected layout category under 4.5:1.
+- The switch is one button (no menu): it flips to the other look and
+  remembers it; flipping back to the computer's look forgets the choice
+  so the app follows the computer again. Choice in localStorage
+  `crust:app-theme`; an inline script in index.html applies it before
+  first paint (Tauri CSP is null, so inline is allowed).
+- Puck: the stylesheet import is now Puck's `no-external.css`, which stops
+  it downloading Inter from rsms.me at run time (offline desktop app,
+  fewer outside requests). Puck's chrome is themed through its own CSS
+  variables. Puck copies `<html>` attributes into the canvas iframe, so
+  our in-canvas controls (block toolbar, "+" buttons, outlines) follow
+  the theme; the site itself doesn't, because nothing styles plain
+  elements and `color-scheme` is a meta tag Puck doesn't copy.
+- The four stray accents are gone: "+", "Save as layout" and "Use this
+  photo" use the primary button; the "Editing…" pill is neutral;
+  "Whole site"/"Edit everywhere" use the warning colour.
+- Geist and Geist Mono were already bundled (F070, OFL, in
+  packages/blocks/fonts/LICENSE.txt); the app loads them from /fonts/, so
+  no new dependency.
+- `check:builder` now runs every screen in light and dark (about 7.5
+  minutes instead of about 4).
+
 ## 2026-11-06 — Milestone 9 "Friendly app" approved (owner)
 
 Owner, after the snapshot https://claude.ai/artifact/EHnrnPwVaMRv9GRGpaXWLx:

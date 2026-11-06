@@ -2,41 +2,41 @@
 
 /* On the canvas: a dashed outline and a "Replace me" label. The wrapper is display: contents when published. */
 /* A white halo inside the amber dashes keeps the outline visible on dark and primary sections too. */
-.cr-show[data-replace] { display: block; position: relative; outline: 2px dashed #b45309; outline-offset: 2px; box-shadow: 0 0 0 2px #fff; }
+.cr-show[data-replace] { display: block; position: relative; outline: 2px dashed var(--app-warn); outline-offset: 2px; box-shadow: 0 0 0 2px var(--app-bg); }
 /* F069: the tag sits on top of the outline, like a tab, not over the words it marks. */
 .cr-show[data-replace]::after {
   content: attr(data-replace);
   position: absolute; bottom: calc(100% + 2px); left: -4px; z-index: 2; max-width: 100%;
   padding: 1px 6px; border-radius: 4px 4px 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  background: #b45309; color: #fff; font: 600 11px/1.4 system-ui, sans-serif; letter-spacing: 0;
+  background: var(--app-warn); color: var(--app-warn-fg); font: 600 11px/1.4 var(--app-font); letter-spacing: 0;
   pointer-events: none;
 }
 
 /* Top bar button */
 .ph-button { display: inline-flex; align-items: center; gap: 6px; }
-.ph-count { min-width: 20px; padding: 0 6px; border-radius: 999px; background: #b45309; color: #fff; font-size: 0.75rem; font-weight: 600; line-height: 20px; text-align: center; }
+.ph-count { min-width: 20px; padding: 0 6px; border-radius: 999px; background: var(--app-warn); color: var(--app-warn-fg); font-size: 0.75rem; font-weight: 600; line-height: 20px; text-align: center; }
 
 /* The list */
 .ph-panel {
   position: fixed; top: 64px; right: 16px; z-index: 50;
   width: min(380px, calc(100vw - 32px)); max-height: calc(100vh - 96px); overflow: auto;
-  padding: 16px; border: 1px solid var(--st-border, #85858f); border-radius: 10px;
-  background: var(--st-panel, #fff); color: var(--st-text, #18181b);
-  box-shadow: 0 8px 28px rgb(0 0 0 / 0.16);
+  padding: 16px; border: 1px solid var(--app-line-strong); border-radius: 10px;
+  background: var(--app-panel); color: var(--app-ink);
+  box-shadow: 0 8px 28px var(--app-shadow);
 }
 .ph-panel h2 { margin: 0 0 4px; font-size: 1rem; }
-.ph-panel h2:focus-visible, .ph-link:focus-visible { outline: 3px solid var(--st-focus, #2563eb); outline-offset: 2px; border-radius: 4px; }
-.ph-help { margin: 0 0 8px; font-size: 0.875rem; color: var(--st-muted, #52525b); }
+.ph-panel h2:focus-visible, .ph-link:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; border-radius: 4px; }
+.ph-help { margin: 0 0 8px; font-size: 0.875rem; color: var(--app-mute); }
 .ph-panel ul { margin: 0; padding: 0; list-style: none; }
-.ph-panel li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; padding: 8px 0; border-top: 1px solid var(--st-divider, #e4e4e7); }
+.ph-panel li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; padding: 8px 0; border-top: 1px solid var(--app-line); }
 .ph-what { display: flex; flex-direction: column; min-width: 0; overflow-wrap: anywhere; }
-.ph-what span { font-size: 0.8125rem; color: var(--st-muted, #52525b); }
+.ph-what span { font-size: 0.8125rem; color: var(--app-mute); }
 .ph-actions { display: flex; gap: 4px; }
 .ph-link { min-height: 32px; min-width: 32px; padding: 0 8px; border: 0; background: none; color: inherit; font: inherit; font-size: 0.875rem; font-weight: 500; text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; }
 
 /* The field in the Advanced tab */
 .ph-field { margin: 0; padding: 0; border: 0; }
-.ph-label { padding: 0; margin-bottom: 6px; font-size: 0.875rem; font-weight: 600; color: #18181b; }
+.ph-label { padding: 0; margin-bottom: 6px; font-size: 0.875rem; font-weight: 600; color: var(--app-ink); }
 .ph-check { display: flex; align-items: center; gap: 8px; min-height: 32px; font-size: 0.875rem; }
 .ph-check input { width: 18px; height: 18px; margin: 0; }
 @media (max-width: 639.98px) { .ph-panel { top: auto; bottom: 16px; } }

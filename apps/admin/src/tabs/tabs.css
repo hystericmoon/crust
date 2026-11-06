@@ -1,42 +1,42 @@
 /* Content / Style / Advanced (F030): a segmented switch at the top of the block's settings. */
 .tb-tabs {
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px;
-  border: 1px solid #d4d4d8; border-radius: 10px; background: #f4f4f5;
+  border: 1px solid var(--app-line); border-radius: 10px; background: var(--app-raised);
 }
 .tb-tab {
   min-height: 36px; padding: 0 8px; border: 0; border-radius: 8px; background: transparent;
-  color: #3f3f46; font: inherit; font-size: 0.875rem; font-weight: 600; cursor: pointer;
+  color: var(--app-mute); font: inherit; font-size: 0.875rem; font-weight: 600; cursor: pointer;
 }
-.tb-tab:hover { color: #18181b; }
-.tb-tab[aria-checked="true"] { background: #fff; color: #3730a3; box-shadow: 0 1px 2px rgb(0 0 0 / 0.12), inset 0 0 0 1.5px #4338ca; }
-.tb-tab:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
-.tb-empty { margin: 0; font-size: 0.875rem; color: #52525b; }
+.tb-tab:hover { color: var(--app-ink); }
+.tb-tab[aria-checked="true"] { background: var(--app-panel); color: var(--app-acc); box-shadow: 0 1px 2px var(--app-shadow), inset 0 0 0 1.5px var(--app-acc); }
+.tb-tab:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
+.tb-empty { margin: 0; font-size: 0.875rem; color: var(--app-mute); }
 .tb-anchor { display: flex; flex-direction: column; gap: 6px; }
-.tb-label { font-weight: 600; font-size: 0.875rem; color: #18181b; }
+.tb-label { font-weight: 600; font-size: 0.875rem; color: var(--app-ink); }
 .tb-input {
-  min-height: 38px; padding: 0 10px; border: 1px solid #85858f; border-radius: 8px;
-  background: #fff; color: #18181b; font: inherit;
+  min-height: 38px; padding: 0 10px; border: 1px solid var(--app-line-strong); border-radius: 8px;
+  background: var(--app-panel); color: var(--app-ink); font: inherit;
 }
-.tb-input[aria-invalid="true"] { border-color: #b42318; }
-.tb-input:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
-.tb-help { margin: 0; font-size: 0.8125rem; color: #52525b; }
-.tb-help.is-error { color: #b42318; font-weight: 600; }
+.tb-input[aria-invalid="true"] { border-color: var(--app-danger); }
+.tb-input:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
+.tb-help { margin: 0; font-size: 0.8125rem; color: var(--app-mute); }
+.tb-help.is-error { color: var(--app-danger); font-weight: 600; }
 
 /* F080: saved element styles, top of the Style tab. */
-.es-box { display: flex; flex-direction: column; gap: 8px; padding: 10px; border: 1px solid #e4e4e7; border-radius: 10px; background: #fafafa; }
+.es-box { display: flex; flex-direction: column; gap: 8px; padding: 10px; border: 1px solid var(--app-line); border-radius: 10px; background: var(--app-fill); }
 .es-box .tb-label { margin: 0; }
 .es-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
 .es-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .es-apply {
   flex: 1; min-width: 0; min-height: 36px; padding: 0 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px;
-  border: 1px solid #c4c4cc; border-radius: 8px; background: #fff; color: #18181b; font: inherit; font-size: 0.875rem; text-align: left; cursor: pointer;
+  border: 1px solid var(--app-line-strong); border-radius: 8px; background: var(--app-panel); color: var(--app-ink); font: inherit; font-size: 0.875rem; text-align: left; cursor: pointer;
 }
 .es-apply span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.es-apply:hover { border-color: #4338ca; }
-.es-apply[aria-pressed="true"] { border-color: #4338ca; box-shadow: inset 0 0 0 1px #4338ca; }
-.es-inuse { flex: none; font-size: 0.75rem; font-weight: 600; color: #3730a3; }
-.es-link { min-height: 32px; min-width: 24px; padding: 0 4px; border: 0; background: none; color: #3730a3; font: inherit; font-size: 0.8125rem; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
-.es-save { align-self: flex-start; min-height: 36px; padding: 0 12px; border: 1px solid #85858f; border-radius: 8px; background: #fff; color: #18181b; font: inherit; font-size: 0.875rem; font-weight: 600; cursor: pointer; }
-.es-confirm { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 0.8125rem; color: #18181b; }
-.es-danger { min-height: 32px; padding: 0 10px; border: 0; border-radius: 6px; background: #b42318; color: #fff; font: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer; }
-.es-apply:focus-visible, .es-link:focus-visible, .es-save:focus-visible, .es-danger:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
+.es-apply:hover { border-color: var(--app-acc); }
+.es-apply[aria-pressed="true"] { border-color: var(--app-acc); box-shadow: inset 0 0 0 1px var(--app-acc); }
+.es-inuse { flex: none; font-size: 0.75rem; font-weight: 600; color: var(--app-acc); }
+.es-link { min-height: 32px; min-width: 24px; padding: 0 4px; border: 0; background: none; color: var(--app-acc); font: inherit; font-size: 0.8125rem; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.es-save { align-self: flex-start; min-height: 36px; padding: 0 12px; border: 1px solid var(--app-line-strong); border-radius: 8px; background: var(--app-panel); color: var(--app-ink); font: inherit; font-size: 0.875rem; font-weight: 600; cursor: pointer; }
+.es-confirm { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 0.8125rem; color: var(--app-ink); }
+.es-danger { min-height: 32px; padding: 0 10px; border: 0; border-radius: 6px; background: var(--app-danger); color: var(--app-danger-fg); font: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer; }
+.es-apply:focus-visible, .es-link:focus-visible, .es-save:focus-visible, .es-danger:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
