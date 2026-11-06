@@ -7,25 +7,21 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
-- **2026-11-06: F087 Page first (built, waiting for your review).**
-  Opening a site now lands on its **Home page in the editor**, drawn at
-  full size (no more 57%). The panel on the right is **gone until you
-  select something**: click a heading or a section and its settings slide
-  in; click the grey area around the page and it goes away again. The
-  page's **title, description and search settings** are behind the new
-  sliders button right next to the page name ("Page settings"; on a post,
-  "Post settings"). A **new site** starts with a short **Next steps** list
-  on the right: replace the sample words and photos, describe the page
-  for search, see it on a phone, publish. Steps tick themselves when done
-  (you can tick them by hand too); **Skip** hides the list, and Help →
-  "Next steps for a new site" brings it back. Snapshot:
-  https://claude.ai/artifact/VX9gKVj8euKZCtwXLahQwg.
+- **2026-11-06: F088 Add section, by picture (built, waiting for your review).**
+  The **Add** button on the left now opens **pictures of whole sections**
+  (hero, features, pricing…) next to your page, with a search box and
+  category buttons. Click a picture and the section lands **after the one
+  you selected** (or at the end); a line at the top says where. The
+  **"+ Add section" bars** between sections pick the spot first and open the
+  same panel. Single things (heading, text, image) are under **Add an
+  element**; **See larger** opens the old big gallery for whole pages and
+  linked sections. One Undo removes what you added. Snapshot:
+  https://claude.ai/artifact/Cx8c5fTfFkxfZYBMBnQs2A.
   **To try:** open the preview
-  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev: you should land on
-  Home at full width with no right panel. Click a heading, then the grey
-  area. Press the sliders button next to the page name. To see Next
-  steps, start a new site from the welcome screen (or in the Mac app,
-  make a new site). Next: F088 Add section, by picture.
+  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, press Add on the left,
+  click a picture. Then hover between two sections, press the purple
+  "+ Add section" and pick one. Try it by keyboard too: Tab to a picture,
+  Enter. Next: F089 One-row section toolbar.
 
 ## Waiting on the owner
 

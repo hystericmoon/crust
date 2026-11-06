@@ -5,6 +5,26 @@ short. Older "Current" entries (newest first) and the older log.
 
 ## Earlier "Current" entries (F065 back to Milestone 1)
 
+- **2026-11-06: F087 Page first (built, waiting for your review).**
+  Opening a site now lands on its **Home page in the editor**, drawn at
+  full size (no more 57%). The panel on the right is **gone until you
+  select something**: click a heading or a section and its settings slide
+  in; click the grey area around the page and it goes away again. The
+  page's **title, description and search settings** are behind the new
+  sliders button right next to the page name ("Page settings"; on a post,
+  "Post settings"). A **new site** starts with a short **Next steps** list
+  on the right: replace the sample words and photos, describe the page
+  for search, see it on a phone, publish. Steps tick themselves when done
+  (you can tick them by hand too); **Skip** hides the list, and Help →
+  "Next steps for a new site" brings it back. Snapshot:
+  https://claude.ai/artifact/VX9gKVj8euKZCtwXLahQwg.
+  **To try:** open the preview
+  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev: you should land on
+  Home at full width with no right panel. Click a heading, then the grey
+  area. Press the sliders button next to the page name. To see Next
+  steps, start a new site from the welcome screen (or in the Mac app,
+  make a new site). Next: F088 Add section, by picture.
+
 - **2026-11-06: F086 one top bar and a left icon bar (built, waiting for
   your review).** Every screen now has the same top bar: your site's name
   on the left (press it for a menu: Pages, Posts, Site settings, Start

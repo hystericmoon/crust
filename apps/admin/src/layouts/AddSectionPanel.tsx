@@ -14,6 +14,9 @@ import { useMyLayouts } from "./mine";
 
 const usePuckSelector = createUsePuck();
 
+/** Pictures drawn at first: each is a rendered preview, so the rest wait behind "Show more". */
+const FIRST = 8;
+
 type Pick = LayoutCategory | "All" | "Mine";
 
 export function AddSectionPanel({ elements }: { elements?: React.ReactNode }) {
@@ -25,6 +28,7 @@ export function AddSectionPanel({ elements }: { elements?: React.ReactNode }) {
   const mine = useMyLayouts();
   const [query, setQuery] = useState("");
   const [pick, setPick] = useState<Pick>("All");
+  const [more, setMore] = useState(false);
 
   const index = addAt !== null ? Math.min(addAt, content.length) : insertionPoint(content, selectedId);
   const where = describeInsertion(getPuck().config as Config, content, index);
@@ -45,19 +49,32 @@ export function AddSectionPanel({ elements }: { elements?: React.ReactNode }) {
       </p>
       <label className="af-addsec-search">
         <span className="lg-search-label">Search layouts</span>
-        <input type="search" value={query} placeholder="Pricing, team, questions…" onChange={(e) => setQuery(e.target.value)} />
+        <input type="search" value={query} placeholder="Pricing, team, questions…" onChange={(e) => {
+            setQuery(e.target.value);
+            setMore(false);
+          }} />
       </label>
       <ul className="af-addsec-chips" aria-label="Categories">
         {(["All", ...layoutCategories, "Mine"] as Pick[]).map((c) => (
           <li key={c}>
-            <button type="button" className="af-chip" aria-pressed={pick === c} onClick={() => setPick(c)}>
+            <button type="button" className="af-chip" aria-pressed={pick === c} onClick={() => {
+                setPick(c);
+                setMore(false);
+              }}>
               {c === "Mine" ? "My layouts" : c}
             </button>
           </li>
         ))}
       </ul>
       {items.length ? (
-        <ItemList items={items} kind="section" onPick={add} />
+        <>
+          <ItemList items={more ? items : items.slice(0, FIRST)} kind="section" onPick={add} />
+          {!more && items.length > FIRST ? (
+            <button type="button" className="af-panel-link" onClick={() => setMore(true)}>
+              Show {items.length - FIRST} more layouts
+            </button>
+          ) : null}
+        </>
       ) : (
         <p className="af-panel-note">{pick === "Mine" ? "Nothing saved yet. Select a section and choose Save as layout." : `No layouts match “${query}”.`}</p>
       )}

@@ -77,11 +77,21 @@ describe("add section panel", () => {
 
   it("filters by search and by category", () => {
     render(<AddSectionPanel />);
-    const all = document.querySelectorAll("button.lg-card-button").length;
-    fireEvent.click(within(screen.getByRole("list", { name: "Categories" })).getAllByRole("button")[1]!);
-    expect(document.querySelectorAll("button.lg-card-button").length).toBeLessThan(all);
+    const chip = within(screen.getByRole("list", { name: "Categories" })).getAllByRole("button")[1]!;
+    fireEvent.click(chip);
+    expect(chip.getAttribute("aria-pressed")).toBe("true");
+    const metas = [...document.querySelectorAll(".lg-card-meta")].map((m) => m.textContent);
+    expect(metas.length).toBeGreaterThan(0);
+    expect(new Set(metas)).toEqual(new Set([chip.textContent]));
     fireEvent.change(screen.getByLabelText("Search layouts"), { target: { value: "zzzzzz" } });
     expect(screen.getByText(/No layouts match/)).toBeTruthy();
+  });
+
+  it("draws the first pictures and keeps the rest behind Show more", () => {
+    render(<AddSectionPanel />);
+    expect(document.querySelectorAll("button.lg-card-button")).toHaveLength(8);
+    fireEvent.click(screen.getByRole("button", { name: /Show \d+ more layouts/ }));
+    expect(document.querySelectorAll("button.lg-card-button").length).toBeGreaterThan(8);
   });
 
   it("keeps single blocks under 'Add an element', and a way to the large gallery", () => {

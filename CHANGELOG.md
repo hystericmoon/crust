@@ -4,6 +4,14 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Add a section by picture (2026-11-06).** The Add button on the left now
+  shows small pictures of whole sections (hero, features, pricing…) next to
+  your page, with search and categories, so you can see where the section
+  will go. Click a picture and it lands after the selected section. The
+  "+ Add section" bars between sections choose the spot first and open the
+  same panel. Single things like a heading or an image are under "Add an
+  element". "See larger" still opens the big gallery with whole pages and
+  linked sections. One Undo removes the section you added.
 - **Your page first (2026-11-06).** Opening a site takes you straight to
   its Home page in the editor, drawn at full size instead of shrunk to
   57%. The settings panel on the right only appears when you select

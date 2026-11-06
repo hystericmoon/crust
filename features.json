@@ -950,7 +950,7 @@
       "description": "Design snapshot first. '+ Add section' between sections opens the layout gallery (categories, Blank, My layouts) in the Add panel; single blocks sit under it as 'Add an element'. Keyboard alternative for every drag. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
       "depends_on": ["F087"],
       "done_check": "npm test -- add-section && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

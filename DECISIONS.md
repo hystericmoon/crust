@@ -3627,3 +3627,21 @@ a lawyer reads it (BLOCKED.md).
 ## 2026-11-06 — Mac app launch test (Claude, reversible)
 
 - The owner's Mac showed the unsigned installer bouncing on the dock and never opening. Reading the code found no blocking start-up step, and CI only tested a Linux build with the site folder forced, so the real Mac start-up was never run. Added `.github/workflows/desktop-smoke.yml` (Actions → Desktop launch test): builds the Mac app, opens it like Finder, records a stack sample, screenshot, output and crash reports. First run (Apple-chip runner, macOS 26): the app opens and shows its welcome screen, so the cause is specific to the owner's Mac or the downloaded combined build. The workflow has a temporary push trigger on the session branch; remove it once the problem is solved.
+
+## 2026-11-06 — F088 Add section, by picture (Claude, reversible)
+
+- Built direction A from the snapshot (https://claude.ai/artifact/Cx8c5fTfFkxfZYBMBnQs2A):
+  pictures live in the Add panel (`layouts/AddSectionPanel.tsx`), not a dialog.
+- The big dialog stays, reached by "See larger" and the top-bar Layouts
+  button: it is the only place for whole pages, starting designs and
+  linked sections. The panel covers sections and My layouts.
+- The "+" bars on the page set the spot (`setAddAt` in `layouts/library.ts`)
+  and switch the left bar to Add; with no spot set, a picture goes after
+  the selected section or at the end. The spot is forgotten after an add.
+- Only the first 8 pictures are drawn, the rest behind "Show more layouts":
+  every picture is a rendered preview, and drawing them all made the
+  editor slow to open (F087 tests timed out).
+- The bars read "Add section" (was "Add a layout"). Insert code is shared
+  with the dialog (`insertLayout`), so Undo, focus and the spoken message
+  behave the same in both.
+

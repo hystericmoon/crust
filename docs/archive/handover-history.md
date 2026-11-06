@@ -648,3 +648,16 @@ Carry on from here instead of picking a feature.
   call: pass as is, tab stop only when the table overflows, or a "no speech"
   tick, which needs a migration). F055's "GitHub" wording (about 70 strings)
   waits until he has tried the app.
+
+## F087 handover note (moved 2026-11-06)
+
+**F087 built (2026-11-06)**: `apps/admin/src/page-first/`:
+`PageFirstWatcher` (in `BuilderRoot`: fit width on Desktop, min 1024;
+right panel shown only while something is selected or a panel mode is
+on), `store.ts` (panel mode `next`/`page`/null; Next steps per site in
+localStorage, `markNewSite()` from the welcome screen), `SettingsButton`
+beside the page switcher, `SettingsPanel` (Puck `fields` override).
+No hash → Home in the editor; `#/` is still the Pages list. DECISIONS "F087".
+Next: **F088 Add section, by picture** (Sonnet), design snapshot first:
+"+ Add section" opens the layout gallery in the Add panel, single blocks
+under it as "Add an element", keyboard alternative for every drag.
