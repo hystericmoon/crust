@@ -1,0 +1,17 @@
+/* F087 Page first: the Next steps list in the right panel. */
+.Puck [class*="_Sidebar--right_"]:has(.pf-next) [class*="_SidebarSection-heading_"],
+.Puck [class*="_Sidebar--right_"]:has(.pf-next) [class*="_SidebarSection-breadcrumbs_"] { display: none; }
+.pf-next { display: grid; gap: 12px; padding: 16px; color: var(--app-ink); }
+.pf-next-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pf-next-title { margin: 0; font-size: 15px; font-weight: 600; }
+.pf-next-title:focus-visible { outline: 2px solid var(--app-acc); outline-offset: 2px; border-radius: 4px; }
+.pf-skip { min-height: 44px; min-width: 44px; }
+.pf-next-count { margin: 0; font-size: 13px; color: var(--app-mute); }
+.pf-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.pf-step { display: grid; grid-template-columns: 24px 1fr; gap: 8px; align-items: start; padding: 10px 8px; border-radius: 8px; }
+.pf-step + .pf-step { border-top: 1px solid var(--app-line); }
+.pf-step input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--app-acc); }
+.pf-step label { font-size: 14px; font-weight: 500; cursor: pointer; }
+.pf-step[data-done] label { color: var(--app-mute); text-decoration: line-through; text-decoration-color: var(--app-line-strong); }
+.pf-step-hint { margin: 2px 0 0; font-size: 12.5px; line-height: 1.45; color: var(--app-mute); }
+.pf-step-action { margin-top: 4px; }

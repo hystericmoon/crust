@@ -8,6 +8,7 @@ const paths = {
   redo: "M15 14l5-5-5-5M20 9H9a5 5 0 000 10h3",
   add: "M12 5v14M5 12h14",
   panel: "M3 4h18v16H3zM15 4v16",
+  sliders: "M4 7h9M17 7h3M15 5v4M4 17h3M11 17h9M9 15v4",
   layers: "M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5",
   pages: "M14 3H6v18h12V7l-4-4zM14 3v4h4",
   brush: "M18 3l-9 9 3 3 9-9-3-3zM9 12c-3 0-4 2-4 4s-1 3-2 3c2 2 8 2 9-4",

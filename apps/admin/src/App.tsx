@@ -81,6 +81,8 @@ import { MediaPicker } from "./media/MediaPicker";
 import { setAppFrame } from "./app-frame/AppTopBar";
 import { EditorBar, EditorFrameContext, PageSwitcher } from "./app-frame/EditorBar";
 import { railPlugins } from "./app-frame/rail";
+import "./page-first/page-first.css";
+import { PageFirstContext, PageFirstWatcher, SettingsButton, SettingsPanel, withSettingsLabel } from "./page-first/PageFirst";
 import { useAutosave, type SavePhase } from "./app-frame/autosave";
 import { MediaFocusProvider } from "./media/FocusPicker";
 import { DesignEditor } from "./designs/DesignEditor";
@@ -96,9 +98,9 @@ const site = (desktopContent()?.site ?? siteJson) as Site;
 /** The builder's blocks: "Replace me" marks (F046), rich text in Text blocks (F042), image fields with the media library (F034), visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
 const editorConfig = withSiteChrome(withSettingsTabs(withPlaceholderEditing(withResponsiveEditing(withSectionEditing(withItemEditing(withIconFields(withBlocksV3Fields(withInteractiveFields(withMediaFields(withRichText(withLinkedSectionFields(config))))))))))));
 /** Posts (F035): the same blocks, with the post's details and top. */
-const postEditorConfig = withPostEditing(editorConfig);
+const postEditorConfig = withSettingsLabel(withPostEditing(editorConfig), "Post settings");
 /** Pages also get search and sharing settings (F036). */
-const pageEditorConfig = withSeoEditing(editorConfig);
+const pageEditorConfig = withSettingsLabel(withSeoEditing(editorConfig), "Page settings");
 
 /** Responsive canvas widths for the viewport switcher. */
 const viewports = [
@@ -163,6 +165,8 @@ export function parseRoute(hash: string): Route {
     const path = new URLSearchParams(hash.split("?")[1] ?? "").get("path");
     if (path) return { name: "edit", path };
   }
+  // F087: page first: with no address, the site opens on its Home page in the editor.
+  if (hash === "" || hash === "#") return { name: "edit", path: "/" };
   // F024: the Publish shortcut lands on the page list with focus on Publish.
   if (new URLSearchParams(hash.split("?")[1] ?? "").get("focus") === "publish") return { name: "pages", focus: "publish" };
   return { name: "pages" };
@@ -562,6 +566,7 @@ function BuilderRoot({ children }: { children: ReactNode }) {
       <LayoutGallery />
       <PlaceholderWatcher />
       <LayoutPhotoWatcher />
+      <PageFirstWatcher />
     </KeyboardRoot>
   );
 }
@@ -631,17 +636,25 @@ function Builder({ path, githubOn, onSaved, pages }: { path: string; githubOn: b
     <SeoSiteProvider value={{ baseUrl: loadSavedAddress(site.baseUrl), siteName: site.name, path }}>
       <LinkedSectionsProvider githubOn={githubOn}>
       <MyLayoutsProvider githubOn={githubOn}>
+        <PageFirstContext.Provider value={{ site: site.name, settingsLabel: "Page settings" }}>
         <EditorFrameContext.Provider
-          value={{ where: <PageSwitcher current={path} pages={pages} hrefFor={editHref} />, devices: viewports, phase: githubOn ? autosave.phase : autosave.phase === "saved" ? "local" : autosave.phase }}
+          value={{ where: (
+            <>
+              <PageSwitcher current={path} pages={pages} hrefFor={editHref} />
+              <SettingsButton />
+            </>
+          ), devices: viewports, phase: githubOn ? autosave.phase : autosave.phase === "saved" ? "local" : autosave.phase }}
         >
           <Puck
             config={pageEditorConfig}
             data={toPuckData(page)}
             viewports={viewports}
+            ui={{ rightSideBarVisible: false }}
             headerTitle={page.title || path}
             plugins={plugins}
             overrides={{
               header: EditorBar,
+              fields: SettingsPanel,
               puck: BuilderRoot,
               iframe: BuilderCanvas,
               actionBar: KeyboardActionBar,
@@ -656,6 +669,7 @@ function Builder({ path, githubOn, onSaved, pages }: { path: string; githubOn: b
             }}
           />
         </EditorFrameContext.Provider>
+        </PageFirstContext.Provider>
         <SaveStatus note={status.note} onDismiss={status.clear} />
       </MyLayoutsProvider>
       </LinkedSectionsProvider>
@@ -716,13 +730,17 @@ function PostBuilder({ slug, githubOn, onSaved }: { slug: string; githubOn: bool
     <BlogContext.Provider value={{ blog, language: site.language }}>
       <LinkedSectionsProvider githubOn={githubOn}>
       <MyLayoutsProvider githubOn={githubOn}>
+        <PageFirstContext.Provider value={{ site: site.name, settingsLabel: "Post settings" }}>
         <EditorFrameContext.Provider
           value={{
             where: (
+              <>
               <a className="af-crumb" href="#/posts">
                 <span className="af-switch-label">Post</span>
                 {post.title || "Untitled post"}
               </a>
+              <SettingsButton />
+              </>
             ),
             devices: viewports,
             phase: githubOn ? autosave.phase : autosave.phase === "saved" ? "local" : autosave.phase,
@@ -732,10 +750,12 @@ function PostBuilder({ slug, githubOn, onSaved }: { slug: string; githubOn: bool
             config={postEditorConfig}
             data={postToPuckData(post)}
             viewports={viewports}
+            ui={{ rightSideBarVisible: false }}
             headerTitle={post.title || "Untitled post"}
             plugins={plugins}
             overrides={{
               header: EditorBar,
+              fields: SettingsPanel,
               puck: BuilderRoot,
               iframe: BuilderCanvas,
               actionBar: KeyboardActionBar,
@@ -748,6 +768,7 @@ function PostBuilder({ slug, githubOn, onSaved }: { slug: string; githubOn: bool
             }}
           />
         </EditorFrameContext.Provider>
+        </PageFirstContext.Provider>
         <SaveStatus note={status.note} onDismiss={status.clear} />
       </MyLayoutsProvider>
       </LinkedSectionsProvider>

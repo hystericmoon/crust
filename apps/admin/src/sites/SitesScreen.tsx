@@ -7,7 +7,7 @@ import { useCallback, useEffect, useId, useRef, useState, type FormEvent } from 
 import { Dialog, focusAfterDialog } from "../pages/PageActions";
 import { AboutCrust, UpdateBanner } from "../updates/UpdateNotice";
 import { Icon } from "../settings/icons";
-import { copyName, siteNameProblem, tidyName, type DeletedSite, type SiteSummary, type SitesApi } from "./sites";
+import { copyName, siteNameProblem, tidyName, type DeletedSite, type SiteSummary, type SitesApi, HOME_HREF } from "./sites";
 import { ThemeToggle } from "../app-theme/ThemeToggle";
 
 const formatDate = (ms: number | null) =>
@@ -64,7 +64,7 @@ export function SitesScreen({ api, openName }: SitesScreenProps) {
   const open = async (site: SiteSummary) => {
     if (opening) return;
     if (site.open) {
-      window.location.hash = "#/";
+      window.location.hash = HOME_HREF;
       return;
     }
     setOpening(site.id);

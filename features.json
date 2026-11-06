@@ -940,7 +940,7 @@
       "description": "Design snapshot first. Opening a site lands on its home page in the editor at fit width (no 57% default). The block list moves into the Add panel. The right panel shows only when something is selected; with nothing selected it shows 'Next steps' for a new site (skippable). Page title and search settings move to the page's settings. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
       "depends_on": ["F086"],
       "done_check": "npm test -- page-first && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

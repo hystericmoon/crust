@@ -207,7 +207,10 @@ describe("app frame: the builder", () => {
     const preview = await screen.findByRole("button", { name: "Preview" }, { timeout: 5000 });
     fireEvent.click(preview);
     expect(preview.getAttribute("aria-pressed")).toBe("true");
+    // F087: with nothing selected the panel starts closed; the button opens the page's settings.
     const panel = screen.getByRole("button", { name: "Settings panel" });
+    expect(panel.getAttribute("aria-pressed")).toBe("false");
+    fireEvent.click(panel);
     expect(panel.getAttribute("aria-pressed")).toBe("true");
     fireEvent.click(panel);
     expect(panel.getAttribute("aria-pressed")).toBe("false");

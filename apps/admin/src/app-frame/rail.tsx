@@ -11,6 +11,7 @@ import { LayoutsButton } from "../layouts/LayoutGallery";
 import { useEffect } from "react";
 import { loadMedia, useMedia } from "../media/store";
 import { FrameIcon } from "./icons";
+import { NextStepsLink } from "../page-first/PageFirst";
 
 export interface RailOptions {
   /** Pages for the Pages panel. */
@@ -162,6 +163,7 @@ export function railPlugins({ pages, hrefFor, quickEdit }: RailOptions): Plugin[
           <button type="button" className="af-panel-link" onClick={openKeyboardHelp}>
             Keyboard shortcuts
           </button>
+          <NextStepsLink />
           {quickEdit ? (
             <a className="af-panel-link" href={quickEdit}>
               Quick edit (words and photos only)

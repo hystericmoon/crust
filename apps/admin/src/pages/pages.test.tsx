@@ -98,7 +98,7 @@ describe("pages: where pages come from", () => {
 
 describe("pages: routes", () => {
   it("parses the admin's addresses", () => {
-    expect(parseRoute("")).toEqual({ name: "pages" });
+    expect(parseRoute("")).toEqual({ name: "edit", path: "/" });
     expect(parseRoute("#/")).toEqual({ name: "pages" });
     expect(parseRoute("#/settings/contrast")).toEqual({ name: "settings" });
     expect(parseRoute("#/edit?path=%2Fabout")).toEqual({ name: "edit", path: "/about" });

@@ -7,6 +7,8 @@
 import { createUsePuck, type Viewport } from "@puckeditor/core";
 import { createContext, useContext, type ReactNode } from "react";
 import { PlaceholderChecklist } from "../placeholders/Checklist";
+import { usePanelToggle } from "../page-first/PageFirst";
+import { isDesktopWidth } from "../page-first/store";
 import { AppTopBar } from "./AppTopBar";
 import { FrameIcon, type FrameIconName } from "./icons";
 import type { SavePhase } from "./autosave";
@@ -35,7 +37,8 @@ function DeviceToggle() {
     <div className="af-seg" role="group" aria-label="Page width">
       {options.map((v) => {
         const label = v.label ?? `${v.width}px`;
-        const on = viewports.current.width === v.width;
+        // F087: Desktop is "fit width", so any desktop width counts.
+        const on = label === "Desktop" ? isDesktopWidth(viewports.current.width) : viewports.current.width === v.width;
         return (
           <button
             key={label}
@@ -77,10 +80,9 @@ function UndoRedo() {
   );
 }
 
-/** The settings panel on the right: shown or hidden (F087 makes it follow the selection). */
+/** The settings panel on the right: it follows the selection (F087); this shows or hides it by hand. */
 function PanelToggle() {
-  const shown = usePuck((s) => s.appState.ui.rightSideBarVisible);
-  const dispatch = usePuck((s) => s.dispatch);
+  const { shown, toggle } = usePanelToggle();
   return (
     <button
       type="button"
@@ -88,7 +90,7 @@ function PanelToggle() {
       aria-pressed={shown}
       aria-label="Settings panel"
       title={shown ? "Hide the settings panel" : "Show the settings panel"}
-      onClick={() => dispatch({ type: "setUi", ui: { rightSideBarVisible: !shown }, recordHistory: false })}
+      onClick={toggle}
     >
       <FrameIcon name="panel" />
     </button>

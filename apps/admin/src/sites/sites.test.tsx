@@ -186,11 +186,11 @@ describe("sites: the Sites screen", () => {
     expect(screen.queryByRole("button", { name: /Recently deleted/ })).toBeNull();
   });
 
-  it("opens another site; the open one just goes back to its pages", async () => {
+  it("opens another site; the open one just goes back to its Home page (F087)", async () => {
     const api = await showScreen();
     location.hash = "#/sites";
     fireEvent.click(screen.getByRole("button", { name: "Harbour Studio" }));
-    expect(location.hash).toBe("#/");
+    expect(location.hash).toBe("#/edit?path=%2F");
     expect(api.open).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "Bakery Lumière" }));
     await flush();
