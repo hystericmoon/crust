@@ -10,32 +10,6 @@ skill (`.claude/skills/crust-start/SKILL.md`). While building:
 `crust-lean`. Finishing: `crust-finish` (it holds the "Ready to clear"
 message the owner asked for every time). Content JSON: `crust-content-format`.
 
-## Checkpoint (2026-11-06, Mac app fix waiting for the owner's try)
-
-Carry on from here instead of picking a feature.
-
-- **Cause found (DECISIONS 2026-11-06 "Mac app won't open"):** the Mac
-  installer's app was "not signed at all" as a bundle, so macOS knew it by a
-  random name, and Crust touches Documents before its window opens. Owner:
-  Apple chip, macOS 27.2, nothing blocked in Privacy & Security.
-- **Fixed in d28ca57:** `bundle.macOS.signingIdentity: "-"` (free ad-hoc
-  signature) and `open_sites_or_fallback` in crates/crust-desktop/src/lib.rs
-  (sites go to the app's data folder if Documents can't be used). Tests added.
-- **Launch test (desktop-smoke.yml, run 42158333443) passed:** a fresh
-  download shows Apple's "Crust Not Opened" box (expected without a $99
-  Developer ID, the owner's call); after "Open Anyway" the welcome screen
-  shows and macOS names the app `app.crust.desktop`.
-- **Mac installer for the owner:** desktop-release.yml run 42159771953
-  (mac only, not on the downloads site), from this branch. Give him the
-  run's artifact link and the "Open Anyway" steps; wait for his try.
-- **Then:** remove the temporary `push` trigger from desktop-smoke.yml,
-  CHANGELOG/PROGRESS, crust-finish. PR #81 carries all of it.
-- **Review round two** (page: https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp,
-  no answers stored there): still open F075 (his phone test) and F078 (his
-  call: pass as is, tab stop only when the table overflows, or a "no speech"
-  tick, which needs a migration). F055's "GitHub" wording (about 70 strings)
-  waits until he has tried the app.
-
 ## Model plan (owner, 2026-11-03)
 
 The owner picks the model per feature; `crust-start` checks it before
@@ -43,26 +17,22 @@ any work.
 
 | Next feature | Model | Why |
 |---|---|---|
-| (none yet) | — | Milestone 7 is complete; the owner picks what's next |
+| App UX redesign: research + design snapshot (not in features.json yet) | Opus | Owner's request 2026-11-06; design judgement and wide research |
 
 Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-05 (Jakarta), branch `ccr-d50f7e80-weuq18` (restarted
-from main after PR #79). **Everything is merged to main** (PRs #70-#79; none
-open). **The store launches free:** all three templates are Free, one short
-Licence page, no Terms/Refunds/Draft banner (DECISIONS "Store launches
-free"; the paid-store pages and the F068 gate stay in the code and return
-when a template gets a price). Publish store was run on main with real
-payments off (result in PROGRESS "Current"). **Owner's words:** "everything
-free right now, later we do something about the paid template". Still open
-for the owner: Passes for F055, F062, F063, F071, F075, F078, F080 (the
-visual review); re-publishing the live site (only on his word); a
-real-device try of the desktop app and real hosts. The F068 wording, seller
-name and contact email are only needed once something is priced.
-**Next: nothing unbuilt.** Ask the owner what comes next (Milestone 8 plan:
-docs/milestone-8.md; `npm run next`).
+Last updated: 2026-11-06 (Jakarta), branch `ccr-d50f7e80-weuq18`. **PR #81
+open** (review fixes, Mac launch test, Mac app fix); CI green; the owner
+merges. **The Mac app opens on the owner's Mac** (Apple chip, macOS 27.2)
+with the installer from desktop-release run 42159771953 (artifact
+`crust-mac`, expires 2026-12-06): it was unsigned as a bundle and hung at
+start-up; now ad-hoc signed, with a Documents fallback (DECISIONS
+2026-11-06). **Owner's words (2026-11-06):** "the ui ux for the app itself
+is not very nice and friendly. we need to see how squarespace, wix,
+webflow made theirs. compare with us. use the best claude skills to
+redesign ours." That is the next piece of work (see Next).
 
 ## Where things stand
 
@@ -80,8 +50,11 @@ docs/milestone-8.md; `npm run next`).
 - **Repository is public** since 2026-11-03 (owner; free CI). Never commit
   paid template files while public; make CI lighter before it goes
   private again (DECISIONS "Repository public for now").
-- **Desktop app** (F055–F062) built and tested in CI, never installed by
-  the owner; installers cost ~150 Actions minutes (ask first).
+- **Desktop app** (F055–F062) installed and opened by the owner on
+  2026-11-06. The welcome screen shows; a fresh download needs "Open
+  Anyway" once (no Apple Developer ID; $99/year, his call). Mac launch
+  test: Actions → Desktop launch test (by hand). Repo public, so installer
+  runs are free; mac-only runs are quicker.
 - **Review round** for 26 features:
   https://claude.ai/artifact/C3czUd4fpf5Qz6t2WqAkwZ (PROGRESS.md
   "Waiting on the owner" says how to read the answers). Check it at the
@@ -94,9 +67,26 @@ docs/milestone-8.md; `npm run next`).
 
 ## Next
 
-**No unbuilt features.** Milestone 7 (store) is complete. Ask the owner
-what to build next; scope is his. Waiting on him: the F068 wording
-choices, the review round, and the store/delivery setup in BLOCKED.md.
+**App UX redesign (owner's request, 2026-11-06).** Not in features.json:
+scope is his, so plan first, then he approves features.
+1. Research how Squarespace, Wix and Webflow do the app itself: first run
+   and onboarding, choosing a template, the editor (canvas, adding
+   sections, editing text and images, settings panels), pages and site
+   settings, preview/publish, empty states, help. Use helper agents for
+   the wide web research (crust-lean).
+2. Walk Crust's own admin the same way (preview
+   https://ccr-d50f7e80-weuq18.crust-admin.pages.dev or `npm run dev`
+   with Playwright screenshots) and compare, screen by screen.
+3. Use the design skills (impeccable for the critique and audit,
+   design-taste-frontend for app screens, emil-design-eng, ui-ux-pro-max)
+   and publish one Artifact: the comparison, what to change, and 2–3
+   redesign directions drawn as UI with Claude's pick marked
+   (owner's preference: before/after mockups, short chat summary).
+4. Propose the work as features in DECISIONS.md → Proposals; the owner
+   adds them. Build only after he picks.
+Still waiting on him: F075 (phone test) and F078 (his call) from review
+round two (https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp); F055's
+"GitHub" wording (about 70 strings) can fold into the redesign.
 
 ## Where to find things
 

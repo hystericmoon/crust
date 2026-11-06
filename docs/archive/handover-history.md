@@ -588,3 +588,29 @@ footer column "Buying"; "Read the full licence" on template pages. Tests:
 (date, seller, contact), run `npm run build:store`, commit the pages.
 **Next: nothing unbuilt.** Ask the owner what comes next (Milestone 8
 plan is docs/milestone-8.md; check `npm run next`).
+
+## Checkpoint (closed 2026-11-06: owner confirmed the app opens) (2026-11-06, Mac app fix waiting for the owner's try)
+
+Carry on from here instead of picking a feature.
+
+- **Cause found (DECISIONS 2026-11-06 "Mac app won't open"):** the Mac
+  installer's app was "not signed at all" as a bundle, so macOS knew it by a
+  random name, and Crust touches Documents before its window opens. Owner:
+  Apple chip, macOS 27.2, nothing blocked in Privacy & Security.
+- **Fixed in d28ca57:** `bundle.macOS.signingIdentity: "-"` (free ad-hoc
+  signature) and `open_sites_or_fallback` in crates/crust-desktop/src/lib.rs
+  (sites go to the app's data folder if Documents can't be used). Tests added.
+- **Launch test (desktop-smoke.yml, run 42158333443) passed:** a fresh
+  download shows Apple's "Crust Not Opened" box (expected without a $99
+  Developer ID, the owner's call); after "Open Anyway" the welcome screen
+  shows and macOS names the app `app.crust.desktop`.
+- **Mac installer for the owner:** desktop-release.yml run 42159771953
+  (mac only, not on the downloads site), from this branch. Give him the
+  run's artifact link and the "Open Anyway" steps; wait for his try.
+- **Then:** remove the temporary `push` trigger from desktop-smoke.yml,
+  CHANGELOG/PROGRESS, crust-finish. PR #81 carries all of it.
+- **Review round two** (page: https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp,
+  no answers stored there): still open F075 (his phone test) and F078 (his
+  call: pass as is, tab stop only when the table overflows, or a "no speech"
+  tick, which needs a migration). F055's "GitHub" wording (about 70 strings)
+  waits until he has tried the app.

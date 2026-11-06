@@ -4,6 +4,12 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **The Mac app opens (2026-11-06).** It used to bounce in the Dock and
+  never show a window. The app is now signed as one app, so macOS knows
+  it is Crust and can ask about the Documents folder; if that folder
+  can't be used, Crust keeps your sites in its own folder instead of
+  quitting. The first time after downloading, macOS still asks you to
+  choose **Open Anyway** in System Settings → Privacy & Security.
 - **Review fixes (2026-11-06).** The two buttons in the full-photo hero
   sit together instead of far apart; in the template preview the "Open
   the file" button is a full-size, easy-to-tap button.

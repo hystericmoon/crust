@@ -7,6 +7,17 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
+- **2026-11-06: the Mac app opens.** The Mac installer's app wasn't
+  signed as one app, so macOS couldn't tell it was Crust and it hung at
+  start-up (long bounce, then nothing). It is now signed (free "ad-hoc"
+  signature), and if Crust can't use the Documents folder it keeps sites
+  in its own app folder instead of quitting. The owner tried the new
+  installer on his Mac (Apple chip, macOS 27.2): the welcome screen shows.
+  A fresh download still needs **Open Anyway** once in System Settings →
+  Privacy & Security (only a $99/year Apple Developer ID removes that; the
+  owner's call). The CI launch test (Actions → Desktop launch test) stays
+  for future Mac checks.
+
 - **2026-11-05: store launches free.** Everything is free for now (owner:
   "later on we can do something about the paid template"). The store has
   three templates (Harbour, Signal, Corner), all Free; none was ever
@@ -20,30 +31,6 @@ later session must know; keep the newest 3 entries here.
   https://crust-store.pages.dev, a template page, and /licence; the
   "Download" buttons should open each template's file. The licence
   wording is plain and short, not lawyer-reviewed.
-
-- **F068 Licence, terms and refunds: built, passes, wording is a draft**
-  (branch `ccr-d50f7e80-weuq18`, its own PR). done_check `npm test --
-  store-legal && npm run check:a11y` exit 0. Snapshot
-  https://claude.ai/artifact/DAmwsHC4W4CcGXzH4DDCij (A built on all
-  three: one price for unlimited sites; full refund within 14 days for
-  any reason; three short pages). The store has Licence, Terms and
-  Refunds pages, a "Buying" footer column, "Read the full licence" on
-  every template page, and a line under every buy button linking all
-  three. Each page says "Draft" until you approve the wording, and the
-  store refuses real payments until then. **To try:** after Publish
-  store, open https://crust-store.pages.dev/licence (and /terms,
-  /refunds); read the wording; tell Claude your changes, the name to
-  sell under and the contact email. **Milestone 7 is complete; no
-  unbuilt features remain.**
-
-- **2026-11-03: token saving A, B and D done** (owner's pick on
-  https://claude.ai/artifact/D2h2rdzR4iQU6dQv7TyWqV; DECISIONS "Token
-  saving"). Nothing changes in Crust itself; sessions carry less. Long
-  features may now stop once for a checkpoint `/clear`.
-
-- **2026-11-03: PR #66 merged** (owner's request): F084, F063, F064,
-  F065, F066 are on main. Start-up files slimmed (history in
-  `docs/archive/`, `npm run next`); one PR per feature from now on.
 
 ## Waiting on the owner
 

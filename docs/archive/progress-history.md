@@ -5,6 +5,30 @@ short. Older "Current" entries (newest first) and the older log.
 
 ## Earlier "Current" entries (F065 back to Milestone 1)
 
+- **F068 Licence, terms and refunds: built, passes, wording is a draft**
+  (branch `ccr-d50f7e80-weuq18`, its own PR). done_check `npm test --
+  store-legal && npm run check:a11y` exit 0. Snapshot
+  https://claude.ai/artifact/DAmwsHC4W4CcGXzH4DDCij (A built on all
+  three: one price for unlimited sites; full refund within 14 days for
+  any reason; three short pages). The store has Licence, Terms and
+  Refunds pages, a "Buying" footer column, "Read the full licence" on
+  every template page, and a line under every buy button linking all
+  three. Each page says "Draft" until you approve the wording, and the
+  store refuses real payments until then. **To try:** after Publish
+  store, open https://crust-store.pages.dev/licence (and /terms,
+  /refunds); read the wording; tell Claude your changes, the name to
+  sell under and the contact email. **Milestone 7 is complete; no
+  unbuilt features remain.**
+
+- **2026-11-03: token saving A, B and D done** (owner's pick on
+  https://claude.ai/artifact/D2h2rdzR4iQU6dQv7TyWqV; DECISIONS "Token
+  saving"). Nothing changes in Crust itself; sessions carry less. Long
+  features may now stop once for a checkpoint `/clear`.
+
+- **2026-11-03: PR #66 merged** (owner's request): F084, F063, F064,
+  F065, F066 are on main. Start-up files slimmed (history in
+  `docs/archive/`, `npm run next`); one PR per feature from now on.
+
 - **F067 Delivery and updates: built, passes** (branch
   `ccr-d50f7e80-weuq18`, PR #69, merged 2026-11-03). done_check `npm test -- delivery`
   exit 0; `npm test`, typecheck, `cargo test` and clippy pass. After a
