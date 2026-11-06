@@ -3457,3 +3457,12 @@ a lawyer reads it (BLOCKED.md).
 - Owner: "I want everything to be free right now… later on we can do something about the paid template." The store has three templates (Harbour, Signal, Corner), all already Free; none is paid.
 - With nothing priced, the store has one short "Licence" page (free to use, don't resell the file) and a footer column "Licence"; no Terms, Refunds or Draft banner. The paid-store pages and the F068 gate are kept and come back as soon as any template gets a price. Tests in `store-legal.test.ts` cover both modes.
 - The free-licence wording is plain and short, not lawyer-reviewed.
+
+## 2026-11-06 — Review round two (owner + Claude)
+
+- **Impeccable re-check of the seven open features.** Passes recorded: F063, F071 (polish notes only). F075 passed too but stays open for the owner's phone test.
+- **Owner's answers:** "fix F080, F062, F078; pass F055 now".
+- **F080:** the full photo hero's two buttons were in a 1/4 + 3/4 columns block (about 170px apart on desktop). They now sit one under the other, like the store's home buttons. Test added. Not done: a contrast test across every colourway (Impeccable P2) and photo assets in the layout-check render (P3); both are proposals.
+- **F062:** the preview's "Already bought it? Open the file" input now has the same 44px file button and focus ring as the template card. Not done: announcing the Premium group when it loads (live region), moving the file input under the Get button.
+- **F078:** nothing to change in the Video block. The reviewer said the builder never asks for captions; it does (a warning under the address, "Does it have speech? Add a captions file", covered by a test). Left alone: the table's scroll region is always a tab stop (a script to switch it only when the table overflows costs more than the extra stop), and there is no "no speech" tick (it would add a prop, which needs a migration). The owner decides whether he wants either.
+- **F055:** passed now. The "GitHub" wording inside the desktop app (about 70 places, see the 2026-11-01 proposal) and the stale window screenshot wait until the owner has tried the Mac app.

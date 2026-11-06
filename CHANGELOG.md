@@ -4,6 +4,9 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Review fixes (2026-11-06).** The two buttons in the full-photo hero
+  sit together instead of far apart; in the template preview the "Open
+  the file" button is a full-size, easy-to-tap button.
 - **The store launches free (2026-11-05).** All three templates are free
   to download. The store has one short Licence page ("free to use, on as
   many sites as you like, please don't resell the file"); the Terms and
