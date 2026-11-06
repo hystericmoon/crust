@@ -1,0 +1,70 @@
+# Opens the built Mac app the way a person does (from Finder's launcher),
+# waits, and records what it is doing: a stack sample, a screenshot, its
+# output and any crash report. Started by hand (Actions → Desktop launch
+# test → Run workflow). For finding out why the app doesn't open.
+name: Desktop launch test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-smoke
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install
+        run: npm ci
+
+      - name: Build the app
+        run: npm run desktop:build -- --bundles app
+
+      - name: Open it and watch
+        shell: bash
+        run: |
+          mkdir -p smoke
+          app=$(ls -d target/release/bundle/macos/*.app | head -n 1)
+          echo "app: $app" | tee smoke/notes.txt
+          uname -m | tee -a smoke/notes.txt
+          sw_vers | tee -a smoke/notes.txt
+          open -n --stdout "$PWD/smoke/out.log" --stderr "$PWD/smoke/err.log" "$app"
+          for t in 10 20 30 40; do
+            sleep 10
+            echo "--- after about $t s" | tee -a smoke/notes.txt
+            pgrep -lx crust | tee -a smoke/notes.txt || echo "crust is not running" | tee -a smoke/notes.txt
+          done
+          pid=$(pgrep -x crust | head -n 1 || true)
+          if [ -n "$pid" ]; then
+            sample "$pid" 5 -file smoke/sample.txt || true
+          fi
+          screencapture -x smoke/screen.png || true
+          osascript -e 'tell application "System Events" to get the name of every window of every process whose name is "crust" or name is "Crust"' > smoke/windows.txt 2>&1 || true
+          ls -la "$HOME/Documents" > smoke/documents.txt 2>&1 || true
+          cp "$HOME"/Library/Logs/DiagnosticReports/*[Cc]rust* smoke/ 2>/dev/null || true
+          pkill -x crust || true
+
+      - name: Keep the results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: launch-test
+          path: smoke
+          if-no-files-found: warn
+          retention-days: 14
