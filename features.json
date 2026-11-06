@@ -684,7 +684,8 @@
       "done_check": "npm test -- store && npm run check:a11y && npm run check:perf",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Impeccable review 2026-11-06 (owner: follow Impeccable): pass. Polish only: hero right half empty, small captions."
     },
     {
       "id": "F064",
@@ -768,7 +769,8 @@
       "done_check": "npm test -- type-styles && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Impeccable review 2026-11-06 (owner: follow Impeccable): pass. Polish only: tightest tracking on serif display."
     },
     {
       "id": "F072",
