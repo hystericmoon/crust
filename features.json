@@ -920,7 +920,7 @@
       "description": "Design snapshot first. The app's own chrome (not the user's site) gets a React Bits-inspired look: violet-tinted near-black and a light counterpart, translucent panels, hairline borders, Geist (OFL) bundled, one violet accent, mono for small print. Follows the computer's light/dark setting, with a toggle that is remembered. All app colours become tokens; every pair passes WCAG 2.2 AA in both themes. Our own code only (React Bits is MIT + Commons Clause). Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
       "depends_on": [],
       "done_check": "npm test -- app-theme && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
