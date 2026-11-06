@@ -17,7 +17,18 @@ any work.
 
 | Next feature | Model | Why |
 |---|---|---|
-| App UX redesign: research + design snapshot (not in features.json yet) | Opus | Owner's request 2026-11-06; design judgement and wide research |
+| F085 App look: dark and light themes | Opus | Design judgement; tokens for everything after |
+| F086 One app frame and top bar | Opus | Autosave and the app shell |
+| F087 Page first | Opus | Editor behaviour |
+| F088 Add section, by picture | Sonnet | Reuses the layout gallery |
+| F089 One-row section toolbar | Sonnet | Contained |
+| F090 Type on the page | Opus | Hardest: inline editing in the canvas |
+| F091 Pages panel | Sonnet | Contained |
+| F092 Styles panel and Site settings sheet | Sonnet | Regrouping existing panels |
+| F093 Words and accessibility sweep | Sonnet | Sweep |
+
+Milestone 9 approved 2026-11-06 (docs/milestone-9.md); models are
+Claude's recommendation, the owner can change any row.
 
 Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
@@ -67,47 +78,17 @@ redesign ours." That is the next piece of work (see Next).
 
 ## Next
 
-### Checkpoint (2026-11-06, 15:50 Jakarta): App UX redesign, snapshot published
+### Milestone 9 "Friendly app" (approved 2026-11-06)
 
-Done:
-- [x] Review pages checked: no new answers (F075, F078 still waiting).
-- [x] Competitor research + Impeccable critique (24/40), notes in
-  `design/ux-audit/NOTES.md`, screenshots `design/ux-audit/*.png`.
-- [x] Assessment B: axe on #/, #/edit, #/settings, #/templates (only the
-  builder has issues: no main/h1, 30 items outside landmarks, aria-grabbed;
-  canvas iframe not scanned) and the detector (one real hit:
-  templates.css .tp-banner side bar). Summarised in the snapshot.
-- [x] Snapshot published: https://claude.ai/artifact/EHnrnPwVaMRv9GRGpaXWLx
-  (`design/app-redesign-v1.html`, built from `app-redesign-v1.src.html`
-  by inlining the JPEGs). A "One studio" recommended; 8 proposed features.
-- [x] Proposal in DECISIONS.md → Proposals.
-Left:
-- [ ] **Waiting on the owner:** direction (A/B/C), autosave vs "Save
-  draft", which of the 8 features to add. Then add the picked ones to
-  features.json only on his word, and draw a snapshot per feature.
-- [ ] PR #81 still open for him to merge; after merge restart the branch
-  from main before building.
-
-**App UX redesign (owner's request, 2026-11-06).** Not in features.json:
-scope is his, so plan first, then he approves features.
-1. Research how Squarespace, Wix and Webflow do the app itself: first run
-   and onboarding, choosing a template, the editor (canvas, adding
-   sections, editing text and images, settings panels), pages and site
-   settings, preview/publish, empty states, help. Use helper agents for
-   the wide web research (crust-lean).
-2. Walk Crust's own admin the same way (preview
-   https://ccr-d50f7e80-weuq18.crust-admin.pages.dev or `npm run dev`
-   with Playwright screenshots) and compare, screen by screen.
-3. Use the design skills (impeccable for the critique and audit,
-   design-taste-frontend for app screens, emil-design-eng, ui-ux-pro-max)
-   and publish one Artifact: the comparison, what to change, and 2–3
-   redesign directions drawn as UI with Claude's pick marked
-   (owner's preference: before/after mockups, short chat summary).
-4. Propose the work as features in DECISIONS.md → Proposals; the owner
-   adds them. Build only after he picks.
+Owner: "Go with your recommendation" + React Bits look with light and dark
+mode. Features F085–F093 in features.json; plan in docs/milestone-9.md;
+snapshot of the direction: https://claude.ai/artifact/EHnrnPwVaMRv9GRGpaXWLx.
+React Bits code can't be used (MIT + Commons Clause): aesthetic only
+(DECISIONS 2026-11-06). Next: F085, design snapshot first.
+PR #81 (review fixes, Mac app fix, redesign research) is still open for
+the owner to merge; after the merge, restart the branch from main.
 Still waiting on him: F075 (phone test) and F078 (his call) from review
-round two (https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp); F055's
-"GitHub" wording (about 70 strings) can fold into the redesign.
+round two (https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp).
 
 ## Where to find things
 

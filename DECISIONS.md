@@ -5,7 +5,7 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 
 ## Proposals
 
-- **App UX redesign (owner's request 2026-11-06; waiting on his pick).** Snapshot: https://claude.ai/artifact/EHnrnPwVaMRv9GRGpaXWLx (`design/app-redesign-v1.html`; notes and screenshots in `design/ux-audit/`). Compared Squarespace, Wix, Webflow with Crust screen by screen (usability score 24/40). Directions: **A "One studio" (recommended:** editor is home, top bar with status and one Publish, left icon bar Add/Pages/Styles/Media/Blog, inspector only on selection), B dashboard + editor (Wix-like), C tidy up today's screens. Proposed features for A, in build order: (1) one app frame and top bar, (2) page first: open on the home page at fit width, "Next steps" when nothing is selected, (3) "+ Add section" opening the layout gallery, (4) one-row section toolbar with a scope step for site-wide changes, (5) type on the page (inline text editing), (6) Pages panel "In the menu / Not in the menu", (7) Styles panel and Site settings sheet, (8) the app's own look and a wording pass (incl. F055's ~70 "GitHub" strings). Open questions for the owner: direction; drop "Save draft" for autosave (browser saves grouped); which features to add. Accessibility found (axe 2026-11-06, builder): no main landmark or h1, 30 panel items outside landmarks, deprecated aria-grabbed, 16px unnamed colour dots, focus under the floating toolbar; the canvas iframe still needs its own scan.
+- **App UX redesign: approved 2026-11-06** as Milestone 9 (F085–F093, docs/milestone-9.md); see the entry below.
 
 - **Footer section in use (from F076).** Count the footer as a use of its linked section, so Layouts → Linked sections won't delete it while the footer shows it (today publishing stops with a clear message instead). Small.
 
@@ -260,6 +260,33 @@ Features Claude suggests. They are not work until the owner adds them to
   the redirects and Crust's 404 page. Small (M). Only helps Apache hosts
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
+
+## 2026-11-06 — Milestone 9 "Friendly app" approved (owner)
+
+Owner, after the snapshot https://claude.ai/artifact/EHnrnPwVaMRv9GRGpaXWLx:
+"Go with your recommendation. also i wanto have https://reactbits.dev
+design and aesthetic, means we should also have light and dark mode."
+Recorded as: direction A "One studio"; autosave on ("Save draft" goes;
+browser saves grouped every few seconds); all 8 proposed features, plus
+the look moved to the front as F085 (dark and light themes) because every
+later screen builds on its tokens; the words part of the old #8 joins the
+accessibility sweep (F093). Models are Claude's recommendation (Opus for
+F085–F087 and F090, Sonnet for the rest); the owner can change any row.
+
+React Bits (reactbits.dev, read 2026-11-06): its code is "MIT + Commons
+Clause" ("you do not sell, sublicense, or redistribute the components
+themselves"), not on our licence list and risky in a public repo. So we
+take the aesthetic only and write our own components. What the site uses:
+violet-tinted near-black #120f17 with surfaces about #221e29, white in
+light mode; translucent white fills (4–7%) and hairline borders; radius
+10–13px; Geist (SIL OFL 1.1, allowed) with a mono for small print; white
+primary buttons on dark, a violet accent (#a855f7 range); soft glows and
+dot grids in hero areas. Dark is its default; light via a toggle. Ours
+follows the computer's setting, with a remembered toggle.
+
+Themes apply to the app's chrome only; the user's site on the canvas
+keeps its own design (otherwise a dark app would make light sites look
+wrong).
 
 ## 2026-11-06 — Mac app won't open: sign it as one app, never quit over Documents (Claude, reversible)
 
