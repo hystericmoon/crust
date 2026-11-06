@@ -1,0 +1,515 @@
+<title>Crust App Redesign</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one long review page in the series style. Comparison table, today's screens with numbered problems, then three directions drawn as app mockups (editor + second screen) with the pick marked, then the work list. Mockups use fixed "screen" colours: they show the app, which is light. */
+:root{--bg:#f3f4f6;--card:#fff;--fg:#15171c;--mute:#5b6270;--line:#d9dce3;--accent:#2f5bd8;--ok:#1d7a4a;--okbg:#e6f4ec;--warn:#8a5a00;--warnbg:#fff4d6;--bad:#a33a2a;
+/* screen tokens: the app's own look inside mockups, same in both themes */
+--s-bg:#ffffff;--s-chrome:#fbfbfc;--s-line:#e4e6ec;--s-ink:#1a1c22;--s-mute:#6b7280;--s-canvas:#eef0f3;--s-acc:#3b47c9;--s-accbg:#eceefe;--s-ok:#1d7a4a;--s-dot:#d97706;--s-site:#f6f1ea;--s-siteink:#2a2420}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101216;--card:#1a1d23;--fg:#eceef2;--mute:#9aa1af;--line:#2e333d;--accent:#8ab4ff;--ok:#5fcf93;--okbg:#16301f;--warn:#f3c969;--warnbg:#3a2f12;--bad:#ff8f7a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101216;--card:#1a1d23;--fg:#eceef2;--mute:#9aa1af;--line:#2e333d;--accent:#8ab4ff;--ok:#5fcf93;--okbg:#16301f;--warn:#f3c969;--warnbg:#3a2f12;--bad:#ff8f7a;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1120px;margin:auto;display:grid;gap:44px}
+h1{font-size:28px;line-height:1.2;margin:0;text-wrap:balance}h2{font-size:21px;margin:0;text-wrap:balance}h3{font-size:16px;margin:0}
+p{margin:0;max-width:72ch}.mute{color:var(--mute)}
+section{display:grid;gap:16px}
+.eyebrow{font:600 12px/1 system-ui,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
+.lede{font-size:17px;max-width:68ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:12px;min-width:0;align-content:start}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,480px),1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+ul,ol{margin:0;padding-left:20px;display:grid;gap:6px}
+.score{display:flex;flex-wrap:wrap;gap:12px}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 12px;font-size:13px}
+.pill b{font-variant-numeric:tabular-nums}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:880px;font-size:13.5px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+thead th{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--mute);background:var(--bg)}
+tbody th{font-weight:600;white-space:nowrap}
+td.us{background:var(--warnbg)}
+tr:last-child td,tr:last-child th{border-bottom:0}
+figure{margin:0;display:grid;gap:10px}
+figure img{border:1px solid var(--line);border-radius:8px;display:block;width:100%;height:auto}
+figcaption{font-size:13px;color:var(--mute)}
+.num{display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:50%;background:var(--bad);color:#fff;font:700 12px/1 system-ui;margin-right:6px;font-variant-numeric:tabular-nums}
+.issues{list-style:none;padding:0;gap:8px}
+.issues li{display:flex;gap:4px;align-items:flex-start;font-size:14px}
+.keep li::marker{color:var(--ok)}
+/* direction blocks */
+.dir{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:18px}
+.dir.rec{border:2px solid var(--ok);box-shadow:0 0 0 4px var(--okbg)}
+.dirhead{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline}
+.badge{font:700 12px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:6px;background:var(--ok);color:#fff}
+.like{font-size:13px;color:var(--mute)}
+.proscons{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px;font-size:14px}
+.good::marker{color:var(--ok)}.bad::marker{color:var(--bad)}
+.lbl{font:600 12px/1 system-ui;letter-spacing:.05em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+
+/* ---------- app mockups (fixed screen colours) ---------- */
+.mock{border:1px solid var(--s-line);border-radius:10px;overflow:hidden;background:var(--s-bg);color:var(--s-ink);font:12px/1.35 system-ui,sans-serif;aspect-ratio:16/10;display:grid;grid-template-rows:auto 1fr;min-width:0;max-width:100%}
+.mock *{box-sizing:border-box}
+.m-top{display:flex;align-items:center;gap:6px;padding:7px 10px;border-bottom:1px solid var(--s-line);background:var(--s-bg);min-width:0}
+.m-top .sp{flex:1}
+.m-site{font-weight:650;display:flex;gap:4px;align-items:center;white-space:nowrap}
+.m-sel{border:1px solid var(--s-line);border-radius:6px;padding:3px 7px;white-space:nowrap;color:var(--s-ink)}
+.m-status{color:var(--s-mute);white-space:nowrap;display:flex;align-items:center;gap:5px;font-size:11px}
+.m-status i{width:7px;height:7px;border-radius:50%;background:var(--s-dot);display:inline-block}
+.m-status i.ok{background:var(--s-ok)}
+.m-btn{border:1px solid var(--s-line);border-radius:6px;padding:4px 9px;white-space:nowrap;background:var(--s-bg);color:var(--s-ink)}
+.m-pri{background:var(--s-acc);border-color:var(--s-acc);color:#fff;font-weight:600}
+.m-pri em{font-style:normal;background:rgba(255,255,255,.25);border-radius:9px;padding:0 6px;margin-left:4px}
+.m-ico{width:22px;height:22px;border-radius:5px;display:grid;place-items:center;color:var(--s-mute)}
+.m-ico svg{width:14px;height:14px}
+.m-dev{display:flex;gap:2px;border:1px solid var(--s-line);border-radius:6px;padding:1px}
+.m-dev span{width:22px;height:18px;border-radius:4px;display:grid;place-items:center;color:var(--s-mute)}
+.m-dev span.on{background:var(--s-accbg);color:var(--s-acc)}
+.m-dev svg{width:12px;height:12px}
+.m-body{display:grid;min-height:0;min-width:0}
+.m-rail{background:var(--s-chrome);border-right:1px solid var(--s-line);display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px}
+.m-rail .it{display:grid;justify-items:center;gap:2px;font-size:9px;color:var(--s-mute);padding:5px 2px;border-radius:6px;width:44px}
+.m-rail .it svg{width:15px;height:15px}
+.m-rail .it.on{background:var(--s-accbg);color:var(--s-acc)}
+.m-rail .grow{flex:1}
+.m-canvas{background:var(--s-canvas);padding:12px;overflow:hidden;min-width:0;display:grid;align-content:start}
+.m-page{background:var(--s-site);color:var(--s-siteink);border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden;font-family:Georgia,"Times New Roman",serif}
+.m-page .nav{display:flex;justify-content:space-between;padding:8px 14px;font:11px system-ui,sans-serif}
+.m-page .hero{padding:16px 14px 18px;display:grid;gap:6px}
+.m-page .hero b{font-size:20px;font-weight:400;line-height:1.1}
+.m-page .hero small{font:10px system-ui,sans-serif;opacity:.75}
+.m-page .hero .cta{justify-self:start;background:var(--s-siteink);color:var(--s-site);font:600 9px system-ui;padding:5px 9px;border-radius:3px}
+.m-page .band{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 14px;background:#ece5da}
+.m-page .band div{height:34px;border-radius:3px;background:#d8cdbd}
+.m-sec{position:relative;outline:2px solid transparent}
+.m-sec.sel{outline-color:var(--s-acc);outline-offset:-2px}
+.m-add{display:flex;align-items:center;gap:6px;justify-content:center;height:0;position:relative;z-index:1}
+.m-add span{background:var(--s-acc);color:#fff;font:600 9px system-ui;border-radius:999px;padding:3px 8px;transform:translateY(-50%);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.m-tool{position:absolute;top:-1px;left:50%;transform:translate(-50%,-100%);background:var(--s-ink);color:#fff;border-radius:7px;display:flex;gap:2px;padding:3px;font:10px system-ui,sans-serif;white-space:nowrap;z-index:2}
+.m-tool span{padding:3px 6px;border-radius:4px}
+.m-tool span.on{background:rgba(255,255,255,.18)}
+.m-panel{background:var(--s-bg);border-left:1px solid var(--s-line);padding:10px;display:grid;gap:8px;align-content:start;min-width:0}
+.m-panel.l{border-left:0;border-right:1px solid var(--s-line)}
+.m-panel h4{margin:0;font-size:12px}
+.m-panel .hint{color:var(--s-mute);font-size:10.5px}
+.m-check{display:grid;gap:5px}
+.m-check div{display:flex;gap:6px;align-items:center;font-size:11px}
+.m-check i{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--s-line);flex:none}
+.m-check i.done{background:var(--s-ok);border-color:var(--s-ok)}
+.m-bar{height:5px;border-radius:3px;background:var(--s-line);overflow:hidden}
+.m-bar i{display:block;height:100%;width:50%;background:var(--s-ok)}
+.m-tabs{display:flex;gap:2px;background:var(--s-canvas);border-radius:6px;padding:2px}
+.m-tabs span{flex:1;text-align:center;padding:3px;border-radius:4px;font-size:10.5px;color:var(--s-mute)}
+.m-tabs span.on{background:var(--s-bg);color:var(--s-ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.m-field{display:grid;gap:3px;font-size:10.5px}
+.m-field div{border:1px solid var(--s-line);border-radius:5px;padding:4px 6px;color:var(--s-ink)}
+.m-sw{display:flex;gap:5px}
+.m-sw i{width:18px;height:18px;border-radius:50%;border:1px solid var(--s-line)}
+.m-list{display:grid;gap:2px}
+.m-list .g{font:600 9px system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--s-mute);margin-top:4px}
+.m-list .r{display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:5px;font-size:11px}
+.m-list .r.on{background:var(--s-accbg);color:var(--s-acc);font-weight:600}
+.m-list .r i{width:6px;height:6px;border-radius:50%;background:var(--s-ok);flex:none}
+.m-list .r i.d{background:var(--s-dot)}
+.m-list .r .h{margin-left:auto;color:var(--s-mute)}
+.m-side{background:#1f2230;color:#c9ccd8;display:grid;align-content:start;gap:2px;padding:10px 6px}
+.m-side .r{padding:5px 8px;border-radius:5px;font-size:11px;display:flex;gap:6px;align-items:center}
+.m-side .r svg{width:13px;height:13px}
+.m-side .r.on{background:#353a50;color:#fff}
+.m-side .brand{color:#fff;font-weight:650;padding:4px 8px 10px}
+.m-dash{background:var(--s-canvas);padding:12px;display:grid;gap:10px;align-content:start;min-width:0}
+.m-tile{background:var(--s-bg);border:1px solid var(--s-line);border-radius:7px;padding:10px;display:grid;gap:6px;min-width:0}
+.m-row{display:grid;grid-template-columns:1.3fr 1fr;gap:10px}
+.m-thumb{border-radius:5px;overflow:hidden;border:1px solid var(--s-line);transform-origin:top left}
+.m-thumb .m-page{box-shadow:none;border-radius:0}
+.m-old{display:flex;gap:4px;flex-wrap:nowrap;overflow:hidden}
+.m-old .m-btn{padding:3px 6px;font-size:10.5px}
+.m-groups{display:grid;gap:2px}
+.m-groups .g{font:600 9px system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--s-mute);padding:6px 8px 2px}
+.m-groups .r{padding:4px 8px;border-radius:5px;font-size:11px}
+.m-groups .r.on{background:var(--s-accbg);color:var(--s-acc);font-weight:600}
+.m-styles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.m-sty{border:1px solid var(--s-line);border-radius:6px;padding:8px;display:grid;gap:4px;font-family:Georgia,serif}
+.m-sty.on{outline:2px solid var(--s-acc);outline-offset:-1px}
+.m-sty b{font-weight:400;font-size:13px}
+.m-sty small{font:9px system-ui;color:var(--s-mute)}
+.annot{font-size:13px;color:var(--mute);display:grid;gap:4px}
+.annot b{color:var(--fg)}
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.work{counter-reset:w;list-style:none;padding:0;display:grid;gap:10px}
+.work li{counter-increment:w;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px 12px 50px;position:relative;display:grid;gap:4px}
+.work li::before{content:counter(w);position:absolute;left:14px;top:12px;width:24px;height:24px;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;font:700 12px/1 system-ui}
+.size{font:600 11px/1 system-ui;letter-spacing:.05em;text-transform:uppercase;color:var(--mute)}
+.q{border-left:3px solid var(--accent);padding:4px 0 4px 14px;display:grid;gap:4px}
+.callout{background:var(--okbg);border-radius:10px;padding:14px 16px;display:grid;gap:6px}
+.wcag{font:600 11px/1 ui-monospace,Menlo,monospace;color:var(--mute);white-space:nowrap}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:640px){.mock{aspect-ratio:auto;min-height:300px}.m-row{grid-template-columns:1fr}.hide-sm{display:none!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="i-add" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></symbol>
+ <symbol id="i-pages" viewBox="0 0 16 16"><path d="M4 2.5h5.5L12 5v8.5H4z M9.5 2.5V5H12" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linejoin="round"/></symbol>
+ <symbol id="i-brush" viewBox="0 0 16 16"><path d="M10.5 2.5l3 3-5.5 5.5-3-3zM5 8.5c-1.8 0-2.5 1.4-2.5 2.8 0 1 -.4 1.7-1 2.2 2.6.4 5.5-.4 5.5-3" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linejoin="round"/></symbol>
+ <symbol id="i-img" viewBox="0 0 16 16"><rect x="2.5" y="3" width="11" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M3 11l3.2-3 2.5 2.3L10.5 9l2.8 2.5" stroke="currentColor" stroke-width="1.3" fill="none"/></symbol>
+ <symbol id="i-blog" viewBox="0 0 16 16"><path d="M3 4h10M3 7h10M3 10h6" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></symbol>
+ <symbol id="i-gear" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.2" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M8 1.8v2M8 12.2v2M1.8 8h2M12.2 8h2M3.6 3.6l1.4 1.4M11 11l1.4 1.4M3.6 12.4L5 11M11 5l1.4-1.4" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/></symbol>
+ <symbol id="i-help" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.8" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M6.4 6.4a1.7 1.7 0 113 1c-.7.5-1.4.9-1.4 1.8M8 11.3v.1" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/></symbol>
+ <symbol id="i-home" viewBox="0 0 16 16"><path d="M2.5 7.5L8 3l5.5 4.5V13H2.5z" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linejoin="round"/></symbol>
+ <symbol id="i-undo" viewBox="0 0 16 16"><path d="M5 4L2.5 6.5 5 9M2.5 6.5h7a3.5 3.5 0 010 7H7" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+ <symbol id="i-redo" viewBox="0 0 16 16"><path d="M11 4l2.5 2.5L11 9M13.5 6.5h-7a3.5 3.5 0 000 7H9" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+ <symbol id="i-desk" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="8" rx="1" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M6 13.5h4" stroke="currentColor" stroke-width="1.4"/></symbol>
+ <symbol id="i-tab" viewBox="0 0 16 16"><rect x="3.5" y="2" width="9" height="12" rx="1.2" stroke="currentColor" stroke-width="1.4" fill="none"/></symbol>
+ <symbol id="i-phone" viewBox="0 0 16 16"><rect x="5" y="2" width="6" height="12" rx="1.2" stroke="currentColor" stroke-width="1.4" fill="none"/></symbol>
+ <symbol id="i-more" viewBox="0 0 16 16"><circle cx="4" cy="8" r="1.2" fill="currentColor"/><circle cx="8" cy="8" r="1.2" fill="currentColor"/><circle cx="12" cy="8" r="1.2" fill="currentColor"/></symbol>
+ <symbol id="i-down" viewBox="0 0 16 16"><path d="M5 6.5l3 3 3-3" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></symbol>
+</svg>
+
+<main>
+
+<header style="display:grid;gap:12px">
+  <span class="eyebrow">Crust · app redesign · snapshot v1 · 6 Nov 2026</span>
+  <h1>Making the Crust app itself friendly</h1>
+  <p class="lede">You said the app isn't very nice or friendly to use, and asked how Squarespace, Wix and Webflow do theirs. The short answer: Crust's <b>words and choices</b> are already kind, but the <b>editor</b> feels like a developer tool. You see a small page, a long list of block names and a search-engine form. The three big builders all make the page the main thing on screen and keep tools hidden until you need them.</p>
+  <div class="score">
+    <span class="pill">Usability score today <b>24 / 40</b></span>
+    <span class="pill">Screens walked <b>13</b></span>
+    <span class="pill">Builders compared <b>3</b></span>
+    <span class="pill">Directions <b>3</b> · pick: <b>A</b></span>
+  </div>
+  <p class="mute" style="font-size:13px">The score uses Nielsen's 10 usability heuristics, each marked 0 to 4. Screenshots are from the desktop app with the sample site, at 1440 × 900.</p>
+</header>
+
+<!-- ============ 1 COMPARISON ============ -->
+<section>
+  <span class="eyebrow">1 · How the three do it</span>
+  <h2>Same jobs, side by side</h2>
+  <p class="mute">From their help pages and product tours (Nov 2026). The last column is Crust today, highlighted where it falls behind.</p>
+  <div class="tablewrap" role="region" aria-label="Comparison table, scrolls sideways" tabindex="0">
+  <table>
+    <thead><tr><th scope="col">Job</th><th scope="col">Squarespace</th><th scope="col">Wix</th><th scope="col">Webflow</th><th scope="col">Crust today</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Where you land</th><td>The site itself, with a slim Website panel beside it</td><td>A dashboard with a setup checklist, then an "Edit site" button</td><td>The designer, a dense pro tool</td><td class="us">Site list → page table → editor (three steps to see your page)</td></tr>
+      <tr><th scope="row">The page on screen</th><td>Fills the window</td><td>Fills the window</td><td>Fills the middle</td><td class="us">57% zoom: body text under 10px</td></tr>
+      <tr><th scope="row">Adding sections</th><td>"+ Add section" between sections → gallery with category tabs, Blank, Saved</td><td>Hover "+ Add Section", or the Add panel</td><td>Add panel in a left icon bar</td><td>"+" on the page plus a 13-item block list always open on the left</td></tr>
+      <tr><th scope="row">Editing text</th><td>Click it and type on the page</td><td>Click it and type on the page</td><td>Double-click on the page</td><td class="us">In a side box ("Quick edit"), not on the page</td></tr>
+      <tr><th scope="row">Right-hand panel</th><td>Pops up next to what you clicked</td><td>Inspector only when something is selected</td><td>Style panel, always open</td><td class="us">Search-engine form when nothing is selected</td></tr>
+      <tr><th scope="row">Look of the site</th><td>One paintbrush: fonts, colours, buttons, spacing</td><td>Site Styles panel</td><td>Classes and variables (CSS ideas)</td><td>16-item settings list that mixes look and site details</td></tr>
+      <tr><th scope="row">Site details</th><td>Separate settings: domain, SEO, social</td><td>Dashboard settings</td><td>Site settings page</td><td>In the same 16-item list</td></tr>
+      <tr><th scope="row">Pages</th><td>"Main navigation" vs "Not linked"</td><td>Pages panel with menu order</td><td>Pages panel with folders</td><td>A table on a separate screen</td></tr>
+      <tr><th scope="row">Saving / going live</th><td>Saves on its own; site is live once public</td><td>Save and Publish, first-publish dialog</td><td>Publish menu listing unpublished changes</td><td class="us">"Save draft" plus Publish, both in the header with no status, equal weight to 5 other buttons</td></tr>
+      <tr><th scope="row">Help and checks</th><td>Help panel</td><td>Accessibility Wizard; alt text asks "What's in the image?"</td><td>Cmd+K find; Audit panel jumps to problems</td><td>Good checks before publishing; Keyboard button in the header</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>Worth copying</h3><ul class="keep">
+      <li>"+ Add section" between sections, opening a gallery with pictures (we already have the 90-layout gallery)</li>
+      <li>Split the work three ways: the page (on the canvas), the look (one paintbrush), site details (a settings sheet)</li>
+      <li>One clear status: "Saved · 3 changes not live", and a Publish button that shows the count</li>
+      <li>Pages grouped "In the menu" and "Not in the menu"</li>
+      <li>A short "next steps" list for a new site, with a skip</li>
+      <li>Cmd+K to find any page or setting</li>
+    </ul></div>
+    <div class="card"><h3>Worth avoiding</h3><ul>
+      <li class="bad">Webflow's CSS ideas (classes, flex) and dense dark chrome: too steep for our users</li>
+      <li class="bad">Wix's crowded top bar (16 items, with upsells)</li>
+      <li class="bad">Squarespace's "save = live" (Crust users rely on a separate Publish)</li>
+      <li class="bad">Free positioning anywhere on the page: it breaks on phones</li>
+      <li class="bad">Several editors or modes for the same page</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ============ 2 TODAY ============ -->
+<section>
+  <span class="eyebrow">2 · Crust today</span>
+  <h2>Four screens, and what gets in the way</h2>
+  <div class="grid2">
+    <figure class="card">
+      <img src="{{04-editor}}" alt="Crust editor: six equal outlined buttons and a black Save draft in the header, a long list of block names on the left, the page small in the middle at 57 percent, and a search-engine form on the right." loading="lazy">
+      <figcaption><b>Editor, nothing selected</b></figcaption>
+      <ul class="issues">
+        <li><span class="num">1</span>Six equal buttons plus "Save draft" in the header. Publish doesn't stand out, and nothing says whether your work is saved or live.</li>
+        <li><span class="num">2</span>The page is at 57%, so its body text is under 10px. You can't judge your own design.</li>
+        <li><span class="num">3</span>The right panel opens on search-engine fields. That isn't the first thing anyone wants to do.</li>
+        <li><span class="num">4</span>A 13+ item block list is always open, before you've decided to add anything.</li>
+      </ul>
+    </figure>
+    <figure class="card">
+      <img src="{{06-editor-section}}" alt="A section selected: a black two-row toolbar with about twelve controls covers the site header; the right panel says the content is on the canvas." loading="lazy">
+      <figcaption><b>Section selected</b></figcaption>
+      <ul class="issues">
+        <li><span class="num">5</span>About 12 controls on two rows, covering the site header and the "+" button.</li>
+        <li><span class="num">6</span>"Whole site" and "Make linked" sit next to colour dots, so a site-wide change looks as small as a colour pick.</li>
+        <li><span class="num">7</span>Four unrelated accent colours (purple, indigo, teal, orange) across the editor.</li>
+      </ul>
+    </figure>
+    <figure class="card">
+      <img src="{{03-home-pages}}" alt="Site home: publish card with Cloudflare details, then a table of pages." loading="lazy">
+      <figcaption><b>Site home</b></figcaption>
+      <ul class="issues">
+        <li><span class="num">8</span>An extra stop between the site list and your page. The back link says "All sites" here, "Builder" in settings, and is missing in Posts.</li>
+        <li><span class="num">9</span>Host details ("Cloudflare Pages · Hosni") come before your pages.</li>
+      </ul>
+    </figure>
+    <figure class="card">
+      <img src="{{08-settings}}" alt="Site settings: a flat list of 15 items on the left, style cards in the middle, a preview on the right, Publish, Discard and Save at the top." loading="lazy">
+      <figcaption><b>Site settings</b></figcaption>
+      <ul class="issues">
+        <li><span class="num">10</span>15 items in one flat list: look (Styles, Colours, Buttons…) mixed with site details (Template, Site address).</li>
+        <li><span class="num">11</span>Here it's "Save" and "Discard"; in the editor it's "Save draft". Two words for one idea.</li>
+      </ul>
+    </figure>
+  </div>
+  <div class="card">
+    <h3>Keep these: they're already good</h3>
+    <ul class="keep">
+      <li>Kind, plain wording: "Saved, not live yet", and a failed save keeps "Try again"</li>
+      <li>Choosing by picture: templates, the Styles cards above, the 90-layout gallery</li>
+      <li>Reassurance: checks before publishing, an undoable template switch</li>
+      <li>The welcome screen, the best screen in the app</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 3 DIRECTIONS ============ -->
+<section>
+  <span class="eyebrow">3 · Directions</span>
+  <h2>Three ways to fix it</h2>
+  <p class="mute">Each is drawn twice: the editor, and the second screen people use most. Fake page content; the point is the app around it.</p>
+
+  <!-- A -->
+  <article class="dir rec" aria-labelledby="dA">
+    <div class="dirhead"><span class="badge">Recommended</span><h3 id="dA" style="font-size:19px">A · One studio</h3><span class="like">Closest to Squarespace</span></div>
+    <p>The editor <b>is</b> home: open a site and you're on its home page, full size. One top bar: site menu, page switcher, status, Publish. A slim icon bar on the left opens Add, Pages, Styles, Media and Blog one at a time. The right panel appears only when you select something.</p>
+    <div class="grid2">
+      <div>
+        <div class="lbl">Editor, nothing selected</div>
+        <div class="mock" role="img" aria-label="Direction A editor: top bar with site name, page switcher, device toggle, undo and redo, status saying Saved and 3 changes not live, Preview and a blue Publish 3 button. Left icon bar. The page fills the canvas with an Add section pill between sections. Right panel shows Next steps for a new site.">
+          <div class="m-top">
+            <span class="m-site">Harbour Studio <svg class="m-ico" style="width:12px;height:12px"><use href="#i-down"/></svg></span>
+            <span class="m-sel">Page: Home ▾</span>
+            <span class="sp"></span>
+            <span class="m-dev hide-sm"><span class="on"><svg><use href="#i-desk"/></svg></span><span><svg><use href="#i-tab"/></svg></span><span><svg><use href="#i-phone"/></svg></span></span>
+            <span class="m-ico hide-sm"><svg><use href="#i-undo"/></svg></span><span class="m-ico hide-sm"><svg><use href="#i-redo"/></svg></span>
+            <span class="m-status"><i></i>3 not live</span>
+            <span class="m-btn m-pri">Publish<em>3</em></span>
+          </div>
+          <div class="m-body" style="grid-template-columns:56px 1fr 30%">
+            <div class="m-rail">
+              <span class="it"><svg><use href="#i-add"/></svg>Add</span>
+              <span class="it"><svg><use href="#i-pages"/></svg>Pages</span>
+              <span class="it"><svg><use href="#i-brush"/></svg>Styles</span>
+              <span class="it"><svg><use href="#i-img"/></svg>Media</span>
+              <span class="it"><svg><use href="#i-blog"/></svg>Blog</span>
+              <span class="grow"></span>
+              <span class="it"><svg><use href="#i-gear"/></svg>Site</span>
+              <span class="it"><svg><use href="#i-help"/></svg>Help</span>
+            </div>
+            <div class="m-canvas">
+              <div class="m-page">
+                <div class="nav"><b>Harbour Studio</b><span>Work · About · Contact</span></div>
+                <div class="hero"><b>Calm rooms for busy lives</b><small>Interior design in Jakarta and Bandung.</small><span class="cta">See our work</span></div>
+                <div class="m-add"><span>+ Add section</span></div>
+                <div class="band"><div></div><div></div><div></div></div>
+              </div>
+            </div>
+            <div class="m-panel">
+              <h4>Next steps</h4>
+              <div class="m-bar"><i></i></div>
+              <div class="m-check">
+                <div><i class="done"></i>Pick a template</div>
+                <div><i class="done"></i>Choose a style</div>
+                <div><i></i>Add your logo</div>
+                <div><i></i>Write your home page</div>
+              </div>
+              <span class="hint">Click anything on the page to edit it.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="lbl">Section selected</div>
+        <div class="mock" role="img" aria-label="Direction A with a section selected: a single-row dark toolbar above the section with Section, Edit, Style, Layout, Move and More. The right panel shows Content and Style tabs with colour choices and height.">
+          <div class="m-top">
+            <span class="m-site">Harbour Studio <svg class="m-ico" style="width:12px;height:12px"><use href="#i-down"/></svg></span>
+            <span class="m-sel">Page: Home ▾</span>
+            <span class="sp"></span>
+            <span class="m-status"><i class="ok"></i>All changes live</span>
+            <span class="m-btn hide-sm">Preview</span>
+            <span class="m-btn m-pri">Publish</span>
+          </div>
+          <div class="m-body" style="grid-template-columns:56px 1fr 30%">
+            <div class="m-rail">
+              <span class="it"><svg><use href="#i-add"/></svg>Add</span>
+              <span class="it"><svg><use href="#i-pages"/></svg>Pages</span>
+              <span class="it"><svg><use href="#i-brush"/></svg>Styles</span>
+              <span class="it"><svg><use href="#i-img"/></svg>Media</span>
+              <span class="it"><svg><use href="#i-blog"/></svg>Blog</span>
+            </div>
+            <div class="m-canvas" style="padding-top:26px">
+              <div class="m-page">
+                <div class="nav"><b>Harbour Studio</b><span>Work · About · Contact</span></div>
+                <div class="m-sec sel"><div class="m-tool"><span class="on">Section</span><span>Style</span><span>Layout</span><span>↑↓</span><span>⋯</span></div><div class="hero"><b>Calm rooms for busy lives</b><small>Interior design in Jakarta and Bandung.</small><span class="cta">See our work</span></div></div>
+                <div class="band"><div></div><div></div><div></div></div>
+              </div>
+            </div>
+            <div class="m-panel">
+              <h4>Hero section</h4>
+              <div class="m-tabs"><span class="on">Style</span><span>Layout</span></div>
+              <div class="m-field">Background<div class="m-sw" style="border:0;padding:0"><i style="background:#f6f1ea;outline:2px solid #3b47c9"></i><i style="background:#ece5da"></i><i style="background:#2a2420"></i><i style="background:#fff"></i></div></div>
+              <div class="m-field">Height<div>Medium ▾</div></div>
+              <span class="hint">Applies to this section. To change every section like it, use Styles.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="annot"><span><b>What changes for you:</b> one screen fewer to get to your page; the page at full size; Publish is the one blue button and shows how many changes aren't live; site-wide changes live only in Styles, so you can't hit them by accident from a section.</span></div>
+    <div class="proscons">
+      <div><div class="lbl">Why it's the pick</div><ul>
+        <li class="good">Fixes the biggest problems (1–6, 8) at once</li>
+        <li class="good">Closest to what Squarespace users expect; one place to learn</li>
+        <li class="good">Reuses what we have: layout gallery, Styles cards, the checks</li>
+      </ul></div>
+      <div><div class="lbl">Costs</div><ul>
+        <li class="bad">Largest change: the site home and settings screens fold into panels</li>
+        <li class="bad">Typing directly on the page is new work, and the hardest part</li>
+        <li class="bad">Everything you've reviewed moves; one more review round</li>
+      </ul></div>
+    </div>
+  </article>
+
+  <!-- B -->
+  <article class="dir" aria-labelledby="dB">
+    <div class="dirhead"><h3 id="dB" style="font-size:19px">B · Dashboard + editor</h3><span class="like">Closest to Wix</span></div>
+    <p>A dashboard per site with a dark sidebar (Home, Pages, Blog, Media, Design, Settings). Home shows a setup checklist, a preview and the publish status. "Edit site" opens a focused full-screen editor.</p>
+    <div class="grid2">
+      <div>
+        <div class="lbl">Site dashboard</div>
+        <div class="mock" role="img" aria-label="Direction B dashboard: dark sidebar with Home, Pages, Blog, Media, Design, Settings. Main area has a site preview with an Edit site button, a setup checklist at 2 of 4, and a publish status card.">
+          <div class="m-top"><span class="m-site">Harbour Studio ▾</span><span class="sp"></span><span class="m-status"><i></i>3 changes not live</span><span class="m-btn m-pri">Publish</span></div>
+          <div class="m-body" style="grid-template-columns:120px 1fr">
+            <div class="m-side">
+              <span class="r on"><svg><use href="#i-home"/></svg>Home</span>
+              <span class="r"><svg><use href="#i-pages"/></svg>Pages</span>
+              <span class="r"><svg><use href="#i-blog"/></svg>Blog</span>
+              <span class="r"><svg><use href="#i-img"/></svg>Media</span>
+              <span class="r"><svg><use href="#i-brush"/></svg>Design</span>
+              <span class="r"><svg><use href="#i-gear"/></svg>Settings</span>
+            </div>
+            <div class="m-dash">
+              <div class="m-row">
+                <div class="m-tile"><div class="m-thumb"><div class="m-page"><div class="nav"><b>Harbour Studio</b><span>Work · About</span></div><div class="hero" style="padding:8px 14px 10px"><b style="font-size:14px">Calm rooms for busy lives</b></div></div></div><span class="m-btn m-pri" style="justify-self:start">Edit site</span></div>
+                <div class="m-tile"><h4 style="margin:0;font-size:12px">Set up your site</h4><div class="m-bar"><i></i></div><div class="m-check"><div><i class="done"></i>Pick a template</div><div><i class="done"></i>Choose a style</div><div><i></i>Add your logo</div><div><i></i>Connect publishing</div></div></div>
+              </div>
+              <div class="m-tile" style="grid-template-columns:1fr auto;align-items:center"><span>Live at <b>harbour-studio.pages.dev</b> · last published today 3:08</span><span class="m-btn">View site</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="lbl">Editor (after "Edit site")</div>
+        <div class="mock" role="img" aria-label="Direction B editor: top bar with Back to dashboard, page switcher, status, Preview and Publish. Add panel open on the left with section pictures. Page fills the rest.">
+          <div class="m-top"><span class="m-btn">← Dashboard</span><span class="m-sel">Home ▾</span><span class="sp"></span><span class="m-status hide-sm"><i></i>Saved</span><span class="m-btn hide-sm">Preview</span><span class="m-btn m-pri">Publish</span></div>
+          <div class="m-body" style="grid-template-columns:34% 1fr">
+            <div class="m-panel l"><h4>Add a section</h4><div class="m-tabs"><span class="on">Intro</span><span>Gallery</span><span>Text</span></div>
+              <div class="m-styles"><div class="m-sty"><b>Big title</b><small>Intro</small></div><div class="m-sty"><b>Split</b><small>Intro</small></div><div class="m-sty"><b>Photo</b><small>Intro</small></div><div class="m-sty"><b>Blank</b><small>Start empty</small></div></div></div>
+            <div class="m-canvas"><div class="m-page"><div class="nav"><b>Harbour Studio</b><span>Work · About</span></div><div class="hero"><b>Calm rooms for busy lives</b><small>Interior design in Jakarta and Bandung.</small></div><div class="band"><div></div><div></div><div></div></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="proscons">
+      <div><div class="lbl">Good</div><ul><li class="good">Clear "manage" vs "edit" split; room for Blog, Media, Store later</li><li class="good">Setup checklist gets new users going</li></ul></div>
+      <div><div class="lbl">Weak</div><ul><li class="bad">Keeps the extra stop before your page (problem 8)</li><li class="bad">Two places to learn; the look sits in both "Design" and the editor</li><li class="bad">A dark sidebar adds chrome to a small desktop window</li></ul></div>
+    </div>
+  </article>
+
+  <!-- C -->
+  <article class="dir" aria-labelledby="dC">
+    <div class="dirhead"><h3 id="dC" style="font-size:19px">C · Tidy up</h3><span class="like">Today's structure, cleaned</span></div>
+    <p>Same screens as today. Header with a status and one primary Publish, the rest moved into a "More" menu. Page opens at fit width. The right panel shows a hint until you select something. One-row section toolbar. Settings grouped into four.</p>
+    <div class="grid2">
+      <div>
+        <div class="lbl">Editor</div>
+        <div class="mock" role="img" aria-label="Direction C editor: today's layout with a header of Pages, Layouts, a More menu, a status and one blue Publish. Block list on the left, page at fit width, right panel with a hint.">
+          <div class="m-top"><span class="m-site">Harbour Studio</span><span class="sp"></span><span class="m-old hide-sm"><span class="m-btn">Pages</span><span class="m-btn">Layouts</span><span class="m-btn">Site settings</span><span class="m-ico"><svg><use href="#i-more"/></svg></span></span><span class="m-status"><i></i>Saved · not live</span><span class="m-btn m-pri">Publish</span></div>
+          <div class="m-body" style="grid-template-columns:24% 1fr 24%">
+            <div class="m-panel l"><div class="m-list"><span class="g">Layout</span><span class="r">Section</span><span class="r">Columns</span><span class="r">Grid of cards</span><span class="g">Content</span><span class="r">Heading</span><span class="r">Text</span><span class="r">Image</span></div></div>
+            <div class="m-canvas"><div class="m-page"><div class="nav"><b>Harbour Studio</b><span>Work</span></div><div class="hero"><b style="font-size:16px">Calm rooms for busy lives</b><small>Interior design.</small></div><div class="m-add"><span>+</span></div><div class="band"><div></div><div></div><div></div></div></div></div>
+            <div class="m-panel"><h4>Nothing selected</h4><span class="hint">Click a section on the page to change it, or drag a block in from the left.</span><span class="hint">Page title and search settings: <u>Page settings</u></span></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="lbl">Site settings, grouped</div>
+        <div class="mock" role="img" aria-label="Direction C settings: left list grouped into Look, Header and footer, Site details, Advanced. Styles selected, showing four style cards.">
+          <div class="m-top"><span class="m-btn">← Editor</span><b>Site settings</b><span class="sp"></span><span class="m-status"><i class="ok"></i>Saved</span><span class="m-btn m-pri">Publish</span></div>
+          <div class="m-body" style="grid-template-columns:32% 1fr">
+            <div class="m-panel l"><div class="m-groups"><span class="g">Look</span><span class="r on">Styles</span><span class="r">Fine-tune (colours, type, buttons…)</span><span class="g">Header &amp; footer</span><span class="r">Header &amp; menu</span><span class="r">Footer</span><span class="g">Site details</span><span class="r">Address &amp; search</span><span class="g">Advanced</span><span class="r">Theme pack · Template</span></div></div>
+            <div class="m-dash" style="background:var(--s-bg)"><div class="m-styles"><div class="m-sty on"><b>Quiet, well made</b><small>Atelier</small></div><div class="m-sty" style="background:#15171c;color:#fff"><b>Quiet, well made</b><small>Studio</small></div><div class="m-sty"><b>Quiet, well made</b><small>Gallery</small></div><div class="m-sty" style="background:#f8f3ec"><b>Quiet, well made</b><small>Maison</small></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="proscons">
+      <div><div class="lbl">Good</div><ul><li class="good">Smallest and safest; fixes 1–3, 5, 10, 11</li><li class="good">Nothing you've already reviewed moves much</li></ul></div>
+      <div><div class="lbl">Weak</div><ul><li class="bad">Still feels like an admin tool; text still edited in a side box</li><li class="bad">Keeps the extra stop and the block list always open</li><li class="bad">Doesn't answer "friendly" so much as "less messy"</li></ul></div>
+    </div>
+  </article>
+
+  <div class="tablewrap" role="region" aria-label="Directions compared" tabindex="0">
+    <table style="min-width:640px">
+      <thead><tr><th scope="col"></th><th scope="col">A · One studio ✓</th><th scope="col">B · Dashboard + editor</th><th scope="col">C · Tidy up</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Problems fixed (of 11)</th><td>10</td><td>7</td><td>6</td></tr>
+        <tr><th scope="row">Clicks from opening the app to your page</th><td>1</td><td>2</td><td>2</td></tr>
+        <tr><th scope="row">Size of work</th><td>Large (about 8 features)</td><td>Large (about 7)</td><td>Small (about 3)</td></tr>
+        <tr><th scope="row">Feels friendly</th><td>Yes: page first, tools on demand</td><td>Mostly</td><td>Somewhat</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 4 A11Y ============ -->
+<section>
+  <span class="eyebrow">4 · Accessibility</span>
+  <h2>To fix whichever direction you pick</h2>
+  <div class="card">
+    <ul>
+      {{A11Y}}
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 5 WORK ============ -->
+<section>
+  <span class="eyebrow">5 · Proposed work for A</span>
+  <h2>In the order I'd build it</h2>
+  <p class="mute">Each is one feature, one PR and one review. They're proposals only (in DECISIONS.md → Proposals): nothing is built until you say which to add.</p>
+  <ol class="work">
+    <li><b>One app frame and top bar</b><span class="mute">Site menu (switch sites), page switcher, status ("Saved · 3 not live"), Preview, Publish as the one main button with the count. Left icon bar. Same words everywhere ("Publish", "Back to …").</span><span class="size">Medium · fixes 1, 8, 11</span></li>
+    <li><b>Page first</b><span class="mute">Open a site straight onto its home page at fit width. The block list moves into the Add panel. The right panel appears only on selection, with "Next steps" when nothing is selected.</span><span class="size">Medium · fixes 2, 3, 4</span></li>
+    <li><b>Add section, by picture</b><span class="mute">"+ Add section" between sections opens the layout gallery (Intro, Gallery, Text…, Blank, My layouts). Single blocks sit under it as "Add an element".</span><span class="size">Small–medium · reuses F080</span></li>
+    <li><b>One-row section toolbar</b><span class="mute">Section · Style · Layout · Move · More. Site-wide actions ("change everywhere", "make linked") go under More, with a step that says how many sections and pages it affects.</span><span class="size">Small · fixes 5, 6</span></li>
+    <li><b>Type on the page</b><span class="mute">Click a heading or text and edit it in place, with the rich-text bar floating above it. Quick edit stays as a list view for long pages.</span><span class="size">Large · the biggest single step toward "friendly"</span></li>
+    <li><b>Pages panel</b><span class="mute">"In the menu" and "Not in the menu", drag or arrow keys to reorder, a status dot per page, page settings (title, search and sharing) behind each page's ⋯.</span><span class="size">Medium · replaces the site home table</span></li>
+    <li><b>Styles panel and Site settings sheet</b><span class="mute">Paintbrush panel: Styles cards first, then Fine-tune (colours, type, buttons, spacing, motion), and Header &amp; footer. Site details (address, search defaults, where to publish) in a separate sheet.</span><span class="size">Medium · fixes 10</span></li>
+    <li><b>The app's own look and words</b><span class="mute">One accent colour across the app, a type pairing for the chrome, and a wording pass (including the ~70 "GitHub" strings from F055).</span><span class="size">Small–medium · fixes 7</span></li>
+  </ol>
+</section>
+
+<!-- ============ 6 QUESTIONS ============ -->
+<section>
+  <span class="eyebrow">6 · Your call</span>
+  <h2>Three questions</h2>
+  <div class="grid3">
+    <div class="q"><b>Which direction?</b><span class="mute">My pick is A. B if you want a "manage" home for later features (store, analytics); C if you'd rather keep changes small for now.</span></div>
+    <div class="q"><b>Drop "Save draft"?</b><span class="mute">A works best when changes save on their own and the status says so. The desktop app can save to your computer quietly. In the browser, each save is a GitHub save, so I'd group them every few seconds. Keep the button, or let it go?</span></div>
+    <div class="q"><b>Which features to add?</b><span class="mute">Pick from the 8 above. I'd start with 1–3: they change how the app feels most, for the least work.</span></div>
+  </div>
+  <div class="callout"><b>How to answer</b><span>Reply in chat, for example "A, autosave yes, add 1–4". I'll add your picks as features and draw a design snapshot before building each one.</span></div>
+</section>
+
+</main>
