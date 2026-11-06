@@ -131,3 +131,19 @@
 .af-media img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; background: var(--app-raised); }
 .af-add-layouts { padding: 12px 16px 0; }
 .af-add-layouts .crust-header-link { width: 100%; justify-content: center; }
+
+/* F088: Add section, by picture */
+.af-addsec { display: grid; gap: 12px; padding: 12px 16px 16px; }
+.af-addsec .af-panel-title { padding: 0; }
+.af-addsec-where { margin: 0; color: var(--app-mute); font-size: 0.8125rem; }
+.af-addsec-search { display: grid; gap: 4px; }
+.af-addsec-search input { min-height: 36px; padding: 0 10px; border: 1px solid var(--app-line-strong); border-radius: 8px; background: var(--app-panel); color: var(--app-ink); font: inherit; }
+.af-addsec-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.af-chip { min-height: 28px; padding: 0 10px; border: 1px solid var(--app-line); border-radius: 999px; background: transparent; color: var(--app-mute); font: inherit; font-size: 0.8125rem; cursor: pointer; }
+.af-chip:hover { background: var(--app-hover); }
+.af-chip[aria-pressed="true"] { background: var(--app-acc-soft); color: var(--app-acc); border-color: transparent; }
+.af-chip:focus-visible, .af-addsec :is(input, summary):focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
+.af-addsec .lg-grid { grid-template-columns: 1fr; gap: 10px; }
+.af-addsec .lg-card-desc { display: none; }
+.af-addsec-elements { border-top: 1px solid var(--app-line); padding-top: 10px; }
+.af-addsec-elements summary { cursor: pointer; font-weight: 500; min-height: 28px; display: flex; align-items: center; }

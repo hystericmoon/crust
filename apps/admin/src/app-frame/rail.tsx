@@ -7,7 +7,7 @@
 import { blocksPlugin, outlinePlugin, type Plugin } from "@puckeditor/core";
 import { mediaSrc } from "@crust/blocks";
 import { openKeyboardHelp } from "../keyboard/KeyboardEditing";
-import { LayoutsButton } from "../layouts/LayoutGallery";
+import { AddSectionPanel } from "../layouts/AddSectionPanel";
 import { useEffect } from "react";
 import { loadMedia, useMedia } from "../media/store";
 import { FrameIcon } from "./icons";
@@ -77,19 +77,12 @@ function MediaPanel() {
 export function railPlugins({ pages, hrefFor, quickEdit }: RailOptions): Plugin[] {
   const blocks = blocksPlugin();
   return [
-    // Add: whole layouts first (the gallery), then single blocks. F088 turns this into "Add section, by picture".
+    // Add: whole layouts first (the gallery), then single blocks. F088: pictures of sections first, single blocks under "Add an element".
     {
       ...blocks,
       label: "Add",
       icon: <FrameIcon name="add" size={18} />,
-      render: () => (
-        <div className="af-add">
-          <div className="af-add-layouts">
-            <LayoutsButton />
-          </div>
-          {blocks.render?.()}
-        </div>
-      ),
+      render: () => <AddSectionPanel elements={blocks.render?.()} />,
     },
     outlinePlugin({ label: "Layers", icon: <FrameIcon name="layers" size={18} /> }),
     {
