@@ -10,39 +10,31 @@ skill (`.claude/skills/crust-start/SKILL.md`). While building:
 `crust-lean`. Finishing: `crust-finish` (it holds the "Ready to clear"
 message the owner asked for every time). Content JSON: `crust-content-format`.
 
-## Checkpoint (2026-11-06, owner cleared to switch to Opus)
+## Checkpoint (2026-11-06, Mac app fix waiting for the owner's try)
 
 Carry on from here instead of picking a feature.
 
-- **Mac app won't open (owner's Mac):** the installer from run 42139329529
-  (artifact `crust-mac`, expires 2026-12-06; Apple-chip + Intel build,
-  unsigned) bounces on the dock for a long time and then stays still. No
-  permission prompt appeared; he opened it from Applications.
-- **What CI showed:** the launch test (`.github/workflows/desktop-smoke.yml`,
-  run 42144538564, artifact `launch-test`) built the app natively on a clean
-  macOS 26 Apple-chip runner and opened it like Finder does: it ran, the
-  window showed the welcome screen, the Documents/Crust folder was made
-  with no prompt. So the code starts fine; the cause is on his Mac or in the
-  downloaded/combined build. Suspects: macOS blocking the unsigned download
-  (quarantine, "Open Anyway"), a window off-screen, the combined build.
-- **Waiting on the owner:** does the menu bar say Crust / is a window listed
-  in Window; any "Crust was blocked" line with Open Anyway in System
-  Settings → Privacy & Security; a Cmd+Shift+3 screenshot after the bounce
-  stops; Apple or Intel chip and macOS version.
-- **Next step:** extend desktop-smoke.yml to build the combined
-  (`--target universal-apple-darwin`) app, set the download quarantine flag
-  (`xattr -w com.apple.quarantine`), and try it again; then fix what shows.
-  The workflow has a temporary `push` trigger for the session branch (the
-  dispatch button 404s until the file is on main); remove that trigger when
-  it is no longer needed. Repo is public, so Actions minutes are free.
-- **Review round two** (page: https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp):
-  `reviewed: true` for F055, F062, F063, F071, F080. Still open: F075 (his
-  phone test) and F078 (his call: pass as is, make the table scroll area a
-  tab stop only when it overflows, or add a "no speech" tick, which needs a
-  migration). F055's "GitHub" wording in the app (about 70 strings) waits
-  until he has tried the app.
-- **PR #81** (branch `ccr-d50f7e80-weuq18`) is open, CI green at 9b2f63c; the
-  owner merges. Re-publishing the live site: only on his word.
+- **Cause found (DECISIONS 2026-11-06 "Mac app won't open"):** the Mac
+  installer's app was "not signed at all" as a bundle, so macOS knew it by a
+  random name, and Crust touches Documents before its window opens. Owner:
+  Apple chip, macOS 27.2, nothing blocked in Privacy & Security.
+- **Fixed in d28ca57:** `bundle.macOS.signingIdentity: "-"` (free ad-hoc
+  signature) and `open_sites_or_fallback` in crates/crust-desktop/src/lib.rs
+  (sites go to the app's data folder if Documents can't be used). Tests added.
+- **Launch test (desktop-smoke.yml, run 42158333443) passed:** a fresh
+  download shows Apple's "Crust Not Opened" box (expected without a $99
+  Developer ID, the owner's call); after "Open Anyway" the welcome screen
+  shows and macOS names the app `app.crust.desktop`.
+- **Mac installer for the owner:** desktop-release.yml run 42159771953
+  (mac only, not on the downloads site), from this branch. Give him the
+  run's artifact link and the "Open Anyway" steps; wait for his try.
+- **Then:** remove the temporary `push` trigger from desktop-smoke.yml,
+  CHANGELOG/PROGRESS, crust-finish. PR #81 carries all of it.
+- **Review round two** (page: https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp,
+  no answers stored there): still open F075 (his phone test) and F078 (his
+  call: pass as is, tab stop only when the table overflows, or a "no speech"
+  tick, which needs a migration). F055's "GitHub" wording (about 70 strings)
+  waits until he has tried the app.
 
 ## Model plan (owner, 2026-11-03)
 
