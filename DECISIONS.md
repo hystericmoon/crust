@@ -261,6 +261,47 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-06 — F086 One app frame and top bar (Claude, reversible)
+
+- Built take A from the snapshot https://claude.ai/artifact/4yD6q3o3bHh3nogcJRhaRW
+  (`design/f086-app-frame-v1.html`): site menu and "where you are" on the
+  left; tools, status, Preview and Publish on the right. It is the
+  Milestone 9 drawing the owner approved. Code in `apps/admin/src/app-frame/`.
+- The builder's bar is Puck's `header` override; the left icon bar is Puck
+  plugins. "Add" and "Layers" are Puck's block list and outline renamed
+  (same plugin names, so they replace Puck's own). Layers stays although
+  the plan lists only Add…Help: it is the keyboard and screen-reader way
+  to see a page's structure. Pages, Styles, Media, Blog, Site and Help are
+  small panels that link to today's screens until F087–F092 build them out.
+  The Layouts button moved from the top bar into the Add panel; the
+  "To replace" checklist stays in the bar.
+- Device toggle, undo/redo and Preview drive Puck's own state (setUi,
+  history). Puck's viewport buttons on the canvas are hidden by CSS; the
+  zoom stays there. Puck's two side-panel toggles went with its header:
+  the active icon in the left bar hides that panel (Puck's behaviour) and
+  a new "Settings panel" button in the bar shows or hides the right one.
+- Saving on its own: every edit is still kept in the browser at once; the
+  save to GitHub waits for 3 seconds of quiet (1 second in the desktop
+  app, where it is a file write), so a burst of typing is one commit.
+  Unchanged content is never saved (Puck reports a change on open). A
+  waiting save goes when you leave the editor, close the tab
+  (`pagehide`), or press Ctrl/Cmd+S. A failed save keeps the F069 alert
+  with Try again; successes no longer pop a toast, the bar says
+  "Saving…" / "Saved · 3 changes not live". A post that fails its checks
+  is "Kept in this browser" with the reason in a toast.
+- "Save draft" is gone from the page and post builders. Site settings
+  keeps Save and Discard until F092 regroups that screen (Discard undoes
+  every group at once, so autosave there needs that redesign first). To
+  keep one primary button, Save is primary only while something is
+  unsaved; Publish is primary otherwise.
+- Same words: "Publish" everywhere; Posts, Site settings, templates, All
+  sites (desktop) and Sign out (web, last after a divider, F069) are in
+  the site menu on every screen. The Pages screen's "Save draft" row
+  action (F020, for drafts left in a browser) is unchanged for now; F091
+  replaces that screen.
+- The linked-section editor, page designs and quick edit keep their own
+  bars; F087/F093 bring them in line.
+
 ## 2026-11-06 — F085 App look: dark and light themes (Claude, reversible)
 
 - Built take A "Violet night" from the snapshot

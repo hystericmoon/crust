@@ -7,6 +7,25 @@ touches an older area ("How it fits" notes per feature, newest first).
 
 ## Per-feature notes (F053–F065)
 
+F085 (from HANDOVER, 2026-11-06). Last updated: 2026-11-06 ~17:30 (Jakarta), F085 built; branch `ccr-d50f7e80-weuq18`. **PR #81
+open** (review fixes, Mac launch test, Mac app fix); CI green; the owner
+merges. **The Mac app opens on the owner's Mac** (Apple chip, macOS 27.2)
+with the installer from desktop-release run 42159771953 (artifact
+`crust-mac`, expires 2026-12-06): it was unsigned as a bundle and hung at
+start-up; now ad-hoc signed, with a Documents fallback (DECISIONS
+2026-11-06). **Owner's words (2026-11-06):** "the ui ux for the app itself
+is not very nice and friendly. we need to see how squarespace, wix,
+webflow made theirs. compare with us. use the best claude skills to
+redesign ours." That is the next piece of work (see Next).
+**F085 built (2026-11-06)**: Violet night in dark and light, tokens in
+`apps/admin/src/app-theme/app-theme.css` (use `--app-*` for every new
+colour; the guard test fails on raw colours), switch in every header.
+Next: **F086 One app frame and top bar** (Opus), design snapshot first;
+build on the F085 tokens and the direction-A drawings in
+`design/app-redesign-v1.html`. F086 removes "Save draft" (autosave:
+desktop to disk, browser grouped every few seconds) — see the F086 entry
+in features.json.
+
 F067 (from HANDOVER, 2026-11-03). Last updated: 2026-11-03 ~21:45 (Jakarta), branch
 `ccr-d50f7e80-weuq18` (PR #69, merged 2026-11-03). Last feature:
 **F067 Delivery and updates built, passes** (DECISIONS "F067"). How it

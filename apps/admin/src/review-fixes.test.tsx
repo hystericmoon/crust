@@ -411,15 +411,17 @@ describe("review-fixes 10: polish", () => {
     expect(items).toEqual(["About us (/about): changes in this browser, saved when you publish", "Team (/team): new page"]);
   });
 
-  it("puts Sign out last in the builders' top bars, after a divider (F040)", () => {
+  // F086: the builders' top bar is the app frame's; Sign out is the site menu's last item, after a divider.
+  it("puts Sign out last in the site menu, after a divider (F040, F086)", () => {
     const app = readFileSync("apps/admin/src/App.tsx", "utf8");
     for (const name of ["function Builder(", "function PostBuilder("]) {
       const part = app.slice(app.indexOf(name));
-      const bar = part.slice(part.indexOf("headerActions"), part.indexOf("puck: BuilderRoot"));
-      expect(bar.indexOf("<SignOutLink />")).toBeGreaterThan(bar.indexOf("<SaveDraftButton"));
+      expect(part.slice(0, part.indexOf("puck: BuilderRoot"))).toContain("header: EditorBar");
     }
-    const signOut = readFileSync("apps/admin/src/sign-out.tsx", "utf8");
-    expect(signOut).toContain(`className="crust-signout-divider" aria-hidden="true"`);
+    const bar = readFileSync("apps/admin/src/app-frame/AppTopBar.tsx", "utf8");
+    const menu = bar.slice(bar.indexOf("function SiteMenu"), bar.indexOf("function FrameStatus"));
+    expect(menu.lastIndexOf("SIGN_OUT_URL")).toBeGreaterThan(menu.lastIndexOf("Start from a template"));
+    expect(menu).toContain(`className="af-menu-end"`);
   });
 
   it("breaks addresses in the page list only after a / or - (F007, F021)", () => {

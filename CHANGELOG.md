@@ -4,6 +4,13 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **One top bar, and changes save on their own (2026-11-06).** Every
+  screen has the same top bar: your site's menu on the left, the status
+  ("Saved · 3 changes not live") and Publish with its count on the right.
+  The editor adds a page switcher, device widths, undo and redo, and
+  Preview; a slim icon bar on the left opens Add, Layers, Pages, Styles,
+  Media, Blog, Site and Help. "Save draft" is gone: pages and posts save
+  a few seconds after you stop typing, or at once with Ctrl/⌘+S.
 - **The app in dark and light (2026-11-06).** Crust has a new look: dark
   violet-black or clean white, with the Geist font and violet only on
   what you've selected. It follows your computer's light/dark setting;

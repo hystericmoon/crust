@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { readFileSync } from "node:fs";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { App, SIGN_OUT_URL, SignOutLink } from "./App";
 import { CANVAS_TITLE, fixPuckChrome, installPuckChromeFixes, LOADING_LABEL, ZOOM_LABEL } from "./keyboard/puck-chrome";
@@ -27,27 +27,32 @@ describe("tidy-up: Sign out (F040)", () => {
     expect(SIGN_OUT_URL).toBe("/cdn-cgi/access/logout");
   });
 
+  // F086: in the site menu of the builder's top bar.
   it("is in the page builder's top bar", async () => {
     location.hash = "#/edit?path=/";
     render(<App />);
-    const link = await screen.findByRole("link", { name: "Sign out" }, { timeout: 5000 });
+    fireEvent.click(await screen.findByRole("button", { name: /site menu/ }, { timeout: 5000 }));
+    const link = await screen.findByRole("link", { name: "Sign out" });
     expect(link.getAttribute("href")).toBe(SIGN_OUT_URL);
   });
 
   // F069 moved it after New page, past a divider, so a slip doesn't sign out.
-  it("is on the Pages screen, after New page", async () => {
+  // F086: in the site menu, as its last item after a divider, away from New page.
+  it("is on the Pages screen, in the site menu, away from New page", async () => {
     location.hash = "#/";
     render(<App />);
-    const link = await screen.findByRole("link", { name: "Sign out" }, { timeout: 5000 });
+    const newPage = await screen.findByRole("button", { name: "New page" }, { timeout: 5000 });
+    fireEvent.click(screen.getByRole("button", { name: /site menu/ }));
+    const link = screen.getByRole("link", { name: "Sign out" });
     expect(link.getAttribute("href")).toBe(SIGN_OUT_URL);
-    const newPage = screen.getByRole("button", { name: "New page" });
-    expect(link.compareDocumentPosition(newPage) & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
+    expect(link.closest("li")?.className).toBe("af-menu-end");
+    expect(newPage.closest(".af-menu")).toBeNull();
   });
 
   it("is in the post builder's top bar too", () => {
     const source = readFileSync("apps/admin/src/App.tsx", "utf8");
     const postBuilder = source.slice(source.indexOf("function PostBuilder"), source.indexOf("function QuickEditScreen"));
-    expect(postBuilder).toContain("<SignOutLink />");
+    expect(postBuilder).toContain("header: EditorBar");
   });
 });
 

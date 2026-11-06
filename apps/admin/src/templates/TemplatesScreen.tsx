@@ -11,6 +11,7 @@
 import baseCss from "@crust/blocks/styles.css?raw";
 import { useEffect, useId, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { Dialog, focusAfterDialog } from "../pages/PageActions";
+import { AppTopBar } from "../app-frame/AppTopBar";
 import { setJustApplied } from "./local-site";
 import { sitesInvoke } from "../sites/sites";
 import { cardPicture, pictureFor, premiumTemplates, templateUpdate, type CatalogueState, type CatalogueTemplate, type PreviewWidth } from "./catalogue";
@@ -154,13 +155,15 @@ export function TemplatesScreen({ siteName, githubOn, currentSite, sources: give
   const ready = cards.filter((c) => c.template || !c.loading);
   return (
     <div className="st">
-      <header className="st-header">
-        <a className="st-back" href="#/">
-          <span aria-hidden="true">←</span> Pages
-        </a>
-        <h1 className="st-title">{siteName}: start from a template</h1>
-        <ThemeToggle />
-      </header>
+      {/* F086: the app frame's top bar. */}
+      <AppTopBar
+        siteName={siteName}
+        where={
+          <h1 className="af-title">
+            <span className="pg-sr">{siteName}: </span>Start from a template
+          </h1>
+        }
+      />
       <main className="pg">
         <p className="st-lede">
           Pick a template to look through its pages. Nothing changes until you choose “Use this template” and confirm; even then your

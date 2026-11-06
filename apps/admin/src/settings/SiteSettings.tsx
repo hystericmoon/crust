@@ -48,7 +48,7 @@ import { migrateChrome, validateChrome, type SiteChrome } from "@crust/blocks";
 import { SiteAddressGroup } from "./SiteAddress";
 import { TemplateGroup } from "./TemplateGroup";
 import { bundledLoader, type TemplateLoader } from "../templates/collect";
-import { ThemeToggle } from "../app-theme/ThemeToggle";
+import { AppTopBar } from "../app-frame/AppTopBar";
 
 export interface SiteSettingsProps {
   site: Site;
@@ -228,23 +228,24 @@ export function SiteSettings({
 
   return (
     <div className="st">
-      <header className="st-header">
-        <a className="st-back" href="#/">
-          <Icon name="back" /> Builder
-        </a>
-        <h1 className="st-title">Site settings</h1>
-        <span className="st-dirty">{dirty ? "Unsaved changes" : "All changes saved"}</span>
-        <div className="st-actions">
-          {headerLink}
-          <button type="button" className="st-button" onClick={discard} disabled={!dirty}>
-            Discard
-          </button>
-          <button type="button" className="st-button st-button-primary" onClick={save} aria-disabled={saving || undefined}>
-            {saving ? "Saving…" : "Save"}
-          </button>
-        </div>
-        <ThemeToggle />
-      </header>
+      {/* F086: the app frame's top bar. One primary button at a time: Save while
+          something is unsaved (Discard undoes every group at once, so these stay
+          until F092 regroups this screen), Publish once it's all saved. */}
+      <AppTopBar
+        where={<h1 className="af-title">Site settings</h1>}
+        tools={
+          <>
+            <span className="st-dirty">{dirty ? "Unsaved changes" : "All changes saved"}</span>
+            <button type="button" className="st-button" onClick={discard} disabled={!dirty}>
+              Discard
+            </button>
+            <button type="button" className={dirty || saving ? "af-publish" : "st-button"} onClick={save} aria-disabled={saving || undefined}>
+              {saving ? "Saving…" : "Save"}
+            </button>
+          </>
+        }
+        publish={!dirty && !saving}
+      />
       <p className="st-status" role="status" aria-live="polite">
         {status}
       </p>

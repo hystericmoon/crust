@@ -5,6 +5,34 @@ short. Older "Current" entries (newest first) and the older log.
 
 ## Earlier "Current" entries (F065 back to Milestone 1)
 
+- **2026-11-06: F085 the app in dark and light (built, waiting for your
+  review).** The app itself (not your site) now has the React Bits-style
+  "Violet night" look: violet-tinted near-black in dark mode, white in
+  light mode, Geist font, thin borders, and violet only on what's
+  selected or active. It follows your computer's light/dark setting; the
+  sun/moon button at the top right of every screen switches it, and Crust
+  remembers. Pressing it back to your computer's mode makes it follow the
+  computer again. Your site on the canvas keeps its own colours in both.
+  Every text colour passes the contrast check in both modes, and the
+  builder accessibility check now runs in both. Snapshot:
+  https://claude.ai/artifact/KE4fZPZSFQJE8keiH4DwsA. **To try:** open the
+  preview https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, press the
+  sun/moon button on the pages list, the editor and Site settings; switch
+  your Mac or phone to dark mode and reload. Next: F086 (one app frame and
+  top bar, Opus). The screen layouts are still today's; they change in
+  F086–F092.
+
+- **2026-11-06: the Mac app opens.** The Mac installer's app wasn't
+  signed as one app, so macOS couldn't tell it was Crust and it hung at
+  start-up (long bounce, then nothing). It is now signed (free "ad-hoc"
+  signature), and if Crust can't use the Documents folder it keeps sites
+  in its own app folder instead of quitting. The owner tried the new
+  installer on his Mac (Apple chip, macOS 27.2): the welcome screen shows.
+  A fresh download still needs **Open Anyway** once in System Settings →
+  Privacy & Security (only a $99/year Apple Developer ID removes that; the
+  owner's call). The CI launch test (Actions → Desktop launch test) stays
+  for future Mac checks.
+
 - **2026-11-05: store launches free.** Everything is free for now (owner:
   "later on we can do something about the paid template"). The store has
   three templates (Harbour, Signal, Corner), all Free; none was ever

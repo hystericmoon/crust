@@ -1,7 +1,6 @@
-import { Icon } from "../settings/icons";
 import { placeholderSummary, type Page } from "@crust/blocks";
 import type { DeletedPage } from "../api-client";
-import { SignOutLink } from "../sign-out";
+import { AppTopBar } from "../app-frame/AppTopBar";
 import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { checkNewPage, createPage, slugify, type NewPageErrors, type NewPageInput } from "./new-page";
 import { FIND_FROM, loadSort, matchesQuery, pageStatus, saveSort, SORT_LABELS, sortRows, type SortKey } from "./list-view";
@@ -9,7 +8,6 @@ import { focusAfterDialog, PageActions, type LinkingPage, type PageAction } from
 import type { PageRow } from "./store";
 import { UpdateBanner } from "../updates/UpdateNotice";
 import { designHref, useDesignStatus } from "../designs/DesignLinks";
-import { ThemeToggle } from "../app-theme/ThemeToggle";
 
 /**
  * F069: an address may wrap after a "/" or "-", never mid-word
@@ -132,38 +130,33 @@ export function PageList({ allSites = false, siteName, rows, sourceNote, loadErr
     after(onDelete!(row), row.inRepo ? `Deleted “${row.title}”. It leaves the live site the next time you publish.` : `Deleted “${row.title}”.`);
   return (
     <div className="st">
-      <header className="st-header">
-        {allSites ? (
-          <a className="st-back" href="#/sites">
-            <Icon name="back" /> All sites
-          </a>
-        ) : null}
-        <h1 className="st-title">{siteName}: pages</h1>
-        <div className="st-actions">
-          <a className="st-button st-link-button" href="#/posts">
-            Posts
-          </a>
-          <a className="st-button st-link-button" href="#/settings">
-            Site settings
-          </a>
-          <a className="st-button st-link-button" href="#/templates">
-            Start from a template
-          </a>
+      {/* F086: the app frame's top bar. Posts, Site settings, templates and Sign out are in the site menu. */}
+      <AppTopBar
+        siteName={siteName}
+        allSites={allSites}
+        where={
+          <h1 className="af-title">
+            <span className="pg-sr">{siteName}: </span>Pages
+          </h1>
+        }
+        tools={
           <button
             ref={newPageRef}
             type="button"
-            className="st-button st-button-primary"
+            className="st-button"
             aria-expanded={creating}
             aria-controls="new-page"
             onClick={() => setCreating((c) => !c)}
           >
             New page
           </button>
-          {/* F069: last, after a divider, away from New page. */}
-          <SignOutLink className="st-button st-link-button" />
-        </div>
-        <ThemeToggle />
-      </header>
+        }
+        onPublish={() => {
+          const heading = document.getElementById("publish-h");
+          heading?.focus();
+          heading?.scrollIntoView({ block: "start" });
+        }}
+      />
 
       <main className="pg">
         <NewPageForm open={creating} existing={rows?.map((r) => r.path) ?? []} onCancel={() => {

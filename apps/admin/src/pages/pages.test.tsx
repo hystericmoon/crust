@@ -119,7 +119,7 @@ describe("pages: list screen", () => {
     expect(within(home!).getByRole("link", { name: "Home" }).getAttribute("href")).toBe("#/edit?path=%2F");
     expect(about!.textContent).toContain("Only in this browser");
     expect(about!.textContent).toContain("Not recorded yet");
-    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Demo: pages");
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Demo: Pages");
   });
 
   it("shows loading and empty states", () => {

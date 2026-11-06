@@ -1,8 +1,8 @@
 import { checkPost, config, countPlaceholders, defaultBlog, migrateChrome, tokensToCss,
   HEADER_V2_CSS, ICONS_CSS, BLOCKS_V3_CSS, INTERACTIVE_CSS, designNames, isDesignKind, type DesignKind, type BlogSettings, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
 import { relinkPage } from "@crust/blocks/links";
-import { Puck, useGetPuck, type Data } from "@puckeditor/core";
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Puck, type Data } from "@puckeditor/core";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import siteJson from "../../../content/site.json";
 import {
   deletePage,
@@ -21,9 +21,10 @@ import {
   type DeletedPage,
   type PendingChanges,
 } from "./api-client";
-import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot, openKeyboardHelp } from "./keyboard/KeyboardEditing";
+import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot } from "./keyboard/KeyboardEditing";
 import { LayoutPhotoWatcher } from "./layouts/photos";
 import { LayoutGallery, LayoutInserters, LayoutsButton } from "./layouts/LayoutGallery";
+import "./app-frame/app-frame.css";
 import { MyLayoutsProvider } from "./layouts/mine";
 import { PageList, editHref } from "./pages/PageList";
 import type { LinkingPage } from "./pages/PageActions";
@@ -44,8 +45,7 @@ import { PublishPanel } from "./publish/PublishPanel";
 import { DesktopPublishPanel } from "./publish/DesktopPublishPanel";
 import { desktopHosts } from "./publish/hosts";
 import { desktopPublisher } from "./desktop/local-publish";
-import { PublishShortcut, usePendingCount } from "./publish/shortcut";
-import { SignOutLink } from "./sign-out";
+import { usePendingCount } from "./publish/shortcut";
 import { SaveStatus, useSaveStatus } from "./save-status";
 import { withRichText } from "./rich-text/field";
 import { withLinkedSectionFields } from "./linked/fields";
@@ -78,7 +78,10 @@ import { sitesApi, sitesInvoke } from "./sites/sites";
 import { SitesScreen } from "./sites/SitesScreen";
 import { withMediaFields } from "./media/fields";
 import { MediaPicker } from "./media/MediaPicker";
-import { ThemeToggle } from "./app-theme/ThemeToggle";
+import { setAppFrame } from "./app-frame/AppTopBar";
+import { EditorBar, EditorFrameContext, PageSwitcher } from "./app-frame/EditorBar";
+import { railPlugins } from "./app-frame/rail";
+import { useAutosave, type SavePhase } from "./app-frame/autosave";
 import { MediaFocusProvider } from "./media/FocusPicker";
 import { DesignEditor } from "./designs/DesignEditor";
 import { BlogContext, withPostEditing } from "./posts/editing";
@@ -113,19 +116,6 @@ function useTokenStyles(css: string) {
     document.head.appendChild(style);
     return () => style.remove();
   }, [css]);
-}
-
-/**
- * Replaces Puck's Publish control, which is a <span> and can't be reached
- * with the keyboard. It saves a draft, so it says so.
- */
-function SaveDraftButton({ onSave }: { onSave: (data: Data) => void }) {
-  const getPuck = useGetPuck();
-  return (
-    <button type="button" className="crust-save" onClick={() => onSave(getPuck().appState.data)}>
-      Save draft
-    </button>
-  );
 }
 
 export { saveFailed, saveMessage } from "./save-messages";
@@ -267,7 +257,7 @@ export function App() {
     }
     return saveMessage(result, local, "Site settings");
   };
-  const pageOptions = usePageOptions(githubOn, route.name === "settings");
+  const pageOptions = usePageOptions(githubOn, route.name === "settings" || route.name === "edit");
   // F025: the builder edits the same draft as Site settings ("Whole site" mode).
   const siteStyle: SiteStyle = {
     tokens: draft,
@@ -278,8 +268,11 @@ export function App() {
   };
 
   // F024: shown in the builder and Site settings top bars; counted again on each screen change.
-  const pendingCount = usePendingCount(githubOn, route.name);
-  const shortcut = (className: string) => (githubOn ? <PublishShortcut count={pendingCount} className={className} /> : null);
+  // F086: and after each save, so the top bar's "3 changes not live" keeps up.
+  const [saves, setSaves] = useState(0);
+  const onSaved = useCallback(() => setSaves((n) => n + 1), []);
+  const pendingCount = usePendingCount(githubOn, `${route.name}:${saves}`);
+  useEffect(() => setAppFrame({ siteName: site.name, desktop: desktopContent() !== null, pending: pendingCount }), [pendingCount]);
 
   if (route.name === "settings") {
     return (
@@ -288,7 +281,6 @@ export function App() {
         {/* F076: a footer built from blocks is a linked section. */}
         <LinkedSectionsProvider githubOn={!!githubOn}>
         <SiteSettings
-          headerLink={shortcut("st-button st-link-button")}
           site={site}
           page={getLocalDraft("/")?.page ?? bundledPages().find((p) => p.path === "/") ?? bundledPages()[0]!}
           saved={saved}
@@ -337,7 +329,7 @@ export function App() {
     return (
       <SiteStyleContext.Provider value={siteStyle}>
         <SiteChromeContext.Provider value={{ chrome: chromeDraft, siteName: site.name, path: `/blog/${route.slug}` }}>
-          <PostBuilder key={route.slug} slug={route.slug} githubOn={githubOn} shortcut={shortcut("crust-header-link")} />
+          <PostBuilder key={route.slug} slug={route.slug} githubOn={githubOn} onSaved={onSaved} />
           <MediaPicker />
         </SiteChromeContext.Provider>
       </SiteStyleContext.Provider>
@@ -401,7 +393,7 @@ export function App() {
     return (
       <SiteStyleContext.Provider value={siteStyle}>
         <SiteChromeContext.Provider value={{ chrome: chromeDraft, siteName: site.name, path: route.path }}>
-          <Builder key={route.path} path={route.path} githubOn={githubOn} shortcut={shortcut("crust-header-link")} />
+          <Builder key={route.path} path={route.path} githubOn={githubOn} onSaved={onSaved} pages={pageOptions} />
           <MediaPicker />
         </SiteChromeContext.Provider>
       </SiteStyleContext.Provider>
@@ -584,7 +576,13 @@ function BuilderCanvas({ children, document }: { children: ReactNode; document?:
   );
 }
 
-function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean; shortcut?: ReactNode }) {
+/** F086: what a save ended in, for the top bar. */
+function phaseOf(result: ApiResult<unknown>): SavePhase {
+  if (result.ok) return "saved";
+  return saveFailed(result) ? "failed" : "local";
+}
+
+function Builder({ path, githubOn, onSaved, pages }: { path: string; githubOn: boolean; onSaved: () => void; pages: { path: string; title: string }[] }) {
   const [page, setPage] = useState<Page | null | undefined>(undefined);
   const status = useSaveStatus();
 
@@ -592,21 +590,28 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
     void loadPage(path, githubOn).then(setPage);
   }, [path, githubOn]);
 
-
-  const saveDraftRef = useRef<(data: Data) => Promise<void>>(async () => {});
-  const saveDraft = useCallback(
-    async (data: Data) => {
-      const next = fromPuckData(path, data);
+  // F086: changes save on their own (grouped), so "Save draft" is gone.
+  const save = useCallback(
+    async (next: Page): Promise<SavePhase> => {
       const local = saveLocalDraft(next, false);
-      status.saving();
       const result = await saveContent({ kind: "page", page: next });
-      if (result.ok) saveLocalDraft(next, true);
+      if (result.ok) {
+        saveLocalDraft(next, true);
+        onSaved();
+      }
       // F069: a failed save stays on screen with "Try again".
-      status.show(saveMessage(result, local, "Page"), saveFailed(result), () => void saveDraftRef.current(data));
+      if (saveFailed(result)) status.show(saveMessage(result, local, "Page"), true, () => autosave.retry(next));
+      else status.clear();
+      return phaseOf(result);
     },
-    [path, status.saving, status.show],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [onSaved, status.show, status.clear],
   );
-  saveDraftRef.current = saveDraft;
+  const autosave = useAutosave<Page>(save, (p) => JSON.stringify(p), page ?? null);
+  const plugins = useMemo(
+    () => railPlugins({ pages: () => pages, hrefFor: editHref, quickEdit: `#/edit?path=${encodeURIComponent(path)}&mode=quick` }),
+    [pages, path],
+  );
 
   if (page === undefined) return <Loading />;
   if (page === null) {
@@ -626,43 +631,31 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
     <SeoSiteProvider value={{ baseUrl: loadSavedAddress(site.baseUrl), siteName: site.name, path }}>
       <LinkedSectionsProvider githubOn={githubOn}>
       <MyLayoutsProvider githubOn={githubOn}>
-        <Puck
-          config={pageEditorConfig}
-          data={toPuckData(page)}
-          viewports={viewports}
-          headerTitle={page.title || path}
-          overrides={{
-            headerActions: () => (
-              <>
-                <a className="crust-header-link" href="#/">
-                  Pages
-                </a>
-                <a className="crust-header-link" href={`#/edit?path=${encodeURIComponent(path)}&mode=quick`}>
-                  Quick edit
-                </a>
-                <LayoutsButton />
-                <PlaceholderChecklist />
-                <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
-                  Keyboard
-                </button>
-                <a className="crust-header-link" href="#/settings">
-                  Site settings
-                </a>
-                {shortcut}
-                <SaveDraftButton onSave={saveDraft} />
-                {/* F069: at the far end, after a divider, away from Save draft. */}
-                <ThemeToggle />
-                <SignOutLink />
-              </>
-            ),
-            puck: BuilderRoot,
-            iframe: BuilderCanvas,
-            actionBar: KeyboardActionBar,
-          }}
-          onPublish={saveDraft}
-          // Keep every edit in this browser, so leaving the page never loses work.
-          onChange={(data) => saveLocalDraft(fromPuckData(path, data), false)}
-        />
+        <EditorFrameContext.Provider
+          value={{ where: <PageSwitcher current={path} pages={pages} hrefFor={editHref} />, devices: viewports, phase: githubOn ? autosave.phase : autosave.phase === "saved" ? "local" : autosave.phase }}
+        >
+          <Puck
+            config={pageEditorConfig}
+            data={toPuckData(page)}
+            viewports={viewports}
+            headerTitle={page.title || path}
+            plugins={plugins}
+            overrides={{
+              header: EditorBar,
+              puck: BuilderRoot,
+              iframe: BuilderCanvas,
+              actionBar: KeyboardActionBar,
+            }}
+            onPublish={(data) => autosave.retry(fromPuckData(path, data))}
+            // Keep every edit in this browser at once, so leaving the page never loses work;
+            // the save to GitHub (or the computer) follows when the editing pauses.
+            onChange={(data) => {
+              const next = fromPuckData(path, data);
+              saveLocalDraft(next, false);
+              autosave.schedule(next);
+            }}
+          />
+        </EditorFrameContext.Provider>
         <SaveStatus note={status.note} onDismiss={status.clear} />
       </MyLayoutsProvider>
       </LinkedSectionsProvider>
@@ -671,7 +664,7 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
 }
 
 /** One post in the builder (F035). Like Builder, with the post's details in the page settings. */
-function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boolean; shortcut?: ReactNode }) {
+function PostBuilder({ slug, githubOn, onSaved }: { slug: string; githubOn: boolean; onSaved: () => void }) {
   const [post, setPost] = useState<Post | null | undefined>(undefined);
   const [blog, setBlog] = useState<BlogSettings>(defaultBlog);
   const status = useSaveStatus();
@@ -681,25 +674,29 @@ function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boo
     if (githubOn) void listPosts().then((res) => res.ok && setBlog(res.blog));
   }, [slug, githubOn]);
 
-
-  const saveDraftRef = useRef<(data: Data) => Promise<void>>(async () => {});
-  const saveDraft = useCallback(
-    async (data: Data) => {
-      const next = postFromPuckData(slug, data);
+  const save = useCallback(
+    async (next: Post): Promise<SavePhase> => {
       const problems = checkPost(next);
       const local = saveLocalPost(next, false);
       if (problems.length) {
-        status.show(`Kept in this browser, not saved to GitHub yet: ${problems.join(" ")}`, true);
-        return;
+        // Said once per new problem, not on every pause in typing.
+        status.show(`Kept in this browser, not saved yet: ${problems.join(" ")}`);
+        return "held";
       }
-      status.saving();
       const result = await savePost(next);
-      if (result.ok) saveLocalPost(next, true);
-      status.show(saveMessage(result, local, "Post"), saveFailed(result), () => void saveDraftRef.current(data));
+      if (result.ok) {
+        saveLocalPost(next, true);
+        onSaved();
+      }
+      if (saveFailed(result)) status.show(saveMessage(result, local, "Post"), true, () => autosave.retry(next));
+      else status.clear();
+      return phaseOf(result);
     },
-    [slug, status.saving, status.show],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [onSaved, status.show, status.clear],
   );
-  saveDraftRef.current = saveDraft;
+  const autosave = useAutosave<Post>(save, (p) => JSON.stringify(p), post ?? null);
+  const plugins = useMemo(() => railPlugins({ pages: () => [], hrefFor: editHref }).filter((p) => p.name !== "pages"), []);
 
   if (post === undefined) return <Loading />;
   if (post === null) {
@@ -719,36 +716,38 @@ function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boo
     <BlogContext.Provider value={{ blog, language: site.language }}>
       <LinkedSectionsProvider githubOn={githubOn}>
       <MyLayoutsProvider githubOn={githubOn}>
-        <Puck
-          config={postEditorConfig}
-          data={postToPuckData(post)}
-          viewports={viewports}
-          headerTitle={post.title || "Untitled post"}
-          overrides={{
-            headerActions: () => (
-              <>
-                <a className="crust-header-link" href="#/posts">
-                  Posts
-                </a>
-                <LayoutsButton />
-                <PlaceholderChecklist />
-                <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
-                  Keyboard
-                </button>
-                {shortcut}
-                <SaveDraftButton onSave={saveDraft} />
-                {/* F069: at the far end, after a divider, away from Save draft. */}
-                <ThemeToggle />
-                <SignOutLink />
-              </>
+        <EditorFrameContext.Provider
+          value={{
+            where: (
+              <a className="af-crumb" href="#/posts">
+                <span className="af-switch-label">Post</span>
+                {post.title || "Untitled post"}
+              </a>
             ),
-            puck: BuilderRoot,
-            iframe: BuilderCanvas,
-            actionBar: KeyboardActionBar,
+            devices: viewports,
+            phase: githubOn ? autosave.phase : autosave.phase === "saved" ? "local" : autosave.phase,
           }}
-          onPublish={saveDraft}
-          onChange={(data) => saveLocalPost(postFromPuckData(slug, data), false)}
-        />
+        >
+          <Puck
+            config={postEditorConfig}
+            data={postToPuckData(post)}
+            viewports={viewports}
+            headerTitle={post.title || "Untitled post"}
+            plugins={plugins}
+            overrides={{
+              header: EditorBar,
+              puck: BuilderRoot,
+              iframe: BuilderCanvas,
+              actionBar: KeyboardActionBar,
+            }}
+            onPublish={(data) => autosave.retry(postFromPuckData(slug, data))}
+            onChange={(data) => {
+              const next = postFromPuckData(slug, data);
+              saveLocalPost(next, false);
+              autosave.schedule(next);
+            }}
+          />
+        </EditorFrameContext.Provider>
         <SaveStatus note={status.note} onDismiss={status.clear} />
       </MyLayoutsProvider>
       </LinkedSectionsProvider>
