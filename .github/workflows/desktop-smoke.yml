@@ -6,6 +6,10 @@ name: Desktop launch test
 
 on:
   workflow_dispatch:
+  # Lets it run from the session branch before it is on main.
+  push:
+    branches: [ccr-d50f7e80-weuq18]
+    paths: [.github/workflows/desktop-smoke.yml]
 
 permissions:
   contents: read
