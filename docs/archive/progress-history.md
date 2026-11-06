@@ -5,6 +5,26 @@ short. Older "Current" entries (newest first) and the older log.
 
 ## Earlier "Current" entries (F065 back to Milestone 1)
 
+- **2026-11-06: F086 one top bar and a left icon bar (built, waiting for
+  your review).** Every screen now has the same top bar: your site's name
+  on the left (press it for a menu: Pages, Posts, Site settings, Start
+  from a template, and Sign out at the bottom; in the Mac app also All
+  sites), then where you are. On the right: the status ("Saved · 3
+  changes not live") and **Publish** with the number of changes, always
+  in the same place. In the editor the bar also has the page switcher,
+  Desktop/Tablet/Phone width, Undo and Redo, a button to show or hide
+  the settings panel, and Preview. The slim bar on the left opens Add
+  (layouts and blocks), Layers, Pages, Styles, Media, Blog, Site and
+  Help. **"Save draft" is gone:** changes save on their own a few
+  seconds after you stop typing (about 1 second in the Mac app), and
+  Ctrl/⌘+S saves at once. Site settings keeps Save and Discard until
+  F092. Snapshot: https://claude.ai/artifact/4yD6q3o3bHh3nogcJRhaRW.
+  **To try:** open the preview
+  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, open a page, change
+  a heading and watch the status; press the site name for the menu; try
+  each icon on the left; press Preview. (The preview link can't save to
+  GitHub, so it says "Saved in this browser".) Next: F087 Page first.
+
 - **2026-11-06: F085 the app in dark and light (built, waiting for your
   review).** The app itself (not your site) now has the React Bits-style
   "Violet night" look: violet-tinted near-black in dark mode, white in

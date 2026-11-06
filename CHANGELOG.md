@@ -4,6 +4,14 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Your page first (2026-11-06).** Opening a site takes you straight to
+  its Home page in the editor, drawn at full size instead of shrunk to
+  57%. The settings panel on the right only appears when you select
+  something; the rest of the time the page has the room. The page's title,
+  description and search settings are behind the new settings button
+  next to the page name. A new site starts with a short "Next steps"
+  list that ticks itself off as you go; Skip hides it and Help brings it
+  back.
 - **One top bar, and changes save on their own (2026-11-06).** Every
   screen has the same top bar: your site's menu on the left, the status
   ("Saved · 3 changes not live") and Publish with its count on the right.

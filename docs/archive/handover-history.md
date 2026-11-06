@@ -7,6 +7,21 @@ touches an older area ("How it fits" notes per feature, newest first).
 
 ## Per-feature notes (F053–F065)
 
+F086 (from HANDOVER, 2026-11-06). **F086 built (2026-11-06)**: `apps/admin/src/app-frame/` holds the one top
+bar (`AppTopBar`, site menu, `setAppFrame` store for site name and the
+pending count), the builder's bar (`EditorBar`, Puck `header` override:
+page switcher, widths, undo/redo, settings-panel toggle, Preview), the
+left icon bar (`railPlugins`: Puck plugins; Pages…Help are link panels
+for now) and autosave (`useAutosave`, 3 s browser / 1 s desktop, skips
+unchanged content, flushes on leave and Ctrl/Cmd+S). Site settings still
+has Save/Discard (until F092). DECISIONS "F086".
+Next: **F087 Page first** (Opus), design snapshot first: open a site on
+its home page at fit width, block list into the Add panel, right panel
+only when something is selected ("Next steps" otherwise), page title and
+search settings into the page's settings.
+PR #81 (review fixes, Mac app fix, redesign research, F085, F086) is still open for
+the owner to merge; after the merge, restart the branch from main.
+
 F085 (from HANDOVER, 2026-11-06). Last updated: 2026-11-06 ~17:30 (Jakarta), F085 built; branch `ccr-d50f7e80-weuq18`. **PR #81
 open** (review fixes, Mac launch test, Mac app fix); CI green; the owner
 merges. **The Mac app opens on the owner's Mac** (Apple chip, macOS 27.2)

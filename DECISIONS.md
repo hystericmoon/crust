@@ -261,6 +261,39 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-06 — F087 Page first (Claude, reversible)
+
+- Built take A from the snapshot https://claude.ai/artifact/VX9gKVj8euKZCtwXLahQwg
+  (`design/f087-page-first-v1.html`): one right panel that follows what
+  you pick. Code in `apps/admin/src/page-first/`.
+- **Opening a site lands on Home in the editor**: no address (`""`/`#`)
+  and the desktop app's "open site" go to `#/edit?path=%2F`; `#/` stays
+  the Pages list, so every existing link keeps working.
+- **Fit width** instead of Puck's auto zoom on a fixed 1280 px: on
+  Desktop the page is drawn as wide as the canvas, never under 1024 px
+  (our desktop breakpoint), so it shows at 100% whenever the canvas is
+  desktop-wide. Below that (a panel open on a small laptop) it scales a
+  little rather than switching to the tablet layout. Any width from
+  1024 up counts as "Desktop" for the toggle.
+- **Right panel**: closed with nothing selected; opens when a block is
+  picked, or for the page's settings, or for a new site's Next steps.
+  Picking a block replaces page settings; deselecting goes back to
+  Next steps if that list is open. The panel button still hides or shows
+  it by hand (with nothing selected it opens the page's settings).
+- **Page settings** open from a button beside the page switcher, not
+  from inside it: the switcher is a native select (keyboard and screen
+  readers for free), which can't hold an action. Snapshot drew it in the
+  switcher; same place on screen. Panel heading reads "Page settings" /
+  "Post settings" (Puck root label).
+- **Next steps** (4 steps: replace sample words and photos, describe the
+  page for search, see it on a phone, publish). Real checkboxes; the
+  first three tick themselves when done. Kept per site in this browser
+  (localStorage, keyed by site name); shown for sites made from the
+  welcome screen, Skip puts it away, Help → "Next steps for a new site"
+  brings it back. Older sites open with no list.
+- The block list already lived in the Add panel since F086; F087 only
+  removes the always-open right panel that made the canvas narrow.
+
 ## 2026-11-06 — F086 One app frame and top bar (Claude, reversible)
 
 - Built take A from the snapshot https://claude.ai/artifact/4yD6q3o3bHh3nogcJRhaRW

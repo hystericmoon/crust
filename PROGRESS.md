@@ -7,25 +7,25 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
-- **2026-11-06: F086 one top bar and a left icon bar (built, waiting for
-  your review).** Every screen now has the same top bar: your site's name
-  on the left (press it for a menu: Pages, Posts, Site settings, Start
-  from a template, and Sign out at the bottom; in the Mac app also All
-  sites), then where you are. On the right: the status ("Saved · 3
-  changes not live") and **Publish** with the number of changes, always
-  in the same place. In the editor the bar also has the page switcher,
-  Desktop/Tablet/Phone width, Undo and Redo, a button to show or hide
-  the settings panel, and Preview. The slim bar on the left opens Add
-  (layouts and blocks), Layers, Pages, Styles, Media, Blog, Site and
-  Help. **"Save draft" is gone:** changes save on their own a few
-  seconds after you stop typing (about 1 second in the Mac app), and
-  Ctrl/⌘+S saves at once. Site settings keeps Save and Discard until
-  F092. Snapshot: https://claude.ai/artifact/4yD6q3o3bHh3nogcJRhaRW.
+- **2026-11-06: F087 Page first (built, waiting for your review).**
+  Opening a site now lands on its **Home page in the editor**, drawn at
+  full size (no more 57%). The panel on the right is **gone until you
+  select something**: click a heading or a section and its settings slide
+  in; click the grey area around the page and it goes away again. The
+  page's **title, description and search settings** are behind the new
+  sliders button right next to the page name ("Page settings"; on a post,
+  "Post settings"). A **new site** starts with a short **Next steps** list
+  on the right: replace the sample words and photos, describe the page
+  for search, see it on a phone, publish. Steps tick themselves when done
+  (you can tick them by hand too); **Skip** hides the list, and Help →
+  "Next steps for a new site" brings it back. Snapshot:
+  https://claude.ai/artifact/VX9gKVj8euKZCtwXLahQwg.
   **To try:** open the preview
-  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, open a page, change
-  a heading and watch the status; press the site name for the menu; try
-  each icon on the left; press Preview. (The preview link can't save to
-  GitHub, so it says "Saved in this browser".) Next: F087 Page first.
+  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev: you should land on
+  Home at full width with no right panel. Click a heading, then the grey
+  area. Press the sliders button next to the page name. To see Next
+  steps, start a new site from the welcome screen (or in the Mac app,
+  make a new site). Next: F088 Add section, by picture.
 
 ## Waiting on the owner
 
