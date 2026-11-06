@@ -67,6 +67,32 @@ redesign ours." That is the next piece of work (see Next).
 
 ## Next
 
+### Checkpoint (2026-11-06): App UX redesign, research done
+
+Done:
+- [x] Review pages checked: no new answers (F075, F078 still waiting).
+- [x] Competitor research (Squarespace, Wix, Webflow) and Impeccable
+  critique, Assessment A (design review, 24/40). Both condensed in
+  `design/ux-audit/NOTES.md`, with three drafted directions (A "One
+  studio" is Claude's pick).
+- [x] Screenshots of today's screens: `design/ux-audit/*.png`. To retake:
+  serve apps/admin/dist with scripts/serve-static.mjs, inject
+  scripts/fake-tauri.js (`window.__FAKE_TAURI__ = {host:"connected"}`),
+  playwright-core with executablePath /opt/pw-browsers/chromium (the
+  pattern in scripts/check-builder-a11y.mjs).
+Left:
+- [ ] Impeccable critique Assessment B (detector) was stopped half way:
+  rerun as a helper agent (`sh <impeccable skill>/scripts/impeccable
+  detect --json apps/admin/src`, plus axe on #/, #/edit?path=/,
+  #/settings, #/templates; run axe BEFORE injecting the overlay).
+- [ ] Publish one Artifact (`design/app-redesign-v1.html`): the comparison
+  screen by screen (Crust screenshot vs how the three do it), the
+  critique, and directions A/B/C drawn as UI with before/after (editor and
+  site home), A marked as the pick. Embed small JPEGs (ffmpeg scale=960,
+  q 5; ~40-70KB each).
+- [ ] Propose features in DECISIONS.md → Proposals; owner picks; build only
+  after that. Short plain-language chat summary for the owner.
+
 **App UX redesign (owner's request, 2026-11-06).** Not in features.json:
 scope is his, so plan first, then he approves features.
 1. Research how Squarespace, Wix and Webflow do the app itself: first run
