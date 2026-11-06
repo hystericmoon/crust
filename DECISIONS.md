@@ -259,6 +259,25 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-06 — Mac app won't open: sign it as one app, never quit over Documents (Claude, reversible)
+
+- **What CI found:** the Mac installer's app was "not signed at all" as a
+  bundle (only the program file had the linker's automatic signature), so
+  macOS knew it by a random name (`crust-21a9…`), not `app.crust.desktop`.
+  macOS ties the Documents permission to that name, and Crust touches
+  Documents before its window opens. Owner's Mac: Apple chip, macOS 27.2,
+  nothing blocked in Privacy & Security, bounce then nothing.
+- **Chosen:** `bundle.macOS.signingIdentity: "-"` (free ad-hoc signature:
+  the whole app sealed and named). Not a Developer ID: that costs $99/year
+  and is the owner's call; without it macOS still asks for "Open Anyway"
+  once after download.
+- **Chosen:** if the Crust folder in Documents can't be used, sites go in
+  the app's own data folder (~/Library/Application Support/app.crust.desktop/Sites)
+  instead of the app quitting at start-up. Rare; reversible.
+- Rejected: opening the window before the sites are ready (every command
+  would need a "not ready yet" state; a bigger change for the same result).
+
+
 ## 2026-11-03 — F084 Rebuild Harbour, Signal and Corner (Claude, reversible)
 
 Snapshot https://claude.ai/artifact/KhSZToRB3zEYzpXrCe5eVo
