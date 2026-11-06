@@ -10,6 +10,40 @@ skill (`.claude/skills/crust-start/SKILL.md`). While building:
 `crust-lean`. Finishing: `crust-finish` (it holds the "Ready to clear"
 message the owner asked for every time). Content JSON: `crust-content-format`.
 
+## Checkpoint (2026-11-06, owner cleared to switch to Opus)
+
+Carry on from here instead of picking a feature.
+
+- **Mac app won't open (owner's Mac):** the installer from run 42139329529
+  (artifact `crust-mac`, expires 2026-12-06; Apple-chip + Intel build,
+  unsigned) bounces on the dock for a long time and then stays still. No
+  permission prompt appeared; he opened it from Applications.
+- **What CI showed:** the launch test (`.github/workflows/desktop-smoke.yml`,
+  run 42144538564, artifact `launch-test`) built the app natively on a clean
+  macOS 26 Apple-chip runner and opened it like Finder does: it ran, the
+  window showed the welcome screen, the Documents/Crust folder was made
+  with no prompt. So the code starts fine; the cause is on his Mac or in the
+  downloaded/combined build. Suspects: macOS blocking the unsigned download
+  (quarantine, "Open Anyway"), a window off-screen, the combined build.
+- **Waiting on the owner:** does the menu bar say Crust / is a window listed
+  in Window; any "Crust was blocked" line with Open Anyway in System
+  Settings → Privacy & Security; a Cmd+Shift+3 screenshot after the bounce
+  stops; Apple or Intel chip and macOS version.
+- **Next step:** extend desktop-smoke.yml to build the combined
+  (`--target universal-apple-darwin`) app, set the download quarantine flag
+  (`xattr -w com.apple.quarantine`), and try it again; then fix what shows.
+  The workflow has a temporary `push` trigger for the session branch (the
+  dispatch button 404s until the file is on main); remove that trigger when
+  it is no longer needed. Repo is public, so Actions minutes are free.
+- **Review round two** (page: https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp):
+  `reviewed: true` for F055, F062, F063, F071, F080. Still open: F075 (his
+  phone test) and F078 (his call: pass as is, make the table scroll area a
+  tab stop only when it overflows, or add a "no speech" tick, which needs a
+  migration). F055's "GitHub" wording in the app (about 70 strings) waits
+  until he has tried the app.
+- **PR #81** (branch `ccr-d50f7e80-weuq18`) is open, CI green at 9b2f63c; the
+  owner merges. Re-publishing the live site: only on his word.
+
 ## Model plan (owner, 2026-11-03)
 
 The owner picks the model per feature; `crust-start` checks it before
