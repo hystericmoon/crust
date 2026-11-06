@@ -1,0 +1,236 @@
+<title>Crust App Themes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: F085 snapshot in the series style. Three takes on the React Bits look, each drawn as the direction-A editor in dark and light side by side, then a live contrast table computed from the same tokens. Mockup colours come from per-take theme classes, fixed in both page themes. */
+:root{--bg:#f3f4f6;--card:#fff;--fg:#15171c;--mute:#5b6270;--line:#d9dce3;--accent:#2f5bd8;--ok:#1d7a4a;--okbg:#e6f4ec;--bad:#a33a2a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101216;--card:#1a1d23;--fg:#eceef2;--mute:#9aa1af;--line:#2e333d;--accent:#8ab4ff;--ok:#5fcf93;--okbg:#16301f;--bad:#ff8f7a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101216;--card:#1a1d23;--fg:#eceef2;--mute:#9aa1af;--line:#2e333d;--accent:#8ab4ff;--ok:#5fcf93;--okbg:#16301f;--bad:#ff8f7a;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1180px;margin:auto;display:grid;gap:40px}
+h1{font-size:28px;line-height:1.2;margin:0;text-wrap:balance}h2{font-size:21px;margin:0}h3{font-size:18px;margin:0}
+p{margin:0;max-width:72ch}.mute{color:var(--mute)}
+section{display:grid;gap:16px}
+.eyebrow{font:600 12px/1 system-ui,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
+.dir{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:16px;min-width:0}
+.dir.rec{border:2px solid var(--ok);box-shadow:0 0 0 4px var(--okbg)}
+.dirhead{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline}
+.badge{font:700 12px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:6px;background:var(--ok);color:#fff}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,480px),1fr));gap:14px}
+.lbl{font:600 12px/1 system-ui;letter-spacing:.05em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+ul{margin:0;padding-left:20px;display:grid;gap:5px;font-size:14px}
+.good::marker{color:var(--ok)}.bad::marker{color:var(--bad)}
+.pc{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+thead th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--mute);background:var(--bg)}
+td.r{font-variant-numeric:tabular-nums}
+.pass{color:var(--ok);font-weight:600}.fail{color:var(--bad);font-weight:700}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid var(--line);vertical-align:-1px;margin-right:4px}
+.q{border-left:3px solid var(--accent);padding:4px 0 4px 14px;display:grid;gap:4px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- mockup: all colours from --t-* set by theme classes ---------- */
+.ui{--t-font:"Geist",system-ui,sans-serif;--t-mono:"Geist Mono",ui-monospace,Menlo,monospace;
+  border-radius:12px;overflow:hidden;border:1px solid var(--t-line);background:var(--t-bg);color:var(--t-ink);font:12px/1.4 var(--t-font);aspect-ratio:16/10;display:grid;grid-template-rows:auto 1fr;min-width:0;max-width:100%;position:relative}
+.ui *{box-sizing:border-box}
+.ui .glow{position:absolute;inset:0;pointer-events:none;background:var(--t-glow,none)}
+.ui .top{position:relative;display:flex;align-items:center;gap:7px;padding:8px 10px;border-bottom:1px solid var(--t-line);background:var(--t-top)}
+.ui .sp{flex:1}
+.ui .site{font-weight:600;white-space:nowrap}
+.ui .chip{border:1px solid var(--t-line);background:var(--t-fill);border-radius:9px;padding:4px 8px;white-space:nowrap}
+.ui .seg{display:flex;gap:2px;background:var(--t-fill);border:1px solid var(--t-line);border-radius:9px;padding:2px}
+.ui .seg span{width:22px;height:18px;border-radius:6px;display:grid;place-items:center;color:var(--t-mute)}
+.ui .seg span.on{background:var(--t-raised);color:var(--t-ink)}
+.ui svg{width:12px;height:12px}
+.ui .status{font:11px var(--t-mono);color:var(--t-mute);display:flex;align-items:center;gap:5px;white-space:nowrap}
+.ui .status i{width:6px;height:6px;border-radius:50%;background:var(--t-warn)}
+.ui .btn{border-radius:10px;padding:5px 11px;font-weight:600;white-space:nowrap;border:1px solid var(--t-line);background:var(--t-fill)}
+.ui .pri{background:var(--t-pri);color:var(--t-prifg);border-color:transparent}
+.ui .pri em{font:500 10px var(--t-mono);font-style:normal;opacity:.75;margin-left:5px}
+.ui .body{position:relative;display:grid;grid-template-columns:54px 1fr 30%;min-height:0}
+.ui .rail{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border-right:1px solid var(--t-line);background:var(--t-panel)}
+.ui .rail span{display:grid;justify-items:center;gap:2px;font-size:9px;color:var(--t-mute);padding:5px 2px;border-radius:9px;width:44px}
+.ui .rail span svg{width:15px;height:15px}
+.ui .rail span.on{background:var(--t-raised);color:var(--t-ink)}
+.ui .rail span.on svg{color:var(--t-acc)}
+.ui .canvas{background:var(--t-canvas);background-image:radial-gradient(var(--t-dot) 1px,transparent 1px);background-size:14px 14px;padding:14px;overflow:hidden;min-width:0}
+.ui .page{background:#f6f1ea;color:#2a2420;border-radius:6px;overflow:hidden;font-family:Georgia,serif;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.ui .page .nav{display:flex;justify-content:space-between;padding:8px 14px;font:11px system-ui,sans-serif}
+.ui .page .hero{padding:16px 14px;display:grid;gap:6px;outline:2px solid var(--t-acc);outline-offset:-2px;position:relative}
+.ui .page .hero b{font-size:19px;font-weight:400}
+.ui .page .hero small{font:10px system-ui;opacity:.75}
+.ui .page .band{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 14px;background:#ece5da}
+.ui .page .band div{height:30px;border-radius:3px;background:#d8cdbd}
+.ui .tag{position:absolute;top:0;left:0;background:var(--t-acc);color:var(--t-accfg);font:600 9px var(--t-font);padding:2px 6px;border-radius:0 0 5px 0}
+.ui .page .hero{padding-top:22px}
+.ui .insp{border-left:1px solid var(--t-line);background:var(--t-panel);padding:10px;display:grid;gap:8px;align-content:start;min-width:0}
+.ui .insp h4{margin:0;font-size:12px;font-weight:600}
+.ui .tabs{display:flex;gap:2px;background:var(--t-fill);border:1px solid var(--t-line);border-radius:9px;padding:2px}
+.ui .tabs span{flex:1;text-align:center;padding:3px;border-radius:7px;color:var(--t-mute);font-size:10.5px}
+.ui .tabs span.on{background:var(--t-raised);color:var(--t-ink);font-weight:600}
+.ui .fld{display:grid;gap:3px;font-size:10.5px;color:var(--t-mute)}
+.ui .fld div{border:1px solid var(--t-line);background:var(--t-fill);border-radius:8px;padding:4px 7px;color:var(--t-ink)}
+.ui .fld .mono{font-family:var(--t-mono)}
+.ui .dots{display:flex;gap:6px}
+.ui .dots i{width:24px;height:24px;border-radius:50%;border:1px solid var(--t-line)}
+.ui .dots i.on{box-shadow:0 0 0 2px var(--t-panel),0 0 0 4px var(--t-acc)}
+.ui .hint{color:var(--t-mute);font-size:10.5px}
+.ui .card{border:1px solid var(--t-line);background:var(--t-card,var(--t-fill));border-radius:11px;padding:9px;display:grid;gap:5px;position:relative;overflow:hidden}
+.ui .card .k{font:10px var(--t-mono);color:var(--t-mute)}
+
+/* take A — Violet night (React Bits faithful) */
+.tA.dark{--t-bg:#120f17;--t-top:#120f17;--t-panel:#16121c;--t-raised:#2a2533;--t-fill:rgba(255,255,255,.04);--t-line:rgba(255,255,255,.09);--t-ink:#f6f4f9;--t-mute:#a49fae;--t-acc:#a78bfa;--t-accfg:#120f17;--t-pri:#f4f2f7;--t-prifg:#141118;--t-canvas:#0d0b11;--t-dot:rgba(255,255,255,.06);--t-warn:#f5b454}
+.tA.light{--t-bg:#ffffff;--t-top:#ffffff;--t-panel:#fbfafc;--t-raised:#efedf3;--t-fill:rgba(24,24,27,.03);--t-line:rgba(24,24,27,.10);--t-ink:#27272a;--t-mute:#625d6b;--t-acc:#7c3aed;--t-accfg:#ffffff;--t-pri:#18151d;--t-prifg:#ffffff;--t-canvas:#f3f1f6;--t-dot:rgba(24,24,27,.08);--t-warn:#b45309}
+/* take B — Graphite (neutral, violet only for Publish/selection) */
+.tB.dark{--t-bg:#09090b;--t-top:#09090b;--t-panel:#0f0f12;--t-raised:#27272a;--t-fill:rgba(255,255,255,.03);--t-line:rgba(255,255,255,.08);--t-ink:#fafafa;--t-mute:#a1a1aa;--t-acc:#a78bfa;--t-accfg:#09090b;--t-pri:#7c3aed;--t-prifg:#ffffff;--t-canvas:#050506;--t-dot:rgba(255,255,255,.05);--t-warn:#f5b454}
+.tB.light{--t-bg:#fafafa;--t-top:#ffffff;--t-panel:#ffffff;--t-raised:#f1f1f3;--t-fill:rgba(24,24,27,.02);--t-line:rgba(24,24,27,.10);--t-ink:#18181b;--t-mute:#63636b;--t-acc:#7c3aed;--t-accfg:#ffffff;--t-pri:#7c3aed;--t-prifg:#ffffff;--t-canvas:#f0f0f2;--t-dot:rgba(24,24,27,.07);--t-warn:#b45309}
+/* take C — Aurora (A plus glow and gradient Publish) */
+.tC.dark{--t-bg:#100c16;--t-top:rgba(16,12,22,.7);--t-panel:rgba(22,17,30,.82);--t-raised:#2d2638;--t-fill:rgba(255,255,255,.05);--t-line:rgba(255,255,255,.10);--t-ink:#f7f4fb;--t-mute:#a9a1b6;--t-acc:#c4b5fd;--t-accfg:#100c16;--t-pri:linear-gradient(135deg,#7c3aed,#c026d3);--t-prifg:#ffffff;--t-canvas:#0c0911;--t-dot:rgba(255,255,255,.05);--t-warn:#f5b454;
+  --t-glow:radial-gradient(60% 40% at 15% 0%,rgba(124,58,237,.35),transparent 70%),radial-gradient(40% 35% at 95% 10%,rgba(192,38,211,.22),transparent 70%);--t-card:linear-gradient(160deg,rgba(124,58,237,.18),rgba(255,255,255,.03))}
+.tC.light{--t-bg:#fdfcff;--t-top:rgba(255,255,255,.75);--t-panel:rgba(255,255,255,.85);--t-raised:#efeaf8;--t-fill:rgba(76,29,149,.03);--t-line:rgba(76,29,149,.12);--t-ink:#241b33;--t-mute:#615874;--t-acc:#7c3aed;--t-accfg:#ffffff;--t-pri:linear-gradient(135deg,#6d28d9,#a21caf);--t-prifg:#ffffff;--t-canvas:#f4f0fa;--t-dot:rgba(76,29,149,.08);--t-warn:#b45309;
+  --t-glow:radial-gradient(60% 40% at 15% 0%,rgba(167,139,250,.35),transparent 70%),radial-gradient(40% 35% at 95% 10%,rgba(232,121,249,.22),transparent 70%);--t-card:linear-gradient(160deg,rgba(167,139,250,.18),rgba(255,255,255,.6))}
+@media (max-width:640px){.ui{aspect-ratio:auto;min-height:300px}.ui .hide-sm{display:none}.ui .body{grid-template-columns:48px 1fr}.ui .insp{display:none}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="i-add" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></symbol>
+ <symbol id="i-pages" viewBox="0 0 16 16"><path d="M4 2.5h5.5L12 5v8.5H4z M9.5 2.5V5H12" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linejoin="round"/></symbol>
+ <symbol id="i-brush" viewBox="0 0 16 16"><path d="M10.5 2.5l3 3-5.5 5.5-3-3zM5 8.5c-1.8 0-2.5 1.4-2.5 2.8 0 1-.4 1.7-1 2.2 2.6.4 5.5-.4 5.5-3" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linejoin="round"/></symbol>
+ <symbol id="i-img" viewBox="0 0 16 16"><rect x="2.5" y="3" width="11" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M3 11l3.2-3 2.5 2.3L10.5 9l2.8 2.5" stroke="currentColor" stroke-width="1.3" fill="none"/></symbol>
+ <symbol id="i-blog" viewBox="0 0 16 16"><path d="M3 4h10M3 7h10M3 10h6" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></symbol>
+ <symbol id="i-desk" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="8" rx="1" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M6 13.5h4" stroke="currentColor" stroke-width="1.4"/></symbol>
+ <symbol id="i-phone" viewBox="0 0 16 16"><rect x="5" y="2" width="6" height="12" rx="1.2" stroke="currentColor" stroke-width="1.4" fill="none"/></symbol>
+ <symbol id="i-sun" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.6" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></symbol>
+</svg>
+
+<template id="editor">
+  <div class="glow"></div>
+  <div class="top">
+    <span class="site">Harbour Studio ▾</span>
+    <span class="chip hide-sm">Home ▾</span>
+    <span class="sp"></span>
+    <span class="seg hide-sm"><span class="on"><svg><use href="#i-desk"/></svg></span><span><svg><use href="#i-phone"/></svg></span></span>
+    <span class="status"><i></i>3 not live</span>
+    <span class="chip hide-sm" title="Light or dark"><svg><use href="#i-sun"/></svg></span>
+    <span class="btn pri">Publish<em>3</em></span>
+  </div>
+  <div class="body">
+    <div class="rail">
+      <span><svg><use href="#i-add"/></svg>Add</span>
+      <span><svg><use href="#i-pages"/></svg>Pages</span>
+      <span class="on"><svg><use href="#i-brush"/></svg>Styles</span>
+      <span><svg><use href="#i-img"/></svg>Media</span>
+      <span><svg><use href="#i-blog"/></svg>Blog</span>
+    </div>
+    <div class="canvas">
+      <div class="page">
+        <div class="nav"><b>Harbour Studio</b><span>Work · About · Contact</span></div>
+        <div class="hero"><span class="tag">Hero section</span><b>Calm rooms for busy lives</b><small>Interior design in Jakarta and Bandung.</small></div>
+        <div class="band"><div></div><div></div><div></div></div>
+      </div>
+    </div>
+    <div class="insp">
+      <h4>Hero section</h4>
+      <div class="tabs"><span class="on">Style</span><span>Layout</span></div>
+      <div class="fld">Background<span class="dots"><i class="on" style="background:#f6f1ea"></i><i style="background:#ece5da"></i><i style="background:#2a2420"></i></span></div>
+      <div class="fld">Height<div>Medium ▾</div></div>
+      <div class="card"><span class="k">padding · 96px</span><span>Spacing follows Styles</span></div>
+      <span class="hint">Only this section changes.</span>
+    </div>
+  </div>
+</template>
+
+<main>
+<header style="display:grid;gap:12px">
+  <span class="eyebrow">F085 · App look · snapshot v1 · 6 Nov 2026</span>
+  <h1>The app in dark and light</h1>
+  <p>You asked for React Bits' look with light and dark mode. Below are three takes, each drawn on the new editor (direction A) in both modes. Only the app changes: the cream site on the canvas keeps its own design in both modes. The app follows your computer's setting, and a sun/moon button switches it.</p>
+  <p class="mute" style="font-size:13px">React Bits' code has a licence we can't use ("Commons Clause": no redistributing it, and our repository is public). So we copy the feel, not the code: Geist font (free licence), violet-tinted near-black, see-through panels, thin borders, 10–12px corners, monospace small print.</p>
+</header>
+
+<article class="dir rec" aria-labelledby="hA">
+  <div class="dirhead"><span class="badge">Recommended</span><h3 id="hA">A · Violet night</h3><span class="mute" style="font-size:13px">Closest to React Bits</span></div>
+  <p>React Bits' own palette: near-black with a violet tint, white Publish button in dark mode, ink-black in light. Violet appears only where something is selected or active, so it always means "this one".</p>
+  <div class="pair">
+    <div><div class="lbl">Dark</div><div class="ui tA dark" role="img" aria-label="Take A dark: violet-tinted black app around a cream site; white Publish button; violet outline on the selected section."></div></div>
+    <div><div class="lbl">Light</div><div class="ui tA light" role="img" aria-label="Take A light: white app with soft lilac-grey canvas; black Publish button; violet selection."></div></div>
+  </div>
+  <div class="pc">
+    <div><div class="lbl">Good</div><ul><li class="good">Unmistakably the React Bits feel you pointed to</li><li class="good">Violet has one job (selection), so it never competes with the site's own colours</li><li class="good">Quiet enough to sit next to any template</li></ul></div>
+    <div><div class="lbl">Watch</div><ul><li class="bad">A white Publish button in dark mode is less "branded" than a violet one</li></ul></div>
+  </div>
+</article>
+
+<article class="dir" aria-labelledby="hB">
+  <div class="dirhead"><h3 id="hB">B · Graphite</h3><span class="mute" style="font-size:13px">Neutral zinc, violet Publish</span></div>
+  <p>Pure neutral greys (no violet tint), with violet saved for Publish and selection. Closer to shadcn/Linear than to React Bits.</p>
+  <div class="pair">
+    <div><div class="lbl">Dark</div><div class="ui tB dark" role="img" aria-label="Take B dark: neutral black app; violet Publish button."></div></div>
+    <div><div class="lbl">Light</div><div class="ui tB light" role="img" aria-label="Take B light: off-white app; violet Publish button."></div></div>
+  </div>
+  <div class="pc">
+    <div><div class="lbl">Good</div><ul><li class="good">The most neutral: the site gets all the attention</li><li class="good">Violet Publish is easy to find</li></ul></div>
+    <div><div class="lbl">Watch</div><ul><li class="bad">Loses most of the React Bits character you asked for</li><li class="bad">Violet means both "publish" and "selected"</li></ul></div>
+  </div>
+</article>
+
+<article class="dir" aria-labelledby="hC">
+  <div class="dirhead"><h3 id="hC">C · Aurora</h3><span class="mute" style="font-size:13px">A plus React Bits' glow</span></div>
+  <p>A, plus soft violet and magenta light behind the top bar, frosted panels, a gradient Publish and tinted cards: React Bits' showroom side.</p>
+  <div class="pair">
+    <div><div class="lbl">Dark</div><div class="ui tC dark" role="img" aria-label="Take C dark: violet and magenta glow behind the top bar, frosted panels, gradient Publish button."></div></div>
+    <div><div class="lbl">Light</div><div class="ui tC light" role="img" aria-label="Take C light: lilac glow, frosted white panels, gradient Publish button."></div></div>
+  </div>
+  <div class="pc">
+    <div><div class="lbl">Good</div><ul><li class="good">The most memorable; feels like a product launch</li></ul></div>
+    <div><div class="lbl">Watch</div><ul><li class="bad">The glow tints how you see your site's colours (bad when you're choosing them)</li><li class="bad">Blur and gradients cost speed on older Macs and phones</li><li class="bad">Tiring over long sessions; better kept for the welcome screen</li></ul></div>
+  </div>
+</article>
+
+<section>
+  <span class="eyebrow">Contrast, worked out from the colours above</span>
+  <h2>Every text pair, both modes</h2>
+  <p class="mute">WCAG 2.2 AA: 4.5:1 for text, 3:1 for outlines and icons. See-through colours are mixed over their panel before measuring. Gradients are measured at their lighter end.</p>
+  <div class="tablewrap" role="region" aria-label="Contrast table" tabindex="0"><table id="ct"><thead><tr><th scope="col">Take</th><th scope="col">Mode</th><th scope="col">Text on app</th><th scope="col">Grey text on panel</th><th scope="col">Publish label</th><th scope="col">Selection outline on canvas</th><th scope="col">Panel border</th></tr></thead><tbody></tbody></table></div>
+  <p class="mute" style="font-size:13px">Panel borders are decoration (the panels are separated by colour too), so WCAG doesn't need them at 3:1. Form fields will get a stronger border than these hairlines when F085 is built.</p>
+</section>
+
+<section>
+  <span class="eyebrow">What gets built in F085</span>
+  <h2>Take A, everywhere in the app</h2>
+  <ul>
+    <li>All app colours become named tokens, with a dark set and a light set; the four stray accents (purple, indigo, teal, orange) go.</li>
+    <li>Follows the computer's light/dark setting; the sun/moon button overrides it, and the app remembers your choice. No flash of the wrong mode on start.</li>
+    <li>Geist and Geist Mono bundled with the app (works offline in the desktop app).</li>
+    <li>The canvas keeps your site's own colours; only the frame around it changes.</li>
+    <li>A test checks every text pair at 4.5:1 in both modes, and the builder accessibility check runs in both.</li>
+    <li>Today's screens get the new look straight away. The new layout (top bar, icon bar) comes in F086–F087.</li>
+  </ul>
+  <div class="q"><b>Default for a first start</b><span class="mute">Follow the computer. If you'd rather Crust always opens dark (like React Bits), say so. It's a one-line change.</span></div>
+</section>
+</main>
+
+<script>
+const tpl=document.getElementById('editor');
+document.querySelectorAll('.ui').forEach(el=>el.appendChild(tpl.content.cloneNode(true)));
+function rgb(s){s=s.trim();if(s.startsWith('#')){const h=s.slice(1);return[0,2,4].map(i=>parseInt(h.substr(i,2),16)).concat(1)}const m=s.match(/[\d.]+/g).map(Number);return[m[0],m[1],m[2],m[3]??1]}
+function mix(fg,bg){const a=fg[3];return[0,1,2].map(i=>fg[i]*a+bg[i]*(1-a)).concat(1)}
+function lum(c){const f=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};return .2126*f(c[0])+.7152*f(c[1])+.0722*f(c[2])}
+function ratio(a,b){const x=lum(a),y=lum(b);return(Math.max(x,y)+.05)/(Math.min(x,y)+.05)}
+function lastColor(v){const m=v.match(/#[0-9a-f]{6}|rgba?\([^)]+\)/gi);return m?m[m.length-1]:v}
+function firstColor(v){const m=v.match(/#[0-9a-f]{6}|rgba?\([^)]+\)/gi);return m?m[0]:v}
+const tb=document.querySelector('#ct tbody');
+[['A','tA'],['B','tB'],['C','tC']].forEach(([n,c])=>['dark','light'].forEach(mode=>{
+  const probe=document.createElement('div');probe.className='ui '+c+' '+mode;probe.style.cssText='position:absolute;visibility:hidden;width:0;height:0';document.body.appendChild(probe);
+  const v=k=>getComputedStyle(probe).getPropertyValue('--t-'+k);
+  const bg=rgb(v('bg')),panel=mix(rgb(lastColor(v('panel'))),bg),canvas=rgb(v('canvas'));
+  const priRaw=v('pri');const pri=rgb(priRaw.includes('gradient')?lastColor(priRaw):priRaw);
+  const cells=[[rgb(v('ink')),bg,4.5],[rgb(v('mute')),panel,4.5],[rgb(v('prifg')),pri,4.5],[rgb(v('acc')),canvas,3],[mix(rgb(v('line')),panel),panel,null]];
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${n}</td><td>${mode}</td>`+cells.map(([a,b,need])=>{const r=ratio(a,b);const ok=need==null?null:r>=need;return `<td class="r">${r.toFixed(2)}:1 ${ok==null?'<span class="mute">decorative</span>':ok?'<span class="pass">pass</span>':'<span class="fail">fail</span>'}</td>`}).join('');
+  tb.appendChild(tr);probe.remove();
+}));
+</script>

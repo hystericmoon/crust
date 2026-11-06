@@ -84,7 +84,24 @@ Owner: "Go with your recommendation" + React Bits look with light and dark
 mode. Features F085–F093 in features.json; plan in docs/milestone-9.md;
 snapshot of the direction: https://claude.ai/artifact/EHnrnPwVaMRv9GRGpaXWLx.
 React Bits code can't be used (MIT + Commons Clause): aesthetic only
-(DECISIONS 2026-11-06). Next: F085, design snapshot first.
+(DECISIONS 2026-11-06).
+
+### Checkpoint (2026-11-06 ~16:30 Jakarta): F085 snapshot published
+
+- [x] F085 snapshot: https://claude.ai/artifact/KE4fZPZSFQJE8keiH4DwsA
+  (`design/f085-app-themes-v1.html`). Takes: **A Violet night (pick,
+  build it)**, B Graphite, C Aurora. Exact take-A tokens (dark and light)
+  are the `.tA.dark` / `.tA.light` rules in that file; contrast all pass.
+  React Bits measured with Playwright: bg #120f17, surfaces #221e29,
+  Geist, radius 10–13px, white primary in dark.
+- [ ] Build F085 (Opus): app colour tokens (dark/light) replacing the
+  stray accents, follow system + remembered toggle with no start-up
+  flash, bundle Geist + Geist Mono (OFL; add to licence notes), canvas
+  (site) untouched, test `app-theme` checking every text pair >= 4.5:1 in
+  both modes, check:builder in both modes. Default: follow the computer
+  (owner can ask for always-dark).
+- Branch: PR #81 is still open; if the owner hasn't merged it, F085 code
+  lands in the same PR (say so in the PR body) unless he merges first.
 PR #81 (review fixes, Mac app fix, redesign research) is still open for
 the owner to merge; after the merge, restart the branch from main.
 Still waiting on him: F075 (phone test) and F078 (his call) from review
