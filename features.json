@@ -930,7 +930,7 @@
       "description": "Design snapshot first. One top bar on every screen: site menu (switch sites), page switcher, device toggle, undo/redo, status ('Saved · 3 changes not live'), Preview, and Publish as the one primary button with the count. Left icon bar (Add, Pages, Styles, Media, Blog, Site, Help). Changes save on their own (desktop: to the computer; browser: grouped into one save every few seconds); 'Save draft' goes. Same words for the same idea everywhere. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
       "depends_on": ["F085"],
       "done_check": "npm test -- app-frame && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },
