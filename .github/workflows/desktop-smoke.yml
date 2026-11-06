@@ -44,7 +44,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p smoke
-          app=$(ls -d target/release/bundle/macos/*.app | head -n 1)
+          app=$(find target/release/bundle/macos -maxdepth 1 -name '*.app' | head -n 1)
           echo "app: $app" | tee smoke/notes.txt
           uname -m | tee -a smoke/notes.txt
           sw_vers | tee -a smoke/notes.txt
