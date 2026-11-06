@@ -99,6 +99,9 @@ const openBuilder = async () => {
 };
 const panelShown = () => screen.getByRole("button", { name: "Settings panel" }).getAttribute("aria-pressed") === "true";
 
+// These mount the whole editor, Add panel previews included: slow CI machines need more than vitest's 5 s.
+const BUILDER_TEST_MS = 20_000;
+
 describe("page first: the right panel", () => {
   it("is closed with nothing selected; Page settings opens the title and search settings", async () => {
     const settings = await openBuilder();
@@ -111,7 +114,7 @@ describe("page first: the right panel", () => {
     // Pressed again, it closes.
     fireEvent.click(settings);
     await waitFor(() => expect(panelShown()).toBe(false));
-  });
+  }, BUILDER_TEST_MS);
 
   it("a new site opens with Next steps; Skip closes it and Help brings it back", async () => {
     markNewSite();
@@ -142,13 +145,13 @@ describe("page first: the right panel", () => {
     expect(await screen.findByRole("heading", { name: "Next steps" })).toBeTruthy();
     await act(async () => {});
     expect(panelShown()).toBe(true);
-  });
+  }, BUILDER_TEST_MS);
 
   it("an older site opens with no list and no panel", async () => {
     await openBuilder();
     expect(screen.queryByRole("heading", { name: "Next steps" })).toBeNull();
     expect(panelShown()).toBe(false);
-  });
+  }, BUILDER_TEST_MS);
 });
 
 describe("page first: blocks live in the Add panel", () => {
