@@ -1,5 +1,5 @@
 {
-  "milestone": 8,
+  "milestone": 9,
   "rules": "One feature per session. passes=true only when done_check exits 0. needs_review items also need the owner to set reviewed=true after testing the preview. Only the owner adds or removes features.",
   "features": [
     {
@@ -599,7 +599,8 @@
       "done_check": "cargo test -p crust-desktop && npm test -- desktop && cargo clippy -- -D warnings",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Owner 2026-11-06: pass now. The GitHub wording in the app (about 70 places, DECISIONS) is still to do after the owner tries the Mac app."
     },
     {
       "id": "F056",
@@ -674,7 +675,8 @@
       "done_check": "npm test -- catalogue && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Owner 2026-11-06: fix, then pass. The Open the file button in the preview is now 44px like the card one."
     },
     {
       "id": "F063",
@@ -684,7 +686,8 @@
       "done_check": "npm test -- store && npm run check:a11y && npm run check:perf",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Impeccable review 2026-11-06 (owner: follow Impeccable): pass. Polish only: hero right half empty, small captions."
     },
     {
       "id": "F064",
@@ -768,7 +771,8 @@
       "done_check": "npm test -- type-styles && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Impeccable review 2026-11-06 (owner: follow Impeccable): pass. Polish only: tightest tracking on serif display."
     },
     {
       "id": "F072",
@@ -864,7 +868,8 @@
       "done_check": "npm test -- layouts && npm run check:layouts",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Owner 2026-11-06: fix, then pass. Hero buttons now sit together (stacked)."
     },
     {
       "id": "F081",
@@ -908,6 +913,96 @@
       "needs_review": true,
       "reviewed": true,
       "review_note": "Passed by the impeccable skill's re-check after the fixes, at the owner's request (2026-11-04: \"Follow whatever impeccable skill says\"): Both majors and the Signal bar are fixed; Studio photos and stock-template devices were left as taste calls."
+    },
+    {
+      "id": "F085",
+      "title": "App look: dark and light themes",
+      "description": "Design snapshot first. The app's own chrome (not the user's site) gets a React Bits-inspired look: violet-tinted near-black and a light counterpart, translucent panels, hairline borders, Geist (OFL) bundled, one violet accent, mono for small print. Follows the computer's light/dark setting, with a toggle that is remembered. All app colours become tokens; every pair passes WCAG 2.2 AA in both themes. Our own code only (React Bits is MIT + Commons Clause). Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
+      "depends_on": [],
+      "done_check": "npm test -- app-theme && npm run check:builder",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F086",
+      "title": "One app frame and top bar",
+      "description": "Design snapshot first. One top bar on every screen: site menu (switch sites), page switcher, device toggle, undo/redo, status ('Saved · 3 changes not live'), Preview, and Publish as the one primary button with the count. Left icon bar (Add, Pages, Styles, Media, Blog, Site, Help). Changes save on their own (desktop: to the computer; browser: grouped into one save every few seconds); 'Save draft' goes. Same words for the same idea everywhere. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
+      "depends_on": ["F085"],
+      "done_check": "npm test -- app-frame && npm run check:builder",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F087",
+      "title": "Page first",
+      "description": "Design snapshot first. Opening a site lands on its home page in the editor at fit width (no 57% default). The block list moves into the Add panel. The right panel shows only when something is selected; with nothing selected it shows 'Next steps' for a new site (skippable). Page title and search settings move to the page's settings. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
+      "depends_on": ["F086"],
+      "done_check": "npm test -- page-first && npm run check:builder",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F088",
+      "title": "Add section, by picture",
+      "description": "Design snapshot first. '+ Add section' between sections opens the layout gallery (categories, Blank, My layouts) in the Add panel; single blocks sit under it as 'Add an element'. Keyboard alternative for every drag. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
+      "depends_on": ["F087"],
+      "done_check": "npm test -- add-section && npm run check:builder",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F089",
+      "title": "One-row section toolbar",
+      "description": "Design snapshot first. The section toolbar becomes one row: Section, Style, Layout, Move, More. Site-wide actions (change everywhere, make linked, save as layout) move under More, with a step that says how many sections and pages a change affects. Colour choices named and at least 24px. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
+      "depends_on": ["F087"],
+      "done_check": "npm test -- section-toolbar && npm run check:builder",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F090",
+      "title": "Type on the page",
+      "description": "Design snapshot first. Click a heading or text on the canvas and edit it in place, with the rich-text bar floating above it; Escape leaves. Quick edit stays as a list view. Undo works across both. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
+      "depends_on": ["F087"],
+      "done_check": "npm test -- inline-text && npm run check:builder",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F091",
+      "title": "Pages panel",
+      "description": "Design snapshot first. Pages in a left panel grouped 'In the menu' and 'Not in the menu', reorder by drag or arrow keys, a status dot per page, each page's settings (title, address, search and sharing) behind its menu. Replaces the site home table. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
+      "depends_on": ["F086"],
+      "done_check": "npm test -- pages-panel && npm run check:builder",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F092",
+      "title": "Styles panel and Site settings sheet",
+      "description": "Design snapshot first. A Styles panel (paintbrush): Styles cards first, then Fine-tune (colours, type, buttons, cards, links, spacing, motion, section styles) and Header & footer. Site details (address, search defaults, where to publish, theme pack, template) in a separate Site settings sheet. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
+      "depends_on": ["F086"],
+      "done_check": "npm test -- styles-panel && npm run check:builder",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
+    },
+    {
+      "id": "F093",
+      "title": "Words and accessibility sweep",
+      "description": "One word per idea across the app, including F055's ~70 'GitHub' strings. Builder accessibility from the 2026-11-06 scan: main landmark and h1, labelled regions for panels, spoken drag status instead of aria-grabbed, focus never hidden under floating bars, and an axe scan inside the canvas frame. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
+      "depends_on": ["F088", "F089", "F090", "F091", "F092"],
+      "done_check": "npm test -- app-words && npm run check:builder",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false
     }
   ]
 }

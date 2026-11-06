@@ -17,26 +17,27 @@ any work.
 
 | Next feature | Model | Why |
 |---|---|---|
-| (none yet) | — | Milestone 7 is complete; the owner picks what's next |
+| F086 One app frame and top bar | Opus | Autosave and the app shell |
+| F087 Page first | Opus | Editor behaviour |
+| F088 Add section, by picture | Sonnet | Reuses the layout gallery |
+| F089 One-row section toolbar | Sonnet | Contained |
+| F090 Type on the page | Opus | Hardest: inline editing in the canvas |
+| F091 Pages panel | Sonnet | Contained |
+| F092 Styles panel and Site settings sheet | Sonnet | Regrouping existing panels |
+| F093 Words and accessibility sweep | Sonnet | Sweep |
+
+Milestone 9 approved 2026-11-06 (docs/milestone-9.md); models are
+Claude's recommendation, the owner can change any row.
 
 Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-05 (Jakarta), branch `ccr-d50f7e80-weuq18` (restarted
-from main after PR #79). **Everything is merged to main** (PRs #70-#79; none
-open). **The store launches free:** all three templates are Free, one short
-Licence page, no Terms/Refunds/Draft banner (DECISIONS "Store launches
-free"; the paid-store pages and the F068 gate stay in the code and return
-when a template gets a price). Publish store was run on main with real
-payments off (result in PROGRESS "Current"). **Owner's words:** "everything
-free right now, later we do something about the paid template". Still open
-for the owner: Passes for F055, F062, F063, F071, F075, F078, F080 (the
-visual review); re-publishing the live site (only on his word); a
-real-device try of the desktop app and real hosts. The F068 wording, seller
-name and contact email are only needed once something is priced.
-**Next: nothing unbuilt.** Ask the owner what comes next (Milestone 8 plan:
-docs/milestone-8.md; `npm run next`).
+Last updated: 2026-11-06 ~20:00 (Jakarta), F089 built; branch `ccr-d50f7e80-weuq18`. **PR #81
+open** (review fixes, Mac app fix, F085, F086, F087, now F088 and F089 too: same branch, so
+one PR until he merges); the owner merges.
+The Mac app opens on the owner's Mac (ad-hoc signed; DECISIONS
+2026-11-06). Milestone 9 "Friendly app" is under way (see Next).
 
 ## Where things stand
 
@@ -54,8 +55,11 @@ docs/milestone-8.md; `npm run next`).
 - **Repository is public** since 2026-11-03 (owner; free CI). Never commit
   paid template files while public; make CI lighter before it goes
   private again (DECISIONS "Repository public for now").
-- **Desktop app** (F055–F062) built and tested in CI, never installed by
-  the owner; installers cost ~150 Actions minutes (ask first).
+- **Desktop app** (F055–F062) installed and opened by the owner on
+  2026-11-06. The welcome screen shows; a fresh download needs "Open
+  Anyway" once (no Apple Developer ID; $99/year, his call). Mac launch
+  test: Actions → Desktop launch test (by hand). Repo public, so installer
+  runs are free; mac-only runs are quicker.
 - **Review round** for 26 features:
   https://claude.ai/artifact/C3czUd4fpf5Qz6t2WqAkwZ (PROGRESS.md
   "Waiting on the owner" says how to read the answers). Check it at the
@@ -68,9 +72,28 @@ docs/milestone-8.md; `npm run next`).
 
 ## Next
 
-**No unbuilt features.** Milestone 7 (store) is complete. Ask the owner
-what to build next; scope is his. Waiting on him: the F068 wording
-choices, the review round, and the store/delivery setup in BLOCKED.md.
+### Milestone 9 "Friendly app" (approved 2026-11-06)
+
+Owner: "Go with your recommendation" + React Bits look with light and dark
+mode. Features F085–F093 in features.json; plan in docs/milestone-9.md;
+snapshot of the direction: https://claude.ai/artifact/EHnrnPwVaMRv9GRGpaXWLx.
+React Bits code can't be used (MIT + Commons Clause): aesthetic only
+(DECISIONS 2026-11-06).
+
+**F085 built**: tokens in `apps/admin/src/app-theme/app-theme.css`; use
+`--app-*` for every new colour (the guard test fails on raw colours).
+**F086 built**: `apps/admin/src/app-frame/` (top bar, `EditorBar`,
+`railPlugins`, `useAutosave`); DECISIONS "F086".
+**F087 built**: `apps/admin/src/page-first/` (see DECISIONS "F087").
+**F088 built**: Add panel with layout pictures (DECISIONS "F088").
+**F089 built (2026-11-06)**: `SectionToolbar` in `apps/admin/src/sections/editing.tsx`
+is one row (Section, Style, Layout, Move, More); DECISIONS "F089".
+Next: **F090 Type on the page** (Opus), design snapshot first.
+PR #81 (review fixes, Mac app fix, redesign research, F085–F088) is
+still open for the owner to merge; after the merge, restart the branch
+from main.
+Still waiting on him: F075 (phone test) and F078 (his call) from review
+round two (https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp).
 
 ## Where to find things
 

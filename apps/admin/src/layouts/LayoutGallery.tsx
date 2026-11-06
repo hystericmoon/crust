@@ -24,6 +24,7 @@ import {
   splitSimple,
   planLayoutInsert,
   registerGalleryOpener,
+  setAddAt,
   type LayoutItem,
   type LayoutKind,
 } from "./library";
@@ -348,7 +349,7 @@ function SavePage({ onSaved }: { onSaved: () => void }) {
   );
 }
 
-function ItemList({ items, kind, onPick, labelledBy }: { items: LayoutItem[]; kind: LayoutKind; onPick: (item: LayoutItem) => void; labelledBy?: string }) {
+export function ItemList({ items, kind, onPick, labelledBy }: { items: LayoutItem[]; kind: LayoutKind; onPick: (item: LayoutItem) => void; labelledBy?: string }) {
   return (
     <ul className={kind === "section" ? "lg-grid" : "lg-grid is-pages"} aria-labelledby={labelledBy}>
       {items.map((item) =>
@@ -382,6 +383,20 @@ function ItemGrid({ items, kind, onPick }: { items: LayoutItem[]; kind: LayoutKi
       <ItemList items={simple} kind={kind} onPick={onPick} labelledBy="lg-simple" />
     </>
   );
+}
+
+/** F088: put a layout on the page (one Undo removes it), select it and say so. Shared by the dialog and the Add panel. */
+export function insertLayout(getPuck: ReturnType<typeof useGetPuck>, item: LayoutItem, index: number, tokens?: Parameters<typeof planLayoutInsert>[3]): boolean {
+  const puck = getPuck();
+  // F080: a gradient that wouldn't read in this site's colours is swapped for one that does.
+  const plan = planLayoutInsert(puck.appState.data as Data, item, index, tokens);
+  if (!plan) return false;
+  // setData skips the undo history unless asked; one Undo removes the whole layout.
+  puck.dispatch({ type: "setData", data: plan.data, recordHistory: true });
+  select(getPuck, plan.firstId);
+  focusBlock(plan.firstId);
+  announce(plan.announcement);
+  return true;
 }
 
 const categoryCount = (c: LayoutCategory | "All") =>
@@ -431,16 +446,8 @@ export function LayoutGallery() {
   const where = open ? describeInsertion(getPuck().config as Config, (getPuck().appState.data as Data).content, index) : "";
 
   const pick = (item: LayoutItem) => {
-    const puck = getPuck();
-    // F080: a gradient that wouldn't read in this site's colours is swapped for one that does.
-    const plan = planLayoutInsert(puck.appState.data as Data, item, index, siteStyle?.tokens);
     close();
-    if (!plan) return;
-    // setData skips the undo history unless asked; one Undo removes the whole layout.
-    puck.dispatch({ type: "setData", data: plan.data, recordHistory: true });
-    select(getPuck, plan.firstId);
-    focusBlock(plan.firstId);
-    announce(plan.announcement);
+    insertLayout(getPuck, item, index, siteStyle?.tokens);
   };
 
   return (
@@ -675,6 +682,14 @@ export function LayoutInserters({ document: doc }: { document?: Document }) {
   // The canvas is shown zoomed out; undo that so the buttons stay a usable size.
   const inv = zoom > 0 && zoom < 1 ? 1 / zoom : 1;
   const empty = content.length === 0;
+  const getPuck = useGetPuck();
+  // F088: the bars choose the spot, then the pictures open in the Add panel (no dialog over the page).
+  const openAddPanel = (index: number) => {
+    setAddAt(index);
+    const puck = getPuck();
+    puck.dispatch({ type: "setUi", ui: { plugin: { current: "blocks" } }, recordHistory: false });
+    announce(`Add section: ${describeInsertion(puck.config as Config, (puck.appState.data as Data).content, index)}. Pick a layout in the Add panel.`);
+  };
   return createPortal(
     <div className="lg-inserters">
       {empty && spots[0] ? (
@@ -683,9 +698,9 @@ export function LayoutInserters({ document: doc }: { document?: Document }) {
           type="button"
           className="lg-insert-empty"
           style={{ top: spots[0].top, left: spots[0].left, transform: `translate(-50%, -50%) scale(${inv})` }}
-          onClick={() => openLayoutGallery(0)}
+          onClick={() => openAddPanel(0)}
         >
-          <span aria-hidden="true">+</span> Add a layout
+          <span aria-hidden="true">+</span> Add section
         </button>
       ) : (
         // Pointer shortcuts: keyboard users have the "Layouts" button, which adds after the selected section.
@@ -696,9 +711,9 @@ export function LayoutInserters({ document: doc }: { document?: Document }) {
             className="lg-insert"
             tabIndex={-1}
             aria-hidden="true"
-            data-tip={s.index === 0 ? "Add a layout at the top" : s.index === content.length ? "Add a layout at the end" : "Add a layout here"}
+            data-tip={s.index === 0 ? "Add section at the top" : s.index === content.length ? "Add section at the end" : "Add section here"}
             style={{ top: s.top, left: s.left, transform: `translate(-50%, -50%) scale(${inv})` }}
-            onClick={() => openLayoutGallery(s.index)}
+            onClick={() => openAddPanel(s.index)}
           >
             +
           </button>

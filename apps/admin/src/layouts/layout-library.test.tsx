@@ -9,6 +9,7 @@ import {
   describeInsertion,
   filterLayouts,
   insertionPoint,
+  getAddAt,
   openLayoutGallery,
   planLayoutInsert,
   topLevelIndexOf,
@@ -228,7 +229,7 @@ describe("layout-library: + buttons on the canvas", () => {
     expect(spots.every((s) => s.left === 400)).toBe(true);
   });
 
-  it("shows a real 'Add a layout' button on an empty page", async () => {
+  it("shows a real 'Add section' button on an empty page", async () => {
     data = { root: { props: {} }, content: [] };
     document.body.innerHTML = `<div data-puck-dropzone="root:default-zone"></div>`;
     render(
@@ -238,10 +239,12 @@ describe("layout-library: + buttons on the canvas", () => {
       </>,
     );
     await act(async () => new Promise<void>((r) => requestAnimationFrame(() => r())));
-    const add = await screen.findByRole("button", { name: /Add a layout/ });
+    const add = await screen.findByRole("button", { name: /Add section/ });
     expect(add.tabIndex).toBe(0);
     await act(async () => fireEvent.click(add));
-    expect(screen.getByText("Adds to this empty page.")).toBeTruthy();
+    // F088: the pictures open in the Add panel, at the spot the bar chose.
+    expect(getAddAt()).toBe(0);
+    expect(dispatch.mock.calls.some(([a]) => a.type === "setUi" && a.ui.plugin.current === "blocks")).toBe(true);
   });
 
   it("between sections, the + buttons are pointer shortcuts with a tooltip", async () => {
@@ -251,7 +254,7 @@ describe("layout-library: + buttons on the canvas", () => {
     const plus = document.querySelectorAll<HTMLButtonElement>(".lg-insert");
     expect(plus).toHaveLength(3);
     expect([...plus].every((b) => b.tabIndex === -1 && b.getAttribute("aria-hidden") === "true")).toBe(true);
-    expect(plus[0]!.dataset.tip).toBe("Add a layout at the top");
-    expect(plus[2]!.dataset.tip).toBe("Add a layout at the end");
+    expect(plus[0]!.dataset.tip).toBe("Add section at the top");
+    expect(plus[2]!.dataset.tip).toBe("Add section at the end");
   });
 });

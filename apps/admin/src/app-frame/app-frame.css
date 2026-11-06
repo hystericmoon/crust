@@ -1,0 +1,149 @@
+/* F086: one app frame (take A, design/f086-app-frame-v1.html). Every colour is an F085 token. */
+
+.af-top {
+  display: flex; align-items: center; gap: 8px;
+  min-height: 52px; padding: 6px 12px;
+  background: var(--app-top); color: var(--app-ink);
+  border-bottom: 1px solid var(--app-line);
+  font-family: var(--app-font); font-size: 14px;
+  flex-wrap: wrap;
+}
+.af-grow { flex: 1 1 0; min-width: 0; }
+.af-where, .af-tools { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.af-icon { flex: none; }
+
+/* Site menu */
+.af-site { position: relative; }
+.af-site-button {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 8px;
+  border: 0; border-radius: 8px; background: transparent; color: var(--app-ink);
+  font: inherit; font-weight: 600; cursor: pointer; max-width: 260px;
+}
+.af-site-button:hover, .af-site-button[aria-expanded="true"] { background: var(--app-hover); }
+.af-site-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.af-logo {
+  display: grid; place-items: center; width: 24px; height: 24px; flex: none;
+  border-radius: 6px; background: var(--app-pri); color: var(--app-pri-fg); font-size: 12px; font-weight: 600;
+}
+.af-menu {
+  position: absolute; z-index: 300; top: calc(100% + 6px); left: 0; min-width: 220px;
+  padding: 6px; border: 1px solid var(--app-line); border-radius: 10px;
+  background: var(--app-panel); box-shadow: 0 12px 32px var(--app-shadow);
+}
+.af-menu ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.af-menu a {
+  display: flex; align-items: center; min-height: 36px; padding: 0 10px; border-radius: 6px;
+  color: var(--app-ink); text-decoration: none; font-weight: 500;
+}
+.af-menu a:hover { background: var(--app-hover); }
+.af-menu-end { margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--app-line); }
+
+/* Where you are */
+.af-title { margin: 0; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.af-sep { width: 1px; height: 20px; background: var(--app-line); flex: none; }
+.af-switch, .af-crumb {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 4px 0 10px;
+  border: 1px solid var(--app-line); border-radius: 8px; color: var(--app-ink); text-decoration: none; max-width: 300px;
+}
+.af-crumb { padding-right: 10px; }
+.af-crumb:hover { background: var(--app-hover); }
+.af-switch-label { color: var(--app-mute); font-size: 13px; }
+.af-switch select {
+  min-height: 34px; max-width: 220px; border: 0; background: transparent; color: var(--app-ink);
+  font: inherit; font-weight: 500; cursor: pointer;
+}
+.af-switch:focus-within { outline: 3px solid var(--app-acc); outline-offset: 2px; }
+.af-switch select:focus-visible { outline: none; }
+
+/* Tools */
+.af-seg { display: inline-flex; border: 1px solid var(--app-line); border-radius: 8px; overflow: hidden; }
+.af-seg .af-icon-button { border-radius: 0; }
+.af-icon-button {
+  display: inline-grid; place-items: center; width: 36px; height: 36px;
+  border: 0; border-radius: 8px; background: transparent; color: var(--app-mute); cursor: pointer;
+}
+.af-icon-button:hover:not(:disabled) { background: var(--app-hover); color: var(--app-ink); }
+.af-icon-button[aria-pressed="true"] { background: var(--app-acc-soft); color: var(--app-acc); }
+.af-icon-button:disabled { cursor: default; opacity: 0.45; }
+.af-divider { width: 1px; height: 22px; margin: 0 4px; background: var(--app-line); }
+.af-button, .af-tools .st-button, .af-tools .crust-header-link {
+  display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px;
+  border: 1px solid var(--app-line-strong); border-radius: 8px; background: transparent;
+  color: var(--app-ink); font: inherit; font-weight: 500; text-decoration: none; cursor: pointer; white-space: nowrap;
+}
+.af-button:hover { background: var(--app-hover); }
+.af-button[aria-pressed="true"] { background: var(--app-acc-soft); border-color: var(--app-acc); color: var(--app-ink); }
+
+/* Status */
+.af-status { display: inline-flex; align-items: center; gap: 7px; color: var(--app-mute); font-size: 13px; white-space: nowrap; }
+.af-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--app-ok); flex: none; }
+.af-status-warn .af-dot { background: var(--app-warn); }
+.af-status-busy .af-dot { background: var(--app-acc); }
+.af-status-danger { color: var(--app-danger); font-weight: 600; }
+.af-status-danger .af-dot { background: var(--app-danger); }
+
+/* Publish: the one primary button */
+.af-publish {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px;
+  border: 0; border-radius: 8px; background: var(--app-pri); color: var(--app-pri-fg);
+  font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; white-space: nowrap;
+}
+.af-publish:hover { background: var(--app-pri-hover); }
+.af-count {
+  min-width: 20px; padding: 1px 6px; border-radius: 999px; text-align: center;
+  font: 500 12px/18px var(--app-mono); background: var(--app-pri-fg); color: var(--app-pri);
+}
+
+.af-top :is(a, button, select):focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
+
+/* Narrow windows: the device toggle and Preview fold first; status and Publish never do. */
+@media (max-width: 900px) {
+  .af-seg, .af-top .af-button { display: none; }
+  .af-site-name { max-width: 120px; }
+}
+@media (max-width: 560px) {
+  .af-status { display: none; }
+  .af-where { order: 10; flex-basis: 100%; }
+}
+
+/* Puck: our header fills its row; Puck's own viewport buttons are replaced by the top bar's (zoom stays). */
+.Puck [class*="_PuckLayout-header_"] { min-width: 0; }
+.Puck [class*="_ViewportControls-actionsInner_"] > span:nth-child(-n + 3),
+.Puck [class*="_ViewportControls-actionsInner_"] > [class*="_ViewportControls-divider_"]:nth-child(4) { display: none; }
+
+/* Icon bar panels */
+.af-panel { display: grid; gap: 10px; padding: 16px; font-family: var(--app-font); color: var(--app-ink); }
+.af-panel-title { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--app-mute); }
+.af-panel-note { margin: 0; font-size: 13px; color: var(--app-mute); line-height: 1.5; }
+.af-panel-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.af-panel-list a {
+  display: grid; gap: 1px; padding: 8px 10px; border-radius: 8px; color: var(--app-ink); text-decoration: none;
+}
+.af-panel-list a:hover { background: var(--app-hover); }
+.af-panel-list small { color: var(--app-mute); font-size: 12px; }
+.af-panel-link {
+  display: flex; align-items: center; min-height: 36px; padding: 0 12px; border: 1px solid var(--app-line-strong);
+  border-radius: 8px; background: transparent; color: var(--app-ink); font: inherit; font-weight: 500; text-decoration: none; cursor: pointer; text-align: left;
+}
+.af-panel-link:hover { background: var(--app-hover); }
+.af-panel :is(a, button):focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
+.af-media { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.af-media img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; background: var(--app-raised); }
+.af-add-layouts { padding: 12px 16px 0; }
+.af-add-layouts .crust-header-link { width: 100%; justify-content: center; }
+
+/* F088: Add section, by picture */
+.af-addsec { display: grid; gap: 12px; padding: 12px 16px 16px; }
+.af-addsec .af-panel-title { padding: 0; }
+.af-addsec-where { margin: 0; color: var(--app-mute); font-size: 0.8125rem; }
+.af-addsec-search { display: grid; gap: 4px; }
+.af-addsec-search input { min-height: 36px; padding: 0 10px; border: 1px solid var(--app-line-strong); border-radius: 8px; background: var(--app-panel); color: var(--app-ink); font: inherit; }
+.af-addsec-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.af-chip { min-height: 28px; padding: 0 10px; border: 1px solid var(--app-line); border-radius: 999px; background: transparent; color: var(--app-mute); font: inherit; font-size: 0.8125rem; cursor: pointer; }
+.af-chip:hover { background: var(--app-hover); }
+.af-chip[aria-pressed="true"] { background: var(--app-acc-soft); color: var(--app-acc); border-color: transparent; }
+.af-chip:focus-visible, .af-addsec :is(input, summary):focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
+.af-addsec .lg-grid { grid-template-columns: 1fr; gap: 10px; }
+.af-addsec .lg-card-desc { display: none; }
+.af-addsec-elements { border-top: 1px solid var(--app-line); padding-top: 10px; }
+.af-addsec-elements summary { cursor: pointer; font-weight: 500; min-height: 28px; display: flex; align-items: center; }

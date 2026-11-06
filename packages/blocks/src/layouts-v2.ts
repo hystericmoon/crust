@@ -225,7 +225,8 @@ export const sectionLayoutsV2: SectionLayout[] = [
       h1("Rooms that hold the light", { eyebrow: "Interior studio" }),
       text("Calm, practical homes for people who live in them every day.", "left", "default"),
       spacer("sm"),
-      columns([[button("See the work", "/work")], [button("About the studio", "/about", "secondary")]], { gap: "sm", widths: "one-three" }),
+      button("See the work", "/work"),
+      button("About the studio", "/about", "secondary"),
     ], { photo: "stair", height: "full", valign: "bottom", tint: "light", headerOver: true, width: "wide", focus: { x: 50, y: 40 } }),
   ]),
   L("hero-split-photo", "Text beside a photo", "Hero", "Headline and a button on one side, a tall photo on the other.", () => [

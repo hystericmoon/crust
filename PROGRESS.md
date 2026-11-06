@@ -7,43 +7,17 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
-- **2026-11-05: store launches free.** Everything is free for now (owner:
-  "later on we can do something about the paid template"). The store has
-  three templates (Harbour, Signal, Corner), all Free; none was ever
-  priced. With nothing for sale it shows one short **Licence** page (free
-  to use, on as many sites as you like; don't resell the file) and a
-  footer column "Licence"; the Terms and Refunds pages and the "Draft"
-  banner are gone. The paid-store pages and the F068 live-payment check
-  stay in the code and come back as soon as any template gets a price
-  (PR #79; DECISIONS "Store launches free"). Publish store was run on
-  main with real payments off. **To try:** open
-  https://crust-store.pages.dev, a template page, and /licence; the
-  "Download" buttons should open each template's file. The licence
-  wording is plain and short, not lawyer-reviewed.
-
-- **F068 Licence, terms and refunds: built, passes, wording is a draft**
-  (branch `ccr-d50f7e80-weuq18`, its own PR). done_check `npm test --
-  store-legal && npm run check:a11y` exit 0. Snapshot
-  https://claude.ai/artifact/DAmwsHC4W4CcGXzH4DDCij (A built on all
-  three: one price for unlimited sites; full refund within 14 days for
-  any reason; three short pages). The store has Licence, Terms and
-  Refunds pages, a "Buying" footer column, "Read the full licence" on
-  every template page, and a line under every buy button linking all
-  three. Each page says "Draft" until you approve the wording, and the
-  store refuses real payments until then. **To try:** after Publish
-  store, open https://crust-store.pages.dev/licence (and /terms,
-  /refunds); read the wording; tell Claude your changes, the name to
-  sell under and the contact email. **Milestone 7 is complete; no
-  unbuilt features remain.**
-
-- **2026-11-03: token saving A, B and D done** (owner's pick on
-  https://claude.ai/artifact/D2h2rdzR4iQU6dQv7TyWqV; DECISIONS "Token
-  saving"). Nothing changes in Crust itself; sessions carry less. Long
-  features may now stop once for a checkpoint `/clear`.
-
-- **2026-11-03: PR #66 merged** (owner's request): F084, F063, F064,
-  F065, F066 are on main. Start-up files slimmed (history in
-  `docs/archive/`, `npm run next`); one PR per feature from now on.
+- **2026-11-06: F089 One-row section toolbar (built, waiting for your review).**
+  Click a section: its bar is one row, **Section · Style · Layout · move
+  arrows · More**. Section is the background picture, Style shows the four
+  colours with their names (bigger, easier to hit), Layout is the height.
+  Under **More** are "Change <style> everywhere…" (asks first, says how many
+  sections it changes), "Make linked…" and "Save as layout…". Snapshot:
+  https://claude.ai/artifact/G8y8XJd5qEpki25JdHbUSU.
+  **To try:** open the preview
+  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, click a section, open
+  each menu. Try the keyboard: Tab to the bar, ← → along it, Enter opens,
+  Esc closes. Next: F090 Type on the page (Opus).
 
 ## Waiting on the owner
 

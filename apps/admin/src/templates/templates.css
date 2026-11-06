@@ -40,7 +40,7 @@
 }
 .tp-pages button:hover { background: var(--st-bg); }
 .tp-pages button[aria-current="page"] { background: var(--st-bg); font-weight: 600; box-shadow: inset 3px 0 0 var(--st-action); }
-.tp-path { font: 0.8125rem/1.4 ui-monospace, Menlo, Consolas, monospace; color: var(--st-muted); font-weight: 400; }
+.tp-path { font: 0.8125rem/1.4 var(--app-mono); color: var(--st-muted); font-weight: 400; }
 .tp-sub { margin: 8px 0 0; font-size: 0.875rem; font-weight: 500; color: var(--st-muted); }
 .tp-description { margin: 0 0 8px; color: var(--st-muted); }
 .tp-stage { min-width: 0; padding: 16px 24px 32px; display: grid; align-content: start; gap: 12px; }
@@ -57,8 +57,8 @@
 .tp-list { padding: 12px 16px; border-radius: 8px; border: 1px solid var(--st-divider); }
 .tp-list h3 { margin: 0 0 4px; font-size: 1rem; }
 .tp-list ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
-.tp-replaced { background: var(--st-danger-bg); border-color: #fecdca; }
-.tp-kept { background: #ecfdf3; border-color: #abefc6; }
+.tp-replaced { background: var(--st-danger-bg); border-color: var(--app-danger); }
+.tp-kept { background: var(--app-ok-soft); border-color: var(--app-ok); }
 
 /* After the switch, on the Pages screen */
 .tp-banner { display: grid; gap: 8px; border-left: 4px solid var(--st-ok); }
@@ -84,7 +84,13 @@
 .tp-get { text-decoration: none; display: inline-flex; align-items: center; gap: 0.4em; }
 .tp-bought { display: grid; gap: 6px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--st-divider); font-size: 0.875rem; }
 .tp-bought label { font-weight: 600; }
-.tp-bought input { width: 100%; min-width: 0; font: inherit; }
+.tp-bought input { width: 100%; min-width: 0; max-width: 100%; min-height: 44px; font: inherit; color: var(--st-muted); }
+/* F062 review: same 44px file button as the card version. */
+.tp-bought input::file-selector-button {
+  min-height: 44px; margin-right: 12px; padding: 4px 16px; font: inherit; font-weight: 600; cursor: pointer;
+  color: var(--st-text); background: var(--st-surface, transparent); border: 1px solid var(--st-text); border-radius: 8px;
+}
+.tp-bought input:focus-visible { outline: 2px solid var(--st-focus); outline-offset: 2px; }
 .tp-shot:focus-visible { outline: 2px solid var(--st-focus); outline-offset: 2px; }
 .tp-shot { margin: 0 auto; max-height: 70dvh; overflow-y: auto; border: 1px solid var(--st-divider); border-radius: 8px; background: #fff; }
 .tp-shot img { display: block; width: 100%; height: auto; }

@@ -8,3 +8,6 @@ target/
 !.env.example
 .wrangler/
 .crust-cache/
+
+# Impeccable design tool working files
+.impeccable/

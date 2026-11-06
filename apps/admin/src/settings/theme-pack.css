@@ -15,7 +15,7 @@
 }
 .st-file::file-selector-button {
   min-height: 36px; margin-right: 12px; padding: 0 14px;
-  border: 1px solid var(--st-border); border-radius: 6px; background: #f4f4f5; color: var(--st-text);
+  border: 1px solid var(--st-border); border-radius: 6px; background: var(--app-raised); color: var(--st-text);
   font: inherit; font-weight: 500; cursor: pointer;
 }
 .st-pack-message:empty { display: none; }
@@ -24,12 +24,12 @@
 .st-warning ul { margin: 0; padding-left: 20px; }
 .st-pack-loaded {
   display: grid; gap: 12px; margin-top: 8px; padding: 16px;
-  border: 2px solid #4338ca; border-radius: 10px; background: #f5f6ff;
+  border: 2px solid var(--app-acc); border-radius: 10px; background: var(--app-acc-soft);
 }
 .st-pack-name { margin: 0; font-size: 1rem; font-weight: 600; }
 .st-pack-swatches { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr)); gap: 6px 12px; font-size: 0.875rem; }
 .st-pack-swatches li { display: flex; align-items: center; gap: 8px; }
-.st-pack-swatch { flex: none; width: 20px; height: 20px; border-radius: 50%; border: 1px solid rgb(0 0 0 / 0.25); }
+.st-pack-swatch { flex: none; width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--app-line); }
 .st-pack-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 /* Grid items default to their content's width; let fields shrink on phones. */
 .st-pack-part > * { min-width: 0; }

@@ -7,6 +7,40 @@ touches an older area ("How it fits" notes per feature, newest first).
 
 ## Per-feature notes (F053–F065)
 
+F086 (from HANDOVER, 2026-11-06). **F086 built (2026-11-06)**: `apps/admin/src/app-frame/` holds the one top
+bar (`AppTopBar`, site menu, `setAppFrame` store for site name and the
+pending count), the builder's bar (`EditorBar`, Puck `header` override:
+page switcher, widths, undo/redo, settings-panel toggle, Preview), the
+left icon bar (`railPlugins`: Puck plugins; Pages…Help are link panels
+for now) and autosave (`useAutosave`, 3 s browser / 1 s desktop, skips
+unchanged content, flushes on leave and Ctrl/Cmd+S). Site settings still
+has Save/Discard (until F092). DECISIONS "F086".
+Next: **F087 Page first** (Opus), design snapshot first: open a site on
+its home page at fit width, block list into the Add panel, right panel
+only when something is selected ("Next steps" otherwise), page title and
+search settings into the page's settings.
+PR #81 (review fixes, Mac app fix, redesign research, F085, F086) is still open for
+the owner to merge; after the merge, restart the branch from main.
+
+F085 (from HANDOVER, 2026-11-06). Last updated: 2026-11-06 ~17:30 (Jakarta), F085 built; branch `ccr-d50f7e80-weuq18`. **PR #81
+open** (review fixes, Mac launch test, Mac app fix); CI green; the owner
+merges. **The Mac app opens on the owner's Mac** (Apple chip, macOS 27.2)
+with the installer from desktop-release run 42159771953 (artifact
+`crust-mac`, expires 2026-12-06): it was unsigned as a bundle and hung at
+start-up; now ad-hoc signed, with a Documents fallback (DECISIONS
+2026-11-06). **Owner's words (2026-11-06):** "the ui ux for the app itself
+is not very nice and friendly. we need to see how squarespace, wix,
+webflow made theirs. compare with us. use the best claude skills to
+redesign ours." That is the next piece of work (see Next).
+**F085 built (2026-11-06)**: Violet night in dark and light, tokens in
+`apps/admin/src/app-theme/app-theme.css` (use `--app-*` for every new
+colour; the guard test fails on raw colours), switch in every header.
+Next: **F086 One app frame and top bar** (Opus), design snapshot first;
+build on the F085 tokens and the direction-A drawings in
+`design/app-redesign-v1.html`. F086 removes "Save draft" (autosave:
+desktop to disk, browser grouped every few seconds) — see the F086 entry
+in features.json.
+
 F067 (from HANDOVER, 2026-11-03). Last updated: 2026-11-03 ~21:45 (Jakarta), branch
 `ccr-d50f7e80-weuq18` (PR #69, merged 2026-11-03). Last feature:
 **F067 Delivery and updates built, passes** (DECISIONS "F067"). How it
@@ -588,3 +622,48 @@ footer column "Buying"; "Read the full licence" on template pages. Tests:
 (date, seller, contact), run `npm run build:store`, commit the pages.
 **Next: nothing unbuilt.** Ask the owner what comes next (Milestone 8
 plan is docs/milestone-8.md; check `npm run next`).
+
+## Checkpoint (closed 2026-11-06: owner confirmed the app opens) (2026-11-06, Mac app fix waiting for the owner's try)
+
+Carry on from here instead of picking a feature.
+
+- **Cause found (DECISIONS 2026-11-06 "Mac app won't open"):** the Mac
+  installer's app was "not signed at all" as a bundle, so macOS knew it by a
+  random name, and Crust touches Documents before its window opens. Owner:
+  Apple chip, macOS 27.2, nothing blocked in Privacy & Security.
+- **Fixed in d28ca57:** `bundle.macOS.signingIdentity: "-"` (free ad-hoc
+  signature) and `open_sites_or_fallback` in crates/crust-desktop/src/lib.rs
+  (sites go to the app's data folder if Documents can't be used). Tests added.
+- **Launch test (desktop-smoke.yml, run 42158333443) passed:** a fresh
+  download shows Apple's "Crust Not Opened" box (expected without a $99
+  Developer ID, the owner's call); after "Open Anyway" the welcome screen
+  shows and macOS names the app `app.crust.desktop`.
+- **Mac installer for the owner:** desktop-release.yml run 42159771953
+  (mac only, not on the downloads site), from this branch. Give him the
+  run's artifact link and the "Open Anyway" steps; wait for his try.
+- **Then:** remove the temporary `push` trigger from desktop-smoke.yml,
+  CHANGELOG/PROGRESS, crust-finish. PR #81 carries all of it.
+- **Review round two** (page: https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp,
+  no answers stored there): still open F075 (his phone test) and F078 (his
+  call: pass as is, tab stop only when the table overflows, or a "no speech"
+  tick, which needs a migration). F055's "GitHub" wording (about 70 strings)
+  waits until he has tried the app.
+
+## F087 handover note (moved 2026-11-06)
+
+**F087 built (2026-11-06)**: `apps/admin/src/page-first/`:
+`PageFirstWatcher` (in `BuilderRoot`: fit width on Desktop, min 1024;
+right panel shown only while something is selected or a panel mode is
+on), `store.ts` (panel mode `next`/`page`/null; Next steps per site in
+localStorage, `markNewSite()` from the welcome screen), `SettingsButton`
+beside the page switcher, `SettingsPanel` (Puck `fields` override).
+No hash → Home in the editor; `#/` is still the Pages list. DECISIONS "F087".
+Next: **F088 Add section, by picture** (Sonnet), design snapshot first:
+"+ Add section" opens the layout gallery in the Add panel, single blocks
+under it as "Add an element", keyboard alternative for every drag.
+
+**F088 built (2026-11-06)**: `apps/admin/src/layouts/AddSectionPanel.tsx`
+is the Add panel (pictures, search, categories, "Add an element" under it);
+the "+" bars call `setAddAt` then switch to the Add plugin; the dialog
+stays as "See larger". DECISIONS "F088".
+Next: **F089 One-row section toolbar** (Sonnet), design snapshot first.

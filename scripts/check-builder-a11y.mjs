@@ -87,7 +87,10 @@ const screens = [
   ["Section Style tab, video", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible', '[aria-label="Background"] .sx-seg-option:has-text("Video"):visible'] }],
   // F080: saving a section's style (the name form), and the layout gallery with the new layouts and the "Simple" group.
   ["Section Style tab, saving a style", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible', ".es-save:visible"] }],
-  ["layout gallery, Hero", "/#/edit?path=/", null, null, ['button:text-is("Layouts")', '.lg-cat:has-text("Hero")']],
+  // F088: the Add panel's pictures (Hero picked, then Show more), and the big gallery behind "See larger".
+  ["add section panel, Hero", "/#/edit?path=/", null, null, ['.af-chip:text-is("Hero")']],
+  ["add section panel, show more", "/#/edit?path=/", null, null, ['.af-addsec button:has-text("more layouts")']],
+  ["layout gallery, Hero", "/#/edit?path=/", null, null, ['button:has-text("See larger")', '.lg-cat:has-text("Hero")']],
   // F078: the Table's cells, the Video's notes, Pricing's Style tab, an Icon list switched to Numbers.
   ["Table cells", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Table"]'],
   ["Video notes", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Video"]'],
@@ -116,8 +119,11 @@ const server = await serve(distDir);
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 let failures = 0;
 try {
-  for (const [label, hash, post, select, clicks = [], { app, wait, firstRun, update, media, then = [] } = {}] of screens) {
-    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  // F085: every screen in the app's light look and in its dark look (the computer's setting, which the app follows).
+  for (const scheme of ["light", "dark"])
+  for (const [name, hash, post, select, clicks = [], { app, wait, firstRun, update, media, then = [] } = {}] of screens) {
+    const label = `${name} (${scheme})`;
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, colorScheme: scheme });
     if (media) {
       const items = [
         { file: "stage.jpg", alt: "The band on stage", width: 1920, height: 1200, bytes: 400000, uploadedAt: "2026-11-02T10:00:00Z", focus: { x: 18, y: 45 } },

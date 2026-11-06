@@ -5,6 +5,8 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 
 ## Proposals
 
+- **App UX redesign: approved 2026-11-06** as Milestone 9 (F085–F093, docs/milestone-9.md); see the entry below.
+
 - **Footer section in use (from F076).** Count the footer as a use of its linked section, so Layouts → Linked sections won't delete it while the footer shows it (today publishing stops with a clear message instead). Small.
 
 - **Video uploads (from F073).** Background videos are linked by address for now. Uploading them to the media library would need size limits (a 10 s loop is 2–8 MB) and maybe Git LFS or Cloudflare R2, which may cost money. Owner's call.
@@ -257,6 +259,161 @@ Features Claude suggests. They are not work until the owner adds them to
   found" page there. Publishing by FTP could write an `.htaccess` with
   the redirects and Crust's 404 page. Small (M). Only helps Apache hosts
   (most shared hosting); Nginx hosts ignore it, harmlessly.
+
+
+## 2026-11-06 — F087 Page first (Claude, reversible)
+
+- Built take A from the snapshot https://claude.ai/artifact/VX9gKVj8euKZCtwXLahQwg
+  (`design/f087-page-first-v1.html`): one right panel that follows what
+  you pick. Code in `apps/admin/src/page-first/`.
+- **Opening a site lands on Home in the editor**: no address (`""`/`#`)
+  and the desktop app's "open site" go to `#/edit?path=%2F`; `#/` stays
+  the Pages list, so every existing link keeps working.
+- **Fit width** instead of Puck's auto zoom on a fixed 1280 px: on
+  Desktop the page is drawn as wide as the canvas, never under 1024 px
+  (our desktop breakpoint), so it shows at 100% whenever the canvas is
+  desktop-wide. Below that (a panel open on a small laptop) it scales a
+  little rather than switching to the tablet layout. Any width from
+  1024 up counts as "Desktop" for the toggle.
+- **Right panel**: closed with nothing selected; opens when a block is
+  picked, or for the page's settings, or for a new site's Next steps.
+  Picking a block replaces page settings; deselecting goes back to
+  Next steps if that list is open. The panel button still hides or shows
+  it by hand (with nothing selected it opens the page's settings).
+- **Page settings** open from a button beside the page switcher, not
+  from inside it: the switcher is a native select (keyboard and screen
+  readers for free), which can't hold an action. Snapshot drew it in the
+  switcher; same place on screen. Panel heading reads "Page settings" /
+  "Post settings" (Puck root label).
+- **Next steps** (4 steps: replace sample words and photos, describe the
+  page for search, see it on a phone, publish). Real checkboxes; the
+  first three tick themselves when done. Kept per site in this browser
+  (localStorage, keyed by site name); shown for sites made from the
+  welcome screen, Skip puts it away, Help → "Next steps for a new site"
+  brings it back. Older sites open with no list.
+- The block list already lived in the Add panel since F086; F087 only
+  removes the always-open right panel that made the canvas narrow.
+
+## 2026-11-06 — F086 One app frame and top bar (Claude, reversible)
+
+- Built take A from the snapshot https://claude.ai/artifact/4yD6q3o3bHh3nogcJRhaRW
+  (`design/f086-app-frame-v1.html`): site menu and "where you are" on the
+  left; tools, status, Preview and Publish on the right. It is the
+  Milestone 9 drawing the owner approved. Code in `apps/admin/src/app-frame/`.
+- The builder's bar is Puck's `header` override; the left icon bar is Puck
+  plugins. "Add" and "Layers" are Puck's block list and outline renamed
+  (same plugin names, so they replace Puck's own). Layers stays although
+  the plan lists only Add…Help: it is the keyboard and screen-reader way
+  to see a page's structure. Pages, Styles, Media, Blog, Site and Help are
+  small panels that link to today's screens until F087–F092 build them out.
+  The Layouts button moved from the top bar into the Add panel; the
+  "To replace" checklist stays in the bar.
+- Device toggle, undo/redo and Preview drive Puck's own state (setUi,
+  history). Puck's viewport buttons on the canvas are hidden by CSS; the
+  zoom stays there. Puck's two side-panel toggles went with its header:
+  the active icon in the left bar hides that panel (Puck's behaviour) and
+  a new "Settings panel" button in the bar shows or hides the right one.
+- Saving on its own: every edit is still kept in the browser at once; the
+  save to GitHub waits for 3 seconds of quiet (1 second in the desktop
+  app, where it is a file write), so a burst of typing is one commit.
+  Unchanged content is never saved (Puck reports a change on open). A
+  waiting save goes when you leave the editor, close the tab
+  (`pagehide`), or press Ctrl/Cmd+S. A failed save keeps the F069 alert
+  with Try again; successes no longer pop a toast, the bar says
+  "Saving…" / "Saved · 3 changes not live". A post that fails its checks
+  is "Kept in this browser" with the reason in a toast.
+- "Save draft" is gone from the page and post builders. Site settings
+  keeps Save and Discard until F092 regroups that screen (Discard undoes
+  every group at once, so autosave there needs that redesign first). To
+  keep one primary button, Save is primary only while something is
+  unsaved; Publish is primary otherwise.
+- Same words: "Publish" everywhere; Posts, Site settings, templates, All
+  sites (desktop) and Sign out (web, last after a divider, F069) are in
+  the site menu on every screen. The Pages screen's "Save draft" row
+  action (F020, for drafts left in a browser) is unchanged for now; F091
+  replaces that screen.
+- The linked-section editor, page designs and quick edit keep their own
+  bars; F087/F093 bring them in line.
+
+## 2026-11-06 — F085 App look: dark and light themes (Claude, reversible)
+
+- Built take A "Violet night" from the snapshot
+  https://claude.ai/artifact/KE4fZPZSFQJE8keiH4DwsA (owner had approved
+  the React Bits look; A was the recommended take).
+- Tokens live in `apps/admin/src/app-theme/app-theme.css`: light on
+  `:root`, dark on `:root[data-app-theme="dark"]`. The old `--st-*`
+  variables point at them. 27 CSS files now use tokens only; a guard test
+  (`app-theme-guard.test.ts`) fails on new raw colours, with an allowlist
+  for site-side paint (search result preview, white paper behind site
+  previews, focal-point rings on photos, hidden-block stripes).
+- Light mute text is #5f5a68 (the mockup's #625d6b was short of 4.5:1 on
+  the raised grey); the light violet tint was lightened after
+  check:builder found the selected layout category under 4.5:1.
+- The switch is one button (no menu): it flips to the other look and
+  remembers it; flipping back to the computer's look forgets the choice
+  so the app follows the computer again. Choice in localStorage
+  `crust:app-theme`; an inline script in index.html applies it before
+  first paint (Tauri CSP is null, so inline is allowed).
+- Puck: the stylesheet import is now Puck's `no-external.css`, which stops
+  it downloading Inter from rsms.me at run time (offline desktop app,
+  fewer outside requests). Puck's chrome is themed through its own CSS
+  variables. Puck copies `<html>` attributes into the canvas iframe, so
+  our in-canvas controls (block toolbar, "+" buttons, outlines) follow
+  the theme; the site itself doesn't, because nothing styles plain
+  elements and `color-scheme` is a meta tag Puck doesn't copy.
+- The four stray accents are gone: "+", "Save as layout" and "Use this
+  photo" use the primary button; the "Editing…" pill is neutral;
+  "Whole site"/"Edit everywhere" use the warning colour.
+- Geist and Geist Mono were already bundled (F070, OFL, in
+  packages/blocks/fonts/LICENSE.txt); the app loads them from /fonts/, so
+  no new dependency.
+- `check:builder` now runs every screen in light and dark (about 7.5
+  minutes instead of about 4).
+
+## 2026-11-06 — Milestone 9 "Friendly app" approved (owner)
+
+Owner, after the snapshot https://claude.ai/artifact/EHnrnPwVaMRv9GRGpaXWLx:
+"Go with your recommendation. also i wanto have https://reactbits.dev
+design and aesthetic, means we should also have light and dark mode."
+Recorded as: direction A "One studio"; autosave on ("Save draft" goes;
+browser saves grouped every few seconds); all 8 proposed features, plus
+the look moved to the front as F085 (dark and light themes) because every
+later screen builds on its tokens; the words part of the old #8 joins the
+accessibility sweep (F093). Models are Claude's recommendation (Opus for
+F085–F087 and F090, Sonnet for the rest); the owner can change any row.
+
+React Bits (reactbits.dev, read 2026-11-06): its code is "MIT + Commons
+Clause" ("you do not sell, sublicense, or redistribute the components
+themselves"), not on our licence list and risky in a public repo. So we
+take the aesthetic only and write our own components. What the site uses:
+violet-tinted near-black #120f17 with surfaces about #221e29, white in
+light mode; translucent white fills (4–7%) and hairline borders; radius
+10–13px; Geist (SIL OFL 1.1, allowed) with a mono for small print; white
+primary buttons on dark, a violet accent (#a855f7 range); soft glows and
+dot grids in hero areas. Dark is its default; light via a toggle. Ours
+follows the computer's setting, with a remembered toggle.
+
+Themes apply to the app's chrome only; the user's site on the canvas
+keeps its own design (otherwise a dark app would make light sites look
+wrong).
+
+## 2026-11-06 — Mac app won't open: sign it as one app, never quit over Documents (Claude, reversible)
+
+- **What CI found:** the Mac installer's app was "not signed at all" as a
+  bundle (only the program file had the linker's automatic signature), so
+  macOS knew it by a random name (`crust-21a9…`), not `app.crust.desktop`.
+  macOS ties the Documents permission to that name, and Crust touches
+  Documents before its window opens. Owner's Mac: Apple chip, macOS 27.2,
+  nothing blocked in Privacy & Security, bounce then nothing.
+- **Chosen:** `bundle.macOS.signingIdentity: "-"` (free ad-hoc signature:
+  the whole app sealed and named). Not a Developer ID: that costs $99/year
+  and is the owner's call; without it macOS still asks for "Open Anyway"
+  once after download.
+- **Chosen:** if the Crust folder in Documents can't be used, sites go in
+  the app's own data folder (~/Library/Application Support/app.crust.desktop/Sites)
+  instead of the app quitting at start-up. Rare; reversible.
+- Rejected: opening the window before the sites are ready (every command
+  would need a "not ready yet" state; a bigger change for the same result).
 
 
 ## 2026-11-03 — F084 Rebuild Harbour, Signal and Corner (Claude, reversible)
@@ -3457,3 +3614,54 @@ a lawyer reads it (BLOCKED.md).
 - Owner: "I want everything to be free right now… later on we can do something about the paid template." The store has three templates (Harbour, Signal, Corner), all already Free; none is paid.
 - With nothing priced, the store has one short "Licence" page (free to use, don't resell the file) and a footer column "Licence"; no Terms, Refunds or Draft banner. The paid-store pages and the F068 gate are kept and come back as soon as any template gets a price. Tests in `store-legal.test.ts` cover both modes.
 - The free-licence wording is plain and short, not lawyer-reviewed.
+
+## 2026-11-06 — Review round two (owner + Claude)
+
+- **Impeccable re-check of the seven open features.** Passes recorded: F063, F071 (polish notes only). F075 passed too but stays open for the owner's phone test.
+- **Owner's answers:** "fix F080, F062, F078; pass F055 now".
+- **F080:** the full photo hero's two buttons were in a 1/4 + 3/4 columns block (about 170px apart on desktop). They now sit one under the other, like the store's home buttons. Test added. Not done: a contrast test across every colourway (Impeccable P2) and photo assets in the layout-check render (P3); both are proposals.
+- **F062:** the preview's "Already bought it? Open the file" input now has the same 44px file button and focus ring as the template card. Not done: announcing the Premium group when it loads (live region), moving the file input under the Get button.
+- **F078:** nothing to change in the Video block. The reviewer said the builder never asks for captions; it does (a warning under the address, "Does it have speech? Add a captions file", covered by a test). Left alone: the table's scroll region is always a tab stop (a script to switch it only when the table overflows costs more than the extra stop), and there is no "no speech" tick (it would add a prop, which needs a migration). The owner decides whether he wants either.
+- **F055:** passed now. The "GitHub" wording inside the desktop app (about 70 places, see the 2026-11-01 proposal) and the stale window screenshot wait until the owner has tried the Mac app.
+
+## 2026-11-06 — Mac app launch test (Claude, reversible)
+
+- The owner's Mac showed the unsigned installer bouncing on the dock and never opening. Reading the code found no blocking start-up step, and CI only tested a Linux build with the site folder forced, so the real Mac start-up was never run. Added `.github/workflows/desktop-smoke.yml` (Actions → Desktop launch test): builds the Mac app, opens it like Finder, records a stack sample, screenshot, output and crash reports. First run (Apple-chip runner, macOS 26): the app opens and shows its welcome screen, so the cause is specific to the owner's Mac or the downloaded combined build. The workflow has a temporary push trigger on the session branch; remove it once the problem is solved.
+
+## 2026-11-06 — F088 Add section, by picture (Claude, reversible)
+
+- Built direction A from the snapshot (https://claude.ai/artifact/Cx8c5fTfFkxfZYBMBnQs2A):
+  pictures live in the Add panel (`layouts/AddSectionPanel.tsx`), not a dialog.
+- The big dialog stays, reached by "See larger" and the top-bar Layouts
+  button: it is the only place for whole pages, starting designs and
+  linked sections. The panel covers sections and My layouts.
+- The "+" bars on the page set the spot (`setAddAt` in `layouts/library.ts`)
+  and switch the left bar to Add; with no spot set, a picture goes after
+  the selected section or at the end. The spot is forgotten after an add.
+- Only the first 8 pictures are drawn, the rest behind "Show more layouts":
+  every picture is a rendered preview, and drawing them all made the
+  editor slow to open (F087 tests timed out).
+- The bars read "Add section" (was "Add a layout"). Insert code is shared
+  with the dialog (`insertLayout`), so Undo, focus and the spoken message
+  behave the same in both.
+
+
+## 2026-11-06 — F089 One-row section toolbar (Claude, reversible)
+
+- Built direction A from the snapshot (https://claude.ai/artifact/G8y8XJd5qEpki25JdHbUSU):
+  labelled row, one menu open at a time (`SectionToolbar` in `sections/editing.tsx`).
+- The spec's five names needed contents: **Section** = background picture
+  (with focus and tint), **Style** = the four named colours, **Layout** =
+  height, **Move** = the existing arrow buttons (now inside the row for
+  sections; other blocks keep their plain bar), **More** = change everywhere,
+  make linked, save as layout.
+- The "This section / Whole site" switch left the bar. The site-wide edit is
+  reached from More through a confirmation step; the panel's "Edit everywhere"
+  still works (same shared scope).
+- The step says "N sections on this page, and every <style> section on other
+  pages": the editor has no cheap count of other pages, so no page number is
+  claimed.
+- `SaveLayoutAction` and `MakeLinkedAction` stay as exports; their forms are now
+  `SaveLayoutForm` and `MakeLinkedForm`, shared with the More menu.
+- Row uses `role="toolbar"` with ← → between buttons; Escape returns focus to
+  the button that opened the menu.

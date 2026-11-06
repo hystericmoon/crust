@@ -206,3 +206,14 @@ describe("Gallery shapes in the layout library", () => {
     for (const s of found) expect(["square", "wide", "original"]).toContain(s);
   });
 });
+
+describe("F080 review: hero buttons", () => {
+  it("the full photo hero keeps its two buttons together, not in far-apart columns", () => {
+    const hero = findSectionLayout("hero-photo-full");
+    expect(hero).toBeDefined();
+    const json = JSON.stringify(hero!.build());
+    expect(json).not.toContain('"one-three"');
+    expect(json).toContain("See the work");
+    expect(json).toContain("About the studio");
+  });
+});

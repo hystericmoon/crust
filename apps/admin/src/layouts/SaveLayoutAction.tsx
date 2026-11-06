@@ -11,9 +11,33 @@ import { useMyLayouts } from "./mine";
 
 const usePuckSelector = createUsePuck();
 
-export function SaveLayoutAction() {
+/** The naming form for keeping the selected section (F089: also shown from the toolbar's More menu). */
+export function SaveLayoutForm({ item, onDone }: { item: ComponentData; onDone: () => void }) {
   const getPuck = useGetPuck();
   const mine = useMyLayouts();
+  const id = item.props.id as string;
+  return (
+    <>
+      <NameForm
+        idPrefix={`lg-save-${id}`}
+        label="Layout name"
+        initial={firstHeading([item]) || "My section"}
+        submitLabel="Save layout"
+        onSubmit={async (name) => {
+          // The section as it is now, not as it was when the form opened.
+          const current = getPuck().getItemById(id) ?? item;
+          const problem = await mine.save(name, "section", [current]);
+          if (!problem) onDone();
+          return problem;
+        }}
+        onCancel={onDone}
+      />
+      <p className="lg-save-note">Shows in Layouts → My layouts, kept in {mine.where}. Pages that use it won't change later.</p>
+    </>
+  );
+}
+
+export function SaveLayoutAction() {
   const item = usePuckSelector((s) => s.selectedItem) as ComponentData | null;
   const [open, setOpen] = useState(false);
   const id = item?.props.id as string | undefined;
@@ -28,21 +52,7 @@ export function SaveLayoutAction() {
       </button>
       {open ? (
         <div className="sx-pop lg-save-pop" role="group" aria-label="Save this section as a layout">
-          <NameForm
-            idPrefix={`lg-save-${id}`}
-            label="Layout name"
-            initial={firstHeading([item]) || "My section"}
-            submitLabel="Save layout"
-            onSubmit={async (name) => {
-              // The section as it is now, not as it was when the form opened.
-              const current = getPuck().getItemById(id!) ?? item;
-              const problem = await mine.save(name, "section", [current]);
-              if (!problem) setOpen(false);
-              return problem;
-            }}
-            onCancel={() => setOpen(false)}
-          />
-          <p className="lg-save-note">Shows in Layouts → My layouts, kept in {mine.where}. Pages that use it won't change later.</p>
+          <SaveLayoutForm item={item} onDone={() => setOpen(false)} />
         </div>
       ) : null}
     </ActionBar.Group>

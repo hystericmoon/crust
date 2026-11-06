@@ -15,8 +15,6 @@
  */
 import { ActionBar, createUsePuck, useGetPuck, type ComponentData, type Config, type Data } from "@puckeditor/core";
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
-import { SaveLayoutAction } from "../layouts/SaveLayoutAction";
-import { MakeLinkedAction } from "../linked/fields";
 import { SectionToolbar } from "../sections/editing";
 import { availableMoves, planInsert, planMove, type MoveKind } from "./moves";
 import { installPuckChromeFixes } from "./puck-chrome";
@@ -401,31 +399,29 @@ export function KeyboardActionBar({
   const config = usePuckSelector((s) => s.config);
   const id = usePuckSelector((s) => s.selectedItem?.props.id) as string | undefined;
   const moves = id ? availableMoves(data, config, id) : [];
+  const moveGroup = moves.length ? (
+    <>
+      {moves.map((kind) => (
+        <ActionBar.Action key={kind} label={actionLabels[kind]} aria-label={actionLabels[kind]} onClick={() => runMove(getPuck, id!, kind)}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+            strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+            <path d={icons[kind]} />
+          </svg>
+        </ActionBar.Action>
+      ))}
+    </>
+  ) : null;
+  // F089: a selected Section gets one row (Section, Style, Layout, Move, More); other blocks keep the plain bar.
+  const isSection = usePuckSelector((s) => s.selectedItem?.type) === "Section";
   return (
     <ActionBar>
       <ActionBar.Group>
         {parentAction}
         {label ? <ActionBar.Label label={label} /> : null}
       </ActionBar.Group>
-      {moves.length ? (
-        <ActionBar.Group>
-          {moves.map((kind) => (
-            <ActionBar.Action key={kind} label={actionLabels[kind]} aria-label={actionLabels[kind]} onClick={() => runMove(getPuck, id!, kind)}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
-                <path d={icons[kind]} />
-              </svg>
-            </ActionBar.Action>
-          ))}
-        </ActionBar.Group>
-      ) : null}
+      {isSection ? null : moveGroup ? <ActionBar.Group>{moveGroup}</ActionBar.Group> : null}
       <ActionBar.Group>{children}</ActionBar.Group>
-      {/* F025: style, height and image for a selected Section. */}
-      <SectionToolbar />
-      {/* F027: keep this section to reuse from the layout library. */}
-      <SaveLayoutAction />
-      {/* F043: show it on many pages, edited in one place. */}
-      <MakeLinkedAction />
+      {isSection ? <SectionToolbar moves={moveGroup} /> : null}
     </ActionBar>
   );
 }

@@ -2,9 +2,9 @@
    the canvas iframe too. Two-tone ring: dark outline plus a white halo, so it
    shows on light and dark blocks alike. */
 [data-puck-component]:focus-visible {
-  outline: 3px solid #18181b;
+  outline: 3px solid var(--app-acc);
   outline-offset: 2px;
-  box-shadow: 0 0 0 5px #ffffff;
+  box-shadow: 0 0 0 5px var(--app-bg);
 }
 
 .Puck button:focus-visible,
@@ -14,11 +14,11 @@
 .Puck textarea:focus-visible,
 .Puck [role="button"]:focus-visible,
 .Puck [tabindex]:focus-visible {
-  outline: 3px solid #18181b;
+  outline: 3px solid var(--app-acc);
   outline-offset: 2px;
 }
 
-.crust-header-link { background: #fff; font: inherit; cursor: pointer; }
+.crust-header-link { background: var(--app-panel); font: inherit; cursor: pointer; }
 /* F040: Puck splits the top bar 1fr | title | 1fr, so the buttons only get
    the right half. Give them all the room the panel toggles don't need,
    with the page title after the toggles. From 1100 px (where all the
@@ -35,7 +35,7 @@
 /* F069: Puck's own field labels ("Background", "Title level") look like
    Crust's (.mf-label): dark, semibold, no type icon. */
 .Puck {
-  --puck-field-label-color-text: #18181b;
+  --puck-field-label-color-text: var(--app-ink);
   --puck-field-label-font-size: 0.875rem;
   --puck-field-label-font-weight: 600;
 }
@@ -48,16 +48,16 @@
 /* F040: the "Layout"/"Content" headings in Puck's block list are #767676 on
    a light grey (under 4.5:1). Same muted grey as the rest of the admin
    (--st-muted, 7.7:1 on white). */
-.Puck [class*="_ComponentList-title_"] { color: #52525b; }
+.Puck [class*="_ComponentList-title_"] { color: var(--app-mute); }
 
 /* F069: "Skip to page", hidden until it has keyboard focus (WCAG 2.4.1). */
 .kb-skip {
   position: fixed; top: 8px; left: 8px; z-index: 2147483647;
-  padding: 10px 16px; border-radius: 8px; background: #18181b; color: #fff;
-  font: 600 15px/1.3 system-ui, -apple-system, "Segoe UI", sans-serif; text-decoration: none;
+  padding: 10px 16px; border-radius: 8px; background: var(--app-pri); color: var(--app-pri-fg);
+  font: 600 15px/1.3 var(--app-font); text-decoration: none;
   transform: translateY(-200%);
 }
-.kb-skip:focus { transform: none; outline: 3px solid #18181b; outline-offset: 2px; box-shadow: 0 0 0 5px #fff; }
+.kb-skip:focus { transform: none; outline: 3px solid var(--app-acc); outline-offset: 2px; box-shadow: 0 0 0 5px var(--app-bg); }
 
 .kb-live {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
@@ -66,35 +66,35 @@
 
 .kb-help {
   max-width: min(36rem, calc(100vw - 32px));
-  padding: 24px; border: 1px solid #85858f; border-radius: 12px;
-  color: #18181b; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  padding: 24px; border: 1px solid var(--app-line-strong); border-radius: 12px;
+  color: var(--app-ink); font: 16px/1.5 var(--app-font);
 }
-.kb-help::backdrop { background: rgb(0 0 0 / 0.4); }
+.kb-help::backdrop { background: var(--app-backdrop); }
 .kb-help h2 { margin: 0 0 4px; font-size: 1.25rem; }
-.kb-help p { margin: 0 0 16px; color: #52525b; }
+.kb-help p { margin: 0 0 16px; color: var(--app-mute); }
 .kb-help table { border-collapse: collapse; width: 100%; }
-.kb-help th, .kb-help td { padding: 8px 0; border-top: 1px solid #e4e4e7; text-align: left; vertical-align: top; }
+.kb-help th, .kb-help td { padding: 8px 0; border-top: 1px solid var(--app-line); text-align: left; vertical-align: top; }
 .kb-help th { padding-right: 16px; white-space: nowrap; font-weight: 500; }
 .kb-help kbd {
-  font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.875rem;
-  padding: 2px 6px; border: 1px solid #85858f; border-radius: 4px; background: #f4f4f5;
+  font-family: var(--app-mono); font-size: 0.875rem;
+  padding: 2px 6px; border: 1px solid var(--app-line-strong); border-radius: 4px; background: var(--app-raised);
 }
 .kb-help-close {
   margin-top: 16px; min-height: 44px; padding: 0 16px;
-  border: 0; border-radius: 8px; background: #18181b; color: #fff; font: inherit; cursor: pointer;
+  border: 0; border-radius: 8px; background: var(--app-pri); color: var(--app-pri-fg); font: inherit; cursor: pointer;
 }
-.kb-help-close:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
+.kb-help-close:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
 
 .crust-save {
   display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px;
-  border: 0; border-radius: 6px; background: #18181b; color: #fff;
+  border: 0; border-radius: 6px; background: var(--app-pri); color: var(--app-pri-fg);
   font: inherit; font-weight: 600; cursor: pointer;
 }
-.crust-save:hover { background: #3f3f46; }
-.crust-save:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
+.crust-save:hover { background: var(--app-pri-hover); }
+.crust-save:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
 
 /* F069: Sign out sits at the end of the top bar, after a thin divider. */
-.crust-signout-divider { align-self: stretch; width: 1px; min-height: 24px; margin: 0 4px 0 8px; background: #d4d4d8; }
+.crust-signout-divider { align-self: stretch; width: 1px; min-height: 24px; margin: 0 4px 0 8px; background: var(--app-line); }
 @media (max-width: 640px) { .st-actions .crust-signout-divider { display: none; } }
 
 /* Save feedback in the builder: a toast above everything, bottom centre. */
@@ -102,26 +102,26 @@
 .crust-status {
   position: fixed; left: 50%; bottom: 24px; z-index: 1000; transform: translateX(-50%);
   max-width: min(36rem, calc(100vw - 32px)); padding: 12px 16px;
-  border-radius: 10px; background: #18181b; color: #fff;
-  font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 0.2);
+  border-radius: 10px; background: var(--app-pri); color: var(--app-pri-fg);
+  font: 15px/1.4 var(--app-font);
+  box-shadow: 0 8px 24px var(--app-shadow);
 }
 /* F069: a failed save stays, in warning colours, with "Try again". */
-.crust-status-error { background: #fef2f2; color: #7f1d1d; border: 2px solid #b91c1c; }
+.crust-status-error { background: var(--app-danger-soft); color: var(--app-danger); border: 2px solid var(--app-danger); }
 .crust-status-error p { margin: 0 0 10px; }
 .crust-status-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .crust-status-actions button {
   min-height: 36px; padding: 0 14px; border-radius: 6px; font: inherit; font-weight: 600; cursor: pointer;
-  border: 1px solid #7f1d1d; background: #fff; color: #7f1d1d;
+  border: 1px solid var(--app-danger); background: var(--app-panel); color: var(--app-danger);
 }
-.crust-status-actions .crust-status-retry { background: #b91c1c; border-color: #b91c1c; color: #fff; }
-.crust-status-actions button:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
+.crust-status-actions .crust-status-retry { background: var(--app-danger); border-color: var(--app-danger); color: var(--app-danger-fg); }
+.crust-status-actions button:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
 
 /* Tooltips for icon-only buttons (main page and canvas). */
 .crust-tooltip {
   position: fixed; z-index: 2147483647; max-width: 16rem; padding: 5px 9px;
-  border-radius: 6px; background: #18181b; color: #fff;
-  font: 500 13px/1.35 system-ui, -apple-system, "Segoe UI", sans-serif;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 0.25); pointer-events: auto;
+  border-radius: 6px; background: var(--app-pri); color: var(--app-pri-fg);
+  font: 500 13px/1.35 var(--app-font);
+  box-shadow: 0 4px 12px var(--app-shadow); pointer-events: auto;
 }
 .crust-tooltip[hidden] { display: none; }

@@ -98,7 +98,7 @@ describe("pages: where pages come from", () => {
 
 describe("pages: routes", () => {
   it("parses the admin's addresses", () => {
-    expect(parseRoute("")).toEqual({ name: "pages" });
+    expect(parseRoute("")).toEqual({ name: "edit", path: "/" });
     expect(parseRoute("#/")).toEqual({ name: "pages" });
     expect(parseRoute("#/settings/contrast")).toEqual({ name: "settings" });
     expect(parseRoute("#/edit?path=%2Fabout")).toEqual({ name: "edit", path: "/about" });
@@ -119,7 +119,7 @@ describe("pages: list screen", () => {
     expect(within(home!).getByRole("link", { name: "Home" }).getAttribute("href")).toBe("#/edit?path=%2F");
     expect(about!.textContent).toContain("Only in this browser");
     expect(about!.textContent).toContain("Not recorded yet");
-    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Demo: pages");
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Demo: Pages");
   });
 
   it("shows loading and empty states", () => {

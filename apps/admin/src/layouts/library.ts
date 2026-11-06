@@ -188,3 +188,21 @@ export function registerGalleryOpener(fn: Opener): () => void {
     if (opener === fn) opener = null;
   };
 }
+
+// --- F088: where the Add panel inserts ----------------------------------------------
+
+/** The spot picked by a "+ Add section" bar on the page; null means "after the selection, or at the end". */
+let addAt: number | null = null;
+const addListeners = new Set<() => void>();
+export const getAddAt = () => addAt;
+export function setAddAt(index: number | null) {
+  if (addAt === index) return;
+  addAt = index;
+  addListeners.forEach((fn) => fn());
+}
+export function subscribeAddAt(fn: () => void): () => void {
+  addListeners.add(fn);
+  return () => {
+    addListeners.delete(fn);
+  };
+}
