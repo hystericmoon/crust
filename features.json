@@ -922,7 +922,8 @@
       "done_check": "npm test -- app-theme && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Pass (owner, 2026-11-10)"
     },
     {
       "id": "F086",
@@ -932,7 +933,8 @@
       "done_check": "npm test -- app-frame && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Pass (owner, 2026-11-10)"
     },
     {
       "id": "F087",
@@ -942,7 +944,8 @@
       "done_check": "npm test -- page-first && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Pass (owner, 2026-11-10)"
     },
     {
       "id": "F088",
@@ -952,7 +955,8 @@
       "done_check": "npm test -- add-section && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Pass (owner, 2026-11-10)"
     },
     {
       "id": "F089",
@@ -962,7 +966,8 @@
       "done_check": "npm test -- section-toolbar && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Pass (owner, 2026-11-10)"
     },
     {
       "id": "F090",

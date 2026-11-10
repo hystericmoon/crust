@@ -60,7 +60,7 @@ docs/milestone-9.md; direction snapshot https://claude.ai/artifact/EHnrnPwVaMRv9
 of its features waits for the owner's review (`needs_review`, not `reviewed`). A new session should not start a feature.
 
 The next step is the owner's:
-1. **Review F085 to F093**, plus F075 (phone test) and F078 (his call, review round two:
+1. **Review F090 to F093** (F085 to F089 passed 2026-11-10), plus F075 (phone test) and F078 (his call, review round two:
    https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp). Record each Pass as `reviewed: true` (with his words as
    `review_note`); list each "needs fixing" for him and ask before reworking (CLAUDE.md).
 2. **Merge PR #81** (CI must be green). Then restart the branch from main; from then on one PR per feature.
