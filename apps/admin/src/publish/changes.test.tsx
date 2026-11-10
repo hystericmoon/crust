@@ -76,7 +76,7 @@ describe("changes: what the next publish does", () => {
   });
 
   it("says when everything is live, or nothing ever was", () => {
-    expect(describeChanges(changes(), titles)).toEqual({ summary: "Everything saved to GitHub is live.", items: [] });
+    expect(describeChanges(changes(), titles)).toEqual({ summary: "Everything saved is live.", items: [] });
     expect(describeChanges(changes({ lastPublish: null, site: true }), titles).summary).toBe(
       "The site hasn't been published yet, so publishing puts every saved page live.",
     );

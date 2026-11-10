@@ -266,7 +266,7 @@ export function App() {
     setSavedChrome(next);
     setChromeDraft((c) => ({ ...c, header: { ...c.header, menu } }));
     saveChrome(next);
-    // Like the rest of Site settings: kept in this browser at once, then saved to GitHub when that is on.
+    // Like the rest of Site settings: kept in this browser at once, then saved when that is on.
     void saveContent({ kind: "site", site: siteToSave(site, saved, next, defaultChrome, savedAddress) });
   };
   // F092: what the Styles panel and the Site settings sheet need beside the colours and type.
@@ -471,7 +471,7 @@ function Pages({ githubOn, focusPublish = false, menu, onMenuChange }: { githubO
           ? "Showing the pages in this browser for now."
           : githubOn
           ? "Each page shows where its latest version is: only in this browser, saved, or live."
-          : "Saving to GitHub isn't switched on yet, so this lists the pages built into the app plus drafts saved in this browser. Renaming and deleting those pages switches on with it."
+          : "Saving isn't switched on yet, so this lists the pages built into the app plus drafts kept in this browser. Renaming and deleting those pages switches on with it."
       }
       githubOn={githubOn === true}
       onRename={rename}
@@ -591,7 +591,7 @@ function Builder({ path, githubOn, onSaved, pages }: { path: string; githubOn: b
               <PageSwitcher current={path} pages={pages} hrefFor={editHref} />
               <SettingsButton />
             </>
-          ), devices: viewports, phase: githubOn ? autosave.phase : autosave.phase === "saved" ? "local" : autosave.phase }}
+          ), heading: `Editing ${page.title || path}`, devices: viewports, phase: githubOn ? autosave.phase : autosave.phase === "saved" ? "local" : autosave.phase }}
         >
           <Puck
             config={pageEditorConfig}
@@ -690,6 +690,7 @@ function PostBuilder({ slug, githubOn, onSaved }: { slug: string; githubOn: bool
               <SettingsButton />
               </>
             ),
+            heading: `Editing post: ${post.title || "Untitled post"}`,
             devices: viewports,
             phase: githubOn ? autosave.phase : autosave.phase === "saved" ? "local" : autosave.phase,
           }}

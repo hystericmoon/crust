@@ -207,7 +207,7 @@ describe("review-fixes 6: failed saves and publishes (F006, F008)", () => {
     const status = useSaveStatus();
     return (
       <>
-        <button type="button" onClick={() => status.show(failed ? "Page not saved to GitHub: offline." : "Page saved to GitHub.", failed, retry)}>
+        <button type="button" onClick={() => status.show(failed ? "Page not saved: offline." : "Page saved.", failed, retry)}>
           Save
         </button>
         <SaveStatus note={status.note} onDismiss={status.clear} />
@@ -221,7 +221,7 @@ describe("review-fixes 6: failed saves and publishes (F006, F008)", () => {
     render(<Harness failed retry={retry} />);
     act(() => screen.getByRole("button", { name: "Save" }).click());
     const alert = screen.getByRole("alert");
-    expect(alert.textContent).toContain("Page not saved to GitHub: offline.");
+    expect(alert.textContent).toContain("Page not saved: offline.");
     act(() => vi.advanceTimersByTime(60_000));
     expect(screen.getByRole("alert")).toBe(alert);
     act(() => within(alert).getByRole("button", { name: "Try again" }).click());
@@ -234,7 +234,7 @@ describe("review-fixes 6: failed saves and publishes (F006, F008)", () => {
     vi.useFakeTimers();
     render(<Harness failed={false} />);
     act(() => screen.getByRole("button", { name: "Save" }).click());
-    expect(screen.getByRole("status").textContent).toBe("Page saved to GitHub.");
+    expect(screen.getByRole("status").textContent).toBe("Page saved.");
     expect(screen.queryByRole("alert")).toBeNull();
     act(() => vi.advanceTimersByTime(10_000));
     expect(screen.getByRole("status").textContent).toBe("");

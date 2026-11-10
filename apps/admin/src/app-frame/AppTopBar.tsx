@@ -188,6 +188,8 @@ export interface AppTopBarProps {
   where?: ReactNode;
   /** In the middle-right: the screen's own tools (device toggle, undo, New page…). */
   tools?: ReactNode;
+  /** F093: the screen's h1, spoken only (screens with their own visible h1 leave it out). */
+  heading?: string;
   /** Where saving stands; null on screens that don't edit (they only say what's live). */
   phase?: SavePhase | null;
   /** Just before Publish (Preview in the builder). */
@@ -197,9 +199,10 @@ export interface AppTopBarProps {
   publish?: boolean;
 }
 
-export function AppTopBar({ siteName, allSites, where, tools, phase = null, beforePublish, onPublish, publish = true }: AppTopBarProps) {
+export function AppTopBar({ siteName, allSites, where, heading, tools, phase = null, beforePublish, onPublish, publish = true }: AppTopBarProps) {
   return (
     <header className="af-top">
+      {heading ? <h1 className="af-sr">{heading}</h1> : null}
       <SiteMenu siteName={siteName} allSites={allSites} />
       {where ? <div className="af-where">{where}</div> : null}
       <span className="af-grow" />

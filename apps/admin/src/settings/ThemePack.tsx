@@ -21,6 +21,7 @@ import {
 } from "@crust/blocks";
 import { useEffect, useId, useRef, useState } from "react";
 import { useMyLayouts } from "../layouts/mine";
+import { H } from "./heading";
 
 export interface PackPreview {
   tokens?: SiteTokens;
@@ -151,7 +152,7 @@ export function ThemePackGroup({ siteName, tokens, chrome, canExport, onPreview,
   return (
     <>
       <div className="st-pack-part">
-        <h3 className="st-pack-h">Download this site's look</h3>
+        <H level={3} className="st-pack-h">Download this site's look</H>
         <label className="st-field-label" htmlFor={`${id}-name`}>
           Theme name
         </label>
@@ -177,7 +178,7 @@ export function ThemePackGroup({ siteName, tokens, chrome, canExport, onPreview,
       </div>
 
       <div className="st-pack-part">
-        <h3 className="st-pack-h">Bring in a theme pack</h3>
+        <H level={3} className="st-pack-h">Bring in a theme pack</H>
         <label className="st-field-label" htmlFor={`${id}-file`}>
           Choose a .crust file
         </label>
@@ -208,9 +209,9 @@ export function ThemePackGroup({ siteName, tokens, chrome, canExport, onPreview,
 
         {loaded ? (
           <section className="st-pack-loaded" aria-labelledby={`${id}-loaded`}>
-            <h4 id={`${id}-loaded`} className="st-pack-name">
+            <H level={4} id={`${id}-loaded`} className="st-pack-name">
               Previewing “{loaded.name}”
-            </h4>
+            </H>
             {loaded.tokens ? (
               <ul className="st-pack-swatches" aria-label="Its colours">
                 {colorRoles.map((r) => (

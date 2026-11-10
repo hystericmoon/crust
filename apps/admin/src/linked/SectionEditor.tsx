@@ -71,7 +71,7 @@ export function SectionEditor({ id, back, githubOn, config, overrides }: Props) 
     setWarned(false);
     const n = linked.usage[id]?.length ?? used.length;
     status.show(
-      `“${res.name}” saved to ${linked.where}${n > 1 ? `, so all ${pagesLabel(n)} show the change` : n === 1 ? ", so its page shows the change" : ""}.${githubOn ? " Visitors see it after you publish." : ""}`,
+      `“${res.name}” ${linked.where === "this browser" ? "kept in this browser" : "saved"}${n > 1 ? `, so all ${pagesLabel(n)} show the change` : n === 1 ? ", so its page shows the change" : ""}.${githubOn ? " Visitors see it after you publish." : ""}`,
     );
   };
 

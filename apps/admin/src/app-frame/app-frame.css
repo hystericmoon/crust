@@ -147,3 +147,6 @@
 .af-addsec .lg-card-desc { display: none; }
 .af-addsec-elements { border-top: 1px solid var(--app-line); padding-top: 10px; }
 .af-addsec-elements summary { cursor: pointer; font-weight: 500; min-height: 28px; display: flex; align-items: center; }
+
+/* F093: text for screen readers only (the builder's h1). */
+.af-sr { position: absolute; width: 1px; height: 1px; margin: 0; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }

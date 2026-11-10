@@ -2,6 +2,7 @@
 // at desktop width, after the canvas has loaded. Fails on any "serious" or
 // "critical" issue. Needs the built admin: npm run build first.
 // Usage: node scripts/check-builder-a11y.mjs [apps/admin/dist]
+// To rerun only some screens: CHECK_ONLY="Table|Tabs" node scripts/check-builder-a11y.mjs
 import { readFile, stat } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { join } from "node:path";
@@ -89,6 +90,11 @@ const screens = [
   ["Section Style tab, video", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible', '[aria-label="Background"] .sx-seg-option:has-text("Video"):visible'] }],
   // F080: saving a section's style (the name form), and the layout gallery with the new layouts and the "Simple" group.
   ["Section Style tab, saving a style", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible', ".es-save:visible"] }],
+  // F093: the Styles panel (a group opened) and the Site settings sheet, which the scan did not open before.
+  ["Styles panel", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Styles")', ".sp-head"]],
+  ["Styles panel, Colours open", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Styles")', '.sp-row-h button:has-text("Colours")']],
+  ["Styles panel, Header and menu open", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Styles")', '.sp-row-h button:has-text("Header and menu")']],
+  ["Site settings sheet", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Site")', "button.af-panel-link:has-text('Site settings')", "dialog[open]"]],
   // F091: the Pages panel in the left bar, and a page's menu open.
   ["Pages panel", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Pages")', '.pp-group-title:has-text("In the menu")']],
   ["Pages panel, page menu", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Pages")', 'button[aria-label^="More for"]', '.pp-menu']],
@@ -118,6 +124,8 @@ const screens = [
   ["media library, focal point", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { media: true, then: ['button:has-text("Choose image"):visible', '.mp-photo[data-file="stage.jpg"]'] }],
   ["app welcome screen, Blank picked", "/", null, null, ['label:has-text("Blank")'], { app: "none", firstRun: true, wait: ".fr-card iframe" }],
 ];
+// F093: floating bars on the page (the typing bar, the text toolbar, the block's action bar) and the app's save message.
+const BARS = ".it-bar, .rt-floating .rt-toolbar, .rt-floating .rt-link, [class*='_DraggableComponent-actions_'], .crust-status";
 const fakeApp = await readFile(new URL("./fake-tauri.js", import.meta.url), "utf8");
 
 const server = await serve(distDir);
@@ -128,6 +136,7 @@ try {
   for (const scheme of ["light", "dark"])
   for (const [name, hash, post, select, clicks = [], { app, wait, firstRun, update, media, then = [] } = {}] of screens) {
     const label = `${name} (${scheme})`;
+    if (process.env.CHECK_ONLY && !new RegExp(process.env.CHECK_ONLY).test(name)) continue;
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, colorScheme: scheme });
     if (media) {
       const items = [
@@ -159,6 +168,13 @@ try {
       // A Section is clicked near its corner, so the Section itself is selected rather than a block inside it.
       await page.frameLocator("#preview-frame").locator(select).first().click(select.includes("Section") ? { position: { x: 12, y: 12 } } : undefined);
       if (select.includes("Text")) await page.waitForSelector(".rt-editor", { state: "attached", timeout: 10_000 });
+      // F090/F093: a Heading opens for typing with its bar; scan that state, bar showing.
+      if (select.includes("Heading")) {
+        const bar = page.frameLocator("#preview-frame").locator(".it-bar").first();
+        // A click opens it for typing; if the pointer only selected the block, Enter (the keyboard way in) does.
+        if (!(await bar.waitFor({ state: "attached", timeout: 2000 }).then(() => true, () => false))) await page.keyboard.press("Enter");
+        await bar.waitFor({ state: "attached", timeout: 10_000 });
+      }
       await page.waitForTimeout(500);
     }
     // F073: buttons to press once the block is selected (its settings panel).
@@ -167,10 +183,41 @@ try {
       await page.waitForTimeout(600);
     }
     await page.addScriptTag({ content: axeSource });
-    const results = await page.evaluate(() =>
+    const runAxe = () =>
       // eslint-disable-next-line no-undef
-      axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"] } }),
-    );
+      axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"] } });
+    const results = await page.evaluate(runAxe);
+    // F093: the canvas frame is its own document, so it is scanned on its own (the page the owner is editing, in its editing state).
+    const canvas = await (await page.$("#preview-frame"))?.contentFrame();
+    if (canvas) {
+      await canvas.addScriptTag({ content: axeSource });
+      const inFrame = await canvas.evaluate(runAxe);
+      for (const v of inFrame.violations) {
+        // The site's own links inside the canvas are edited, not used (a click selects the block), and Puck's floating
+        // action bar can sit over the link above a selected block. Their size is checked on the published pages (check:a11y).
+        if (v.id === "target-size") v.nodes = v.nodes.filter((n) => !n.html.startsWith("<a "));
+        if (!v.nodes.length) continue;
+        v.help = `in the page preview: ${v.help}`;
+        v.nodes = v.nodes.map((n) => ({ ...n, target: ["#preview-frame", ...n.target] }));
+        results.violations.push(v);
+      }
+      // Focus never hidden under a floating bar (WCAG 2.4.11).
+      const covered = await canvas.evaluate((selector) => {
+        const a = document.activeElement;
+        if (!a || a === document.body) return null;
+        const r = a.getBoundingClientRect();
+        for (const bar of document.querySelectorAll(selector)) {
+          if (bar.contains(a) || a.contains(bar)) continue;
+          const b = bar.getBoundingClientRect();
+          // Hidden means mostly covered (WCAG 2.4.11 AA: not entirely hidden; half is the line this check draws).
+          const across = Math.min(r.right, b.right) - Math.max(r.left, b.left);
+          const down = Math.min(r.bottom, b.bottom) - Math.max(r.top, b.top);
+          if (b.width && b.height && across > 0 && down > 0 && (across * down) / Math.max(1, r.width * r.height) >= 0.5) return a.tagName.toLowerCase() + (a.className ? "." + String(a.className).split(" ")[0] : "");
+        }
+        return null;
+      }, BARS);
+      if (covered) results.violations.push({ id: "focus-obscured", impact: "serious", help: "Focus is hidden under a floating bar", nodes: [{ target: ["#preview-frame", covered] }] });
+    }
     const bad = results.violations.filter((v) => v.impact === "serious" || v.impact === "critical");
     const minor = results.violations.filter((v) => !bad.includes(v));
     if (bad.length) {

@@ -7,6 +7,7 @@ import { templateFileName, templateLimits, templateSummary, type PackLayout, typ
 import { useId, useState } from "react";
 import { useMyLayouts } from "../layouts/mine";
 import { collectTemplate, type CollectStep, type TemplateLoader } from "../templates/collect";
+import { H } from "./heading";
 
 const stepLabels: Record<CollectStep, string> = {
   pages: "Collecting pages…",
@@ -94,7 +95,7 @@ export function TemplateGroup({
       </p>
       {connected ? null : (
         <p className="st-help">
-          This preview isn't connected to GitHub, so the template holds the sample site that comes with the builder.
+          This preview isn't connected to your saved site, so the template holds the sample site that comes with the builder.
         </p>
       )}
       <div className="tp-fields">
@@ -144,7 +145,7 @@ export function TemplateGroup({
       ) : null}
       {summary.length ? (
         <div className="tp-summary">
-          <h3>In the template</h3>
+          <H level={3}>In the template</H>
           <ul>
             {summary.map((s) => (
               <li key={s}>{s}</li>

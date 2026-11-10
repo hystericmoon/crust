@@ -594,7 +594,7 @@ function ConfirmDialog({
     }
     setJustApplied(
       githubOn
-        ? `Your site now uses the “${t.name}” template. It's saved to GitHub; visitors see it after you publish.`
+        ? `Your site now uses the “${t.name}” template. It's saved; visitors see it after you publish.`
         : `Your site now uses the “${t.name}” template, in this browser.`,
     );
     onApplied();

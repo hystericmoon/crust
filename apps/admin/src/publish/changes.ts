@@ -1,4 +1,4 @@
-/** What's saved to GitHub but not live yet, in the owner's words (F016). */
+/** What's saved but not live yet, in the owner's words (F016). */
 import type { PendingChanges } from "../api-client";
 import type { PageRow } from "../pages/store";
 
@@ -37,6 +37,6 @@ export function describeChanges(changes: PendingChanges, titles: Map<string, str
     // Redirect changes not already explained by a move above.
     ...(changes.redirects && changes.moved.length === 0 ? ["Redirects from old page addresses"] : []),
   ];
-  if (items.length === 0) return { summary: "Everything saved to GitHub is live.", items };
+  if (items.length === 0) return { summary: "Everything saved is live.", items };
   return { summary: items.length === 1 ? "1 change waiting to go live:" : `${items.length} changes waiting to go live:`, items };
 }

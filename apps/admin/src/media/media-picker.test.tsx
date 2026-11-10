@@ -178,17 +178,17 @@ describe("Choose an image (F034)", () => {
     api.deleteMedia.mockResolvedValue({ ok: true });
     await act(async () => fireEvent.click(screen.getByRole("radio", { name: "Clay mugs on a shelf" })));
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Delete from library…" })));
-    expect(screen.getByText(/Its history stays on GitHub/)).toBeTruthy();
+    expect(screen.getByText(/Its history is kept/)).toBeTruthy();
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Delete photo" })));
     expect(api.deleteMedia).toHaveBeenCalledWith("mugs.jpg");
     expect(screen.queryByRole("radio", { name: "Clay mugs on a shelf" })).toBeNull();
   });
 
-  it("explains when the library isn't available (no saving to GitHub here)", async () => {
-    api.listMedia.mockResolvedValue({ ok: false, error: "Saving to GitHub isn't available here yet.", notConfigured: true });
+  it("explains when the library isn't available (saving isn't on here)", async () => {
+    api.listMedia.mockResolvedValue({ ok: false, error: "Saving isn't available here yet.", notConfigured: true });
     setup();
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Choose image" })));
-    await waitFor(() => expect(screen.getByText(/The photo library needs saving to GitHub/)).toBeTruthy());
+    await waitFor(() => expect(screen.getByText(/The photo library needs saving to be switched on/)).toBeTruthy());
     expect((screen.getByRole("button", { name: "Upload photos" }) as HTMLButtonElement).disabled).toBe(true);
   });
 });

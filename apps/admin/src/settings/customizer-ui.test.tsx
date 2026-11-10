@@ -23,7 +23,7 @@ afterEach(() => {
 
 let latest: SiteTokens;
 function setup(initial: SiteTokens = defaultTokens) {
-  const onSave = vi.fn(async (_t: SiteTokens) => "Saved to GitHub.");
+  const onSave = vi.fn(async (_t: SiteTokens) => "Saved.");
   function Harness() {
     const [draft, setDraft] = useState(initial);
     latest = draft;

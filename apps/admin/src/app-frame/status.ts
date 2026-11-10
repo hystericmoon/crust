@@ -6,7 +6,7 @@ export function statusText(phase: SavePhase | null, pending: number | null): str
   if (phase === "saving") return "Saving…";
   if (phase === "failed") return "Not saved";
   if (phase === "held") return "Kept in this browser";
-  if (phase === "local") return "Saved in this browser";
+  if (phase === "local") return "Kept in this browser";
   const live = pending === null ? "" : pending === 0 ? "all live" : pending === 1 ? "1 change not live" : `${pending} changes not live`;
   // Screens that don't edit anything only say what's live.
   if (phase === null) return live ? live[0]!.toUpperCase() + live.slice(1) : "";

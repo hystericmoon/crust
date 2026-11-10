@@ -75,7 +75,7 @@ describe("publish-drafts: browser drafts and Publish", () => {
 
   it("stops and explains when a draft can't be saved", async () => {
     const posts = stubApi();
-    const onSaveDrafts = vi.fn(async () => "“Team”: Not saved to GitHub: The page needs a title. The draft is still safe in this browser.");
+    const onSaveDrafts = vi.fn(async () => "“Team”: Not saved: The page needs a title. The draft is still kept in this browser.");
     render(<PublishPanel githubOn siteUrl="https://example.pages.dev" changes={changes} drafts={drafts} onSaveDrafts={onSaveDrafts} />);
     await act(async () => {});
     await act(async () => screen.getByRole("button", { name: "Publish 3 changes" }).click());

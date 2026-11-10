@@ -21,7 +21,7 @@ describe("save-api client", () => {
 
   it("treats a missing server (the app page comes back) as not switched on", async () => {
     vi.stubGlobal("fetch", respond("<!doctype html>", "text/html"));
-    expect(await getStatus()).toEqual({ ok: false, error: "Saving to GitHub isn't available here yet.", notConfigured: true });
+    expect(await getStatus()).toEqual({ ok: false, error: "Saving isn't available here yet.", notConfigured: true });
   });
 
   it("never throws on network errors", async () => {
@@ -37,13 +37,13 @@ describe("save-api client", () => {
 
 describe("save-api messages", () => {
   it("tells the owner where the save went", () => {
-    expect(saveMessage({ ok: true }, true, "Page")).toBe("Page saved to GitHub. Visitors see it after you publish.");
+    expect(saveMessage({ ok: true }, true, "Page")).toBe("Page saved. Visitors see it after you publish.");
     expect(saveMessage({ ok: false, error: "x", notConfigured: true }, true, "Page")).toBe(
-      "Page saved in this browser. Saving to GitHub isn't switched on yet.",
+      "Page kept in this browser. Saving isn't switched on yet.",
     );
     expect(saveMessage({ ok: false, error: "GitHub didn't accept the token." }, true, "Site settings")).toBe(
-      "Site settings not saved to GitHub: GitHub didn't accept the token. A copy is safe in this browser.",
+      "Site settings not saved: GitHub didn't accept the token. A copy is kept in this browser.",
     );
-    expect(saveMessage({ ok: false, error: "Oops." }, false, "Page")).toBe("Page not saved to GitHub: Oops.");
+    expect(saveMessage({ ok: false, error: "Oops." }, false, "Page")).toBe("Page not saved: Oops.");
   });
 });

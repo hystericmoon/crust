@@ -1218,3 +1218,19 @@ short. Older "Current" entries (newest first) and the older log.
   click a picture. Then hover between two sections, press the purple
   "+ Add section" and pick one. Try it by keyboard too: Tab to a picture,
   Enter. Next: F089 One-row section toolbar.
+
+## F092 notes (archived 2026-11-10)
+
+- **2026-11-10: F092 Styles panel and Site settings sheet (built, waiting for your review).**
+  The paintbrush button on the left now opens one panel for how the whole
+  site looks: **Styles** cards first (one tap, with Undo), then **Fine-tune**
+  (Colours, Type, Buttons, Cards, Links, Spacing and shape, Motion, Section
+  styles; one opens at a time) and **Header & footer**. Save and Discard sit at
+  the bottom. Site details (address, search defaults, where to publish, theme
+  pack, save as template) are in a **Site settings** sheet, opened from a
+  button in the Styles panel or the Site panel; it closes with Escape or
+  Close. Snapshot: https://claude.ai/artifact/S6MeqWy5akeBJCRzGciDXZ.
+  **To try:** open the preview https://ccr-d50f7e80-weuq18.crust-admin.pages.dev,
+  click the paintbrush, pick a Style card, open Colours, then press Site
+  settings and press Escape. (The preview can't save; changes stay in the browser.)
+  Next: F093 Words and accessibility sweep.

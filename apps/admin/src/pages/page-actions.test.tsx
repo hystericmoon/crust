@@ -155,7 +155,7 @@ describe("page-actions: page list", () => {
     expect(document.activeElement).toBe(within(dialog).getByRole("button", { name: "Keep page" }));
     expect(dialog.getAttribute("aria-describedby")).toBeTruthy();
     expect(dialog.textContent).toContain("from the live site the next time you publish");
-    expect(dialog.textContent).toContain("Changes you haven't saved to GitHub yet are deleted too.");
+    expect(dialog.textContent).toContain("Changes you haven't saved yet are deleted too.");
 
     await act(async () => within(dialog).getByRole("button", { name: "Delete page" }).click());
     await flush();

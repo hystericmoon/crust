@@ -687,3 +687,33 @@ Next: **F090 Type on the page** (Opus), design snapshot first.
 CSS); `RichTextEditor` has `floating`/`autoFocus`; Enter and the bar button in
 `keyboard/KeyboardEditing.tsx`; DECISIONS "F090".
 Next: **F091 Pages panel** (Sonnet), design snapshot first.
+
+## F085 to F092 notes (archived 2026-11-10)
+
+## Next
+
+### Milestone 9 "Friendly app" (approved 2026-11-06)
+
+Owner: "Go with your recommendation" + React Bits look with light and dark
+mode. Features F085–F093 in features.json; plan in docs/milestone-9.md;
+snapshot of the direction: https://claude.ai/artifact/EHnrnPwVaMRv9GRGpaXWLx.
+React Bits code can't be used (MIT + Commons Clause): aesthetic only
+(DECISIONS 2026-11-06).
+
+**F085 built**: tokens in `apps/admin/src/app-theme/app-theme.css`; use
+`--app-*` for every new colour (the guard test fails on raw colours).
+**F086 built**: `apps/admin/src/app-frame/` (top bar, `EditorBar`,
+`railPlugins`, `useAutosave`); DECISIONS "F086".
+**F087 built**: `apps/admin/src/page-first/` (see DECISIONS "F087").
+**F088 built**: Add panel with layout pictures (DECISIONS "F088").
+**F091 built**: `apps/admin/src/pages-panel/`; DECISIONS "F091".
+**F092 built (2026-11-10)**: `apps/admin/src/styles-panel/` (`StylesPanel`, `SiteSettingsSheet`,
+`StylesPanelContext` fed by App.tsx's edit route); reuses the Site settings controls, which are now
+exported from `settings/SiteSettings.tsx`; DECISIONS "F092".
+Next: **F093 Words and accessibility sweep** (Sonnet).
+PR #81 (review fixes, Mac app fix, redesign research, F085–F088) is
+still open for the owner to merge; after the merge, restart the branch
+from main.
+Still waiting on him: F075 (phone test) and F078 (his call) from review
+round two (https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp).
+

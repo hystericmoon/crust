@@ -33,7 +33,7 @@ export function usePagesData(githubOn: boolean | null) {
         setError(undefined);
         setRows(mergePageRows(res.pages, localDrafts()));
       } else {
-        setError(`Couldn't load your pages from GitHub: ${res.error}`);
+        setError(`Couldn't load your pages from your site: ${res.error}`);
         setRows(mergePageRows(bundled, localDrafts()));
       }
     });
@@ -71,7 +71,7 @@ export function usePagesData(githubOn: boolean | null) {
     const draft = getLocalDraft(row.path);
     if (!draft) return "There's no draft of this page in this browser any more.";
     const res = await saveContent({ kind: "page", page: draft.page });
-    if (!res.ok) return `Not saved to GitHub: ${res.error} The draft is still safe in this browser.`;
+    if (!res.ok) return `Not saved: ${res.error} The draft is still kept in this browser.`;
     saveLocalDraft(draft.page, true);
     reload();
     return null;

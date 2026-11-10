@@ -8,7 +8,7 @@ export type ApiResult<T = Record<string, never>> =
   | ({ ok: true } & T)
   | { ok: false; error: string; notConfigured?: boolean };
 
-const NOT_AVAILABLE = "Saving to GitHub isn't available here yet.";
+const NOT_AVAILABLE = "Saving isn't available here yet.";
 
 async function call<T>(path: string, init?: RequestInit): Promise<ApiResult<T>> {
   let res: Response;

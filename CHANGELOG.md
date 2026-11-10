@@ -4,6 +4,13 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Plain words and a friendlier builder for keyboard and screen readers (2026-11-10).** The app no longer says
+  "GitHub" anywhere: changes are "saved" or "kept in this browser", and "publish" makes them live (about 75
+  messages). In the builder, the page area and the side panels have names a screen reader announces, there is one
+  heading ("Editing Home"), dragging a block is read out in words instead of codes, a focused control is never
+  hidden under a floating bar, and the Site settings sheet's headings step down in order. The accessibility check
+  now also covers the page preview, the Styles panel and the Site settings sheet.
+
 - **Styles panel and Site settings sheet (2026-11-10).** The paintbrush button
   on the left opens one panel for the look of the whole site: Styles cards
   first, then Fine-tune (colours, type, buttons, cards, links, spacing and

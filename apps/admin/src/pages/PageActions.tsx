@@ -267,13 +267,13 @@ export function DeleteDialog({
         <div className="pg-dialog-body" id={`${id}-body`}>
           {row.inRepo ? (
             <p>
-              The page is removed from GitHub now, and from the live site the next time you publish. Links to {row.path} will
+              The page is removed now, and from the live site the next time you publish. Links to {row.path} will
               stop working. You can bring it back from “Recently deleted” on this screen.
             </p>
           ) : (
             <p>This page is only in this browser, so deleting it removes it for good.</p>
           )}
-          {row.inRepo && row.localChanges ? <p>Changes you haven't saved to GitHub yet are deleted too.</p> : null}
+          {row.inRepo && row.localChanges ? <p>Changes you haven't saved yet are deleted too.</p> : null}
         </div>
         {error ? (
           <p className="st-error" role="alert">

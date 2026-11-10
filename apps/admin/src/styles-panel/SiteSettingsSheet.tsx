@@ -14,6 +14,7 @@ import { ThemePackGroup } from "../settings/ThemePack";
 import { useStylesPanel } from "./context";
 import { SaveBar, useInvalid } from "./useStyleSave";
 import "./styles-panel.css";
+import { HeadingShift } from "../settings/heading";
 
 export function SiteSettingsSheet({ onClose }: { onClose: () => void }) {
   const style = useSiteStyle();
@@ -23,6 +24,7 @@ export function SiteSettingsSheet({ onClose }: { onClose: () => void }) {
   const draft = style.tokens;
   return (
     <Dialog labelledBy={`${id}-title`} onClose={onClose}>
+      <HeadingShift.Provider value={1}>
       <div className="st sp-sheet">
         <div className="sp-sheet-head">
           <h2 id={`${id}-title`} className="sp-sheet-title">Site settings</h2>
@@ -85,6 +87,7 @@ export function SiteSettingsSheet({ onClose }: { onClose: () => void }) {
 
         <SaveBar invalid={invalid} />
       </div>
+      </HeadingShift.Provider>
     </Dialog>
   );
 }

@@ -167,7 +167,7 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
       {githubOn ? (
         <>
           <p className="st-lede">
-            Publishing turns your saved pages into the live site. Only what's saved to GitHub goes live; drafts kept in this
+            Publishing turns your saved pages into the live site. Only what's saved goes live; drafts kept in this
             browser don't.
           </p>
           <p className={`pg-run is-${state.tone}`}>
@@ -177,7 +177,7 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
                 {" "}
                 Last publish started {formatDate(latest.createdAt)}.{" "}
                 <a href={latest.url} target="_blank" rel="noreferrer">
-                  Details on GitHub
+                  See details
                 </a>
               </>
             ) : null}
@@ -229,11 +229,11 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
             {message}
           </p>
           {failure || (!busy && state.tone === "error") ? (
-            // F069: a plain next step instead of only "Details on GitHub".
+            // F069: a plain next step instead of only "See details".
             <div className="st-warning pg-publish-failed" role={failure ? "alert" : undefined}>
               <p>
                 {failure ||
-                  "The last publish didn't finish, so the live site still shows the version before it. Usually trying again is enough. If it fails twice, send Claude the “Details on GitHub” link."}
+                  "The last publish didn't finish, so the live site still shows the version before it. Usually trying again is enough. If it fails twice, send Claude the “See details” link."}
               </p>
               <button type="button" className="st-button" onClick={requestPublish}>
                 Try again
@@ -259,7 +259,7 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
         </>
       ) : (
         <p className="st-lede">
-          Publishing from here switches on together with saving to GitHub, after the one-time setup in docs/setup-saving.md.
+          Publishing from here switches on together with saving, after the one-time setup in docs/setup-saving.md.
           Until then the live site doesn't change.
         </p>
       )}
@@ -302,7 +302,7 @@ function SaveDraftsDialog({
         <div className="pg-dialog-body" id="save-drafts-body">
           <p>
             {n === 1 ? "This page has" : "These pages have"} changes only in this browser:{" "}
-            {drafts.map((d) => d.title).join(", ")}. Publishing puts only what's saved on GitHub live.
+            {drafts.map((d) => d.title).join(", ")}. Publishing puts only what's saved live.
           </p>
         </div>
         {error ? (

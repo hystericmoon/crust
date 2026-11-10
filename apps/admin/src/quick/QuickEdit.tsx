@@ -164,7 +164,7 @@ export function QuickEdit({ page: initial, githubOn, saveMessage }: Props) {
 
       <footer className="qe-foot">
         <p className="qe-status" role="status" aria-live="polite">
-          {status || (dirty ? "Changes are kept in this browser. Save to put them on GitHub." : "")}
+          {status || (dirty ? "Changes are kept in this browser. Save to keep them for good." : "")}
         </p>
         <div className="qe-actions">
           <button type="button" className={githubOn ? "qe-button" : "qe-button qe-primary"} disabled={busy} onClick={() => void save()}>

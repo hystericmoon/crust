@@ -238,7 +238,7 @@ export function PagesPanel({
     if (failed) setFailure(failed);
   };
   const saveDraft = (row: PageRow) =>
-    run(row.path, after(onSaveDraft!(row), `Saved “${row.title}” to GitHub. Visitors see it after you publish.`));
+    run(row.path, after(onSaveDraft!(row), `Saved “${row.title}”. Visitors see it after you publish.`));
   const duplicate = (row: PageRow) =>
     run(row.path, after(onDuplicate!(row), `Made a copy of “${row.title}”. It is in “Not in the menu”, only in this browser until you save it.`));
 
@@ -373,7 +373,7 @@ export function PagesPanel({
             {canSave(row) ? (
               <li>
                 <button type="button" aria-disabled={busy !== null || undefined} onClick={choose(() => void saveDraft(row))}>
-                  {busy === row.path ? "Saving…" : "Save to GitHub"}
+                  {busy === row.path ? "Saving…" : "Save"}
                 </button>
               </li>
             ) : null}

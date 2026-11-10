@@ -1,7 +1,7 @@
 /**
  * Post, blog and "Page not found" designs in the builder (F082). Loaded once
  * per visit. Like posts, a copy is kept in this browser: it wins until it's
- * saved to GitHub (or the site folder in the app), so preview links without
+ * saved (or the site folder in the app), so preview links without
  * saving can still be tried.
  */
 import { checkDesign, cleanDesign, designKinds, type DesignKind, type PageDesign, type PageDesigns } from "@crust/blocks";

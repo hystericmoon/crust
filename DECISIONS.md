@@ -5,6 +5,11 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 
 ## Proposals
 
+- **Pages panel: say so when a menu change fails to save to GitHub (from F093).** F091 saves menu changes
+  fire-and-forget, so a failed save shows nothing. Suggest a short message with "Try again", like page saves have. Size S.
+- **Site settings sheet: make Search defaults and Where to publish editable in place (from F093).** F092 only shows and
+  links them; the owner would change the site name, language and publish place right in the sheet. Size M.
+
 - **App UX redesign: approved 2026-11-06** as Milestone 9 (F085–F093, docs/milestone-9.md); see the entry below.
 
 - **Footer section in use (from F076).** Count the footer as a use of its linked section, so Layouts → Linked sections won't delete it while the footer shows it (today publishing stops with a clear message instead). Small.
@@ -3734,3 +3739,51 @@ a lawyer reads it (BLOCKED.md).
 - The post editor keeps the plain Styles and Site links (it has no site-style context).
 - Contrast checks keep their own "Contrast checks" h2 inside Colours, and the inner groups keep their heading levels;
   F093 tidies heading levels in the sweep.
+
+## 2026-11-10 — F093 Words and accessibility sweep (Claude, reversible)
+
+No design snapshot (words and accessibility only); the glossary below is the record. Test: `apps/admin/src/app-words.test.tsx`.
+
+**One word per idea (before → after).** The owner's idea of "put it on the site" is two steps, so there are two words, and
+"GitHub" (a tool's name, which he never needs) is gone from every screen.
+
+| Idea | Before (several words) | Now (one word) |
+|---|---|---|
+| Keep a change in the site | "saved to GitHub", "saved on GitHub", "Save to GitHub", "put on GitHub" | **saved** / **Save** |
+| Change kept only in this browser | "saved in this browser", "safe in this browser", "saved to this browser" | **kept in this browser** |
+| Make it visible to visitors | publish, "put live", "goes live" | **publish** (and **live** for the result) |
+| Saving is off (preview links) | "Saving to GitHub isn't switched on / isn't on / isn't available" | **Saving isn't switched on / isn't available** |
+| Where the site is stored | "GitHub", "the repository" | **your site** |
+| Details of a publish run | link "Details on GitHub" | **See details** (the link still goes to the run) |
+| Loading failures | "Couldn't load your pages from GitHub" | "Couldn't load your pages from your site" |
+| A page deleted | "removed from GitHub" | "removed" |
+| A deleted photo | "its history stays on GitHub" | "its history is kept" |
+
+- Applied across `apps/admin/src` (about 75 strings, F055's "GitHub" strings included); tests that quoted the old words
+  were updated with them. The test fails on `GitHub`, `repository` and the "saved/safe in this browser" forms in any screen
+  text (comments and code names such as `savedToGitHub`, `applyOnGitHub` are fine).
+- **Not changed on purpose:** error text that comes from the server or GitHub's own answer (for example "GitHub is down."),
+  which tells the owner what to report; the setup guides in `docs/`; the content JSON and the published site.
+- The desktop wording ("on your computer") F055 asked for already exists in `desktop/` (F056, F058); with "saved" and "your
+  site" the shared messages now read right in both the browser and the app.
+
+**Builder accessibility (WCAG 2.2 AA).** From the 2026-11-06 scan:
+- *Main landmark and h1.* Puck has neither, so `keyboard/puck-chrome.ts` adds `role="main"` to the canvas, names the left
+  rail ("Builder tools") and the two side panels as regions ("Tool panel", "Settings panel"; the panels inside keep their
+  own names). The top bar carries one spoken-only h1 ("Editing Home", "Editing post: ..."); screens that show their own h1 are unchanged.
+- *Spoken drag status instead of aria-grabbed.* The drag library marks blocks `aria-grabbed`/`aria-pressed` and announces
+  "Picked up draggable item Hero-3f2a9c". Both attributes are removed; `keyboard/drag-status.ts` turns its announcements into
+  "Picked up Hero. Use the arrow keys ..." / "Hero is over Columns." / "Dropped Hero in the page." and reads them in our own
+  live region (the library's own region is set to off so nothing is said twice). F091's Pages panel already speaks every
+  move through its live region (keyboard, menu and mouse drops); it never used aria-grabbed.
+- *Blocks are groups, not buttons.* A block holds buttons and links of its own and its name starts with the block's
+  type, not its visible words, which axe flagged as nested controls and a name mismatch inside the canvas. They are now
+  `role="group"` with the same name, "block" role description and Enter/Alt+arrow keys.
+- *Focus never hidden under a floating bar (2.4.11).* `keyboard/focus-clear.ts` (main page and canvas) scrolls so a focused
+  thing is clear of the block's action bar, the typing bar, the text toolbar and the save message; plus 72 px scroll
+  padding. `check:builder` fails if focus ends up under one of those bars.
+- *Axe inside the canvas frame.* `check:builder` now also scans the page preview (the frame is its own document, which F090
+  noted was never scanned). The frame gets a title ("Page preview"). New screens: the Styles panel (closed, Colours open,
+  Header and menu open) and the Site settings sheet; the Heading screen now waits for the typing bar and scans that state.
+- *Heading levels in reused groups.* The Site settings groups say their level through `settings/heading.tsx`; inside the
+  sheet they step down one (Site address h3, its parts h4; Theme pack h3, h4, h5), so no level repeats or skips.

@@ -101,7 +101,7 @@ describe("app frame: the status line", () => {
     expect(statusText("saved", 1)).toBe("Saved · 1 change not live");
     expect(statusText("saved", 0)).toBe("Saved · all live");
     expect(statusText("saved", null)).toBe("Saved");
-    expect(statusText("local", null)).toBe("Saved in this browser");
+    expect(statusText("local", null)).toBe("Kept in this browser");
     expect(statusText("held", null)).toBe("Kept in this browser");
     expect(statusText("failed", 3)).toBe("Not saved");
     // Screens that don't edit only say what's live.
@@ -196,8 +196,8 @@ describe("app frame: the builder", () => {
     expect(widths.map((b) => b.getAttribute("aria-label"))).toEqual(["Desktop width", "Tablet width", "Phone width"]);
     // Puck picks the width closest to the window; the test page has no size, so at most one is on.
     expect(widths.filter((b) => b.getAttribute("aria-pressed") === "true").length).toBeLessThanOrEqual(1);
-    // Saving to GitHub isn't on here: the browser keeps it.
-    expect(within(bar).getByRole("status").textContent).toBe("Saved in this browser");
+    // Saving isn't on here: the browser keeps it.
+    expect(within(bar).getByRole("status").textContent).toBe("Kept in this browser");
     expect(screen.queryByRole("button", { name: "Save draft" })).toBeNull();
   });
 

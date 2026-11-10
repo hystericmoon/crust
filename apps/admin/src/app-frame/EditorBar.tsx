@@ -19,6 +19,8 @@ export interface EditorFrame {
   /** Where you are: the page switcher, or the post's name. */
   where: ReactNode;
   phase: SavePhase;
+  /** F093: the screen's one h1 (spoken only), such as "Editing Home". */
+  heading?: string;
   /** The widths the device toggle offers (the builder's viewports). */
   devices?: Viewport[];
 }
@@ -115,9 +117,10 @@ function PreviewButton() {
 }
 
 export function EditorBar() {
-  const { where, phase } = useContext(EditorFrameContext);
+  const { where, phase, heading } = useContext(EditorFrameContext);
   return (
     <AppTopBar
+      heading={heading ?? "Page builder"}
       where={where}
       tools={
         <>

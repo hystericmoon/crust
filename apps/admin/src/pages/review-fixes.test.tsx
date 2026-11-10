@@ -81,7 +81,7 @@ describe("review fixes: page list", () => {
 
   it("offers Try again when the list couldn't load", () => {
     const onRetry = vi.fn();
-    render(<PageList siteName="Demo" rows={rows} sourceNote="" loadError="Couldn't load your pages from GitHub." onRetry={onRetry} onCreate={() => {}} />);
+    render(<PageList siteName="Demo" rows={rows} sourceNote="" loadError="Couldn't load your pages from your site." onRetry={onRetry} onCreate={() => {}} />);
     act(() => screen.getByRole("button", { name: "Try again" }).click());
     expect(onRetry).toHaveBeenCalled();
   });

@@ -18,6 +18,8 @@ import { ActionBar, createUsePuck, useGetPuck, type ComponentData, type Config, 
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { SectionToolbar } from "../sections/editing";
 import { availableMoves, planInsert, planMove, type MoveKind } from "./moves";
+import { installDragStatus } from "./drag-status";
+import { installFocusClear } from "./focus-clear";
 import { installPuckChromeFixes } from "./puck-chrome";
 import { installTooltips } from "./tooltips";
 
@@ -99,6 +101,16 @@ function KeyboardHelp() {
 let canvasDoc: Document | null = null;
 
 const labelOf = (config: Config, item: ComponentData) => config.components[item.type]?.label ?? item.type;
+
+/** F093: what a drag id means in words: a block's name, "the page", or "inside Columns". */
+export function dragName(puck: PuckApi, id: string): string {
+  const item = puck.getItemById(id);
+  if (item) return labelOf(puck.config, item);
+  const [owner] = id.split(":");
+  if (!owner || owner === "root") return "the page";
+  const parent = puck.getItemById(owner);
+  return parent ? `inside ${labelOf(puck.config, parent)}` : id.replace(/-[\w-]{6,}$/, "");
+}
 
 export function focusBlock(id: string) {
   // Wait for Puck to re-render the canvas before moving focus back.
@@ -266,11 +278,23 @@ function labelBlocks(doc: Document, puck: PuckApi) {
   const set = (el: Element, name: string, value: string) => {
     if (el.getAttribute(name) !== value) el.setAttribute(name, value);
   };
+  // F093: the page being edited is the canvas document's main content.
+  const root = doc.querySelector<HTMLElement>("[class*='_DropZone--isRootZone_']");
+  if (root) {
+    set(root, "role", "main");
+    set(root, "aria-label", "Page content");
+  }
   for (const el of doc.querySelectorAll<HTMLElement>("[data-puck-component]")) {
     const item = puck.getItemById(el.dataset.puckComponent ?? "");
     if (!item) continue;
     const text = summary(item);
     set(el, "aria-label", text ? `${labelOf(puck.config, item)}: ${text}` : labelOf(puck.config, item));
+    // A group, not a button: a block holds buttons and links of its own (nested controls),
+    // and a button's name must contain its visible words, which a block's label doesn't.
+    set(el, "role", "group");
+    // The drag library marks these as pressed/grabbed buttons; both are wrong on a group, and drag status is spoken (drag-status.ts).
+    el.removeAttribute("aria-pressed");
+    el.removeAttribute("aria-grabbed");
     set(el, "aria-roledescription", "block");
     set(el, "aria-describedby", HELP_ID);
     set(el, "aria-keyshortcuts", "Enter Alt+ArrowUp Alt+ArrowDown Alt+ArrowLeft Alt+ArrowRight");
@@ -287,10 +311,14 @@ export function KeyboardRoot({ children }: { children: ReactNode }) {
     // Tooltips first, so Escape closes an open tooltip before it deselects.
     const removeTooltips = installTooltips(document);
     const removeChromeFixes = installPuckChromeFixes(document);
+    const removeFocusClear = installFocusClear(document);
+    const removeDragStatus = installDragStatus(document, (id) => dragName(getPuck(), id), announce);
     const onKey = (e: KeyboardEvent) => handleKey(e, getPuck);
     document.addEventListener("keydown", onKey, true);
     return () => {
       document.removeEventListener("keydown", onKey, true);
+      removeDragStatus();
+      removeFocusClear();
       removeChromeFixes();
       removeTooltips();
     };
@@ -342,7 +370,10 @@ export function KeyboardCanvas({ children, document: doc }: { children: ReactNod
   useEffect(() => {
     if (!doc) return;
     canvasDoc = doc;
+    // F093: the canvas is a document of its own and needs a title (WCAG 2.4.2).
+    if (!doc.title) doc.title = "Page preview";
     const removeTooltips = installTooltips(doc);
+    const removeFocusClear = installFocusClear(doc);
     const onKey = (e: KeyboardEvent) => handleKey(e, getPuck);
     doc.addEventListener("keydown", onKey, true);
     let frame = 0;
@@ -365,6 +396,7 @@ export function KeyboardCanvas({ children, document: doc }: { children: ReactNod
       doc.removeEventListener("keydown", onKey, true);
       doc.defaultView?.removeEventListener("scroll", onScroll);
       removeTooltips();
+      removeFocusClear();
       observer.disconnect();
       cancelAnimationFrame(frame);
       if (canvasDoc === doc) canvasDoc = null;

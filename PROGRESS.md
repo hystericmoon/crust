@@ -7,19 +7,17 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
-- **2026-11-10: F092 Styles panel and Site settings sheet (built, waiting for your review).**
-  The paintbrush button on the left now opens one panel for how the whole
-  site looks: **Styles** cards first (one tap, with Undo), then **Fine-tune**
-  (Colours, Type, Buttons, Cards, Links, Spacing and shape, Motion, Section
-  styles; one opens at a time) and **Header & footer**. Save and Discard sit at
-  the bottom. Site details (address, search defaults, where to publish, theme
-  pack, save as template) are in a **Site settings** sheet, opened from a
-  button in the Styles panel or the Site panel; it closes with Escape or
-  Close. Snapshot: https://claude.ai/artifact/S6MeqWy5akeBJCRzGciDXZ.
-  **To try:** open the preview https://ccr-d50f7e80-weuq18.crust-admin.pages.dev,
-  click the paintbrush, pick a Style card, open Colours, then press Site
-  settings and press Escape. (The preview can't save; changes stay in the browser.)
-  Next: F093 Words and accessibility sweep.
+- **2026-11-10: F093 Words and accessibility sweep (built, waiting for your review). Milestone 9 is complete:
+  F085 to F093 are all built and waiting for your review.**
+  Nothing on screen says "GitHub" any more: a change is **saved** (kept in your site) or **kept in this browser**
+  (a draft), and **publish** makes it live. About 75 messages changed. The builder is easier for keyboard and screen
+  reader users: it has a main area and a heading, its side panels have names, dragging a block is read out in plain
+  words ("Picked up Hero ... Dropped Hero in the page"), and a focused button never ends up under a floating bar.
+  The accessibility check now also looks inside the page preview, the Styles panel and the Site settings sheet.
+  The words table is in DECISIONS "F093". **To try:** open the preview
+  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, edit a heading and read the messages (Save, Publish, Pages
+  panel); Tab through the builder, and with a screen reader (VoiceOver: Cmd+F5) pick up a block with Space.
+  Next: your review of F085 to F093 plus F075 and F078, then merge PR #81. No unbuilt features are left.
 
 ## Waiting on the owner
 

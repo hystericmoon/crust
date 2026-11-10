@@ -12,33 +12,15 @@ message the owner asked for every time). Content JSON: `crust-content-format`.
 
 ## Model plan (owner, 2026-11-03)
 
-The owner picks the model per feature; `crust-start` checks it before
-any work.
-
-| Next feature | Model | Why |
-|---|---|---|
-| F086 One app frame and top bar | Opus | Autosave and the app shell |
-| F087 Page first | Opus | Editor behaviour |
-| F088 Add section, by picture | Sonnet | Reuses the layout gallery |
-| F089 One-row section toolbar | Sonnet | Contained |
-| F090 Type on the page | Opus (built with Sonnet, owner 2026-11-10) | Hardest: inline editing in the canvas |
-| F091 Pages panel | Sonnet | Contained |
-| F092 Styles panel and Site settings sheet | Sonnet | Regrouping existing panels |
-| F093 Words and accessibility sweep | Sonnet | Sweep |
-
-Milestone 9 approved 2026-11-06 (docs/milestone-9.md); models are
-Claude's recommendation, the owner can change any row.
-
-2026-11-10: the owner asked for Sonnet and Haiku only ("Keep everything using sonnet and haiku"), so
-F091 onwards use Sonnet (Haiku for small sweeps).
+Every feature in features.json is built (F001 to F093); there is no next feature to start. The owner asked on
+2026-11-10 for Sonnet and Haiku only ("Keep everything using sonnet and haiku"). Milestone 9 plan: docs/milestone-9.md.
 
 Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-10, F092 built; branch `ccr-d50f7e80-weuq18`. **PR #81
-open** (review fixes, Mac app fix, F085 to F090: same branch, so one PR until he
-merges); the owner merges. Milestone 9 "Friendly app" is under way (see Next).
+Last updated: 2026-11-10, F093 built, **Milestone 9 "Friendly app" complete**; branch `ccr-d50f7e80-weuq18`.
+**PR #81 is open** (review fixes, Mac app fix, F085 to F093: one branch, so one PR until he merges it); the owner merges.
 
 ## Where things stand
 
@@ -73,30 +55,27 @@ merges); the owner merges. Milestone 9 "Friendly app" is under way (see Next).
 
 ## Next
 
-### Milestone 9 "Friendly app" (approved 2026-11-06)
+**No unbuilt features are left** (`npm run next` says so). Milestone 9 "Friendly app" (F085 to F093, plan in
+docs/milestone-9.md; direction snapshot https://claude.ai/artifact/EHnrnPwVaMRv9GRGpaXWLx) is built, and every one
+of its features waits for the owner's review (`needs_review`, not `reviewed`). A new session should not start a feature.
 
-Owner: "Go with your recommendation" + React Bits look with light and dark
-mode. Features F085–F093 in features.json; plan in docs/milestone-9.md;
-snapshot of the direction: https://claude.ai/artifact/EHnrnPwVaMRv9GRGpaXWLx.
-React Bits code can't be used (MIT + Commons Clause): aesthetic only
-(DECISIONS 2026-11-06).
+The next step is the owner's:
+1. **Review F085 to F093**, plus F075 (phone test) and F078 (his call, review round two:
+   https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp). Record each Pass as `reviewed: true` (with his words as
+   `review_note`); list each "needs fixing" for him and ask before reworking (CLAUDE.md).
+2. **Merge PR #81** (CI must be green). Then restart the branch from main; from then on one PR per feature.
+3. Scope is his: proposals waiting in DECISIONS.md "Proposals" (including the two from F093: a failed Pages-panel menu
+   save should say so; make Search defaults and Where to publish editable in the Site settings sheet).
 
-**F085 built**: tokens in `apps/admin/src/app-theme/app-theme.css`; use
-`--app-*` for every new colour (the guard test fails on raw colours).
-**F086 built**: `apps/admin/src/app-frame/` (top bar, `EditorBar`,
-`railPlugins`, `useAutosave`); DECISIONS "F086".
-**F087 built**: `apps/admin/src/page-first/` (see DECISIONS "F087").
-**F088 built**: Add panel with layout pictures (DECISIONS "F088").
-**F091 built**: `apps/admin/src/pages-panel/`; DECISIONS "F091".
-**F092 built (2026-11-10)**: `apps/admin/src/styles-panel/` (`StylesPanel`, `SiteSettingsSheet`,
-`StylesPanelContext` fed by App.tsx's edit route); reuses the Site settings controls, which are now
-exported from `settings/SiteSettings.tsx`; DECISIONS "F092".
-Next: **F093 Words and accessibility sweep** (Sonnet).
-PR #81 (review fixes, Mac app fix, redesign research, F085–F088) is
-still open for the owner to merge; after the merge, restart the branch
-from main.
-Still waiting on him: F075 (phone test) and F078 (his call) from review
-round two (https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp).
+Where things are (Milestone 9): tokens `apps/admin/src/app-theme/app-theme.css` (use `--app-*` for every colour; a guard test
+fails on raw colours); `app-frame/` (top bar, `EditorBar`, `railPlugins`, `useAutosave`); `page-first/` (F087);
+`layouts/AddSectionPanel` (F088); `inline-text/` (F090); `pages-panel/` (F091); `styles-panel/` (F092);
+F093: `keyboard/puck-chrome.ts` (landmarks), `keyboard/drag-status.ts`, `keyboard/focus-clear.ts`,
+`settings/heading.tsx`, test `app-words.test.tsx`, `scripts/check-builder-a11y.mjs` (now scans the page preview, Styles
+panel and Site settings sheet). Details per feature in DECISIONS.md (search the id). Words: use "saved", "kept in this
+browser", "publish", "your site"; never "GitHub" in screen text (the F093 test fails on it).
+
+React Bits code can't be used (MIT + Commons Clause): aesthetic only (DECISIONS 2026-11-06).
 
 ## Where to find things
 
