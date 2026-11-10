@@ -261,13 +261,15 @@ export function App() {
     () => (menuIsAutomatic ? menuFromPages(pageOptions) : chromeDraft.header.menu),
     [menuIsAutomatic, pageOptions, chromeDraft.header.menu],
   );
-  const saveMenu = (menu: MenuLink[]) => {
+  // Resolves to a message when the save to the site failed (the change itself is kept in this browser).
+  const saveMenu = async (menu: MenuLink[]): Promise<string | null> => {
     const next: SiteChrome = { ...savedChrome, header: { ...savedChrome.header, menu } };
     setSavedChrome(next);
     setChromeDraft((c) => ({ ...c, header: { ...c.header, menu } }));
     saveChrome(next);
     // Like the rest of Site settings: kept in this browser at once, then saved when that is on.
-    void saveContent({ kind: "site", site: siteToSave(site, saved, next, defaultChrome, savedAddress) });
+    const res = await saveContent({ kind: "site", site: siteToSave(site, saved, next, defaultChrome, savedAddress) });
+    return githubOn && !res.ok ? `The menu change wasn't saved to your site: ${res.error} It is kept in this browser.` : null;
   };
   // F092: what the Styles panel and the Site settings sheet need beside the colours and type.
   const stylesPanelState = (githubOn: boolean) => ({
@@ -445,7 +447,7 @@ function Loading() {
   );
 }
 
-function Pages({ githubOn, focusPublish = false, menu, onMenuChange }: { githubOn: boolean | null; focusPublish?: boolean; menu: MenuLink[]; onMenuChange: (menu: MenuLink[]) => void }) {
+function Pages({ githubOn, focusPublish = false, menu, onMenuChange }: { githubOn: boolean | null; focusPublish?: boolean; menu: MenuLink[]; onMenuChange: (menu: MenuLink[]) => Promise<string | null> }) {
   const { rows: markedRows, plainRows: rows, error, changes, deleted, reload, rename, restore, saveDraft, saveAllDrafts, drafts, findLinks, remove, duplicate } = usePagesData(githubOn);
 
   // F024: arriving from the Publish shortcut, focus goes to the Publish panel once the list is there.

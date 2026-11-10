@@ -5,10 +5,10 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 
 ## Proposals
 
-- **Pages panel: say so when a menu change fails to save to GitHub (from F093).** F091 saves menu changes
-  fire-and-forget, so a failed save shows nothing. Suggest a short message with "Try again", like page saves have. Size S.
-- **Site settings sheet: make Search defaults and Where to publish editable in place (from F093).** F092 only shows and
-  links them; the owner would change the site name, language and publish place right in the sheet. Size M.
+- ~~Pages panel: say so when a menu change fails to save~~ **Done 2026-11-10 (owner: "Start with the failed menu save").**
+  `saveMenu` (App.tsx) now returns a message when the save to the site fails; the panel shows it with "Try again"
+  (same change, saved again). The change stays in this browser either way. Small fix on F091, no new feature item.
+- ~~Site settings sheet: make Search defaults and Where to publish editable in place~~ **Added as F094 by the owner on 2026-11-10 ("add it").**
 
 - **App UX redesign: approved 2026-11-06** as Milestone 9 (F085–F093, docs/milestone-9.md); see the entry below.
 
