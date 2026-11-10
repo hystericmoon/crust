@@ -77,6 +77,13 @@ browser", "publish", "your site"; never "GitHub" in screen text (the F093 test f
 
 React Bits code can't be used (MIT + Commons Clause): aesthetic only (DECISIONS 2026-11-06).
 
+Notes from 2026-11-10 (night run, all built with Sonnet on the owner's word "keep everything using sonnet and haiku"):
+- F090 fix after F093 (commit 1c6c5c1): a real mouse click never opened typing (Puck sets `pointer-events: none`
+  inside blocks); now a capture-phase listener (`useClickToType`). check:builder uses a real click.
+- CI once failed `ftp::tests::ftps_connects_with_a_trusted_certificate` (crates/crust-desktop, "InvalidContentType")
+  on abf9e15, a push with no Rust change; it passed locally and on every later push. If it fails again, root-cause the
+  local FTPS test server rather than re-running.
+
 ## Where to find things
 
 | What | File |
