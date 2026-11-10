@@ -4,6 +4,9 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Clicking a heading or text on the page now opens typing (2026-11-10).** Until now only the Enter key did; a real
+  mouse or finger click just selected the block.
+
 - **Plain words and a friendlier builder for keyboard and screen readers (2026-11-10).** The app no longer says
   "GitHub" anywhere: changes are "saved" or "kept in this browser", and "publish" makes them live (about 75
   messages). In the builder, the page area and the side panels have names a screen reader announces, there is one

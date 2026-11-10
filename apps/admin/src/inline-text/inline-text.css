@@ -19,9 +19,8 @@
 .it-btn[aria-pressed="true"] { background: var(--app-pri); color: var(--app-pri-fg); }
 .it-btn:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 1px; box-shadow: 0 0 0 5px var(--app-bg); }
 .it-done { border: 1px solid var(--app-line-strong); background: var(--app-panel); }
-/* Text: the editor's own bar floats at the left; Done sits at the right of the same row. */
-.it-rich > .it-bar-slot { left: auto; right: 0; }
-.it-rich.is-below > .it-bar-slot { bottom: auto; top: calc(100% + 10px); }
+/* Text: the editor's own bar floats above at the left; Done sits below at the right (Puck's action bar is above, at the right). */
+.it-rich > .it-bar-slot { left: auto; right: 0; bottom: auto; top: calc(100% + 10px); } /* below: Puck's own action bar sits above, at the right */
 .it-rich.is-below .rt-floating .rt-toolbar { bottom: auto; top: calc(100% + 10px); }
 .it-rich.is-below .rt-floating .rt-link { top: calc(100% + 64px); }
 .it-plain { display: inline; outline: 2px dashed var(--app-acc); outline-offset: 4px; border-radius: 2px; white-space: pre-wrap; }

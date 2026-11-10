@@ -35,6 +35,29 @@ export function patchBlock(getPuck: Getter, id: string, patch: Record<string, un
 
 const isElement = (t: EventTarget | null): t is Element => !!t && typeof (t as Element).closest === "function";
 
+/**
+ * Puck switches off pointer events on everything inside a block (`[data-puck-component] *`), so a real click
+ * lands on the block's wrapper, never on the words. The click is therefore listened for on the page, in the
+ * capture phase (the wrapper does not pass it on), and matched to the block's wrapper when it comes.
+ * It waits a tick so Puck has selected the block first (typing ends when another block is the selected one).
+ */
+function useClickToType(id: string) {
+  return useCallback(
+    (hit: HTMLElement | null) => {
+      const doc = hit?.ownerDocument;
+      if (!hit || !doc) return;
+      const onClick = (e: MouseEvent) => {
+        if (!isElement(e.target) || e.target.closest("[data-puck-overlay-portal], [data-inline-editing]")) return;
+        const wrapper = hit.closest("[data-puck-component]");
+        if (wrapper && wrapper.contains(e.target)) setTimeout(() => startInlineEdit(id), 0);
+      };
+      doc.addEventListener("click", onClick, true);
+      return () => doc.removeEventListener("click", onClick, true);
+    },
+    [id],
+  );
+}
+
 /** Where focus goes when typing ends: the block itself, so the keyboard carries on from there. */
 function focusBlockSoon(id: string, from: Element | null) {
   const doc = from?.ownerDocument;
@@ -184,11 +207,12 @@ function InlineHeading({ base, props }: { base: Render; props: Record<string, an
   const getPuck = useGetPuck();
   const current = useEditingId();
   const id = props.id as string;
+  const hitRef = useClickToType(id);
   const editing = props.puck?.isEditing && current === id;
   if (!props.puck?.isEditing) return <>{base(props)}</>;
   if (!editing) {
     return (
-      <div className="it-hit" data-inline-type="Heading" onClick={() => startInlineEdit(id)}>
+      <div ref={hitRef} className="it-hit" data-inline-type="Heading" onClick={() => startInlineEdit(id)}>
         {base(props)}
       </div>
     );
@@ -227,10 +251,11 @@ function InlineTextBlock({ base, props }: { base: Render; props: Record<string, 
   const getPuck = useGetPuck();
   const current = useEditingId();
   const id = props.id as string;
+  const hitRef = useClickToType(id);
   if (!props.puck?.isEditing) return <>{base(props)}</>;
   if (current !== id) {
     return (
-      <div className="it-hit" data-inline-type="Text" onClick={() => startInlineEdit(id)}>
+      <div ref={hitRef} className="it-hit" data-inline-type="Text" onClick={() => startInlineEdit(id)}>
         {base(props)}
       </div>
     );

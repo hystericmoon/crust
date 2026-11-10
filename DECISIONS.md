@@ -3692,6 +3692,9 @@ a lawyer reads it (BLOCKED.md).
   block render walks its props and a React element in `text` loops.
 - Not done: the a11y check scans the main document, not the canvas frame, so the typing state itself is
   covered by unit tests and the Heading screen only.
+- **Fix (found in F093):** a real click never opened typing, in any browser, only Enter did: Puck sets `pointer-events: none`
+  on everything inside a block, so the click lands on the block's wrapper, not on the `.it-hit` React onClick. Now a
+  capture-phase click listener on the canvas document (`useClickToType`) starts typing; `check:builder` uses the real click. That exposed Done hidden under Puck's action bar for Text, so Done now sits below the text.
 
 ## 2026-11-10 — F091 Pages panel (Claude, reversible)
 

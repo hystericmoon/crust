@@ -171,8 +171,7 @@ try {
       // F090/F093: a Heading opens for typing with its bar; scan that state, bar showing.
       if (select.includes("Heading")) {
         const bar = page.frameLocator("#preview-frame").locator(".it-bar").first();
-        // A click opens it for typing; if the pointer only selected the block, Enter (the keyboard way in) does.
-        if (!(await bar.waitFor({ state: "attached", timeout: 2000 }).then(() => true, () => false))) await page.keyboard.press("Enter");
+        // The click above is a real one: it opens the heading for typing (no Enter fallback, so a dead click fails here).
         await bar.waitFor({ state: "attached", timeout: 10_000 });
       }
       await page.waitForTimeout(500);

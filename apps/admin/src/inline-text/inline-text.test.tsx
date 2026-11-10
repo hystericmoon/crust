@@ -65,6 +65,19 @@ describe("inline text (F090): heading", () => {
     expect(editingId()).toBe("h");
   });
 
+  it("a real click lands on Puck's block wrapper (it switches off pointer events inside), and still types", async () => {
+    const wrapper = document.createElement("div");
+    wrapper.setAttribute("data-puck-component", "h");
+    document.body.appendChild(wrapper);
+    const Render = inline.components.Heading!.render as (p: Record<string, unknown>) => React.ReactElement;
+    render(<Render {...data.content[0]!.props} puck={{ isEditing: true }} />, { container: wrapper });
+    expect(editingId()).toBeNull();
+    fireEvent.click(wrapper); // the wrapper itself, as in the browser
+    await new Promise((r) => setTimeout(r, 5));
+    expect(editingId()).toBe("h");
+    wrapper.remove();
+  });
+
   it("shows nothing extra on the published page or in preview", () => {
     const { container } = draw(data.content[0]!, false);
     expect(container.querySelector(".it-hit")).toBeNull();
