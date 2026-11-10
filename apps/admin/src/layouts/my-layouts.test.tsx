@@ -148,7 +148,7 @@ describe("my-layouts: saving to GitHub", () => {
   it("loads from GitHub and says so when it can't", async () => {
     api.listLayouts.mockResolvedValueOnce({ ok: false, error: "GitHub is down." });
     await openMine(true);
-    expect(await screen.findByText("Couldn't load your layouts from GitHub: GitHub is down.")).toBeTruthy();
+    expect(await screen.findByText("Couldn't load your layouts from your site: GitHub is down.")).toBeTruthy();
     api.listLayouts.mockResolvedValueOnce({ ok: true, layouts: [savedLayout()] });
     fireEvent.click(screen.getByRole("button", { name: "Try again" }));
     expect(await screen.findByRole("button", { name: /^Kept section/ })).toBeTruthy();

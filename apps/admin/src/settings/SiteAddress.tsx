@@ -1,6 +1,7 @@
 /** Site settings → Site address (F044): the site's own domain. */
 import { normalizeSiteAddress, siteHost } from "@crust/blocks";
 import { useEffect, useState } from "react";
+import { H } from "./heading";
 
 export const CUSTOM_DOMAIN_GUIDE = "https://github.com/hystericmoon/crust/blob/main/docs/setup-custom-domain.md";
 
@@ -84,7 +85,7 @@ export function SiteAddressGroup({
       </div>
 
       <div className="sa-steps">
-        <h3>Before you set it</h3>
+        <H level={3}>Before you set it</H>
         <ol>
           <li>Buy the domain (any registrar works; Cloudflare's own sells at cost).</li>
           <li>Connect it to your site in Cloudflare. The guide walks you through it in about 15 minutes.</li>
@@ -100,7 +101,7 @@ export function SiteAddressGroup({
       </div>
 
       <div className="sa-uses">
-        <h3>Where it's used</h3>
+        <H level={3}>Where it's used</H>
         <ul>
           <li>Links in Google and other search results</li>
           <li>The sitemap and robots.txt search engines read</li>

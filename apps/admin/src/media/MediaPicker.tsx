@@ -292,7 +292,7 @@ export function MediaPicker() {
               {media.status === "loading" || media.status === "idle" ? (
                 <p className="mp-note">Loading your photos…</p>
               ) : media.status === "off" ? (
-                <p className="mp-note">The photo library needs saving to GitHub, which works on crust-admin.pages.dev. Here you can still type a web address in the image field.</p>
+                <p className="mp-note">The photo library needs saving to be switched on, which works on crust-admin.pages.dev. Here you can still type a web address in the image field.</p>
               ) : media.status === "error" ? (
                 <p className="mp-note">
                   {media.error}{" "}
@@ -388,7 +388,7 @@ export function MediaPicker() {
                       <p className="mp-hint">To delete this photo, choose another one on {usedOn.length === 1 ? "that page" : "those pages"} first.</p>
                     ) : confirmDelete ? (
                       <div className="mp-confirm" role="group" aria-label="Delete this photo?">
-                        <p>Delete {item.file} from the library? Its history stays on GitHub.</p>
+                        <p>Delete {item.file} from the library? Its history is kept.</p>
                         <button type="button" id={`${id}-delete`} className="mp-button mp-danger" disabled={!!busy} onClick={() => void remove()}>
                           Delete photo
                         </button>

@@ -17,6 +17,7 @@ import { loadPost, loadPostRows } from "../posts/store";
 import { SaveStatus, useSaveStatus } from "../save-status";
 import { DesignKindContext } from "./context";
 import { forgetDesign, loadDesigns, storeDesign, useDesigns } from "./store";
+import { ThemeToggle } from "../app-theme/ThemeToggle";
 
 export { DesignKindContext };
 
@@ -198,6 +199,7 @@ export function DesignEditor({ kind, githubOn, config, overrides, language }: Pr
                       </button>
                     )
                   ) : null}
+                  <ThemeToggle />
                   <SaveButton onSave={(d) => void save(d)} />
                 </>
               ),

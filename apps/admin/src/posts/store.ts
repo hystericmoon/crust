@@ -1,7 +1,7 @@
 /**
  * Where posts come from in the admin (F035), like pages (F007): GitHub once
  * saving is switched on, otherwise the posts bundled into the app, plus
- * drafts kept in this browser, which win until they're saved to GitHub.
+ * drafts kept in this browser, which win until they're saved.
  */
 import { checkPost, defaultBlog, migrateRichTextBlocks, sortPosts, type BlogSettings, type Post } from "@crust/blocks";
 import type { Data } from "@puckeditor/core";
@@ -93,7 +93,7 @@ export async function loadPostRows(githubOn: boolean): Promise<{ rows: PostRow[]
   if (!githubOn) return { rows: mergePostRows(fromBundle, localPosts()), blog: templateBase()?.blog ?? defaultBlog };
   const res = await listPosts();
   if (res.ok) return { rows: mergePostRows(res.posts, localPosts()), blog: res.blog };
-  return { rows: mergePostRows(fromBundle, localPosts()), blog: defaultBlog, error: `Couldn't load your posts from GitHub: ${res.error}` };
+  return { rows: mergePostRows(fromBundle, localPosts()), blog: defaultBlog, error: `Couldn't load your posts from your site: ${res.error}` };
 }
 
 /** A browser draft that isn't on GitHub wins; then GitHub; then the bundled copy. */

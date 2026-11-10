@@ -48,6 +48,7 @@ import { migrateChrome, validateChrome, type SiteChrome } from "@crust/blocks";
 import { SiteAddressGroup } from "./SiteAddress";
 import { TemplateGroup } from "./TemplateGroup";
 import { bundledLoader, type TemplateLoader } from "../templates/collect";
+import { AppTopBar } from "../app-frame/AppTopBar";
 
 export interface SiteSettingsProps {
   site: Site;
@@ -227,22 +228,24 @@ export function SiteSettings({
 
   return (
     <div className="st">
-      <header className="st-header">
-        <a className="st-back" href="#/">
-          <Icon name="back" /> Builder
-        </a>
-        <h1 className="st-title">Site settings</h1>
-        <span className="st-dirty">{dirty ? "Unsaved changes" : "All changes saved"}</span>
-        <div className="st-actions">
-          {headerLink}
-          <button type="button" className="st-button" onClick={discard} disabled={!dirty}>
-            Discard
-          </button>
-          <button type="button" className="st-button st-button-primary" onClick={save} aria-disabled={saving || undefined}>
-            {saving ? "Saving…" : "Save"}
-          </button>
-        </div>
-      </header>
+      {/* F086: the app frame's top bar. One primary button at a time: Save while
+          something is unsaved (Discard undoes every group at once, so these stay
+          until F092 regroups this screen), Publish once it's all saved. */}
+      <AppTopBar
+        where={<h1 className="af-title">Site settings</h1>}
+        tools={
+          <>
+            <span className="st-dirty">{dirty ? "Unsaved changes" : "All changes saved"}</span>
+            <button type="button" className="st-button" onClick={discard} disabled={!dirty}>
+              Discard
+            </button>
+            <button type="button" className={dirty || saving ? "af-publish" : "st-button"} onClick={save} aria-disabled={saving || undefined}>
+              {saving ? "Saving…" : "Save"}
+            </button>
+          </>
+        }
+        publish={!dirty && !saving}
+      />
       <p className="st-status" role="status" aria-live="polite">
         {status}
       </p>
@@ -534,7 +537,7 @@ function jumpTo(e: MouseEvent, id: string) {
   heading?.focus({ preventScroll: true });
 }
 
-function ColorRow({
+export function ColorRow({
   role,
   value,
   failing,
@@ -613,7 +616,7 @@ function ColorRow({
   );
 }
 
-function ContrastPanel({
+export function ContrastPanel({
   results,
   colors,
   onApply,
@@ -668,7 +671,7 @@ function ContrastPanel({
 }
 
 /** F072: the Style library: a card per look (set in its own fonts and colours) and its three colourways. */
-function StyleLibrary({ tokens, onPick }: { tokens: SiteTokens; onPick: (look: StyleLook, variation: LookVariation) => void }) {
+export function StyleLibrary({ tokens, onPick }: { tokens: SiteTokens; onPick: (look: StyleLook, variation: LookVariation) => void }) {
   useFontPreviews();
   const current = matchingLook(tokens);
   const track = { tightest: "-0.05em", tighter: "-0.04em", tight: "-0.03em", snug: "-0.02em", normal: "0", wide: "0.02em" } as const;
@@ -764,7 +767,7 @@ const PAIR_HEADING = "Calm rooms";
 const PAIR_BODY = "Houses and studios, designed to last.";
 
 /** F070: tested heading and body pairs as cards, each set in its own fonts. */
-function FontPairs({ fonts, onPick }: { fonts: SiteTokens["fonts"]; onPick: (fonts: SiteTokens["fonts"]) => void }) {
+export function FontPairs({ fonts, onPick }: { fonts: SiteTokens["fonts"]; onPick: (fonts: SiteTokens["fonts"]) => void }) {
   useFontPreviews();
   const current = findFontPair(fonts);
   const onSystem = !bundledFontIn(fonts.heading) && !bundledFontIn(fonts.body);
@@ -805,7 +808,7 @@ function FontPairs({ fonts, onPick }: { fonts: SiteTokens["fonts"]; onPick: (fon
 
 const categories: FontCategory[] = ["serif", "sans", "mono"];
 
-function FontField({
+export function FontField({
   label,
   value,
   sample,
@@ -876,7 +879,7 @@ function FontField({
   );
 }
 
-function NumberField({
+export function NumberField({
   id,
   label,
   unit,

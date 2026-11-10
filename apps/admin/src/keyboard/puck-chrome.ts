@@ -20,6 +20,17 @@ export const CANVAS_TITLE = "Page preview";
 export const ZOOM_LABEL = "Zoom";
 export const LOADING_LABEL = "Loading the preview";
 
+/**
+ * F093: landmarks for the builder (Puck has no `main` and its side panels are
+ * bare divs). Each entry: where Puck puts it, the role we add, and its name.
+ */
+export const LANDMARKS: { selector: string; role: "main" | "region"; label: string }[] = [
+  { selector: "[class*='_PuckCanvas_']", role: "main", label: "Page" },
+  { selector: "[class*='_Sidebar--left_']", role: "region", label: "Tool panel" },
+  { selector: "[class*='_Sidebar--right_']", role: "region", label: "Settings panel" },
+];
+const NAV_LABEL = "Builder tools";
+
 const setIfMissing = (el: Element, name: string, value: string) => {
   if (!el.getAttribute(name)?.trim()) el.setAttribute(name, value);
 };
@@ -35,6 +46,15 @@ export function fixPuckChrome(root: ParentNode): void {
     loader.setAttribute("role", "progressbar");
     loader.setAttribute("aria-label", LOADING_LABEL);
   }
+  for (const { selector, role, label } of LANDMARKS) {
+    for (const el of root.querySelectorAll(selector)) {
+      if (el.getAttribute("role") !== role) el.setAttribute("role", role);
+      setIfMissing(el, "aria-label", label);
+    }
+  }
+  for (const nav of root.querySelectorAll("nav[class*='_Nav_']")) setIfMissing(nav, "aria-label", NAV_LABEL);
+  // aria-grabbed is retired in ARIA 1.2 and screen readers ignore it; drag status is spoken instead (drag-status.ts).
+  for (const el of root.querySelectorAll("[aria-grabbed]")) el.removeAttribute("aria-grabbed");
   for (const link of root.querySelectorAll<HTMLElement>(NAV_LINK)) {
     if (link.getAttribute("role") !== "button") link.setAttribute("role", "button");
     if (link.getAttribute("tabindex") !== "0") link.setAttribute("tabindex", "0");
@@ -73,7 +93,7 @@ export function installPuckChromeFixes(doc: Document): () => void {
     });
   });
   // Class changes too: the active rail item is only marked by its class.
-  observer.observe(doc.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+  observer.observe(doc.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "aria-grabbed"] });
   return () => {
     observer.disconnect();
     doc.removeEventListener("keydown", pressNavItem);

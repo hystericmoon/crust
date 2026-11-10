@@ -1,0 +1,69 @@
+<title>Section toolbar options</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{--bg:#fbfafc;--panel:#fff;--ink:#27272a;--mute:#5f5a68;--line:#d9d6df;--acc:#6d28d9;--accsoft:#f0e9fd;--ok:#146c43;--oksoft:#e3f4ea;--warn:#8a4b00;--warnsoft:#fdf0dc;--bar:#27272a;--barfg:#fff;--barbtn:rgba(255,255,255,.14);
+--s-bg:#fff;--s-surface:#f1eef7;--s-primary:#4f46e5;--s-dark:#18181b;--font:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121014;--panel:#1b1820;--ink:#ececf1;--mute:#a9a3b4;--line:#3a3544;--acc:#b794f6;--accsoft:#2a2140;--ok:#6fd6a0;--oksoft:#16301f;--warn:#f2b866;--warnsoft:#35260f;--bar:#f4f2f8;--barfg:#18181b;--barbtn:rgba(0,0,0,.1);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121014;--panel:#1b1820;--ink:#ececf1;--mute:#a9a3b4;--line:#3a3544;--acc:#b794f6;--accsoft:#2a2140;--ok:#6fd6a0;--oksoft:#16301f;--warn:#f2b866;--warnsoft:#35260f;--bar:#f4f2f8;--barfg:#18181b;--barbtn:rgba(0,0,0,.1);color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--font);padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1{font-size:1.6rem;margin:0;text-wrap:balance}h2{font-size:1.15rem;margin:0}p{margin:0}.mute{color:var(--mute)}
+.opt{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.opt.rec{border:2px solid var(--acc)}
+.tag{display:inline-block;font-size:.75rem;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--accsoft);color:var(--acc);margin-left:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.stage{border:1px dashed var(--line);border-radius:10px;padding:14px;min-width:0;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.cap{font-size:.78rem;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.sec{border:2px solid var(--acc);border-radius:8px;padding:14px;background:var(--s-surface);position:relative;min-height:70px}
+.sec b{display:block}.sec span{color:var(--mute);font-size:.85rem}
+.bar{display:flex;flex-wrap:wrap;gap:4px;align-items:center;background:var(--bar);color:var(--barfg);border-radius:10px;padding:4px;width:max-content;max-width:100%}
+.bar>*{min-height:36px;padding:0 10px;border-radius:7px;background:var(--barbtn);font-size:.8rem;font-weight:500;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.bar .on{background:var(--acc);color:#fff}
+.bar .ic{width:36px;padding:0;justify-content:center}
+.sw{display:flex;gap:10px;flex-wrap:wrap}
+.sw span{display:flex;align-items:center;gap:6px;font-size:.8rem;border:1.5px solid var(--line);border-radius:8px;padding:4px 8px 4px 4px;min-height:32px}
+.sw i{width:24px;height:24px;border-radius:50%;border:1px solid var(--line);display:block}
+.pop{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--panel);display:flex;flex-direction:column;gap:10px}
+.step{border:2px solid var(--warn);background:var(--warnsoft);color:var(--ink);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.btns{display:flex;gap:8px;flex-wrap:wrap}.btn{min-height:36px;padding:0 12px;border-radius:8px;border:1.5px solid var(--line);display:inline-flex;align-items:center;font-size:.85rem}
+.btn.p{background:var(--ink);color:var(--bg);border-color:var(--ink)}.btn.w{background:var(--warn);color:var(--panel);border-color:var(--warn)}
+ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.pros{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;font-size:.88rem}
+.pros b.g{color:var(--ok)}.pros b.r{color:var(--warn)}
+.vert{position:absolute;left:-56px;top:0;display:flex;flex-direction:column;gap:4px;background:var(--bar);border-radius:10px;padding:4px}
+.vert span{width:36px;height:36px;border-radius:7px;background:var(--barbtn);display:grid;place-items:center;color:var(--barfg);font-size:.8rem}
+.sum{border-left:4px solid var(--acc);padding-left:12px}
+</style>
+<div class="wrap">
+<div><h1>One-row section toolbar</h1>
+<p class="mute">F089. Today a selected section shows up to nine controls in a wrapping bar. Three ways to make it one calm row: Section, Style, Layout, Move, More.</p></div>
+
+<section class="opt rec" aria-labelledby="a"><h2 id="a">A · Labelled row with menus<span class="tag">Recommended</span></h2>
+<div class="grid">
+<div class="stage"><span class="cap">Selected section</span>
+<div class="sec"><b>Plans that grow with you</b><span>Pricing · Surface style</span></div>
+<div class="bar" role="toolbar" aria-label="Section"><span>Section ▾</span><span class="on">Style ▾</span><span>Layout ▾</span><span class="ic" aria-label="Move up">↑</span><span class="ic" aria-label="Move down">↓</span><span>More ⋯</span></div></div>
+<div class="stage"><span class="cap">Style opened: named colours, 32px targets, 24px swatches</span>
+<div class="pop"><div class="sw"><span><i style="background:var(--s-bg)"></i>Background</span><span style="border-color:var(--acc)"><i style="background:var(--s-surface)"></i>Surface ✓</span><span><i style="background:var(--s-primary)"></i>Primary</span><span><i style="background:var(--s-dark)"></i>Dark</span></div>
+<p class="mute" style="font-size:.82rem">Changes this section only.</p></div></div>
+<div class="stage"><span class="cap">More opened</span>
+<div class="pop"><ul><li>Change this style everywhere…</li><li>Make linked (use on many pages)…</li><li>Save as layout…</li><li>Delete section</li></ul></div></div>
+<div class="stage"><span class="cap">“Change everywhere” asks first</span>
+<div class="step"><b>Change “Surface” everywhere?</b><p style="font-size:.88rem">This changes <b>4 sections on 2 pages</b>, and any page you add later.</p><div class="btns"><span class="btn w">Change everywhere</span><span class="btn">Cancel</span></div></div></div>
+</div>
+<div class="pros"><div><b class="g">Works</b><ul><li>Words, not icons: the owner is not a developer, labels are recognition over recall.</li><li>Five items fits in one row at 900px and wraps nicely on narrow canvases.</li><li>Site-wide actions are out of the way and always confirmed with a count.</li></ul></div>
+<div><b class="r">Costs</b><ul><li>One extra click to reach Height, Image or colour.</li><li>Row is about 440px wide, so on a phone canvas it sits above the section, not on it.</li></ul></div></div></section>
+
+<section class="opt" aria-labelledby="b"><h2 id="b">B · Icons only, with names on hover</h2>
+<div class="grid"><div class="stage"><span class="cap">Selected section</span>
+<div class="sec"><b>Plans that grow with you</b><span>Pricing · Surface style</span></div>
+<div class="bar"><span class="ic">▤</span><span class="ic">◐</span><span class="ic">▦</span><span class="ic">↑</span><span class="ic">↓</span><span class="ic">⋯</span></div></div>
+<div class="pros" style="grid-column:span 1"><div><b class="g">Works</b><ul><li>Smallest bar, about 230px.</li></ul></div><div><b class="r">Costs</b><ul><li>Hover names don't exist on a phone or iPad.</li><li>Icons for “Layout” and “Section” are ambiguous (recognition problem, Nielsen heuristic 6).</li><li>Fails the owner's “plain words” rule.</li></ul></div></div></div></section>
+
+<section class="opt" aria-labelledby="c"><h2 id="c">C · Vertical rail beside the section</h2>
+<div class="grid"><div class="stage" style="padding-left:70px"><span class="cap">Selected section</span>
+<div class="sec"><div class="vert"><span>Sec</span><span>◐</span><span>▦</span><span>↕</span><span>⋯</span></div><b>Plans that grow with you</b><span>Pricing · Surface style</span></div></div>
+<div class="pros"><div><b class="g">Works</b><ul><li>Never covers the section's own text.</li></ul></div><div><b class="r">Costs</b><ul><li>Needs 56px of left margin that narrow and full-width sections don't have.</li><li>Clips at the canvas edge at phone width.</li><li>Still icon-led.</li></ul></div></div></div></section>
+
+<div class="sum"><b>Recommendation: A.</b> Same one row at every width, labelled, keyboard order Section → Style → Layout → Move → More (arrow keys inside the toolbar, Escape closes a menu). Colours show their names, swatches 24px inside 32px targets. Site-wide actions live under More and always show how many sections and pages they touch before anything changes.</div>
+</div>

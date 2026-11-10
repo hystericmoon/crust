@@ -104,9 +104,12 @@ export interface SitesApi {
   open(id: string): Promise<void>;
 }
 
-/** Starts the builder again from the Pages screen, with whichever site is open. */
+/** F087: opening a site lands on its Home page in the editor. */
+export const HOME_HREF = "#/edit?path=%2F";
+
+/** Starts the builder again on the open site's Home page (F087: page first). */
 export function reloadBuilder() {
-  window.location.hash = "#/";
+  window.location.hash = HOME_HREF;
   window.location.reload();
 }
 

@@ -27,7 +27,7 @@ afterEach(() => {
 
 let address = "";
 function setup(saved = site.baseUrl) {
-  const onSave = vi.fn(async (_t: SiteTokens) => "Saved to GitHub.");
+  const onSave = vi.fn(async (_t: SiteTokens) => "Saved.");
   function Harness() {
     const [draft, setDraft] = useState(saved);
     address = draft;

@@ -1,18 +1,18 @@
 /* Search and sharing settings (F036), in the page settings panel. */
 .so-field { display: flex; flex-direction: column; gap: 6px; }
-.so-hint { margin: 0; font-size: 0.8125rem; color: #52525b; }
-.so-hint.is-long { color: #92400e; }
-.so-check { display: flex; align-items: center; gap: 8px; min-height: 32px; font-size: 0.875rem; font-weight: 600; color: #18181b; }
-.so-check input { width: 18px; height: 18px; margin: 0; accent-color: #4338ca; }
-.so-check input:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
+.so-hint { margin: 0; font-size: 0.8125rem; color: var(--app-mute); }
+.so-hint.is-long { color: var(--app-warn); }
+.so-check { display: flex; align-items: center; gap: 8px; min-height: 32px; font-size: 0.875rem; font-weight: 600; color: var(--app-ink); }
+.so-check input { width: 18px; height: 18px; margin: 0; accent-color: var(--app-acc); }
+.so-check input:focus-visible { outline: 2px solid var(--app-acc); outline-offset: 2px; }
 .so-previews { display: flex; flex-direction: column; gap: 8px; }
-.so-search { display: flex; flex-direction: column; gap: 2px; padding: 12px; border: 1px solid #e4e4e7; border-radius: 8px; background: #fff; font-family: Arial, system-ui, sans-serif; }
+.so-search { display: flex; flex-direction: column; gap: 2px; padding: 12px; border: 1px solid #e4e4e7; border-radius: 8px; background: #fff; font-family: Arial, var(--app-font); }
 .so-search-url { font-size: 0.75rem; color: #3f3f46; overflow-wrap: anywhere; }
 .so-search-title { font-size: 1.0625rem; line-height: 1.3; color: #1a0dab; }
 .so-search-text { font-size: 0.8125rem; line-height: 1.45; color: #474747; }
-.so-card { border: 1px solid #d4d4d8; border-radius: 10px; overflow: hidden; background: #f4f4f5; }
-.so-card-image { display: block; width: 100%; aspect-ratio: 1.91 / 1; object-fit: cover; background: #e4e4e7; }
+.so-card { border: 1px solid var(--app-line); border-radius: 10px; overflow: hidden; background: var(--app-raised); }
+.so-card-image { display: block; width: 100%; aspect-ratio: 1.91 / 1; object-fit: cover; background: var(--app-canvas); }
 .so-card-body { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; }
-.so-card-host { font-size: 0.75rem; color: #52525b; text-transform: lowercase; }
-.so-card-title { font-size: 0.9375rem; font-weight: 600; color: #18181b; }
-.so-card-text { font-size: 0.8125rem; color: #3f3f46; }
+.so-card-host { font-size: 0.75rem; color: var(--app-mute); text-transform: lowercase; }
+.so-card-title { font-size: 0.9375rem; font-weight: 600; color: var(--app-ink); }
+.so-card-text { font-size: 0.8125rem; color: var(--app-mute); }

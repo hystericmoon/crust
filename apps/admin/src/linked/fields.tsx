@@ -105,10 +105,38 @@ export function withLinkedSectionFields(config: Config<Components>): Config<Comp
   };
 }
 
-/** "Make linked" on a selected Section's toolbar. */
-export function MakeLinkedAction() {
+/** The naming form for making the selected section linked (F089: also shown from the toolbar's More menu). */
+export function MakeLinkedForm({ item, onDone }: { item: ComponentData; onDone: () => void }) {
   const getPuck = useGetPuck();
   const linked = useLinkedSections();
+  const id = item.props.id as string;
+  return (
+    <>
+      <p className="ls-pop-note">Use it on many pages and edit it in one place.</p>
+      <NameForm
+        idPrefix={`ls-make-${id}`}
+        label="Linked section name"
+        initial={firstHeading([item]) || "My section"}
+        submitLabel="Make linked"
+        onSubmit={async (name) => {
+          const puck = getPuck();
+          const current = puck.getItemById(id) ?? item;
+          const made = await linked.create(name, [current]);
+          if (typeof made === "string") return made;
+          const block = linkedBlock(made.id);
+          puck.dispatch({ type: "setData", data: replaceBlock(puck.appState.data as Data, id, [block]), recordHistory: true });
+          onDone();
+          announce(`“${made.name}” is a linked section now. Add it to other pages from Layouts → Linked. Save this page to keep the link.`);
+          return null;
+        }}
+        onCancel={onDone}
+      />
+    </>
+  );
+}
+
+/** "Make linked" on a selected Section's toolbar. */
+export function MakeLinkedAction() {
   const inEditor = useInSectionEditor();
   const item = usePuckSelector((s) => s.selectedItem) as ComponentData | null;
   const [open, setOpen] = useState(false);
@@ -122,25 +150,7 @@ export function MakeLinkedAction() {
       </button>
       {open ? (
         <div className="sx-pop ls-make-pop" role="group" aria-label="Make this section a linked section">
-          <p className="ls-pop-note">Use it on many pages and edit it in one place.</p>
-          <NameForm
-            idPrefix={`ls-make-${id}`}
-            label="Linked section name"
-            initial={firstHeading([item]) || "My section"}
-            submitLabel="Make linked"
-            onSubmit={async (name) => {
-              const puck = getPuck();
-              const current = puck.getItemById(id!) ?? item;
-              const made = await linked.create(name, [current]);
-              if (typeof made === "string") return made;
-              const block = linkedBlock(made.id);
-              puck.dispatch({ type: "setData", data: replaceBlock(puck.appState.data as Data, id!, [block]), recordHistory: true });
-              setOpen(false);
-              announce(`“${made.name}” is a linked section now. Add it to other pages from Layouts → Linked. Save this page to keep the link.`);
-              return null;
-            }}
-            onCancel={() => setOpen(false)}
-          />
+          <MakeLinkedForm item={item} onDone={() => setOpen(false)} />
         </div>
       ) : null}
     </ActionBar.Group>

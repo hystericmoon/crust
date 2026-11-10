@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "@puckeditor/core/puck.css";
+// F085: without Puck's Inter download (the app uses the bundled Geist; the desktop app works offline).
+import "@puckeditor/core/no-external.css";
 import "@crust/blocks/styles.css";
 import "./settings/settings.css";
 import "./settings/chrome-groups.css";
@@ -20,9 +21,19 @@ import "./seo/seo.css";
 import "./quick/quick.css";
 import "./chrome-canvas.css";
 import "./pages/pages.css";
+import "./pages-panel/pages-panel.css";
 import "./updates/updates.css";
+// F085: the app's colour and font tokens, last so they win over Puck's.
+import "./app-theme/app-theme.css";
+import { applyTheme, followSystemTheme, resolveTheme, storedTheme, systemTheme } from "./app-theme/theme";
+import { installAppFonts } from "./app-theme/fonts";
 import { isDesktop, launchDesktop } from "./desktop/desktop";
 import type { FirstRunContext } from "./first-run/first-run";
+
+// F085: index.html has already set the look; this keeps it right if that script didn't run, and follows the computer.
+applyTheme(resolveTheme(storedTheme(), systemTheme()));
+followSystemTheme();
+installAppFonts();
 
 const root = document.getElementById("root");
 if (!root) throw new Error("Missing #root element");

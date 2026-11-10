@@ -81,14 +81,15 @@ describe("review fixes: page list", () => {
 
   it("offers Try again when the list couldn't load", () => {
     const onRetry = vi.fn();
-    render(<PageList siteName="Demo" rows={rows} sourceNote="" loadError="Couldn't load your pages from GitHub." onRetry={onRetry} onCreate={() => {}} />);
+    render(<PageList siteName="Demo" rows={rows} sourceNote="" loadError="Couldn't load your pages from your site." onRetry={onRetry} onCreate={() => {}} />);
     act(() => screen.getByRole("button", { name: "Try again" }).click());
     expect(onRetry).toHaveBeenCalled();
   });
 
-  it("explains why Home has no Rename or Delete", () => {
+  it("explains why Home has no Change address or Delete", () => {
     render(<PageList siteName="Demo" rows={rows} sourceNote="" githubOn onCreate={() => {}} onRename={vi.fn()} onDelete={vi.fn()} />);
-    expect(screen.getByText("Always at /")).toBeTruthy();
+    act(() => screen.getByRole("button", { name: "More for Home" }).click());
+    expect(screen.getByText("Home always lives at /")).toBeTruthy();
   });
 
   it("puts the Publish panel before the page list", () => {

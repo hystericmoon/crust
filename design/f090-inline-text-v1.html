@@ -1,0 +1,67 @@
+<title>Type on the page</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: three directions side by side, each a small canvas mockup; recommendation outlined. */
+:root{--bg:#ffffff;--panel:#fbfafc;--ink:#27272a;--mute:#5f5a68;--line:#d6d3dc;--line-strong:#857f8f;--acc:#7c3aed;--acc-soft:#f1eafd;--pri:#18151d;--pri-fg:#ffffff;--ok:#146c43;--warn:#8a4b00;--shadow:rgba(24,20,30,.14);--site-ink:#1c1b22;--site-mute:#5b5864;--font:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#120f17;--panel:#16121c;--ink:#f6f4f9;--mute:#a49fae;--line:#2c2733;--line-strong:#6f6879;--acc:#a78bfa;--acc-soft:#251d3a;--pri:#f4f2f7;--pri-fg:#141118;--ok:#6fd6a0;--warn:#f2b866;--shadow:rgba(0,0,0,.5);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#120f17;--panel:#16121c;--ink:#f6f4f9;--mute:#a49fae;--line:#2c2733;--line-strong:#6f6879;--acc:#a78bfa;--acc-soft:#251d3a;--pri:#f4f2f7;--pri-fg:#141118;--ok:#6fd6a0;--warn:#f2b866;--shadow:rgba(0,0,0,.5);color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--font);padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1{font-size:1.6rem;margin:0;text-wrap:balance}h2{font-size:1.15rem;margin:0;text-wrap:balance}p{margin:0}.mute{color:var(--mute)}
+.opt{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.opt.rec{border:2px solid var(--acc)}
+.tag{display:inline-block;font-size:.75rem;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--acc-soft);color:var(--acc);margin-left:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.stage{border:1px dashed var(--line-strong);border-radius:10px;padding:14px;min-width:0;display:flex;flex-direction:column;gap:12px;background:var(--bg)}
+.cap{font-size:.75rem;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.page{border:1px solid var(--line);border-radius:8px;padding:34px 16px 16px;position:relative;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.site-h{font-size:1.5rem;font-weight:700;color:var(--site-ink);margin:0}
+.site-p{color:var(--site-mute);margin:0}
+.live{outline:3px solid var(--acc);outline-offset:4px;border-radius:2px;position:relative}
+.dash{outline:2px dashed var(--acc);outline-offset:4px;border-radius:2px}
+.bar{position:absolute;bottom:calc(100% + 10px);left:0;display:flex;gap:2px;align-items:center;padding:4px;background:var(--panel);border:1px solid var(--line-strong);border-radius:8px;box-shadow:0 4px 14px var(--shadow);width:max-content;max-width:100%;font-size:.85rem;font-weight:600}
+.bar span{min-width:36px;min-height:36px;display:inline-grid;place-items:center;padding:0 8px;border-radius:6px}
+.bar .on{background:var(--pri);color:var(--pri-fg)}
+.bar .done{border:1px solid var(--line-strong)}
+.side{border:1px solid var(--line);border-radius:8px;padding:12px;background:var(--panel);display:flex;flex-direction:column;gap:8px;font-size:.85rem}
+.side .field{border:1px solid var(--line-strong);border-radius:6px;padding:6px 8px;min-height:34px}
+.pop{position:absolute;top:calc(100% + 8px);left:0;background:var(--panel);border:1px solid var(--line-strong);border-radius:8px;padding:8px 10px;font-size:.8rem;box-shadow:0 4px 14px var(--shadow);width:max-content;max-width:100%}
+.kbd{display:inline-block;border:1px solid var(--line-strong);border-radius:4px;padding:0 6px;font-size:.78rem;background:var(--bg)}
+.pros{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px;font-size:.88rem}
+.pros b.g{color:var(--ok)}.pros b.r{color:var(--warn)}
+ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.sum{border-left:4px solid var(--acc);padding-left:12px}
+</style>
+<div class="wrap">
+<div><h1>Type on the page</h1>
+<p class="mute">F090. Today a heading or text block is edited in the panel on the right. Three ways to type on the page itself. Mockups use the app's own colours, light and dark follow your setting.</p></div>
+
+<section class="opt rec" aria-labelledby="a"><h2 id="a">A · Click, type in place, bar floats above<span class="tag">Recommended</span></h2>
+<div class="grid">
+<div class="stage"><span class="cap">Hover: a dashed edge says "you can type here"</span>
+<div class="page"><h3 class="site-h dash">Fresh bread, every morning</h3><p class="site-p">Baked from 5 a.m. on Harbour street.</p></div></div>
+<div class="stage"><span class="cap">Heading, after one click</span>
+<div class="page"><div class="live"><div class="bar" role="toolbar" aria-label="Heading options"><span>Level</span><span>H1</span><span class="on">H2</span><span>H3</span><span>H4</span><span class="done">Done</span></div><h3 class="site-h" style="margin:0">Fresh bread, every morning|</h3></div><p class="site-p">Baked from 5 a.m. on Harbour street.</p></div></div>
+<div class="stage"><span class="cap">Text: the rich-text bar floats, same buttons as the panel</span>
+<div class="page"><h3 class="site-h">Fresh bread, every morning</h3><div class="live"><div class="bar" role="toolbar" aria-label="Format text"><span><b>B</b></span><span><i>I</i></span><span>Link</span><span>• List</span><span>1. List</span></div><p class="site-p" style="margin:0">Baked from 5 a.m. on Harbour street, with <b>sourdough</b> on Saturdays.|</p></div></div></div>
+<div class="stage"><span class="cap">Leaving and the keyboard</span>
+<ul><li><span class="kbd">Escape</span> or <b>Done</b> or a click elsewhere leaves.</li><li>Keyboard: select the block, <span class="kbd">Enter</span> to type, <span class="kbd">Escape</span> to return to the block.</li><li>A "Type on the page" button sits in the block's bar for screen readers and touch.</li><li>Undo steps are shared with the side panel.</li></ul></div>
+</div>
+<div class="pros"><div><b class="g">Works</b><ul><li>What you type is what the page shows: same font, size, colour.</li><li>The bar is small and only for that block, no panel to look away to.</li><li>The side panel and Quick edit stay for everything else.</li></ul></div>
+<div><b class="r">Costs</b><ul><li>A bar above text near the top of the page flips below it.</li><li>Clicking text now opens typing. Moving a block is still by its handle or Alt and arrows.</li></ul></div></div></section>
+
+<section class="opt" aria-labelledby="b"><h2 id="b">B · Double-click to type, the bar sits in the block's bar</h2>
+<div class="grid"><div class="stage"><span class="cap">Block selected, one more step to type</span>
+<div class="page"><div class="live"><div class="bar"><span>↑</span><span>↓</span><span>Type</span><span>⧉</span><span>🗑</span></div><h3 class="site-h" style="margin:0">Fresh bread, every morning</h3></div></div></div>
+<div class="stage"><span class="cap">Typing: format buttons in the same bar</span><div class="page"><div class="live"><div class="bar"><span><b>B</b></span><span><i>I</i></span><span>Link</span><span class="done">Done</span></div><h3 class="site-h" style="margin:0">Fresh bread, every morning|</h3></div></div></div></div>
+<div class="pros"><div><b class="g">Works</b><ul><li>One toolbar per block, nothing new to learn.</li><li>No accidental typing when you only meant to select.</li></ul></div>
+<div><b class="r">Costs</b><ul><li>Two steps to start, and a double-click is hard on phones.</li><li>The bar sits far from the cursor on tall blocks.</li></ul></div></div></section>
+
+<section class="opt" aria-labelledby="c"><h2 id="c">C · Small pop-up editor over the page</h2>
+<div class="grid"><div class="stage"><span class="cap">Click opens a box under the text</span>
+<div class="page"><div class="live"><h3 class="site-h" style="margin:0">Fresh bread, every morning</h3><div class="pop"><div class="field">Fresh bread, every morning</div><div style="display:flex;gap:6px;margin-top:6px"><span class="kbd">B</span><span class="kbd">I</span><span class="kbd">Done</span></div></div></div></div></div></div>
+<div class="pros"><div><b class="g">Works</b><ul><li>Never shifts the page's layout.</li></ul></div>
+<div><b class="r">Costs</b><ul><li>You type in a box, not the page, so line breaks and size are a guess.</li><li>It covers the text below the block.</li></ul></div></div></section>
+
+<p class="sum"><b>Recommendation: A.</b> It is the closest to writing on the page, and the keyboard path is as short as the mouse one.</p>
+</div>

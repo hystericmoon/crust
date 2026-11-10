@@ -51,7 +51,7 @@ export interface LinkedSections {
   sections: LinkedSectionFile[] | null;
   usage: Record<string, SectionUse[]>;
   loadError: string | null;
-  where: "GitHub" | "this browser";
+  where: "your site" | "this browser";
   get: (id: string) => LinkedSectionFile | undefined;
   reload: () => void;
   /** Each resolves to the section, or an error message. */
@@ -101,7 +101,7 @@ export function LinkedSectionsProvider({ githubOn, children }: { githubOn: boole
         setSections(res.sections);
         setUsage(res.usage);
       } else {
-        setLoadError(`Couldn't load your linked sections from GitHub: ${res.error}`);
+        setLoadError(`Couldn't load your linked sections from your site: ${res.error}`);
         setSections([]);
       }
     });
@@ -117,7 +117,7 @@ export function LinkedSectionsProvider({ githubOn, children }: { githubOn: boole
     sections,
     usage,
     loadError,
-    where: githubOn ? "GitHub" : "this browser",
+    where: githubOn ? "your site" : "this browser",
     get: (id) => byId.get(id),
     reload: () => setVersion((v) => v + 1),
     create: async (name, content) => {

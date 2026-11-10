@@ -12,31 +12,15 @@ message the owner asked for every time). Content JSON: `crust-content-format`.
 
 ## Model plan (owner, 2026-11-03)
 
-The owner picks the model per feature; `crust-start` checks it before
-any work.
-
-| Next feature | Model | Why |
-|---|---|---|
-| (none yet) | — | Milestone 7 is complete; the owner picks what's next |
+Every feature in features.json is built (F001 to F093); there is no next feature to start. The owner asked on
+2026-11-10 for Sonnet and Haiku only ("Keep everything using sonnet and haiku"). Milestone 9 plan: docs/milestone-9.md.
 
 Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-05 (Jakarta), branch `ccr-d50f7e80-weuq18` (restarted
-from main after PR #79). **Everything is merged to main** (PRs #70-#79; none
-open). **The store launches free:** all three templates are Free, one short
-Licence page, no Terms/Refunds/Draft banner (DECISIONS "Store launches
-free"; the paid-store pages and the F068 gate stay in the code and return
-when a template gets a price). Publish store was run on main with real
-payments off (result in PROGRESS "Current"). **Owner's words:** "everything
-free right now, later we do something about the paid template". Still open
-for the owner: Passes for F055, F062, F063, F071, F075, F078, F080 (the
-visual review); re-publishing the live site (only on his word); a
-real-device try of the desktop app and real hosts. The F068 wording, seller
-name and contact email are only needed once something is priced.
-**Next: nothing unbuilt.** Ask the owner what comes next (Milestone 8 plan:
-docs/milestone-8.md; `npm run next`).
+Last updated: 2026-11-10, F093 built, **Milestone 9 "Friendly app" complete**; branch `ccr-d50f7e80-weuq18`.
+**PR #81 is open** (review fixes, Mac app fix, F085 to F093: one branch, so one PR until he merges it); the owner merges.
 
 ## Where things stand
 
@@ -54,8 +38,11 @@ docs/milestone-8.md; `npm run next`).
 - **Repository is public** since 2026-11-03 (owner; free CI). Never commit
   paid template files while public; make CI lighter before it goes
   private again (DECISIONS "Repository public for now").
-- **Desktop app** (F055–F062) built and tested in CI, never installed by
-  the owner; installers cost ~150 Actions minutes (ask first).
+- **Desktop app** (F055–F062) installed and opened by the owner on
+  2026-11-06. The welcome screen shows; a fresh download needs "Open
+  Anyway" once (no Apple Developer ID; $99/year, his call). Mac launch
+  test: Actions → Desktop launch test (by hand). Repo public, so installer
+  runs are free; mac-only runs are quicker.
 - **Review round** for 26 features:
   https://claude.ai/artifact/C3czUd4fpf5Qz6t2WqAkwZ (PROGRESS.md
   "Waiting on the owner" says how to read the answers). Check it at the
@@ -68,9 +55,34 @@ docs/milestone-8.md; `npm run next`).
 
 ## Next
 
-**No unbuilt features.** Milestone 7 (store) is complete. Ask the owner
-what to build next; scope is his. Waiting on him: the F068 wording
-choices, the review round, and the store/delivery setup in BLOCKED.md.
+**No unbuilt features are left** (`npm run next` says so). Milestone 9 "Friendly app" (F085 to F093, plan in
+docs/milestone-9.md; direction snapshot https://claude.ai/artifact/EHnrnPwVaMRv9GRGpaXWLx) is built, and every one
+of its features waits for the owner's review (`needs_review`, not `reviewed`). A new session should not start a feature.
+
+The next step is the owner's:
+1. **Review F090 to F093** (F085 to F089 passed 2026-11-10), plus F075 (phone test) and F078 (his call, review round two:
+   https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp). Record each Pass as `reviewed: true` (with his words as
+   `review_note`); list each "needs fixing" for him and ask before reworking (CLAUDE.md).
+2. **Merge PR #81** (CI must be green). Then restart the branch from main; from then on one PR per feature.
+3. Scope is his: proposals waiting in DECISIONS.md "Proposals" (including the two from F093: a failed Pages-panel menu
+   save should say so; make Search defaults and Where to publish editable in the Site settings sheet).
+
+Where things are (Milestone 9): tokens `apps/admin/src/app-theme/app-theme.css` (use `--app-*` for every colour; a guard test
+fails on raw colours); `app-frame/` (top bar, `EditorBar`, `railPlugins`, `useAutosave`); `page-first/` (F087);
+`layouts/AddSectionPanel` (F088); `inline-text/` (F090); `pages-panel/` (F091); `styles-panel/` (F092);
+F093: `keyboard/puck-chrome.ts` (landmarks), `keyboard/drag-status.ts`, `keyboard/focus-clear.ts`,
+`settings/heading.tsx`, test `app-words.test.tsx`, `scripts/check-builder-a11y.mjs` (now scans the page preview, Styles
+panel and Site settings sheet). Details per feature in DECISIONS.md (search the id). Words: use "saved", "kept in this
+browser", "publish", "your site"; never "GitHub" in screen text (the F093 test fails on it).
+
+React Bits code can't be used (MIT + Commons Clause): aesthetic only (DECISIONS 2026-11-06).
+
+Notes from 2026-11-10 (night run, all built with Sonnet on the owner's word "keep everything using sonnet and haiku"):
+- F090 fix after F093 (commit 1c6c5c1): a real mouse click never opened typing (Puck sets `pointer-events: none`
+  inside blocks); now a capture-phase listener (`useClickToType`). check:builder uses a real click.
+- CI once failed `ftp::tests::ftps_connects_with_a_trusted_certificate` (crates/crust-desktop, "InvalidContentType")
+  on abf9e15, a push with no Rust change; it passed locally and on every later push. If it fails again, root-cause the
+  local FTPS test server rather than re-running.
 
 ## Where to find things
 
@@ -87,3 +99,4 @@ choices, the review round, and the store/delivery setup in BLOCKED.md.
 | User-visible changes | CHANGELOG.md |
 | Older handover and progress notes | docs/archive/ |
 | Setup guides for the owner | docs/setup-*.md |
+

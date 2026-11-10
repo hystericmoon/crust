@@ -3,7 +3,156 @@
 Moved out of PROGRESS.md on 2026-11-03 to keep the start of each session
 short. Older "Current" entries (newest first) and the older log.
 
+## F091 (archived 2026-11-10)
+
+- **2026-11-10: F091 Pages panel (built, waiting for your review).**
+  The Pages button on the left opens a panel with your pages in two groups:
+  **In the menu** (in menu order) and **Not in the menu**. Drag a page to
+  reorder it or to move it between groups; with the keyboard, focus the grip
+  and press up or down arrow (or use Move up and Move down). Each page's **⋯**
+  menu has Page settings (title, search and sharing), Change address, Duplicate,
+  Save to GitHub and Delete. The home screen shows the same panel instead of the
+  table. Status is a dot plus words. Snapshot: https://claude.ai/artifact/Py2BWv56W8cCrUw7FVYmy2.
+  **To try:** open the preview https://ccr-d50f7e80-weuq18.crust-admin.pages.dev,
+  click Pages, drag About above Home, open its ⋯ menu and choose Take out of
+  menu, then Duplicate a page. (The preview can't save; changes stay in the browser.)
+  Next: F092 Styles panel and Site settings sheet.
+
+## F090 (archived 2026-11-10)
+
+- **2026-11-10: F090 Type on the page (built, waiting for your review).**
+  On the page, click a heading or a text block and type right there. A small
+  bar floats above it: for a heading, the level (H1 to H4) and **Done**; for
+  text, bold, italic, link and lists. **Escape**, **Done**, or a click
+  elsewhere leaves. The side panel and Quick edit still work, and Undo steps
+  are shared with the panel. Keyboard: select a block, press **Enter** to
+  type (or use the new "Type on the page" button in its bar), **Escape** to
+  go back to the block. Snapshot: https://claude.ai/artifact/X9G5XUcFRfCR1nY8wCtKqL.
+  **To try:** open the preview https://ccr-d50f7e80-weuq18.crust-admin.pages.dev,
+  click a heading, change its words and level, press Escape, then press Undo.
+  Next: F091 Pages panel.
+
+## F089 (archived 2026-11-10)
+
+- **2026-11-06: F089 One-row section toolbar (built, waiting for your review).**
+  Click a section: its bar is one row, **Section · Style · Layout · move
+  arrows · More**. Section is the background picture, Style shows the four
+  colours with their names (bigger, easier to hit), Layout is the height.
+  Under **More** are "Change <style> everywhere…" (asks first, says how many
+  sections it changes), "Make linked…" and "Save as layout…". Snapshot:
+  https://claude.ai/artifact/G8y8XJd5qEpki25JdHbUSU.
+  **To try:** open the preview
+  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, click a section, open
+  each menu. Try the keyboard: Tab to the bar, ← → along it, Enter opens,
+  Esc closes. Next: F090 Type on the page (Opus).
+
 ## Earlier "Current" entries (F065 back to Milestone 1)
+
+- **2026-11-06: F087 Page first (built, waiting for your review).**
+  Opening a site now lands on its **Home page in the editor**, drawn at
+  full size (no more 57%). The panel on the right is **gone until you
+  select something**: click a heading or a section and its settings slide
+  in; click the grey area around the page and it goes away again. The
+  page's **title, description and search settings** are behind the new
+  sliders button right next to the page name ("Page settings"; on a post,
+  "Post settings"). A **new site** starts with a short **Next steps** list
+  on the right: replace the sample words and photos, describe the page
+  for search, see it on a phone, publish. Steps tick themselves when done
+  (you can tick them by hand too); **Skip** hides the list, and Help →
+  "Next steps for a new site" brings it back. Snapshot:
+  https://claude.ai/artifact/VX9gKVj8euKZCtwXLahQwg.
+  **To try:** open the preview
+  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev: you should land on
+  Home at full width with no right panel. Click a heading, then the grey
+  area. Press the sliders button next to the page name. To see Next
+  steps, start a new site from the welcome screen (or in the Mac app,
+  make a new site). Next: F088 Add section, by picture.
+
+- **2026-11-06: F086 one top bar and a left icon bar (built, waiting for
+  your review).** Every screen now has the same top bar: your site's name
+  on the left (press it for a menu: Pages, Posts, Site settings, Start
+  from a template, and Sign out at the bottom; in the Mac app also All
+  sites), then where you are. On the right: the status ("Saved · 3
+  changes not live") and **Publish** with the number of changes, always
+  in the same place. In the editor the bar also has the page switcher,
+  Desktop/Tablet/Phone width, Undo and Redo, a button to show or hide
+  the settings panel, and Preview. The slim bar on the left opens Add
+  (layouts and blocks), Layers, Pages, Styles, Media, Blog, Site and
+  Help. **"Save draft" is gone:** changes save on their own a few
+  seconds after you stop typing (about 1 second in the Mac app), and
+  Ctrl/⌘+S saves at once. Site settings keeps Save and Discard until
+  F092. Snapshot: https://claude.ai/artifact/4yD6q3o3bHh3nogcJRhaRW.
+  **To try:** open the preview
+  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, open a page, change
+  a heading and watch the status; press the site name for the menu; try
+  each icon on the left; press Preview. (The preview link can't save to
+  GitHub, so it says "Saved in this browser".) Next: F087 Page first.
+
+- **2026-11-06: F085 the app in dark and light (built, waiting for your
+  review).** The app itself (not your site) now has the React Bits-style
+  "Violet night" look: violet-tinted near-black in dark mode, white in
+  light mode, Geist font, thin borders, and violet only on what's
+  selected or active. It follows your computer's light/dark setting; the
+  sun/moon button at the top right of every screen switches it, and Crust
+  remembers. Pressing it back to your computer's mode makes it follow the
+  computer again. Your site on the canvas keeps its own colours in both.
+  Every text colour passes the contrast check in both modes, and the
+  builder accessibility check now runs in both. Snapshot:
+  https://claude.ai/artifact/KE4fZPZSFQJE8keiH4DwsA. **To try:** open the
+  preview https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, press the
+  sun/moon button on the pages list, the editor and Site settings; switch
+  your Mac or phone to dark mode and reload. Next: F086 (one app frame and
+  top bar, Opus). The screen layouts are still today's; they change in
+  F086–F092.
+
+- **2026-11-06: the Mac app opens.** The Mac installer's app wasn't
+  signed as one app, so macOS couldn't tell it was Crust and it hung at
+  start-up (long bounce, then nothing). It is now signed (free "ad-hoc"
+  signature), and if Crust can't use the Documents folder it keeps sites
+  in its own app folder instead of quitting. The owner tried the new
+  installer on his Mac (Apple chip, macOS 27.2): the welcome screen shows.
+  A fresh download still needs **Open Anyway** once in System Settings →
+  Privacy & Security (only a $99/year Apple Developer ID removes that; the
+  owner's call). The CI launch test (Actions → Desktop launch test) stays
+  for future Mac checks.
+
+- **2026-11-05: store launches free.** Everything is free for now (owner:
+  "later on we can do something about the paid template"). The store has
+  three templates (Harbour, Signal, Corner), all Free; none was ever
+  priced. With nothing for sale it shows one short **Licence** page (free
+  to use, on as many sites as you like; don't resell the file) and a
+  footer column "Licence"; the Terms and Refunds pages and the "Draft"
+  banner are gone. The paid-store pages and the F068 live-payment check
+  stay in the code and come back as soon as any template gets a price
+  (PR #79; DECISIONS "Store launches free"). Publish store was run on
+  main with real payments off. **To try:** open
+  https://crust-store.pages.dev, a template page, and /licence; the
+  "Download" buttons should open each template's file. The licence
+  wording is plain and short, not lawyer-reviewed.
+
+- **F068 Licence, terms and refunds: built, passes, wording is a draft**
+  (branch `ccr-d50f7e80-weuq18`, its own PR). done_check `npm test --
+  store-legal && npm run check:a11y` exit 0. Snapshot
+  https://claude.ai/artifact/DAmwsHC4W4CcGXzH4DDCij (A built on all
+  three: one price for unlimited sites; full refund within 14 days for
+  any reason; three short pages). The store has Licence, Terms and
+  Refunds pages, a "Buying" footer column, "Read the full licence" on
+  every template page, and a line under every buy button linking all
+  three. Each page says "Draft" until you approve the wording, and the
+  store refuses real payments until then. **To try:** after Publish
+  store, open https://crust-store.pages.dev/licence (and /terms,
+  /refunds); read the wording; tell Claude your changes, the name to
+  sell under and the contact email. **Milestone 7 is complete; no
+  unbuilt features remain.**
+
+- **2026-11-03: token saving A, B and D done** (owner's pick on
+  https://claude.ai/artifact/D2h2rdzR4iQU6dQv7TyWqV; DECISIONS "Token
+  saving"). Nothing changes in Crust itself; sessions carry less. Long
+  features may now stop once for a checkpoint `/clear`.
+
+- **2026-11-03: PR #66 merged** (owner's request): F084, F063, F064,
+  F065, F066 are on main. Start-up files slimmed (history in
+  `docs/archive/`, `npm run next`); one PR per feature from now on.
 
 - **F067 Delivery and updates: built, passes** (branch
   `ccr-d50f7e80-weuq18`, PR #69, merged 2026-11-03). done_check `npm test -- delivery`
@@ -1053,3 +1202,35 @@ short. Older "Current" entries (newest first) and the older log.
 - 2026-11-02: F074 Rows and columns v2 built (snapshot, direction A); done_check `npm test -- columns-v2 && npm run check:a11y` exit 0.
 
 - 2026-11-02: PRs #54–#59 merged to main in order (owner asked). Next: F075 Motion.
+
+- **2026-11-06: F088 Add section, by picture (built, waiting for your review).**
+  The **Add** button on the left now opens **pictures of whole sections**
+  (hero, features, pricing…) next to your page, with a search box and
+  category buttons. Click a picture and the section lands **after the one
+  you selected** (or at the end); a line at the top says where. The
+  **"+ Add section" bars** between sections pick the spot first and open the
+  same panel. Single things (heading, text, image) are under **Add an
+  element**; **See larger** opens the old big gallery for whole pages and
+  linked sections. One Undo removes what you added. Snapshot:
+  https://claude.ai/artifact/Cx8c5fTfFkxfZYBMBnQs2A.
+  **To try:** open the preview
+  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, press Add on the left,
+  click a picture. Then hover between two sections, press the purple
+  "+ Add section" and pick one. Try it by keyboard too: Tab to a picture,
+  Enter. Next: F089 One-row section toolbar.
+
+## F092 notes (archived 2026-11-10)
+
+- **2026-11-10: F092 Styles panel and Site settings sheet (built, waiting for your review).**
+  The paintbrush button on the left now opens one panel for how the whole
+  site looks: **Styles** cards first (one tap, with Undo), then **Fine-tune**
+  (Colours, Type, Buttons, Cards, Links, Spacing and shape, Motion, Section
+  styles; one opens at a time) and **Header & footer**. Save and Discard sit at
+  the bottom. Site details (address, search defaults, where to publish, theme
+  pack, save as template) are in a **Site settings** sheet, opened from a
+  button in the Styles panel or the Site panel; it closes with Escape or
+  Close. Snapshot: https://claude.ai/artifact/S6MeqWy5akeBJCRzGciDXZ.
+  **To try:** open the preview https://ccr-d50f7e80-weuq18.crust-admin.pages.dev,
+  click the paintbrush, pick a Style card, open Colours, then press Site
+  settings and press Escape. (The preview can't save; changes stay in the browser.)
+  Next: F093 Words and accessibility sweep.

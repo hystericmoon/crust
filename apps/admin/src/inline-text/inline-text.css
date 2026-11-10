@@ -1,0 +1,28 @@
+/* F090: typing on the page. Admin tokens only; the text itself keeps the site's look. */
+.it-hit { display: contents; }
+.it-frame { position: relative; display: block; }
+.it-bar-slot { position: absolute; bottom: calc(100% + 10px); left: 0; z-index: 20; max-width: 100%; }
+.it-frame.is-below .it-bar-slot { bottom: auto; top: calc(100% + 10px); }
+.it-frame > .rt-floating { display: block; }
+.it-bar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 4px; width: max-content; max-width: 100%;
+  font: 14px/1.4 var(--app-font); color: var(--app-ink);
+  background: var(--app-panel); border: 1px solid var(--app-line-strong); border-radius: 8px; box-shadow: 0 4px 14px var(--app-shadow);
+}
+.it-bar-label { padding: 0 4px 0 8px; font-weight: 600; }
+.it-levels { display: inline-flex; gap: 2px; }
+.it-btn {
+  min-width: 40px; min-height: 40px; padding: 0 10px; border: 0; border-radius: 6px;
+  background: transparent; color: var(--app-ink); font: 600 14px var(--app-font); cursor: pointer;
+}
+.it-btn:hover { background: var(--app-hover); }
+.it-btn[aria-pressed="true"] { background: var(--app-pri); color: var(--app-pri-fg); }
+.it-btn:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 1px; box-shadow: 0 0 0 5px var(--app-bg); }
+.it-done { border: 1px solid var(--app-line-strong); background: var(--app-panel); }
+/* Text: the editor's own bar floats above at the left; Done sits below at the right (Puck's action bar is above, at the right). */
+.it-rich > .it-bar-slot { left: auto; right: 0; bottom: auto; top: calc(100% + 10px); } /* below: Puck's own action bar sits above, at the right */
+.it-rich.is-below .rt-floating .rt-toolbar { bottom: auto; top: calc(100% + 10px); }
+.it-rich.is-below .rt-floating .rt-link { top: calc(100% + 64px); }
+.it-plain { display: inline; outline: 2px dashed var(--app-acc); outline-offset: 4px; border-radius: 2px; white-space: pre-wrap; }
+.it-plain:focus { outline: 3px solid var(--app-acc); }
+@media (pointer: coarse) { .it-btn { min-width: 44px; min-height: 44px; } }

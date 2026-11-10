@@ -460,7 +460,21 @@ fn choose_sites<R: Runtime>(app: &tauri::App<R>) -> Result<Sites, SiteError> {
             (first.parent().map(PathBuf::from).unwrap_or(documents), None)
         }
     };
-    Sites::open(home, forced)
+    let fallback = app.path().app_data_dir().unwrap_or_else(|_| std::env::temp_dir().join("crust")).join("Sites");
+    open_sites_or_fallback(home, forced, fallback)
+}
+
+/// Opens the sites in `home`; if that folder can't be used (macOS said no
+/// to Documents, a read-only disk), the app's own data folder is used so
+/// the window still opens instead of Crust quitting at start-up.
+pub fn open_sites_or_fallback(home: PathBuf, forced: Option<String>, fallback: PathBuf) -> Result<Sites, SiteError> {
+    match Sites::open(&home, forced.clone()) {
+        Ok(sites) => Ok(sites),
+        Err(e) => {
+            eprintln!("Crust couldn't use {}: {e}. Using {} instead.", home.display(), fallback.display());
+            Sites::open(fallback, forced)
+        }
+    }
 }
 
 /// The Crust folder and site for one site folder: its parent, and its name.
@@ -590,6 +604,35 @@ impl<R: Runtime> tauri::Assets<R> for NoAssets {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn falls_back_when_the_crust_folder_cant_be_used() {
+        let dir = tempfile::tempdir().unwrap();
+        // A file where the Crust folder should be: the folder can't be made.
+        let blocked = dir.path().join("Crust");
+        std::fs::write(&blocked, b"not a folder").unwrap();
+        let fallback = dir.path().join("Support").join("Sites");
+        let sites = open_sites_or_fallback(blocked, None, fallback.clone()).unwrap();
+        assert_eq!(sites.home(), fallback.as_path());
+        assert!(sites.current().root().is_dir());
+    }
+
+    #[test]
+    fn uses_the_crust_folder_when_it_works() {
+        let dir = tempfile::tempdir().unwrap();
+        let home = dir.path().join("Crust");
+        let sites = open_sites_or_fallback(home.clone(), None, dir.path().join("Other")).unwrap();
+        assert_eq!(sites.home(), home.as_path());
+        assert!(!dir.path().join("Other").exists());
+    }
+
+    #[test]
+    fn mac_build_is_signed_as_one_app() {
+        // Without this the Mac app is "not signed at all" as a bundle, macOS
+        // can't tell it is Crust, and it hangs at start-up (owner, 2026-11-06).
+        let conf: serde_json::Value = serde_json::from_str(include_str!("../tauri.conf.json")).unwrap();
+        assert_eq!(conf["bundle"]["macOS"]["signingIdentity"], "-");
+    }
 
     #[test]
     fn decodes_encoded_paths() {

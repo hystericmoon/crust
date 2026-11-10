@@ -301,6 +301,6 @@ describe("words in the app (F055)", () => {
     expect(saveMessage({ ok: true, data: {} } as never, true, "Page")).toBe("Page saved. Visitors see it after you publish.");
     expect(saveMessage({ ok: false, error: "The disk is full." } as never, true, "Page")).toBe("Page not saved: The disk is full.");
     setDesktopContent(null);
-    expect(saveMessage({ ok: true, data: {} } as never, true, "Page")).toContain("saved to GitHub");
+    expect(saveMessage({ ok: true, data: {} } as never, true, "Page")).toContain("saved");
   });
 });

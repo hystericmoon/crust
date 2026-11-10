@@ -98,7 +98,7 @@ describe("pages: where pages come from", () => {
 
 describe("pages: routes", () => {
   it("parses the admin's addresses", () => {
-    expect(parseRoute("")).toEqual({ name: "pages" });
+    expect(parseRoute("")).toEqual({ name: "edit", path: "/" });
     expect(parseRoute("#/")).toEqual({ name: "pages" });
     expect(parseRoute("#/settings/contrast")).toEqual({ name: "settings" });
     expect(parseRoute("#/edit?path=%2Fabout")).toEqual({ name: "edit", path: "/about" });
@@ -112,14 +112,13 @@ describe("pages: list screen", () => {
     { path: "/about", title: "About", lastEdited: null, localChanges: true, inRepo: false },
   ];
 
-  it("lists title, address and last edited, with links to the builder", () => {
+  it("lists title, address and status, with links to the builder", () => {
     render(<PageList siteName="Demo" rows={rows} sourceNote="From GitHub." onCreate={() => {}} />);
-    const table = screen.getByRole("table");
-    const [, home, about] = within(table).getAllByRole("row");
-    expect(within(home!).getByRole("link", { name: "Home" }).getAttribute("href")).toBe("#/edit?path=%2F");
-    expect(about!.textContent).toContain("Only in this browser");
-    expect(about!.textContent).toContain("Not recorded yet");
-    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Demo: pages");
+    expect(screen.getByRole("link", { name: "Home" }).getAttribute("href")).toBe("#/edit?path=%2F");
+    const about = Array.from(document.querySelectorAll(".pp-item[data-item]")).find((i) => i.getAttribute("data-item") === "/about")!;
+    expect(about.textContent).toContain("Only in this browser");
+    expect(about.textContent).toContain("/about");
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Demo: Pages");
   });
 
   it("shows loading and empty states", () => {

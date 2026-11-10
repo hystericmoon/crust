@@ -7,43 +7,17 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
-- **2026-11-05: store launches free.** Everything is free for now (owner:
-  "later on we can do something about the paid template"). The store has
-  three templates (Harbour, Signal, Corner), all Free; none was ever
-  priced. With nothing for sale it shows one short **Licence** page (free
-  to use, on as many sites as you like; don't resell the file) and a
-  footer column "Licence"; the Terms and Refunds pages and the "Draft"
-  banner are gone. The paid-store pages and the F068 live-payment check
-  stay in the code and come back as soon as any template gets a price
-  (PR #79; DECISIONS "Store launches free"). Publish store was run on
-  main with real payments off. **To try:** open
-  https://crust-store.pages.dev, a template page, and /licence; the
-  "Download" buttons should open each template's file. The licence
-  wording is plain and short, not lawyer-reviewed.
-
-- **F068 Licence, terms and refunds: built, passes, wording is a draft**
-  (branch `ccr-d50f7e80-weuq18`, its own PR). done_check `npm test --
-  store-legal && npm run check:a11y` exit 0. Snapshot
-  https://claude.ai/artifact/DAmwsHC4W4CcGXzH4DDCij (A built on all
-  three: one price for unlimited sites; full refund within 14 days for
-  any reason; three short pages). The store has Licence, Terms and
-  Refunds pages, a "Buying" footer column, "Read the full licence" on
-  every template page, and a line under every buy button linking all
-  three. Each page says "Draft" until you approve the wording, and the
-  store refuses real payments until then. **To try:** after Publish
-  store, open https://crust-store.pages.dev/licence (and /terms,
-  /refunds); read the wording; tell Claude your changes, the name to
-  sell under and the contact email. **Milestone 7 is complete; no
-  unbuilt features remain.**
-
-- **2026-11-03: token saving A, B and D done** (owner's pick on
-  https://claude.ai/artifact/D2h2rdzR4iQU6dQv7TyWqV; DECISIONS "Token
-  saving"). Nothing changes in Crust itself; sessions carry less. Long
-  features may now stop once for a checkpoint `/clear`.
-
-- **2026-11-03: PR #66 merged** (owner's request): F084, F063, F064,
-  F065, F066 are on main. Start-up files slimmed (history in
-  `docs/archive/`, `npm run next`); one PR per feature from now on.
+- **2026-11-10: F093 Words and accessibility sweep (built, waiting for your review). Milestone 9 is complete:
+  F085 to F093 are all built and waiting for your review.**
+  Nothing on screen says "GitHub" any more: a change is **saved** (kept in your site) or **kept in this browser**
+  (a draft), and **publish** makes it live. About 75 messages changed. The builder is easier for keyboard and screen
+  reader users: it has a main area and a heading, its side panels have names, dragging a block is read out in plain
+  words ("Picked up Hero ... Dropped Hero in the page"), and a focused button never ends up under a floating bar.
+  The accessibility check now also looks inside the page preview, the Styles panel and the Site settings sheet.
+  The words table is in DECISIONS "F093". **To try:** open the preview
+  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, edit a heading and read the messages (Save, Publish, Pages
+  panel); Tab through the builder, and with a screen reader (VoiceOver: Cmd+F5) pick up a block with Space.
+  Next: your review of F085 to F093 plus F075 and F078, then merge PR #81. No unbuilt features are left.
 
 ## Waiting on the owner
 

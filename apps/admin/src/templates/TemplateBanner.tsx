@@ -92,7 +92,7 @@ function BringBackDialog({ last, onClose, onDone }: { last: Switch; onClose: () 
       setError(failed);
       return;
     }
-    setJustApplied(last.commit ? "Your previous site is back. It's saved to GitHub; visitors see it after you publish." : "Your previous site is back in this browser.");
+    setJustApplied(last.commit ? "Your previous site is back. It's saved; visitors see it after you publish." : "Your previous site is back in this browser.");
     onDone();
   };
 

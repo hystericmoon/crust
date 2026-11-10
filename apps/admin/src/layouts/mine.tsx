@@ -42,8 +42,8 @@ export interface MyLayouts {
   layouts: SavedLayout[] | null;
   /** Why the list couldn't load, if it didn't. */
   loadError: string | null;
-  /** Where saves go, for messages: "GitHub" or "this browser". */
-  where: "GitHub" | "this browser";
+  /** Where saves go, for messages: "your site" or "this browser". */
+  where: "your site" | "this browser";
   reload: () => void;
   /** Each resolves to an error message, or null when it worked. */
   save: (name: string, kind: SavedLayout["kind"], content: ComponentData[]) => Promise<string | null>;
@@ -89,7 +89,7 @@ export function MyLayoutsProvider({ githubOn, children }: { githubOn: boolean; c
         setLoadError(null);
         setLayouts(res.layouts);
       } else {
-        setLoadError(`Couldn't load your layouts from GitHub: ${res.error}`);
+        setLoadError(`Couldn't load your layouts from your site: ${res.error}`);
         setLayouts([]);
       }
     });
@@ -162,7 +162,7 @@ export function MyLayoutsProvider({ githubOn, children }: { githubOn: boolean; c
   const value: MyLayouts = {
     layouts,
     loadError,
-    where: githubOn ? "GitHub" : "this browser",
+    where: githubOn ? "your site" : "this browser",
     reload: () => setVersion((v) => v + 1),
     save,
     rename,

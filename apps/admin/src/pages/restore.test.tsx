@@ -23,7 +23,7 @@ describe("restore: recently deleted", () => {
     act(() => toggle.click());
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
     expect(screen.getByRole("button", { name: "Restore About us" })).toBeTruthy();
-    expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(2);
+    expect(within(document.getElementById("deleted-list")!).getAllByRole("listitem")).toHaveLength(2);
   });
 
   it("restores a page and announces it", async () => {

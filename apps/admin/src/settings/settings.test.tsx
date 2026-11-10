@@ -31,7 +31,7 @@ afterEach(() => {
 
 /** Renders the screen with real state, like App does. */
 function setup(initial: SiteTokens = defaultTokens) {
-  const onSave = vi.fn(async (_tokens: SiteTokens) => "Saved to GitHub.");
+  const onSave = vi.fn(async (_tokens: SiteTokens) => "Saved.");
   function Harness() {
     const [saved, setSaved] = useState(initial);
     const [draft, setDraft] = useState(initial);
@@ -136,7 +136,7 @@ describe("Site settings screen", () => {
     type("Primary", "#0f766e");
     await act(async () => screen.getByRole("button", { name: "Save" }).click());
     expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ colors: expect.objectContaining({ primary: "#0F766E" }) }));
-    expect(screen.getByRole("status").textContent).toBe("Saved to GitHub.");
+    expect(screen.getByRole("status").textContent).toBe("Saved.");
     expect(screen.getByText("All changes saved")).toBeTruthy();
   });
 

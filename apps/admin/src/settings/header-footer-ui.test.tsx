@@ -83,7 +83,7 @@ describe("header menu editor (keyboard alternative to dragging)", () => {
 
 function settings() {
   const chrome0 = migrateChrome(site, pages);
-  const onSave = vi.fn(async (_t: SiteTokens) => "Saved to GitHub.");
+  const onSave = vi.fn(async (_t: SiteTokens) => "Saved.");
   let latest: SiteChrome = chrome0;
   function Harness() {
     const [draft, setDraft] = useState(defaultTokens);

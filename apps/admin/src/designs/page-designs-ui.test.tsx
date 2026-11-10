@@ -16,7 +16,7 @@ import { forgetDesign, getDesignsState, loadDesigns, resetDesignsStore, storeDes
 const api = vi.hoisted(() => ({ listDesigns: vi.fn(), saveDesign: vi.fn(), resetDesign: vi.fn() }));
 vi.mock("../api-client", async (orig) => ({ ...(await orig<typeof import("../api-client")>()), ...api }));
 
-const offline = { ok: false as const, error: "Saving to GitHub isn't available here yet.", notConfigured: true };
+const offline = { ok: false as const, error: "Saving isn't available here yet.", notConfigured: true };
 
 beforeEach(() => {
   Object.values(api).forEach((f) => f.mockReset());

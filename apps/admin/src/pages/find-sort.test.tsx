@@ -21,10 +21,9 @@ const rows = [
 ];
 // The pages only: "Page not found" (F082) has a row of its own after them.
 const titles = () =>
-  within(screen.getByRole("table"))
-    .getAllByRole("rowheader")
-    .filter((h) => !h.closest(".pg-builtin"))
-    .map((h) => h.textContent);
+  Array.from(document.querySelectorAll(".pp-name a"))
+    .filter((a) => !a.closest(".pp-builtin"))
+    .map((a) => a.textContent);
 
 describe("find-sort: rules", () => {
   it("matches every word in the title or address, ignoring case and accents", () => {
@@ -48,7 +47,7 @@ describe("find-sort: page list", () => {
 
   it("filters, announces the count, and offers a way back from no matches", () => {
     render(<PageList siteName="Demo" rows={rows} sourceNote="" onCreate={() => {}} />);
-    expect(titles()).toEqual(["Services", "About us", "Café opening", "Our team", "Home", "Contact"]);
+    expect(titles()).toEqual(["Home", "About us", "Café opening", "Contact", "Services", "Our team"]);
     const find = screen.getByLabelText("Find a page");
     act(() => {
       fireEvent.change(find, { target: { value: "us" } });
@@ -63,14 +62,11 @@ describe("find-sort: page list", () => {
     expect(titles()).toHaveLength(6);
   });
 
-  it("sorts by address and remembers the choice", () => {
-    const { unmount } = render(<PageList siteName="Demo" rows={rows} sourceNote="" onCreate={() => {}} />);
-    act(() => {
-      fireEvent.change(screen.getByLabelText("Sort by"), { target: { value: "address" } });
-    });
-    expect(titles()[0]).toBe("Home");
-    unmount();
-    render(<PageList siteName="Demo" rows={rows} sourceNote="" onCreate={() => {}} />);
-    expect((screen.getByLabelText("Sort by") as HTMLSelectElement).value).toBe("address");
+  it("lists the pages in the menu first, in menu order, then the others by address", () => {
+    const menu = [{ label: "Contact", href: "/contact" }, { label: "Elsewhere", href: "https://example.com" }, { label: "About", href: "/about" }];
+    render(<PageList siteName="Demo" rows={rows} menu={menu} sourceNote="" onCreate={() => {}} />);
+    expect(titles()).toEqual(["Contact", "About us", "Home", "Café opening", "Services", "Our team"]);
+    const inMenu = screen.getByRole("region", { name: "In the menu" });
+    expect(within(inMenu).getAllByRole("link").map((a) => a.textContent)).toEqual(["Contact", "About us"]);
   });
 });

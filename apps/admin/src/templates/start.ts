@@ -65,7 +65,7 @@ export function replacePlan(t: Pick<Template, "name" | "site" | "media" | "layou
 
   const notes: string[] = [];
   if (current.drafts) notes.push(`${plural(current.drafts, "draft")} only in this browser ${current.drafts === 1 ? "is" : "are"} set aside and ${current.drafts === 1 ? "comes" : "come"} back with your previous site.`);
-  if (!current.photos && t.media.length) notes.push(`Saving to GitHub isn't on here, so the template's ${plural(t.media.length, "photo")} can't join a photo library; pages show empty photo spaces until you pick photos.`);
+  if (!current.photos && t.media.length) notes.push(`Saving isn't on here, so the template's ${plural(t.media.length, "photo")} can't join a photo library; pages show empty photo spaces until you pick photos.`);
   return { replaced, kept, notes };
 }
 

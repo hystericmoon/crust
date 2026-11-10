@@ -1,6 +1,6 @@
 import { validateTokens, type SiteTokens } from "@crust/blocks";
 
-/** Saved tokens live in this browser until F006 (Save to GitHub). */
+/** Saved tokens live in this browser until F006 (Save). */
 export const TOKENS_KEY = "crust:draft:tokens";
 
 export function loadSavedTokens(fallback: SiteTokens): SiteTokens {

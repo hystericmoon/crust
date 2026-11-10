@@ -13,12 +13,13 @@
  * The same moves are buttons on the selected block's action bar. Results are
  * announced in a polite live region.
  */
+import { isInlineEditing, isInlineType, startInlineEdit } from "../inline-text/store";
 import { ActionBar, createUsePuck, useGetPuck, type ComponentData, type Config, type Data } from "@puckeditor/core";
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
-import { SaveLayoutAction } from "../layouts/SaveLayoutAction";
-import { MakeLinkedAction } from "../linked/fields";
 import { SectionToolbar } from "../sections/editing";
 import { availableMoves, planInsert, planMove, type MoveKind } from "./moves";
+import { installDragStatus } from "./drag-status";
+import { installFocusClear } from "./focus-clear";
 import { installPuckChromeFixes } from "./puck-chrome";
 import { installTooltips } from "./tooltips";
 
@@ -51,7 +52,7 @@ export const openKeyboardHelp = () => helpOpener?.();
 
 const shortcuts: [string, string][] = [
   ["Tab", "Move between blocks on the page"],
-  ["Enter", "Select the block and edit it in the panel on the right"],
+  ["Enter", "Select the block and edit it in the panel on the right; on a heading or text, type right on the page (Escape to finish)"],
   ["Alt + ↑ / ↓", "Move the block up or down"],
   ["Alt + ←", "Move the block out of its section or column"],
   ["Alt + →", "Move the block into the section or columns above it"],
@@ -100,6 +101,16 @@ function KeyboardHelp() {
 let canvasDoc: Document | null = null;
 
 const labelOf = (config: Config, item: ComponentData) => config.components[item.type]?.label ?? item.type;
+
+/** F093: what a drag id means in words: a block's name, "the page", or "inside Columns". */
+export function dragName(puck: PuckApi, id: string): string {
+  const item = puck.getItemById(id);
+  if (item) return labelOf(puck.config, item);
+  const [owner] = id.split(":");
+  if (!owner || owner === "root") return "the page";
+  const parent = puck.getItemById(owner);
+  return parent ? `inside ${labelOf(puck.config, parent)}` : id.replace(/-[\w-]{6,}$/, "");
+}
 
 export function focusBlock(id: string) {
   // Wait for Puck to re-render the canvas before moving focus back.
@@ -188,7 +199,7 @@ const arrowMoves: Record<string, [MoveKind, MoveKind | null]> = {
 
 /** One handler for the main page and the canvas iframe. */
 export function handleKey(e: KeyboardEvent, getPuck: () => PuckApi) {
-  if (e.defaultPrevented || isTyping(e.target)) return;
+  if (e.defaultPrevented || isTyping(e.target) || isInlineEditing()) return;
   const target = asElement(e.target);
   const puck = getPuck();
 
@@ -217,6 +228,12 @@ export function handleKey(e: KeyboardEvent, getPuck: () => PuckApi) {
     e.preventDefault();
     select(getPuck, focusedId!);
     const item = puck.getItemById(focusedId!);
+    // F090: a heading or text block opens for typing right on the page.
+    if (item && isInlineType(item.type)) {
+      startInlineEdit(focusedId!);
+      announce(`Typing in ${labelOf(puck.config, item)}. Escape to finish.`);
+      return;
+    }
     if (item) announce(`${labelOf(puck.config, item)} selected. Edit it in the panel on the right; Alt and the arrow keys move it.`);
     return;
   }
@@ -261,11 +278,23 @@ function labelBlocks(doc: Document, puck: PuckApi) {
   const set = (el: Element, name: string, value: string) => {
     if (el.getAttribute(name) !== value) el.setAttribute(name, value);
   };
+  // F093: the page being edited is the canvas document's main content.
+  const root = doc.querySelector<HTMLElement>("[class*='_DropZone--isRootZone_']");
+  if (root) {
+    set(root, "role", "main");
+    set(root, "aria-label", "Page content");
+  }
   for (const el of doc.querySelectorAll<HTMLElement>("[data-puck-component]")) {
     const item = puck.getItemById(el.dataset.puckComponent ?? "");
     if (!item) continue;
     const text = summary(item);
     set(el, "aria-label", text ? `${labelOf(puck.config, item)}: ${text}` : labelOf(puck.config, item));
+    // A group, not a button: a block holds buttons and links of its own (nested controls),
+    // and a button's name must contain its visible words, which a block's label doesn't.
+    set(el, "role", "group");
+    // The drag library marks these as pressed/grabbed buttons; both are wrong on a group, and drag status is spoken (drag-status.ts).
+    el.removeAttribute("aria-pressed");
+    el.removeAttribute("aria-grabbed");
     set(el, "aria-roledescription", "block");
     set(el, "aria-describedby", HELP_ID);
     set(el, "aria-keyshortcuts", "Enter Alt+ArrowUp Alt+ArrowDown Alt+ArrowLeft Alt+ArrowRight");
@@ -282,10 +311,14 @@ export function KeyboardRoot({ children }: { children: ReactNode }) {
     // Tooltips first, so Escape closes an open tooltip before it deselects.
     const removeTooltips = installTooltips(document);
     const removeChromeFixes = installPuckChromeFixes(document);
+    const removeFocusClear = installFocusClear(document);
+    const removeDragStatus = installDragStatus(document, (id) => dragName(getPuck(), id), announce);
     const onKey = (e: KeyboardEvent) => handleKey(e, getPuck);
     document.addEventListener("keydown", onKey, true);
     return () => {
       document.removeEventListener("keydown", onKey, true);
+      removeDragStatus();
+      removeFocusClear();
       removeChromeFixes();
       removeTooltips();
     };
@@ -337,7 +370,10 @@ export function KeyboardCanvas({ children, document: doc }: { children: ReactNod
   useEffect(() => {
     if (!doc) return;
     canvasDoc = doc;
+    // F093: the canvas is a document of its own and needs a title (WCAG 2.4.2).
+    if (!doc.title) doc.title = "Page preview";
     const removeTooltips = installTooltips(doc);
+    const removeFocusClear = installFocusClear(doc);
     const onKey = (e: KeyboardEvent) => handleKey(e, getPuck);
     doc.addEventListener("keydown", onKey, true);
     let frame = 0;
@@ -360,6 +396,7 @@ export function KeyboardCanvas({ children, document: doc }: { children: ReactNod
       doc.removeEventListener("keydown", onKey, true);
       doc.defaultView?.removeEventListener("scroll", onScroll);
       removeTooltips();
+      removeFocusClear();
       observer.disconnect();
       cancelAnimationFrame(frame);
       if (canvasDoc === doc) canvasDoc = null;
@@ -401,31 +438,39 @@ export function KeyboardActionBar({
   const config = usePuckSelector((s) => s.config);
   const id = usePuckSelector((s) => s.selectedItem?.props.id) as string | undefined;
   const moves = id ? availableMoves(data, config, id) : [];
+  const moveGroup = moves.length ? (
+    <>
+      {moves.map((kind) => (
+        <ActionBar.Action key={kind} label={actionLabels[kind]} aria-label={actionLabels[kind]} onClick={() => runMove(getPuck, id!, kind)}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+            strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+            <path d={icons[kind]} />
+          </svg>
+        </ActionBar.Action>
+      ))}
+    </>
+  ) : null;
+  // F089: a selected Section gets one row (Section, Style, Layout, Move, More); other blocks keep the plain bar.
+  const isSection = usePuckSelector((s) => s.selectedItem?.type) === "Section";
+  const typeBlock = isInlineType(usePuckSelector((s) => s.selectedItem?.type));
   return (
     <ActionBar>
       <ActionBar.Group>
         {parentAction}
         {label ? <ActionBar.Label label={label} /> : null}
       </ActionBar.Group>
-      {moves.length ? (
+      {isSection ? null : moveGroup ? <ActionBar.Group>{moveGroup}</ActionBar.Group> : null}
+      {typeBlock && id ? (
         <ActionBar.Group>
-          {moves.map((kind) => (
-            <ActionBar.Action key={kind} label={actionLabels[kind]} aria-label={actionLabels[kind]} onClick={() => runMove(getPuck, id!, kind)}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
-                <path d={icons[kind]} />
-              </svg>
-            </ActionBar.Action>
-          ))}
+          <ActionBar.Action label="Type on the page" aria-label="Type on the page" onClick={() => startInlineEdit(id)}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+              <path d="M4 7V5h16v2M12 5v14M9 19h6" />
+            </svg>
+          </ActionBar.Action>
         </ActionBar.Group>
       ) : null}
       <ActionBar.Group>{children}</ActionBar.Group>
-      {/* F025: style, height and image for a selected Section. */}
-      <SectionToolbar />
-      {/* F027: keep this section to reuse from the layout library. */}
-      <SaveLayoutAction />
-      {/* F043: show it on many pages, edited in one place. */}
-      <MakeLinkedAction />
+      {isSection ? <SectionToolbar moves={moveGroup} /> : null}
     </ActionBar>
   );
 }

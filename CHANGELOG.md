@@ -4,6 +4,87 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Clicking a heading or text on the page now opens typing (2026-11-10).** Until now only the Enter key did; a real
+  mouse or finger click just selected the block.
+
+- **Plain words and a friendlier builder for keyboard and screen readers (2026-11-10).** The app no longer says
+  "GitHub" anywhere: changes are "saved" or "kept in this browser", and "publish" makes them live (about 75
+  messages). In the builder, the page area and the side panels have names a screen reader announces, there is one
+  heading ("Editing Home"), dragging a block is read out in words instead of codes, a focused control is never
+  hidden under a floating bar, and the Site settings sheet's headings step down in order. The accessibility check
+  now also covers the page preview, the Styles panel and the Site settings sheet.
+
+- **Styles panel and Site settings sheet (2026-11-10).** The paintbrush button
+  on the left opens one panel for the look of the whole site: Styles cards
+  first, then Fine-tune (colours, type, buttons, cards, links, spacing and
+  shape, motion, section styles) and Header & footer, with Save and Discard at
+  the bottom. Site address, search defaults, where to publish, theme packs and
+  Save as template moved to a **Site settings** sheet that opens from the
+  Styles and Site panels. It is a real dialog: Escape closes it and focus goes
+  back to the button. The old Site settings page still works.
+
+- **Pages panel (2026-11-10).** The Pages button on the left now opens a real
+  panel: your pages in two groups, **In the menu** (in the order the menu shows
+  them) and **Not in the menu**. Drag a page to reorder it, or to move it
+  between the groups; with the keyboard, focus its grip and press the up or
+  down arrow, or use Move up and Move down in its **⋯** menu. Each page shows
+  its status in words (Live, Edits not live yet, Only in this browser…). The
+  ⋯ menu holds Page settings (title, search and sharing), Change address,
+  Duplicate, Save to GitHub and Delete. The panel replaces the table on the
+  home screen, so the list is the same in both places.
+
+- **Type on the page (2026-11-10).** Click a heading or a text block on the
+  page and type right there, with a small bar floating above it. Headings get
+  their level (H1 to H4) and Done; text gets bold, italic, link and lists.
+  Escape, Done, or a click elsewhere leaves. With the keyboard, select a block
+  and press Enter, or use "Type on the page" in its bar; Escape puts focus back
+  on the block. Undo covers typing on the page and the side panel alike. The
+  side panel and Quick edit stay as they were.
+- **One-row section toolbar (2026-11-06).** Select a section and its bar is
+  now a single row: **Section** (background picture), **Style** (the four
+  colours, each with its name), **Layout** (height), the move arrows, and
+  **More**. Arrow keys travel along the row; Escape closes a menu. The
+  site-wide actions (change a style everywhere, make linked, save as
+  layout) are under More. "Change everywhere" asks first and says how
+  many sections it touches. The "This section / Whole site" switch is gone
+  from the bar.
+- **Add a section by picture (2026-11-06).** The Add button on the left now
+  shows small pictures of whole sections (hero, features, pricing…) next to
+  your page, with search and categories, so you can see where the section
+  will go. Click a picture and it lands after the selected section. The
+  "+ Add section" bars between sections choose the spot first and open the
+  same panel. Single things like a heading or an image are under "Add an
+  element". "See larger" still opens the big gallery with whole pages and
+  linked sections. One Undo removes the section you added.
+- **Your page first (2026-11-06).** Opening a site takes you straight to
+  its Home page in the editor, drawn at full size instead of shrunk to
+  57%. The settings panel on the right only appears when you select
+  something; the rest of the time the page has the room. The page's title,
+  description and search settings are behind the new settings button
+  next to the page name. A new site starts with a short "Next steps"
+  list that ticks itself off as you go; Skip hides it and Help brings it
+  back.
+- **One top bar, and changes save on their own (2026-11-06).** Every
+  screen has the same top bar: your site's menu on the left, the status
+  ("Saved · 3 changes not live") and Publish with its count on the right.
+  The editor adds a page switcher, device widths, undo and redo, and
+  Preview; a slim icon bar on the left opens Add, Layers, Pages, Styles,
+  Media, Blog, Site and Help. "Save draft" is gone: pages and posts save
+  a few seconds after you stop typing, or at once with Ctrl/⌘+S.
+- **The app in dark and light (2026-11-06).** Crust has a new look: dark
+  violet-black or clean white, with the Geist font and violet only on
+  what you've selected. It follows your computer's light/dark setting;
+  the sun/moon button at the top right switches it and Crust remembers.
+  Your site's own colours don't change.
+- **The Mac app opens (2026-11-06).** It used to bounce in the Dock and
+  never show a window. The app is now signed as one app, so macOS knows
+  it is Crust and can ask about the Documents folder; if that folder
+  can't be used, Crust keeps your sites in its own folder instead of
+  quitting. The first time after downloading, macOS still asks you to
+  choose **Open Anyway** in System Settings → Privacy & Security.
+- **Review fixes (2026-11-06).** The two buttons in the full-photo hero
+  sit together instead of far apart; in the template preview the "Open
+  the file" button is a full-size, easy-to-tap button.
 - **The store launches free (2026-11-05).** All three templates are free
   to download. The store has one short Licence page ("free to use, on as
   many sites as you like, please don't resell the file"); the Terms and

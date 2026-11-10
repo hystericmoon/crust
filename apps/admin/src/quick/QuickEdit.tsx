@@ -11,6 +11,7 @@ import { ImageField } from "../media/ImageField";
 import { fromPuckData, saveLocalDraft, toPuckData } from "../pages/store";
 import { RichTextEditor } from "../rich-text/RichTextEditor";
 import { applyQuickEdit, quickGroups, type QuickField } from "./quick";
+import { ThemeToggle } from "../app-theme/ThemeToggle";
 
 export const fullBuilderHref = (path: string) => `#/edit?path=${encodeURIComponent(path)}&mode=full`;
 
@@ -105,6 +106,7 @@ export function QuickEdit({ page: initial, githubOn, saveMessage }: Props) {
         <a className="qe-full" href={fullBuilderHref(initial.path)}>
           Full builder
         </a>
+        <ThemeToggle />
       </header>
 
       <main className="qe-main">
@@ -162,7 +164,7 @@ export function QuickEdit({ page: initial, githubOn, saveMessage }: Props) {
 
       <footer className="qe-foot">
         <p className="qe-status" role="status" aria-live="polite">
-          {status || (dirty ? "Changes are kept in this browser. Save to put them on GitHub." : "")}
+          {status || (dirty ? "Changes are kept in this browser. Save to keep them for good." : "")}
         </p>
         <div className="qe-actions">
           <button type="button" className={githubOn ? "qe-button" : "qe-button qe-primary"} disabled={busy} onClick={() => void save()}>

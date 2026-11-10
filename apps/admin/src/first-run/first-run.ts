@@ -5,6 +5,7 @@
  * lands in the builder with the "To replace" list open. Shown once: as soon
  * as the first site has its settings, the app opens straight into it.
  */
+import { markNewSite } from "../page-first/store";
 import type { LocalStore } from "../../server/local-store";
 import { CHROME_KEY } from "../chrome-store";
 import { TOKENS_KEY } from "../tokens-store";
@@ -125,6 +126,8 @@ export async function makeFirstSite(
 /** Into the builder on the Home page; the app starts again with the new site. */
 export function landInBuilder(withTemplate: boolean) {
   if (withTemplate) setOpenToReplace();
+  // F087: a new site opens with its Next steps.
+  markNewSite();
   window.location.hash = "#/edit?path=%2F";
   window.location.reload();
 }

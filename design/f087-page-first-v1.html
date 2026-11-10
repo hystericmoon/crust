@@ -1,0 +1,201 @@
+<title>Crust Page First</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column of three framed takes, each a drawn top bar over a mini editor, then the details. */
+:root{
+  --bg:#ffffff;--panel:#fbfafc;--raised:#efedf3;--line:rgba(24,24,27,.1);--ink:#27272a;--mute:#5f5a68;
+  --acc:#7c3aed;--acc-soft:rgba(124,58,237,.08);--pri:#18151d;--pri-fg:#fff;--canvas:#f3f1f6;--ok:#067647;--warn:#b45309;
+  --page:#fff;--page-ink:#1d1b20;
+  --sans:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"Geist Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#120f17;--panel:#16121c;--raised:#2a2533;--line:rgba(255,255,255,.09);--ink:#f6f4f9;--mute:#a49fae;
+  --acc:#a78bfa;--acc-soft:rgba(167,139,250,.16);--pri:#f4f2f7;--pri-fg:#141118;--canvas:#0d0b11;--ok:#4ade80;--warn:#fbbf24;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#120f17;--panel:#16121c;--raised:#2a2533;--line:rgba(255,255,255,.09);--ink:#f6f4f9;--mute:#a49fae;
+  --acc:#a78bfa;--acc-soft:rgba(167,139,250,.16);--pri:#f4f2f7;--pri-fg:#141118;--canvas:#0d0b11;--ok:#4ade80;--warn:#fbbf24;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
+.wrap{max-width:1080px;margin:0 auto;padding-block:40px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:44px}
+h1{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h2{font-size:19px;font-weight:600;margin:0;letter-spacing:-.01em;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+p{margin:0;max-width:68ch}
+.lead{color:var(--mute);margin-top:8px}
+.tag{font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mute)}
+.tag.rec{background:var(--acc-soft);color:var(--acc);border-color:transparent}
+.take{display:grid;gap:14px}
+.take.is-rec .frame{border-color:var(--acc)}
+.frame{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--canvas)}
+.scroll{overflow-x:auto}
+.ed{min-width:760px}
+.top{display:flex;align-items:center;gap:8px;height:48px;padding:0 10px;background:var(--bg);border-bottom:1px solid var(--line);font-size:12.5px}
+.sp{flex:1}
+.site{display:flex;align-items:center;gap:7px;font-weight:600;padding:5px 8px;border-radius:7px}
+.logo{width:20px;height:20px;border-radius:5px;background:var(--pri);color:var(--pri-fg);display:grid;place-items:center;font:600 11px var(--sans)}
+.sel{border:1px solid var(--line);border-radius:7px;padding:5px 9px;display:flex;gap:6px;align-items:center}
+.sel b{font-weight:500}.sel i{font-style:normal;color:var(--mute)}
+.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg span{width:28px;height:26px;display:grid;place-items:center;color:var(--mute)}
+.seg span.on{background:var(--acc-soft);color:var(--acc)}
+.ib{width:28px;height:28px;display:grid;place-items:center;color:var(--mute);border-radius:7px}
+svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.status{display:flex;align-items:center;gap:6px;color:var(--mute);white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--warn)}.dot.ok{background:var(--ok)}
+.btn{border:1px solid var(--line);border-radius:7px;padding:5px 11px;font-weight:500}
+.btn.pri{background:var(--pri);color:var(--pri-fg);border-color:transparent;display:flex;gap:7px;align-items:center}
+.btn.pri em{font:500 11px var(--mono);font-style:normal;background:color-mix(in srgb,var(--pri-fg) 18%,transparent);border-radius:999px;padding:1px 6px}
+.vr{width:1px;height:20px;background:var(--line)}
+.body{display:grid;grid-template-columns:58px 1fr 200px;height:230px}
+.rail{background:var(--bg);border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;font-size:9.5px}
+.rail .it{display:grid;justify-items:center;gap:2px;color:var(--mute);padding:5px 2px;border-radius:7px;width:48px}
+.rail .it.on{background:var(--acc-soft);color:var(--acc)}
+.rail .grow{flex:1}
+.cv{display:grid;place-items:start center;padding:14px;background:radial-gradient(var(--line) 1px,transparent 1px) 0 0/14px 14px}
+.cvbar{display:flex;gap:8px;align-items:center;font-size:11px;color:var(--mute);margin-bottom:8px}
+.pg{width:100%;max-width:420px;background:var(--page);color:var(--page-ink);border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.12);font-size:10px;overflow:hidden}
+.pg .n{display:flex;justify-content:space-between;padding:8px 14px;border-bottom:1px solid #eee}
+.pg .h{padding:22px 14px}.pg .h b{font-size:17px;display:block;letter-spacing:-.02em}
+.pg .band{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 14px 16px}.pg .band i{height:42px;background:#eeecf1;border-radius:3px}
+.side{background:var(--panel);border-left:1px solid var(--line);padding:12px;font-size:11.5px;display:grid;align-content:start;gap:8px}
+.side h4{margin:0;font-size:12px}
+.side .r{height:8px;border-radius:4px;background:var(--raised)}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px 28px;font-size:14px}
+.notes div{min-width:0}
+.notes b{display:block;font-size:12px;font-weight:500;color:var(--mute);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.notes ul{margin:0;padding-left:18px}
+.subbar{display:flex;align-items:center;gap:8px;height:38px;padding:0 10px;background:var(--panel);border-bottom:1px solid var(--line);font-size:12px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:500;color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+td code{font:13px var(--mono)}
+.callout{border-left:3px solid var(--acc);padding:4px 0 4px 14px}
+.body.np{grid-template-columns:58px 1fr}
+.state{font:500 12px/1 var(--mono);color:var(--mute);letter-spacing:.04em;text-transform:uppercase}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,470px),1fr));gap:14px}
+.pair .ed{min-width:460px}
+.pair .body{grid-template-columns:44px 1fr 170px;height:250px}
+.pair .body.np{grid-template-columns:44px 1fr}
+.pair .rail .it{width:36px;font-size:0;gap:0}
+.pair .top{gap:6px;font-size:11.5px}
+.side .x{display:flex;justify-content:space-between;align-items:center}
+.ns{display:grid;gap:6px}
+.ns span{display:flex;gap:7px;align-items:center}
+.ck{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--line);flex:none}
+.ck.ok{background:var(--ok);border-color:var(--ok)}
+.lk{color:var(--acc);font-weight:500}
+.tabs{display:flex;gap:10px;border-bottom:1px solid var(--line);padding-bottom:5px}
+.tabs b{color:var(--acc)}.tabs i{font-style:normal;color:var(--mute)}
+.fl{display:grid;gap:3px}.fl small{color:var(--mute);font-size:10px}
+.inp{border:1px solid var(--line);border-radius:5px;padding:4px 6px;background:var(--bg)}
+.float{position:absolute;right:12px;bottom:12px;width:190px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;font-size:11px;display:grid;gap:7px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.cv{position:relative}
+.scrim{position:absolute;inset:0;background:rgba(10,8,14,.45);display:grid;place-items:center}
+.sheet{width:280px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:11px;display:grid;gap:8px}
+.strip{display:flex;gap:12px;align-items:center;height:34px;padding:0 10px;background:var(--acc-soft);border-bottom:1px solid var(--line);font-size:11px;white-space:nowrap;overflow:hidden}
+.menu{position:absolute;left:96px;top:2px;width:170px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:5px;font-size:11px;display:grid;gap:1px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:2}
+.menu span{padding:5px 7px;border-radius:5px}.menu .on{background:var(--acc-soft);color:var(--acc)}.menu hr{border:0;border-top:1px solid var(--line);margin:3px 0}
+.ed{position:relative}
+.sel.hl{border-color:var(--acc);color:var(--acc)}
+.blk{outline:2px solid var(--acc);outline-offset:-2px}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-desk" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+  <symbol id="i-tab" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-add" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></symbol>
+  <symbol id="i-pages" viewBox="0 0 24 24"><path d="M14 3H6v18h12V7l-4-4Z"/><path d="M14 3v4h4"/></symbol>
+  <symbol id="i-brush" viewBox="0 0 24 24"><path d="M18 3 9 12l3 3 9-9-3-3Z"/><path d="M9 12c-3 0-4 2-4 4s-1 3-2 3c2 2 8 2 9-4"/></symbol>
+  <symbol id="i-img" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></symbol>
+  <symbol id="i-blog" viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M9 8h6M9 12h6M9 16h4"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></symbol>
+</svg>
+
+<main class="wrap">
+  <header>
+    <h1>F087 · Page first</h1>
+    <p class="lead">What you see when you open a site, and where a page's title and search settings live. All three takes open on the Home page in the editor, at full width (no 57% zoom), with blocks inside the Add panel. They differ in how "Next steps" shows up and where page settings open. I'll build take A unless you say otherwise.</p>
+  </header>
+
+  <section class="take is-rec" aria-labelledby="a-h">
+    <h2 id="a-h">A · One panel on the right that follows what you pick <span class="tag rec">Recommended · building this</span></h2>
+    <div class="pair">
+      <div class="take"><span class="state">1 · New site opens, nothing picked</span>
+        <div class="frame scroll" data-ed='{"side":"next"}' aria-label="Take A, state 1: the Home page fills the canvas at full width. On the right a panel titled Next steps with a Skip link lists: Change the headline (done), Replace the photos, Add your contact details, Preview on a phone, Publish."></div></div>
+      <div class="take"><span class="state">2 · Page settings (from the page switcher)</span>
+        <div class="frame scroll" data-ed='{"side":"page","hl":1}' aria-label="Take A, state 2: the page switcher is highlighted and the right panel shows Home page settings with two tabs, Page and Search, and fields for Page title and Description."></div></div>
+      <div class="take"><span class="state">3 · Nothing picked, Next steps skipped</span>
+        <div class="frame scroll" data-ed='{"side":null}' aria-label="Take A, state 3: no right panel at all; the page uses the full width between the left icon bar and the window edge."></div></div>
+      <div class="take"><span class="state">4 · A section picked</span>
+        <div class="frame scroll" data-ed='{"side":"block","blk":1}' aria-label="Take A, state 4: the hero section is outlined and the right panel shows its settings with Content, Style and Advanced tabs."></div></div>
+    </div>
+    <div class="notes">
+      <div><b>Why</b>One place for "settings of the thing I'm on": a block, the page, or the to-do list. Figma, Framer and Webflow all work this way, so the rule is learnable in one go (consistency, Nielsen #4). The page gets the full width until you need a panel (focus on content, progressive disclosure).</div>
+      <div><b>How you get there</b>Page settings: "Page settings" in the page switcher menu (and in the Pages panel later, F091). Esc or a click on the grey area around the page drops the selection and closes a block's panel. Next steps comes back from Help. Closing the panel (× or the panel button) never loses anything.</div>
+      <div><b>Trade-off</b>The canvas width changes when the panel opens. I keep the page at "fit width" so it rescales instead of jumping, and the panel slides in under 200 ms (off with Reduce motion).</div>
+    </div>
+  </section>
+
+  <section class="take" aria-labelledby="b-h">
+    <h2 id="b-h">B · Floating card and a page settings dialog <span class="tag">Option</span></h2>
+    <div class="pair">
+      <div class="take"><span class="state">1 · New site opens</span>
+        <div class="frame scroll" data-ed='{"side":null,"float":1}' aria-label="Take B, state 1: no right panel; a floating Next steps card sits over the bottom right corner of the page."></div></div>
+      <div class="take"><span class="state">2 · Page settings</span>
+        <div class="frame scroll" data-ed='{"side":null,"sheet":1}' aria-label="Take B, state 2: the canvas is dimmed and a centred dialog titled Home page settings shows Page and Search tabs, title and description fields, Cancel and Save."></div></div>
+    </div>
+    <div class="notes">
+      <div><b>Why</b>Squarespace's model: page settings are a separate, "formal" place, so they feel safe to change.</div>
+      <div><b>Trade-off</b>The card covers part of the page you're editing. The dialog hides the page, so you can't see the title change on the canvas, and it brings back Save/Cancel when everything else saves on its own.</div>
+    </div>
+  </section>
+
+  <section class="take" aria-labelledby="c-h">
+    <h2 id="c-h">C · Checklist strip on top, settings in the Pages panel <span class="tag">Option</span></h2>
+    <div class="pair">
+      <div class="take"><span class="state">1 · New site opens</span>
+        <div class="frame scroll" data-ed='{"side":null,"strip":1}' aria-label="Take C, state 1: a thin violet strip under the top bar reads Next steps 1 of 5, Replace the photos, with Show all and Skip."></div></div>
+      <div class="take"><span class="state">2 · Page settings</span>
+        <div class="frame scroll" data-ed='{"side":null,"rail":"pages","menu":1}' aria-label="Take C, state 2: the Pages panel is open on the left; the Home row has a menu with Rename, Page settings, Duplicate and Delete."></div></div>
+    </div>
+    <div class="notes">
+      <div><b>Why</b>Wix's model: pages and their settings live together. The strip is always visible without taking width.</div>
+      <div><b>Trade-off</b>Page settings depend on the Pages panel (F091) and hide two clicks deep. The strip costs height on every screen until it's done or skipped.</div>
+    </div>
+  </section>
+
+  <section aria-labelledby="x-h" style="display:grid;gap:10px">
+    <h2 id="x-h">Accessibility in all takes</h2>
+    <div class="notes">
+      <div><b>Keyboard</b>Esc on a picked block goes back to "nothing picked"; the panel's first field gets focus when it opens from a menu, and focus returns to the switcher when it closes.</div>
+      <div><b>Screen readers</b>The panel is a labelled region ("Settings: Hero section", "Settings: Home page", "Next steps"); its title change is announced politely.</div>
+      <div><b>Next steps</b>Real checkboxes that tick themselves; Skip is a button, 44 px target; it remembers per site.</div>
+    </div>
+  </section>
+</main>
+
+<script>
+const I=n=>`<svg><use href="#i-${n}"/></svg>`;
+const side={
+ next:`<div class="side"><div class="x"><h4>Next steps</h4><span class="lk">Skip</span></div><div class="ns"><span><i class="ck ok"></i>Change the headline</span><span><i class="ck"></i>Replace the photos</span><span><i class="ck"></i>Add contact details</span><span><i class="ck"></i>Preview on a phone</span><span><i class="ck"></i>Publish</span></div></div>`,
+ page:`<div class="side"><div class="x"><h4>Home · page</h4><span>×</span></div><div class="tabs"><b>Page</b><i>Search</i></div><div class="fl"><small>Page title</small><span class="inp">Home</span></div><div class="fl"><small>Description</small><span class="inp">Interior design in…</span></div></div>`,
+ block:`<div class="side"><div class="x"><h4>Hero section</h4><span>×</span></div><div class="tabs"><b>Content</b><i>Style</i><i>Advanced</i></div><div class="fl"><small>Heading</small><span class="inp">Calm rooms…</span></div><div class="r"></div><div class="r" style="width:60%"></div></div>`};
+document.querySelectorAll('[data-ed]').forEach(f=>{
+ const o=JSON.parse(f.dataset.ed);
+ const rail=['add','layers','pages','brush','img','blog'].map(n=>`<span class="it${(o.rail||'')===n?' on':''}">${I(n)}</span>`).join('')+`<span class="grow"></span><span class="it">${I('gear')}</span><span class="it">${I('help')}</span>`;
+ const page=`<div class="pg"><div class="n"><b>Harbour Studio</b><span>Work · About · Contact</span></div><div class="h${o.blk?' blk':''}"><b>Calm rooms for busy lives</b>Interior design in Jakarta and Bandung.</div><div class="band"><i></i><i></i><i></i></div></div>`;
+ let extra='';
+ if(o.float)extra=`<div class="float"><div class="x" style="display:flex;justify-content:space-between"><b>Next steps · 1/5</b><span class="lk">Skip</span></div><div class="ns"><span><i class="ck ok"></i>Change the headline</span><span><i class="ck"></i>Replace the photos</span><span><i class="ck"></i>Add contact details</span></div></div>`;
+ if(o.sheet)extra=`<div class="scrim"><div class="sheet"><b>Home · page settings</b><div class="tabs"><b>Page</b><i>Search</i></div><div class="fl"><small>Page title</small><span class="inp">Home</span></div><div style="display:flex;gap:6px;justify-content:flex-end"><span class="btn">Cancel</span><span class="btn pri">Save</span></div></div></div>`;
+ const menu=o.menu?`<div class="menu" style="left:50px;top:40px"><b style="padding:4px 7px">Pages</b><span class="on">Home ⋯</span><span style="padding-left:16px">Rename</span><span style="padding-left:16px" class="on">Page settings</span><span style="padding-left:16px">Duplicate</span><hr><span>About</span><span>Contact</span></div>`:'';
+ f.innerHTML=`<div class="ed" role="img" aria-label="${f.getAttribute('aria-label')}"><div class="top"><span class="site"><span class="logo">H</span>Harbour${I('down')}</span><span class="sel${o.hl?' hl':''}"><i>Page</i><b>Home</b>${I('down')}</span><span class="sp"></span><span class="ib">${I('undo')}</span><span class="status"><span class="dot"></span>Saved</span><span class="btn">Preview</span><span class="btn pri">Publish<em>3</em></span></div>${o.strip?`<div class="strip"><b>Next steps · 1 of 5</b><span>Replace the photos</span><span class="sp"></span><span class="lk">Show all</span><span class="lk">Skip</span></div>`:''}<div class="body${o.side?'':' np'}"><div class="rail">${rail}</div><div class="cv">${page}${extra}${menu}</div>${o.side?side[o.side]:''}</div></div>`;
+ f.removeAttribute('aria-label');
+});
+</script>

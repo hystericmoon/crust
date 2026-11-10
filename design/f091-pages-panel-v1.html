@@ -1,0 +1,59 @@
+<title>Pages Panel Directions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: three left-panel drawings side by side, each a small phone-width panel next to a faded page. Tokens are the app's own (app-theme.css). */
+:root{--app-font:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;--app-mono:"Geist Mono",ui-monospace,Menlo,Consolas,monospace;
+--app-bg:#fff;--app-panel:#fbfafc;--app-raised:#efedf3;--app-fill:rgba(24,24,27,.03);--app-hover:rgba(24,24,27,.06);--app-line:rgba(24,24,27,.1);--app-line-strong:#857f8f;--app-ink:#27272a;--app-mute:#5f5a68;--app-acc:#7c3aed;--app-acc-soft:rgba(124,58,237,.08);--app-warn:#b45309;--app-ok:#067647;--app-canvas:#f3f1f6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--app-bg:#120f17;--app-panel:#16121c;--app-raised:#2a2533;--app-fill:rgba(255,255,255,.04);--app-hover:rgba(255,255,255,.07);--app-line:rgba(255,255,255,.09);--app-line-strong:#6f6879;--app-ink:#f6f4f9;--app-mute:#a49fae;--app-acc:#a78bfa;--app-acc-soft:rgba(167,139,250,.16);--app-warn:#f5b454;--app-ok:#5fcf93;--app-canvas:#0d0b11;color-scheme:dark}}
+:root[data-theme="dark"]{--app-bg:#120f17;--app-panel:#16121c;--app-raised:#2a2533;--app-fill:rgba(255,255,255,.04);--app-hover:rgba(255,255,255,.07);--app-line:rgba(255,255,255,.09);--app-line-strong:#6f6879;--app-ink:#f6f4f9;--app-mute:#a49fae;--app-acc:#a78bfa;--app-acc-soft:rgba(167,139,250,.16);--app-warn:#f5b454;--app-ok:#5fcf93;--app-canvas:#0d0b11;color-scheme:dark}
+body{background:var(--app-bg);color:var(--app-ink);font-family:var(--app-font);padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));line-height:1.5}
+main{max-width:1100px;margin:0 auto;display:grid;gap:24px}
+h1{font-size:1.5rem;margin:0;text-wrap:balance}h2{font-size:1.0625rem;margin:0}p{margin:0}.lede{color:var(--app-mute);max-width:65ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));gap:20px;align-items:start}
+.opt{display:grid;gap:10px;min-width:0}.rec{outline:2px solid var(--app-acc);outline-offset:6px;border-radius:12px}
+.tag{display:inline-block;font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--app-acc)}
+.panel{background:var(--app-panel);border:1px solid var(--app-line);border-radius:10px;padding:14px;display:grid;gap:8px;font-size:.8125rem}
+.ph{font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--app-mute);display:flex;justify-content:space-between;align-items:center}
+.btn{border:1px solid var(--app-line-strong);border-radius:8px;padding:2px 10px;min-height:28px;display:inline-flex;align-items:center;background:transparent;color:var(--app-ink);font:inherit;font-size:.75rem}
+.grp{font-size:.6875rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--app-mute);margin-top:4px}
+.row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;border:1px solid transparent}.row.on{background:var(--app-acc-soft);border-color:var(--app-acc)}
+.row:hover{background:var(--app-hover)}.grip{color:var(--app-mute);letter-spacing:-2px}.name{flex:1;min-width:0}.name small{display:block;color:var(--app-mute);font-family:var(--app-mono);font-size:.6875rem}
+.dot{width:9px;height:9px;border-radius:50%;flex:none;box-sizing:border-box}.live{background:var(--app-ok)}.ed{border:2px solid var(--app-warn)}.loc{border:2px solid var(--app-mute)}
+.st{font-size:.6875rem;color:var(--app-mute);white-space:nowrap}.more{color:var(--app-mute);font-weight:700}
+.menu{background:var(--app-raised);border:1px solid var(--app-line-strong);border-radius:8px;padding:4px;display:grid;font-size:.75rem;margin-left:24px}.menu span{padding:4px 8px;border-radius:6px}.menu span:first-child{background:var(--app-hover)}
+.ind{margin-left:22px}.tbl{width:100%;border-collapse:collapse;font-size:.75rem}.tbl th,.tbl td{text-align:left;padding:6px 4px;border-bottom:1px solid var(--app-line)}
+ul.pro{margin:0;padding-left:18px;color:var(--app-mute);font-size:.8125rem}
+</style>
+<main>
+<div><h1>Pages panel</h1><p class="lede">The Pages icon in the left bar opens a panel with every page. It replaces the table on the home screen and works while you edit. Three ways to draw it, with the same menu behind each page: Page settings (title, address, search and sharing), Rename address, Duplicate, Delete.</p></div>
+<div class="grid">
+<section class="opt rec" aria-label="Direction A, recommended"><span class="tag">A · Recommended</span><h2>Two groups, one list</h2>
+<div class="panel"><div class="ph">Pages <span class="btn">+ New page</span></div>
+<div class="grp">In the menu</div>
+<div class="row on"><span class="grip" aria-hidden="true">⋮⋮</span><span class="dot live"></span><span class="name">Home<small>/</small></span><span class="st">Live</span><span class="more">⋯</span></div>
+<div class="row"><span class="grip" aria-hidden="true">⋮⋮</span><span class="dot ed"></span><span class="name">About<small>/about</small></span><span class="st">Edits not live</span><span class="more">⋯</span></div>
+<div class="menu"><span>Page settings</span><span>Move up</span><span>Take out of menu</span><span>Duplicate</span><span>Delete</span></div>
+<div class="row"><span class="grip" aria-hidden="true">⋮⋮</span><span class="dot live"></span><span class="name">Contact<small>/contact</small></span><span class="st">Live</span><span class="more">⋯</span></div>
+<div class="grp">Not in the menu</div>
+<div class="row"><span class="dot loc"></span><span class="name">Thank you<small>/thanks</small></span><span class="st">Only in this browser</span><span class="more">⋯</span></div></div>
+<ul class="pro"><li>Drag a page to reorder, or between groups to add or remove it from the menu.</li><li>Keyboard: focus the grip, Up and Down arrows move it; the menu has Move up, Move down.</li><li>The status is a dot plus words.</li></ul></section>
+
+<section class="opt" aria-label="Direction B"><span class="tag" style="color:var(--app-mute)">B</span><h2>Menu as a tree</h2>
+<div class="panel"><div class="ph">Pages <span class="btn">+ New page</span></div>
+<div class="grp">Site menu</div>
+<div class="row"><span class="dot live"></span><span class="name">Home</span><span class="more">⋯</span></div>
+<div class="row"><span class="dot ed"></span><span class="name">Services</span><span class="more">⋯</span></div>
+<div class="row ind"><span class="dot live"></span><span class="name">Pricing</span><span class="more">⋯</span></div>
+<div class="row ind"><span class="dot live"></span><span class="name">Process</span><span class="more">⋯</span></div>
+<div class="grp">Other pages</div>
+<div class="row"><span class="dot loc"></span><span class="name">Thank you</span><span class="more">⋯</span></div></div>
+<ul class="pro"><li>Shows dropdowns as they appear on the site.</li><li>Heavier to learn, and nesting is already in Header and footer.</li></ul></section>
+
+<section class="opt" aria-label="Direction C"><span class="tag" style="color:var(--app-mute)">C</span><h2>Compact table</h2>
+<div class="panel"><div class="ph">Pages <span class="btn">+ New page</span></div>
+<table class="tbl"><thead><tr><th>Page</th><th>Menu</th><th>Status</th></tr></thead><tbody>
+<tr><td>Home</td><td>1</td><td><span class="dot live" style="display:inline-block"></span> Live</td></tr>
+<tr><td>About</td><td>2</td><td><span class="dot ed" style="display:inline-block"></span> Edits</td></tr>
+<tr><td>Thank you</td><td>–</td><td><span class="dot loc" style="display:inline-block"></span> Local</td></tr></tbody></table></div>
+<ul class="pro"><li>Closest to today's table.</li><li>Menu order is a number to type; no drag, and it is cramped in a narrow panel.</li></ul></section>
+</div></main>

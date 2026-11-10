@@ -1,0 +1,184 @@
+/* F085: the app's own look ("take A · Violet night", design/f085-app-themes-v1.html).
+   Every colour the app's chrome uses is a token here, defined once: light on
+   :root, dark under :root[data-app-theme="dark"]. The site being edited (the
+   canvas and the previews) keeps its own design; nothing here styles it.
+
+   Violet (--app-acc) is only for selection, active, focus and links. The
+   primary button is ink-black in light and white in dark (--app-pri).
+   Every text pair is at least 4.5:1 and every boundary that matters (field
+   borders, focus ring, selection) at least 3:1 in both themes: checked by
+   app-theme-contrast.test.ts.
+
+   Puck copies the page's styles and the <html> attributes into the canvas
+   iframe, so nothing here may style plain elements (body, h1…) without a
+   class or the app's #root: tokens alone are harmless there. The colour
+   scheme for native controls is set with <meta name="color-scheme"> (see
+   index.html and theme.ts), which Puck doesn't copy. */
+
+/* Geist and Geist Mono (SIL OFL 1.1) come with the site fonts (F070), served
+   at /fonts/; their @font-face rules are added by installAppFonts (theme.ts),
+   so the desktop app needs no network. */
+
+/* app-theme:light */
+:root {
+  --app-font: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --app-mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  --app-bg: #ffffff;
+  --app-top: #ffffff;
+  --app-panel: #fbfafc;
+  --app-raised: #efedf3;
+  --app-fill: rgba(24, 24, 27, 0.03);
+  --app-hover: rgba(24, 24, 27, 0.06);
+  --app-line: rgba(24, 24, 27, 0.1);
+  --app-line-strong: #857f8f;
+  --app-ink: #27272a;
+  --app-mute: #5f5a68;
+  --app-acc: #7c3aed;
+  --app-acc-hover: #6d28d9;
+  --app-acc-fg: #ffffff;
+  --app-acc-soft: rgba(124, 58, 237, 0.08);
+  --app-pri: #18151d;
+  --app-pri-hover: #3a3542;
+  --app-pri-fg: #ffffff;
+  --app-canvas: #f3f1f6;
+  --app-dot: rgba(24, 24, 27, 0.08);
+  --app-warn: #b45309;
+  --app-warn-hover: #92400e;
+  --app-warn-fg: #ffffff;
+  --app-warn-soft: #fff7ed;
+  --app-danger: #b42318;
+  --app-danger-hover: #912018;
+  --app-danger-fg: #ffffff;
+  --app-danger-soft: #fef3f2;
+  --app-ok: #067647;
+  --app-ok-soft: #ecfdf3;
+  --app-shadow: rgba(24, 20, 30, 0.14);
+  --app-backdrop: rgba(18, 15, 23, 0.55);
+}
+
+/* app-theme:dark */
+:root[data-app-theme="dark"] {
+  --app-bg: #120f17;
+  --app-top: #120f17;
+  --app-panel: #16121c;
+  --app-raised: #2a2533;
+  --app-fill: rgba(255, 255, 255, 0.04);
+  --app-hover: rgba(255, 255, 255, 0.07);
+  --app-line: rgba(255, 255, 255, 0.09);
+  --app-line-strong: #6f6879;
+  --app-ink: #f6f4f9;
+  --app-mute: #a49fae;
+  --app-acc: #a78bfa;
+  --app-acc-hover: #c4b5fd;
+  --app-acc-fg: #120f17;
+  --app-acc-soft: rgba(167, 139, 250, 0.16);
+  --app-pri: #f4f2f7;
+  --app-pri-hover: #d9d4e0;
+  --app-pri-fg: #141118;
+  --app-canvas: #0d0b11;
+  --app-dot: rgba(255, 255, 255, 0.06);
+  --app-warn: #f5b454;
+  --app-warn-hover: #f8c97f;
+  --app-warn-fg: #120f17;
+  --app-warn-soft: rgba(245, 180, 84, 0.12);
+  --app-danger: #ff8f7a;
+  --app-danger-hover: #ffb2a3;
+  --app-danger-fg: #120f17;
+  --app-danger-soft: rgba(255, 143, 122, 0.12);
+  --app-ok: #5fcf93;
+  --app-ok-soft: rgba(95, 207, 147, 0.12);
+  --app-shadow: rgba(0, 0, 0, 0.5);
+  --app-backdrop: rgba(5, 4, 8, 0.7);
+}
+
+/* Puck's chrome (side panels, top bar, fields) in the app's colours and font.
+   Puck keeps its tokens in a cascade layer, so these win. */
+:root {
+  --puck-font-family: var(--app-font);
+  --puck-font-family-monospaced: var(--app-mono);
+  --puck-color-surface: var(--app-panel);
+  --puck-color-surface-subtle: var(--app-panel);
+  --puck-color-surface-muted: var(--app-raised);
+  --puck-color-surface-inverse: var(--app-pri);
+  --puck-color-text: var(--app-ink);
+  --puck-color-text-primary: var(--app-ink);
+  --puck-color-text-secondary: var(--app-mute);
+  --puck-color-text-muted: var(--app-mute);
+  --puck-color-text-subtle: var(--app-mute);
+  --puck-color-text-disabled: var(--app-mute);
+  --puck-color-text-inverse: var(--app-pri-fg);
+  --puck-color-border: var(--app-line);
+  --puck-color-border-muted: var(--app-line);
+  --puck-color-border-hover: var(--app-line-strong);
+  --puck-color-border-inverse: var(--app-line-strong);
+  --puck-color-bg-disabled: var(--app-raised);
+  --puck-color-focus-ring: var(--app-acc);
+  --puck-color-interactive: var(--app-acc);
+  --puck-color-interactive-hover: var(--app-acc-hover);
+  --puck-color-interactive-active: var(--app-acc-hover);
+  --puck-color-interactive-inverse-hover: var(--app-acc-hover);
+  --puck-color-interactive-inverse-active: var(--app-acc-hover);
+  --puck-color-interactive-neutral-hover: var(--app-hover);
+  --puck-color-interactive-soft: var(--app-acc-soft);
+  --puck-color-interactive-soft-hover: var(--app-acc-soft);
+  --puck-color-interactive-subtle: var(--app-acc-soft);
+  --puck-color-selection-border: var(--app-acc);
+  --puck-color-selection-bg: var(--app-acc-soft);
+  --puck-color-line-placeholder: var(--app-acc);
+  --puck-color-overlay-backdrop: var(--app-backdrop);
+  /* The few places Puck names a grey or blue step directly. */
+  --puck-color-white: var(--app-panel);
+  --puck-color-black: var(--app-ink);
+  --puck-color-grey-01: var(--app-ink);
+  --puck-color-grey-02: var(--app-ink);
+  --puck-color-grey-03: var(--app-ink);
+  --puck-color-grey-04: var(--app-mute);
+  --puck-color-grey-05: var(--app-mute);
+  --puck-color-grey-06: var(--app-line-strong);
+  --puck-color-grey-07: var(--app-line-strong);
+  --puck-color-grey-08: var(--app-line-strong);
+  --puck-color-grey-09: var(--app-line);
+  --puck-color-grey-10: var(--app-hover);
+  --puck-color-grey-11: var(--app-raised);
+  --puck-color-grey-12: var(--app-panel);
+  --puck-color-azure-04: var(--app-acc);
+  --puck-color-azure-05: var(--app-acc);
+  --puck-color-azure-06: var(--app-acc);
+  --puck-color-azure-07: var(--app-acc);
+  --puck-color-azure-08: var(--app-acc);
+  --puck-color-azure-09: var(--app-acc-soft);
+  --puck-color-azure-10: var(--app-acc-soft);
+  --puck-color-azure-11: var(--app-acc-soft);
+  --puck-color-azure-12: var(--app-acc-soft);
+}
+
+/* The app's own page: background, ink and font. #root is the app's mount
+   point; the canvas iframe has none, so the site keeps its own. */
+body:has(> #root) {
+  margin: 0;
+  background: var(--app-bg);
+  color: var(--app-ink);
+  font-family: var(--app-font);
+}
+#root ::selection { background: var(--app-acc); color: var(--app-acc-fg); }
+
+/* Puck's top bar and canvas well: the dotted canvas of the design. */
+:root {
+  --puck-header-color-bg: var(--app-top);
+  --puck-canvas-color-bg: var(--app-canvas) radial-gradient(var(--app-dot) 1px, transparent 1px) 0 0 / 14px 14px;
+}
+
+/* F085: the light/dark switch (ThemeToggle). */
+.app-theme-toggle {
+  display: inline-grid; place-items: center; flex: none;
+  width: 36px; height: 36px; padding: 0;
+  border: 1px solid var(--app-line-strong); border-radius: 10px;
+  background: var(--app-fill); color: var(--app-ink); cursor: pointer;
+}
+.app-theme-toggle:hover { background: var(--app-hover); }
+.app-theme-toggle:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
+.app-theme-toggle svg { width: 18px; height: 18px; }
+.st-header .app-theme-toggle { width: 44px; height: 44px; }
+/* On screens without an actions group the switch goes to the far end. */
+.st-header:not(:has(.st-actions)) > .app-theme-toggle { margin-left: auto; }

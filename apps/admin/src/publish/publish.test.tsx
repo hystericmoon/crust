@@ -25,7 +25,7 @@ describe("publish status in plain words", () => {
 describe("publish panel", () => {
   it("explains that publishing needs GitHub switched on", () => {
     render(<PublishPanel githubOn={false} siteUrl="https://site.dev" />);
-    expect(screen.getByText(/switches on together with saving to GitHub/)).toBeTruthy();
+    expect(screen.getByText(/switches on together with saving/)).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Publish site" })).toBeNull();
   });
 

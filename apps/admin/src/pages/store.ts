@@ -2,7 +2,7 @@
  * Where pages come from in the admin (F007):
  *  - GitHub, through the API, once saving is switched on;
  *  - otherwise the pages bundled into the app at build time (content/pages);
- *  - plus drafts kept in this browser, which win until they're saved to GitHub.
+ *  - plus drafts kept in this browser, which win until they're saved.
  */
 import { countPlaceholders, migrateRichText, type Page } from "@crust/blocks";
 import type { Data } from "@puckeditor/core";
@@ -14,7 +14,7 @@ export interface LocalDraft {
   page: Page;
   /** ISO time of the last save in this browser. */
   updatedAt: string;
-  /** True once the same version was saved to GitHub. */
+  /** True once the same version was saved. */
   savedToGitHub: boolean;
 }
 
@@ -27,7 +27,7 @@ export interface PageRow {
   localChanges: boolean;
   /** Exists on GitHub (or in the app's bundled content), not only in this browser. */
   inRepo: boolean;
-  /** Saved to GitHub but not live yet (F016). */
+  /** Saved but not live yet (F016). */
   unpublished?: "new" | "edited";
   /** F046: how many template placeholders are left to replace. */
   placeholders?: number;

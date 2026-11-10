@@ -1,60 +1,60 @@
 /* Layout library (F026): the gallery dialog (main page) and the "+" buttons
    between sections (canvas; Puck copies these styles into the iframe).
-   Blue (#4338ca) is the builder's "selected / add" colour. */
+   The accent (--app-acc, F085) is the builder's "selected" colour; "+" is the primary. */
 
 /* --- Gallery ------------------------------------------------------------------ */
 .lg-dialog {
   width: min(1180px, calc(100vw - 32px)); height: min(860px, calc(100vh - 32px)); height: min(860px, calc(100dvh - 32px));
-  max-width: none; max-height: none; padding: 0; border: 1px solid #85858f; border-radius: 14px;
-  background: #fff; color: #18181b; overflow: hidden;
-  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  max-width: none; max-height: none; padding: 0; border: 1px solid var(--app-line-strong); border-radius: 14px;
+  background: var(--app-panel); color: var(--app-ink); overflow: hidden;
+  font: 15px/1.45 var(--app-font);
 }
-.lg-dialog::backdrop { background: rgb(9 9 11 / 0.55); }
+.lg-dialog::backdrop { background: var(--app-backdrop); }
 .lg-box { display: flex; flex-direction: column; height: 100%; }
 
 .lg-head {
   display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-  padding: 16px 20px; border-bottom: 1px solid #e4e4e7;
+  padding: 16px 20px; border-bottom: 1px solid var(--app-line);
 }
 .lg-head-text { flex: 1 1 240px; min-width: 0; }
 .lg-head h2 { margin: 0; font-size: 1.25rem; line-height: 1.2; }
-.lg-where { margin: 2px 0 0; color: #52525b; font-size: 0.875rem; }
+.lg-where { margin: 2px 0 0; color: var(--app-mute); font-size: 0.875rem; }
 
-.lg-kind { display: flex; padding: 3px; gap: 2px; border: 1px solid #d4d4d8; border-radius: 10px; background: #f4f4f5; }
+.lg-kind { display: flex; padding: 3px; gap: 2px; border: 1px solid var(--app-line); border-radius: 10px; background: var(--app-raised); }
 .lg-kind-option {
   min-height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: transparent;
-  color: #3f3f46; font: inherit; font-size: 0.875rem; font-weight: 600; cursor: pointer;
+  color: var(--app-mute); font: inherit; font-size: 0.875rem; font-weight: 600; cursor: pointer;
 }
-.lg-kind-option[aria-checked="true"] { background: #fff; color: #3730a3; box-shadow: 0 1px 2px rgb(0 0 0 / 0.12), inset 0 0 0 1.5px #4338ca; }
+.lg-kind-option[aria-checked="true"] { background: var(--app-panel); color: var(--app-acc); box-shadow: 0 1px 2px var(--app-shadow), inset 0 0 0 1.5px var(--app-acc); }
 
 .lg-close {
-  min-height: 36px; padding: 0 14px; border: 1px solid #85858f; border-radius: 8px;
-  background: #fff; color: #18181b; font: inherit; font-size: 0.875rem; font-weight: 600; cursor: pointer;
+  min-height: 36px; padding: 0 14px; border: 1px solid var(--app-line-strong); border-radius: 8px;
+  background: var(--app-panel); color: var(--app-ink); font: inherit; font-size: 0.875rem; font-weight: 600; cursor: pointer;
 }
-.lg-close:hover { background: #f4f4f5; }
+.lg-close:hover { background: var(--app-hover); }
 
 .lg-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 200px minmax(0, 1fr); }
-.lg-side { padding: 16px 12px; border-right: 1px solid #e4e4e7; overflow: auto; background: #fafafa; }
+.lg-side { padding: 16px 12px; border-right: 1px solid var(--app-line); overflow: auto; background: var(--app-fill); }
 .lg-cats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
 .lg-cat {
   display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%;
   min-height: 36px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent;
-  color: #3f3f46; font: inherit; font-size: 0.875rem; text-align: left; cursor: pointer;
+  color: var(--app-mute); font: inherit; font-size: 0.875rem; text-align: left; cursor: pointer;
 }
-.lg-cat:hover { background: #f4f4f5; color: #18181b; }
-.lg-cat[aria-pressed="true"] { background: #eef2ff; color: #3730a3; font-weight: 600; }
-.lg-cat-count { color: #71717a; font-size: 0.75rem; font-variant-numeric: tabular-nums; }
-.lg-cat[aria-pressed="true"] .lg-cat-count { color: #3730a3; }
-.lg-side-note { margin: 4px; color: #52525b; font-size: 0.875rem; }
+.lg-cat:hover { background: var(--app-hover); color: var(--app-ink); }
+.lg-cat[aria-pressed="true"] { background: var(--app-acc-soft); color: var(--app-acc); font-weight: 600; }
+.lg-cat-count { color: var(--app-mute); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+.lg-cat[aria-pressed="true"] .lg-cat-count { color: var(--app-acc); }
+.lg-side-note { margin: 4px; color: var(--app-mute); font-size: 0.875rem; }
 
 .lg-main { overflow: auto; padding: 16px 20px 24px; display: flex; flex-direction: column; gap: 8px; }
 .lg-search { display: flex; flex-direction: column; gap: 4px; }
-.lg-search-label { font-size: 0.8125rem; font-weight: 600; color: #3f3f46; }
+.lg-search-label { font-size: 0.8125rem; font-weight: 600; color: var(--app-mute); }
 .lg-search input {
-  min-height: 40px; padding: 0 12px; border: 1px solid #85858f; border-radius: 8px;
-  background: #fff; color: #18181b; font: inherit; max-width: 420px;
+  min-height: 40px; padding: 0 12px; border: 1px solid var(--app-line-strong); border-radius: 8px;
+  background: var(--app-panel); color: var(--app-ink); font: inherit; max-width: 420px;
 }
-.lg-count { margin: 0; color: #52525b; font-size: 0.8125rem; }
+.lg-count { margin: 0; color: var(--app-mute); font-size: 0.8125rem; }
 .lg-count:empty { display: none; }
 
 .lg-grid {
@@ -66,33 +66,33 @@
 /* A card is one big target: the button's ::after stretches over the preview. */
 .lg-card {
   position: relative; display: flex; flex-direction: column;
-  border: 1px solid #d4d4d8; border-radius: 10px; background: #fff; overflow: hidden;
+  border: 1px solid var(--app-line); border-radius: 10px; background: var(--app-panel); overflow: hidden;
   transition: border-color 120ms, box-shadow 120ms;
 }
-.lg-card:hover { border-color: #4338ca; box-shadow: 0 4px 14px rgb(67 56 202 / 0.14); }
-.lg-card:has(.lg-card-button:focus-visible) { border-color: #4338ca; box-shadow: 0 0 0 3px #18181b; }
-.lg-thumb { position: relative; overflow: hidden; border-bottom: 1px solid #e4e4e7; background: var(--cr-color-background, #fff); }
+.lg-card:hover { border-color: var(--app-acc); box-shadow: 0 4px 14px var(--app-acc-soft); }
+.lg-card:has(.lg-card-button:focus-visible) { border-color: var(--app-acc); box-shadow: 0 0 0 3px var(--app-acc); }
+.lg-thumb { position: relative; overflow: hidden; border-bottom: 1px solid var(--app-line); background: var(--cr-color-background, #fff); }
 .lg-thumb-page { position: absolute; top: 0; left: 0; transform-origin: top left; pointer-events: none; }
 .lg-card-text { padding: 8px 12px 10px; display: flex; flex-direction: column; gap: 2px; }
 .lg-card-button {
   display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 0;
-  border: 0; background: none; color: #18181b; font: inherit; text-align: left; cursor: pointer;
+  border: 0; background: none; color: var(--app-ink); font: inherit; text-align: left; cursor: pointer;
 }
 .lg-card-button::after { content: ""; position: absolute; inset: 0; border-radius: 10px; }
 .lg-card-button:focus-visible { outline: none; }
 .lg-card-name { font-weight: 600; font-size: 0.9375rem; }
-.lg-card-meta { flex: none; color: #52525b; font-size: 0.75rem; }
-.lg-card-desc { margin: 0; color: #52525b; font-size: 0.8125rem; }
+.lg-card-meta { flex: none; color: var(--app-mute); font-size: 0.75rem; }
+.lg-card-desc { margin: 0; color: var(--app-mute); font-size: 0.8125rem; }
 
-.lg-empty { padding: 32px 0; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; color: #3f3f46; }
+.lg-empty { padding: 32px 0; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; color: var(--app-mute); }
 .lg-empty p { margin: 0; }
 
-.lg-dialog :is(button, input):focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
+.lg-dialog :is(button, input):focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
 
 @media (max-width: 760px) {
   .lg-dialog { width: 100vw; height: 100dvh; border-radius: 0; border: 0; }
   .lg-body { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
-  .lg-side { border-right: 0; border-bottom: 1px solid #e4e4e7; padding: 8px 12px; overflow-x: auto; }
+  .lg-side { border-right: 0; border-bottom: 1px solid var(--app-line); padding: 8px 12px; overflow-x: auto; }
   .lg-cats { flex-direction: row; }
   .lg-cat { white-space: nowrap; }
   .lg-main { padding: 12px 16px 20px; }
@@ -100,24 +100,24 @@
 
 /* --- "+" between sections (canvas) ---------------------------------------------- */
 .lg-inserters { position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: 2147483000; }
-.lg-insert, .lg-insert-empty { position: absolute; transform-origin: center; cursor: pointer; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+.lg-insert, .lg-insert-empty { position: absolute; transform-origin: center; cursor: pointer; font-family: var(--app-font); }
 .lg-insert {
-  width: 32px; height: 32px; padding: 0; border: 2px solid #fff; border-radius: 50%;
-  background: #4338ca; color: #fff; font-size: 20px; font-weight: 700; line-height: 1;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.3);
+  width: 32px; height: 32px; padding: 0; border: 2px solid var(--app-panel); border-radius: 50%;
+  background: var(--app-pri); color: var(--app-pri-fg); font-size: 20px; font-weight: 700; line-height: 1;
+  box-shadow: 0 2px 8px var(--app-shadow);
   opacity: 0; transition: opacity 150ms;
 }
 /* Shown while the pointer is over the page; each one is fully opaque under the pointer. */
 body:hover .lg-insert { opacity: 0.85; }
-.lg-insert:hover { opacity: 1; background: #3730a3; }
+.lg-insert:hover { opacity: 1; background: var(--app-pri-hover); }
 .lg-insert-empty {
   display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 20px;
-  border: 2px dashed #4338ca; border-radius: 12px; background: #fff; color: #3730a3;
+  border: 2px dashed var(--app-line-strong); border-radius: 12px; background: var(--app-panel); color: var(--app-ink);
   font-size: 16px; font-weight: 600; white-space: nowrap;
 }
 .lg-insert-empty span { font-size: 22px; line-height: 1; }
-.lg-insert-empty:hover { background: #eef2ff; }
-.lg-insert-empty:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; }
+.lg-insert-empty:hover { background: var(--app-raised); }
+.lg-insert-empty:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
 
 @media (prefers-reduced-motion: reduce) {
   .lg-card, .lg-insert { transition: none; }
@@ -134,59 +134,59 @@ body:hover .lg-insert { opacity: 0.85; }
 .lg-more, .lg-menu, .lg-name-form, .lg-confirm { position: relative; z-index: 1; }
 .lg-more {
   display: grid; place-items: center; flex: none; width: 32px; height: 32px; padding: 0;
-  border: 1px solid transparent; border-radius: 8px; background: transparent; color: #3f3f46; cursor: pointer;
+  border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--app-mute); cursor: pointer;
 }
-.lg-more:hover, .lg-more[aria-expanded="true"] { border-color: #d4d4d8; background: #f4f4f5; }
+.lg-more:hover, .lg-more[aria-expanded="true"] { border-color: var(--app-line); background: var(--app-hover); }
 .lg-menu { display: flex; gap: 6px; padding-top: 6px; }
 .lg-menu button {
-  min-height: 32px; padding: 0 12px; border: 1px solid #85858f; border-radius: 8px; background: #fff;
-  color: #18181b; font: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer;
+  min-height: 32px; padding: 0 12px; border: 1px solid var(--app-line-strong); border-radius: 8px; background: var(--app-panel);
+  color: var(--app-ink); font: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer;
 }
-.lg-menu button:hover { background: #f4f4f5; }
-.lg-menu .is-danger { color: #b42318; border-color: #b42318; }
-.lg-card.is-mine { border-color: #99d5cc; }
-.lg-card.is-mine:hover { border-color: #0f766e; box-shadow: 0 4px 14px rgb(15 118 110 / 0.16); }
+.lg-menu button:hover { background: var(--app-hover); }
+.lg-menu .is-danger { color: var(--app-danger); border-color: var(--app-danger); }
+.lg-card.is-mine { border-color: var(--app-line-strong); }
+.lg-card.is-mine:hover { border-color: var(--app-acc); box-shadow: 0 4px 14px var(--app-acc-soft); }
 
 .lg-name-form { display: flex; flex-direction: column; gap: 6px; padding-top: 6px; }
-.lg-name-label { font-size: 0.8125rem; font-weight: 600; color: #3f3f46; }
+.lg-name-label { font-size: 0.8125rem; font-weight: 600; color: var(--app-mute); }
 .lg-name-input {
-  min-height: 38px; padding: 0 10px; border: 1px solid #85858f; border-radius: 8px;
-  background: #fff; color: #18181b; font: inherit; width: 100%;
+  min-height: 38px; padding: 0 10px; border: 1px solid var(--app-line-strong); border-radius: 8px;
+  background: var(--app-panel); color: var(--app-ink); font: inherit; width: 100%;
 }
-.lg-name-input[aria-invalid="true"] { border-color: #b42318; }
-.lg-name-error { margin: 0; color: #b42318; font-size: 0.8125rem; font-weight: 600; }
+.lg-name-input[aria-invalid="true"] { border-color: var(--app-danger); }
+.lg-name-error { margin: 0; color: var(--app-danger); font-size: 0.8125rem; font-weight: 600; }
 .lg-name-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .lg-name-save, .lg-danger {
-  min-height: 36px; padding: 0 14px; border: 0; border-radius: 8px; color: #fff;
+  min-height: 36px; padding: 0 14px; border: 0; border-radius: 8px; color: var(--app-pri-fg);
   font: inherit; font-size: 0.875rem; font-weight: 600; cursor: pointer;
 }
-.lg-name-save { background: #0f766e; }
-.lg-name-save:hover { background: #115e59; }
-.lg-danger { background: #b42318; }
-.lg-danger:hover { background: #912018; }
+.lg-name-save { background: var(--app-pri); }
+.lg-name-save:hover { background: var(--app-pri-hover); }
+.lg-danger { background: var(--app-danger); }
+.lg-danger:hover { background: var(--app-danger-hover); }
 .lg-name-save:disabled, .lg-danger:disabled { opacity: 0.7; cursor: progress; }
 .lg-confirm { display: flex; flex-direction: column; gap: 8px; padding-top: 6px; }
-.lg-confirm p { margin: 0; font-size: 0.8125rem; color: #3f3f46; }
+.lg-confirm p { margin: 0; font-size: 0.8125rem; color: var(--app-mute); }
 .lg-save-page { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .lg-save-page .lg-close:disabled { opacity: 0.55; cursor: not-allowed; }
-.lg-main > .lg-name-form { max-width: 420px; padding: 12px; border: 1px solid #99d5cc; border-radius: 10px; background: #f0fdfa; }
+.lg-main > .lg-name-form { max-width: 420px; padding: 12px; border: 1px solid var(--app-line-strong); border-radius: 10px; background: var(--app-fill); }
 
 /* The toolbar button and its pop-over (canvas). */
-.lg-save-tbtn { background: #0f766e; font-weight: 600; }
-.lg-save-tbtn:hover, .lg-save-tbtn[aria-expanded="true"] { background: #115e59; }
+.lg-save-tbtn { background: var(--app-pri); font-weight: 600; }
+.lg-save-tbtn:hover, .lg-save-tbtn[aria-expanded="true"] { background: var(--app-pri-hover); }
 .lg-save-pop .lg-name-form { padding-top: 0; }
-.lg-save-pop .lg-name-form button:focus-visible, .lg-save-pop input:focus-visible { outline: 3px solid #18181b; outline-offset: 2px; box-shadow: none; }
-.lg-save-note { margin: 0; font-size: 0.75rem; color: #52525b; }
+.lg-save-pop .lg-name-form button:focus-visible, .lg-save-pop input:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; box-shadow: none; }
+.lg-save-note { margin: 0; font-size: 0.75rem; color: var(--app-mute); }
 
 /* Confirmation after saving, renaming or deleting (main page). */
 .lg-toast:empty { display: none; }
 .lg-toast {
   position: fixed; left: 50%; bottom: 24px; z-index: 1000; transform: translateX(-50%);
   max-width: min(36rem, calc(100vw - 32px)); padding: 12px 16px; border-radius: 10px;
-  background: #18181b; color: #fff; font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 0.2);
+  background: var(--app-pri); color: var(--app-pri-fg); font: 15px/1.4 var(--app-font);
+  box-shadow: 0 8px 24px var(--app-shadow);
 }
 
 /* F080: the "Simple" group after the new layouts. */
-.lg-subhead { margin: 28px 4px 0; padding-top: 16px; border-top: 1px solid #e4e4e7; font-size: 0.9375rem; font-weight: 600; display: flex; gap: 8px; align-items: baseline; }
+.lg-subhead { margin: 28px 4px 0; padding-top: 16px; border-top: 1px solid var(--app-line); font-size: 0.9375rem; font-weight: 600; display: flex; gap: 8px; align-items: baseline; }
 .lg-subhead + .lg-side-note { margin-bottom: 12px; }

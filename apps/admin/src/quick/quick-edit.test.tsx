@@ -98,7 +98,7 @@ describe("Quick edit screen (F038)", () => {
     expect(saved.kind).toBe("page");
     expect(saved.page.title).toBe("Home");
     expect(JSON.stringify(saved.page.puck)).toContain("Warm bread");
-    expect(screen.getByRole("status").textContent).toContain("saved to GitHub");
+    expect(screen.getByRole("status").textContent).toContain("saved");
     expect(getLocalDraft("/")?.savedToGitHub).toBe(true);
   });
 

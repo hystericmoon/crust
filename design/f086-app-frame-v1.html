@@ -1,0 +1,234 @@
+<title>Crust Top Bar Options</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column of three framed takes, each a drawn top bar over a mini editor, then the details. */
+:root{
+  --bg:#ffffff;--panel:#fbfafc;--raised:#efedf3;--line:rgba(24,24,27,.1);--ink:#27272a;--mute:#5f5a68;
+  --acc:#7c3aed;--acc-soft:rgba(124,58,237,.08);--pri:#18151d;--pri-fg:#fff;--canvas:#f3f1f6;--ok:#067647;--warn:#b45309;
+  --page:#fff;--page-ink:#1d1b20;
+  --sans:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"Geist Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#120f17;--panel:#16121c;--raised:#2a2533;--line:rgba(255,255,255,.09);--ink:#f6f4f9;--mute:#a49fae;
+  --acc:#a78bfa;--acc-soft:rgba(167,139,250,.16);--pri:#f4f2f7;--pri-fg:#141118;--canvas:#0d0b11;--ok:#4ade80;--warn:#fbbf24;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#120f17;--panel:#16121c;--raised:#2a2533;--line:rgba(255,255,255,.09);--ink:#f6f4f9;--mute:#a49fae;
+  --acc:#a78bfa;--acc-soft:rgba(167,139,250,.16);--pri:#f4f2f7;--pri-fg:#141118;--canvas:#0d0b11;--ok:#4ade80;--warn:#fbbf24;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
+.wrap{max-width:1080px;margin:0 auto;padding-block:40px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:44px}
+h1{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h2{font-size:19px;font-weight:600;margin:0;letter-spacing:-.01em;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+p{margin:0;max-width:68ch}
+.lead{color:var(--mute);margin-top:8px}
+.tag{font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mute)}
+.tag.rec{background:var(--acc-soft);color:var(--acc);border-color:transparent}
+.take{display:grid;gap:14px}
+.take.is-rec .frame{outline:2px solid var(--acc);outline-offset:4px}
+.frame{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--canvas)}
+.scroll{overflow-x:auto}
+.ed{min-width:760px}
+.top{display:flex;align-items:center;gap:8px;height:48px;padding:0 10px;background:var(--bg);border-bottom:1px solid var(--line);font-size:12.5px}
+.sp{flex:1}
+.site{display:flex;align-items:center;gap:7px;font-weight:600;padding:5px 8px;border-radius:7px}
+.logo{width:20px;height:20px;border-radius:5px;background:var(--pri);color:var(--pri-fg);display:grid;place-items:center;font:600 11px var(--sans)}
+.sel{border:1px solid var(--line);border-radius:7px;padding:5px 9px;display:flex;gap:6px;align-items:center}
+.sel b{font-weight:500}.sel i{font-style:normal;color:var(--mute)}
+.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg span{width:28px;height:26px;display:grid;place-items:center;color:var(--mute)}
+.seg span.on{background:var(--acc-soft);color:var(--acc)}
+.ib{width:28px;height:28px;display:grid;place-items:center;color:var(--mute);border-radius:7px}
+svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.status{display:flex;align-items:center;gap:6px;color:var(--mute);white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--warn)}.dot.ok{background:var(--ok)}
+.btn{border:1px solid var(--line);border-radius:7px;padding:5px 11px;font-weight:500}
+.btn.pri{background:var(--pri);color:var(--pri-fg);border-color:transparent;display:flex;gap:7px;align-items:center}
+.btn.pri em{font:500 11px var(--mono);font-style:normal;background:color-mix(in srgb,var(--pri-fg) 18%,transparent);border-radius:999px;padding:1px 6px}
+.vr{width:1px;height:20px;background:var(--line)}
+.body{display:grid;grid-template-columns:58px 1fr 200px;height:230px}
+.rail{background:var(--bg);border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;font-size:9.5px}
+.rail .it{display:grid;justify-items:center;gap:2px;color:var(--mute);padding:5px 2px;border-radius:7px;width:48px}
+.rail .it.on{background:var(--acc-soft);color:var(--acc)}
+.rail .grow{flex:1}
+.cv{display:grid;place-items:start center;padding:14px;background:radial-gradient(var(--line) 1px,transparent 1px) 0 0/14px 14px}
+.cvbar{display:flex;gap:8px;align-items:center;font-size:11px;color:var(--mute);margin-bottom:8px}
+.pg{width:100%;max-width:420px;background:var(--page);color:var(--page-ink);border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.12);font-size:10px;overflow:hidden}
+.pg .n{display:flex;justify-content:space-between;padding:8px 14px;border-bottom:1px solid #eee}
+.pg .h{padding:22px 14px}.pg .h b{font-size:17px;display:block;letter-spacing:-.02em}
+.pg .band{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 14px 16px}.pg .band i{height:42px;background:#eeecf1;border-radius:3px}
+.side{background:var(--panel);border-left:1px solid var(--line);padding:12px;font-size:11.5px;display:grid;align-content:start;gap:8px}
+.side h4{margin:0;font-size:12px}
+.side .r{height:8px;border-radius:4px;background:var(--raised)}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px 28px;font-size:14px}
+.notes div{min-width:0}
+.notes b{display:block;font-size:12px;font-weight:500;color:var(--mute);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.notes ul{margin:0;padding-left:18px}
+.subbar{display:flex;align-items:center;gap:8px;height:38px;padding:0 10px;background:var(--panel);border-bottom:1px solid var(--line);font-size:12px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:500;color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+td code{font:13px var(--mono)}
+.callout{border-left:3px solid var(--acc);padding:4px 0 4px 14px}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-desk" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+  <symbol id="i-tab" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-add" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></symbol>
+  <symbol id="i-pages" viewBox="0 0 24 24"><path d="M14 3H6v18h12V7l-4-4Z"/><path d="M14 3v4h4"/></symbol>
+  <symbol id="i-brush" viewBox="0 0 24 24"><path d="M18 3 9 12l3 3 9-9-3-3Z"/><path d="M9 12c-3 0-4 2-4 4s-1 3-2 3c2 2 8 2 9-4"/></symbol>
+  <symbol id="i-img" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></symbol>
+  <symbol id="i-blog" viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M9 8h6M9 12h6M9 16h4"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></symbol>
+</svg>
+
+<main class="wrap">
+  <header>
+    <h1>F086 · One app frame and top bar</h1>
+    <p class="lead">Three ways to lay out the same controls: site menu, page switcher, device toggle, undo and redo, the save status, Preview, and Publish with its count. All three share the left icon bar and the "changes save on their own" behaviour. I'll build take A unless you say otherwise.</p>
+  </header>
+
+  <!-- Shared rail, drawn once per take -->
+  <section class="take is-rec" aria-labelledby="a-h">
+    <h2 id="a-h">A · Where you are on the left, what you do on the right <span class="tag rec">Recommended · building this</span></h2>
+    <div class="frame scroll"><div class="ed" role="img" aria-label="Take A: top bar with the Harbour Studio site menu and a Page: Home switcher on the left; on the right a device toggle, undo, redo, status reading Saved, 3 changes not live, a Preview button and a dark Publish button with 3. Left icon bar with Add, Layers, Pages, Styles, Media, Blog, and Site and Help at the bottom.">
+      <div class="top">
+        <span class="site"><span class="logo">H</span>Harbour Studio<svg><use href="#i-down"/></svg></span>
+        <span class="sel"><i>Page</i><b>Home</b><svg><use href="#i-down"/></svg></span>
+        <span class="sp"></span>
+        <span class="seg"><span class="on"><svg><use href="#i-desk"/></svg></span><span><svg><use href="#i-tab"/></svg></span><span><svg><use href="#i-phone"/></svg></span></span>
+        <span class="ib"><svg><use href="#i-undo"/></svg></span><span class="ib"><svg><use href="#i-redo"/></svg></span>
+        <span class="vr"></span>
+        <span class="status"><span class="dot"></span>Saved · 3 changes not live</span>
+        <span class="btn">Preview</span>
+        <span class="btn pri">Publish<em>3</em></span>
+        <span class="ib"><svg><use href="#i-moon"/></svg></span>
+      </div>
+      <div class="body">
+        <div class="rail">
+          <span class="it on"><svg><use href="#i-add"/></svg>Add</span>
+          <span class="it"><svg><use href="#i-layers"/></svg>Layers</span>
+          <span class="it"><svg><use href="#i-pages"/></svg>Pages</span>
+          <span class="it"><svg><use href="#i-brush"/></svg>Styles</span>
+          <span class="it"><svg><use href="#i-img"/></svg>Media</span>
+          <span class="it"><svg><use href="#i-blog"/></svg>Blog</span>
+          <span class="grow"></span>
+          <span class="it"><svg><use href="#i-gear"/></svg>Site</span>
+          <span class="it"><svg><use href="#i-help"/></svg>Help</span>
+        </div>
+        <div class="cv"><div class="pg"><div class="n"><b>Harbour Studio</b><span>Work · About · Contact</span></div><div class="h"><b>Calm rooms for busy lives</b>Interior design in Jakarta and Bandung.</div><div class="band"><i></i><i></i><i></i></div></div></div>
+        <div class="side"><h4>Page</h4><div class="r"></div><div class="r" style="width:70%"></div><div class="r"></div></div>
+      </div>
+    </div></div>
+    <div class="notes">
+      <div><b>Why</b>It's the drawing you approved in Milestone 9. It reads left to right like a sentence: <i>this site, this page</i> … <i>save state, go live</i>. Webflow and Squarespace put context left and the commit action far right, so people look for Publish there.</div>
+      <div><b>Trade-off</b>The device toggle moves off the canvas into the bar, a longer reach from the page. On narrow windows Preview and the device toggle fold into the site menu first; Publish and the status never fold.</div>
+    </div>
+  </section>
+
+  <section class="take" aria-labelledby="b-h">
+    <h2 id="b-h">B · Page and device centred over the canvas <span class="tag">Alternative</span></h2>
+    <div class="frame scroll"><div class="ed" role="img" aria-label="Take B: site menu on the left, the page switcher and device toggle centred, and on the right undo, redo, status, Preview and Publish 3.">
+      <div class="top">
+        <span class="site"><span class="logo">H</span>Harbour Studio<svg><use href="#i-down"/></svg></span>
+        <span class="sp"></span>
+        <span class="sel"><i>Page</i><b>Home</b><svg><use href="#i-down"/></svg></span>
+        <span class="seg"><span class="on"><svg><use href="#i-desk"/></svg></span><span><svg><use href="#i-tab"/></svg></span><span><svg><use href="#i-phone"/></svg></span></span>
+        <span class="sp"></span>
+        <span class="ib"><svg><use href="#i-undo"/></svg></span><span class="ib"><svg><use href="#i-redo"/></svg></span>
+        <span class="status"><span class="dot"></span>Saved · 3 not live</span>
+        <span class="btn">Preview</span>
+        <span class="btn pri">Publish<em>3</em></span>
+      </div>
+      <div class="body">
+        <div class="rail"><span class="it on"><svg><use href="#i-add"/></svg>Add</span><span class="it"><svg><use href="#i-layers"/></svg>Layers</span><span class="it"><svg><use href="#i-pages"/></svg>Pages</span><span class="it"><svg><use href="#i-brush"/></svg>Styles</span><span class="it"><svg><use href="#i-img"/></svg>Media</span><span class="it"><svg><use href="#i-blog"/></svg>Blog</span><span class="grow"></span><span class="it"><svg><use href="#i-gear"/></svg>Site</span><span class="it"><svg><use href="#i-help"/></svg>Help</span></div>
+        <div class="cv"><div class="pg"><div class="n"><b>Harbour Studio</b><span>Work · About · Contact</span></div><div class="h"><b>Calm rooms for busy lives</b>Interior design in Jakarta and Bandung.</div><div class="band"><i></i><i></i><i></i></div></div></div>
+        <div class="side"><h4>Page</h4><div class="r"></div><div class="r" style="width:70%"></div><div class="r"></div></div>
+      </div>
+    </div></div>
+    <div class="notes">
+      <div><b>Good</b>Framer-like symmetry; the page name sits right above the page it names.</div>
+      <div><b>Weaker</b>The centre drifts when the side panels open and close, so the switcher moves under your pointer. The status gets squeezed to "3 not live", which is less clear.</div>
+    </div>
+  </section>
+
+  <section class="take" aria-labelledby="c-h">
+    <h2 id="c-h">C · Slim top bar, tools in a second row over the canvas <span class="tag">Alternative</span></h2>
+    <div class="frame scroll"><div class="ed" role="img" aria-label="Take C: a slim top bar with only the site menu, status and Publish 3; under it a lighter second row with the page switcher, device toggle, undo, redo and Preview.">
+      <div class="top">
+        <span class="site"><span class="logo">H</span>Harbour Studio<svg><use href="#i-down"/></svg></span>
+        <span class="sp"></span>
+        <span class="status"><span class="dot"></span>Saved · 3 changes not live</span>
+        <span class="btn pri">Publish<em>3</em></span>
+      </div>
+      <div class="subbar">
+        <span class="sel"><i>Page</i><b>Home</b><svg><use href="#i-down"/></svg></span>
+        <span class="sp"></span>
+        <span class="seg"><span class="on"><svg><use href="#i-desk"/></svg></span><span><svg><use href="#i-tab"/></svg></span><span><svg><use href="#i-phone"/></svg></span></span>
+        <span class="ib"><svg><use href="#i-undo"/></svg></span><span class="ib"><svg><use href="#i-redo"/></svg></span>
+        <span class="btn">Preview</span>
+      </div>
+      <div class="body" style="height:192px">
+        <div class="rail"><span class="it on"><svg><use href="#i-add"/></svg>Add</span><span class="it"><svg><use href="#i-layers"/></svg>Layers</span><span class="it"><svg><use href="#i-pages"/></svg>Pages</span><span class="it"><svg><use href="#i-brush"/></svg>Styles</span><span class="grow"></span><span class="it"><svg><use href="#i-help"/></svg>Help</span></div>
+        <div class="cv"><div class="pg"><div class="n"><b>Harbour Studio</b><span>Work · About · Contact</span></div><div class="h"><b>Calm rooms for busy lives</b>Interior design in Jakarta and Bandung.</div></div></div>
+        <div class="side"><h4>Page</h4><div class="r"></div><div class="r" style="width:70%"></div></div>
+      </div>
+    </div></div>
+    <div class="notes">
+      <div><b>Good</b>Calmest top bar; works well on small laptop screens because nothing has to fold.</div>
+      <div><b>Weaker</b>Two bars cost ~38px of page height, and splitting the controls across two rows is the "two places to look" problem the audit flagged in today's editor.</div>
+    </div>
+  </section>
+
+  <section class="take" aria-labelledby="o-h">
+    <h2 id="o-h">The same bar on the other screens (all takes)</h2>
+    <div class="frame scroll"><div class="ed" role="img" aria-label="Pages screen top bar: Harbour Studio site menu, the screen name Pages, a New page button, status and Publish 3.">
+      <div class="top">
+        <span class="site"><span class="logo">H</span>Harbour Studio<svg><use href="#i-down"/></svg></span>
+        <span class="vr"></span><b style="font-weight:500">Pages</b>
+        <span class="sp"></span>
+        <span class="btn">New page</span>
+        <span class="vr"></span>
+        <span class="status"><span class="dot"></span>3 changes not live</span>
+        <span class="btn pri">Publish<em>3</em></span>
+        <span class="ib"><svg><use href="#i-moon"/></svg></span>
+      </div>
+    </div></div>
+    <p>Pages, Posts, Site settings and Templates get the same bar: the site menu on the left, the screen's name, that screen's own buttons, then the status and Publish in the same spot. The site menu holds: All sites (desktop app), Pages, Posts, Site settings, Start from a template, Keyboard shortcuts, Sign out.</p>
+  </section>
+
+  <section aria-labelledby="s-h" style="display:grid;gap:14px">
+    <h2 id="s-h">Saving on its own: what the status says</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Moment</th><th>Browser (crust-admin)</th><th>Mac / Windows app</th></tr></thead>
+      <tbody>
+        <tr><td>You type or move something</td><td>Kept in this browser at once; one save to GitHub after 3 seconds of quiet</td><td>Saved to the site folder after 1 second of quiet</td></tr>
+        <tr><td>While saving</td><td><code>Saving…</code></td><td><code>Saving…</code></td></tr>
+        <tr><td>Done</td><td><code>Saved · 3 changes not live</code> or <code>Saved · all live</code></td><td>same</td></tr>
+        <tr><td>Saving to GitHub is off</td><td><code>Saved in this browser</code></td><td>n/a</td></tr>
+        <tr><td>It failed</td><td>Red <code>Not saved</code> in the bar, the message with <b>Try again</b> stays on screen until it works</td><td>same</td></tr>
+        <tr><td>You leave the page or close the tab</td><td>Any waiting save goes immediately</td><td>same</td></tr>
+      </tbody>
+    </table></div>
+    <p class="callout">"Save draft" goes away. <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>S</kbd> still saves straight away for people who are used to it. Site settings keep their Save and Discard buttons until F092 regroups that screen, because Discard there undoes several panels at once.</p>
+  </section>
+
+  <section aria-labelledby="x-h" style="display:grid;gap:10px">
+    <h2 id="x-h">Accessibility</h2>
+    <ul style="margin:0;padding-left:18px;display:grid;gap:4px;max-width:75ch">
+      <li>The top bar is a <code>banner</code>; the icon bar is a labelled toolbar; every icon button has a name ("Undo", "Phone width").</li>
+      <li>The device toggle is three toggle buttons with <code>aria-pressed</code>; the page switcher is a real select, so it works with the keyboard and screen readers as-is.</li>
+      <li>The site menu opens with Enter or Space, closes with Escape, and gives focus back to its button.</li>
+      <li>The status line is a polite live region: "Saving…" and "Saved" are spoken, but not every keystroke.</li>
+      <li>All targets are at least 28×28px (above the 24px minimum, WCAG 2.5.8); colours come from the F085 tokens, which already pass 4.5:1 in both modes.</li>
+    </ul>
+  </section>
+</main>

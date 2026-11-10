@@ -1,0 +1,123 @@
+# Opens the built Mac app the way a person does (from Finder's launcher),
+# waits, and records what it is doing: a stack sample, a screenshot, its
+# output, the system log and any crash report. Started by hand (Actions →
+# Desktop launch test → Run workflow). For finding out why the app doesn't
+# open on the owner's Mac.
+#
+# It builds the same combined (Apple chip + Intel) installer as the release
+# workflow, copies the app out of the disk image into /Applications and
+# opens it twice: once marked as downloaded from the internet (the
+# quarantine flag a browser sets; macOS should stop it and offer "Open
+# Anyway"), and once as after "Open Anyway", with the Documents permission
+# reset so macOS asks again, like on a Mac that never ran Crust.
+name: Desktop launch test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-smoke
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install
+        run: npm ci
+
+      - name: Build the combined installer (same as the release)
+        run: npm run desktop:build -- --target universal-apple-darwin
+
+      - name: Install from the disk image, as downloaded
+        shell: bash
+        run: |
+          mkdir -p smoke
+          dmg=$(find target/universal-apple-darwin/release/bundle/dmg -maxdepth 1 -name '*.dmg' | head -n 1)
+          echo "dmg: $dmg" | tee smoke/notes.txt
+          uname -m | tee -a smoke/notes.txt
+          sw_vers | tee -a smoke/notes.txt
+          spctl --status 2>&1 | tee -a smoke/notes.txt || true
+          # A browser marks downloads with this flag; Finder copies it on.
+          xattr -w com.apple.quarantine "0083;$(printf '%x' "$(date +%s)");Safari;" "$dmg"
+          hdiutil attach -nobrowse -readonly -mountpoint /Volumes/CrustSmoke "$dmg" >/dev/null
+          src=$(find /Volumes/CrustSmoke -maxdepth 1 -name '*.app' | head -n 1)
+          echo "app in image: $src" | tee -a smoke/notes.txt
+          ditto "$src" /Applications/Crust-download.app
+          ditto "$src" /Applications/Crust-allowed.app
+          hdiutil detach /Volumes/CrustSmoke >/dev/null || true
+          xattr -w com.apple.quarantine "0083;$(printf '%x' "$(date +%s)");Safari;" /Applications/Crust-download.app
+          # "Open Anyway" in System Settings lets the app run from then on.
+          xattr -d com.apple.quarantine /Applications/Crust-allowed.app 2>/dev/null || true
+          # Ask about Documents again, as on a Mac that never ran Crust.
+          tccutil reset SystemPolicyDocumentsFolder app.crust.desktop 2>&1 | tee -a smoke/notes.txt || true
+          for a in download allowed; do
+            app="/Applications/Crust-$a.app"
+            {
+              echo "=== $a"
+              xattr -l "$app"
+              lipo -info "$app"/Contents/MacOS/* 2>&1
+              codesign -dv --verbose=2 "$app" 2>&1
+              codesign --verify --deep --strict "$app" 2>&1 && echo "verify: ok"
+              spctl --assess --type execute -vv "$app" 2>&1
+            } >> "smoke/signing.txt" || true
+          done
+
+      # Nothing here waits on the app or on a prompt: everything is started in
+      # the background and stopped after a fixed time.
+      - name: Open each copy and watch
+        shell: bash
+        run: |
+          limit() { perl -e '$t = shift; alarm $t; exec @ARGV' "$@"; }
+          for a in download allowed; do
+            app="/Applications/Crust-$a.app"
+            start=$(date '+%Y-%m-%d %H:%M:%S')
+            echo "=== $a, opened $start" | tee -a smoke/notes.txt
+            open "$app" > "smoke/open-$a.txt" 2>&1 &
+            for t in 10 20 30 40; do
+              sleep 10
+              echo "--- after about $t s" | tee -a smoke/notes.txt
+              pgrep -lf "Crust-$a.app" | tee -a smoke/notes.txt || echo "not running" | tee -a smoke/notes.txt
+            done
+            pid=$(pgrep -f "Crust-$a.app/Contents/MacOS" | head -n 1 || true)
+            if [ -n "$pid" ]; then
+              limit 30 sample "$pid" 5 -file "smoke/sample-$a.txt" || true
+            fi
+            limit 20 screencapture -x "smoke/screen-$a.png" || true
+            limit 20 osascript -e 'tell application "System Events" to get the name of every window of every process whose background only is false' > "smoke/windows-$a.txt" 2>&1 || true
+            limit 120 log show --style compact --start "$start" \
+              --predicate 'process == "crust" OR process == "syspolicyd" OR process == "tccd" OR eventMessage CONTAINS[c] "Crust-'"$a"'"' \
+              > "smoke/log-$a.txt" 2>&1 || true
+            pkill -f "Crust-$a.app/Contents/MacOS" || true
+            pkill -x CoreServicesUIAgent || true
+            pkill -x UserNotificationCenter || true
+            sleep 3
+          done
+          ls -la "$HOME/Documents" "$HOME/Library/Application Support/app.crust.desktop" > smoke/folders.txt 2>&1 || true
+          cp "$HOME"/Library/Logs/DiagnosticReports/*[Cc]rust* smoke/ 2>/dev/null || true
+
+      - name: Keep the results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: launch-test
+          path: smoke
+          if-no-files-found: warn
+          retention-days: 14

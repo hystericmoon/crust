@@ -2,6 +2,7 @@
 // at desktop width, after the canvas has loaded. Fails on any "serious" or
 // "critical" issue. Needs the built admin: npm run build first.
 // Usage: node scripts/check-builder-a11y.mjs [apps/admin/dist]
+// To rerun only some screens: CHECK_ONLY="Table|Tabs" node scripts/check-builder-a11y.mjs
 import { readFile, stat } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { join } from "node:path";
@@ -53,6 +54,8 @@ const blocksPost = {
 const screens = [
   ["page builder", "/#/edit?path=/", null, null],
   ["page builder, Text block selected", "/#/edit?path=/", null, '[data-puck-component^="Text"]'],
+  // F090: clicking a Heading opens it for typing on the page (a Text block does the same, covered above).
+  ["page builder, Heading clicked (typing on the page)", "/#/edit?path=/", null, '[data-puck-component^="Heading"]', []],
   ["post builder", "/#/post?slug=check-post", samplePost, null],
   ["template gallery", "/#/templates", null, null],
   ["template preview", "/#/templates", null, null, [".tp-card[id]"]],
@@ -87,7 +90,18 @@ const screens = [
   ["Section Style tab, video", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible', '[aria-label="Background"] .sx-seg-option:has-text("Video"):visible'] }],
   // F080: saving a section's style (the name form), and the layout gallery with the new layouts and the "Simple" group.
   ["Section Style tab, saving a style", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible', ".es-save:visible"] }],
-  ["layout gallery, Hero", "/#/edit?path=/", null, null, ['button:text-is("Layouts")', '.lg-cat:has-text("Hero")']],
+  // F093: the Styles panel (a group opened) and the Site settings sheet, which the scan did not open before.
+  ["Styles panel", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Styles")', ".sp-head"]],
+  ["Styles panel, Colours open", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Styles")', '.sp-row-h button:has-text("Colours")']],
+  ["Styles panel, Header and menu open", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Styles")', '.sp-row-h button:has-text("Header and menu")']],
+  ["Site settings sheet", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Site")', "button.af-panel-link:has-text('Site settings')", "dialog[open]"]],
+  // F091: the Pages panel in the left bar, and a page's menu open.
+  ["Pages panel", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Pages")', '.pp-group-title:has-text("In the menu")']],
+  ["Pages panel, page menu", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Pages")', 'button[aria-label^="More for"]', '.pp-menu']],
+  // F088: the Add panel's pictures (Hero picked, then Show more), and the big gallery behind "See larger".
+  ["add section panel, Hero", "/#/edit?path=/", null, null, ['.af-chip:text-is("Hero")']],
+  ["add section panel, show more", "/#/edit?path=/", null, null, ['.af-addsec button:has-text("more layouts")']],
+  ["layout gallery, Hero", "/#/edit?path=/", null, null, ['button:has-text("See larger")', '.lg-cat:has-text("Hero")']],
   // F078: the Table's cells, the Video's notes, Pricing's Style tab, an Icon list switched to Numbers.
   ["Table cells", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Table"]'],
   ["Video notes", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Video"]'],
@@ -110,14 +124,20 @@ const screens = [
   ["media library, focal point", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { media: true, then: ['button:has-text("Choose image"):visible', '.mp-photo[data-file="stage.jpg"]'] }],
   ["app welcome screen, Blank picked", "/", null, null, ['label:has-text("Blank")'], { app: "none", firstRun: true, wait: ".fr-card iframe" }],
 ];
+// F093: floating bars on the page (the typing bar, the text toolbar, the block's action bar) and the app's save message.
+const BARS = ".it-bar, .rt-floating .rt-toolbar, .rt-floating .rt-link, [class*='_DraggableComponent-actions_'], .crust-status";
 const fakeApp = await readFile(new URL("./fake-tauri.js", import.meta.url), "utf8");
 
 const server = await serve(distDir);
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 let failures = 0;
 try {
-  for (const [label, hash, post, select, clicks = [], { app, wait, firstRun, update, media, then = [] } = {}] of screens) {
-    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  // F085: every screen in the app's light look and in its dark look (the computer's setting, which the app follows).
+  for (const scheme of ["light", "dark"])
+  for (const [name, hash, post, select, clicks = [], { app, wait, firstRun, update, media, then = [] } = {}] of screens) {
+    const label = `${name} (${scheme})`;
+    if (process.env.CHECK_ONLY && !new RegExp(process.env.CHECK_ONLY).test(name)) continue;
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, colorScheme: scheme });
     if (media) {
       const items = [
         { file: "stage.jpg", alt: "The band on stage", width: 1920, height: 1200, bytes: 400000, uploadedAt: "2026-11-02T10:00:00Z", focus: { x: 18, y: 45 } },
@@ -148,6 +168,12 @@ try {
       // A Section is clicked near its corner, so the Section itself is selected rather than a block inside it.
       await page.frameLocator("#preview-frame").locator(select).first().click(select.includes("Section") ? { position: { x: 12, y: 12 } } : undefined);
       if (select.includes("Text")) await page.waitForSelector(".rt-editor", { state: "attached", timeout: 10_000 });
+      // F090/F093: a Heading opens for typing with its bar; scan that state, bar showing.
+      if (select.includes("Heading")) {
+        const bar = page.frameLocator("#preview-frame").locator(".it-bar").first();
+        // The click above is a real one: it opens the heading for typing (no Enter fallback, so a dead click fails here).
+        await bar.waitFor({ state: "attached", timeout: 10_000 });
+      }
       await page.waitForTimeout(500);
     }
     // F073: buttons to press once the block is selected (its settings panel).
@@ -156,10 +182,41 @@ try {
       await page.waitForTimeout(600);
     }
     await page.addScriptTag({ content: axeSource });
-    const results = await page.evaluate(() =>
+    const runAxe = () =>
       // eslint-disable-next-line no-undef
-      axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"] } }),
-    );
+      axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"] } });
+    const results = await page.evaluate(runAxe);
+    // F093: the canvas frame is its own document, so it is scanned on its own (the page the owner is editing, in its editing state).
+    const canvas = await (await page.$("#preview-frame"))?.contentFrame();
+    if (canvas) {
+      await canvas.addScriptTag({ content: axeSource });
+      const inFrame = await canvas.evaluate(runAxe);
+      for (const v of inFrame.violations) {
+        // The site's own links inside the canvas are edited, not used (a click selects the block), and Puck's floating
+        // action bar can sit over the link above a selected block. Their size is checked on the published pages (check:a11y).
+        if (v.id === "target-size") v.nodes = v.nodes.filter((n) => !n.html.startsWith("<a "));
+        if (!v.nodes.length) continue;
+        v.help = `in the page preview: ${v.help}`;
+        v.nodes = v.nodes.map((n) => ({ ...n, target: ["#preview-frame", ...n.target] }));
+        results.violations.push(v);
+      }
+      // Focus never hidden under a floating bar (WCAG 2.4.11).
+      const covered = await canvas.evaluate((selector) => {
+        const a = document.activeElement;
+        if (!a || a === document.body) return null;
+        const r = a.getBoundingClientRect();
+        for (const bar of document.querySelectorAll(selector)) {
+          if (bar.contains(a) || a.contains(bar)) continue;
+          const b = bar.getBoundingClientRect();
+          // Hidden means mostly covered (WCAG 2.4.11 AA: not entirely hidden; half is the line this check draws).
+          const across = Math.min(r.right, b.right) - Math.max(r.left, b.left);
+          const down = Math.min(r.bottom, b.bottom) - Math.max(r.top, b.top);
+          if (b.width && b.height && across > 0 && down > 0 && (across * down) / Math.max(1, r.width * r.height) >= 0.5) return a.tagName.toLowerCase() + (a.className ? "." + String(a.className).split(" ")[0] : "");
+        }
+        return null;
+      }, BARS);
+      if (covered) results.violations.push({ id: "focus-obscured", impact: "serious", help: "Focus is hidden under a floating bar", nodes: [{ target: ["#preview-frame", covered] }] });
+    }
     const bad = results.violations.filter((v) => v.impact === "serious" || v.impact === "critical");
     const minor = results.violations.filter((v) => !bad.includes(v));
     if (bad.length) {

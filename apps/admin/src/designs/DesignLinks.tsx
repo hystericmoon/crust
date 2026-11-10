@@ -19,7 +19,7 @@ export function useDesignStatus(kind: DesignKind): string {
   }, []);
   if (status !== "ready") return "";
   if (!designs[kind]) return "Built-in look";
-  return unsaved.includes(kind) ? "Your design (saved in this browser)" : "Your design";
+  return unsaved.includes(kind) ? "Your design (kept in this browser)" : "Your design";
 }
 
 /** A card on the Posts screen for one design. */

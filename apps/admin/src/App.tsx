@@ -1,53 +1,42 @@
-import { checkPost, config, countPlaceholders, defaultBlog, migrateChrome, tokensToCss,
-  HEADER_V2_CSS, ICONS_CSS, BLOCKS_V3_CSS, INTERACTIVE_CSS, designNames, isDesignKind, type DesignKind, type BlogSettings, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
-import { relinkPage } from "@crust/blocks/links";
-import { Puck, useGetPuck, type Data } from "@puckeditor/core";
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { checkPost, config, defaultBlog, menuFromPages, migrateChrome, tokensToCss,
+  HEADER_V2_CSS, ICONS_CSS, BLOCKS_V3_CSS, INTERACTIVE_CSS, designNames, isDesignKind, type DesignKind, type BlogSettings, type MenuLink, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
+import { Puck, type Data } from "@puckeditor/core";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import siteJson from "../../../content/site.json";
 import {
-  deletePage,
-  getChanges,
-  getDeleted,
-  getLinks,
   getPage,
   getStatus,
   listPages,
   listPosts,
-  renamePage,
-  restorePage,
   saveContent,
   savePost,
   type ApiResult,
-  type DeletedPage,
-  type PendingChanges,
 } from "./api-client";
-import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot, openKeyboardHelp } from "./keyboard/KeyboardEditing";
+import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot } from "./keyboard/KeyboardEditing";
 import { LayoutPhotoWatcher } from "./layouts/photos";
 import { LayoutGallery, LayoutInserters, LayoutsButton } from "./layouts/LayoutGallery";
+import "./app-frame/app-frame.css";
 import { MyLayoutsProvider } from "./layouts/mine";
 import { PageList, editHref } from "./pages/PageList";
-import type { LinkingPage } from "./pages/PageActions";
+import { usePagesData } from "./pages-panel/usePagesData";
+import { PagesMenuContext, PagesRail } from "./pages-panel/PagesRail";
 import {
   bundledPages,
   fromPuckData,
   getLocalDraft,
   localDrafts,
   mergePageRows,
-  moveLocalDraft,
-  removeLocalDraft,
   saveLocalDraft,
   toPuckData,
-  type PageRow,
 } from "./pages/store";
-import { markUnpublished } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
 import { DesktopPublishPanel } from "./publish/DesktopPublishPanel";
 import { desktopHosts } from "./publish/hosts";
 import { desktopPublisher } from "./desktop/local-publish";
-import { PublishShortcut, usePendingCount } from "./publish/shortcut";
-import { SignOutLink } from "./sign-out";
+import { usePendingCount } from "./publish/shortcut";
 import { SaveStatus, useSaveStatus } from "./save-status";
 import { withRichText } from "./rich-text/field";
+import { withInlineText } from "./inline-text/InlineText";
 import { withLinkedSectionFields } from "./linked/fields";
 import { LinkedSectionsProvider } from "./linked/store";
 import { SectionEditor } from "./linked/SectionEditor";
@@ -78,6 +67,15 @@ import { sitesApi, sitesInvoke } from "./sites/sites";
 import { SitesScreen } from "./sites/SitesScreen";
 import { withMediaFields } from "./media/fields";
 import { MediaPicker } from "./media/MediaPicker";
+import { setAppFrame } from "./app-frame/AppTopBar";
+import { EditorBar, EditorFrameContext, PageSwitcher } from "./app-frame/EditorBar";
+import { railPlugins } from "./app-frame/rail";
+import { StylesPanelContext } from "./styles-panel/context";
+import { StylesPanel } from "./styles-panel/StylesPanel";
+import { SiteSettingsButton } from "./styles-panel/SiteSettingsSheet";
+import "./page-first/page-first.css";
+import { PageFirstContext, PageFirstWatcher, SettingsButton, SettingsPanel, withSettingsLabel } from "./page-first/PageFirst";
+import { useAutosave, type SavePhase } from "./app-frame/autosave";
 import { MediaFocusProvider } from "./media/FocusPicker";
 import { DesignEditor } from "./designs/DesignEditor";
 import { BlogContext, withPostEditing } from "./posts/editing";
@@ -90,11 +88,11 @@ import { fromPuckData as postFromPuckData, loadPost, saveLocalPost, toPuckData a
 /** The site's settings: built into the web admin, or from the desktop app's site folder (F055). */
 const site = (desktopContent()?.site ?? siteJson) as Site;
 /** The builder's blocks: "Replace me" marks (F046), rich text in Text blocks (F042), image fields with the media library (F034), visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
-const editorConfig = withSiteChrome(withSettingsTabs(withPlaceholderEditing(withResponsiveEditing(withSectionEditing(withItemEditing(withIconFields(withBlocksV3Fields(withInteractiveFields(withMediaFields(withRichText(withLinkedSectionFields(config))))))))))));
+const editorConfig = withSiteChrome(withSettingsTabs(withPlaceholderEditing(withResponsiveEditing(withSectionEditing(withItemEditing(withIconFields(withBlocksV3Fields(withInteractiveFields(withMediaFields(withRichText(withLinkedSectionFields(withInlineText(config)))))))))))));
 /** Posts (F035): the same blocks, with the post's details and top. */
-const postEditorConfig = withPostEditing(editorConfig);
+const postEditorConfig = withSettingsLabel(withPostEditing(editorConfig), "Post settings");
 /** Pages also get search and sharing settings (F036). */
-const pageEditorConfig = withSeoEditing(editorConfig);
+const pageEditorConfig = withSettingsLabel(withSeoEditing(editorConfig), "Page settings");
 
 /** Responsive canvas widths for the viewport switcher. */
 const viewports = [
@@ -112,19 +110,6 @@ function useTokenStyles(css: string) {
     document.head.appendChild(style);
     return () => style.remove();
   }, [css]);
-}
-
-/**
- * Replaces Puck's Publish control, which is a <span> and can't be reached
- * with the keyboard. It saves a draft, so it says so.
- */
-function SaveDraftButton({ onSave }: { onSave: (data: Data) => void }) {
-  const getPuck = useGetPuck();
-  return (
-    <button type="button" className="crust-save" onClick={() => onSave(getPuck().appState.data)}>
-      Save draft
-    </button>
-  );
 }
 
 export { saveFailed, saveMessage } from "./save-messages";
@@ -172,6 +157,8 @@ export function parseRoute(hash: string): Route {
     const path = new URLSearchParams(hash.split("?")[1] ?? "").get("path");
     if (path) return { name: "edit", path };
   }
+  // F087: page first: with no address, the site opens on its Home page in the editor.
+  if (hash === "" || hash === "#") return { name: "edit", path: "/" };
   // F024: the Publish shortcut lands on the page list with focus on Publish.
   if (new URLSearchParams(hash.split("?")[1] ?? "").get("focus") === "publish") return { name: "pages", focus: "publish" };
   return { name: "pages" };
@@ -266,7 +253,41 @@ export function App() {
     }
     return saveMessage(result, local, "Site settings");
   };
-  const pageOptions = usePageOptions(githubOn, route.name === "settings");
+  const pageOptions = usePageOptions(githubOn, route.name === "settings" || route.name === "edit" || route.name === "pages");
+  // F091: the pages panel's "In the menu" is the header menu. A site whose header was never edited gets its menu
+  // from its pages at publish time, so until then every page counts as in the menu.
+  const menuIsAutomatic = site.header === undefined && sameChrome(savedChrome, defaultChrome);
+  const panelMenu = useMemo(
+    () => (menuIsAutomatic ? menuFromPages(pageOptions) : chromeDraft.header.menu),
+    [menuIsAutomatic, pageOptions, chromeDraft.header.menu],
+  );
+  const saveMenu = (menu: MenuLink[]) => {
+    const next: SiteChrome = { ...savedChrome, header: { ...savedChrome.header, menu } };
+    setSavedChrome(next);
+    setChromeDraft((c) => ({ ...c, header: { ...c.header, menu } }));
+    saveChrome(next);
+    // Like the rest of Site settings: kept in this browser at once, then saved when that is on.
+    void saveContent({ kind: "site", site: siteToSave(site, saved, next, defaultChrome, savedAddress) });
+  };
+  // F092: what the Styles panel and the Site settings sheet need beside the colours and type.
+  const stylesPanelState = (githubOn: boolean) => ({
+    site: { name: site.name, language: site.language },
+    chrome: chromeDraft,
+    onChromeChange: setChromeDraft,
+    chromeDirty: !sameChrome(savedChrome, chromeDraft),
+    pages: pageOptions,
+    address: addressDraft,
+    onAddressChange: setAddressDraft,
+    addressDirty: savedAddress !== addressDraft,
+    templateLoader: githubOn ? githubLoader : bundledLoader,
+    githubOn,
+    save: () => saveSiteTokens(draft),
+    discard: () => {
+      setDraft(saved);
+      setChromeDraft(savedChrome);
+      setAddressDraft(savedAddress);
+    },
+  });
   // F025: the builder edits the same draft as Site settings ("Whole site" mode).
   const siteStyle: SiteStyle = {
     tokens: draft,
@@ -277,8 +298,11 @@ export function App() {
   };
 
   // F024: shown in the builder and Site settings top bars; counted again on each screen change.
-  const pendingCount = usePendingCount(githubOn, route.name);
-  const shortcut = (className: string) => (githubOn ? <PublishShortcut count={pendingCount} className={className} /> : null);
+  // F086: and after each save, so the top bar's "3 changes not live" keeps up.
+  const [saves, setSaves] = useState(0);
+  const onSaved = useCallback(() => setSaves((n) => n + 1), []);
+  const pendingCount = usePendingCount(githubOn, `${route.name}:${saves}`);
+  useEffect(() => setAppFrame({ siteName: site.name, desktop: desktopContent() !== null, pending: pendingCount }), [pendingCount]);
 
   if (route.name === "settings") {
     return (
@@ -287,7 +311,6 @@ export function App() {
         {/* F076: a footer built from blocks is a linked section. */}
         <LinkedSectionsProvider githubOn={!!githubOn}>
         <SiteSettings
-          headerLink={shortcut("st-button st-link-button")}
           site={site}
           page={getLocalDraft("/")?.page ?? bundledPages().find((p) => p.path === "/") ?? bundledPages()[0]!}
           saved={saved}
@@ -336,7 +359,7 @@ export function App() {
     return (
       <SiteStyleContext.Provider value={siteStyle}>
         <SiteChromeContext.Provider value={{ chrome: chromeDraft, siteName: site.name, path: `/blog/${route.slug}` }}>
-          <PostBuilder key={route.slug} slug={route.slug} githubOn={githubOn} shortcut={shortcut("crust-header-link")} />
+          <PostBuilder key={route.slug} slug={route.slug} githubOn={githubOn} onSaved={onSaved} />
           <MediaPicker />
         </SiteChromeContext.Provider>
       </SiteStyleContext.Provider>
@@ -400,14 +423,18 @@ export function App() {
     return (
       <SiteStyleContext.Provider value={siteStyle}>
         <SiteChromeContext.Provider value={{ chrome: chromeDraft, siteName: site.name, path: route.path }}>
-          <Builder key={route.path} path={route.path} githubOn={githubOn} shortcut={shortcut("crust-header-link")} />
+          <PagesMenuContext.Provider value={{ menu: panelMenu, onMenuChange: saveMenu, githubOn, currentPath: route.path }}>
+            <StylesPanelContext.Provider value={stylesPanelState(githubOn)}>
+              <Builder key={route.path} path={route.path} githubOn={githubOn} onSaved={onSaved} pages={pageOptions} />
+            </StylesPanelContext.Provider>
+          </PagesMenuContext.Provider>
           <MediaPicker />
         </SiteChromeContext.Provider>
       </SiteStyleContext.Provider>
     );
   }
 
-  return <Pages githubOn={githubOn} focusPublish={route.name === "pages" && route.focus === "publish"} />;
+  return <Pages githubOn={githubOn} focusPublish={route.name === "pages" && route.focus === "publish"} menu={panelMenu} onMenuChange={saveMenu} />;
 }
 
 function Loading() {
@@ -418,35 +445,8 @@ function Loading() {
   );
 }
 
-function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; focusPublish?: boolean }) {
-  const [rows, setRows] = useState<PageRow[] | null>(null);
-  const [error, setError] = useState<string>();
-  const [changes, setChanges] = useState<PendingChanges | null>(null);
-  const [deleted, setDeleted] = useState<DeletedPage[] | null>(null);
-  // Bumped after a rename, delete or publish to load the list again.
-  const [version, setVersion] = useState(0);
-  const reload = () => setVersion((v) => v + 1);
-
-  useEffect(() => {
-    if (githubOn === null) return;
-    const bundled = bundledPages().map((p) => ({ path: p.path, title: p.title, lastEdited: null, ...(countPlaceholders(p.puck.content) ? { placeholders: countPlaceholders(p.puck.content) } : {}) }));
-    if (!githubOn) {
-      setRows(mergePageRows(bundled, localDrafts()));
-      return;
-    }
-    void listPages().then((res) => {
-      if (res.ok) {
-        setError(undefined);
-        setRows(mergePageRows(res.pages, localDrafts()));
-      } else {
-        setError(`Couldn't load your pages from GitHub: ${res.error}`);
-        setRows(mergePageRows(bundled, localDrafts()));
-      }
-    });
-    // If this fails, pages just aren't marked; the list itself still works.
-    void getChanges().then((res) => setChanges(res.ok ? res : null));
-    void getDeleted().then((res) => setDeleted(res.ok ? res.pages : null));
-  }, [githubOn, version]);
+function Pages({ githubOn, focusPublish = false, menu, onMenuChange }: { githubOn: boolean | null; focusPublish?: boolean; menu: MenuLink[]; onMenuChange: (menu: MenuLink[]) => void }) {
+  const { rows: markedRows, plainRows: rows, error, changes, deleted, reload, rename, restore, saveDraft, saveAllDrafts, drafts, findLinks, remove, duplicate } = usePagesData(githubOn);
 
   // F024: arriving from the Publish shortcut, focus goes to the Publish panel once the list is there.
   useEffect(() => {
@@ -456,69 +456,14 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
     heading?.scrollIntoView({ block: "start" });
   }, [focusPublish, rows === null]);
 
-  // Rename and delete (F015): through GitHub for pages there, in this browser otherwise.
-  const rename = async (row: PageRow, to: string): Promise<string | { relinked: LinkingPage[] }> => {
-    let relinked: LinkingPage[] = [];
-    if (row.inRepo) {
-      const res = await renamePage(row.path, to);
-      if (!res.ok) return `Not renamed: ${res.error}`;
-      // F069: said in the message ("It also updated 3 links…").
-      relinked = res.relinked ?? [];
-    }
-    if (!moveLocalDraft(row.path, to)) return "This browser wouldn't store the change. Try again.";
-    // F018: drafts in this browser follow too, so saving one later doesn't bring the old links back.
-    for (const draft of localDrafts()) {
-      const { puck, count } = relinkPage(draft.page.puck, row.path, to);
-      if (count) saveLocalDraft({ ...draft.page, puck }, draft.savedToGitHub);
-    }
-    reload();
-    return { relinked };
-  };
-  const restore = async (page: DeletedPage): Promise<string | null> => {
-    const res = await restorePage(page);
-    if (!res.ok) return `Not restored: ${res.error}`;
-    reload();
-    return null;
-  };
-  // F020: the browser draft goes to GitHub as it is, like "Save draft" in the builder.
-  const saveDraft = async (row: PageRow): Promise<string | null> => {
-    const draft = getLocalDraft(row.path);
-    if (!draft) return "There's no draft of this page in this browser any more.";
-    const res = await saveContent({ kind: "page", page: draft.page });
-    if (!res.ok) return `Not saved to GitHub: ${res.error} The draft is still safe in this browser.`;
-    saveLocalDraft(draft.page, true);
-    reload();
-    return null;
-  };
-  // F022: Publish offers to save these first.
-  const drafts = githubOn ? (rows ?? []).filter((r) => r.localChanges) : [];
-  const saveAllDrafts = async (): Promise<string | null> => {
-    for (const row of drafts) {
-      const failed = await saveDraft(row);
-      if (failed) return `“${row.title}”: ${failed}`;
-    }
-    return null;
-  };
-  const findLinks = async (row: PageRow) => {
-    if (!githubOn || !row.inRepo) return null;
-    const res = await getLinks(row.path);
-    return res.ok ? res.pages : null;
-  };
-  const remove = async (row: PageRow): Promise<string | null> => {
-    if (row.inRepo) {
-      const res = await deletePage(row.path);
-      if (!res.ok) return `Not deleted: ${res.error}`;
-    }
-    removeLocalDraft(row.path);
-    reload();
-    return null;
-  };
-
   return (
     <PageList
       siteName={site.name}
       allSites={desktopContent() !== null}
-      rows={rows && markUnpublished(rows, changes)}
+      rows={markedRows}
+      menu={menu}
+      onMenuChange={onMenuChange}
+      onDuplicate={duplicate}
       loadError={error}
       onRetry={reload}
       sourceNote={
@@ -526,7 +471,7 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
           ? "Showing the pages in this browser for now."
           : githubOn
           ? "Each page shows where its latest version is: only in this browser, saved, or live."
-          : "Saving to GitHub isn't switched on yet, so this lists the pages built into the app plus drafts saved in this browser. Renaming and deleting those pages switches on with it."
+          : "Saving isn't switched on yet, so this lists the pages built into the app plus drafts kept in this browser. Renaming and deleting those pages switches on with it."
       }
       githubOn={githubOn === true}
       onRename={rename}
@@ -569,6 +514,7 @@ function BuilderRoot({ children }: { children: ReactNode }) {
       <LayoutGallery />
       <PlaceholderWatcher />
       <LayoutPhotoWatcher />
+      <PageFirstWatcher />
     </KeyboardRoot>
   );
 }
@@ -583,7 +529,13 @@ function BuilderCanvas({ children, document }: { children: ReactNode; document?:
   );
 }
 
-function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean; shortcut?: ReactNode }) {
+/** F086: what a save ended in, for the top bar. */
+function phaseOf(result: ApiResult<unknown>): SavePhase {
+  if (result.ok) return "saved";
+  return saveFailed(result) ? "failed" : "local";
+}
+
+function Builder({ path, githubOn, onSaved, pages }: { path: string; githubOn: boolean; onSaved: () => void; pages: { path: string; title: string }[] }) {
   const [page, setPage] = useState<Page | null | undefined>(undefined);
   const status = useSaveStatus();
 
@@ -591,21 +543,28 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
     void loadPage(path, githubOn).then(setPage);
   }, [path, githubOn]);
 
-
-  const saveDraftRef = useRef<(data: Data) => Promise<void>>(async () => {});
-  const saveDraft = useCallback(
-    async (data: Data) => {
-      const next = fromPuckData(path, data);
+  // F086: changes save on their own (grouped), so "Save draft" is gone.
+  const save = useCallback(
+    async (next: Page): Promise<SavePhase> => {
       const local = saveLocalDraft(next, false);
-      status.saving();
       const result = await saveContent({ kind: "page", page: next });
-      if (result.ok) saveLocalDraft(next, true);
+      if (result.ok) {
+        saveLocalDraft(next, true);
+        onSaved();
+      }
       // F069: a failed save stays on screen with "Try again".
-      status.show(saveMessage(result, local, "Page"), saveFailed(result), () => void saveDraftRef.current(data));
+      if (saveFailed(result)) status.show(saveMessage(result, local, "Page"), true, () => autosave.retry(next));
+      else status.clear();
+      return phaseOf(result);
     },
-    [path, status.saving, status.show],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [onSaved, status.show, status.clear],
   );
-  saveDraftRef.current = saveDraft;
+  const autosave = useAutosave<Page>(save, (p) => JSON.stringify(p), page ?? null);
+  const plugins = useMemo(
+    () => railPlugins({ pages: () => pages, hrefFor: editHref, quickEdit: `#/edit?path=${encodeURIComponent(path)}&mode=quick`, pagesPanel: () => <PagesRail />, stylesPanel: () => <StylesPanel />, siteSettings: () => <SiteSettingsButton className="st-button af-panel-link" /> }),
+    [pages, path],
+  );
 
   if (page === undefined) return <Loading />;
   if (page === null) {
@@ -625,42 +584,40 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
     <SeoSiteProvider value={{ baseUrl: loadSavedAddress(site.baseUrl), siteName: site.name, path }}>
       <LinkedSectionsProvider githubOn={githubOn}>
       <MyLayoutsProvider githubOn={githubOn}>
-        <Puck
-          config={pageEditorConfig}
-          data={toPuckData(page)}
-          viewports={viewports}
-          headerTitle={page.title || path}
-          overrides={{
-            headerActions: () => (
-              <>
-                <a className="crust-header-link" href="#/">
-                  Pages
-                </a>
-                <a className="crust-header-link" href={`#/edit?path=${encodeURIComponent(path)}&mode=quick`}>
-                  Quick edit
-                </a>
-                <LayoutsButton />
-                <PlaceholderChecklist />
-                <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
-                  Keyboard
-                </button>
-                <a className="crust-header-link" href="#/settings">
-                  Site settings
-                </a>
-                {shortcut}
-                <SaveDraftButton onSave={saveDraft} />
-                {/* F069: at the far end, after a divider, away from Save draft. */}
-                <SignOutLink />
-              </>
-            ),
-            puck: BuilderRoot,
-            iframe: BuilderCanvas,
-            actionBar: KeyboardActionBar,
-          }}
-          onPublish={saveDraft}
-          // Keep every edit in this browser, so leaving the page never loses work.
-          onChange={(data) => saveLocalDraft(fromPuckData(path, data), false)}
-        />
+        <PageFirstContext.Provider value={{ site: site.name, settingsLabel: "Page settings" }}>
+        <EditorFrameContext.Provider
+          value={{ where: (
+            <>
+              <PageSwitcher current={path} pages={pages} hrefFor={editHref} />
+              <SettingsButton />
+            </>
+          ), heading: `Editing ${page.title || path}`, devices: viewports, phase: githubOn ? autosave.phase : autosave.phase === "saved" ? "local" : autosave.phase }}
+        >
+          <Puck
+            config={pageEditorConfig}
+            data={toPuckData(page)}
+            viewports={viewports}
+            ui={{ rightSideBarVisible: false }}
+            headerTitle={page.title || path}
+            plugins={plugins}
+            overrides={{
+              header: EditorBar,
+              fields: SettingsPanel,
+              puck: BuilderRoot,
+              iframe: BuilderCanvas,
+              actionBar: KeyboardActionBar,
+            }}
+            onPublish={(data) => autosave.retry(fromPuckData(path, data))}
+            // Keep every edit in this browser at once, so leaving the page never loses work;
+            // the save to GitHub (or the computer) follows when the editing pauses.
+            onChange={(data) => {
+              const next = fromPuckData(path, data);
+              saveLocalDraft(next, false);
+              autosave.schedule(next);
+            }}
+          />
+        </EditorFrameContext.Provider>
+        </PageFirstContext.Provider>
         <SaveStatus note={status.note} onDismiss={status.clear} />
       </MyLayoutsProvider>
       </LinkedSectionsProvider>
@@ -669,7 +626,7 @@ function Builder({ path, githubOn, shortcut }: { path: string; githubOn: boolean
 }
 
 /** One post in the builder (F035). Like Builder, with the post's details in the page settings. */
-function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boolean; shortcut?: ReactNode }) {
+function PostBuilder({ slug, githubOn, onSaved }: { slug: string; githubOn: boolean; onSaved: () => void }) {
   const [post, setPost] = useState<Post | null | undefined>(undefined);
   const [blog, setBlog] = useState<BlogSettings>(defaultBlog);
   const status = useSaveStatus();
@@ -679,25 +636,29 @@ function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boo
     if (githubOn) void listPosts().then((res) => res.ok && setBlog(res.blog));
   }, [slug, githubOn]);
 
-
-  const saveDraftRef = useRef<(data: Data) => Promise<void>>(async () => {});
-  const saveDraft = useCallback(
-    async (data: Data) => {
-      const next = postFromPuckData(slug, data);
+  const save = useCallback(
+    async (next: Post): Promise<SavePhase> => {
       const problems = checkPost(next);
       const local = saveLocalPost(next, false);
       if (problems.length) {
-        status.show(`Kept in this browser, not saved to GitHub yet: ${problems.join(" ")}`, true);
-        return;
+        // Said once per new problem, not on every pause in typing.
+        status.show(`Kept in this browser, not saved yet: ${problems.join(" ")}`);
+        return "held";
       }
-      status.saving();
       const result = await savePost(next);
-      if (result.ok) saveLocalPost(next, true);
-      status.show(saveMessage(result, local, "Post"), saveFailed(result), () => void saveDraftRef.current(data));
+      if (result.ok) {
+        saveLocalPost(next, true);
+        onSaved();
+      }
+      if (saveFailed(result)) status.show(saveMessage(result, local, "Post"), true, () => autosave.retry(next));
+      else status.clear();
+      return phaseOf(result);
     },
-    [slug, status.saving, status.show],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [onSaved, status.show, status.clear],
   );
-  saveDraftRef.current = saveDraft;
+  const autosave = useAutosave<Post>(save, (p) => JSON.stringify(p), post ?? null);
+  const plugins = useMemo(() => railPlugins({ pages: () => [], hrefFor: editHref }).filter((p) => p.name !== "pages"), []);
 
   if (post === undefined) return <Loading />;
   if (post === null) {
@@ -717,35 +678,46 @@ function PostBuilder({ slug, githubOn, shortcut }: { slug: string; githubOn: boo
     <BlogContext.Provider value={{ blog, language: site.language }}>
       <LinkedSectionsProvider githubOn={githubOn}>
       <MyLayoutsProvider githubOn={githubOn}>
-        <Puck
-          config={postEditorConfig}
-          data={postToPuckData(post)}
-          viewports={viewports}
-          headerTitle={post.title || "Untitled post"}
-          overrides={{
-            headerActions: () => (
+        <PageFirstContext.Provider value={{ site: site.name, settingsLabel: "Post settings" }}>
+        <EditorFrameContext.Provider
+          value={{
+            where: (
               <>
-                <a className="crust-header-link" href="#/posts">
-                  Posts
-                </a>
-                <LayoutsButton />
-                <PlaceholderChecklist />
-                <button type="button" className="crust-header-link" onClick={openKeyboardHelp}>
-                  Keyboard
-                </button>
-                {shortcut}
-                <SaveDraftButton onSave={saveDraft} />
-                {/* F069: at the far end, after a divider, away from Save draft. */}
-                <SignOutLink />
+              <a className="af-crumb" href="#/posts">
+                <span className="af-switch-label">Post</span>
+                {post.title || "Untitled post"}
+              </a>
+              <SettingsButton />
               </>
             ),
-            puck: BuilderRoot,
-            iframe: BuilderCanvas,
-            actionBar: KeyboardActionBar,
+            heading: `Editing post: ${post.title || "Untitled post"}`,
+            devices: viewports,
+            phase: githubOn ? autosave.phase : autosave.phase === "saved" ? "local" : autosave.phase,
           }}
-          onPublish={saveDraft}
-          onChange={(data) => saveLocalPost(postFromPuckData(slug, data), false)}
-        />
+        >
+          <Puck
+            config={postEditorConfig}
+            data={postToPuckData(post)}
+            viewports={viewports}
+            ui={{ rightSideBarVisible: false }}
+            headerTitle={post.title || "Untitled post"}
+            plugins={plugins}
+            overrides={{
+              header: EditorBar,
+              fields: SettingsPanel,
+              puck: BuilderRoot,
+              iframe: BuilderCanvas,
+              actionBar: KeyboardActionBar,
+            }}
+            onPublish={(data) => autosave.retry(postFromPuckData(slug, data))}
+            onChange={(data) => {
+              const next = postFromPuckData(slug, data);
+              saveLocalPost(next, false);
+              autosave.schedule(next);
+            }}
+          />
+        </EditorFrameContext.Provider>
+        </PageFirstContext.Provider>
         <SaveStatus note={status.note} onDismiss={status.clear} />
       </MyLayoutsProvider>
       </LinkedSectionsProvider>

@@ -8,6 +8,7 @@ import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { deletePost, saveBlog, savePost } from "../api-client";
 import { DesignCard } from "../designs/DesignLinks";
 import { loadPostRows, removeLocalPost, saveLocalPost, type PostRow } from "./store";
+import { AppTopBar } from "../app-frame/AppTopBar";
 
 export const postEditHref = (slug: string) => `#/post?slug=${encodeURIComponent(slug)}`;
 
@@ -76,20 +77,20 @@ export function PostList({ siteName, githubOn, language }: { siteName: string; g
 
   return (
     <div className="st">
-      <header className="st-header">
-        <h1 className="st-title">{siteName}: posts</h1>
-        <div className="st-actions">
-          <a className="st-button st-link-button" href="#/">
-            Pages
-          </a>
-          <a className="st-button st-link-button" href="#/settings">
-            Site settings
-          </a>
-          <button ref={newRef} type="button" className="st-button st-button-primary" aria-expanded={creating} aria-controls="new-post" onClick={() => setCreating((c) => !c)}>
+      {/* F086: the app frame's top bar. */}
+      <AppTopBar
+        siteName={siteName}
+        where={
+          <h1 className="af-title">
+            <span className="pg-sr">{siteName}: </span>Posts
+          </h1>
+        }
+        tools={
+          <button ref={newRef} type="button" className="st-button" aria-expanded={creating} aria-controls="new-post" onClick={() => setCreating((c) => !c)}>
             New post
           </button>
-        </div>
-      </header>
+        }
+      />
       <main className="pg">
         {creating ? (
           <NewPostForm

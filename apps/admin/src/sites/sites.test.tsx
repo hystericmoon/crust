@@ -186,11 +186,11 @@ describe("sites: the Sites screen", () => {
     expect(screen.queryByRole("button", { name: /Recently deleted/ })).toBeNull();
   });
 
-  it("opens another site; the open one just goes back to its pages", async () => {
+  it("opens another site; the open one just goes back to its Home page (F087)", async () => {
     const api = await showScreen();
     location.hash = "#/sites";
     fireEvent.click(screen.getByRole("button", { name: "Harbour Studio" }));
-    expect(location.hash).toBe("#/");
+    expect(location.hash).toBe("#/edit?path=%2F");
     expect(api.open).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "Bakery Lumière" }));
     await flush();
@@ -334,14 +334,18 @@ describe("sites: the Sites screen", () => {
 });
 
 describe("sites: the Pages screen", () => {
+  // F086: All sites is the first item of the site menu, at the start of the top bar.
   it("leads with All sites in the app, and not on the web", () => {
     const { unmount } = render(<PageList allSites siteName="Harbour" rows={[]} sourceNote="" onCreate={() => {}} />);
-    const link = screen.getByRole("link", { name: "All sites" });
+    const menu = screen.getByRole("button", { name: /^Harbour\s*, site menu$/ });
+    expect(menu.compareDocumentPosition(screen.getByRole("heading", { level: 1 })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    fireEvent.click(menu);
+    const link = screen.getAllByRole("link")[0]!;
+    expect(link.textContent).toBe("All sites");
     expect(link.getAttribute("href")).toBe("#/sites");
-    // First in the header, before the title.
-    expect(link.compareDocumentPosition(screen.getByRole("heading", { level: 1 })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     unmount();
     render(<PageList siteName="Harbour" rows={[]} sourceNote="" onCreate={() => {}} />);
+    fireEvent.click(screen.getByRole("button", { name: /^Harbour\s*, site menu$/ }));
     expect(screen.queryByRole("link", { name: "All sites" })).toBeNull();
   });
 });
