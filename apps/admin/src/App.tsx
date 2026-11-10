@@ -1,25 +1,16 @@
-import { checkPost, config, countPlaceholders, defaultBlog, migrateChrome, tokensToCss,
-  HEADER_V2_CSS, ICONS_CSS, BLOCKS_V3_CSS, INTERACTIVE_CSS, designNames, isDesignKind, type DesignKind, type BlogSettings, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
-import { relinkPage } from "@crust/blocks/links";
+import { checkPost, config, defaultBlog, menuFromPages, migrateChrome, tokensToCss,
+  HEADER_V2_CSS, ICONS_CSS, BLOCKS_V3_CSS, INTERACTIVE_CSS, designNames, isDesignKind, type DesignKind, type BlogSettings, type MenuLink, type Page, type Post, type Site, type SiteChrome, type SiteTokens } from "@crust/blocks";
 import { Puck, type Data } from "@puckeditor/core";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import siteJson from "../../../content/site.json";
 import {
-  deletePage,
-  getChanges,
-  getDeleted,
-  getLinks,
   getPage,
   getStatus,
   listPages,
   listPosts,
-  renamePage,
-  restorePage,
   saveContent,
   savePost,
   type ApiResult,
-  type DeletedPage,
-  type PendingChanges,
 } from "./api-client";
 import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot } from "./keyboard/KeyboardEditing";
 import { LayoutPhotoWatcher } from "./layouts/photos";
@@ -27,20 +18,17 @@ import { LayoutGallery, LayoutInserters, LayoutsButton } from "./layouts/LayoutG
 import "./app-frame/app-frame.css";
 import { MyLayoutsProvider } from "./layouts/mine";
 import { PageList, editHref } from "./pages/PageList";
-import type { LinkingPage } from "./pages/PageActions";
+import { usePagesData } from "./pages-panel/usePagesData";
+import { PagesMenuContext, PagesRail } from "./pages-panel/PagesRail";
 import {
   bundledPages,
   fromPuckData,
   getLocalDraft,
   localDrafts,
   mergePageRows,
-  moveLocalDraft,
-  removeLocalDraft,
   saveLocalDraft,
   toPuckData,
-  type PageRow,
 } from "./pages/store";
-import { markUnpublished } from "./publish/changes";
 import { PublishPanel } from "./publish/PublishPanel";
 import { DesktopPublishPanel } from "./publish/DesktopPublishPanel";
 import { desktopHosts } from "./publish/hosts";
@@ -262,7 +250,22 @@ export function App() {
     }
     return saveMessage(result, local, "Site settings");
   };
-  const pageOptions = usePageOptions(githubOn, route.name === "settings" || route.name === "edit");
+  const pageOptions = usePageOptions(githubOn, route.name === "settings" || route.name === "edit" || route.name === "pages");
+  // F091: the pages panel's "In the menu" is the header menu. A site whose header was never edited gets its menu
+  // from its pages at publish time, so until then every page counts as in the menu.
+  const menuIsAutomatic = site.header === undefined && sameChrome(savedChrome, defaultChrome);
+  const panelMenu = useMemo(
+    () => (menuIsAutomatic ? menuFromPages(pageOptions) : chromeDraft.header.menu),
+    [menuIsAutomatic, pageOptions, chromeDraft.header.menu],
+  );
+  const saveMenu = (menu: MenuLink[]) => {
+    const next: SiteChrome = { ...savedChrome, header: { ...savedChrome.header, menu } };
+    setSavedChrome(next);
+    setChromeDraft((c) => ({ ...c, header: { ...c.header, menu } }));
+    saveChrome(next);
+    // Like the rest of Site settings: kept in this browser at once, then saved to GitHub when that is on.
+    void saveContent({ kind: "site", site: siteToSave(site, saved, next, defaultChrome, savedAddress) });
+  };
   // F025: the builder edits the same draft as Site settings ("Whole site" mode).
   const siteStyle: SiteStyle = {
     tokens: draft,
@@ -398,14 +401,16 @@ export function App() {
     return (
       <SiteStyleContext.Provider value={siteStyle}>
         <SiteChromeContext.Provider value={{ chrome: chromeDraft, siteName: site.name, path: route.path }}>
-          <Builder key={route.path} path={route.path} githubOn={githubOn} onSaved={onSaved} pages={pageOptions} />
+          <PagesMenuContext.Provider value={{ menu: panelMenu, onMenuChange: saveMenu, githubOn, currentPath: route.path }}>
+            <Builder key={route.path} path={route.path} githubOn={githubOn} onSaved={onSaved} pages={pageOptions} />
+          </PagesMenuContext.Provider>
           <MediaPicker />
         </SiteChromeContext.Provider>
       </SiteStyleContext.Provider>
     );
   }
 
-  return <Pages githubOn={githubOn} focusPublish={route.name === "pages" && route.focus === "publish"} />;
+  return <Pages githubOn={githubOn} focusPublish={route.name === "pages" && route.focus === "publish"} menu={panelMenu} onMenuChange={saveMenu} />;
 }
 
 function Loading() {
@@ -416,35 +421,8 @@ function Loading() {
   );
 }
 
-function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; focusPublish?: boolean }) {
-  const [rows, setRows] = useState<PageRow[] | null>(null);
-  const [error, setError] = useState<string>();
-  const [changes, setChanges] = useState<PendingChanges | null>(null);
-  const [deleted, setDeleted] = useState<DeletedPage[] | null>(null);
-  // Bumped after a rename, delete or publish to load the list again.
-  const [version, setVersion] = useState(0);
-  const reload = () => setVersion((v) => v + 1);
-
-  useEffect(() => {
-    if (githubOn === null) return;
-    const bundled = bundledPages().map((p) => ({ path: p.path, title: p.title, lastEdited: null, ...(countPlaceholders(p.puck.content) ? { placeholders: countPlaceholders(p.puck.content) } : {}) }));
-    if (!githubOn) {
-      setRows(mergePageRows(bundled, localDrafts()));
-      return;
-    }
-    void listPages().then((res) => {
-      if (res.ok) {
-        setError(undefined);
-        setRows(mergePageRows(res.pages, localDrafts()));
-      } else {
-        setError(`Couldn't load your pages from GitHub: ${res.error}`);
-        setRows(mergePageRows(bundled, localDrafts()));
-      }
-    });
-    // If this fails, pages just aren't marked; the list itself still works.
-    void getChanges().then((res) => setChanges(res.ok ? res : null));
-    void getDeleted().then((res) => setDeleted(res.ok ? res.pages : null));
-  }, [githubOn, version]);
+function Pages({ githubOn, focusPublish = false, menu, onMenuChange }: { githubOn: boolean | null; focusPublish?: boolean; menu: MenuLink[]; onMenuChange: (menu: MenuLink[]) => void }) {
+  const { rows: markedRows, plainRows: rows, error, changes, deleted, reload, rename, restore, saveDraft, saveAllDrafts, drafts, findLinks, remove, duplicate } = usePagesData(githubOn);
 
   // F024: arriving from the Publish shortcut, focus goes to the Publish panel once the list is there.
   useEffect(() => {
@@ -454,69 +432,14 @@ function Pages({ githubOn, focusPublish = false }: { githubOn: boolean | null; f
     heading?.scrollIntoView({ block: "start" });
   }, [focusPublish, rows === null]);
 
-  // Rename and delete (F015): through GitHub for pages there, in this browser otherwise.
-  const rename = async (row: PageRow, to: string): Promise<string | { relinked: LinkingPage[] }> => {
-    let relinked: LinkingPage[] = [];
-    if (row.inRepo) {
-      const res = await renamePage(row.path, to);
-      if (!res.ok) return `Not renamed: ${res.error}`;
-      // F069: said in the message ("It also updated 3 links…").
-      relinked = res.relinked ?? [];
-    }
-    if (!moveLocalDraft(row.path, to)) return "This browser wouldn't store the change. Try again.";
-    // F018: drafts in this browser follow too, so saving one later doesn't bring the old links back.
-    for (const draft of localDrafts()) {
-      const { puck, count } = relinkPage(draft.page.puck, row.path, to);
-      if (count) saveLocalDraft({ ...draft.page, puck }, draft.savedToGitHub);
-    }
-    reload();
-    return { relinked };
-  };
-  const restore = async (page: DeletedPage): Promise<string | null> => {
-    const res = await restorePage(page);
-    if (!res.ok) return `Not restored: ${res.error}`;
-    reload();
-    return null;
-  };
-  // F020: the browser draft goes to GitHub as it is, like "Save draft" in the builder.
-  const saveDraft = async (row: PageRow): Promise<string | null> => {
-    const draft = getLocalDraft(row.path);
-    if (!draft) return "There's no draft of this page in this browser any more.";
-    const res = await saveContent({ kind: "page", page: draft.page });
-    if (!res.ok) return `Not saved to GitHub: ${res.error} The draft is still safe in this browser.`;
-    saveLocalDraft(draft.page, true);
-    reload();
-    return null;
-  };
-  // F022: Publish offers to save these first.
-  const drafts = githubOn ? (rows ?? []).filter((r) => r.localChanges) : [];
-  const saveAllDrafts = async (): Promise<string | null> => {
-    for (const row of drafts) {
-      const failed = await saveDraft(row);
-      if (failed) return `“${row.title}”: ${failed}`;
-    }
-    return null;
-  };
-  const findLinks = async (row: PageRow) => {
-    if (!githubOn || !row.inRepo) return null;
-    const res = await getLinks(row.path);
-    return res.ok ? res.pages : null;
-  };
-  const remove = async (row: PageRow): Promise<string | null> => {
-    if (row.inRepo) {
-      const res = await deletePage(row.path);
-      if (!res.ok) return `Not deleted: ${res.error}`;
-    }
-    removeLocalDraft(row.path);
-    reload();
-    return null;
-  };
-
   return (
     <PageList
       siteName={site.name}
       allSites={desktopContent() !== null}
-      rows={rows && markUnpublished(rows, changes)}
+      rows={markedRows}
+      menu={menu}
+      onMenuChange={onMenuChange}
+      onDuplicate={duplicate}
       loadError={error}
       onRetry={reload}
       sourceNote={
@@ -615,7 +538,7 @@ function Builder({ path, githubOn, onSaved, pages }: { path: string; githubOn: b
   );
   const autosave = useAutosave<Page>(save, (p) => JSON.stringify(p), page ?? null);
   const plugins = useMemo(
-    () => railPlugins({ pages: () => pages, hrefFor: editHref, quickEdit: `#/edit?path=${encodeURIComponent(path)}&mode=quick` }),
+    () => railPlugins({ pages: () => pages, hrefFor: editHref, quickEdit: `#/edit?path=${encodeURIComponent(path)}&mode=quick`, pagesPanel: () => <PagesRail /> }),
     [pages, path],
   );
 

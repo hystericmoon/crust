@@ -13,6 +13,9 @@ afterEach(() => {
 const row = (over: Partial<PageRow>): PageRow => ({ path: "/about", title: "About", lastEdited: null, localChanges: false, inRepo: true, ...over });
 const rows = [row({ path: "/", title: "Home" }), row({}), row({ path: "/draft", title: "Draft idea", inRepo: false, localChanges: true })];
 
+// F091: a page's actions are in its "More for …" menu.
+const more = (title: string) => screen.getByRole("button", { name: `More for ${title}` });
+const openMenu = (title: string) => act(() => more(title).click());
 const flush = () => act(async () => {});
 // Focus moves on the next tick, once the dialog has closed.
 const tick = () => act(() => new Promise((ok) => setTimeout(ok, 0)));
@@ -39,30 +42,37 @@ describe("page-actions: rules", () => {
 });
 
 describe("page-actions: page list", () => {
-  it("offers rename and delete for every page but Home, named for screen readers", () => {
+  it("offers Change address and Delete for every page but Home, in the page's menu", () => {
     render(<PageList siteName="Demo" rows={rows} sourceNote="" githubOn onCreate={() => {}} onRename={vi.fn()} onDelete={vi.fn()} />);
-    const [, home, about] = within(screen.getByRole("table")).getAllByRole("row");
-    expect(within(home!).queryByRole("button")).toBeNull();
-    expect(within(about!).getByRole("button", { name: "Rename About" })).toBeTruthy();
-    expect(within(about!).getByRole("button", { name: "Delete About" })).toBeTruthy();
+    openMenu("Home");
+    expect(screen.queryByRole("button", { name: "Change address" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Delete" })).toBeNull();
+    openMenu("About");
+    const menu = screen.getByRole("list", { name: "About" });
+    expect(within(menu).getByRole("button", { name: "Change address" })).toBeTruthy();
+    expect(within(menu).getByRole("button", { name: "Delete" })).toBeTruthy();
   });
 
   it("without GitHub, only pages that live in this browser can change", () => {
     render(<PageList siteName="Demo" rows={rows} sourceNote="" onCreate={() => {}} onRename={vi.fn()} onDelete={vi.fn()} />);
-    expect(screen.queryByRole("button", { name: "Rename About" })).toBeNull();
-    expect(screen.getByRole("button", { name: "Rename Draft idea" })).toBeTruthy();
+    openMenu("About");
+    expect(screen.queryByRole("button", { name: "Change address" })).toBeNull();
+    openMenu("Draft idea");
+    expect(screen.getByRole("button", { name: "Change address" })).toBeTruthy();
   });
 
-  it("shows no actions column when nothing can change", () => {
+  it("has no Change address or Delete when nothing can change", () => {
     render(<PageList siteName="Demo" rows={rows.slice(0, 2)} sourceNote="" onCreate={() => {}} onRename={vi.fn()} onDelete={vi.fn()} />);
-    // Title, Status, Address, Last edited: no Actions column.
-    expect(screen.getAllByRole("columnheader")).toHaveLength(4);
+    openMenu("About");
+    expect(screen.queryByRole("button", { name: "Change address" })).toBeNull();
+    expect(screen.getByRole("link", { name: "Page settings" })).toBeTruthy();
   });
 
   it("renames: checks the address, explains the redirect, then announces the result", async () => {
     const onRename = vi.fn(async () => null);
     render(<PageList siteName="Demo" rows={rows} sourceNote="" githubOn onCreate={() => {}} onRename={onRename} onDelete={vi.fn()} />);
-    act(() => screen.getByRole("button", { name: "Rename About" }).click());
+    openMenu("About");
+    act(() => screen.getByRole("button", { name: "Change address" }).click());
 
     const dialog = screen.getByRole("dialog", { name: "New address for “About”" });
     const input = within(dialog).getByLabelText("New address") as HTMLInputElement;
@@ -96,7 +106,8 @@ describe("page-actions: page list", () => {
   it("keeps the dialog open with the reason when a rename fails", async () => {
     const onRename = vi.fn(async () => "Not renamed: There's already a page at /team.");
     render(<PageList siteName="Demo" rows={rows} sourceNote="" githubOn onCreate={() => {}} onRename={onRename} onDelete={vi.fn()} />);
-    act(() => screen.getByRole("button", { name: "Rename About" }).click());
+    openMenu("About");
+    act(() => screen.getByRole("button", { name: "Change address" }).click());
     const dialog = screen.getByRole("dialog");
     act(() => {
       fireEvent.change(within(dialog).getByLabelText("New address"), { target: { value: "team" } });
@@ -108,21 +119,21 @@ describe("page-actions: page list", () => {
 
   it("cancel and Esc close the dialog and return focus to the button", async () => {
     render(<PageList siteName="Demo" rows={rows} sourceNote="" githubOn onCreate={() => {}} onRename={vi.fn()} onDelete={vi.fn()} />);
-    const rename = screen.getByRole("button", { name: "Rename About" });
-    act(() => rename.click());
+    openMenu("About");
+    act(() => screen.getByRole("button", { name: "Change address" }).click());
     act(() => within(screen.getByRole("dialog")).getByRole("button", { name: "Cancel" }).click());
     expect(screen.queryByRole("dialog")).toBeNull();
     await tick();
-    expect(document.activeElement).toBe(rename);
+    expect(document.activeElement).toBe(more("About"));
 
-    const del = screen.getByRole("button", { name: "Delete About" });
-    act(() => del.click());
+    openMenu("About");
+    act(() => screen.getByRole("button", { name: "Delete" }).click());
     act(() => {
       fireEvent(screen.getByRole("dialog"), new Event("cancel", { cancelable: true }));
     });
     expect(screen.queryByRole("dialog")).toBeNull();
     await tick();
-    expect(document.activeElement).toBe(del);
+    expect(document.activeElement).toBe(more("About"));
   });
 
   it("deletes after a confirmation that starts on Keep page", async () => {
@@ -138,7 +149,8 @@ describe("page-actions: page list", () => {
         onDelete={onDelete}
       />,
     );
-    act(() => screen.getByRole("button", { name: "Delete About" }).click());
+    openMenu("About");
+    act(() => screen.getByRole("button", { name: "Delete" }).click());
     const dialog = screen.getByRole("dialog", { name: "Delete “About”?" });
     expect(document.activeElement).toBe(within(dialog).getByRole("button", { name: "Keep page" }));
     expect(dialog.getAttribute("aria-describedby")).toBeTruthy();
@@ -153,7 +165,8 @@ describe("page-actions: page list", () => {
 
   it("says plainly when a page only lives in this browser", () => {
     render(<PageList siteName="Demo" rows={rows} sourceNote="" onCreate={() => {}} onRename={vi.fn()} onDelete={vi.fn()} />);
-    act(() => screen.getByRole("button", { name: "Delete Draft idea" }).click());
+    openMenu("Draft idea");
+    act(() => screen.getByRole("button", { name: "Delete" }).click());
     expect(screen.getByRole("dialog").textContent).toContain("This page is only in this browser, so deleting it removes it for good.");
   });
 });

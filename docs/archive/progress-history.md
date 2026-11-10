@@ -3,6 +3,20 @@
 Moved out of PROGRESS.md on 2026-11-03 to keep the start of each session
 short. Older "Current" entries (newest first) and the older log.
 
+## F090 (archived 2026-11-10)
+
+- **2026-11-10: F090 Type on the page (built, waiting for your review).**
+  On the page, click a heading or a text block and type right there. A small
+  bar floats above it: for a heading, the level (H1 to H4) and **Done**; for
+  text, bold, italic, link and lists. **Escape**, **Done**, or a click
+  elsewhere leaves. The side panel and Quick edit still work, and Undo steps
+  are shared with the panel. Keyboard: select a block, press **Enter** to
+  type (or use the new "Type on the page" button in its bar), **Escape** to
+  go back to the block. Snapshot: https://claude.ai/artifact/X9G5XUcFRfCR1nY8wCtKqL.
+  **To try:** open the preview https://ccr-d50f7e80-weuq18.crust-admin.pages.dev,
+  click a heading, change its words and level, press Escape, then press Undo.
+  Next: F091 Pages panel.
+
 ## F089 (archived 2026-11-10)
 
 - **2026-11-06: F089 One-row section toolbar (built, waiting for your review).**

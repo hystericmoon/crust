@@ -3687,3 +3687,29 @@ a lawyer reads it (BLOCKED.md).
   block render walks its props and a React element in `text` loops.
 - Not done: the a11y check scans the main document, not the canvas frame, so the typing state itself is
   covered by unit tests and the Heading screen only.
+
+## 2026-11-10 — F091 Pages panel (Claude, reversible)
+
+- Snapshot: https://claude.ai/artifact/Py2BWv56W8cCrUw7FVYmy2 (`design/f091-pages-panel-v1.html`). Built direction A: two groups
+  ("In the menu", "Not in the menu"), a grip and a ⋯ menu per page. Code in `apps/admin/src/pages-panel/`.
+- **"In the menu" is the header menu** (`site.json` header.menu): a page is in it when a menu item links to its
+  address. No page JSON change, no migration. A site whose header was never edited gets its menu from its pages
+  at publish time, so until the first change every page shows as in the menu; the first change saves the menu
+  explicitly (browser at once, GitHub when it is on; fire and forget, like the other local-first saves).
+- Reordering reuses `removeItem` from the menu editor; the new rules (`model.ts`) skip menu items that are not
+  pages (outside links), keep dropdown pages inside their dropdown, and refuse a ninth link. Drag moves a row
+  (before another row, to the end of the group, or into the other group to add or take out). Keyboard: Up and Down
+  on the grip, or Move up and Move down in the menu. Moves are announced ("Moved About up. Position 2 of 3 in the menu.").
+- The status keeps its words (`pageStatus`); the dot is `aria-hidden`.
+- **One panel, two places.** The same `PagesPanel` is the left bar's Pages panel in the editor and the card on the
+  home screen (`#/`, which still holds Publish): the table is gone. `usePagesData` holds what the screen's
+  `Pages` had (rows, rename, delete, restore, save to GitHub), so nothing was lost: rename (now "Change address"),
+  delete, Save to GitHub, find, recently deleted and the "Page not found" design moved into the panel and the
+  page's menu. **New: Duplicate** (a copy "Copy of …" at `/<address>-copy`, kept in this browser until saved).
+- "Page settings" in a page's menu opens that page with its settings panel showing (`#/edit?path=…&settings=1`),
+  or just opens the panel for the page being edited. Title, search and sharing are there; the address is
+  "Change address" (it needs the redirect and link-update dialog).
+- Dropped on purpose: the Sort box and the Last edited column (menu order replaces them; the status says what
+  matters). The find box stays, from six pages.
+- Not tried by hand: drag with a real mouse in a browser (covered by unit tests with drag events), and phone drag
+  (touch has no HTML5 drag; the grip arrows and the menu are the way on a phone).

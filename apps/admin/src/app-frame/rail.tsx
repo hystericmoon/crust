@@ -19,6 +19,8 @@ export interface RailOptions {
   hrefFor: (path: string) => string;
   /** The page or post being edited, for the Help panel's quick edit link. */
   quickEdit?: string;
+  /** F091: the full Pages panel (replaces the plain list). */
+  pagesPanel?: () => React.ReactElement;
 }
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
@@ -74,7 +76,7 @@ function MediaPanel() {
   );
 }
 
-export function railPlugins({ pages, hrefFor, quickEdit }: RailOptions): Plugin[] {
+export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel }: RailOptions): Plugin[] {
   const blocks = blocksPlugin();
   return [
     // Add: whole layouts first (the gallery), then single blocks. F088: pictures of sections first, single blocks under "Add an element".
@@ -89,7 +91,7 @@ export function railPlugins({ pages, hrefFor, quickEdit }: RailOptions): Plugin[
       name: "pages",
       label: "Pages",
       icon: <FrameIcon name="pages" size={18} />,
-      render: () => <PagesPanel pages={pages()} hrefFor={hrefFor} />,
+      render: () => (pagesPanel ? pagesPanel() : <PagesPanel pages={pages()} hrefFor={hrefFor} />),
     },
     {
       name: "styles",

@@ -51,9 +51,9 @@ describe("changes: marking pages", () => {
         onCreate={() => {}}
       />,
     );
-    const [, about, contact] = within(screen.getByRole("table")).getAllByRole("row");
-    expect(about!.textContent).toContain("Edits not live yet");
-    expect(contact!.textContent).toContain("Saved, not live yet");
+    const item = (path: string) => Array.from(document.querySelectorAll(".pp-item[data-item]")).find((i) => i.getAttribute("data-item") === path)!;
+    expect(item("/about").textContent).toContain("Edits not live yet");
+    expect(item("/contact").textContent).toContain("Saved, not live yet");
   });
 });
 

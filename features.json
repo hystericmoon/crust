@@ -980,7 +980,7 @@
       "description": "Design snapshot first. Pages in a left panel grouped 'In the menu' and 'Not in the menu', reorder by drag or arrow keys, a status dot per page, each page's settings (title, address, search and sharing) behind its menu. Replaces the site home table. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
       "depends_on": ["F086"],
       "done_check": "npm test -- pages-panel && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

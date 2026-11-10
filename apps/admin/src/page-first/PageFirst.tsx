@@ -62,7 +62,8 @@ export function PageFirstWatcher() {
 
   // A new site opens with its Next steps; otherwise nothing is open.
   useEffect(() => {
-    setPanelMode(site && startNextSteps(site).show ? "next" : null);
+    // F091: "Page settings" in the Pages panel opens a page with its settings showing.
+    setPanelMode(/[?&]settings=1\b/.test(location.hash) ? "page" : site && startNextSteps(site).show ? "next" : null);
     return () => setPanelMode(null);
   }, [site]);
 

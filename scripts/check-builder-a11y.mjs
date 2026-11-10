@@ -89,6 +89,9 @@ const screens = [
   ["Section Style tab, video", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible', '[aria-label="Background"] .sx-seg-option:has-text("Video"):visible'] }],
   // F080: saving a section's style (the name form), and the layout gallery with the new layouts and the "Simple" group.
   ["Section Style tab, saving a style", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible', ".es-save:visible"] }],
+  // F091: the Pages panel in the left bar, and a page's menu open.
+  ["Pages panel", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Pages")', '.pp-group-title:has-text("In the menu")']],
+  ["Pages panel, page menu", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Pages")', 'button[aria-label^="More for"]', '.pp-menu']],
   // F088: the Add panel's pictures (Hero picked, then Show more), and the big gallery behind "See larger".
   ["add section panel, Hero", "/#/edit?path=/", null, null, ['.af-chip:text-is("Hero")']],
   ["add section panel, show more", "/#/edit?path=/", null, null, ['.af-addsec button:has-text("more layouts")']],

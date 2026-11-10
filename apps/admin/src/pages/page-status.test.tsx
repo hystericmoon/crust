@@ -25,7 +25,7 @@ describe("page-status: one status per page", () => {
     expect(pageStatus(row({ localChanges: true }), false, false).label).toBe("Only in this browser");
   });
 
-  it("shows it in its own column, with the old badges gone", () => {
+  it("shows it as words beside the dot, with the old badges gone", () => {
     render(
       <PageList
         siteName="Demo"
@@ -36,11 +36,13 @@ describe("page-status: one status per page", () => {
         onCreate={() => {}}
       />,
     );
-    const headers = screen.getAllByRole("columnheader").map((h) => h.textContent);
-    expect(headers.slice(0, 2)).toEqual(["Title", "Status"]);
-    const [, home, about] = within(screen.getByRole("table")).getAllByRole("row");
-    expect(within(home!).getAllByRole("cell")[0]!.textContent).toBe("Live");
-    expect(within(about!).getAllByRole("cell")[0]!.textContent).toBe("Changes not saved");
-    expect(about!.textContent).not.toContain("Edits not live yet");
+    const items = Array.from(document.querySelectorAll(".pp-item[data-item]"));
+    const home = items.find((i) => i.getAttribute("data-item") === "/")!;
+    const about = items.find((i) => i.getAttribute("data-item") === "/about")!;
+    expect(home.querySelector(".pp-status")!.textContent).toBe("Live");
+    expect(about.querySelector(".pp-status")!.textContent).toBe("Changes not saved");
+    // The dot is decoration; the words carry the meaning.
+    expect(about.querySelector(".pp-dot")!.getAttribute("aria-hidden")).toBe("true");
+    expect(about.textContent).not.toContain("Edits not live yet");
   });
 });

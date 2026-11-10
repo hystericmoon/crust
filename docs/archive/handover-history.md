@@ -673,3 +673,10 @@ Next: **F089 One-row section toolbar** (Sonnet), design snapshot first.
 **F089 built (2026-11-06)**: `SectionToolbar` in `apps/admin/src/sections/editing.tsx`
 is one row (Section, Style, Layout, Move, More); DECISIONS "F089".
 Next: **F090 Type on the page** (Opus), design snapshot first.
+
+## F090 notes (archived 2026-11-10)
+
+**F090 built (2026-11-10)**: `apps/admin/src/inline-text/` (`withInlineText`, store,
+CSS); `RichTextEditor` has `floating`/`autoFocus`; Enter and the bar button in
+`keyboard/KeyboardEditing.tsx`; DECISIONS "F090".
+Next: **F091 Pages panel** (Sonnet), design snapshot first.

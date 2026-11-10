@@ -118,7 +118,7 @@ export function Dialog({
   );
 }
 
-function RenameDialog({
+export function RenameDialog({
   row,
   otherPaths,
   onRename,
@@ -232,7 +232,7 @@ function RenameDialog({
   );
 }
 
-function DeleteDialog({
+export function DeleteDialog({
   row,
   onDelete,
   onClose,

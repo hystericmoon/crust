@@ -86,9 +86,10 @@ describe("review fixes: page list", () => {
     expect(onRetry).toHaveBeenCalled();
   });
 
-  it("explains why Home has no Rename or Delete", () => {
+  it("explains why Home has no Change address or Delete", () => {
     render(<PageList siteName="Demo" rows={rows} sourceNote="" githubOn onCreate={() => {}} onRename={vi.fn()} onDelete={vi.fn()} />);
-    expect(screen.getByText("Always at /")).toBeTruthy();
+    act(() => screen.getByRole("button", { name: "More for Home" }).click());
+    expect(screen.getByText("Home always lives at /")).toBeTruthy();
   });
 
   it("puts the Publish panel before the page list", () => {

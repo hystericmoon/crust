@@ -4,6 +4,16 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Pages panel (2026-11-10).** The Pages button on the left now opens a real
+  panel: your pages in two groups, **In the menu** (in the order the menu shows
+  them) and **Not in the menu**. Drag a page to reorder it, or to move it
+  between the groups; with the keyboard, focus its grip and press the up or
+  down arrow, or use Move up and Move down in its **⋯** menu. Each page shows
+  its status in words (Live, Edits not live yet, Only in this browser…). The
+  ⋯ menu holds Page settings (title, search and sharing), Change address,
+  Duplicate, Save to GitHub and Delete. The panel replaces the table on the
+  home screen, so the list is the same in both places.
+
 - **Type on the page (2026-11-10).** Click a heading or a text block on the
   page and type right there, with a small bar floating above it. Headings get
   their level (H1 to H4) and Done; text gets bold, italic, link and lists.

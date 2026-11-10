@@ -320,7 +320,8 @@ describe("review-fixes 8: the rename message says how many links changed (F018)"
     ];
     const onRename = vi.fn(async () => ({ relinked: [{ path: "content/site.json", title: "Site header and footer", count: 2 }] }));
     render(<PageList siteName="Bakery" rows={rows} githubOn onRename={onRename} onDelete={vi.fn(async () => null)} sourceNote="" onCreate={vi.fn()} />);
-    await act(async () => screen.getByRole("button", { name: "Rename Menu" }).click());
+    act(() => screen.getByRole("button", { name: "More for Menu" }).click());
+    await act(async () => screen.getByRole("button", { name: "Change address" }).click());
     const dialog = screen.getByRole("dialog");
     fireEvent.change(within(dialog).getByLabelText("New address"), { target: { value: "food" } });
     await act(async () => within(dialog).getByRole("button", { name: "Change address" }).click());
@@ -430,13 +431,11 @@ describe("review-fixes 10: polish", () => {
       { path: "/opening-hours", title: "Hours", lastEdited: null, localChanges: false, inRepo: true },
     ];
     render(<PageList siteName="Bakery" rows={rows} sourceNote="" onCreate={vi.fn()} />);
-    const cell = document.querySelectorAll("td.pg-path-cell")[1]!;
-    expect(cell.textContent).toBe("/opening-hours");
-    expect(cell.innerHTML).toBe("/<wbr>opening-<wbr>hours");
+    const small = document.querySelectorAll(".pp-name small")[1]!;
+    expect(small.textContent).toBe("/opening-hours");
+    expect(small.innerHTML).toBe("/<wbr>opening-<wbr>hours");
     render(<p data-testid="p">{breakablePath("/a")}</p>);
     expect(screen.getByTestId("p").innerHTML).toBe("/<wbr>a");
-    const css = readFileSync("apps/admin/src/pages/pages.css", "utf8");
-    expect(css).toContain(".pg-table .pg-path-cell { overflow-wrap: normal; word-break: normal; }");
   });
 
   it("the Site header label sits above the header, not on its links (F029, F004)", () => {

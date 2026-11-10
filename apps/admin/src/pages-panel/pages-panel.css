@@ -1,0 +1,61 @@
+/* F091 Pages panel. Colours are the app's own tokens only. The dot is decoration; the words beside it say the status. */
+.pp { display: grid; gap: 10px; min-width: 0; color: var(--app-ink); font-family: var(--app-font); }
+.pp-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pp-head h2 { margin: 0; }
+.pp-head h2:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; border-radius: 4px; }
+.pp-new {
+  min-height: 32px; padding: 0 12px; border: 1px solid var(--app-line-strong); border-radius: 8px;
+  background: transparent; color: var(--app-ink); font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+}
+.pp-new:hover { background: var(--app-hover); }
+.pp-lede { margin: 0; }
+.pp-find { display: grid; gap: 4px; }
+.pp-find .st-input { width: 100%; max-width: none; }
+.pp-group { display: grid; gap: 4px; }
+.pp-group-title { margin: 6px 0 0; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--app-mute); }
+.pp-list { list-style: none; margin: 0; padding: 4px; display: grid; gap: 2px; border: 1px dashed transparent; border-radius: 10px; min-height: 12px; }
+.pp-list.is-over { border-color: var(--app-acc); background: var(--app-acc-soft); }
+.pp-item { display: grid; gap: 2px; border-radius: 8px; }
+.pp-item.is-over { box-shadow: 0 -2px 0 var(--app-acc); }
+.pp-row { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 6px 6px 6px 4px; border: 1px solid transparent; border-radius: 8px; }
+.pp-row:hover { background: var(--app-hover); }
+.pp-row.is-current { background: var(--app-acc-soft); border-color: var(--app-acc); }
+.pp-row[draggable="true"] { cursor: grab; }
+.pp-grip, .pp-more {
+  flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 32px; min-height: 32px;
+  border: 0; border-radius: 6px; background: transparent; color: var(--app-mute); font: inherit; font-weight: 700; cursor: pointer;
+}
+.pp-grip { cursor: grab; }
+.pp-grip:hover, .pp-more:hover { background: var(--app-hover); color: var(--app-ink); }
+.pp-grip:disabled { cursor: default; opacity: 0.5; }
+.pp-grip:focus-visible, .pp-more:focus-visible, .pp-new:focus-visible,
+.pp-menu :is(a, button):focus-visible, .pp-name a:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
+.pp-name { flex: 1; min-width: 0; display: grid; gap: 1px; }
+.pp-name a { color: var(--app-ink); font-weight: 500; text-underline-offset: 0.2em; overflow-wrap: anywhere; }
+.pp-name small { color: var(--app-mute); font-size: 12px; font-family: var(--app-mono); overflow-wrap: anywhere; }
+.pp-replace { font-size: 12px; color: var(--app-mute); }
+.pp-status { flex: none; max-width: 9rem; font-size: 12px; color: var(--app-mute); text-align: right; line-height: 1.3; }
+.pp-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; box-sizing: border-box; }
+.pp-dot.is-live { background: var(--app-ok); }
+.pp-dot.is-new, .pp-dot.is-edited { border: 2px solid var(--app-warn); }
+.pp-dot.is-unsaved, .pp-dot.is-local { border: 2px solid var(--app-mute); }
+.pp-dot.is-saved, .pp-dot.is-builtin { background: var(--app-line-strong); }
+.pp-menu {
+  list-style: none; margin: 0 0 4px 36px; padding: 4px; display: grid; gap: 1px;
+  background: var(--app-raised); border: 1px solid var(--app-line-strong); border-radius: 8px;
+}
+.pp-menu :is(a, button) {
+  display: flex; align-items: center; min-height: 36px; width: 100%; padding: 0 10px; border: 0; border-radius: 6px; box-sizing: border-box;
+  background: transparent; color: var(--app-ink); font: inherit; font-size: 13px; text-align: left; text-decoration: none; cursor: pointer;
+}
+.pp-menu :is(a, button):hover { background: var(--app-hover); }
+.pp-menu .pp-danger { color: var(--app-danger); }
+.pp-menu [aria-disabled="true"] { opacity: 0.6; cursor: progress; }
+.pp-note, .pp-empty { padding: 6px 10px; font-size: 13px; color: var(--app-mute); }
+.pp-builtin-list { margin-top: 4px; }
+.pp-rail .st-lede, .pp-rail .st-status-inline, .pp-rail .st-error { font-size: 13px; }
+.pp-rail .pg-deleted { margin: 8px 0 0; padding: 0; border: 0; background: transparent; }
+.pp-rail .st-input { background: var(--app-bg); color: var(--app-ink); border: 1px solid var(--app-line-strong); }
+.pp-rail .pg-form { gap: 10px; }
+@media (max-width: 640px) { .pp-status { max-width: 6rem; } }
+@media (prefers-reduced-motion: reduce) { .pp * { transition: none; } }

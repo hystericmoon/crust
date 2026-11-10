@@ -36,7 +36,7 @@ Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-10, F090 built; branch `ccr-d50f7e80-weuq18`. **PR #81
+Last updated: 2026-11-10, F091 built; branch `ccr-d50f7e80-weuq18`. **PR #81
 open** (review fixes, Mac app fix, F085 to F090: same branch, so one PR until he
 merges); the owner merges. Milestone 9 "Friendly app" is under way (see Next).
 
@@ -87,10 +87,10 @@ React Bits code can't be used (MIT + Commons Clause): aesthetic only
 `railPlugins`, `useAutosave`); DECISIONS "F086".
 **F087 built**: `apps/admin/src/page-first/` (see DECISIONS "F087").
 **F088 built**: Add panel with layout pictures (DECISIONS "F088").
-**F090 built (2026-11-10)**: `apps/admin/src/inline-text/` (`withInlineText`, store,
-CSS); `RichTextEditor` has `floating`/`autoFocus`; Enter and the bar button in
-`keyboard/KeyboardEditing.tsx`; DECISIONS "F090".
-Next: **F091 Pages panel** (Sonnet), design snapshot first.
+**F091 built (2026-11-10)**: `apps/admin/src/pages-panel/` (`PagesPanel` is both the
+editor's Pages panel and the home screen's list; `model.ts` menu rules;
+`usePagesData` the screen's data); "In the menu" = header.menu; DECISIONS "F091".
+Next: **F092 Styles panel and Site settings sheet** (Sonnet), design snapshot first.
 PR #81 (review fixes, Mac app fix, redesign research, F085–F088) is
 still open for the owner to merge; after the merge, restart the branch
 from main.
@@ -112,3 +112,4 @@ round two (https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp).
 | User-visible changes | CHANGELOG.md |
 | Older handover and progress notes | docs/archive/ |
 | Setup guides for the owner | docs/setup-*.md |
+

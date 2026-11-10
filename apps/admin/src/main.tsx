@@ -21,6 +21,7 @@ import "./seo/seo.css";
 import "./quick/quick.css";
 import "./chrome-canvas.css";
 import "./pages/pages.css";
+import "./pages-panel/pages-panel.css";
 import "./updates/updates.css";
 // F085: the app's colour and font tokens, last so they win over Puck's.
 import "./app-theme/app-theme.css";
