@@ -21,7 +21,7 @@ any work.
 | F087 Page first | Opus | Editor behaviour |
 | F088 Add section, by picture | Sonnet | Reuses the layout gallery |
 | F089 One-row section toolbar | Sonnet | Contained |
-| F090 Type on the page | Opus | Hardest: inline editing in the canvas |
+| F090 Type on the page | Opus (built with Sonnet, owner 2026-11-10) | Hardest: inline editing in the canvas |
 | F091 Pages panel | Sonnet | Contained |
 | F092 Styles panel and Site settings sheet | Sonnet | Regrouping existing panels |
 | F093 Words and accessibility sweep | Sonnet | Sweep |
@@ -29,15 +29,16 @@ any work.
 Milestone 9 approved 2026-11-06 (docs/milestone-9.md); models are
 Claude's recommendation, the owner can change any row.
 
+2026-11-10: the owner asked for Sonnet and Haiku only ("Keep everything using sonnet and haiku"), so
+F091 onwards use Sonnet (Haiku for small sweeps).
+
 Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-06 ~20:00 (Jakarta), F089 built; branch `ccr-d50f7e80-weuq18`. **PR #81
-open** (review fixes, Mac app fix, F085, F086, F087, now F088 and F089 too: same branch, so
-one PR until he merges); the owner merges.
-The Mac app opens on the owner's Mac (ad-hoc signed; DECISIONS
-2026-11-06). Milestone 9 "Friendly app" is under way (see Next).
+Last updated: 2026-11-10, F090 built; branch `ccr-d50f7e80-weuq18`. **PR #81
+open** (review fixes, Mac app fix, F085 to F090: same branch, so one PR until he
+merges); the owner merges. Milestone 9 "Friendly app" is under way (see Next).
 
 ## Where things stand
 
@@ -86,9 +87,10 @@ React Bits code can't be used (MIT + Commons Clause): aesthetic only
 `railPlugins`, `useAutosave`); DECISIONS "F086".
 **F087 built**: `apps/admin/src/page-first/` (see DECISIONS "F087").
 **F088 built**: Add panel with layout pictures (DECISIONS "F088").
-**F089 built (2026-11-06)**: `SectionToolbar` in `apps/admin/src/sections/editing.tsx`
-is one row (Section, Style, Layout, Move, More); DECISIONS "F089".
-Next: **F090 Type on the page** (Opus), design snapshot first.
+**F090 built (2026-11-10)**: `apps/admin/src/inline-text/` (`withInlineText`, store,
+CSS); `RichTextEditor` has `floating`/`autoFocus`; Enter and the bar button in
+`keyboard/KeyboardEditing.tsx`; DECISIONS "F090".
+Next: **F091 Pages panel** (Sonnet), design snapshot first.
 PR #81 (review fixes, Mac app fix, redesign research, F085–F088) is
 still open for the owner to merge; after the merge, restart the branch
 from main.

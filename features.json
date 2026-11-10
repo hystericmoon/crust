@@ -970,7 +970,7 @@
       "description": "Design snapshot first. Click a heading or text on the canvas and edit it in place, with the rich-text bar floating above it; Escape leaves. Quick edit stays as a list view. Undo works across both. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
       "depends_on": ["F087"],
       "done_check": "npm test -- inline-text && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

@@ -7,17 +7,17 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
-- **2026-11-06: F089 One-row section toolbar (built, waiting for your review).**
-  Click a section: its bar is one row, **Section · Style · Layout · move
-  arrows · More**. Section is the background picture, Style shows the four
-  colours with their names (bigger, easier to hit), Layout is the height.
-  Under **More** are "Change <style> everywhere…" (asks first, says how many
-  sections it changes), "Make linked…" and "Save as layout…". Snapshot:
-  https://claude.ai/artifact/G8y8XJd5qEpki25JdHbUSU.
-  **To try:** open the preview
-  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, click a section, open
-  each menu. Try the keyboard: Tab to the bar, ← → along it, Enter opens,
-  Esc closes. Next: F090 Type on the page (Opus).
+- **2026-11-10: F090 Type on the page (built, waiting for your review).**
+  On the page, click a heading or a text block and type right there. A small
+  bar floats above it: for a heading, the level (H1 to H4) and **Done**; for
+  text, bold, italic, link and lists. **Escape**, **Done**, or a click
+  elsewhere leaves. The side panel and Quick edit still work, and Undo steps
+  are shared with the panel. Keyboard: select a block, press **Enter** to
+  type (or use the new "Type on the page" button in its bar), **Escape** to
+  go back to the block. Snapshot: https://claude.ai/artifact/X9G5XUcFRfCR1nY8wCtKqL.
+  **To try:** open the preview https://ccr-d50f7e80-weuq18.crust-admin.pages.dev,
+  click a heading, change its words and level, press Escape, then press Undo.
+  Next: F091 Pages panel.
 
 ## Waiting on the owner
 

@@ -667,3 +667,9 @@ is the Add panel (pictures, search, categories, "Add an element" under it);
 the "+" bars call `setAddAt` then switch to the Add plugin; the dialog
 stays as "See larger". DECISIONS "F088".
 Next: **F089 One-row section toolbar** (Sonnet), design snapshot first.
+
+## F089 notes (archived 2026-11-10)
+
+**F089 built (2026-11-06)**: `SectionToolbar` in `apps/admin/src/sections/editing.tsx`
+is one row (Section, Style, Layout, Move, More); DECISIONS "F089".
+Next: **F090 Type on the page** (Opus), design snapshot first.

@@ -53,6 +53,8 @@ const blocksPost = {
 const screens = [
   ["page builder", "/#/edit?path=/", null, null],
   ["page builder, Text block selected", "/#/edit?path=/", null, '[data-puck-component^="Text"]'],
+  // F090: clicking a Heading opens it for typing on the page (a Text block does the same, covered above).
+  ["page builder, Heading clicked (typing on the page)", "/#/edit?path=/", null, '[data-puck-component^="Heading"]', []],
   ["post builder", "/#/post?slug=check-post", samplePost, null],
   ["template gallery", "/#/templates", null, null],
   ["template preview", "/#/templates", null, null, [".tp-card[id]"]],

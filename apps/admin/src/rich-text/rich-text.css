@@ -43,3 +43,19 @@
   .rt-tool { width: 44px; height: 44px; }
   .rt-btn, .rt-link-input { min-height: 44px; }
 }
+
+/* F090: the same editor, drawn on the page. The text keeps the block's own
+   look (the page's CSS styles .cr-text); only the bar floats above it. */
+.rt-floating { display: block; font: inherit; color: inherit; }
+.rt-floating .rt-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.rt-floating .rt-field { border: 0; background: transparent; border-radius: 4px; outline: 2px dashed var(--app-acc); outline-offset: 4px; }
+.rt-floating .rt-field:focus-within { outline: 3px solid var(--app-acc); outline-offset: 4px; }
+.rt-floating .rt-editor { min-height: 1.5em; max-height: none; overflow: visible; padding: 0; font: inherit; line-height: inherit; }
+.rt-floating .rt-placeholder { left: 0; top: 0; font: inherit; }
+.rt-floating .rt-p { margin: 0 0 0.6em; }
+.rt-floating .rt-toolbar {
+  position: absolute; bottom: calc(100% + 10px); left: 0; z-index: 20; width: max-content; max-width: 100%;
+  background: var(--app-panel); border: 1px solid var(--app-line-strong); border-radius: 8px;
+  box-shadow: 0 4px 14px var(--app-shadow);
+}
+.rt-floating .rt-link { position: absolute; top: calc(100% + 10px); left: 0; z-index: 20; width: min(340px, 100%); border: 1px solid var(--app-line-strong); border-radius: 8px; }

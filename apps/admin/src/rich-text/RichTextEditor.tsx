@@ -43,9 +43,13 @@ export interface RichTextEditorProps {
   value: unknown;
   onChange: (value: RichText) => void;
   id?: string;
+  /** F090: typing on the page. The bar floats above the text and the field takes the block's own look. */
+  floating?: boolean;
+  /** F090: put the cursor in the text as soon as it appears. */
+  autoFocus?: boolean;
 }
 
-export function RichTextEditor({ label, labelSuffix, value, onChange, id }: RichTextEditorProps) {
+export function RichTextEditor({ label, labelSuffix, value, onChange, id, floating, autoFocus }: RichTextEditorProps) {
   const own = useId();
   // Puck can draw a field twice (one copy hidden), so ids get our own suffix.
   const editorId = `${id ?? "rt"}-${own.replace(/[^a-zA-Z0-9_-]/g, "")}`;
@@ -65,20 +69,23 @@ export function RichTextEditor({ label, labelSuffix, value, onChange, id }: Rich
     editorState: () => $writeRichText(value),
   };
   return (
-    <div className="rt" data-crust-rich="">
+    <div className={floating ? "rt rt-floating" : "rt"} data-crust-rich="">
       <span className="rt-label" id={labelId}>
         {label}
         {labelSuffix ? <span className="rt-sr">{labelSuffix}</span> : null}
       </span>
       <LexicalComposer initialConfig={initialConfig}>
-        <Field editorId={editorId} labelId={labelId} value={value} onChange={onChange} />
+        <Field editorId={editorId} labelId={labelId} value={value} onChange={onChange} autoFocus={autoFocus} />
       </LexicalComposer>
     </div>
   );
 }
 
-function Field({ editorId, labelId, value, onChange }: { editorId: string; labelId: string; value: unknown; onChange: (v: RichText) => void }) {
+function Field({ editorId, labelId, value, onChange, autoFocus }: { editorId: string; labelId: string; value: unknown; onChange: (v: RichText) => void; autoFocus?: boolean }) {
   const [editor] = useLexicalComposerContext();
+  useEffect(() => {
+    if (autoFocus) editor.focus(undefined, { defaultSelection: "rootEnd" });
+  }, [editor, autoFocus]);
   const [linkOpen, setLinkOpen] = useState(false);
   const openLink = useCallback(() => setLinkOpen(true), []);
   const onKeyDown = (e: KeyboardEvent) => {

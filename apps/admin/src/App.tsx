@@ -48,6 +48,7 @@ import { desktopPublisher } from "./desktop/local-publish";
 import { usePendingCount } from "./publish/shortcut";
 import { SaveStatus, useSaveStatus } from "./save-status";
 import { withRichText } from "./rich-text/field";
+import { withInlineText } from "./inline-text/InlineText";
 import { withLinkedSectionFields } from "./linked/fields";
 import { LinkedSectionsProvider } from "./linked/store";
 import { SectionEditor } from "./linked/SectionEditor";
@@ -96,7 +97,7 @@ import { fromPuckData as postFromPuckData, loadPost, saveLocalPost, toPuckData a
 /** The site's settings: built into the web admin, or from the desktop app's site folder (F055). */
 const site = (desktopContent()?.site ?? siteJson) as Site;
 /** The builder's blocks: "Replace me" marks (F046), rich text in Text blocks (F042), image fields with the media library (F034), visual Section fields (F025), per-device settings (F029), Content/Style/Advanced tabs (F030). */
-const editorConfig = withSiteChrome(withSettingsTabs(withPlaceholderEditing(withResponsiveEditing(withSectionEditing(withItemEditing(withIconFields(withBlocksV3Fields(withInteractiveFields(withMediaFields(withRichText(withLinkedSectionFields(config))))))))))));
+const editorConfig = withSiteChrome(withSettingsTabs(withPlaceholderEditing(withResponsiveEditing(withSectionEditing(withItemEditing(withIconFields(withBlocksV3Fields(withInteractiveFields(withMediaFields(withRichText(withLinkedSectionFields(withInlineText(config)))))))))))));
 /** Posts (F035): the same blocks, with the post's details and top. */
 const postEditorConfig = withSettingsLabel(withPostEditing(editorConfig), "Post settings");
 /** Pages also get search and sharing settings (F036). */

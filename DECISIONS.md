@@ -3665,3 +3665,25 @@ a lawyer reads it (BLOCKED.md).
   `SaveLayoutForm` and `MakeLinkedForm`, shared with the More menu.
 - Row uses `role="toolbar"` with ← → between buttons; Escape returns focus to
   the button that opened the menu.
+
+## 2026-11-10 owner: "Keep everything using sonnet and haiku"
+
+- F090 built with Sonnet instead of the planned Opus. Later features follow the same instruction.
+
+## 2026-11-10 — F090 Type on the page (Claude, reversible)
+
+- Snapshot: https://claude.ai/artifact/X9G5XUcFRfCR1nY8wCtKqL (`design/f090-inline-text-v1.html`).
+  Built direction A: click and type in place, bar floats above.
+- Only Heading and Text can be typed in (`inlineTypes` in `inline-text/store.ts`); other blocks keep the panel.
+- Heading: a one-line text box in the heading's own markup, bar = level H1 to H4 + Done. Text: the
+  existing rich text editor (`floating`), so bold, italic, link (validated by `isAllowedLink`) and lists
+  match the panel. No page JSON change, no migration.
+- Entering: click the text, or Enter on a focused block, or the "Type on the page" button in the block's
+  bar. Leaving: Escape, Done, Enter in a heading, a click elsewhere, or selecting another block; focus goes back to the block.
+- Words go through the same `replace` dispatch as the panel, so undo is one history for both. Typing
+  while Puck's own shortcuts would fire (undo, etc.) stays inside the text (as the panel editor does).
+  Quick edit is a separate screen and is unchanged; the draft is shared, but Puck's undo list is per open builder.
+- Heading markup is repeated in `EditingHeading` (not passed through the block's render) because the
+  block render walks its props and a React element in `text` loops.
+- Not done: the a11y check scans the main document, not the canvas frame, so the typing state itself is
+  covered by unit tests and the Heading screen only.

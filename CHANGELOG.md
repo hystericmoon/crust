@@ -4,6 +4,13 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Type on the page (2026-11-10).** Click a heading or a text block on the
+  page and type right there, with a small bar floating above it. Headings get
+  their level (H1 to H4) and Done; text gets bold, italic, link and lists.
+  Escape, Done, or a click elsewhere leaves. With the keyboard, select a block
+  and press Enter, or use "Type on the page" in its bar; Escape puts focus back
+  on the block. Undo covers typing on the page and the side panel alike. The
+  side panel and Quick edit stay as they were.
 - **One-row section toolbar (2026-11-06).** Select a section and its bar is
   now a single row: **Section** (background picture), **Style** (the four
   colours, each with its name), **Layout** (height), the move arrows, and

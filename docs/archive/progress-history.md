@@ -3,6 +3,20 @@
 Moved out of PROGRESS.md on 2026-11-03 to keep the start of each session
 short. Older "Current" entries (newest first) and the older log.
 
+## F089 (archived 2026-11-10)
+
+- **2026-11-06: F089 One-row section toolbar (built, waiting for your review).**
+  Click a section: its bar is one row, **Section · Style · Layout · move
+  arrows · More**. Section is the background picture, Style shows the four
+  colours with their names (bigger, easier to hit), Layout is the height.
+  Under **More** are "Change <style> everywhere…" (asks first, says how many
+  sections it changes), "Make linked…" and "Save as layout…". Snapshot:
+  https://claude.ai/artifact/G8y8XJd5qEpki25JdHbUSU.
+  **To try:** open the preview
+  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, click a section, open
+  each menu. Try the keyboard: Tab to the bar, ← → along it, Enter opens,
+  Esc closes. Next: F090 Type on the page (Opus).
+
 ## Earlier "Current" entries (F065 back to Milestone 1)
 
 - **2026-11-06: F087 Page first (built, waiting for your review).**

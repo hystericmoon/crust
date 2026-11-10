@@ -3,6 +3,7 @@ import { config } from "@crust/blocks";
 import type { ComponentData, Config, Data } from "@puckeditor/core";
 import { act, cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { stopInlineEdit } from "../inline-text/store";
 import { findById } from "./moves";
 import { handleKey, openKeyboardHelp, KeyboardRoot } from "./KeyboardEditing";
 
@@ -43,6 +44,7 @@ beforeEach(() => {
     content: [block("Section", "s", { content: [block("Heading", "h", { text: "Hi" }), block("Text", "t")] })],
   };
   selected = null;
+  stopInlineEdit();
   dispatch.mockReset();
   document.body.innerHTML = `
     <div data-puck-component="h" tabindex="0"></div>

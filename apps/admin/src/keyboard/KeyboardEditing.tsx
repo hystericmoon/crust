@@ -13,6 +13,7 @@
  * The same moves are buttons on the selected block's action bar. Results are
  * announced in a polite live region.
  */
+import { isInlineEditing, isInlineType, startInlineEdit } from "../inline-text/store";
 import { ActionBar, createUsePuck, useGetPuck, type ComponentData, type Config, type Data } from "@puckeditor/core";
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { SectionToolbar } from "../sections/editing";
@@ -49,7 +50,7 @@ export const openKeyboardHelp = () => helpOpener?.();
 
 const shortcuts: [string, string][] = [
   ["Tab", "Move between blocks on the page"],
-  ["Enter", "Select the block and edit it in the panel on the right"],
+  ["Enter", "Select the block and edit it in the panel on the right; on a heading or text, type right on the page (Escape to finish)"],
   ["Alt + ↑ / ↓", "Move the block up or down"],
   ["Alt + ←", "Move the block out of its section or column"],
   ["Alt + →", "Move the block into the section or columns above it"],
@@ -186,7 +187,7 @@ const arrowMoves: Record<string, [MoveKind, MoveKind | null]> = {
 
 /** One handler for the main page and the canvas iframe. */
 export function handleKey(e: KeyboardEvent, getPuck: () => PuckApi) {
-  if (e.defaultPrevented || isTyping(e.target)) return;
+  if (e.defaultPrevented || isTyping(e.target) || isInlineEditing()) return;
   const target = asElement(e.target);
   const puck = getPuck();
 
@@ -215,6 +216,12 @@ export function handleKey(e: KeyboardEvent, getPuck: () => PuckApi) {
     e.preventDefault();
     select(getPuck, focusedId!);
     const item = puck.getItemById(focusedId!);
+    // F090: a heading or text block opens for typing right on the page.
+    if (item && isInlineType(item.type)) {
+      startInlineEdit(focusedId!);
+      announce(`Typing in ${labelOf(puck.config, item)}. Escape to finish.`);
+      return;
+    }
     if (item) announce(`${labelOf(puck.config, item)} selected. Edit it in the panel on the right; Alt and the arrow keys move it.`);
     return;
   }
@@ -413,6 +420,7 @@ export function KeyboardActionBar({
   ) : null;
   // F089: a selected Section gets one row (Section, Style, Layout, Move, More); other blocks keep the plain bar.
   const isSection = usePuckSelector((s) => s.selectedItem?.type) === "Section";
+  const typeBlock = isInlineType(usePuckSelector((s) => s.selectedItem?.type));
   return (
     <ActionBar>
       <ActionBar.Group>
@@ -420,6 +428,15 @@ export function KeyboardActionBar({
         {label ? <ActionBar.Label label={label} /> : null}
       </ActionBar.Group>
       {isSection ? null : moveGroup ? <ActionBar.Group>{moveGroup}</ActionBar.Group> : null}
+      {typeBlock && id ? (
+        <ActionBar.Group>
+          <ActionBar.Action label="Type on the page" aria-label="Type on the page" onClick={() => startInlineEdit(id)}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+              <path d="M4 7V5h16v2M12 5v14M9 19h6" />
+            </svg>
+          </ActionBar.Action>
+        </ActionBar.Group>
+      ) : null}
       <ActionBar.Group>{children}</ActionBar.Group>
       {isSection ? <SectionToolbar moves={moveGroup} /> : null}
     </ActionBar>
