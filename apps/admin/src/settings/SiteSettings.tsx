@@ -537,7 +537,7 @@ function jumpTo(e: MouseEvent, id: string) {
   heading?.focus({ preventScroll: true });
 }
 
-function ColorRow({
+export function ColorRow({
   role,
   value,
   failing,
@@ -616,7 +616,7 @@ function ColorRow({
   );
 }
 
-function ContrastPanel({
+export function ContrastPanel({
   results,
   colors,
   onApply,
@@ -671,7 +671,7 @@ function ContrastPanel({
 }
 
 /** F072: the Style library: a card per look (set in its own fonts and colours) and its three colourways. */
-function StyleLibrary({ tokens, onPick }: { tokens: SiteTokens; onPick: (look: StyleLook, variation: LookVariation) => void }) {
+export function StyleLibrary({ tokens, onPick }: { tokens: SiteTokens; onPick: (look: StyleLook, variation: LookVariation) => void }) {
   useFontPreviews();
   const current = matchingLook(tokens);
   const track = { tightest: "-0.05em", tighter: "-0.04em", tight: "-0.03em", snug: "-0.02em", normal: "0", wide: "0.02em" } as const;
@@ -767,7 +767,7 @@ const PAIR_HEADING = "Calm rooms";
 const PAIR_BODY = "Houses and studios, designed to last.";
 
 /** F070: tested heading and body pairs as cards, each set in its own fonts. */
-function FontPairs({ fonts, onPick }: { fonts: SiteTokens["fonts"]; onPick: (fonts: SiteTokens["fonts"]) => void }) {
+export function FontPairs({ fonts, onPick }: { fonts: SiteTokens["fonts"]; onPick: (fonts: SiteTokens["fonts"]) => void }) {
   useFontPreviews();
   const current = findFontPair(fonts);
   const onSystem = !bundledFontIn(fonts.heading) && !bundledFontIn(fonts.body);
@@ -808,7 +808,7 @@ function FontPairs({ fonts, onPick }: { fonts: SiteTokens["fonts"]; onPick: (fon
 
 const categories: FontCategory[] = ["serif", "sans", "mono"];
 
-function FontField({
+export function FontField({
   label,
   value,
   sample,
@@ -879,7 +879,7 @@ function FontField({
   );
 }
 
-function NumberField({
+export function NumberField({
   id,
   label,
   unit,

@@ -7,18 +7,19 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
-- **2026-11-10: F091 Pages panel (built, waiting for your review).**
-  The Pages button on the left opens a panel with your pages in two groups:
-  **In the menu** (in menu order) and **Not in the menu**. Drag a page to
-  reorder it or to move it between groups; with the keyboard, focus the grip
-  and press up or down arrow (or use Move up and Move down). Each page's **⋯**
-  menu has Page settings (title, search and sharing), Change address, Duplicate,
-  Save to GitHub and Delete. The home screen shows the same panel instead of the
-  table. Status is a dot plus words. Snapshot: https://claude.ai/artifact/Py2BWv56W8cCrUw7FVYmy2.
+- **2026-11-10: F092 Styles panel and Site settings sheet (built, waiting for your review).**
+  The paintbrush button on the left now opens one panel for how the whole
+  site looks: **Styles** cards first (one tap, with Undo), then **Fine-tune**
+  (Colours, Type, Buttons, Cards, Links, Spacing and shape, Motion, Section
+  styles; one opens at a time) and **Header & footer**. Save and Discard sit at
+  the bottom. Site details (address, search defaults, where to publish, theme
+  pack, save as template) are in a **Site settings** sheet, opened from a
+  button in the Styles panel or the Site panel; it closes with Escape or
+  Close. Snapshot: https://claude.ai/artifact/S6MeqWy5akeBJCRzGciDXZ.
   **To try:** open the preview https://ccr-d50f7e80-weuq18.crust-admin.pages.dev,
-  click Pages, drag About above Home, open its ⋯ menu and choose Take out of
-  menu, then Duplicate a page. (The preview can't save; changes stay in the browser.)
-  Next: F092 Styles panel and Site settings sheet.
+  click the paintbrush, pick a Style card, open Colours, then press Site
+  settings and press Escape. (The preview can't save; changes stay in the browser.)
+  Next: F093 Words and accessibility sweep.
 
 ## Waiting on the owner
 

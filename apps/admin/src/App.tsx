@@ -70,6 +70,9 @@ import { MediaPicker } from "./media/MediaPicker";
 import { setAppFrame } from "./app-frame/AppTopBar";
 import { EditorBar, EditorFrameContext, PageSwitcher } from "./app-frame/EditorBar";
 import { railPlugins } from "./app-frame/rail";
+import { StylesPanelContext } from "./styles-panel/context";
+import { StylesPanel } from "./styles-panel/StylesPanel";
+import { SiteSettingsButton } from "./styles-panel/SiteSettingsSheet";
 import "./page-first/page-first.css";
 import { PageFirstContext, PageFirstWatcher, SettingsButton, SettingsPanel, withSettingsLabel } from "./page-first/PageFirst";
 import { useAutosave, type SavePhase } from "./app-frame/autosave";
@@ -266,6 +269,25 @@ export function App() {
     // Like the rest of Site settings: kept in this browser at once, then saved to GitHub when that is on.
     void saveContent({ kind: "site", site: siteToSave(site, saved, next, defaultChrome, savedAddress) });
   };
+  // F092: what the Styles panel and the Site settings sheet need beside the colours and type.
+  const stylesPanelState = (githubOn: boolean) => ({
+    site: { name: site.name, language: site.language },
+    chrome: chromeDraft,
+    onChromeChange: setChromeDraft,
+    chromeDirty: !sameChrome(savedChrome, chromeDraft),
+    pages: pageOptions,
+    address: addressDraft,
+    onAddressChange: setAddressDraft,
+    addressDirty: savedAddress !== addressDraft,
+    templateLoader: githubOn ? githubLoader : bundledLoader,
+    githubOn,
+    save: () => saveSiteTokens(draft),
+    discard: () => {
+      setDraft(saved);
+      setChromeDraft(savedChrome);
+      setAddressDraft(savedAddress);
+    },
+  });
   // F025: the builder edits the same draft as Site settings ("Whole site" mode).
   const siteStyle: SiteStyle = {
     tokens: draft,
@@ -402,7 +424,9 @@ export function App() {
       <SiteStyleContext.Provider value={siteStyle}>
         <SiteChromeContext.Provider value={{ chrome: chromeDraft, siteName: site.name, path: route.path }}>
           <PagesMenuContext.Provider value={{ menu: panelMenu, onMenuChange: saveMenu, githubOn, currentPath: route.path }}>
-            <Builder key={route.path} path={route.path} githubOn={githubOn} onSaved={onSaved} pages={pageOptions} />
+            <StylesPanelContext.Provider value={stylesPanelState(githubOn)}>
+              <Builder key={route.path} path={route.path} githubOn={githubOn} onSaved={onSaved} pages={pageOptions} />
+            </StylesPanelContext.Provider>
           </PagesMenuContext.Provider>
           <MediaPicker />
         </SiteChromeContext.Provider>
@@ -538,7 +562,7 @@ function Builder({ path, githubOn, onSaved, pages }: { path: string; githubOn: b
   );
   const autosave = useAutosave<Page>(save, (p) => JSON.stringify(p), page ?? null);
   const plugins = useMemo(
-    () => railPlugins({ pages: () => pages, hrefFor: editHref, quickEdit: `#/edit?path=${encodeURIComponent(path)}&mode=quick`, pagesPanel: () => <PagesRail /> }),
+    () => railPlugins({ pages: () => pages, hrefFor: editHref, quickEdit: `#/edit?path=${encodeURIComponent(path)}&mode=quick`, pagesPanel: () => <PagesRail />, stylesPanel: () => <StylesPanel />, siteSettings: () => <SiteSettingsButton className="st-button af-panel-link" /> }),
     [pages, path],
   );
 

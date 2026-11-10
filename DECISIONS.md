@@ -3713,3 +3713,24 @@ a lawyer reads it (BLOCKED.md).
   matters). The find box stays, from six pages.
 - Not tried by hand: drag with a real mouse in a browser (covered by unit tests with drag events), and phone drag
   (touch has no HTML5 drag; the grip arrows and the menu are the way on a phone).
+
+## 2026-11-10 — F092 Styles panel and Site settings sheet (Claude, reversible)
+
+- Snapshot: https://claude.ai/artifact/S6MeqWy5akeBJCRzGciDXZ (`design/f092-styles-panel-v1.html`). Built direction A,
+  one scrolling panel (Styles cards, Fine-tune rows that open in place, Header & footer). B (tabs) and C (drill-in
+  with Back) were drawn; A keeps the cards first and has the fewest focus moves. Code in `apps/admin/src/styles-panel/`.
+- **A regrouping, not a rewrite.** The panel reuses the Site settings controls as they were (`StyleLibrary`, `ColorRow`,
+  `ContrastPanel`, `FontPairs`, `FontField`, `NumberField`, now exported from `settings/SiteSettings.tsx`, plus the
+  `StyleGroups` and `ChromeGroups` editors). Spacing, corner radius and page width share one row, "Spacing and shape".
+- Panel and sheet edit the same draft as before (`SiteStyleContext` for colours and type; new `StylesPanelContext` for
+  header, footer, address, save and discard, filled in App.tsx). One Save writes tokens, header, footer and address
+  together, as the old screen did; same checks (red fields, `validateTokens`, `validateChrome`). No content JSON change.
+- Site settings sheet = the browser's modal `<dialog>` (the app's shared `Dialog`: focus trapped, Escape closes, focus
+  returns to the button). Groups: Site address, Search defaults, Where to publish, Theme pack, Save as template. "Search
+  defaults" and "Where to publish" have no editable fields of their own today: the first states the site name and language
+  that pages fall back to and points to each page's settings; the second links to Publish on the home screen. Not new features.
+- The `#/settings` screen stays (full page with live preview and every group), so nothing is lost; its "Styles" and Site
+  rail entries now lead to the panel and sheet in the editor. Retiring the screen is the owner's call.
+- The post editor keeps the plain Styles and Site links (it has no site-style context).
+- Contrast checks keep their own "Contrast checks" h2 inside Colours, and the inner groups keep their heading levels;
+  F093 tidies heading levels in the sweep.

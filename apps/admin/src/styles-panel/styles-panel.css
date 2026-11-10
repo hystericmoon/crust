@@ -1,0 +1,27 @@
+/* F092: the Styles panel and the Site settings sheet. Colours are --app-* tokens only. */
+.sp { padding: 0; gap: 0; align-content: start; }
+.sp-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 16px 16px 0; }
+.sp > .af-panel-note, .sp > .sp-status { padding: 8px 16px 0; }
+.sp-status { margin: 0; font-size: 13px; color: var(--app-mute); min-height: 0; }
+.sp-site-button { min-height: 32px; padding: 4px 12px; font-size: 0.875rem; }
+.sp .st, .sp-body { min-height: 0; background: transparent; padding: 0 16px 16px; font-size: 14px; }
+.sp-h { margin: 16px 0 6px; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--app-mute); }
+.sp-h:focus { outline: none; }
+.sp-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.sp-row { border: 1px solid var(--app-line); border-radius: 8px; background: var(--app-bg); }
+.sp-row-h { margin: 0; font-size: 14px; }
+.sp-row-button { all: unset; box-sizing: border-box; display: flex; width: 100%; min-height: 40px; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 12px; cursor: pointer; font: inherit; font-weight: 500; color: var(--app-ink); border-radius: 8px; }
+.sp-row-button:hover { background: var(--app-hover); }
+.sp-row-button:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
+.sp-row-button[aria-expanded="true"] { background: var(--app-acc-soft); }
+.sp-row-body { padding: 8px 12px 12px; display: grid; gap: 12px; }
+.sp-save { position: sticky; bottom: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 16px; background: var(--app-panel); border-top: 1px solid var(--app-line); }
+.sp-save .sp-status { padding: 0; }
+.sp-save-buttons { display: flex; gap: 8px; }
+.sp-sheet { min-height: 0; background: transparent; display: grid; gap: 16px; }
+.sp-sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.sp-sheet-title { margin: 0; font-size: 1.25rem; }
+.sp-sheet-group { display: grid; gap: 8px; padding-top: 12px; border-top: 1px solid var(--app-line); }
+.sp-sheet-group h3 { margin: 0; font-size: 1rem; }
+.sp-sheet .sp-save { position: static; padding: 12px 0 0; background: transparent; }
+dialog.pg-dialog:has(.sp-sheet) { width: min(40rem, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow-y: auto; }

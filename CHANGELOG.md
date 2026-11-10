@@ -4,6 +4,15 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Styles panel and Site settings sheet (2026-11-10).** The paintbrush button
+  on the left opens one panel for the look of the whole site: Styles cards
+  first, then Fine-tune (colours, type, buttons, cards, links, spacing and
+  shape, motion, section styles) and Header & footer, with Save and Discard at
+  the bottom. Site address, search defaults, where to publish, theme packs and
+  Save as template moved to a **Site settings** sheet that opens from the
+  Styles and Site panels. It is a real dialog: Escape closes it and focus goes
+  back to the button. The old Site settings page still works.
+
 - **Pages panel (2026-11-10).** The Pages button on the left now opens a real
   panel: your pages in two groups, **In the menu** (in the order the menu shows
   them) and **Not in the menu**. Drag a page to reorder it, or to move it

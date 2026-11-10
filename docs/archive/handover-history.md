@@ -5,6 +5,13 @@ Notes moved out of HANDOVER.md on 2026-11-03 so a new session reads less
 Nothing here is needed to start a feature; look things up when a feature
 touches an older area ("How it fits" notes per feature, newest first).
 
+## F091 (archived 2026-11-10)
+
+**F091 built (2026-11-10)**: `apps/admin/src/pages-panel/` (`PagesPanel` is both the
+editor's Pages panel and the home screen's list; `model.ts` menu rules;
+`usePagesData` the screen's data); "In the menu" = header.menu; DECISIONS "F091".
+(was next: **F092 Styles panel and Site settings sheet** (Sonnet), design snapshot first.
+
 ## Per-feature notes (F053–F065)
 
 F086 (from HANDOVER, 2026-11-06). **F086 built (2026-11-06)**: `apps/admin/src/app-frame/` holds the one top

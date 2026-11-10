@@ -990,7 +990,7 @@
       "description": "Design snapshot first. A Styles panel (paintbrush): Styles cards first, then Fine-tune (colours, type, buttons, cards, links, spacing, motion, section styles) and Header & footer. Site details (address, search defaults, where to publish, theme pack, template) in a separate Site settings sheet. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
       "depends_on": ["F086"],
       "done_check": "npm test -- styles-panel && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     },

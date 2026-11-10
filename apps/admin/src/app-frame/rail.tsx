@@ -21,6 +21,9 @@ export interface RailOptions {
   quickEdit?: string;
   /** F091: the full Pages panel (replaces the plain list). */
   pagesPanel?: () => React.ReactElement;
+  /** F092: the full Styles panel, and the button that opens the Site settings sheet (replace the plain links). */
+  stylesPanel?: () => React.ReactElement;
+  siteSettings?: () => React.ReactElement;
 }
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
@@ -76,7 +79,7 @@ function MediaPanel() {
   );
 }
 
-export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel }: RailOptions): Plugin[] {
+export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel, stylesPanel, siteSettings }: RailOptions): Plugin[] {
   const blocks = blocksPlugin();
   return [
     // Add: whole layouts first (the gallery), then single blocks. F088: pictures of sections first, single blocks under "Add an element".
@@ -97,7 +100,10 @@ export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel }: RailOptio
       name: "styles",
       label: "Styles",
       icon: <FrameIcon name="brush" size={18} />,
-      render: () => (
+      render: () =>
+        stylesPanel ? (
+          stylesPanel()
+        ) : (
         <Panel title="Styles">
           <p className="af-panel-note">Colours, fonts, buttons, spacing and the header and footer, for the whole site.</p>
           <a className="af-panel-link" href="#/settings">
@@ -105,7 +111,7 @@ export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel }: RailOptio
           </a>
           <p className="af-panel-note">To style one section, select it on the page.</p>
         </Panel>
-      ),
+        ),
     },
     {
       name: "media",
@@ -137,9 +143,13 @@ export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel }: RailOptio
       icon: <FrameIcon name="site" size={18} />,
       render: () => (
         <Panel title="Site">
-          <a className="af-panel-link" href="#/settings">
-            Site settings
-          </a>
+          {siteSettings ? (
+            siteSettings()
+          ) : (
+            <a className="af-panel-link" href="#/settings">
+              Site settings
+            </a>
+          )}
           <a className="af-panel-link" href="#/templates">
             Start from a template
           </a>

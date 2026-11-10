@@ -3,6 +3,21 @@
 Moved out of PROGRESS.md on 2026-11-03 to keep the start of each session
 short. Older "Current" entries (newest first) and the older log.
 
+## F091 (archived 2026-11-10)
+
+- **2026-11-10: F091 Pages panel (built, waiting for your review).**
+  The Pages button on the left opens a panel with your pages in two groups:
+  **In the menu** (in menu order) and **Not in the menu**. Drag a page to
+  reorder it or to move it between groups; with the keyboard, focus the grip
+  and press up or down arrow (or use Move up and Move down). Each page's **⋯**
+  menu has Page settings (title, search and sharing), Change address, Duplicate,
+  Save to GitHub and Delete. The home screen shows the same panel instead of the
+  table. Status is a dot plus words. Snapshot: https://claude.ai/artifact/Py2BWv56W8cCrUw7FVYmy2.
+  **To try:** open the preview https://ccr-d50f7e80-weuq18.crust-admin.pages.dev,
+  click Pages, drag About above Home, open its ⋯ menu and choose Take out of
+  menu, then Duplicate a page. (The preview can't save; changes stay in the browser.)
+  Next: F092 Styles panel and Site settings sheet.
+
 ## F090 (archived 2026-11-10)
 
 - **2026-11-10: F090 Type on the page (built, waiting for your review).**
