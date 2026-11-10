@@ -4,6 +4,10 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **A menu change that can't be saved now says so (2026-11-10).** If moving a page in or out of the menu doesn't reach
+  your site (for example you are offline), the Pages panel shows a message with "Try again". The change stays in this
+  browser meanwhile.
+
 - **Clicking a heading or text on the page now opens typing (2026-11-10).** Until now only the Enter key did; a real
   mouse or finger click just selected the block.
 
