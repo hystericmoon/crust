@@ -85,8 +85,10 @@ describe("updates site: the feed", () => {
       const run = spawnSync("npx", ["tsx", "scripts/updates-site.ts", built, out], { encoding: "utf8" });
       expect(run.status, run.stderr).toBe(0);
       const latest = JSON.parse(readFileSync(join(out, "updates/latest.json"), "utf8"));
-      expect(latest.platforms["darwin-aarch64"].url).toBe(`${DOWNLOADS_URL}/0.1.0/Crust.app.tar.gz`);
-      expect(readFileSync(join(out, "0.1.0/Crust.app.tar.gz"), "utf8")).toBe("mac update");
+      // The tool reads the app's own version, so the test does too (it changes with every release).
+      const { version } = JSON.parse(readFileSync("crates/crust-desktop/tauri.conf.json", "utf8")) as { version: string };
+      expect(latest.platforms["darwin-aarch64"].url).toBe(`${DOWNLOADS_URL}/${version}/Crust.app.tar.gz`);
+      expect(readFileSync(join(out, `${version}/Crust.app.tar.gz`), "utf8")).toBe("mac update");
       expect(readFileSync(join(out, "_headers"), "utf8")).toContain("Cache-Control: no-cache");
       expect(readFileSync(join(out, "index.html"), "utf8")).toContain("Download Crust");
     });

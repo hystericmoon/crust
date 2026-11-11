@@ -4,6 +4,10 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Contact page and a working contact form (2026-11-11).** Your site has a Contact page at /contact with a form that
+  emails you each message (spam check on, thank-you message after sending). It shows in the menu next to Home. Merging and
+  publishing now happen by themselves after a green check, so a change to a page goes live without pressing Publish.
+
 - **Edit your site's search defaults in Site settings (2026-11-11).** Each group in the Site settings sheet shows what it is
   set to and opens in place with Edit. Search defaults now lets you change the site name and language, and set a default
   description and a default sharing picture (with a description for screen readers). A page with no description or

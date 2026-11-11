@@ -1,5 +1,14 @@
 [
   {
+    "version": "0.1.1",
+    "date": "2026-11-11",
+    "notes": [
+      "Updates are now signed, so Crust can check that a new version really comes from us before installing it.",
+      "This is the first version that can update itself: from now on, new versions download in the background and install the next time you open Crust.",
+      "Install this one yourself from the downloads page; after that, Crust keeps itself up to date."
+    ]
+  },
+  {
     "version": "0.1.0",
     "date": "2026-11-02",
     "notes": [
