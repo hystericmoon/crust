@@ -7,7 +7,7 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
-- **2026-11-11: F094 Edit site details in the Site settings sheet (built, waiting for your review). Also done: a menu
+- **2026-11-11: F094 Edit site details in the Site settings sheet (passed and merged). Also done: a menu
   change that fails to save now says so.**
   In the editor, open **Site settings**. Each group is now a row that shows what it is set to; press **Edit** to change it
   in place (Done closes it). **Search defaults** lets you change the site name, language, a default description and a
@@ -18,7 +18,7 @@ later session must know; keep the newest 3 entries here.
   **To try:** open the preview https://ccr-d50f7e80-weuq18.crust-admin.pages.dev (it can't save), Site settings, Edit on
   Search defaults, type a description and watch the search preview; leave the picture without its description and see the
   message; Tab through it and press Done (focus returns to the Edit button).
-  Next: your review of F094. Design: https://claude.ai/artifact/TGGKaS6cbZqCbf4XBioDDq (direction C). No unbuilt features are left.
+  F094 passed (owner, 2026-11-11) and PR #82 is merged. Design: https://claude.ai/artifact/TGGKaS6cbZqCbf4XBioDDq (direction C). No unbuilt features are left.
 
 ## Waiting on the owner
 
