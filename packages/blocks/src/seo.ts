@@ -62,3 +62,39 @@ export function shorten(text: string, max: number): string {
   const space = cut.lastIndexOf(" ");
   return `${(space > max * 0.6 ? cut.slice(0, space) : cut).replace(/[\s,.;:!?-]+$/, "")}…`;
 }
+
+/**
+ * Site-wide search and sharing defaults (F094): `seo` in site.json. A page
+ * with no description of its own uses `description`; a page with no sharing
+ * picture uses `image`. Optional: sites without it publish as before.
+ */
+export interface SiteSeo {
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+}
+
+export const siteSeoLimits = { description: 300, imageAlt: 250 };
+
+/** Problems with the site's `seo`, in the owner's words. Missing `seo` is fine. */
+export function checkSiteSeo(seo: unknown): string[] {
+  if (seo === undefined) return [];
+  if (!isObject(seo)) return ["The site's search and sharing defaults are damaged."];
+  const text = (v: unknown) => v === undefined || typeof v === "string";
+  if (!text(seo.description) || !text(seo.image) || !text(seo.imageAlt)) return ["The site's search and sharing defaults are damaged."];
+  const problems: string[] = [];
+  if (((seo.description as string | undefined)?.length ?? 0) > siteSeoLimits.description) problems.push(`The default description is longer than ${siteSeoLimits.description} characters.`);
+  if (((seo.imageAlt as string | undefined)?.length ?? 0) > siteSeoLimits.imageAlt) problems.push(`The default sharing picture description is longer than ${siteSeoLimits.imageAlt} characters.`);
+  if ((seo.image as string | undefined)?.trim() && !(seo.imageAlt as string | undefined)?.trim()) problems.push("The default sharing picture needs a description (alt text).");
+  return problems;
+}
+
+/** Only set values, trimmed; undefined when nothing is set (so the site file stays as it was). */
+export function cleanSiteSeo(seo: SiteSeo | undefined | null): SiteSeo | undefined {
+  if (!seo) return undefined;
+  const out: SiteSeo = {};
+  if (seo.description?.trim()) out.description = seo.description.trim();
+  if (seo.image?.trim()) out.image = seo.image.trim();
+  if (seo.image?.trim() && seo.imageAlt?.trim()) out.imageAlt = seo.imageAlt.trim();
+  return Object.keys(out).length ? out : undefined;
+}

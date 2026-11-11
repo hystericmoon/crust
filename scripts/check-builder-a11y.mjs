@@ -95,6 +95,8 @@ const screens = [
   ["Styles panel, Colours open", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Styles")', '.sp-row-h button:has-text("Colours")']],
   ["Styles panel, Header and menu open", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Styles")', '.sp-row-h button:has-text("Header and menu")']],
   ["Site settings sheet", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Site")', "button.af-panel-link:has-text('Site settings')", "dialog[open]"]],
+  // F094: the sheet with Search defaults opened in place.
+  ["Site settings sheet, Search defaults open", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Site")', "button.af-panel-link:has-text('Site settings')", 'dialog[open] button[aria-label="Edit Search defaults"]']],
   // F091: the Pages panel in the left bar, and a page's menu open.
   ["Pages panel", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Pages")', '.pp-group-title:has-text("In the menu")']],
   ["Pages panel, page menu", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Pages")', 'button[aria-label^="More for"]', '.pp-menu']],

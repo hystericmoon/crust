@@ -19,7 +19,7 @@ Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-10, Milestone 9 "Friendly app" merged (PR #81); branch `ccr-d50f7e80-weuq18` restarted from main.
+Last updated: 2026-11-11, F094 built; Milestone 9 merged (PR #81); branch `ccr-d50f7e80-weuq18`, PR #82 open.
 
 ## Where things stand
 
@@ -54,10 +54,15 @@ Last updated: 2026-11-10, Milestone 9 "Friendly app" merged (PR #81); branch `cc
 
 ## Next
 
-2026-11-10: the owner passed F075, F078 and F085 to F093 and **merged PR #81** (main now has everything). The failed
-menu save (F091 gap) is fixed on this branch. He added **F094** (edit search defaults and where to publish in the Site
-settings sheet): next feature, needs a small design snapshot first (CLAUDE.md), then build. Use Sonnet (his rule).
-One PR per feature from now on; this branch was restarted from main.
+**No unbuilt features are left** (`npm run next` says so). 2026-11-11: F094 (edit search defaults and where to publish in
+the Site settings sheet, direction C) is built and waits for the owner's review, with the failed-menu-save fix. PR #82 holds
+both and is waiting for him to merge (CI green before F094; check it again). Use Sonnet (his rule).
+
+The next step is the owner's:
+1. **Review F094** (and nothing else is waiting). Record a Pass as `reviewed: true` with his words as `review_note`; list a
+   "needs fixing" for him and ask before reworking.
+2. **Merge PR #82** when CI is green. Then restart the branch from main; one PR per feature from then on.
+3. Scope is his: any new idea goes to DECISIONS.md "Proposals".
 
 Where things are (Milestone 9): tokens `apps/admin/src/app-theme/app-theme.css` (use `--app-*` for every colour; a guard test
 fails on raw colours); `app-frame/` (top bar, `EditorBar`, `railPlugins`, `useAutosave`); `page-first/` (F087);

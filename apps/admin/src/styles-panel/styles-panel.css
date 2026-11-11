@@ -25,3 +25,17 @@
 .sp-sheet-group h3 { margin: 0; font-size: 1rem; }
 .sp-sheet .sp-save { position: static; padding: 12px 0 0; background: transparent; }
 dialog.pg-dialog:has(.sp-sheet) { width: min(40rem, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow-y: auto; }
+
+/* F094: the Site settings sheet's groups: a summary row that opens its fields in place. */
+.sp-row { display: grid; gap: 6px; padding: 10px 12px; border: 1px solid var(--app-line); border-radius: 10px; background: var(--app-bg); }
+.sp-row.is-open { border-color: var(--app-acc); }
+.sp-row-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.sp-row-top h3 { margin: 0; font-size: 0.9375rem; }
+.sp-row-top .st-button { min-height: 32px; }
+.sp-row-value { color: var(--app-mute); font-size: 0.8125rem; overflow-wrap: anywhere; }
+.sp-row-body { display: grid; gap: 12px; padding-top: 4px; }
+.sp-row-body[hidden] { display: none; }
+.sp-field { display: grid; gap: 4px; }
+.sp-hint { margin: 0; color: var(--app-mute); font-size: 0.75rem; }
+.sp-snippet { display: grid; gap: 2px; padding: 8px 10px; border: 1px dashed var(--app-line-strong); border-radius: 8px; background: var(--app-panel); }
+.sp-snippet-title { color: var(--app-acc); font-weight: 600; }

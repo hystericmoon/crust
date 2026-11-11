@@ -25,6 +25,9 @@ function setup(over: Partial<StylesPanelState> = {}, style: Partial<SiteStyle> =
   const s: SiteStyle = { tokens: defaultTokens, setTokens: vi.fn(), dirty: false, save: async () => "", discard: vi.fn(), ...style };
   const p: StylesPanelState = {
     site: { name: "Studio <b>Nine</b>", language: "en" },
+    details: { name: "Studio <b>Nine</b>", language: "en", seo: {} },
+    onDetailsChange: vi.fn(),
+    detailsDirty: false,
     chrome,
     onChromeChange: vi.fn(),
     chromeDirty: false,
@@ -125,7 +128,11 @@ describe("styles-panel: the Site settings sheet", () => {
     expect(sheet().getAttribute("aria-labelledby")).toBe(d.getByRole("heading", { level: 2, name: "Site settings" }).id);
     const mine = ["Site address", "Search defaults", "Where to publish", "Theme pack", "Save as template"];
     expect(d.getAllByRole("heading", { level: 3 }).map((h) => h.textContent).filter((t) => mine.includes(t!))).toEqual(["Site address", "Search defaults", "Where to publish", "Theme pack", "Save as template"]);
+    // F094: every group is a summary row; its fields appear when its Edit button is pressed.
+    expect(d.queryByLabelText("Domain")).toBeNull();
+    fireEvent.click(d.getByRole("button", { name: "Edit Site address" }));
     expect(d.getByLabelText("Domain")).toBeTruthy();
+    fireEvent.click(d.getByRole("button", { name: "Edit Where to publish" }));
     expect(d.getByRole("link", { name: "Open Publish" }).getAttribute("href")).toBe("#/?focus=publish");
   });
 
@@ -155,6 +162,7 @@ describe("styles-panel: the Site settings sheet", () => {
   it("changes the address through the screen's own state", () => {
     const { p } = setup({}, {}, <SiteSettingsButton />);
     fireEvent.click(screen.getByRole("button", { name: "Site settings" }));
+    fireEvent.click(within(sheet()).getByRole("button", { name: "Edit Site address" }));
     fireEvent.change(within(sheet()).getByLabelText("Domain"), { target: { value: "studio.com" } });
     expect(p.onAddressChange).toHaveBeenCalledWith("https://studio.com");
   });
@@ -180,3 +188,65 @@ describe("styles-panel: nothing from Site settings is lost", () => {
     expect(css).not.toMatch(/#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(/);
   });
 });
+
+describe("styles-panel: F094 search defaults in the sheet", () => {
+  const sheet = () => within(document.querySelector("dialog") as HTMLDialogElement);
+  const openSearch = (over: Partial<StylesPanelState> = {}) => {
+    const r = setup(over, {}, <SiteSettingsButton />);
+    fireEvent.click(screen.getByRole("button", { name: "Site settings" }));
+    fireEvent.click(sheet().getByRole("button", { name: "Edit Search defaults" }));
+    return r;
+  };
+
+  it("opens one group in place, reports it expanded, and puts focus back on its button when done", () => {
+    openSearch();
+    const edit = sheet().getByRole("button", { name: "Done with Search defaults" });
+    expect(edit.getAttribute("aria-expanded")).toBe("true");
+    expect(document.activeElement).toBe(sheet().getByLabelText("Site name"));
+    fireEvent.click(edit);
+    expect(sheet().getByRole("button", { name: "Edit Search defaults" }).getAttribute("aria-expanded")).toBe("false");
+    expect(document.activeElement).toBe(sheet().getByRole("button", { name: "Edit Search defaults" }));
+  });
+
+  it("changes the name, language and description through the screen's own state", () => {
+    const { p } = openSearch();
+    fireEvent.change(sheet().getByLabelText("Site name"), { target: { value: "Harbour Bakery" } });
+    expect(p.onDetailsChange).toHaveBeenLastCalledWith({ name: "Harbour Bakery", language: "en", seo: {} });
+    fireEvent.change(sheet().getByLabelText("Language"), { target: { value: "id" } });
+    expect(p.onDetailsChange).toHaveBeenLastCalledWith({ name: "Studio <b>Nine</b>", language: "id", seo: {} });
+    fireEvent.change(sheet().getByLabelText("Description when a page has none"), { target: { value: "Sourdough by the loaf." } });
+    expect(p.onDetailsChange).toHaveBeenLastCalledWith({ name: "Studio <b>Nine</b>", language: "en", seo: { description: "Sourdough by the loaf." } });
+  });
+
+  it("counts the description in words and previews it", () => {
+    openSearch({ details: { name: "Harbour Bakery", language: "en", seo: { description: "Sourdough by the loaf." } } });
+    expect(sheet().getByText(/22 of about 160 characters/)).toBeTruthy();
+    expect(sheet().getByRole("group", { name: "How it can look in search" }).textContent).toContain("Sourdough by the loaf.");
+  });
+
+  it("asks for a picture description in words and marks the field, and an empty name too", () => {
+    openSearch({ details: { name: "", language: "en", seo: { image: "https://example.com/a.jpg" } } });
+    expect(sheet().getByText("Give your site a name.")).toBeTruthy();
+    expect(sheet().getByLabelText("Site name").getAttribute("aria-invalid")).toBe("true");
+    expect(sheet().getByText(/Describe the picture so people/)).toBeTruthy();
+    expect(sheet().getByLabelText("Describe the picture (alt text)").getAttribute("aria-invalid")).toBe("true");
+  });
+
+  it("does not save while a name is missing, and says why", async () => {
+    const { p } = setup({ details: { name: "", language: "en", seo: {} }, detailsDirty: true }, {}, <SiteSettingsButton />);
+    fireEvent.click(screen.getByRole("button", { name: "Site settings" }));
+    fireEvent.click(sheet().getByRole("button", { name: "Edit Search defaults" }));
+    fireEvent.click(sheet().getByRole("button", { name: "Save" }));
+    expect(p.save).not.toHaveBeenCalled();
+    expect(sheet().getByRole("status").textContent).toMatch(/Not saved/);
+  });
+
+  it("says in the summary what is set now, in plain words", () => {
+    setup({ details: { name: "Harbour Bakery", language: "id", seo: { description: "Sourdough by the loaf." } } }, {}, <SiteSettingsButton />);
+    fireEvent.click(screen.getByRole("button", { name: "Site settings" }));
+    const row = sheet().getByRole("heading", { level: 3, name: "Search defaults" }).closest("section")!;
+    expect(row.textContent).toContain("Harbour Bakery · Bahasa Indonesia");
+    expect(row.textContent).toContain("Sourdough by the loaf.");
+  });
+});
+

@@ -1,11 +1,16 @@
 /** F092: what the Styles panel and the Site settings sheet need from the screen around the editor (colours and type come from SiteStyleContext). */
 import { createContext, useContext } from "react";
 import type { Site, SiteChrome } from "@crust/blocks";
+import type { SiteDetails } from "../chrome-store";
 import type { PageOption } from "../settings/ChromeGroups";
 import type { TemplateLoader } from "../templates/collect";
 
 export interface StylesPanelState {
   site: Pick<Site, "name" | "language">;
+  /** F094: the saved name and language, and the draft being edited (with the search defaults). */
+  details: SiteDetails;
+  onDetailsChange: (details: SiteDetails) => void;
+  detailsDirty: boolean;
   chrome: SiteChrome;
   onChromeChange: (chrome: SiteChrome) => void;
   chromeDirty: boolean;

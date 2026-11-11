@@ -131,4 +131,17 @@ describe("custom domain: Publish panel (F044)", () => {
     expect(screen.getByRole("link", { name: /Open live site/ }).getAttribute("href")).toBe("https://crust-site.pages.dev");
     expect(screen.getByText(/studio.com isn't connected to your site yet, so the last publish used crust-site.pages.dev/)).toBeTruthy();
   });
+
+  it("F094: name, language and search defaults are saved into site.json, and left out when empty", () => {
+    const chrome = migrateChrome(site, []);
+    const saved = siteToSave(site, defaultTokens, chrome, chrome, site.baseUrl, { name: " Harbour ", language: "id", seo: { description: " Roti. ", image: "", imageAlt: "" } });
+    expect(saved.name).toBe("Harbour");
+    expect(saved.language).toBe("id");
+    expect(saved.seo).toEqual({ description: "Roti." });
+    const cleared = siteToSave(saved, defaultTokens, chrome, chrome, site.baseUrl, { name: "Harbour", language: "id", seo: {} });
+    expect("seo" in cleared).toBe(false);
+    // Without details the file's own values stay.
+    expect(siteToSave({ ...site, seo: { description: "Kept" } }, defaultTokens, chrome, chrome).seo).toEqual({ description: "Kept" });
+  });
 });
+

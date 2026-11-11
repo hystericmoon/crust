@@ -1021,7 +1021,7 @@
       "description": "Search defaults and where to publish become editable in place in the Site settings sheet (F092 only shows and links them), next to the site name and language. Words follow F093 (no 'GitHub' in screen text). Proposed in DECISIONS.md, added by the owner on 2026-11-10 ('add it'). Needs a design look first (a small snapshot), then built.",
       "depends_on": ["F092", "F093"],
       "done_check": "npm test -- styles-panel && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false
     }

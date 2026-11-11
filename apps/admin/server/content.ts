@@ -4,7 +4,7 @@ import type { Page, Redirect, SavedLayout, Site } from "@crust/blocks/content";
 import { validateTokens } from "@crust/blocks/tokens";
 import { validateChrome } from "@crust/blocks/chrome-model";
 import { isBlogPath, isSearchPath } from "@crust/blocks/posts";
-import { checkSeo } from "@crust/blocks/seo";
+import { checkSeo, checkSiteSeo } from "@crust/blocks/seo";
 import { isValidSiteAddress } from "@crust/blocks/site-address";
 import { richTextProblems } from "@crust/blocks/rich-text";
 import { isValidSectionId, linkedSectionIds } from "@crust/blocks/linked-sections";
@@ -185,6 +185,7 @@ export function checkSite(site: unknown): string[] {
     }
   }
   problems.push(...validateChrome(site).map((p) => p.message));
+  problems.push(...checkSiteSeo(site.seo));
   if (site.template !== undefined) {
     const t = site.template;
     if (!isObject(t) || typeof t.id !== "string" || !/^[a-z0-9][a-z0-9-]{0,59}$/.test(t.id) || !Number.isInteger(t.version) || (t.version as number) < 1 || (t.version as number) > 9999) problems.push("The site's template record is damaged.");

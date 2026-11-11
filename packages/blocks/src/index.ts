@@ -250,8 +250,8 @@ export {
 } from "./posts";
 export type { Post, BlogSettings } from "./posts";
 export { PostHeaderView, BlogListView } from "./posts-view";
-export { seoLimits, seoAdvice, checkSeo, cleanSeo, displayUrl, shorten } from "./seo";
-export type { PageSeo } from "./seo";
+export { seoLimits, seoAdvice, checkSeo, cleanSeo, displayUrl, shorten, siteSeoLimits, checkSiteSeo, cleanSiteSeo } from "./seo";
+export type { PageSeo, SiteSeo } from "./seo";
 export { ContactForm, CONTACT_FORM_SCRIPT, FormsContext, contactLimits, contactProblems, formIdFor, extraName, hasContactForm } from "./contact-form";
 export type { ContactFormProps, ExtraField, FormsSetup } from "./contact-form";
 export { PLACEHOLDER_BASE_URL, isPlaceholderAddress, normalizeSiteAddress, isValidSiteAddress, siteHost } from "./site-address";

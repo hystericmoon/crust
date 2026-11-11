@@ -328,6 +328,13 @@ picture shown when the link is shared (needs `imageAlt`); `noindex`
 keeps the page out of search engines and sitemap.xml. Every published
 page gets a canonical link and Open Graph tags.
 
+`site.json` may carry `seo` (optional, added with F094): `{ "description":
+"…", "image": "/media/…", "imageAlt": "…" }`, each optional. A page with
+no description of its own is published with `description`; a page with
+no sharing picture of its own gets `image` (needs `imageAlt`). Pages that
+set their own keep them. Sites without `seo` publish exactly as before,
+so no migration is needed.
+
 `header.search` in `site.json` (optional, added with F039): `true` shows
 a "Search" link to `/search/`, the site search page. The search index
 (`/pagefind/`) is built by Pagefind at publish time from each page's

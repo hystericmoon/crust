@@ -153,12 +153,16 @@ export function renderPage(site: Site, input: Page, baseCss: string, options: Re
     {
       path: page.path,
       title: page.title,
-      description: page.description,
+      // F094: the site's default description fills in for a page with none of its own.
+      description: page.description.trim() ? page.description : (site.seo?.description ?? page.description),
       body: renderBody(page.puck, options.media, formsFor(options, page.path)),
       head: turnstileTag(options, page.puck) + videoTag(page.puck),
       headerOver: headerOverStyle(page.puck.content) ?? undefined,
       hero: heroStyle(page.puck.content) ?? undefined,
-      share: { searchTitle: seo.title, image: seo.image, imageAlt: seo.imageAlt, noindex: seo.noindex },
+      // F094: likewise the site's default sharing picture (with its own alt text, never a page's alt for another picture).
+      share: seo.image?.trim()
+        ? { searchTitle: seo.title, image: seo.image, imageAlt: seo.imageAlt, noindex: seo.noindex }
+        : { searchTitle: seo.title, image: site.seo?.image, imageAlt: site.seo?.image ? site.seo.imageAlt : undefined, noindex: seo.noindex },
       searchable,
     },
     baseCss,
