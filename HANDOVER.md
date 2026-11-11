@@ -26,8 +26,8 @@ Last updated: 2026-11-11, F094 passed and merged (PR #82); branch `ccr-d50f7e80-
 - **main** has everything, through PR #79 (2026-11-05). From now on:
   **one PR per feature**, the session branch restarted from main after each
   merge.
-- **Live site** https://crust-site.pages.dev, published 2026-10-31. Only
-  the owner publishes.
+- **Live site** https://crust-site.pages.dev, published 2026-10-31. Since 2026-11-11
+  merge and publish are automatic (`automerge.yml`; label a PR `hold` to stop it).
 - **Admin** https://crust-admin.pages.dev (main). Preview of the session
   branch: https://ccr-d50f7e80-weuq18.crust-admin.pages.dev (can't save).
 - **Store** (F063-F068) is free and was published from main on 2026-11-05

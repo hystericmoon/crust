@@ -1,0 +1,80 @@
+# Automatic merge and publish (owner, 2026-11-11: "automate this for me").
+#
+# When CI turns green on a pull request from a session branch (ccr-*), this
+# merges it to main, then starts the follow-up runs that a merge by
+# GITHUB_TOKEN would not start by itself:
+#   - Preview deploy (the admin on main), always
+#   - Publish site, only if the PR changed what the live site is made of
+#     (content/, the renderer, the blocks, crust-publish). That workflow keeps
+#     its own accessibility check, which stops a publish on serious issues.
+#   - Contact / delivery workers, only if their folders changed.
+# To switch it off: delete this file, or add the label "hold" to a PR.
+# No secrets are used here; Cloudflare secrets stay inside the other workflows.
+name: Auto merge and publish
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: automerge
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    # Only a green CI run of a pull request, from this repo's own ccr-* branch.
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      startsWith(github.event.workflow_run.head_branch, 'ccr-')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      BRANCH: ${{ github.event.workflow_run.head_branch }}
+      SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Find the pull request
+        id: pr
+        run: |
+          json=$(gh pr list --repo "$REPO" --head "$BRANCH" --state open --json number,isDraft,headRefOid,labels --limit 1)
+          n=$(echo "$json" | jq -r '.[0].number // empty')
+          if [ -z "$n" ]; then echo "No open pull request for $BRANCH."; exit 0; fi
+          draft=$(echo "$json" | jq -r '.[0].isDraft')
+          head=$(echo "$json" | jq -r '.[0].headRefOid')
+          held=$(echo "$json" | jq -r '[.[0].labels[].name] | index("hold") != null')
+          # Stale run: the branch has moved on since this CI run started.
+          if [ "$head" != "$SHA" ]; then echo "CI ran on $SHA but the branch is at $head; waiting for the newer run."; exit 0; fi
+          if [ "$draft" = "true" ]; then echo "Pull request #$n is a draft; not merging."; exit 0; fi
+          if [ "$held" = "true" ]; then echo "Pull request #$n has the hold label; not merging."; exit 0; fi
+          echo "number=$n" >> "$GITHUB_OUTPUT"
+
+      - name: Merge
+        if: steps.pr.outputs.number != ''
+        id: merge
+        run: |
+          n=${{ steps.pr.outputs.number }}
+          gh pr diff "$n" --repo "$REPO" --name-only > changed.txt
+          gh pr merge "$n" --repo "$REPO" --merge --match-head-commit "$SHA"
+          echo "merged=true" >> "$GITHUB_OUTPUT"
+
+      - name: Start the follow-up runs
+        if: steps.merge.outputs.merged == 'true'
+        run: |
+          gh workflow run preview.yml --repo "$REPO" --ref main
+          if grep -qE '^(content/|packages/render/|packages/blocks/|crates/crust-publish/)' changed.txt; then
+            echo "The live site's source changed: publishing."
+            gh workflow run publish.yml --repo "$REPO" --ref main
+          else
+            echo "Nothing the live site is made of changed: not publishing."
+          fi
+          if grep -qE '^packages/contact/' changed.txt; then gh workflow run contact-worker.yml --repo "$REPO" --ref main; fi
+          if grep -qE '^(packages/delivery/|store/list.json)' changed.txt; then gh workflow run delivery-worker.yml --repo "$REPO" --ref main; fi

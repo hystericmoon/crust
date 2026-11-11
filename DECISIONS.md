@@ -266,6 +266,18 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-11 — Automatic merge and publish (owner: "automate this for me")
+
+- The owner lifted his standing rule (no merging, no Publish unless he says so). New workflow
+  `.github/workflows/automerge.yml`: when CI succeeds on a pull request from a `ccr-*` branch of this repo, it merges
+  it (merge commit, only if the branch head is the commit CI tested; skipped for drafts and PRs labelled `hold`).
+- After the merge it starts Preview deploy always, and **Publish site only when the PR touched `content/`,
+  `packages/render/`, `packages/blocks/` or `crates/crust-publish/`** (what the live site is made of). Admin-only
+  changes do not republish. Publish keeps its own accessibility check, which stops a publish on serious issues.
+- Why dispatch by hand: a merge made with GITHUB_TOKEN does not trigger push workflows, so the follow-ups are started
+  explicitly. No secrets in this file. Off switch: the `hold` label, or delete the file.
+- Takes effect once this PR is on main (workflow_run uses the version on main). Wrangler deploys from a terminal stay denied.
+
 ## 2026-11-11 — Free first (owner)
 
 The owner: "let's make everything free first. No budget for domain and app store. Let's finish everything else."
