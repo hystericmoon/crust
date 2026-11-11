@@ -22,7 +22,7 @@ import { ThemeToggle } from "../app-theme/ThemeToggle";
 
 /**
  * F069: each preview has a real screen height too, and the page scrolls
- * inside it. Sized to its content, a full-height opening section (vh units)
+ * inside it (the device height below is the fallback; the preview fills the screen when it can measure it). Sized to its content, a full-height opening section (vh units)
  * grew with the frame: Harbour's was 2244 px on desktop, 5185 px on a phone.
  */
 const widths = [
@@ -531,23 +531,37 @@ function TemplatePreview({ template, target, width, height, title }: { template:
   const html = useMemo(() => previewHtml(template, target, baseCss), [template, target]);
   const paneRef = useRef<HTMLDivElement>(null);
   const [paneWidth, setPaneWidth] = useState(0);
+  const [room, setRoom] = useState(0);
 
   useEffect(() => {
     const pane = paneRef.current;
-    if (!pane || typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(([entry]) => setPaneWidth(entry?.contentRect.width ?? 0));
+    if (!pane) return;
+    // The preview fills the screen down to the bottom edge (the stage keeps 32px below it).
+    const measure = () => setRoom(Math.max(0, Math.floor(window.innerHeight - pane.getBoundingClientRect().top - 32)));
+    measure();
+    window.addEventListener("resize", measure);
+    if (typeof ResizeObserver === "undefined") return () => window.removeEventListener("resize", measure);
+    const observer = new ResizeObserver(([entry]) => {
+      setPaneWidth(entry?.contentRect.width ?? 0);
+      measure();
+    });
     observer.observe(pane);
-    return () => observer.disconnect();
+    return () => {
+      window.removeEventListener("resize", measure);
+      observer.disconnect();
+    };
   }, []);
 
   const scale = paneWidth > 0 ? Math.min(1, paneWidth / width) : 1;
+  // Full screen height when it is known (never shorter than a small laptop's 500px), else the device's own height.
+  const shownHeight = room > 0 ? Math.max(500, room) / scale : height;
   return (
     <div className="tp-pane" ref={paneRef}>
       {html === null ? (
         <p className="st-error">This page can't be shown.</p>
       ) : (
-        <div className="tp-frame" style={{ width: width * scale, height: height * scale }}>
-          <iframe title={title} sandbox="allow-same-origin" srcDoc={html} style={{ width, height, transform: `scale(${scale})` }} />
+        <div className="tp-frame" style={{ width: width * scale, height: shownHeight * scale }}>
+          <iframe title={title} sandbox="allow-same-origin" srcDoc={html} style={{ width, height: shownHeight, transform: `scale(${scale})` }} />
         </div>
       )}
     </div>

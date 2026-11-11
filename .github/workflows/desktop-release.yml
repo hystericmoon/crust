@@ -121,7 +121,10 @@ jobs:
           CRUST_UPDATE_FEED: ${{ vars.CRUST_UPDATE_FEED }}
         run: |
           if [ -n "$TAURI_SIGNING_PRIVATE_KEY" ]; then
-            npm run desktop:build -- --target "$TARGET" --config '{"bundle":{"createUpdaterArtifacts":true}}'
+            # Tauri reads the public half from its own config (plugins.updater.pubkey, empty in the repo) when it
+            # makes the update files; CRUST_UPDATE_PUBKEY alone only reaches the app's code. Run #3/#4 failed on that.
+            config=$(jq -nc --arg key "$CRUST_UPDATE_PUBKEY" '{bundle:{createUpdaterArtifacts:true},plugins:{updater:{pubkey:$key}}}')
+            npm run desktop:build -- --target "$TARGET" --config "$config"
           else
             npm run desktop:build -- --target "$TARGET"
           fi

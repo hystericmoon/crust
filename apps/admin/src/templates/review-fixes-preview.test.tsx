@@ -42,20 +42,22 @@ async function tallHero() {
 }
 
 describe("review-fixes 4: template preview height (F048)", () => {
-  it("shows each width at a fixed screen height and scrolls inside it", async () => {
+  it("shows each width at the screen's height (not the page's) and scrolls inside it", async () => {
+    // The preview fills the screen down to the bottom edge, less the stage's 32px; the page never sets the frame's height.
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 900 });
     const t = await tallHero();
     render(<TemplatesScreen siteName="Bakery" githubOn={false} currentSite={async () => ({ language: "en", pages: [], posts: 0, sections: [], photos: [], drafts: 0 })} sources={[{ id: "tall", load: async () => ({ template: t, problems: [] }) }]} />);
     await act(async () => undefined);
     fireEvent.click(screen.getByRole("button", { name: /^Tall/ }));
     const desktop = screen.getByTitle("Tall: Home, desktop width") as HTMLIFrameElement;
     expect(desktop.style.width).toBe("1280px");
-    expect(desktop.style.height).toBe("800px");
-    expect((desktop.parentElement as HTMLElement).style.height).toBe("800px");
+    expect(desktop.style.height).toBe("868px");
+    expect((desktop.parentElement as HTMLElement).style.height).toBe("868px");
     fireEvent.click(screen.getByRole("button", { name: "Phone" }));
     const phone = screen.getByTitle("Tall: Home, phone width") as HTMLIFrameElement;
-    expect(phone.style.height).toBe("812px");
+    expect(phone.style.height).toBe("868px");
     fireEvent.click(screen.getByRole("button", { name: "Tablet" }));
-    expect((screen.getByTitle("Tall: Home, tablet width") as HTMLIFrameElement).style.height).toBe("1024px");
+    expect((screen.getByTitle("Tall: Home, tablet width") as HTMLIFrameElement).style.height).toBe("868px");
     expect(screen.getByText(/Scroll inside the preview to see the whole page\./)).toBeTruthy();
   });
 });
