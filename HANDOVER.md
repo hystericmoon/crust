@@ -17,8 +17,12 @@ update key stored by the owner (run #2 of Make update key, not yet proven by a s
 Release **0.1.1** is prepared and is in the open PR (with notes): version bump in `crates/crust-desktop/tauri.conf.json`,
 `crates/crust-desktop/Cargo.toml`, `Cargo.lock`, a "what's new" entry in `crates/crust-desktop/whats-new.json`, and
 `scripts/updates-site.test.ts` now reads the app's version instead of assuming 0.1.0.
+Status 2026-11-11: PR #87 merged; the first Desktop installers run (#3) FAILED at "Build the installer" on both platforms:
+`failed to decode pubkey: Missing comment in public key`, so the variable CRUST_UPDATE_PUBKEY holds an incomplete value (the app itself built).
+The release now checks the value in its first step and says so. The owner must re-enter the variable (whole line of public-key.txt from
+run #2's artifact, or the run summary), then rerun step 2. Nothing is installed or published yet.
 Next, in order:
-1. Check the open PR merged by itself (green CI). If not, fix what is red.
+1. (done) PR #87 merged.
 2. Run Actions -> **Desktop installers**: platforms `both`, downloads `true` (tool: `actions_run_trigger`, workflow `desktop-release.yml`).
    Its first step stops with a clear message if the update key halves are missing or wrong: then redo the key (docs/setup-updates.md).
    The first run makes https://crust-downloads.pages.dev; if it stops at "Check the update address", set `CRUST_UPDATE_FEED`.

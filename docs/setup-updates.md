@@ -35,7 +35,10 @@ old one stop getting updates (people would have to download Crust again).
 
 Same page, **Variables** tab → **New repository variable**:
 `CRUST_UPDATE_PUBKEY`, value: everything in `public-key.txt` (it's also
-shown on the run's summary page). The public half isn't secret.
+shown on the run's summary page): one long line, usually starting with
+`dW50cnVzdGVk`. Copy the whole line, no quotes. The public half isn't
+secret. A release stops at its first step with a clear message if this
+value is incomplete.
 
 ## 4. Keep a copy, then delete the download
 
