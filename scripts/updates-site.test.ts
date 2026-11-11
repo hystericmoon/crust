@@ -51,6 +51,17 @@ describe("updates site: the feed", () => {
     expect(filesUrl("0.2.0")).toBe("https://github.com/hystericmoon/crust/releases/download/v0.2.0");
   });
 
+  it("offers Linux: the AppImage updates itself, the .deb is download only", () => {
+    const appimage: BuiltFile = { path: "/b/appimage/Crust_0.2.0_amd64.AppImage", name: "Crust_0.2.0_amd64.AppImage", signature: "c2lnLWxpbg==" };
+    const deb: BuiltFile = { path: "/b/deb/Crust_0.2.0_amd64.deb", name: "Crust_0.2.0_amd64.deb" };
+    const site = updatesSite([MAC, DMG, WIN, appimage, deb], RELEASE);
+    expect(site.latest.platforms["linux-x86_64"]).toEqual({ url: `${filesUrl("0.2.0")}/Crust_0.2.0_amd64.AppImage`, signature: "c2lnLWxpbg==" });
+    expect(site.copies.map((c) => c.to)).toContain("Crust_0.2.0_amd64.deb");
+    expect(site.downloads.map((d) => d.label).filter((l) => l.startsWith("Linux"))).toHaveLength(2);
+    expect(site.index).toContain("Crust_0.2.0_amd64.AppImage");
+    expect(Object.keys(site.latest.platforms)).not.toContain("linux-aarch64");
+  });
+
   it("still offers installers built without the update key, just not as updates", () => {
     const site = updatesSite([DMG, { ...WIN, signature: undefined }], RELEASE, "https://example.test/files/");
     expect(site.latest.platforms).toEqual({});

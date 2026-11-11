@@ -23,8 +23,8 @@ the key passed into Tauri's config, installers on a GitHub release because Pages
 
 Next, in order:
 1. Ask the owner for the bugs he saw (app, home page or downloads page). Fix what he reports, one PR per fix (automatic merge).
-2. Prepare **0.1.2** (versions in `crates/crust-desktop/tauri.conf.json`, `Cargo.toml`, `Cargo.lock`; a "what's new" entry in `whats-new.json`;
-   `scripts/updates-site.test.ts` reads the app's version), PR, merge, then Actions -> **Desktop installers** (`both`, downloads `true`, ~7 min).
+2. **0.1.2 is prepared (Linux added, versions bumped, PR merges automatically)**. Run Actions -> **Desktop installers** (`all`, downloads `true`). Older notes: prepare **0.1.2** (versions in `crates/crust-desktop/tauri.conf.json`, `Cargo.toml`, `Cargo.lock`; a "what's new" entry in `whats-new.json`;
+   `scripts/updates-site.test.ts` reads the app's version), PR, merge, then Actions -> **Desktop installers** (`all`, downloads `true`, ~7 min).
    Success = his 0.1.1 shows "update ready". Then add the "Updates itself" point back to the home page and run Publish home.
 3. F058: the owner tries Publish to Cloudflare Pages from the app with a TEST project `crust-app-test` (never `crust-site`, the live site) and a wrong token.
    F059: waiting to hear if he has an FTP/SFTP host; if not, note "no host to test with" and skip. Do not buy anything.

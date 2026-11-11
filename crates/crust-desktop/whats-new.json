@@ -1,5 +1,13 @@
 [
   {
+    "version": "0.1.2",
+    "date": "2026-11-11",
+    "notes": [
+      "Crust now has a version for Linux (an AppImage that runs on most computers, and a .deb for Ubuntu and Debian).",
+      "The download page lists Mac, Windows and Linux."
+    ]
+  },
+  {
     "version": "0.1.1",
     "date": "2026-11-11",
     "notes": [

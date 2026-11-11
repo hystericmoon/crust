@@ -38,7 +38,7 @@ export interface BuiltFile {
 }
 
 /** The kinds of computer the app updates on, as Tauri names them. */
-export type Target = "darwin-aarch64" | "darwin-x86_64" | "windows-x86_64";
+export type Target = "darwin-aarch64" | "darwin-x86_64" | "windows-x86_64" | "linux-x86_64";
 
 export interface UpdatesSite {
   latest: { version: string; notes: string; pub_date: string; platforms: Partial<Record<Target, { url: string; signature: string }>> };
@@ -91,12 +91,20 @@ export function updatesSite(files: BuiltFile[], release: Release, filesBase = fi
       if (f.signature) platforms["windows-x86_64"] = { url: url(f), signature: f.signature };
       copies.push({ to: at(f), from: f.path });
       downloads.push({ label: "Windows (10 and 11)", to: at(f), url: url(f) });
+    } else if (f.name.endsWith(".AppImage")) {
+      // The AppImage is also its own update (Tauri on Linux updates only AppImages).
+      if (f.signature) platforms["linux-x86_64"] = { url: url(f), signature: f.signature };
+      copies.push({ to: at(f), from: f.path });
+      downloads.push({ label: "Linux (AppImage: runs on most computers, no install)", to: at(f), url: url(f) });
+    } else if (f.name.endsWith(".deb")) {
+      copies.push({ to: at(f), from: f.path });
+      downloads.push({ label: "Linux (.deb for Ubuntu and Debian; doesn't update itself)", to: at(f), url: url(f) });
     } else if (f.name.endsWith(".dmg")) {
       copies.push({ to: at(f), from: f.path });
       downloads.push({ label: "Mac (Apple chip or Intel, macOS 11 or later)", to: at(f), url: url(f) });
     }
   }
-  if (!downloads.length) throw new Error("No installers found (.dmg or -setup.exe). Did the build finish?");
+  if (!downloads.length) throw new Error("No installers found (.dmg, -setup.exe, .AppImage or .deb). Did the build finish?");
   downloads.sort((a, b) => a.label.localeCompare(b.label));
 
   const latest = { version: release.version, notes: release.notes.map((n) => `- ${n}`).join("\n"), pub_date: `${release.date}T00:00:00Z`, platforms };
@@ -112,7 +120,7 @@ function indexPage(release: Release, downloads: UpdatesSite["downloads"]): strin
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Download Crust</title>
-  <meta name="description" content="Download the Crust app for Mac and Windows.">
+  <meta name="description" content="Download the Crust app for Mac, Windows and Linux.">
   <style>
     body { margin: 0; background: #f6f6f7; color: #18181b; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
     main { max-width: 40rem; margin: 0 auto; padding: 48px 16px; }
