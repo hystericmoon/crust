@@ -6,7 +6,6 @@ removes an item once it's done.
 
 | Since | Feature | What's needed from the owner |
 |---|---|---|
-| 2026-10-30 (updated 2026-11-11) | F037 Contact form | **Worker installed 2026-11-11** with its keys (https://crust-contact.hosnirachmani.workers.dev). Left for the owner: add the repository variable `CONTACT_FORM_URL` with that address, then Publish and send a test from his phone. The Cloudflare token `crust-github-preview` (Pages Edit + Workers Scripts Edit) **expires 2027-01-26**; renew it before then or Publish and the Worker install stop working. Original notes: The block, the Worker and its install workflow are built. To make forms send email: a Turnstile widget, a free Resend account, Workers permission on the Cloudflare token, three GitHub secrets and two variables. Step by step: `docs/setup-contact-form.md`. Until then, published forms say "This form isn't connected yet". |
 | 2026-10-31 | Launch: update key (F061 is built and tested without it) | About 10 minutes in the browser, no commands: run Actions → **Make update key**, then paste its three parts into GitHub's secret and variable settings. Step by step: `docs/setup-updates.md`. Not needed until we hand the app to other people; test copies work meanwhile (they just don't update themselves). |
 
 ## Parked: free first (owner, 2026-11-11)
