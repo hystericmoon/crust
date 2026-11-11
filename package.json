@@ -22,6 +22,7 @@
     "check:builder": "node scripts/check-builder-a11y.mjs",
     "check:template": "tsx scripts/check-template.ts",
     "build:starters": "tsx scripts/starter-templates/build.ts",
+    "publish:home": "tsx packages/render/src/cli.ts home/content dist/home && cargo run -q -p crust-publish -- dist/home --base-url https://crust-home.pages.dev --media home/content/media --photo-cache .crust-cache/photos --fonts packages/blocks/fonts",
     "build:store": "tsx scripts/store/build.ts",
     "store:pictures": "tsx scripts/store/pictures.ts && tsx scripts/store/build.ts",
     "gen:responsive-css": "tsx scripts/responsive-css.ts",

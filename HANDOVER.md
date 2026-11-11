@@ -21,6 +21,9 @@ Status 2026-11-11: run #5 (main) built and signed both installers: the update ke
 The last step failed: Cloudflare Pages takes no file over 25 MiB (the Mac update file is 70.9 MiB). The fix (this PR) puts the
 installers on a GitHub release `v0.1.1` and keeps only the feed and download page on Pages (DECISIONS 2026-11-11). Nothing is installed
 or published yet. After it merges, run step 2 again (the Mac and Windows builds repeat, about 12 minutes).
+Release 0.1.1 is LIVE (run #6): downloads page https://crust-downloads.pages.dev, files on GitHub release v0.1.1. Waiting for the owner to install it.
+Home page (owner chose B on 2026-11-11): `home/content`, workflow Publish home (by hand), DECISIONS "Crust home page". After its PR merges, run
+Actions -> Publish home (`publish-home.yml`, tool `actions_run_trigger`), then tell the owner the address.
 Next, in order:
 1. (done) PR #87 merged.
 2. Run Actions -> **Desktop installers**: platforms `both`, downloads `true` (tool: `actions_run_trigger`, workflow `desktop-release.yml`).
