@@ -17,10 +17,10 @@ update key stored by the owner (run #2 of Make update key, not yet proven by a s
 Release **0.1.1** is prepared and is in the open PR (with notes): version bump in `crates/crust-desktop/tauri.conf.json`,
 `crates/crust-desktop/Cargo.toml`, `Cargo.lock`, a "what's new" entry in `crates/crust-desktop/whats-new.json`, and
 `scripts/updates-site.test.ts` now reads the app's version instead of assuming 0.1.0.
-Status 2026-11-11: PR #87 merged; the first Desktop installers runs (#3 on main, #4 Mac-only test) FAILED at "Build the installer":
-`failed to decode pubkey: Missing comment in public key`. The owner's CRUST_UPDATE_PUBKEY is fine (the release check decodes it). Real cause:
-`plugins.updater.pubkey` in tauri.conf.json is empty and the workflow never passed the key into Tauri's config; the fix puts it into
-`--config` (jq). Nothing is installed or published yet. After the fix merges, run step 2 again.
+Status 2026-11-11: run #5 (main) built and signed both installers: the update key and the Tauri config fix (PR #90) work.
+The last step failed: Cloudflare Pages takes no file over 25 MiB (the Mac update file is 70.9 MiB). The fix (this PR) puts the
+installers on a GitHub release `v0.1.1` and keeps only the feed and download page on Pages (DECISIONS 2026-11-11). Nothing is installed
+or published yet. After it merges, run step 2 again (the Mac and Windows builds repeat, about 12 minutes).
 Next, in order:
 1. (done) PR #87 merged.
 2. Run Actions -> **Desktop installers**: platforms `both`, downloads `true` (tool: `actions_run_trigger`, workflow `desktop-release.yml`).
