@@ -5,6 +5,9 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 
 ## Proposals
 
+- ~~A main website for Crust~~ **Chosen by the owner on 2026-11-11: option B ("go ahead with B"), words approved with "go".**
+  Options were at https://claude.ai/artifact/GbFfvBCb95Qc2ZzZ2cuf7M, the draft at https://claude.ai/artifact/CEvDDzYVRAjxUCEUcPEtrE.
+  Built as `home/content` (see "2026-11-11 Crust home page" below). Not added to features.json (the owner's list).
 - ~~Pages panel: say so when a menu change fails to save~~ **Done 2026-11-10 (owner: "Start with the failed menu save").**
   `saveMenu` (App.tsx) now returns a message when the save to the site fails; the panel shows it with "Try again"
   (same change, saved again). The change stays in this browser either way. Small fix on F091, no new feature item.
@@ -3863,3 +3866,15 @@ No design snapshot (words and accessibility only); the glossary below is the rec
 - Decision (Claude, free and reversible): the installers and update files go on a GitHub release `v<version>` (the repository is public, so free; no 25 MiB limit). The small things stay on Pages (`updates/latest.json`, the download page), so the address the app checks does not change. `latest.json` and the page link to the release files.
 - The downloads job now has `contents: write` for creating the release, and re-running a version uploads over the same release (`--clobber`).
 - If the repository goes private again, release files need a login to download: the app could not update from them. Then move the files to a public host (DECISIONS "Repository public for now").
+
+## 2026-11-11 Crust home page (owner chose B: build it with Crust)
+
+- One page, `home/content` (site.json, pages/index.json, three template pictures copied from the store's media), published by hand with
+  Actions → **Publish home** (`publish-home.yml`) to its own free Pages project `crust-home`. Same Cloudflare secrets as the site and store.
+- The store (crust-store.pages.dev) is already a Crust-built site with Templates, Help, Licence and Download pages, so the home page links to
+  it and to the downloads site instead of copying them. The store's address stays (the app reads its catalogue there).
+- Look: the store's tokens (Geist, black on white). The page's address comes from the Pages project at publish time, so links and the
+  sitemap are right even if the name `crust-home` is taken and Cloudflare adds letters to it.
+- Left out on purpose: "Updates itself" (not proven until 0.1.2 updates a 0.1.1; say it once it does). The fourth point says posts, search
+  and a contact form are built in. Test: `scripts/home-site.test.ts`; local run: `npm run publish:home`.
+- Not automatic: like the store, it publishes only when started by hand (Claude starts it after the PR merges).

@@ -1,0 +1,139 @@
+{
+  "name": "Crust",
+  "baseUrl": "https://crust-home.pages.dev",
+  "language": "en",
+  "tokens": {
+    "colors": {
+      "background": "#FFFFFF",
+      "surface": "#F3F3F1",
+      "text": "#111214",
+      "muted": "#585C62",
+      "primary": "#111214",
+      "onPrimary": "#FFFFFF"
+    },
+    "fonts": {
+      "heading": "'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif",
+      "body": "'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif"
+    },
+    "spacing": {
+      "none": 0,
+      "xs": 0.5,
+      "sm": 1,
+      "md": 2,
+      "lg": 4,
+      "xl": 6
+    },
+    "radius": 4,
+    "maxWidth": 1120,
+    "style": {
+      "typeScale": "balanced",
+      "headingWeight": 500,
+      "headingTracking": "tighter",
+      "buttonShape": "square",
+      "cardStyle": "outline",
+      "linkStyle": "underline",
+      "displayWeight": 400,
+      "displayTracking": "tightest",
+      "labelStyle": "mono",
+      "motion": "subtle"
+    },
+    "sectionStyles": {
+      "background": {
+        "bg": "background",
+        "button": "solid"
+      },
+      "surface": {
+        "bg": "surface",
+        "button": "solid"
+      },
+      "primary": {
+        "bg": "primary",
+        "button": "inverse"
+      },
+      "dark": {
+        "bg": "text",
+        "button": "inverse"
+      }
+    }
+  },
+  "header": {
+    "show": true,
+    "logo": {
+      "text": "Crust",
+      "imageSrc": "",
+      "imageAlt": ""
+    },
+    "menu": [
+      {
+        "label": "Templates",
+        "href": "https://crust-store.pages.dev/templates"
+      },
+      {
+        "label": "Help",
+        "href": "https://crust-store.pages.dev/help"
+      }
+    ],
+    "cta": {
+      "label": "Download Crust",
+      "href": "https://crust-downloads.pages.dev"
+    },
+    "sticky": false,
+    "style": "background",
+    "layout": "classic"
+  },
+  "footer": {
+    "show": true,
+    "text": "Crust is a free website builder that publishes plain, fast pages.",
+    "columns": [
+      {
+        "title": "Crust",
+        "links": [
+          {
+            "label": "Download",
+            "href": "https://crust-downloads.pages.dev"
+          },
+          {
+            "label": "What's new",
+            "href": "https://crust-downloads.pages.dev"
+          },
+          {
+            "label": "Help",
+            "href": "https://crust-store.pages.dev/help"
+          }
+        ]
+      },
+      {
+        "title": "Templates",
+        "links": [
+          {
+            "label": "All templates",
+            "href": "https://crust-store.pages.dev/templates"
+          },
+          {
+            "label": "Corner",
+            "href": "https://crust-store.pages.dev/templates/corner"
+          },
+          {
+            "label": "Signal",
+            "href": "https://crust-store.pages.dev/templates/signal"
+          },
+          {
+            "label": "Harbour",
+            "href": "https://crust-store.pages.dev/templates/harbour"
+          }
+        ]
+      },
+      {
+        "title": "Licence",
+        "links": [
+          {
+            "label": "Free to use",
+            "href": "https://crust-store.pages.dev/licence"
+          }
+        ]
+      }
+    ],
+    "copyright": "© {year} {name}",
+    "style": "surface"
+  }
+}

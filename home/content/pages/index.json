@@ -1,0 +1,466 @@
+{
+  "path": "/",
+  "title": "Crust, a free website builder for Mac and Windows",
+  "description": "Crust is a free website builder for Mac and Windows. Design pages with blocks, then publish plain, fast pages to the host you choose.",
+  "puck": {
+    "root": {
+      "props": {}
+    },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "id": "home-section-7",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "home-heading-1",
+                "text": "Design the site. Keep the files.",
+                "level": "h1",
+                "align": "left",
+                "size": "display",
+                "eyebrow": "Free website builder for Mac and Windows"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "home-text-2",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Crust is a website builder that runs on your computer. Build pages from blocks, then publish plain, fast pages to the host you choose. No account and no monthly fee."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default"
+              }
+            },
+            {
+              "type": "Spacer",
+              "props": {
+                "id": "home-spacer-3",
+                "size": "xs"
+              }
+            },
+            {
+              "type": "Button",
+              "props": {
+                "id": "home-button-4",
+                "label": "Download Crust",
+                "href": "https://crust-downloads.pages.dev",
+                "variant": "primary",
+                "align": "left",
+                "icon": "download",
+                "iconAt": "after"
+              }
+            },
+            {
+              "type": "Spacer",
+              "props": {
+                "id": "home-spacer-5",
+                "size": "xs"
+              }
+            },
+            {
+              "type": "Button",
+              "props": {
+                "id": "home-button-6",
+                "label": "See the templates",
+                "href": "https://crust-store.pages.dev/templates",
+                "variant": "secondary",
+                "align": "left"
+              }
+            }
+          ],
+          "width": "narrow"
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "home-section-10",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "home-heading-8",
+                "text": "Three sites to start from",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": "Made with Crust"
+              }
+            },
+            {
+              "type": "Grid",
+              "props": {
+                "id": "home-grid-9",
+                "columns": "3",
+                "titleLevel": "h3",
+                "background": "background",
+                "items": [
+                  {
+                    "title": "Corner",
+                    "text": "Bakeries, cafés, shops and makers. Free with Crust.",
+                    "imageSrc": "/media/corner-home-desktop.jpg",
+                    "imageAlt": "The Corner template's Home page on a computer screen",
+                    "linkLabel": "See Corner",
+                    "linkHref": "https://crust-store.pages.dev/templates/corner"
+                  },
+                  {
+                    "title": "Signal",
+                    "text": "Agencies, product studios and events. Free with Crust.",
+                    "imageSrc": "/media/signal-home-desktop.jpg",
+                    "imageAlt": "The Signal template's Home page on a computer screen",
+                    "linkLabel": "See Signal",
+                    "linkHref": "https://crust-store.pages.dev/templates/signal"
+                  },
+                  {
+                    "title": "Harbour",
+                    "text": "Architects, interiors and studios. Free with Crust.",
+                    "imageSrc": "/media/harbour-home-desktop.jpg",
+                    "imageAlt": "The Harbour template's Home page on a computer screen",
+                    "linkLabel": "See Harbour",
+                    "linkHref": "https://crust-store.pages.dev/templates/harbour"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "home-section-23",
+          "background": "surface",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "home-heading-11",
+                "text": "Made for people who care how it looks",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": "What you get"
+              }
+            },
+            {
+              "type": "Columns",
+              "props": {
+                "id": "home-columns-16",
+                "count": "2",
+                "gap": "md",
+                "column1": [
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "home-heading-12",
+                      "text": "Blocks you can move",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": ""
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "home-text-13",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "Drag a section, or move it with the keyboard. Colours, fonts and spacing are set once and every page follows."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted"
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "home-heading-14",
+                      "text": "Your files, your host",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": ""
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "home-text-15",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "Publish to Cloudflare Pages, Netlify, or any host by FTP or SFTP. Your site is a folder you own."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted"
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "equal",
+                  "tablet": "equal",
+                  "phone": "stack"
+                },
+                "valign": "top"
+              }
+            },
+            {
+              "type": "Spacer",
+              "props": {
+                "id": "home-spacer-17",
+                "size": "sm"
+              }
+            },
+            {
+              "type": "Columns",
+              "props": {
+                "id": "home-columns-22",
+                "count": "2",
+                "gap": "md",
+                "column1": [
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "home-heading-18",
+                      "text": "Fast and accessible",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": ""
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "home-text-19",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "Photos are resized for you, pages are plain HTML, and the blocks are built to WCAG 2.2 AA."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted"
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "home-heading-20",
+                      "text": "Posts, search and a contact form",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": ""
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "home-text-21",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "A blog, site search and a contact form are built in. No code, no plugins."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted"
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "equal",
+                  "tablet": "equal",
+                  "phone": "stack"
+                },
+                "valign": "top"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "home-section-26",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "home-heading-24",
+                "text": "From download to live site",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": "How it works"
+              }
+            },
+            {
+              "type": "IconList",
+              "props": {
+                "id": "home-iconlist-25",
+                "icon": "check",
+                "iconColor": "primary",
+                "items": [
+                  {
+                    "text": "Download Crust and open it. On a Mac, choose Open Anyway once."
+                  },
+                  {
+                    "text": "Pick a template or start blank, then replace the words and photos with your own."
+                  },
+                  {
+                    "text": "Publish. Crust checks the site and sends it to your host."
+                  }
+                ]
+              }
+            }
+          ],
+          "width": "narrow"
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "home-section-31",
+          "background": "primary",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "home-heading-27",
+                "text": "Crust is free.",
+                "level": "h2",
+                "align": "left",
+                "size": "display",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "home-text-28",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Download it, try a template, and publish a site this afternoon."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default"
+              }
+            },
+            {
+              "type": "Spacer",
+              "props": {
+                "id": "home-spacer-29",
+                "size": "xs"
+              }
+            },
+            {
+              "type": "Button",
+              "props": {
+                "id": "home-button-30",
+                "label": "Download Crust",
+                "href": "https://crust-downloads.pages.dev",
+                "variant": "primary",
+                "align": "left",
+                "icon": "download",
+                "iconAt": "after"
+              }
+            }
+          ],
+          "width": "narrow"
+        }
+      }
+    ]
+  }
+}

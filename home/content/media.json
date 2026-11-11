@@ -1,0 +1,38 @@
+[
+  {
+    "file": "harbour-home-desktop.jpg",
+    "alt": "The Harbour template's Home page on a computer screen",
+    "width": 1280,
+    "height": 1600,
+    "bytes": 101642,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "signal-home-desktop.jpg",
+    "alt": "The Signal template's Home page on a computer screen",
+    "width": 1280,
+    "height": 1600,
+    "bytes": 117281,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  },
+  {
+    "file": "corner-home-desktop.jpg",
+    "alt": "The Corner template's Home page on a computer screen",
+    "width": 1280,
+    "height": 1600,
+    "bytes": 149487,
+    "uploadedAt": "2026-11-03T00:00:00.000Z",
+    "focus": {
+      "x": 50,
+      "y": 0
+    }
+  }
+]
