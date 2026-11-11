@@ -12,6 +12,10 @@
 .af-where, .af-tools { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .af-icon { flex: none; }
 
+/* Puck clips its header wrapper (overflow hidden/auto) when the left rail shows, which cut the
+   site menu off at the bar's height. Let it spill over the rail and the canvas. */
+[class*="PuckLayout-header"]:has(.af-top) { overflow: visible; position: relative; z-index: 5; }
+
 /* Site menu */
 .af-site { position: relative; }
 .af-site-button {

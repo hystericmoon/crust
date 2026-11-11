@@ -23,6 +23,13 @@ afterEach(() => {
   location.hash = "";
 });
 
+describe("app frame: site menu is not clipped", () => {
+  it("lets Puck's header wrapper show overflow, so the menu can drop over the rail", () => {
+    const css = readFileSync("apps/admin/src/app-frame/app-frame.css", "utf8");
+    expect(css).toMatch(/PuckLayout-header"\]:has\(\.af-top\)\s*\{[^}]*overflow:\s*visible/);
+  });
+});
+
 describe("app frame: saving on its own", () => {
   it("groups a burst of changes into one save once editing pauses", () => {
     vi.useFakeTimers();
