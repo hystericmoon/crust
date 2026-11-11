@@ -266,6 +266,18 @@ Features Claude suggests. They are not work until the owner adds them to
   (most shared hosting); Nginx hosts ignore it, harmlessly.
 
 
+## 2026-11-11 — Free first (owner)
+
+The owner: "let's make everything free first. No budget for domain and app store. Let's finish everything else."
+
+- **Parked** in BLOCKED.md (kept, not deleted): custom domain (F044), Mac and Windows app signing, payment provider (F066),
+  licence and prices (F068), delivery of paid templates (F067). The store stays free: three free templates, no paid pages
+  until a template gets a price (as since 2026-11-05).
+- **Still wanted, both free:** contact form email (F037, a Turnstile widget and a free Resend account) and the app update key
+  (F061, about 10 minutes). The F063 row was removed: the store has been online since 2026-11-05.
+- No code change. Every feature is built; what is left is owner-side setup and trying F058, F059 and F061 once against real
+  things (a real host, a real release).
+
 ## 2026-11-06 — F087 Page first (Claude, reversible)
 
 - Built take A from the snapshot https://claude.ai/artifact/VX9gKVj8euKZCtwXLahQwg

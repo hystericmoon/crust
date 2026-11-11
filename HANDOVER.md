@@ -56,7 +56,9 @@ Last updated: 2026-11-11, F094 passed and merged (PR #82); branch `ccr-d50f7e80-
 
 **No unbuilt features are left** (`npm run next` says so) and nothing waits for the owner's review. 2026-11-11: F094 passed
 and **PR #82 is merged** (main has everything). The branch was restarted from main; one PR per feature from now on.
-Scope is the owner's: new ideas go to DECISIONS.md "Proposals", never into features.json. Use Sonnet (his rule).
+**Free first (owner, 2026-11-11):** no budget for a domain, app signing or payments, so those rows are parked in BLOCKED.md
+(DECISIONS "Free first"). Open for him: contact form email (F037) and the app update key (F061), both free, and trying
+F058, F059 and F061 once for real. Scope is the owner's: new ideas go to DECISIONS.md "Proposals", never into features.json. Use Sonnet (his rule).
 
 Where things are (Milestone 9): tokens `apps/admin/src/app-theme/app-theme.css` (use `--app-*` for every colour; a guard test
 fails on raw colours); `app-frame/` (top bar, `EditorBar`, `railPlugins`, `useAutosave`); `page-first/` (F087);
