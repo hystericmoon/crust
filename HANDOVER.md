@@ -10,6 +10,26 @@ skill (`.claude/skills/crust-start/SKILL.md`). While building:
 `crust-lean`. Finishing: `crust-finish` (it holds the "Ready to clear"
 message the owner asked for every time). Content JSON: `crust-content-format`.
 
+## Checkpoint (2026-11-11): trying F058, F059, F061 for real
+
+Owner said "let's try". Done: automatic merge and publish are on (`automerge.yml`, PR #84); contact form works (F037 closed);
+update key stored by the owner (run #2 of Make update key, not yet proven by a signed release).
+Release **0.1.1** is prepared and is in the open PR (with notes): version bump in `crates/crust-desktop/tauri.conf.json`,
+`crates/crust-desktop/Cargo.toml`, `Cargo.lock`, a "what's new" entry in `crates/crust-desktop/whats-new.json`, and
+`scripts/updates-site.test.ts` now reads the app's version instead of assuming 0.1.0.
+Next, in order:
+1. Check the open PR merged by itself (green CI). If not, fix what is red.
+2. Run Actions -> **Desktop installers**: platforms `both`, downloads `true` (tool: `actions_run_trigger`, workflow `desktop-release.yml`).
+   Its first step stops with a clear message if the update key halves are missing or wrong: then redo the key (docs/setup-updates.md).
+   The first run makes https://crust-downloads.pages.dev; if it stops at "Check the update address", set `CRUST_UPDATE_FEED`.
+3. Owner installs 0.1.1 from the downloads page (Mac: "Open Anyway" once). His current 0.1.0 has no update key, so it can't update.
+4. Prepare **0.1.2** (same three version files, new whats-new entry), PR, merge, release again. Success = his 0.1.1 shows "update ready".
+5. F058: the owner tries Publish to Cloudflare Pages from the app with a TEST project `crust-app-test` (never `crust-site`, the live site) and a wrong token.
+   F059: waiting to hear if he has an FTP/SFTP host; if not, note "no host to test with" and skip. Do not buy anything.
+Record the results in DECISIONS.md (F058/F059/F061) and remove "never tried" from the notes.
+Notes: the pre-push hook (`scripts/hooks/pre-push.sh`) did not fire for pushes in the session that created it; check it fires now.
+The Cloudflare token `crust-github-preview` expires 2027-01-26.
+
 ## Model plan (owner, 2026-11-03)
 
 Every feature in features.json is built (F001 to F093); there is no next feature to start. The owner asked on
