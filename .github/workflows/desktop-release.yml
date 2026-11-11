@@ -96,6 +96,12 @@ jobs:
           CRUST_UPDATE_PUBKEY: ${{ vars.CRUST_UPDATE_PUBKEY }}
         run: |
           if [ "$HAS_KEY" = "true" ] && [ -n "$CRUST_UPDATE_PUBKEY" ]; then
+            # The public half is one line of text that decodes to a "untrusted comment" line plus the key.
+            # A value that lost part of it (or was pasted decoded) fails here, not 12 minutes into the build.
+            if ! printf '%s' "$CRUST_UPDATE_PUBKEY" | tr -d '[:space:]' | base64 -d 2>/dev/null | grep -q '^untrusted comment:'; then
+              echo "::error::CRUST_UPDATE_PUBKEY is not the whole public key. Paste everything in public-key.txt (one long line, usually starting with dW50cnVzdGVk), with no quotes or spaces. See docs/setup-updates.md."
+              exit 1
+            fi
             echo "Update key found: this build updates itself."
           elif [ "$HAS_KEY" != "true" ] && [ -z "$CRUST_UPDATE_PUBKEY" ]; then
             echo "::notice::No update key yet (BLOCKED.md): this build won't update itself."
