@@ -295,6 +295,12 @@ Features Claude suggests. They are not work until the owner adds them to
 - CI caught a test that assumed the content folder holds only the homepage (`template-check.test.ts` uses `content/` as its sample). The three expectations now read the page list from the sample, so adding a page no longer breaks them.
 - The next CI run failed once in `hosts.test.tsx` (focus back on Publish after connecting a host). Cause: the app returns focus on a deferred call (`focusAfterDialog`, `setTimeout 0`) and the test checked focus without waiting, a race in the test only. The test now waits (`await settle()`) first. App code unchanged. I could not make it fail locally (0 of 9 runs), so the fix rests on the reading of the code, not on a reproduction.
 
+## 2026-11-11 — App update key set (owner; Claude)
+
+- Claude started "Make update key" (run #2) at the owner's request; he stored the three parts himself (`TAURI_SIGNING_PRIVATE_KEY`, `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`, variable `CRUST_UPDATE_PUBKEY`). Claude never saw the values.
+- Run #1 (earlier the same day) also made a key, and the owner wasn't sure which run his first paste came from, so he overwrote all three from run #2. Claude cannot list repository secrets, so the names were not checked from here.
+- Not proven until a real release: the release workflow's first step stops with a clear message if either half is missing, but only a signed release shows the halves match. BLOCKED.md row removed.
+
 ## 2026-11-11 — Free first (owner)
 
 The owner: "let's make everything free first. No budget for domain and app store. Let's finish everything else."

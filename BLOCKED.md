@@ -6,7 +6,6 @@ removes an item once it's done.
 
 | Since | Feature | What's needed from the owner |
 |---|---|---|
-| 2026-10-31 | Launch: update key (F061 is built and tested without it) | About 10 minutes in the browser, no commands: run Actions → **Make update key**, then paste its three parts into GitHub's secret and variable settings. Step by step: `docs/setup-updates.md`. Not needed until we hand the app to other people; test copies work meanwhile (they just don't update themselves). |
 
 ## Parked: free first (owner, 2026-11-11)
 
