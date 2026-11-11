@@ -3,6 +3,20 @@
 Moved out of PROGRESS.md on 2026-11-03 to keep the start of each session
 short. Older "Current" entries (newest first) and the older log.
 
+## F093 (archived 2026-11-11)
+
+- **2026-11-10: F093 Words and accessibility sweep (built, waiting for your review). Milestone 9 is complete:
+  F085 to F093 are all built and waiting for your review.**
+  Nothing on screen says "GitHub" any more: a change is **saved** (kept in your site) or **kept in this browser**
+  (a draft), and **publish** makes it live. About 75 messages changed. The builder is easier for keyboard and screen
+  reader users: it has a main area and a heading, its side panels have names, dragging a block is read out in plain
+  words ("Picked up Hero ... Dropped Hero in the page"), and a focused button never ends up under a floating bar.
+  The accessibility check now also looks inside the page preview, the Styles panel and the Site settings sheet.
+  The words table is in DECISIONS "F093". **To try:** open the preview
+  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, edit a heading and read the messages (Save, Publish, Pages
+  panel); Tab through the builder, and with a screen reader (VoiceOver: Cmd+F5) pick up a block with Space.
+  Next: your review of F085 to F093 plus F075 and F078, then merge PR #81. No unbuilt features are left.
+
 ## F091 (archived 2026-11-10)
 
 - **2026-11-10: F091 Pages panel (built, waiting for your review).**

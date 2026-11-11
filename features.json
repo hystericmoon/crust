@@ -815,7 +815,8 @@
       "done_check": "npm test -- motion && npm run check:a11y && npm run check:perf",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Pass (owner, 2026-11-10)"
     },
     {
       "id": "F076",
@@ -847,7 +848,8 @@
       "done_check": "npm test -- blocks-v3 && npm run check:a11y",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Pass (owner, 2026-11-10)"
     },
     {
       "id": "F079",
@@ -977,7 +979,8 @@
       "done_check": "npm test -- inline-text && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Pass (owner, 2026-11-10)"
     },
     {
       "id": "F091",
@@ -987,7 +990,8 @@
       "done_check": "npm test -- pages-panel && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Pass (owner, 2026-11-10)"
     },
     {
       "id": "F092",
@@ -997,7 +1001,8 @@
       "done_check": "npm test -- styles-panel && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false
+      "reviewed": true,
+      "review_note": "Pass (owner, 2026-11-10)"
     },
     {
       "id": "F093",
@@ -1005,6 +1010,17 @@
       "description": "One word per idea across the app, including F055's ~70 'GitHub' strings. Builder accessibility from the 2026-11-06 scan: main landmark and h1, labelled regions for panels, spoken drag status instead of aria-grabbed, focus never hidden under floating bars, and an axe scan inside the canvas frame. Approved by the owner with Milestone 9 (2026-11-06: 'Go with your recommendation'); docs/milestone-9.md.",
       "depends_on": ["F088", "F089", "F090", "F091", "F092"],
       "done_check": "npm test -- app-words && npm run check:builder",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": true,
+      "review_note": "Pass (owner, 2026-11-10)"
+    },
+    {
+      "id": "F094",
+      "title": "Edit site details in the Site settings sheet",
+      "description": "Search defaults and where to publish become editable in place in the Site settings sheet (F092 only shows and links them), next to the site name and language. Words follow F093 (no 'GitHub' in screen text). Proposed in DECISIONS.md, added by the owner on 2026-11-10 ('add it'). Needs a design look first (a small snapshot), then built.",
+      "depends_on": ["F092", "F093"],
+      "done_check": "npm test -- styles-panel && npm run check:builder",
       "passes": true,
       "needs_review": true,
       "reviewed": false

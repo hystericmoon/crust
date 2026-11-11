@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 /** F091: the Pages panel: groups from the header menu, reordering by keys, menu and drag, the status in words. */
 import type { MenuLink } from "@crust/blocks";
-import { act, cleanup, createEvent, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, cleanup, createEvent, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PageRow } from "../pages/store";
@@ -95,6 +95,17 @@ describe("pages-panel: the panel", () => {
     expect(onMenuChange).toHaveBeenCalledTimes(1);
     expect(onMenuChange.mock.calls[0]![0].map((l: MenuLink) => l.href)).toEqual(["/", "https://example.com", "/contact", "/about"]);
     expect(screen.getByText(/Moved Contact up\. Position 2 of 3 in the menu\./)).toBeTruthy();
+  });
+
+  it("says so when a menu change can't be saved to the site, and Try again saves it again", async () => {
+    const onMenuChange = vi.fn().mockResolvedValueOnce("The menu change wasn't saved to your site: offline.").mockResolvedValueOnce(null);
+    render(<PagesPanel rows={rows} menu={menu} onMenuChange={onMenuChange} githubOn liveKnown />);
+    fireEvent.keyDown(screen.getByRole("button", { name: /^Reorder Contact\. Number 3 of 3 in the menu/ }), { key: "ArrowUp" });
+    expect((await screen.findByRole("alert")).textContent).toContain("wasn't saved to your site");
+    fireEvent.click(screen.getByRole("button", { name: "Try again" }));
+    await waitFor(() => expect(screen.queryByRole("alert")).toBeNull());
+    expect(onMenuChange).toHaveBeenCalledTimes(2);
+    expect(onMenuChange.mock.calls[1]![0]).toEqual(onMenuChange.mock.calls[0]![0]);
   });
 
   it("says when a page is already at the end instead of doing nothing", () => {

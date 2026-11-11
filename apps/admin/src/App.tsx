@@ -60,7 +60,7 @@ import { currentSiteNow } from "./templates/current";
 import { TemplateBanner } from "./templates/TemplateBanner";
 import { TemplatesScreen } from "./templates/TemplatesScreen";
 import { loadSavedTokens, sameTokens, saveTokens } from "./tokens-store";
-import { loadSavedAddress, loadSavedChrome, sameChrome, saveAddress, saveChrome, siteToSave } from "./chrome-store";
+import { detailsOf, loadSavedAddress, loadSavedChrome, loadSavedDetails, sameChrome, sameDetails, saveAddress, saveChrome, saveDetails, siteToSave } from "./chrome-store";
 import { SiteChromeContext, withSiteChrome } from "./chrome-canvas";
 import { desktopContent } from "./desktop/content";
 import { sitesApi, sitesInvoke } from "./sites/sites";
@@ -208,6 +208,9 @@ export function App() {
   // F044: the site's own address (site.json's baseUrl), saved with the rest of Site settings.
   const [savedAddress, setSavedAddress] = useState(() => loadSavedAddress(site.baseUrl));
   const [addressDraft, setAddressDraft] = useState(savedAddress);
+  // F094: the site's name, language and search defaults, saved with the rest of Site settings.
+  const [savedDetails, setSavedDetails] = useState(() => loadSavedDetails(detailsOf(site)));
+  const [detailsDraft, setDetailsDraft] = useState(savedDetails);
   const [githubOn, setGithubOn] = useState<boolean | null>(null);
   // The builder shows unsaved token edits too, so switching screens loses nothing.
   // F076: the builder always has the header and footer v2 CSS (published pages only when used).
@@ -239,17 +242,20 @@ export function App() {
   const saveSiteTokens = async (tokens: SiteTokens) => {
     const chrome = chromeDraft;
     const address = addressDraft;
-    const local = saveTokens(tokens) && saveChrome(chrome) && saveAddress(address);
+    const details = detailsDraft;
+    const local = saveTokens(tokens) && saveChrome(chrome) && saveAddress(address) && saveDetails(details);
     if (local) {
       setSaved(tokens);
       setSavedChrome(chrome);
       setSavedAddress(address);
+      setSavedDetails(details);
     }
-    const result = await saveContent({ kind: "site", site: siteToSave(site, tokens, chrome, defaultChrome, address) });
+    const result = await saveContent({ kind: "site", site: siteToSave(site, tokens, chrome, defaultChrome, address, details) });
     if (result.ok) {
       setSaved(tokens);
       setSavedChrome(chrome);
       setSavedAddress(address);
+      setSavedDetails(details);
     }
     return saveMessage(result, local, "Site settings");
   };
@@ -261,17 +267,22 @@ export function App() {
     () => (menuIsAutomatic ? menuFromPages(pageOptions) : chromeDraft.header.menu),
     [menuIsAutomatic, pageOptions, chromeDraft.header.menu],
   );
-  const saveMenu = (menu: MenuLink[]) => {
+  // Resolves to a message when the save to the site failed (the change itself is kept in this browser).
+  const saveMenu = async (menu: MenuLink[]): Promise<string | null> => {
     const next: SiteChrome = { ...savedChrome, header: { ...savedChrome.header, menu } };
     setSavedChrome(next);
     setChromeDraft((c) => ({ ...c, header: { ...c.header, menu } }));
     saveChrome(next);
     // Like the rest of Site settings: kept in this browser at once, then saved when that is on.
-    void saveContent({ kind: "site", site: siteToSave(site, saved, next, defaultChrome, savedAddress) });
+    const res = await saveContent({ kind: "site", site: siteToSave(site, saved, next, defaultChrome, savedAddress, savedDetails) });
+    return githubOn && !res.ok ? `The menu change wasn't saved to your site: ${res.error} It is kept in this browser.` : null;
   };
   // F092: what the Styles panel and the Site settings sheet need beside the colours and type.
   const stylesPanelState = (githubOn: boolean) => ({
-    site: { name: site.name, language: site.language },
+    site: { name: savedDetails.name, language: savedDetails.language },
+    details: detailsDraft,
+    onDetailsChange: setDetailsDraft,
+    detailsDirty: !sameDetails(savedDetails, detailsDraft),
     chrome: chromeDraft,
     onChromeChange: setChromeDraft,
     chromeDirty: !sameChrome(savedChrome, chromeDraft),
@@ -286,6 +297,7 @@ export function App() {
       setDraft(saved);
       setChromeDraft(savedChrome);
       setAddressDraft(savedAddress);
+      setDetailsDraft(savedDetails);
     },
   });
   // F025: the builder edits the same draft as Site settings ("Whole site" mode).
@@ -392,7 +404,7 @@ export function App() {
     const path = route.kind === "post" ? "/blog/post" : route.kind === "blog" ? "/blog" : "/404";
     return (
       <SiteStyleContext.Provider value={siteStyle}>
-        <SiteChromeContext.Provider value={{ chrome: chromeDraft, siteName: site.name, path }}>
+        <SiteChromeContext.Provider value={{ chrome: chromeDraft, siteName: savedDetails.name, path }}>
           <LinkedSectionsProvider githubOn={githubOn}>
             <DesignEditor
               key={route.kind}
@@ -445,7 +457,7 @@ function Loading() {
   );
 }
 
-function Pages({ githubOn, focusPublish = false, menu, onMenuChange }: { githubOn: boolean | null; focusPublish?: boolean; menu: MenuLink[]; onMenuChange: (menu: MenuLink[]) => void }) {
+function Pages({ githubOn, focusPublish = false, menu, onMenuChange }: { githubOn: boolean | null; focusPublish?: boolean; menu: MenuLink[]; onMenuChange: (menu: MenuLink[]) => Promise<string | null> }) {
   const { rows: markedRows, plainRows: rows, error, changes, deleted, reload, rename, restore, saveDraft, saveAllDrafts, drafts, findLinks, remove, duplicate } = usePagesData(githubOn);
 
   // F024: arriving from the Publish shortcut, focus goes to the Publish panel once the list is there.

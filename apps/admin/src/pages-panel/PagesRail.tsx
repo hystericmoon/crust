@@ -10,7 +10,7 @@ import { usePagesData } from "./usePagesData";
 
 export interface PagesMenuState {
   menu: MenuLink[];
-  onMenuChange?: (menu: MenuLink[]) => void;
+  onMenuChange?: (menu: MenuLink[]) => void | Promise<string | null | void>;
   githubOn: boolean;
   currentPath?: string;
 }

@@ -19,8 +19,7 @@ Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-10, F093 built, **Milestone 9 "Friendly app" complete**; branch `ccr-d50f7e80-weuq18`.
-**PR #81 is open** (review fixes, Mac app fix, F085 to F093: one branch, so one PR until he merges it); the owner merges.
+Last updated: 2026-11-11, F094 built; Milestone 9 merged (PR #81); branch `ccr-d50f7e80-weuq18`, PR #82 open.
 
 ## Where things stand
 
@@ -55,17 +54,15 @@ Last updated: 2026-11-10, F093 built, **Milestone 9 "Friendly app" complete**; b
 
 ## Next
 
-**No unbuilt features are left** (`npm run next` says so). Milestone 9 "Friendly app" (F085 to F093, plan in
-docs/milestone-9.md; direction snapshot https://claude.ai/artifact/EHnrnPwVaMRv9GRGpaXWLx) is built, and every one
-of its features waits for the owner's review (`needs_review`, not `reviewed`). A new session should not start a feature.
+**No unbuilt features are left** (`npm run next` says so). 2026-11-11: F094 (edit search defaults and where to publish in
+the Site settings sheet, direction C) is built and waits for the owner's review, with the failed-menu-save fix. PR #82 holds
+both and is waiting for him to merge (CI green before F094; check it again). Use Sonnet (his rule).
 
 The next step is the owner's:
-1. **Review F090 to F093** (F085 to F089 passed 2026-11-10), plus F075 (phone test) and F078 (his call, review round two:
-   https://claude.ai/artifact/H27p62B6N3YTjLbLAz8Wxp). Record each Pass as `reviewed: true` (with his words as
-   `review_note`); list each "needs fixing" for him and ask before reworking (CLAUDE.md).
-2. **Merge PR #81** (CI must be green). Then restart the branch from main; from then on one PR per feature.
-3. Scope is his: proposals waiting in DECISIONS.md "Proposals" (including the two from F093: a failed Pages-panel menu
-   save should say so; make Search defaults and Where to publish editable in the Site settings sheet).
+1. **Review F094** (and nothing else is waiting). Record a Pass as `reviewed: true` with his words as `review_note`; list a
+   "needs fixing" for him and ask before reworking.
+2. **Merge PR #82** when CI is green. Then restart the branch from main; one PR per feature from then on.
+3. Scope is his: any new idea goes to DECISIONS.md "Proposals".
 
 Where things are (Milestone 9): tokens `apps/admin/src/app-theme/app-theme.css` (use `--app-*` for every colour; a guard test
 fails on raw colours); `app-frame/` (top bar, `EditorBar`, `railPlugins`, `useAutosave`); `page-first/` (F087);

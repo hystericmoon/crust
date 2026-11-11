@@ -27,7 +27,7 @@ export interface PagesPanelProps {
   /** The header menu; the pages it links to are "In the menu". */
   menu: MenuLink[];
   /** Saves a changed menu. Without it the panel only shows the groups. */
-  onMenuChange?: (menu: MenuLink[]) => void;
+  onMenuChange?: (menu: MenuLink[]) => void | Promise<string | null | void>;
   /** The page being edited, marked in the list. */
   currentPath?: string;
   /** For the page being edited, "Page settings" opens the panel here instead of following a link. */
@@ -125,9 +125,16 @@ export function PagesPanel({
   const canChange = (row: PageRow) => row.path !== "/" && (githubOn || !row.inRepo) && !!onRename && !!onDelete;
   const canSave = (row: PageRow) => githubOn && row.localChanges && !!onSaveDraft;
 
+  // A menu change shows at once; if saving it to the site fails, say so and offer "Try again" for that change.
+  const [menuFailure, setMenuFailure] = useState<{ message: string; menu: MenuLink[] } | null>(null);
+  const saveMenu = async (next: MenuLink[]) => {
+    setMenuFailure(null);
+    const failed = await onMenuChange!(next);
+    if (typeof failed === "string") setMenuFailure({ message: failed, menu: next });
+  };
   const commit = (next: MenuLink[] | null, said: string, grip?: string) => {
     if (!next) return false;
-    onMenuChange!(next);
+    void saveMenu(next);
     setMoved(said);
     if (grip) focusGrip.current = grip;
     return true;
@@ -462,6 +469,16 @@ export function PagesPanel({
       <p className="pg-sr" role="status">
         {moved}
       </p>
+      {menuFailure ? (
+        <div className="pg-load-error">
+          <p className="st-error" role="alert">
+            {menuFailure.message}
+          </p>
+          <button type="button" className="st-button pg-small" onClick={() => void saveMenu(menuFailure.menu)}>
+            Try again
+          </button>
+        </div>
+      ) : null}
       {failure ? (
         <p className="st-error" role="alert">
           {failure}

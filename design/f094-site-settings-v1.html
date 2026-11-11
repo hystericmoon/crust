@@ -1,0 +1,158 @@
+<title>Site Settings Directions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap">
+<style>
+/* Layout: three Site settings sheets side by side (A one long sheet, B side tabs, C summary rows that open in place), a recommendation strip above, a "what changes in the file" note below. Tokens are the app's own (app-theme.css). */
+:root{--app-font:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
+--app-bg:#fff;--app-panel:#fbfafc;--app-raised:#efedf3;--app-fill:rgba(24,24,27,.03);--app-hover:rgba(24,24,27,.06);--app-line:rgba(24,24,27,.1);--app-line-strong:#857f8f;--app-ink:#27272a;--app-mute:#5f5a68;--app-acc:#7c3aed;--app-acc-soft:rgba(124,58,237,.08);--app-pri:#18151d;--app-pri-fg:#fff;--app-ok:#067647;--app-ok-soft:#ecfdf3;--app-warn:#b45309;--app-warn-soft:#fff7ed}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--app-bg:#120f17;--app-panel:#16121c;--app-raised:#2a2533;--app-fill:rgba(255,255,255,.04);--app-hover:rgba(255,255,255,.07);--app-line:rgba(255,255,255,.09);--app-line-strong:#6f6879;--app-ink:#f6f4f9;--app-mute:#a49fae;--app-acc:#a78bfa;--app-acc-soft:rgba(167,139,250,.16);--app-pri:#f6f4f9;--app-pri-fg:#18151d;--app-ok:#4ade80;--app-ok-soft:rgba(74,222,128,.12);--app-warn:#fbbf24;--app-warn-soft:rgba(251,191,36,.12);color-scheme:dark}}
+:root[data-theme="dark"]{--app-bg:#120f17;--app-panel:#16121c;--app-raised:#2a2533;--app-fill:rgba(255,255,255,.04);--app-hover:rgba(255,255,255,.07);--app-line:rgba(255,255,255,.09);--app-line-strong:#6f6879;--app-ink:#f6f4f9;--app-mute:#a49fae;--app-acc:#a78bfa;--app-acc-soft:rgba(167,139,250,.16);--app-pri:#f6f4f9;--app-pri-fg:#18151d;--app-ok:#4ade80;--app-ok-soft:rgba(74,222,128,.12);--app-warn:#fbbf24;--app-warn-soft:rgba(251,191,36,.12);color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--app-bg);color:var(--app-ink);font-family:var(--app-font);padding-block:28px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));line-height:1.5}
+main{max-width:1180px;margin:0 auto;display:grid;gap:26px}
+h1{font-size:1.5rem;margin:0;text-wrap:balance}h2{font-size:1.0625rem;margin:0}p{margin:0}
+.lede{color:var(--app-mute);max-width:65ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(20.5rem,1fr));gap:22px;align-items:start}
+.opt{display:grid;gap:10px;min-width:0}
+.opt.rec .sheet{outline:2px solid var(--app-acc);outline-offset:5px}
+.tag{font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--app-mute)}
+.rec .tag{color:var(--app-acc)}
+.why{font-size:.8125rem;color:var(--app-mute)}
+.sheet{background:var(--app-raised);border:1px solid var(--app-line-strong);border-radius:12px;padding:14px;display:grid;gap:10px;font-size:.8125rem;min-width:0}
+.sh{display:flex;justify-content:space-between;align-items:center;gap:8px}.sh b{font-size:.9375rem}
+.btn{border:1px solid var(--app-line-strong);border-radius:8px;padding:2px 10px;min-height:28px;display:inline-flex;align-items:center;font-size:.75rem;background:transparent;color:var(--app-ink);font-family:inherit}
+.btn.pri{background:var(--app-pri);color:var(--app-pri-fg);border-color:var(--app-pri)}
+.grp{display:grid;gap:8px;padding:10px;border:1px solid var(--app-line);border-radius:10px;background:var(--app-bg)}
+.grp>b{font-size:.6875rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--app-mute)}
+.f{display:grid;gap:3px}.f label{font-size:.75rem;font-weight:500}
+.in{border:1px solid var(--app-line-strong);border-radius:8px;padding:5px 9px;min-height:30px;background:var(--app-bg);display:flex;justify-content:space-between;gap:8px;align-items:center}
+.in.area{min-height:52px;align-items:flex-start}
+.hint{font-size:.6875rem;color:var(--app-mute)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.snip{border:1px dashed var(--app-line-strong);border-radius:8px;padding:8px 10px;display:grid;gap:1px;background:var(--app-panel)}
+.snip small{color:var(--app-mute);font-size:.6875rem}.snip .t{color:var(--app-acc);font-weight:600;font-size:.8125rem}
+.pic{display:flex;gap:8px;align-items:center}.pic i{width:56px;height:30px;border-radius:6px;background:linear-gradient(135deg,var(--app-acc-soft),var(--app-line));border:1px solid var(--app-line)}
+.host{display:flex;gap:10px;align-items:center;justify-content:space-between;border:1px solid var(--app-line);border-radius:8px;padding:7px 9px;background:var(--app-panel)}
+.pill{font-size:.6875rem;border-radius:999px;padding:1px 8px;background:var(--app-ok-soft);color:var(--app-ok);font-weight:600;white-space:nowrap}
+.pill.w{background:var(--app-warn-soft);color:var(--app-warn)}
+.split{display:grid;grid-template-columns:7.2rem 1fr;gap:10px}
+.side{display:grid;gap:2px;align-content:start}.side span{padding:6px 8px;border-radius:8px}.side .on{background:var(--app-acc-soft);color:var(--app-acc);font-weight:600}
+.srow{display:grid;gap:6px;border:1px solid var(--app-line);border-radius:10px;background:var(--app-bg);padding:9px 10px}
+.srow .top{display:flex;justify-content:space-between;gap:8px;align-items:center}.srow .top b{font-size:.8125rem}
+.srow .val{color:var(--app-mute);font-size:.75rem;overflow-wrap:anywhere}
+.srow.open{border-color:var(--app-acc)}
+.bar{display:flex;gap:8px;justify-content:flex-end;align-items:center;border-top:1px solid var(--app-line);padding-top:8px}
+.bar .st{margin-right:auto;color:var(--app-mute);font-size:.75rem}
+.strip{display:grid;gap:8px;border:1px solid var(--app-line);border-left:4px solid var(--app-acc);border-radius:10px;background:var(--app-panel);padding:14px 16px}
+.cmp{width:100%;border-collapse:collapse;font-size:.8125rem;min-width:34rem}
+.cmp th,.cmp td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--app-line);vertical-align:top}
+.cmp th{font-size:.6875rem;letter-spacing:.05em;text-transform:uppercase;color:var(--app-mute)}
+.wrap{overflow-x:auto}
+ul{margin:0;padding-left:1.1rem;display:grid;gap:4px}
+.a11y{display:grid;gap:6px;max-width:75ch;font-size:.8125rem}
+</style>
+
+<main>
+  <div>
+    <h1>Site settings: edit search defaults and where to publish</h1>
+    <p class="lede">F094. Today the sheet only shows these two groups and links elsewhere. Three ways to make them editable in place, drawn with the app's real colours. Only the two groups differ; the address, theme pack and template groups stay as they are.</p>
+  </div>
+
+  <section class="strip" aria-label="Recommendation">
+    <h2>Recommendation: C, summary rows that open in place</h2>
+    <p>Every group shows its current value at a glance (what you'd check before publishing), and only the one you open shows fields. It matches the Fine-tune rows in the Styles panel, keeps the sheet short on a phone, and keeps the publishing password form out of sight until you ask for it. A is the simplest to build but the sheet gets long; B hides settings behind tabs you have to find.</p>
+  </section>
+
+  <div class="grid">
+    <!-- A -->
+    <section class="opt" aria-labelledby="a-t">
+      <div class="tag">Option A</div><h2 id="a-t">One long sheet, fields in place</h2>
+      <div class="sheet" role="img" aria-label="Drawing of option A: the sheet with every group's fields visible, scrolling.">
+        <div class="sh"><b>Site settings</b><span class="btn">Close</span></div>
+        <div class="grp"><b>Search defaults</b>
+          <div class="f"><label>Site name</label><div class="in">Harbour Bakery</div></div>
+          <div class="cols">
+            <div class="f"><label>Language</label><div class="in">English <span>▾</span></div></div>
+            <div class="f"><label>Sharing picture</label><div class="pic"><i></i><span class="btn">Choose</span></div></div>
+          </div>
+          <div class="f"><label>Description when a page has none</label><div class="in area">Sourdough, bought by the loaf or by the week.</div><span class="hint">46 of about 155 characters</span></div>
+          <div class="snip"><small>How it can look in search</small><span class="t">Harbour Bakery</span><small>harbourbakery.example · Sourdough, bought by the loaf…</small></div>
+        </div>
+        <div class="grp"><b>Where to publish</b>
+          <div class="host"><span>Cloudflare Pages<br><span class="hint">harbour-bakery.pages.dev</span></span><span class="pill">Connected</span></div>
+          <div class="f"><label>Change to</label><div class="cols"><span class="btn">Netlify</span><span class="btn">FTP server</span></div></div>
+        </div>
+        <div class="hint" style="text-align:center">Theme pack, Save as template … below (as today)</div>
+        <div class="bar"><span class="st">Unsaved changes</span><span class="btn">Discard</span><span class="btn pri">Save</span></div>
+      </div>
+      <p class="why">Fewest clicks to reach a field, but the sheet scrolls past the fold and the publish group pushes Theme pack and Template far down.</p>
+    </section>
+
+    <!-- B -->
+    <section class="opt" aria-labelledby="b-t">
+      <div class="tag">Option B</div><h2 id="b-t">Side tabs, one group at a time</h2>
+      <div class="sheet" role="img" aria-label="Drawing of option B: the sheet with a tab list on the left and one group on the right.">
+        <div class="sh"><b>Site settings</b><span class="btn">Close</span></div>
+        <div class="split">
+          <div class="side"><span>Address</span><span class="on">Search</span><span>Publishing</span><span>Theme pack</span><span>Template</span></div>
+          <div class="grp"><b>Search defaults</b>
+            <div class="f"><label>Site name</label><div class="in">Harbour Bakery</div></div>
+            <div class="f"><label>Language</label><div class="in">English <span>▾</span></div></div>
+            <div class="f"><label>Description</label><div class="in area">Sourdough, bought by the loaf or by the week.</div></div>
+            <div class="f"><label>Sharing picture</label><div class="pic"><i></i><span class="btn">Choose</span></div></div>
+          </div>
+        </div>
+        <div class="bar"><span class="st">Unsaved changes</span><span class="btn">Discard</span><span class="btn pri">Save</span></div>
+      </div>
+      <p class="why">Each tab is short and tidy. Nothing shows its current value until you open it, so a wrong publish place is easy to miss, and on a phone the tab list takes a third of the width.</p>
+    </section>
+
+    <!-- C -->
+    <section class="opt rec" aria-labelledby="c-t">
+      <div class="tag">Option C · recommended</div><h2 id="c-t">Summary rows that open in place</h2>
+      <div class="sheet" role="img" aria-label="Drawing of option C: each group is a row with its current value and an Edit button; one row is open showing its fields.">
+        <div class="sh"><b>Site settings</b><span class="btn">Close</span></div>
+        <div class="srow"><div class="top"><b>Site address</b><span class="btn">Edit</span></div><span class="val">harbourbakery.example</span></div>
+        <div class="srow open"><div class="top"><b>Search defaults</b><span class="btn">Done</span></div>
+          <div class="f"><label>Site name</label><div class="in">Harbour Bakery</div></div>
+          <div class="cols">
+            <div class="f"><label>Language</label><div class="in">English <span>▾</span></div></div>
+            <div class="f"><label>Sharing picture</label><div class="pic"><i></i><span class="btn">Choose</span></div></div>
+          </div>
+          <div class="f"><label>Description when a page has none</label><div class="in area">Sourdough, bought by the loaf or by the week.</div></div>
+          <div class="snip"><small>How it can look in search</small><span class="t">Harbour Bakery</span><small>harbourbakery.example · Sourdough, bought by the loaf…</small></div>
+        </div>
+        <div class="srow"><div class="top"><b>Where to publish</b><span class="btn">Change</span></div><div class="host"><span class="val">Cloudflare Pages · harbour-bakery.pages.dev</span><span class="pill">Connected</span></div></div>
+        <div class="srow"><div class="top"><b>Theme pack</b><span class="btn">Open</span></div><span class="val">Export or import a .crust file</span></div>
+        <div class="srow"><div class="top"><b>Save as template</b><span class="btn">Open</span></div><span class="val">Use this site as a starting point</span></div>
+        <div class="bar"><span class="st">Unsaved changes</span><span class="btn">Discard</span><span class="btn pri">Save</span></div>
+      </div>
+      <p class="why">Current address, search and publish place are all readable without opening anything. "Where to publish" shows a plain "Needs attention" pill (never colour alone) when the connection broke, so you see it before pressing Publish.</p>
+    </section>
+  </div>
+
+  <section aria-labelledby="chg" style="display:grid;gap:10px">
+    <h2 id="chg">What each field does</h2>
+    <div class="wrap"><table class="cmp">
+      <thead><tr><th scope="col">Field</th><th scope="col">What it changes</th><th scope="col">New in the site file?</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Site name, Language</th><td>Used in search results and shared links when a page has no title of its own.</td><td>No, already saved.</td></tr>
+        <tr><th scope="row">Description when a page has none</th><td>Fallback for pages whose own description is empty. The preview line shows the first ~155 characters.</td><td>Yes: one optional text field. Older sites keep working without it (a small migration and a DECISIONS entry).</td></tr>
+        <tr><th scope="row">Sharing picture</th><td>Fallback picture for links shared on social apps. Alt text is required, as everywhere.</td><td>Yes: one optional picture field with alt text.</td></tr>
+        <tr><th scope="row">Where to publish</th><td>Shows the connected host and opens the same connect or reconnect steps as the home screen's Publish panel. Passwords and tokens are typed there, kept on this computer and never shown again.</td><td>No.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="a11y" aria-labelledby="acc">
+    <h2 id="acc">Accessibility, whichever you pick</h2>
+    <ul>
+      <li>Every field has a visible label tied to it, errors say what to fix in words next to the field and are announced, and "Needs attention" is a word, not only a colour.</li>
+      <li>In C, each row's button says what it opens ("Edit Search defaults") and reports expanded or collapsed. Opening moves focus to the first field and Done returns it to the row's button.</li>
+      <li>Every control is at least 24px high (WCAG 2.2 target size) and the sheet stays a real dialog: Escape closes it, focus is trapped and returns to the Site settings button.</li>
+      <li>The description counter is text ("46 of about 155 characters"), not a colour change, and the picture needs alt text before Save works.</li>
+    </ul>
+  </section>
+
+  <p class="lede"><b>Decision for you:</b> C, A or B? And are you happy to add the two optional site-file fields (description, sharing picture)? Without them, Search defaults would only edit the site name and language.</p>
+</main>

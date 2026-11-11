@@ -1,6 +1,6 @@
 import type { ComponentData, Data } from "@puckeditor/core";
 import type { SiteFooter, SiteHeader } from "./chrome";
-import type { PageSeo } from "./seo";
+import type { PageSeo, SiteSeo } from "./seo";
 import type { SiteTokens } from "./tokens";
 
 /** content/site.json */
@@ -15,6 +15,8 @@ export interface Site {
   footer?: Partial<SiteFooter>;
   /** F065 (optional): the template this site started from, and its release then. */
   template?: { id: string; version: number };
+  /** F094 (optional): site-wide search and sharing defaults, used by pages that have none of their own. */
+  seo?: SiteSeo;
 }
 
 /** content/pages/<slug>.json */

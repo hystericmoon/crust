@@ -5,10 +5,10 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 
 ## Proposals
 
-- **Pages panel: say so when a menu change fails to save to GitHub (from F093).** F091 saves menu changes
-  fire-and-forget, so a failed save shows nothing. Suggest a short message with "Try again", like page saves have. Size S.
-- **Site settings sheet: make Search defaults and Where to publish editable in place (from F093).** F092 only shows and
-  links them; the owner would change the site name, language and publish place right in the sheet. Size M.
+- ~~Pages panel: say so when a menu change fails to save~~ **Done 2026-11-10 (owner: "Start with the failed menu save").**
+  `saveMenu` (App.tsx) now returns a message when the save to the site fails; the panel shows it with "Try again"
+  (same change, saved again). The change stays in this browser either way. Small fix on F091, no new feature item.
+- ~~Site settings sheet: make Search defaults and Where to publish editable in place~~ **Added as F094 by the owner on 2026-11-10 ("add it").**
 
 - **App UX redesign: approved 2026-11-06** as Milestone 9 (F085–F093, docs/milestone-9.md); see the entry below.
 
@@ -3742,6 +3742,25 @@ a lawyer reads it (BLOCKED.md).
 - The post editor keeps the plain Styles and Site links (it has no site-style context).
 - Contrast checks keep their own "Contrast checks" h2 inside Colours, and the inner groups keep their heading levels;
   F093 tidies heading levels in the sweep.
+
+## 2026-11-11 — F094 Edit site details in the Site settings sheet (Claude, reversible; owner picked "your recommendations")
+
+Snapshot https://claude.ai/artifact/TGGKaS6cbZqCbf4XBioDDq (`design/f094-site-settings-v1.html`); the owner took C (summary rows
+that open in place) and the two new optional fields. Code in `apps/admin/src/styles-panel/SiteSettingsSheet.tsx`.
+
+- **Contract:** `site.json` may carry `seo: { description?, image?, imageAlt? }` (docs/spec.md, F094). Optional, so older files
+  read and render exactly as before: no migration needed. `checkSiteSeo` (server `checkSite`) wants alt text with a picture
+  and a description of at most 300 characters; `cleanSiteSeo` writes only what is set and removes `seo` when empty.
+- **Render:** a page whose description is empty gets the site's; a page with no sharing picture gets the site's picture with
+  the site's alt (never another picture's alt). A page's own values always win.
+- **Name and language** are now edited in the sheet (`siteToSave` writes them; kept in this browser first like the address,
+  key `crust:draft:details`). One Save writes tokens, header, footer, address and details together, as before.
+- **Where to publish:** in the Mac app the row embeds the existing `DesktopPublishPanel` (connect, change, export). On the web
+  there is one place (Cloudflare Pages through the site's GitHub setup), so the row says so and keeps the "Open Publish" link.
+- **Rows:** `aria-expanded` and `aria-controls` on each Edit button, focus to the first field on open and back to the button on
+  Done. Languages are a short list (12) plus whatever code the site already has.
+- Not done: the `#/settings` screen does not edit these (the sheet is where they live); the description counter is advice
+  (about 160), not a block.
 
 ## 2026-11-10 — F093 Words and accessibility sweep (Claude, reversible)
 

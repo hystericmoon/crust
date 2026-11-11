@@ -7,17 +7,18 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
-- **2026-11-10: F093 Words and accessibility sweep (built, waiting for your review). Milestone 9 is complete:
-  F085 to F093 are all built and waiting for your review.**
-  Nothing on screen says "GitHub" any more: a change is **saved** (kept in your site) or **kept in this browser**
-  (a draft), and **publish** makes it live. About 75 messages changed. The builder is easier for keyboard and screen
-  reader users: it has a main area and a heading, its side panels have names, dragging a block is read out in plain
-  words ("Picked up Hero ... Dropped Hero in the page"), and a focused button never ends up under a floating bar.
-  The accessibility check now also looks inside the page preview, the Styles panel and the Site settings sheet.
-  The words table is in DECISIONS "F093". **To try:** open the preview
-  https://ccr-d50f7e80-weuq18.crust-admin.pages.dev, edit a heading and read the messages (Save, Publish, Pages
-  panel); Tab through the builder, and with a screen reader (VoiceOver: Cmd+F5) pick up a block with Space.
-  Next: your review of F085 to F093 plus F075 and F078, then merge PR #81. No unbuilt features are left.
+- **2026-11-11: F094 Edit site details in the Site settings sheet (built, waiting for your review). Also done: a menu
+  change that fails to save now says so.**
+  In the editor, open **Site settings**. Each group is now a row that shows what it is set to; press **Edit** to change it
+  in place (Done closes it). **Search defaults** lets you change the site name, language, a default description and a
+  default sharing picture (with a description of the picture). Pages with no description or sharing picture of their own
+  use these when you publish; pages that set their own keep them. **Where to publish** shows where your site goes; in the
+  Mac app you connect or change the host right there, on the web it links to Publish. In the Pages panel, if moving a page
+  in or out of the menu can't be saved, you now see a message with **Try again**.
+  **To try:** open the preview https://ccr-d50f7e80-weuq18.crust-admin.pages.dev (it can't save), Site settings, Edit on
+  Search defaults, type a description and watch the search preview; leave the picture without its description and see the
+  message; Tab through it and press Done (focus returns to the Edit button).
+  Next: your review of F094. Design: https://claude.ai/artifact/TGGKaS6cbZqCbf4XBioDDq (direction C). No unbuilt features are left.
 
 ## Waiting on the owner
 

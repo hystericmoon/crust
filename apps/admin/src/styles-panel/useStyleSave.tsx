@@ -1,6 +1,6 @@
 /** F092: save and discard for the Styles panel and the Site settings sheet, with the same checks as the old Site settings screen. */
 import { useCallback, useState } from "react";
-import { validateChrome, validateTokens } from "@crust/blocks";
+import { checkSiteSeo, validateChrome, validateTokens } from "@crust/blocks";
 import { useSiteStyle } from "../sections/site-style";
 import { useStylesPanel } from "./context";
 
@@ -23,7 +23,7 @@ export function SaveBar({ invalid }: { invalid: ReadonlySet<string> }) {
   const panel = useStylesPanel();
   const [status, setStatus] = useState("");
   const [saving, setSaving] = useState(false);
-  const dirty = style.dirty || panel.chromeDirty || panel.addressDirty;
+  const dirty = style.dirty || panel.chromeDirty || panel.addressDirty || panel.detailsDirty;
 
   const save = async () => {
     if (saving) return;
@@ -32,6 +32,11 @@ export function SaveBar({ invalid }: { invalid: ReadonlySet<string> }) {
       return;
     }
     const problems = [...validateTokens(style.tokens), ...validateChrome(panel.chrome)];
+    const seoProblems = checkSiteSeo(panel.details.seo);
+    if (seoProblems.length > 0) {
+      setStatus(`Not saved. ${seoProblems.join(" ")}`);
+      return;
+    }
     if (problems.length > 0) {
       setStatus(`Not saved. ${problems.map((p) => p.message).join(" ")}`);
       return;
