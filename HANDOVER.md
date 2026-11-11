@@ -19,7 +19,7 @@ Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-11, F094 built; Milestone 9 merged (PR #81); branch `ccr-d50f7e80-weuq18`, PR #82 open.
+Last updated: 2026-11-11, F094 passed and merged (PR #82); branch `ccr-d50f7e80-weuq18` restarted from main.
 
 ## Where things stand
 
@@ -54,15 +54,11 @@ Last updated: 2026-11-11, F094 built; Milestone 9 merged (PR #81); branch `ccr-d
 
 ## Next
 
-**No unbuilt features are left** (`npm run next` says so). 2026-11-11: F094 (edit search defaults and where to publish in
-the Site settings sheet, direction C) is built and waits for the owner's review, with the failed-menu-save fix. PR #82 holds
-both and is waiting for him to merge (CI green before F094; check it again). Use Sonnet (his rule).
-
-The next step is the owner's:
-1. **Review F094** (and nothing else is waiting). Record a Pass as `reviewed: true` with his words as `review_note`; list a
-   "needs fixing" for him and ask before reworking.
-2. **Merge PR #82** when CI is green. Then restart the branch from main; one PR per feature from then on.
-3. Scope is his: any new idea goes to DECISIONS.md "Proposals".
+**No unbuilt features are left** (`npm run next` says so) and nothing waits for the owner's review. 2026-11-11: F094 passed
+and **PR #82 is merged** (main has everything). The branch was restarted from main; one PR per feature from now on.
+**Free first (owner, 2026-11-11):** no budget for a domain, app signing or payments, so those rows are parked in BLOCKED.md
+(DECISIONS "Free first"). Open for him: contact form email (F037) and the app update key (F061), both free, and trying
+F058, F059 and F061 once for real. Scope is the owner's: new ideas go to DECISIONS.md "Proposals", never into features.json. Use Sonnet (his rule).
 
 Where things are (Milestone 9): tokens `apps/admin/src/app-theme/app-theme.css` (use `--app-*` for every colour; a guard test
 fails on raw colours); `app-frame/` (top bar, `EditorBar`, `railPlugins`, `useAutosave`); `page-first/` (F087);
