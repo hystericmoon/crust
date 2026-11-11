@@ -118,6 +118,8 @@ describe("updates site: the Desktop installers workflow", () => {
     expect(build.env?.TAURI_SIGNING_PRIVATE_KEY_PASSWORD).toBe("${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}");
     expect(build.env?.CRUST_UPDATE_PUBKEY).toBe("${{ vars.CRUST_UPDATE_PUBKEY }}");
     expect(build.run).toContain("createUpdaterArtifacts");
+    // Tauri's own config needs the public half too (its repo value is empty), or the build stops at "Missing comment in public key".
+    expect(build.run).toContain("plugins:{updater:{pubkey:$key}}");
     // A key without its public half (or the other way round) stops the build.
     expect(find(buildSteps, "Check the update key").run).toContain("exit 1");
   });

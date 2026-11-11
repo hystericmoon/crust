@@ -17,10 +17,10 @@ update key stored by the owner (run #2 of Make update key, not yet proven by a s
 Release **0.1.1** is prepared and is in the open PR (with notes): version bump in `crates/crust-desktop/tauri.conf.json`,
 `crates/crust-desktop/Cargo.toml`, `Cargo.lock`, a "what's new" entry in `crates/crust-desktop/whats-new.json`, and
 `scripts/updates-site.test.ts` now reads the app's version instead of assuming 0.1.0.
-Status 2026-11-11: PR #87 merged; the first Desktop installers run (#3) FAILED at "Build the installer" on both platforms:
-`failed to decode pubkey: Missing comment in public key`, so the variable CRUST_UPDATE_PUBKEY holds an incomplete value (the app itself built).
-The release now checks the value in its first step and says so. The owner must re-enter the variable (whole line of public-key.txt from
-run #2's artifact, or the run summary), then rerun step 2. Nothing is installed or published yet.
+Status 2026-11-11: PR #87 merged; the first Desktop installers runs (#3 on main, #4 Mac-only test) FAILED at "Build the installer":
+`failed to decode pubkey: Missing comment in public key`. The owner's CRUST_UPDATE_PUBKEY is fine (the release check decodes it). Real cause:
+`plugins.updater.pubkey` in tauri.conf.json is empty and the workflow never passed the key into Tauri's config; the fix puts it into
+`--config` (jq). Nothing is installed or published yet. After the fix merges, run step 2 again.
 Next, in order:
 1. (done) PR #87 merged.
 2. Run Actions -> **Desktop installers**: platforms `both`, downloads `true` (tool: `actions_run_trigger`, workflow `desktop-release.yml`).
