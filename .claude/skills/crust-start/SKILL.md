@@ -33,8 +33,11 @@ content JSON, use the `crust-content-format` skill first.
 
 - "Keep on continuing, don't stop": keep building the current milestone
   without waiting for him.
-- Don't merge feature PRs to main, and don't press Publish on the live
-  site, unless he says so in his own words.
+- Merging and publishing are automatic since 2026-11-11 (owner: "automate
+  this for me"): `.github/workflows/automerge.yml` merges a green `ccr-*`
+  PR and starts Publish site when the live site's source changed. Don't
+  merge or publish by hand; to stop a PR from merging, add the `hold`
+  label. Never run wrangler deploys locally (still denied).
 - Scope is his: never add items to features.json. Proposals go in
   DECISIONS.md → Proposals.
 - Design snapshots (Artifacts with 2–3 directions) before visual

@@ -36,8 +36,8 @@ records it). One session works at a time, cleared between features with
 
 - **Decide alone** on reversible, low-impact choices; log them in `DECISIONS.md`.
 - **Stop and ask** only for: destructive or irreversible actions, anything
-  that costs money or changes a plan, credentials, publishing to production,
-  scope changes.
+  that costs money or changes a plan, credentials, scope changes. Merge to main and
+  Publish are automatic (owner, 2026-11-11): see `automerge.yml`.
 - **Human-only blockers** (logins, 2FA, captcha, creating tokens): add to
   `BLOCKED.md`, move to the next unblocked feature.
 - **Scope is the owner's.** You may propose features in `DECISIONS.md` under
