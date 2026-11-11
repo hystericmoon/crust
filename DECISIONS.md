@@ -293,6 +293,7 @@ Features Claude suggests. They are not work until the owner adds them to
 - Checked before pushing: render with the Worker address set (form present, address wired), crust-publish checks, accessibility check on `/contact/` (no serious issues, desktop and phone).
 - This PR touches `content/`, so the automatic merge also starts Publish site (first real test of that path).
 - CI caught a test that assumed the content folder holds only the homepage (`template-check.test.ts` uses `content/` as its sample). The three expectations now read the page list from the sample, so adding a page no longer breaks them.
+- The next CI run failed once in `hosts.test.tsx` (focus back on Publish after connecting a host). Cause: the app returns focus on a deferred call (`focusAfterDialog`, `setTimeout 0`) and the test checked focus without waiting, a race in the test only. The test now waits (`await settle()`) first. App code unchanged. I could not make it fail locally (0 of 9 runs), so the fix rests on the reading of the code, not on a reproduction.
 
 ## 2026-11-11 — Free first (owner)
 

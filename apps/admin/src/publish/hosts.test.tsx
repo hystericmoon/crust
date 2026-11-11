@@ -546,6 +546,8 @@ describe("hosts: connecting your own web host", () => {
     );
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(screen.getByText("SFTP")).toBeTruthy();
+    // Focus returns to Publish on a deferred call (focusAfterDialog); wait for it instead of racing it.
+    await settle();
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "Publish" }));
   });
 
