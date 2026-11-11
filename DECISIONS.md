@@ -3878,3 +3878,12 @@ No design snapshot (words and accessibility only); the glossary below is the rec
 - Left out on purpose: "Updates itself" (not proven until 0.1.2 updates a 0.1.1; say it once it does). The fourth point says posts, search
   and a contact form are built in. Test: `scripts/home-site.test.ts`; local run: `npm run publish:home`.
 - Not automatic: like the store, it publishes only when started by hand (Claude starts it after the PR merges).
+
+## 2026-11-11 — Linux installers and release 0.1.2 (owner: "we need another one for Linux, go make it")
+
+- **Desktop installers** now builds Linux too (Ubuntu 22.04 runner, so the AppImage runs on newer Linux as well): an AppImage
+  (updates itself, signed like the others) and a `.deb` (download only). Normal minutes (1x), not the 2x/10x of Windows/Mac.
+- The platforms choice is now `all` (default: Mac, Windows, Linux), `both` (Mac and Windows only, as before), `linux`, `mac`, `windows`.
+  Putting on the downloads site needs `all`, so every computer finds its update.
+- Linux is x86-64 only for now; ARM Linux not built (reversible, say if wanted). The updates feed gets `linux-x86_64`.
+- Version bumped to **0.1.2** (the planned release) with a what's-new entry. Never run end to end yet: the first run is the test.

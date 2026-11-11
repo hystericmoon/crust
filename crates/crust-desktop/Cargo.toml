@@ -1,6 +1,6 @@
 [package]
 name = "crust-desktop"
-version = "0.1.1"
+version = "0.1.2"
 description = "Crust for Mac and Windows: the builder in a native window, sites kept on the computer."
 edition.workspace = true
 license.workspace = true
