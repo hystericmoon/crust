@@ -4,6 +4,11 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Crust has a home page, and the app's first signed release is out (2026-11-11).** https://crust-home.pages.dev says what
+  Crust is and links to the templates, help and the download page. Version 0.1.1 of the Mac and Windows app is on the
+  download page; it is the first one that can update itself. In the editor the site menu (top left) now opens over the
+  left bar instead of under it, and a template's preview fills the screen down to the bottom edge.
+
 - **Contact page and a working contact form (2026-11-11).** Your site has a Contact page at /contact with a form that
   emails you each message (spam check on, thank-you message after sending). It shows in the menu next to Home. Merging and
   publishing now happen by themselves after a green check, so a change to a page goes live without pressing Publish.
