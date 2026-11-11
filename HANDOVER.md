@@ -10,32 +10,27 @@ skill (`.claude/skills/crust-start/SKILL.md`). While building:
 `crust-lean`. Finishing: `crust-finish` (it holds the "Ready to clear"
 message the owner asked for every time). Content JSON: `crust-content-format`.
 
-## Checkpoint (2026-11-11): trying F058, F059, F061 for real
+## Checkpoint (2026-11-11, saved at the owner's request): real-world tries and the home page
 
-Owner said "let's try". Done: automatic merge and publish are on (`automerge.yml`, PR #84); contact form works (F037 closed);
-update key stored by the owner (run #2 of Make update key, not yet proven by a signed release).
-Release **0.1.1** is prepared and is in the open PR (with notes): version bump in `crates/crust-desktop/tauri.conf.json`,
-`crates/crust-desktop/Cargo.toml`, `Cargo.lock`, a "what's new" entry in `crates/crust-desktop/whats-new.json`, and
-`scripts/updates-site.test.ts` now reads the app's version instead of assuming 0.1.0.
-Status 2026-11-11: run #5 (main) built and signed both installers: the update key and the Tauri config fix (PR #90) work.
-The last step failed: Cloudflare Pages takes no file over 25 MiB (the Mac update file is 70.9 MiB). The fix (this PR) puts the
-installers on a GitHub release `v0.1.1` and keeps only the feed and download page on Pages (DECISIONS 2026-11-11). Nothing is installed
-or published yet. After it merges, run step 2 again (the Mac and Windows builds repeat, about 12 minutes).
-Release 0.1.1 is LIVE (run #6): downloads page https://crust-downloads.pages.dev, files on GitHub release v0.1.1. Waiting for the owner to install it.
-Home page (owner chose B on 2026-11-11): `home/content`, workflow Publish home (by hand), DECISIONS "Crust home page". After its PR merges, run
-Actions -> Publish home (`publish-home.yml`, tool `actions_run_trigger`), then tell the owner the address.
+Done today (all on main, nothing open): automatic merge and publish (`automerge.yml`); contact form (F037 closed); site menu in the editor no
+longer slides under the rail (PR #88); template preview now fills the screen (PR #90); release fixed in three steps (early key check,
+the key passed into Tauri's config, installers on a GitHub release because Pages refuses files over 25 MiB; DECISIONS 2026-11-11).
+- **Release 0.1.1 is live**: https://crust-downloads.pages.dev (feed there, files on GitHub release v0.1.1). **The owner installed it on his
+  Mac and it opens.** He found "a couple of bugs" and will send them later (he could not share when he said it): ask him first thing.
+- **Home page is live** (owner chose option B): https://crust-home.pages.dev, built with Crust (`home/content`), published by hand with
+  Actions -> Publish home (`publish-home.yml`). He has not yet said what he thinks of it. It leaves out "Updates itself" until 0.1.2 proves it.
+- Option pages (Claude artifacts, private): options https://claude.ai/artifact/GbFfvBCb95Qc2ZzZ2cuf7M, draft https://claude.ai/artifact/CEvDDzYVRAjxUCEUcPEtrE.
+
 Next, in order:
-1. (done) PR #87 merged.
-2. Run Actions -> **Desktop installers**: platforms `both`, downloads `true` (tool: `actions_run_trigger`, workflow `desktop-release.yml`).
-   Its first step stops with a clear message if the update key halves are missing or wrong: then redo the key (docs/setup-updates.md).
-   The first run makes https://crust-downloads.pages.dev; if it stops at "Check the update address", set `CRUST_UPDATE_FEED`.
-3. Owner installs 0.1.1 from the downloads page (Mac: "Open Anyway" once). His current 0.1.0 has no update key, so it can't update.
-4. Prepare **0.1.2** (same three version files, new whats-new entry), PR, merge, release again. Success = his 0.1.1 shows "update ready".
-5. F058: the owner tries Publish to Cloudflare Pages from the app with a TEST project `crust-app-test` (never `crust-site`, the live site) and a wrong token.
+1. Ask the owner for the bugs he saw (app, home page or downloads page). Fix what he reports, one PR per fix (automatic merge).
+2. Prepare **0.1.2** (versions in `crates/crust-desktop/tauri.conf.json`, `Cargo.toml`, `Cargo.lock`; a "what's new" entry in `whats-new.json`;
+   `scripts/updates-site.test.ts` reads the app's version), PR, merge, then Actions -> **Desktop installers** (`both`, downloads `true`, ~7 min).
+   Success = his 0.1.1 shows "update ready". Then add the "Updates itself" point back to the home page and run Publish home.
+3. F058: the owner tries Publish to Cloudflare Pages from the app with a TEST project `crust-app-test` (never `crust-site`, the live site) and a wrong token.
    F059: waiting to hear if he has an FTP/SFTP host; if not, note "no host to test with" and skip. Do not buy anything.
 Record the results in DECISIONS.md (F058/F059/F061) and remove "never tried" from the notes.
 Notes: the pre-push hook (`scripts/hooks/pre-push.sh`) did not fire for pushes in the session that created it; check it fires now.
-The Cloudflare token `crust-github-preview` expires 2027-01-26.
+The Cloudflare token `crust-github-preview` expires 2027-01-26. A session cannot start new URL watches after 10 (artifact watch limit); not needed.
 
 ## Model plan (owner, 2026-11-03)
 
@@ -46,7 +41,7 @@ Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-11, F094 passed and merged (PR #82); branch `ccr-d50f7e80-weuq18` restarted from main.
+Last updated: 2026-11-11 (saved at the owner's request, after PR #92); branch `ccr-d50f7e80-weuq18`, everything merged to main.
 
 ## Where things stand
 

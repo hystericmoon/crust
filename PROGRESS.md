@@ -7,6 +7,13 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
+- **2026-11-11 (later): the app's first real release, and a home page for Crust.**
+  **Release 0.1.1 is live** at https://crust-downloads.pages.dev (Mac and Windows). The owner installed it on his Mac and it opens; he has
+  "a couple of bugs" to send. Next: release 0.1.2 so his 0.1.1 shows "update ready" (that proves automatic updates, F061).
+  **The Crust home page is live** at https://crust-home.pages.dev (built with Crust; links to the store and the downloads page).
+  Also fixed: the editor's site menu opened under the left bar; the template preview now fills the screen.
+  **To try:** open the home page on a Mac and a phone; click Download, a template card, Help and Licence.
+
 - **2026-11-11: F094 Edit site details in the Site settings sheet (passed and merged). Also done: a menu
   change that fails to save now says so.**
   In the editor, open **Site settings**. Each group is now a row that shows what it is set to; press **Edit** to change it
