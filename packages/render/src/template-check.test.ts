@@ -80,8 +80,10 @@ describe("template check: unpacking (F047)", () => {
 
   it("writes a content folder the renderer can read: site, pages, linked sections, blog, photos", () => {
     const files = unpackTemplate(fuller());
+    // The sample is the real content folder, so it may hold more pages than the homepage.
+    const pageFiles = fuller().pages.map((p) => `pages/${pageFileName(p.path)}`);
     expect([...files.keys()].sort()).toEqual(
-      ["blog.json", "media.json", "media/harbour.png", "pages/index.json", "pages/services__design.json", "posts/opening-day.json", "sections/contact-strip.json", "site.json"].sort(),
+      ["blog.json", "media.json", "media/harbour.png", ...pageFiles, "posts/opening-day.json", "sections/contact-strip.json", "site.json"].sort(),
     );
     const site = JSON.parse(files.get("site.json") as string);
     expect(site.baseUrl).toBe("https://example.pages.dev");
@@ -101,7 +103,7 @@ describe("template check: unpacking (F047)", () => {
   it("packs the sample site as a template Crust can open", () => {
     const read = readTemplate(JSON.stringify(sample), config.components);
     expect(read.problems).toEqual([]);
-    expect(read.template?.pages.map((p) => p.path)).toEqual(["/"]);
+    expect(read.template?.pages.map((p) => p.path)).toEqual(sample.pages.map((p) => p.path));
   });
 });
 
@@ -214,7 +216,7 @@ describe("template check: sample content (F047)", () => {
     expect(g.items[0]!.status).toBe("fail");
     expect(g.items[0]!.detail?.[0]).toBe("Header, footer or blog settings: filler words or a stand-in photo");
     const titled = { ...sample, pages: [{ ...sample.pages[0]!, title: "TODO" }] };
-    expect(placeholderGroup(titled).items[0]!.detail?.[0]).toBe("Page /: title or description");
+    expect(placeholderGroup(titled).items[0]!.detail?.[0]).toBe(`Page ${sample.pages[0]!.path}: title or description`);
   });
 });
 

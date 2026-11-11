@@ -286,6 +286,15 @@ Features Claude suggests. They are not work until the owner adds them to
   push if it fails. Markdown-only pushes skip it. Chosen over a Stop hook, which would re-run minutes of cargo checks
   after every reply. Off switch: remove the `hooks` block from `.claude/settings.json`.
 
+## 2026-11-11 — Contact page (owner: "create the contact page for me"; Claude, reversible)
+
+- New page `content/pages/contact.json` at `/contact`: one narrow Section with an h1 "Get in touch", a short intro and the Contact form block (default fields, wording tidied). No new block, no shape change.
+- Not done, his call: the site has no header or menu (`site.json` has no `header`), so nothing links to `/contact` yet. Offered: a header with a Contact link, or a link from the homepage.
+- Checked before pushing: render with the Worker address set (form present, address wired), crust-publish checks, accessibility check on `/contact/` (no serious issues, desktop and phone).
+- This PR touches `content/`, so the automatic merge also starts Publish site (first real test of that path).
+- CI caught a test that assumed the content folder holds only the homepage (`template-check.test.ts` uses `content/` as its sample). The three expectations now read the page list from the sample, so adding a page no longer breaks them.
+- The next CI run failed once in `hosts.test.tsx` (focus back on Publish after connecting a host). Cause: the app returns focus on a deferred call (`focusAfterDialog`, `setTimeout 0`) and the test checked focus without waiting, a race in the test only. The test now waits (`await settle()`) first. App code unchanged. I could not make it fail locally (0 of 9 runs), so the fix rests on the reading of the code, not on a reproduction.
+
 ## 2026-11-11 — Free first (owner)
 
 The owner: "let's make everything free first. No budget for domain and app store. Let's finish everything else."
