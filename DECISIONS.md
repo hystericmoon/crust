@@ -3856,3 +3856,10 @@ No design snapshot (words and accessibility only); the glossary below is the rec
   Header and menu open) and the Site settings sheet; the Heading screen now waits for the typing bar and scans that state.
 - *Heading levels in reused groups.* The Site settings groups say their level through `settings/heading.tsx`; inside the
   sheet they step down one (Site address h3, its parts h4; Theme pack h3, h4, h5), so no level repeats or skips.
+
+## 2026-11-11 F061: installers live on a GitHub release, not on Cloudflare Pages
+
+- Release run #5 built and signed both installers (the update key is fine), then "Upload to Cloudflare Pages" stopped: Pages takes no file over 25 MiB and `Crust.app.tar.gz` is 70.9 MiB (the installers are about as big).
+- Decision (Claude, free and reversible): the installers and update files go on a GitHub release `v<version>` (the repository is public, so free; no 25 MiB limit). The small things stay on Pages (`updates/latest.json`, the download page), so the address the app checks does not change. `latest.json` and the page link to the release files.
+- The downloads job now has `contents: write` for creating the release, and re-running a version uploads over the same release (`--clobber`).
+- If the repository goes private again, release files need a login to download: the app could not update from them. Then move the files to a public host (DECISIONS "Repository public for now").

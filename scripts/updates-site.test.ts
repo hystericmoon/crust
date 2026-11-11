@@ -3,12 +3,12 @@
  * and the "Desktop installers" workflow that builds and publishes it.
  */
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { parse } from "yaml";
-import { builtFiles, DOWNLOADS_URL, releaseFor, updatesSite, type BuiltFile } from "./updates-site";
+import { builtFiles, filesUrl, releaseFor, updatesSite, type BuiltFile } from "./updates-site";
 
 const RELEASE = { version: "0.2.0", date: "2026-11-02", notes: ["Faster publishing.", "Photos <b>fixed</b> & tidier."] };
 const MAC: BuiltFile = { path: "/b/macos/Crust.app.tar.gz", name: "Crust.app.tar.gz", signature: "c2lnLW1hYw==" };
@@ -40,17 +40,19 @@ describe("updates site: the feed", () => {
       notes: "- Faster publishing.\n- Photos <b>fixed</b> & tidier.",
       pub_date: "2026-11-02T00:00:00Z",
       platforms: {
-        "darwin-aarch64": { url: `${DOWNLOADS_URL}/0.2.0/Crust.app.tar.gz`, signature: "c2lnLW1hYw==" },
-        "darwin-x86_64": { url: `${DOWNLOADS_URL}/0.2.0/Crust.app.tar.gz`, signature: "c2lnLW1hYw==" },
-        "windows-x86_64": { url: `${DOWNLOADS_URL}/0.2.0/Crust_0.2.0_x64-setup.exe`, signature: "c2lnLXdpbg==" },
+        "darwin-aarch64": { url: `${filesUrl("0.2.0")}/Crust.app.tar.gz`, signature: "c2lnLW1hYw==" },
+        "darwin-x86_64": { url: `${filesUrl("0.2.0")}/Crust.app.tar.gz`, signature: "c2lnLW1hYw==" },
+        "windows-x86_64": { url: `${filesUrl("0.2.0")}/Crust_0.2.0_x64-setup.exe`, signature: "c2lnLXdpbg==" },
       },
     });
-    expect(site.copies.map((c) => c.to).sort()).toEqual(["0.2.0/Crust.app.tar.gz", "0.2.0/Crust_0.2.0_universal.dmg", "0.2.0/Crust_0.2.0_x64-setup.exe"]);
+    expect(site.copies.map((c) => c.to).sort()).toEqual(["Crust.app.tar.gz", "Crust_0.2.0_universal.dmg", "Crust_0.2.0_x64-setup.exe"]);
     expect(site.downloads.map((d) => d.label)).toEqual(["Mac (Apple chip or Intel, macOS 11 or later)", "Windows (10 and 11)"]);
+    // Big files live on the GitHub release: Cloudflare Pages takes nothing over 25 MB.
+    expect(filesUrl("0.2.0")).toBe("https://github.com/hystericmoon/crust/releases/download/v0.2.0");
   });
 
   it("still offers installers built without the update key, just not as updates", () => {
-    const site = updatesSite([DMG, { ...WIN, signature: undefined }], RELEASE, "https://crust-downloads-x1.pages.dev/");
+    const site = updatesSite([DMG, { ...WIN, signature: undefined }], RELEASE, "https://example.test/files/");
     expect(site.latest.platforms).toEqual({});
     expect(site.downloads).toHaveLength(2);
     expect(() => updatesSite([{ ...MAC, signature: undefined }, DMG], RELEASE)).toThrow("no signature");
@@ -61,7 +63,7 @@ describe("updates site: the feed", () => {
     const { index } = updatesSite([MAC, DMG, WIN], RELEASE);
     expect(index).toContain('<html lang="en">');
     expect(index).toContain("<title>Download Crust</title>");
-    expect(index).toContain('href="0.2.0/Crust_0.2.0_universal.dmg"');
+    expect(index).toContain(`href="${filesUrl("0.2.0")}/Crust_0.2.0_universal.dmg"`);
     expect(index).toContain("Photos &lt;b&gt;fixed&lt;/b&gt; &amp; tidier.");
     expect(index).not.toContain("<b>fixed</b>");
     // One h1, then h2: headings in order.
@@ -87,8 +89,9 @@ describe("updates site: the feed", () => {
       const latest = JSON.parse(readFileSync(join(out, "updates/latest.json"), "utf8"));
       // The tool reads the app's own version, so the test does too (it changes with every release).
       const { version } = JSON.parse(readFileSync("crates/crust-desktop/tauri.conf.json", "utf8")) as { version: string };
-      expect(latest.platforms["darwin-aarch64"].url).toBe(`${DOWNLOADS_URL}/${version}/Crust.app.tar.gz`);
-      expect(readFileSync(join(out, `${version}/Crust.app.tar.gz`), "utf8")).toBe("mac update");
+      expect(latest.platforms["darwin-aarch64"].url).toBe(`${filesUrl(version)}/Crust.app.tar.gz`);
+      // The installers are not copied into the Pages folder (too big for it).
+      expect(existsSync(join(out, version))).toBe(false);
       expect(readFileSync(join(out, "_headers"), "utf8")).toContain("Cache-Control: no-cache");
       expect(readFileSync(join(out, "index.html"), "utf8")).toContain("Download Crust");
     });

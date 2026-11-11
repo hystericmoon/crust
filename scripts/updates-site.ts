@@ -5,19 +5,24 @@
  *
  *   updates/latest.json   what the app asks: newest version, what's new,
  *                         and for each kind of computer the signed update
- *   <version>/<file>      the installers and update files
  *   index.html            a download page with what's new
+ *
+ * The installers and update files are too big for Cloudflare Pages (25 MB
+ * a file), so they go on a GitHub release (free, the repository is public)
+ * and the feed and the download page point there.
  *
  *   npx tsx scripts/updates-site.ts <built files folder> <out folder>
  *
  * The version comes from crates/crust-desktop/tauri.conf.json and what's new
  * from crates/crust-desktop/whats-new.json, which must have an entry for it.
  */
-import { copyFile, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { basename, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const DOWNLOADS_URL = "https://crust-downloads.pages.dev";
+/** Where the installers live for a version: that version's GitHub release. */
+export const filesUrl = (version: string, repository = "hystericmoon/crust") => `https://github.com/${repository}/releases/download/v${version}`;
 
 export interface Release {
   version: string;
@@ -37,9 +42,9 @@ export type Target = "darwin-aarch64" | "darwin-x86_64" | "windows-x86_64";
 
 export interface UpdatesSite {
   latest: { version: string; notes: string; pub_date: string; platforms: Partial<Record<Target, { url: string; signature: string }>> };
-  /** Files to copy: published path → built file. */
+  /** Files to put on the version's GitHub release: file name → built file. */
   copies: { to: string; from: string }[];
-  downloads: { label: string; to: string }[];
+  downloads: { label: string; to: string; url: string }[];
   index: string;
 }
 
@@ -64,16 +69,15 @@ const escapeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;")
 const urlName = (name: string) => encodeURIComponent(name);
 
 /**
- * What goes on the downloads site for these built files. A Mac update
+ * What goes on the downloads site (and the release) for these built files. A Mac update
  * (`*.app.tar.gz`, built for both Apple chips) serves both Mac targets; the
  * Windows installer (`*-setup.exe`) is also its update. Installers without
  * a signature are still offered for download, just not as updates.
  */
-export function updatesSite(files: BuiltFile[], release: Release, baseUrl = DOWNLOADS_URL): UpdatesSite {
-  const base = baseUrl.replace(/\/+$/, "");
-  const dir = release.version;
-  const at = (f: BuiltFile) => `${dir}/${f.name}`;
-  const url = (f: BuiltFile) => `${base}/${dir}/${urlName(f.name)}`;
+export function updatesSite(files: BuiltFile[], release: Release, filesBase = filesUrl(release.version)): UpdatesSite {
+  const base = filesBase.replace(/\/+$/, "");
+  const at = (f: BuiltFile) => f.name;
+  const url = (f: BuiltFile) => `${base}/${urlName(f.name)}`;
   const platforms: UpdatesSite["latest"]["platforms"] = {};
   const copies: UpdatesSite["copies"] = [];
   const downloads: UpdatesSite["downloads"] = [];
@@ -86,10 +90,10 @@ export function updatesSite(files: BuiltFile[], release: Release, baseUrl = DOWN
     } else if (f.name.endsWith("-setup.exe")) {
       if (f.signature) platforms["windows-x86_64"] = { url: url(f), signature: f.signature };
       copies.push({ to: at(f), from: f.path });
-      downloads.push({ label: "Windows (10 and 11)", to: at(f) });
+      downloads.push({ label: "Windows (10 and 11)", to: at(f), url: url(f) });
     } else if (f.name.endsWith(".dmg")) {
       copies.push({ to: at(f), from: f.path });
-      downloads.push({ label: "Mac (Apple chip or Intel, macOS 11 or later)", to: at(f) });
+      downloads.push({ label: "Mac (Apple chip or Intel, macOS 11 or later)", to: at(f), url: url(f) });
     }
   }
   if (!downloads.length) throw new Error("No installers found (.dmg or -setup.exe). Did the build finish?");
@@ -100,7 +104,7 @@ export function updatesSite(files: BuiltFile[], release: Release, baseUrl = DOWN
 }
 
 function indexPage(release: Release, downloads: UpdatesSite["downloads"]): string {
-  const links = downloads.map((d) => `      <li><a href="${escapeHtml(d.to.split("/").map(urlName).join("/"))}">${escapeHtml(d.label)}</a></li>`).join("\n");
+  const links = downloads.map((d) => `      <li><a href="${escapeHtml(d.url)}">${escapeHtml(d.label)}</a></li>`).join("\n");
   const notes = release.notes.map((n) => `      <li>${escapeHtml(n)}</li>`).join("\n");
   return `<!doctype html>
 <html lang="en">
@@ -169,10 +173,10 @@ async function main(argv: string[]) {
   const root = join(fileURLToPath(import.meta.url), "../..");
   const conf = JSON.parse(await readFile(join(root, "crates/crust-desktop/tauri.conf.json"), "utf8")) as { version: string };
   const release = releaseFor(JSON.parse(await readFile(join(root, "crates/crust-desktop/whats-new.json"), "utf8")), conf.version);
-  const site = updatesSite(await builtFiles(input), release, process.env.CRUST_DOWNLOADS_URL || DOWNLOADS_URL);
+  const repository = process.env.GITHUB_REPOSITORY || undefined;
+  const site = updatesSite(await builtFiles(input), release, process.env.CRUST_FILES_URL || filesUrl(release.version, repository));
   await mkdir(join(output, "updates"), { recursive: true });
-  await mkdir(join(output, release.version), { recursive: true });
-  for (const c of site.copies) await copyFile(c.from, join(output, c.to));
+  // The installers aren't copied here: the workflow puts them on the version's GitHub release.
   await writeFile(join(output, "updates/latest.json"), `${JSON.stringify(site.latest, null, 2)}\n`);
   await writeFile(join(output, "index.html"), site.index);
   // The feed must never be cached for long, or people get updates late.

@@ -152,6 +152,8 @@ jobs:
     if: inputs.downloads && inputs.platforms == 'both'
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: write # the GitHub release that holds the installers
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -210,9 +212,25 @@ jobs:
             exit 1
           fi
 
+      - name: Put the installers on a GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Pages takes nothing over 25 MB a file, so the installers and update files live on the version's
+          # release (free, the repository is public). The feed and the download page point there.
+          version=$(jq -r .version crates/crust-desktop/tauri.conf.json)
+          files=$(find built -type f \( -name '*.dmg' -o -name '*-setup.exe' -o -name '*.app.tar.gz' \))
+          [ -n "$files" ] || { echo "::error::No installers found to put on the release."; exit 1; }
+          # shellcheck disable=SC2086
+          if gh release view "v$version" >/dev/null 2>&1; then
+            gh release upload "v$version" $files --clobber
+          else
+            gh release create "v$version" $files --target "$GITHUB_SHA" --title "Crust $version" --notes "Installers and update files for Crust $version. The download page has what's new: https://crust-downloads.pages.dev"
+          fi
+
       - name: Put together the downloads site
         env:
-          CRUST_DOWNLOADS_URL: https://${{ steps.project.outputs.subdomain }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: npx tsx scripts/updates-site.ts built dist/downloads
 
       - name: Upload to Cloudflare Pages
