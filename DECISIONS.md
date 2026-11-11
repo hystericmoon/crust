@@ -5,6 +5,10 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
 
 ## Proposals
 
+- **A main website for Crust (asked by the owner 2026-11-11, undecided).** Options drawn at https://claude.ai/artifact/GbFfvBCb95Qc2ZzZ2cuf7M:
+  A grow the download page (small, shows nothing new), **B build a home page with Crust itself and publish it to its own free Pages
+  project (Claude's recommendation: best real test of the product, free, the update feed and installer links don't move)**, C wait for a
+  domain. Waiting for the owner's choice; nothing is added to features.json until he says so.
 - ~~Pages panel: say so when a menu change fails to save~~ **Done 2026-11-10 (owner: "Start with the failed menu save").**
   `saveMenu` (App.tsx) now returns a message when the save to the site fails; the panel shows it with "Try again"
   (same change, saved again). The change stays in this browser either way. Small fix on F091, no new feature item.
