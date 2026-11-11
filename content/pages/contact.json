@@ -1,0 +1,61 @@
+{
+  "path": "/contact",
+  "title": "Contact",
+  "description": "Send a message and we'll reply by email.",
+  "puck": {
+    "root": {
+      "props": {}
+    },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "id": "Section-contact",
+          "background": "background",
+          "paddingY": "xl",
+          "width": "narrow",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "Heading-contact",
+                "text": "Get in touch",
+                "level": "h1",
+                "align": "left",
+                "eyebrow": "Contact"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "Text-contact",
+                "text": "Questions, ideas or a project in mind? Send a message and we'll reply by email.",
+                "align": "left",
+                "tone": "muted"
+              }
+            },
+            {
+              "type": "Spacer",
+              "props": {
+                "id": "Spacer-contact",
+                "size": "sm"
+              }
+            },
+            {
+              "type": "ContactForm",
+              "props": {
+                "id": "ContactForm-contact",
+                "nameLabel": "Your name",
+                "emailLabel": "Your email",
+                "fields": [],
+                "messageLabel": "Your message",
+                "submitLabel": "Send message",
+                "successMessage": "Thank you! Your message is on its way. We'll reply by email."
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
