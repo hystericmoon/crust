@@ -45,5 +45,30 @@
     "claude-api": "user-invocable-only",
     "plugin-authoring": "user-invocable-only",
     "keybindings-help": "user-invocable-only"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "scripts/hooks/session-start.sh",
+            "timeout": 600
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "scripts/hooks/pre-push.sh",
+            "timeout": 1200
+          }
+        ]
+      }
+    ]
   }
 }

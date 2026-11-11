@@ -278,6 +278,14 @@ Features Claude suggests. They are not work until the owner adds them to
   explicitly. No secrets in this file. Off switch: the `hold` label, or delete the file.
 - Takes effect once this PR is on main (workflow_run uses the version on main). Wrangler deploys from a terminal stay denied.
 
+## 2026-11-11 — Start hook and push gate (Claude, reversible; follows "continue the automation")
+
+- `scripts/hooks/session-start.sh` (SessionStart hook in `.claude/settings.json`): runs init, `npm run next` and the top
+  of HANDOVER.md before the first message. The model check and review answers stay with Claude (crust-start steps 4, 6).
+- `scripts/hooks/pre-push.sh` (PreToolUse hook on Bash): before any `git push` it runs `scripts/verify.sh` and blocks the
+  push if it fails. Markdown-only pushes skip it. Chosen over a Stop hook, which would re-run minutes of cargo checks
+  after every reply. Off switch: remove the `hooks` block from `.claude/settings.json`.
+
 ## 2026-11-11 — Free first (owner)
 
 The owner: "let's make everything free first. No budget for domain and app store. Let's finish everything else."
