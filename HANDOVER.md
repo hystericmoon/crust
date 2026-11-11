@@ -10,7 +10,7 @@ skill (`.claude/skills/crust-start/SKILL.md`). While building:
 `crust-lean`. Finishing: `crust-finish` (it holds the "Ready to clear"
 message the owner asked for every time). Content JSON: `crust-content-format`.
 
-## Checkpoint (2026-11-11, saved at the owner's request): real-world tries and the home page
+## Checkpoint (2026-11-11, updated at the owner's request to clear): real-world tries and the home page
 
 Done today (all on main, nothing open): automatic merge and publish (`automerge.yml`); contact form (F037 closed); site menu in the editor no
 longer slides under the rail (PR #88); template preview now fills the screen (PR #90); release fixed in three steps (early key check,
@@ -22,10 +22,10 @@ the key passed into Tauri's config, installers on a GitHub release because Pages
 - Option pages (Claude artifacts, private): options https://claude.ai/artifact/GbFfvBCb95Qc2ZzZ2cuf7M, draft https://claude.ai/artifact/CEvDDzYVRAjxUCEUcPEtrE.
 
 Next, in order:
-1. Ask the owner for the bugs he saw (app, home page or downloads page). Fix what he reports, one PR per fix (automatic merge).
-2. **0.1.2 is prepared (Linux added, versions bumped, PR merges automatically)**. Run Actions -> **Desktop installers** (`all`, downloads `true`). Older notes: prepare **0.1.2** (versions in `crates/crust-desktop/tauri.conf.json`, `Cargo.toml`, `Cargo.lock`; a "what's new" entry in `whats-new.json`;
-   `scripts/updates-site.test.ts` reads the app's version), PR, merge, then Actions -> **Desktop installers** (`all`, downloads `true`, ~7 min).
-   Success = his 0.1.1 shows "update ready". Then add the "Updates itself" point back to the home page and run Publish home.
+1. Ask the owner for the bugs he saw in 0.1.1 (app, home page or downloads page). Fix what he reports, one PR per fix (automatic merge).
+2. **0.1.2 is built and on the downloads page** (Actions -> Desktop installers run 7, success, 2026-11-11 ~18:30 Jakarta; Mac, Windows, Linux).
+   Waiting on the owner: does his installed 0.1.1 show "update ready"? Only he can see it. If yes, add the "Updates itself" point back to
+   the home page (`home/content`) and run Actions -> Publish home; record F061 as tried in DECISIONS. If no, find out why.
 3. F058: the owner tries Publish to Cloudflare Pages from the app with a TEST project `crust-app-test` (never `crust-site`, the live site) and a wrong token.
    F059: waiting to hear if he has an FTP/SFTP host; if not, note "no host to test with" and skip. Do not buy anything.
 Record the results in DECISIONS.md (F058/F059/F061) and remove "never tried" from the notes.
