@@ -292,6 +292,7 @@ Features Claude suggests. They are not work until the owner adds them to
 - Not done, his call: the site has no header or menu (`site.json` has no `header`), so nothing links to `/contact` yet. Offered: a header with a Contact link, or a link from the homepage.
 - Checked before pushing: render with the Worker address set (form present, address wired), crust-publish checks, accessibility check on `/contact/` (no serious issues, desktop and phone).
 - This PR touches `content/`, so the automatic merge also starts Publish site (first real test of that path).
+- CI caught a test that assumed the content folder holds only the homepage (`template-check.test.ts` uses `content/` as its sample). The three expectations now read the page list from the sample, so adding a page no longer breaks them.
 
 ## 2026-11-11 — Free first (owner)
 
