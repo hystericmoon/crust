@@ -1,0 +1,48 @@
+{
+  "kind": "blog",
+  "savedAt": "2026-11-24T07:13:27.205Z",
+  "content": [
+    {
+      "type": "Section",
+      "props": {
+        "id": "design-section-7",
+        "background": "background",
+        "paddingY": "xl",
+        "height": "auto",
+        "valign": "center",
+        "imageSrc": "",
+        "tint": "medium",
+        "content": [
+          {
+            "type": "BlogTitle",
+            "props": {
+              "id": "design-blogtitle-4",
+              "size": "display",
+              "align": "left"
+            }
+          },
+          {
+            "type": "BlogIntro",
+            "props": {
+              "id": "design-blogintro-5",
+              "align": "left"
+            }
+          },
+          {
+            "type": "PostList",
+            "props": {
+              "id": "design-postlist-6",
+              "look": "featured",
+              "columns": "3",
+              "count": "all",
+              "photo": "yes",
+              "date": "yes",
+              "summary": "yes",
+              "titleLevel": "h2"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

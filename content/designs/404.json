@@ -1,0 +1,100 @@
+{
+  "kind": "notFound",
+  "title": "Page not found",
+  "savedAt": "2026-11-24T07:13:27.205Z",
+  "content": [
+    {
+      "type": "Section",
+      "props": {
+        "id": "design-section-14",
+        "background": "background",
+        "paddingY": "xl",
+        "height": "medium",
+        "valign": "center",
+        "imageSrc": "",
+        "tint": "medium",
+        "content": [
+          {
+            "type": "Heading",
+            "props": {
+              "id": "design-heading-8",
+              "text": "Nothing to launch here",
+              "level": "h1",
+              "align": "left",
+              "size": "display",
+              "eyebrow": "Error 404"
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "id": "design-text-9",
+              "text": {
+                "rich": 1,
+                "blocks": [
+                  {
+                    "type": "p",
+                    "children": [
+                      {
+                        "text": "This page has moved, or never existed. The work is still where you left it."
+                      }
+                    ]
+                  }
+                ]
+              },
+              "align": "left",
+              "tone": "muted"
+            }
+          },
+          {
+            "type": "Spacer",
+            "props": {
+              "id": "design-spacer-10",
+              "size": "sm"
+            }
+          },
+          {
+            "type": "Columns",
+            "props": {
+              "id": "design-columns-13",
+              "count": "2",
+              "gap": "sm",
+              "column1": [
+                {
+                  "type": "Button",
+                  "props": {
+                    "id": "design-button-11",
+                    "label": "Go to the home page",
+                    "href": "/",
+                    "variant": "primary",
+                    "align": "left"
+                  }
+                }
+              ],
+              "column2": [
+                {
+                  "type": "Button",
+                  "props": {
+                    "id": "design-button-12",
+                    "label": "See the work",
+                    "href": "/work",
+                    "variant": "arrow",
+                    "align": "left"
+                  }
+                }
+              ],
+              "column3": [],
+              "column4": [],
+              "widths": {
+                "desktop": "one-three",
+                "tablet": "one-three",
+                "phone": "stack"
+              },
+              "valign": "middle"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

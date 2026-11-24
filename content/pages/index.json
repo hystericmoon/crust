@@ -1,7 +1,7 @@
 {
   "path": "/",
-  "title": "Crust demo",
-  "description": "A sample page built with the Crust visual builder.",
+  "title": "Home",
+  "description": "Signal & Co is a brand and launch studio: identity, campaigns and live events for teams that want to be noticed.",
   "puck": {
     "root": {
       "props": {}
@@ -10,55 +10,106 @@
       {
         "type": "Section",
         "props": {
-          "id": "Section-hero",
-          "background": "surface",
-          "paddingY": "xl",
+          "id": "home-section-7",
+          "background": "background",
+          "paddingY": "lg",
+          "height": "full",
+          "valign": "bottom",
+          "imageSrc": "/media/stage-crowd.jpg",
+          "tint": "strong",
+          "bgKind": "photo",
+          "placeholder": [
+            "imageSrc"
+          ],
+          "focus": {
+            "x": 50,
+            "y": 35
+          },
           "content": [
             {
               "type": "Heading",
               "props": {
-                "id": "Heading-hero",
-                "text": "Build fast sites, visually",
+                "id": "home-heading-1",
+                "text": "We make brands people talk about",
                 "level": "h1",
-                "align": "center",
+                "align": "left",
                 "size": "display",
-                "eyebrow": "Visual website builder"
+                "eyebrow": "Brand & launch studio",
+                "placeholder": [
+                  "text",
+                  "eyebrow"
+                ]
               }
             },
             {
               "type": "Text",
               "props": {
-                "id": "Text-hero",
-                "text": "Design pages with blocks and design tokens. Crust publishes them as plain, fast HTML.",
-                "align": "center",
-                "tone": "muted"
+                "id": "home-text-2",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Identity, campaigns and launch events for teams that want to be noticed, and remembered the morning after."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default",
+                "placeholder": [
+                  "text"
+                ]
               }
             },
             {
               "type": "Spacer",
               "props": {
-                "id": "Spacer-hero",
-                "size": "sm"
+                "id": "home-spacer-3",
+                "size": "xs"
               }
             },
             {
-              "type": "Button",
+              "type": "Columns",
               "props": {
-                "id": "Button-hero",
-                "label": "See how it works",
-                "href": "#how",
-                "variant": "primary",
-                "align": "center"
-              }
-            },
-            {
-              "type": "Button",
-              "props": {
-                "id": "hero-arrow",
-                "label": "Read the guide",
-                "href": "#how",
-                "variant": "arrow",
-                "align": "center"
+                "id": "home-columns-6",
+                "count": "2",
+                "gap": "sm",
+                "column1": [
+                  {
+                    "type": "Button",
+                    "props": {
+                      "id": "home-button-4",
+                      "label": "See the work",
+                      "href": "/work",
+                      "variant": "primary",
+                      "align": "left"
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "Button",
+                    "props": {
+                      "id": "home-button-5",
+                      "label": "How we work",
+                      "href": "/services",
+                      "variant": "secondary",
+                      "align": "left"
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "one-three",
+                  "tablet": "one-three",
+                  "phone": "stack"
+                },
+                "valign": "middle"
               }
             }
           ]
@@ -67,87 +118,540 @@
       {
         "type": "Section",
         "props": {
-          "id": "Section-how",
-          "background": "background",
-          "paddingY": "lg",
+          "id": "home-section-10",
+          "background": "dark",
+          "paddingY": "md",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
           "content": [
             {
               "type": "Heading",
               "props": {
-                "id": "Heading-how",
-                "text": "How it works",
+                "id": "home-heading-8",
+                "text": "Trusted by teams at",
+                "level": "h2",
+                "align": "center",
+                "size": "normal",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "LogoRow",
+              "props": {
+                "id": "home-logorow-9",
+                "logoSize": "medium",
+                "grayscale": "yes",
+                "align": "center",
+                "moving": "yes",
+                "logos": [
+                  {
+                    "src": "/media/logo-northfield.png",
+                    "alt": "Northfield",
+                    "href": ""
+                  },
+                  {
+                    "src": "/media/logo-lumen.png",
+                    "alt": "Lumen & Co",
+                    "href": ""
+                  },
+                  {
+                    "src": "/media/logo-atlas.png",
+                    "alt": "Atlas",
+                    "href": ""
+                  },
+                  {
+                    "src": "/media/logo-kestrel.png",
+                    "alt": "Kestrel",
+                    "href": ""
+                  },
+                  {
+                    "src": "/media/logo-orbit.png",
+                    "alt": "Orbit",
+                    "href": ""
+                  }
+                ],
+                "placeholder": [
+                  "logos"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "home-section-13",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "width": "narrow",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "home-heading-11",
+                "text": "Small senior team. A strategist, a designer and a producer on every project, from the first day to the launch.",
                 "level": "h2",
                 "align": "left",
-                "eyebrow": "Three steps"
+                "size": "normal",
+                "eyebrow": "The studio",
+                "placeholder": [
+                  "text",
+                  "eyebrow"
+                ]
               }
             },
             {
               "type": "Text",
               "props": {
-                "id": "Text-how",
-                "text": "Edit pages in the builder.\n\nClick Publish, and the site goes live as static files.",
+                "id": "home-text-12",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Meet the studio",
+                          "href": "/about"
+                        }
+                      ]
+                    }
+                  ]
+                },
                 "align": "left",
                 "tone": "default"
               }
-            },
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "home-section-22",
+          "background": "background",
+          "paddingY": "lg",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
             {
               "type": "Columns",
               "props": {
-                "id": "Columns-how",
-                "count": "3",
-                "gap": "md",
+                "id": "home-columns-16",
+                "count": "2",
+                "gap": "sm",
                 "column1": [
                   {
-                    "type": "Card",
+                    "type": "Heading",
                     "props": {
-                      "id": "Card-design",
-                      "title": "Design",
-                      "titleLevel": "h3",
-                      "text": "Lay out pages with blocks and your design tokens.",
-                      "imageSrc": "",
-                      "imageAlt": "",
-                      "linkLabel": "",
-                      "linkHref": "",
-                      "background": "surface"
+                      "id": "home-heading-14",
+                      "text": "Selected work",
+                      "level": "h2",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": ""
                     }
                   }
                 ],
                 "column2": [
                   {
-                    "type": "Card",
+                    "type": "Text",
                     "props": {
-                      "id": "Card-publish",
-                      "title": "Publish",
-                      "titleLevel": "h3",
-                      "text": "One click turns them into plain, fast HTML.",
-                      "imageSrc": "",
-                      "imageAlt": "",
-                      "linkLabel": "",
-                      "linkHref": "",
-                      "background": "surface"
+                      "id": "home-text-15",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "All work",
+                                "href": "/work"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "right",
+                      "tone": "default"
                     }
                   }
                 ],
-                "column3": [
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "two-one",
+                  "tablet": "two-one",
+                  "phone": "stack"
+                },
+                "valign": "bottom"
+              }
+            },
+            {
+              "type": "Columns",
+              "props": {
+                "id": "home-columns-21",
+                "count": "2",
+                "gap": "md",
+                "column1": [
                   {
-                    "type": "Card",
+                    "type": "ImageOverlay",
                     "props": {
-                      "id": "Card-share",
-                      "title": "Share",
+                      "id": "home-imageoverlay-17",
+                      "imageSrc": "/media/red-stage.jpg",
+                      "imageAlt": "Hands raised in a crowd against a red stage glow",
+                      "title": "Northfield Festival",
                       "titleLevel": "h3",
-                      "text": "Open the live link on any device.",
-                      "imageSrc": "",
-                      "imageAlt": "",
-                      "linkLabel": "",
-                      "linkHref": "",
-                      "background": "surface"
+                      "text": "Identity, stage and signage for 40,000 people, 2026",
+                      "linkLabel": "See the project",
+                      "linkHref": "/work",
+                      "background": "background",
+                      "tint": "medium",
+                      "position": "bottom-left",
+                      "height": "medium",
+                      "placeholder": [
+                        "imageSrc",
+                        "title",
+                        "text"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "ImageOverlay",
+                    "props": {
+                      "id": "home-imageoverlay-18",
+                      "imageSrc": "/media/guitarist.jpg",
+                      "imageAlt": "A guitarist in silhouette leaping on a smoky stage in warm light",
+                      "title": "Kestrel Records",
+                      "titleLevel": "h3",
+                      "text": "Album launch tour in six cities, 2026",
+                      "linkLabel": "See the project",
+                      "linkHref": "/work",
+                      "background": "background",
+                      "tint": "medium",
+                      "position": "bottom-left",
+                      "height": "medium",
+                      "placeholder": [
+                        "imageSrc",
+                        "title",
+                        "text"
+                      ]
                     }
                   }
                 ],
-                "column4": []
+                "column2": [
+                  {
+                    "type": "ImageOverlay",
+                    "props": {
+                      "id": "home-imageoverlay-19",
+                      "imageSrc": "/media/copper-stair.jpg",
+                      "imageAlt": "A man in silhouette on a curving copper-coloured staircase beside tall windows",
+                      "title": "Atlas Architects",
+                      "titleLevel": "h3",
+                      "text": "Rebrand and website, 2025",
+                      "linkLabel": "See the project",
+                      "linkHref": "/work",
+                      "background": "background",
+                      "tint": "medium",
+                      "position": "bottom-left",
+                      "height": "medium",
+                      "placeholder": [
+                        "imageSrc",
+                        "title",
+                        "text"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "ImageOverlay",
+                    "props": {
+                      "id": "home-imageoverlay-20",
+                      "imageSrc": "/media/studio-lounge.jpg",
+                      "imageAlt": "A person at a window bar in a studio lounge with a red floor and leather chairs",
+                      "title": "Orbit Workspace",
+                      "titleLevel": "h3",
+                      "text": "Launch campaign for three buildings, 2025",
+                      "linkLabel": "See the project",
+                      "linkHref": "/work",
+                      "background": "background",
+                      "tint": "medium",
+                      "position": "bottom-left",
+                      "height": "medium",
+                      "placeholder": [
+                        "imageSrc",
+                        "title",
+                        "text"
+                      ]
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "equal",
+                  "tablet": "equal",
+                  "phone": "stack"
+                },
+                "rowGap": "md"
               }
             }
           ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "home-section-24",
+          "background": "background",
+          "paddingY": "md",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Stats",
+              "props": {
+                "id": "home-stats-23",
+                "look": "boxes",
+                "size": "lg",
+                "colour": "primary",
+                "align": "left",
+                "items": [
+                  {
+                    "value": "140+",
+                    "label": "launches since 2015",
+                    "detail": ""
+                  },
+                  {
+                    "value": "9 days",
+                    "label": "from brief to first ideas",
+                    "detail": ""
+                  },
+                  {
+                    "value": "24",
+                    "label": "design and campaign awards",
+                    "detail": ""
+                  },
+                  {
+                    "value": "3",
+                    "label": "senior people on every project",
+                    "detail": ""
+                  }
+                ],
+                "placeholder": [
+                  "items"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "home-section-27",
+          "background": "surface",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "home-heading-25",
+                "text": "What we do",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": "Services"
+              }
+            },
+            {
+              "type": "Tabs",
+              "props": {
+                "id": "home-tabs-26",
+                "tabs": [
+                  {
+                    "label": "Strategy",
+                    "text": "Two weeks of interviews, research and workshops end in one page: who you're for, what you say, and what you never say.\n\nEverything we make afterwards is checked against that page."
+                  },
+                  {
+                    "label": "Identity",
+                    "text": "Names, logos, type, colour and the rules that hold them together, built to work on a stage, a phone screen and the side of a lorry."
+                  },
+                  {
+                    "label": "Campaigns",
+                    "text": "Launch films, posters, social and press, planned as one story told over six weeks rather than one loud day."
+                  },
+                  {
+                    "label": "Live events",
+                    "text": "Launch nights, festivals and tours: stage design, signage and the hundred small decisions that make a crowd remember it."
+                  }
+                ],
+                "look": "pills",
+                "titleLevel": "h3",
+                "placeholder": [
+                  "tabs"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "home-section-33",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Columns",
+              "props": {
+                "id": "home-columns-32",
+                "count": "2",
+                "gap": "xl",
+                "column1": [
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "home-heading-28",
+                      "text": "From brief to launch in six weeks",
+                      "level": "h2",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": "How we work"
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "home-text-29",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "The same three people run your project from the first call to the launch. You'll never be handed to a junior team after the pitch."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Button",
+                    "props": {
+                      "id": "home-button-30",
+                      "label": "See prices",
+                      "href": "/services",
+                      "variant": "arrow",
+                      "align": "left"
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "IconList",
+                    "props": {
+                      "id": "home-iconlist-31",
+                      "icon": "numbers",
+                      "numberStyle": "circle",
+                      "iconColor": "primary",
+                      "items": [
+                        {
+                          "text": "Brief and research. A day with your team, then a week of listening to your customers."
+                        },
+                        {
+                          "text": "First ideas on day nine. Three directions, each one shown as it would look on launch day."
+                        },
+                        {
+                          "text": "Design and build. One direction, made real across every place it needs to appear."
+                        },
+                        {
+                          "text": "Launch, then measure. We're there on the night, and we report back a month later."
+                        }
+                      ],
+                      "placeholder": [
+                        "items"
+                      ]
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "equal",
+                  "tablet": "equal",
+                  "phone": "stack"
+                },
+                "sticky": 1
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "home-section-35",
+          "background": "surface",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "width": "narrow",
+          "content": [
+            {
+              "type": "Quote",
+              "props": {
+                "id": "home-quote-34",
+                "text": "Ticket sales were up forty per cent before we'd announced a single act. People were buying into the festival, not the line-up.",
+                "name": "Maya Okafor",
+                "role": "Director, Northfield Festival",
+                "imageSrc": "",
+                "align": "center",
+                "size": "large",
+                "placeholder": [
+                  "text",
+                  "name",
+                  "role"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "LinkedSection",
+        "props": {
+          "id": "home-linkedsection-36",
+          "section": "contact-strip"
         }
       }
     ]

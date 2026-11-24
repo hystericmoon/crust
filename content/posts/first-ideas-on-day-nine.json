@@ -1,0 +1,113 @@
+{
+  "slug": "first-ideas-on-day-nine",
+  "title": "Why first ideas take nine days",
+  "description": "Not two, not thirty. Why we show clients real work on day nine of every project, and what happens on the eight days before.",
+  "date": "2026-10-21",
+  "cover": "/media/dark-desk.jpg",
+  "coverAlt": "A computer on a desk in a dark room, a window behind it",
+  "puck": {
+    "root": {
+      "props": {}
+    },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "id": "post-nine-section-5",
+          "background": "background",
+          "paddingY": "md",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "width": "narrow",
+          "content": [
+            {
+              "type": "Text",
+              "props": {
+                "id": "post-nine-text-1",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Every project at Signal has the same date in its plan: day nine. That's when the client sees three directions, each one drawn as it would look on launch day."
+                        }
+                      ]
+                    },
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Two days is too soon: we haven't listened enough. Thirty days is too late: by then everyone has fallen in love with an idea nobody has tested."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default",
+                "placeholder": [
+                  "text"
+                ]
+              }
+            },
+            {
+              "type": "Heading",
+              "props": {
+                "id": "post-nine-heading-2",
+                "text": "The eight days before",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "IconList",
+              "props": {
+                "id": "post-nine-iconlist-3",
+                "icon": "numbers",
+                "numberStyle": "plain",
+                "iconColor": "primary",
+                "items": [
+                  {
+                    "text": "Days one and two: a workshop with your team and a walk through everything you've made before."
+                  },
+                  {
+                    "text": "Days three to six: interviews with customers, people who left and people who never came."
+                  },
+                  {
+                    "text": "Days seven and eight: the studio goes quiet, and three teams of two each make one direction."
+                  }
+                ],
+                "placeholder": [
+                  "items"
+                ]
+              }
+            },
+            {
+              "type": "Quote",
+              "props": {
+                "id": "post-nine-quote-4",
+                "text": "Day nine was the first time an agency showed us something we could imagine on the street the next morning.",
+                "name": "Theo Grant",
+                "role": "Head of brand, Orbit Workspace",
+                "imageSrc": "",
+                "align": "left",
+                "size": "normal",
+                "placeholder": [
+                  "text",
+                  "name",
+                  "role"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

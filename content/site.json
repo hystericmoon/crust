@@ -4,16 +4,16 @@
   "language": "en",
   "tokens": {
     "colors": {
-      "background": "#FFFFFF",
-      "surface": "#EEF4EF",
-      "text": "#14231A",
-      "muted": "#4A5A50",
-      "primary": "#1F6B45",
-      "onPrimary": "#FFFFFF"
+      "background": "#0E0F11",
+      "surface": "#191B1F",
+      "text": "#F2F2EF",
+      "muted": "#A3A7AD",
+      "primary": "#FF6B4A",
+      "onPrimary": "#0E0F11"
     },
     "fonts": {
-      "heading": "'Fraunces', Georgia, 'Times New Roman', serif",
-      "body": "'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif"
+      "heading": "'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif",
+      "body": "'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif"
     },
     "spacing": {
       "none": 0,
@@ -23,19 +23,8 @@
       "lg": 4,
       "xl": 6
     },
-    "radius": 8,
+    "radius": 4,
     "maxWidth": 1120,
-    "style": {
-      "typeScale": "balanced",
-      "headingWeight": 700,
-      "headingTracking": "normal",
-      "buttonShape": "pill",
-      "cardStyle": "flat",
-      "linkStyle": "underline",
-      "displayWeight": 300,
-      "displayTracking": "tightest",
-      "labelStyle": "chip"
-    },
     "sectionStyles": {
       "background": {
         "bg": "background",
@@ -53,6 +42,75 @@
         "bg": "text",
         "button": "inverse"
       }
+    },
+    "style": {
+      "typeScale": "dramatic",
+      "headingWeight": 500,
+      "headingTracking": "tighter",
+      "buttonShape": "square",
+      "cardStyle": "outline",
+      "linkStyle": "underline",
+      "displayWeight": 400,
+      "displayTracking": "tightest",
+      "labelStyle": "mono",
+      "motion": "lively"
     }
+  },
+  "header": {
+    "show": true,
+    "logo": {
+      "text": "Signal & Co",
+      "imageSrc": "",
+      "imageAlt": ""
+    },
+    "menu": [
+      {
+        "label": "Work",
+        "href": "/work"
+      },
+      {
+        "label": "Services",
+        "href": "/services"
+      },
+      {
+        "label": "Studio",
+        "href": "/about"
+      },
+      {
+        "label": "Notes",
+        "href": "/blog"
+      },
+      {
+        "label": "Contact",
+        "href": "/contact"
+      }
+    ],
+    "cta": {
+      "label": "Start a project",
+      "href": "/contact"
+    },
+    "sticky": true,
+    "style": "background",
+    "layout": "centred",
+    "overHero": true,
+    "topBar": {
+      "show": true,
+      "text": "Now booking launches for spring 2027.",
+      "link": {
+        "label": "Start a project",
+        "href": "/contact"
+      },
+      "contact": "hello@signal.example",
+      "style": "primary"
+    }
+  },
+  "footer": {
+    "show": true,
+    "text": "A brand and launch studio in East London.",
+    "columns": [],
+    "copyright": "© {year} {name}",
+    "style": "surface",
+    "kind": "blocks",
+    "section": "site-footer"
   }
 }

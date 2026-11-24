@@ -1,0 +1,98 @@
+{
+  "slug": "northfield-sold-out",
+  "title": "How Northfield sold out before the line-up",
+  "description": "Forty thousand tickets, three weeks early, with no names on the poster. What we made, and why it worked.",
+  "date": "2026-08-12",
+  "cover": "/media/red-stage.jpg",
+  "coverAlt": "Hands raised in a crowd against a red stage glow",
+  "puck": {
+    "root": {
+      "props": {}
+    },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "id": "post-northfield-section-4",
+          "background": "background",
+          "paddingY": "md",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "width": "narrow",
+          "content": [
+            {
+              "type": "Text",
+              "props": {
+                "id": "post-northfield-text-1",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Festivals sell on their line-up. That was the problem: Northfield's wouldn't be ready until June, and the money was needed in March."
+                        }
+                      ]
+                    },
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "So we sold the place instead. One colour, one shape and a promise: the warmest weekend of the summer, whoever is playing."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default",
+                "placeholder": [
+                  "text"
+                ]
+              }
+            },
+            {
+              "type": "Image",
+              "props": {
+                "id": "post-northfield-image-2",
+                "src": "/media/guitarist.jpg",
+                "alt": "A guitarist in silhouette leaping on a smoky stage in warm light",
+                "caption": "The late tent, lit in the festival's own amber.",
+                "placeholder": [
+                  "src"
+                ]
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "post-northfield-text-3",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "By the time the first act was announced, there were no tickets left to sell."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "default",
+                "placeholder": [
+                  "text"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

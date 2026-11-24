@@ -1,0 +1,29 @@
+{
+  "kind": "post",
+  "savedAt": "2026-11-24T07:13:27.205Z",
+  "content": [
+    {
+      "type": "PostHero",
+      "props": {
+        "id": "design-posthero-1",
+        "height": "large",
+        "tint": "strong",
+        "align": "left",
+        "summary": "yes"
+      }
+    },
+    {
+      "type": "PostContent",
+      "props": {
+        "id": "design-postcontent-2"
+      }
+    },
+    {
+      "type": "LinkedSection",
+      "props": {
+        "id": "design-linkedsection-3",
+        "section": "contact-strip"
+      }
+    }
+  ]
+}
