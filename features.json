@@ -1034,8 +1034,8 @@
       "done_check": "npm test -- app-look app-theme pages-panel app-frame && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false,
-      "review_note": ""
+      "reviewed": true,
+      "review_note": "Owner: Pass (2026-11-24)."
     },
     {
       "id": "F096",
@@ -1045,8 +1045,8 @@
       "done_check": "npm test -- app-frame page-first add-section layout-library styles-panel review-fixes && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false,
-      "review_note": ""
+      "reviewed": true,
+      "review_note": "Owner: Pass (2026-11-24)."
     },
     {
       "id": "F097",
@@ -1056,8 +1056,8 @@
       "done_check": "npm test -- add-section layout-library keyboard && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false,
-      "review_note": ""
+      "reviewed": true,
+      "review_note": "Owner: Pass (2026-11-24)."
     },
     {
       "id": "F098",
@@ -1067,8 +1067,8 @@
       "done_check": "npm test -- add-section layout-library && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false,
-      "review_note": ""
+      "reviewed": true,
+      "review_note": "Owner: Pass (2026-11-24)."
     },
     {
       "id": "F099",
@@ -1078,8 +1078,8 @@
       "done_check": "npm test -- page-first app-frame && npm run check:builder",
       "passes": true,
       "needs_review": true,
-      "reviewed": false,
-      "review_note": ""
+      "reviewed": true,
+      "review_note": "Owner: Pass (2026-11-24)."
     }
   ]
 }

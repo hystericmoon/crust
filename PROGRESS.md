@@ -7,6 +7,8 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
+- **2026-11-24: You passed F095–F099; the old Blocks / Outline / Fields icons are gone from the left rail.** Now only **This page** and **Your site** show. Nothing else changed. Next: ask you for the 0.1.1 bugs and whether your installed app shows "update ready".
+
 - **2026-11-24: F099 a section's settings in the left panel. Built, waiting for your review.**
   Click a section (on the page or in the list) and the left panel switches to **"<Section> settings"** with **Back to Outline** at the top;
   Back returns to the sections list. The right panel no longer opens when you pick something; it is only for Page settings and Next steps.
