@@ -5,7 +5,7 @@
  * Site settings and Help, one panel at a time, each with a back arrow
  * that names where you came from.
  */
-import { blocksPlugin, outlinePlugin, type Plugin } from "@puckeditor/core";
+import { blocksPlugin, createUsePuck, outlinePlugin, Puck, useGetPuck, type Plugin } from "@puckeditor/core";
 import { mediaSrc } from "@crust/blocks";
 import { openKeyboardHelp } from "../keyboard/KeyboardEditing";
 import { openLayoutGallery } from "../layouts/library";
@@ -93,6 +93,8 @@ function BackButton({ to, onClick }: { to: string; onClick: () => void }) {
 
 type SitePlace = "pages" | "blog" | "media" | "look" | "settings" | "help";
 
+const usePuck = createUsePuck();
+
 export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel, stylesPanel, siteSettings, hidePages }: RailOptions): Plugin[] {
   const blocks = blocksPlugin();
   const outline = outlinePlugin();
@@ -116,9 +118,52 @@ export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel, stylesPanel
     }, [ref]);
   }
 
+  /** F099: a picked section's settings, in plain fields, under "Back to Outline" (Puck's own fields form, drawn here). */
+  function SectionSettings() {
+    const item = usePuck((s) => s.selectedItem);
+    const label = usePuck((s) => (item ? (s.config.components[item.type]?.label ?? item.type) : ""));
+    const parentId = usePuck((s) => {
+      const id = s.selectedItem?.props?.id as string | undefined;
+      return (id ? (s.getParentById(id)?.props?.id as string | undefined) : undefined) ?? "";
+    });
+    const parentLabel = usePuck((s) => {
+      const p = parentId ? s.getItemById(parentId) : undefined;
+      return p ? (s.config.components[p.type]?.label ?? p.type) : "";
+    });
+    const parent = parentId ? { id: parentId, label: parentLabel } : null;
+    const getPuck = useGetPuck();
+    const heading = useRef<HTMLHeadingElement>(null);
+    useEffect(() => heading.current?.focus(), []);
+    return (
+      <div className="af-place af-section-settings">
+        <BackButton to="Outline" onClick={() => getPuck().dispatch({ type: "setUi", ui: { itemSelector: null }, recordHistory: false })} />
+        <h2 className="af-panel-title" ref={heading} tabIndex={-1}>
+          {label} settings
+        </h2>
+        {parent ? (
+          // Puck's own "go up to the parent" link lived in the right panel; a card inside Columns needs it here.
+          <button
+            type="button"
+            className="af-panel-link"
+            onClick={() => {
+              const puck = getPuck();
+              const sel = puck.getSelectorForId(parent.id);
+              if (sel) puck.dispatch({ type: "setUi", ui: { itemSelector: sel }, recordHistory: false });
+            }}
+          >
+            {parent.label}
+          </button>
+        ) : null}
+        <Puck.Fields wrapFields={false} />
+      </div>
+    );
+  }
+
   function ThisPage() {
     const place = useRef<HTMLDivElement>(null);
     useCleanOutline(place);
+    const picked = usePuck((s) => !!s.appState.ui.itemSelector);
+    if (picked) return <SectionSettings />;
     return (
       <div className="af-place" ref={place}>
         <h2 className="af-panel-title">This page</h2>

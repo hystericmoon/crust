@@ -73,10 +73,19 @@ export function PageFirstWatcher() {
   }, [selected]);
 
   useEffect(() => {
-    const want = !!selected || mode !== null;
+    // F099: a picked section's settings show in the left panel; the right one is for the page's settings and Next steps.
+    const want = mode !== null;
     const puck = getPuck();
     if (puck.appState.ui.rightSideBarVisible !== want) puck.dispatch({ type: "setUi", ui: { rightSideBarVisible: want }, recordHistory: false });
   }, [selected, mode, getPuck]);
+
+  // Picking a section brings its settings up in the left panel, whichever place was open.
+  useEffect(() => {
+    if (!selected) return;
+    const puck = getPuck();
+    if (puck.appState.ui.plugin.current !== "this-page" || !puck.appState.ui.leftSideBarVisible)
+      puck.dispatch({ type: "setUi", ui: { plugin: { current: "this-page" }, leftSideBarVisible: true }, recordHistory: false });
+  }, [selected, getPuck]);
 
   // Fit width: on Desktop the page is as wide as the canvas (at least a desktop), so it shows at 100%.
   useEffect(() => {

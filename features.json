@@ -1076,7 +1076,7 @@
       "description": "Milestone 10 (an easier editor), docs/milestone-10.md; approved by the owner on 2026-11-24. Design: https://claude.ai/artifact/HPvK6t2a4bLW97MwfkAGzy. Click a section, get its settings in the left panel under '< Outline', in plain fields. Spike first: whether Puck 0.23 exports a reusable fields component for a left plugin; note the result in DECISIONS. If it does not work cleanly, keep settings on the right and say so.",
       "depends_on": ["F096"],
       "done_check": "npm test -- page-first app-frame && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false,
       "review_note": ""
