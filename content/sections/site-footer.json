@@ -1,0 +1,155 @@
+{
+  "id": "site-footer",
+  "name": "Site footer",
+  "savedAt": "2026-11-24T07:13:27.205Z",
+  "content": [
+    {
+      "type": "Section",
+      "props": {
+        "id": "footer-section-6",
+        "background": "surface",
+        "paddingY": "lg",
+        "height": "auto",
+        "valign": "center",
+        "imageSrc": "",
+        "tint": "medium",
+        "content": [
+          {
+            "type": "Columns",
+            "props": {
+              "id": "footer-columns-5",
+              "count": "3",
+              "gap": "xl",
+              "column1": [
+                {
+                  "type": "Heading",
+                  "props": {
+                    "id": "footer-heading-1",
+                    "text": "Let's make something people talk about.",
+                    "level": "h2",
+                    "align": "left",
+                    "size": "normal",
+                    "eyebrow": ""
+                  }
+                },
+                {
+                  "type": "Text",
+                  "props": {
+                    "id": "footer-text-2",
+                    "text": {
+                      "rich": 1,
+                      "blocks": [
+                        {
+                          "type": "p",
+                          "children": [
+                            {
+                              "text": "hello@signal.example",
+                              "href": "mailto:hello@signal.example"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "align": "left",
+                    "tone": "default"
+                  }
+                }
+              ],
+              "column2": [
+                {
+                  "type": "Text",
+                  "props": {
+                    "id": "footer-text-3",
+                    "text": {
+                      "rich": 1,
+                      "blocks": [
+                        {
+                          "type": "p",
+                          "children": [
+                            {
+                              "text": "Work",
+                              "href": "/work"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "p",
+                          "children": [
+                            {
+                              "text": "Services",
+                              "href": "/services"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "p",
+                          "children": [
+                            {
+                              "text": "Studio",
+                              "href": "/about"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "p",
+                          "children": [
+                            {
+                              "text": "Notes",
+                              "href": "/blog"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "align": "left",
+                    "tone": "default"
+                  }
+                }
+              ],
+              "column3": [
+                {
+                  "type": "Text",
+                  "props": {
+                    "id": "footer-text-4",
+                    "text": {
+                      "rich": 1,
+                      "blocks": [
+                        {
+                          "type": "p",
+                          "children": [
+                            {
+                              "text": "Unit 4, 22 Arches Yard, London E8"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "p",
+                          "children": [
+                            {
+                              "text": "+44 20 5550 0193"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "align": "left",
+                    "tone": "muted",
+                    "placeholder": [
+                      "text"
+                    ]
+                  }
+                }
+              ],
+              "column4": [],
+              "widths": {
+                "desktop": "wide-first",
+                "tablet": "wrap",
+                "phone": "stack"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

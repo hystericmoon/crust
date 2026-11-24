@@ -1,7 +1,7 @@
 {
   "path": "/contact",
   "title": "Contact",
-  "description": "Send a message and we'll reply by email.",
+  "description": "Start a project with Signal & Co. Tell us what you're launching and when; we reply within one working day.",
   "puck": {
     "root": {
       "props": {}
@@ -10,47 +10,114 @@
       {
         "type": "Section",
         "props": {
-          "id": "Section-contact",
+          "id": "contact-section-7",
           "background": "background",
           "paddingY": "xl",
-          "width": "narrow",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
           "content": [
             {
-              "type": "Heading",
+              "type": "Columns",
               "props": {
-                "id": "Heading-contact",
-                "text": "Get in touch",
-                "level": "h1",
-                "align": "left",
-                "eyebrow": "Contact"
-              }
-            },
-            {
-              "type": "Text",
-              "props": {
-                "id": "Text-contact",
-                "text": "Questions, ideas or a project in mind? Send a message and we'll reply by email.",
-                "align": "left",
-                "tone": "muted"
-              }
-            },
-            {
-              "type": "Spacer",
-              "props": {
-                "id": "Spacer-contact",
-                "size": "sm"
-              }
-            },
-            {
-              "type": "ContactForm",
-              "props": {
-                "id": "ContactForm-contact",
-                "nameLabel": "Your name",
-                "emailLabel": "Your email",
-                "fields": [],
-                "messageLabel": "Your message",
-                "submitLabel": "Send message",
-                "successMessage": "Thank you! Your message is on its way. We'll reply by email."
+                "id": "contact-columns-6",
+                "count": "2",
+                "gap": "xl",
+                "column1": [
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "contact-heading-1",
+                      "text": "Start a project",
+                      "level": "h1",
+                      "align": "left",
+                      "size": "display",
+                      "eyebrow": "Contact",
+                      "placeholder": [
+                        "text",
+                        "eyebrow"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "contact-text-2",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "Tell us what you're launching and when. We reply within one working day, usually with a time for a call."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Spacer",
+                    "props": {
+                      "id": "contact-spacer-3",
+                      "size": "xs"
+                    }
+                  },
+                  {
+                    "type": "IconList",
+                    "props": {
+                      "id": "contact-iconlist-4",
+                      "icon": "check",
+                      "iconColor": "primary",
+                      "items": [
+                        {
+                          "text": "hello@signal.example",
+                          "icon": "mail"
+                        },
+                        {
+                          "text": "+44 20 5550 0193",
+                          "icon": "phone"
+                        },
+                        {
+                          "text": "Unit 4, 22 Arches Yard, London E8",
+                          "icon": "map-pin"
+                        }
+                      ],
+                      "placeholder": [
+                        "items"
+                      ]
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "ContactForm",
+                    "props": {
+                      "id": "contact-contactform-5",
+                      "nameLabel": "Your name",
+                      "emailLabel": "Email",
+                      "messageLabel": "What are you launching, and when?",
+                      "fields": [],
+                      "submitLabel": "Send brief",
+                      "successMessage": "Thank you. Your brief is on its way, and we'll reply within one working day."
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "equal",
+                  "tablet": "equal",
+                  "phone": "stack"
+                }
               }
             }
           ]

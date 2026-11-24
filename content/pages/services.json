@@ -1,0 +1,571 @@
+{
+  "path": "/services",
+  "title": "Services",
+  "description": "Strategy, identity, campaigns and live events by Signal & Co, with fixed prices for each way of working together.",
+  "puck": {
+    "root": {
+      "props": {}
+    },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "id": "services-section-3",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "services-heading-1",
+                "text": "Strategy, identity, campaigns and live events",
+                "level": "h1",
+                "align": "left",
+                "size": "display",
+                "eyebrow": "Services",
+                "placeholder": [
+                  "text",
+                  "eyebrow"
+                ]
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "services-text-2",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Four things we're good at, usually done together. Most clients start with a two-week sprint and decide from there."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "muted",
+                "placeholder": [
+                  "text"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "services-section-19",
+          "background": "background",
+          "paddingY": "lg",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "services-heading-4",
+                "text": "Four things we're good at",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Spacer",
+              "props": {
+                "id": "services-spacer-5",
+                "size": "xs"
+              }
+            },
+            {
+              "type": "Columns",
+              "props": {
+                "id": "services-columns-18",
+                "count": "4",
+                "gap": "lg",
+                "column1": [
+                  {
+                    "type": "Icon",
+                    "props": {
+                      "id": "services-icon-6",
+                      "icon": "target",
+                      "look": "square",
+                      "size": "md",
+                      "colour": "primary",
+                      "label": "",
+                      "href": "",
+                      "align": "left"
+                    }
+                  },
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "services-heading-7",
+                      "text": "Strategy",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": "",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "services-text-8",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "Interviews, research and one page that says who you're for."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "Icon",
+                    "props": {
+                      "id": "services-icon-9",
+                      "icon": "palette",
+                      "look": "square",
+                      "size": "md",
+                      "colour": "primary",
+                      "label": "",
+                      "href": "",
+                      "align": "left"
+                    }
+                  },
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "services-heading-10",
+                      "text": "Identity",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": "",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "services-text-11",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "Name, logo, type, colour and the rules that hold them together."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  }
+                ],
+                "column3": [
+                  {
+                    "type": "Icon",
+                    "props": {
+                      "id": "services-icon-12",
+                      "icon": "rocket",
+                      "look": "square",
+                      "size": "md",
+                      "colour": "primary",
+                      "label": "",
+                      "href": "",
+                      "align": "left"
+                    }
+                  },
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "services-heading-13",
+                      "text": "Campaigns",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": "",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "services-text-14",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "A launch told over six weeks, across every channel you use."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  }
+                ],
+                "column4": [
+                  {
+                    "type": "Icon",
+                    "props": {
+                      "id": "services-icon-15",
+                      "icon": "music",
+                      "look": "square",
+                      "size": "md",
+                      "colour": "primary",
+                      "label": "",
+                      "href": "",
+                      "align": "left"
+                    }
+                  },
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "services-heading-16",
+                      "text": "Live events",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": "",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "services-text-17",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "Stages, signage and launch nights people remember."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  }
+                ],
+                "widths": {
+                  "desktop": "equal",
+                  "tablet": "wrap",
+                  "phone": "stack"
+                },
+                "box": {
+                  "style": "surface",
+                  "padding": "md",
+                  "rounded": true
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "services-section-24",
+          "background": "surface",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "services-heading-20",
+                "text": "Ways to work with us",
+                "level": "h2",
+                "align": "center",
+                "size": "normal",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "services-text-21",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Fixed prices, agreed before we start. Travel and printing are charged at cost."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "center",
+                "tone": "muted",
+                "placeholder": [
+                  "text"
+                ]
+              }
+            },
+            {
+              "type": "Spacer",
+              "props": {
+                "id": "services-spacer-22",
+                "size": "sm"
+              }
+            },
+            {
+              "type": "Pricing",
+              "props": {
+                "id": "services-pricing-23",
+                "plans": [
+                  {
+                    "name": "Sprint",
+                    "price": "€12,000",
+                    "period": "two weeks",
+                    "description": "For a team that needs a clear direction before it spends anything else.",
+                    "features": "Strategy workshop\nCustomer interviews\nOne-page brand strategy\nThree creative directions",
+                    "buttonLabel": "Book a sprint",
+                    "buttonHref": "/contact"
+                  },
+                  {
+                    "name": "Launch",
+                    "price": "€38,000",
+                    "period": "six weeks",
+                    "description": "Everything from the sprint, made real and launched.",
+                    "features": "Everything in the sprint\nFull identity system\nLaunch campaign\nWebsite design\nLaunch night support",
+                    "buttonLabel": "Plan a launch",
+                    "buttonHref": "/contact"
+                  },
+                  {
+                    "name": "Partner",
+                    "price": "€9,000",
+                    "period": "per month",
+                    "description": "For brands that launch often and want the same team each time.",
+                    "features": "Two senior people, two days a week\nCampaigns and updates\nQuarterly strategy review",
+                    "buttonLabel": "Talk to us",
+                    "buttonHref": "/contact"
+                  }
+                ],
+                "highlight": "2",
+                "badge": "Most booked",
+                "planStyle": "background",
+                "highlightStyle": "primary",
+                "titleLevel": "h3",
+                "placeholder": [
+                  "plans"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "services-section-26",
+          "background": "background",
+          "paddingY": "lg",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Table",
+              "props": {
+                "id": "services-table-25",
+                "caption": "What each one includes",
+                "rows": [
+                  [
+                    "",
+                    "Sprint",
+                    "Launch",
+                    "Partner"
+                  ],
+                  [
+                    "Strategy",
+                    "Yes",
+                    "Yes",
+                    "Every quarter"
+                  ],
+                  [
+                    "Identity",
+                    "Three directions",
+                    "Full system",
+                    "Updates"
+                  ],
+                  [
+                    "Campaign",
+                    "No",
+                    "Launch campaign",
+                    "Monthly"
+                  ],
+                  [
+                    "Live events",
+                    "No",
+                    "Launch night",
+                    "On request"
+                  ],
+                  [
+                    "Senior people",
+                    "3",
+                    "3, plus makers",
+                    "2"
+                  ]
+                ],
+                "headers": "both",
+                "look": "stripes",
+                "placeholder": [
+                  "caption",
+                  "rows"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "services-section-30",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Columns",
+              "props": {
+                "id": "services-columns-29",
+                "count": "2",
+                "gap": "xl",
+                "column1": [
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "services-heading-27",
+                      "text": "Questions we get asked",
+                      "level": "h2",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": ""
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "Accordion",
+                    "props": {
+                      "id": "services-accordion-28",
+                      "firstOpen": "yes",
+                      "oneAtATime": "no",
+                      "items": [
+                        {
+                          "question": "How soon can you start?",
+                          "answer": "Usually within three weeks. We take on four projects at a time, so we'll tell you on the first call when a place opens up."
+                        },
+                        {
+                          "question": "Do you pitch for free?",
+                          "answer": "No. We'd rather spend that time on a paid sprint, which gives you real work you keep either way."
+                        },
+                        {
+                          "question": "Can you work with our in-house team?",
+                          "answer": "Yes, and we prefer it. Your team knows things we'd need months to learn."
+                        },
+                        {
+                          "question": "Who owns the work?",
+                          "answer": "You do, in full, once the last invoice is paid. Fonts and photos are licensed in your name."
+                        }
+                      ],
+                      "placeholder": [
+                        "items"
+                      ]
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "one-two",
+                  "tablet": "one-two",
+                  "phone": "stack"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "LinkedSection",
+        "props": {
+          "id": "services-linkedsection-31",
+          "section": "contact-strip"
+        }
+      }
+    ]
+  }
+}

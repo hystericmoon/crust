@@ -1,0 +1,57 @@
+{
+  "id": "contact-strip",
+  "name": "Contact strip",
+  "savedAt": "2026-11-24T07:13:27.205Z",
+  "content": [
+    {
+      "type": "Section",
+      "props": {
+        "id": "strip-section-4",
+        "background": "background",
+        "paddingY": "xl",
+        "height": "auto",
+        "valign": "center",
+        "imageSrc": "/media/stair-lights.jpg",
+        "tint": "strong",
+        "bgKind": "photo",
+        "placeholder": [
+          "imageSrc"
+        ],
+        "content": [
+          {
+            "type": "Heading",
+            "props": {
+              "id": "strip-heading-1",
+              "text": "Got a launch date? Let's talk this week.",
+              "level": "h2",
+              "align": "left",
+              "size": "display",
+              "eyebrow": "Start a project",
+              "placeholder": [
+                "text",
+                "eyebrow"
+              ]
+            }
+          },
+          {
+            "type": "Spacer",
+            "props": {
+              "id": "strip-spacer-2",
+              "size": "xs"
+            }
+          },
+          {
+            "type": "Button",
+            "props": {
+              "id": "strip-button-3",
+              "label": "Start a project",
+              "href": "/contact",
+              "variant": "primary",
+              "align": "left"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

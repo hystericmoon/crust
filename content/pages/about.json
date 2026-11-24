@@ -1,0 +1,516 @@
+{
+  "path": "/about",
+  "title": "Studio",
+  "description": "Signal & Co is twelve people on one floor in East London: who we are, what we believe and how to join us.",
+  "puck": {
+    "root": {
+      "props": {}
+    },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "id": "about-section-5",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Columns",
+              "props": {
+                "id": "about-columns-4",
+                "count": "2",
+                "gap": "xl",
+                "column1": [
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "about-heading-1",
+                      "text": "Twelve people, one floor, no account managers",
+                      "level": "h1",
+                      "align": "left",
+                      "size": "display",
+                      "eyebrow": "The studio",
+                      "placeholder": [
+                        "text",
+                        "eyebrow"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "about-text-2",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "Signal started in 2015 in a railway arch with two desks and one client. We're bigger now, but you'll still talk to the people doing the work."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "Image",
+                    "props": {
+                      "id": "about-image-3",
+                      "src": "/media/studio-lounge.jpg",
+                      "alt": "A person at a window bar in a studio lounge with a red floor and leather chairs",
+                      "caption": "",
+                      "placeholder": [
+                        "src"
+                      ]
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "equal",
+                  "tablet": "equal",
+                  "phone": "stack"
+                },
+                "valign": "middle"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "about-section-7",
+          "background": "background",
+          "paddingY": "md",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Stats",
+              "props": {
+                "id": "about-stats-6",
+                "look": "plain",
+                "size": "lg",
+                "colour": "primary",
+                "align": "left",
+                "items": [
+                  {
+                    "value": "2015",
+                    "label": "founded in a railway arch",
+                    "detail": ""
+                  },
+                  {
+                    "value": "12",
+                    "label": "people, all senior",
+                    "detail": ""
+                  },
+                  {
+                    "value": "31",
+                    "label": "countries we've launched in",
+                    "detail": ""
+                  },
+                  {
+                    "value": "0",
+                    "label": "account managers",
+                    "detail": ""
+                  }
+                ],
+                "placeholder": [
+                  "items"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "about-section-20",
+          "background": "surface",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "about-heading-8",
+                "text": "What we believe",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Spacer",
+              "props": {
+                "id": "about-spacer-9",
+                "size": "xs"
+              }
+            },
+            {
+              "type": "Columns",
+              "props": {
+                "id": "about-columns-19",
+                "count": "3",
+                "gap": "xl",
+                "column1": [
+                  {
+                    "type": "Icon",
+                    "props": {
+                      "id": "about-icon-10",
+                      "icon": "eye",
+                      "look": "plain",
+                      "size": "lg",
+                      "colour": "primary",
+                      "label": "",
+                      "href": "",
+                      "align": "left"
+                    }
+                  },
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "about-heading-11",
+                      "text": "Say less, mean it",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": "",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "about-text-12",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "One clear idea beats five clever ones. We cut until it hurts, then cut once more."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "Icon",
+                    "props": {
+                      "id": "about-icon-13",
+                      "icon": "zap",
+                      "look": "plain",
+                      "size": "lg",
+                      "colour": "primary",
+                      "label": "",
+                      "href": "",
+                      "align": "left"
+                    }
+                  },
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "about-heading-14",
+                      "text": "Ideas on day nine",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": "",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "about-text-15",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "Long research phases hide indecision. We show real work early and improve it in the open."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  }
+                ],
+                "column3": [
+                  {
+                    "type": "Icon",
+                    "props": {
+                      "id": "about-icon-16",
+                      "icon": "handshake",
+                      "look": "plain",
+                      "size": "lg",
+                      "colour": "primary",
+                      "label": "",
+                      "href": "",
+                      "align": "left"
+                    }
+                  },
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "about-heading-17",
+                      "text": "Same people, start to finish",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": "",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "about-text-18",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "The team that pitches is the team that delivers. Nobody is handed over."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  }
+                ],
+                "column4": [],
+                "widths": {
+                  "desktop": "equal",
+                  "tablet": "wrap",
+                  "phone": "stack"
+                },
+                "dividers": true
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "about-section-23",
+          "background": "background",
+          "paddingY": "lg",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "about-heading-21",
+                "text": "The partners",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Grid",
+              "props": {
+                "id": "about-grid-22",
+                "columns": "4",
+                "titleLevel": "h3",
+                "background": "surface",
+                "items": [
+                  {
+                    "title": "Dev Malhotra",
+                    "text": "Strategy partner. Ran research at a news agency before Signal.",
+                    "imageSrc": "",
+                    "imageAlt": "",
+                    "linkLabel": "",
+                    "linkHref": ""
+                  },
+                  {
+                    "title": "Lena Brandt",
+                    "text": "Design partner. Type nerd, poster collector, former festival designer.",
+                    "imageSrc": "",
+                    "imageAlt": "",
+                    "linkLabel": "",
+                    "linkHref": ""
+                  },
+                  {
+                    "title": "Kofi Mensah",
+                    "text": "Production partner. Has built stages on four continents.",
+                    "imageSrc": "",
+                    "imageAlt": "",
+                    "linkLabel": "",
+                    "linkHref": ""
+                  },
+                  {
+                    "title": "Rosa Iglesias",
+                    "text": "Campaign partner. Writes every line before anyone opens a laptop.",
+                    "imageSrc": "",
+                    "imageAlt": "",
+                    "linkLabel": "",
+                    "linkHref": ""
+                  }
+                ],
+                "placeholder": [
+                  "items"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "about-section-28",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Columns",
+              "props": {
+                "id": "about-columns-27",
+                "count": "2",
+                "gap": "xl",
+                "column1": [
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "about-heading-24",
+                      "text": "Join us",
+                      "level": "h2",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": ""
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "about-text-25",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "We hire one or two people a year, always senior, always people who've made things they're proud of."
+                              }
+                            ]
+                          },
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "Send three projects and a few lines about why to hello@signal.example."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Button",
+                    "props": {
+                      "id": "about-button-26",
+                      "label": "Send your work",
+                      "href": "mailto:hello@signal.example",
+                      "variant": "arrow",
+                      "align": "left"
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "one-two",
+                  "tablet": "one-two",
+                  "phone": "stack"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "LinkedSection",
+        "props": {
+          "id": "about-linkedsection-29",
+          "section": "contact-strip"
+        }
+      }
+    ]
+  }
+}

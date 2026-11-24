@@ -1,0 +1,363 @@
+{
+  "path": "/work",
+  "title": "Work",
+  "description": "Launches, identities and live events by Signal & Co for festivals, labels, architects and workspaces.",
+  "puck": {
+    "root": {
+      "props": {}
+    },
+    "content": [
+      {
+        "type": "Section",
+        "props": {
+          "id": "work-section-3",
+          "background": "background",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "work-heading-1",
+                "text": "Launches, identities and nights people still talk about",
+                "level": "h1",
+                "align": "left",
+                "size": "display",
+                "eyebrow": "Work",
+                "placeholder": [
+                  "text",
+                  "eyebrow"
+                ]
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "id": "work-text-2",
+                "text": {
+                  "rich": 1,
+                  "blocks": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "A few of the projects we've made since 2015. Each one started with a brief, a deadline and a team that wanted to be noticed."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "align": "left",
+                "tone": "muted",
+                "placeholder": [
+                  "text"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "work-section-6",
+          "background": "background",
+          "paddingY": "lg",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "work-heading-4",
+                "text": "Northfield Festival",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": "Identity, stage and signage, 2026",
+                "placeholder": [
+                  "text",
+                  "eyebrow"
+                ]
+              }
+            },
+            {
+              "type": "Slideshow",
+              "props": {
+                "id": "work-slideshow-5",
+                "name": "Northfield Festival",
+                "ratio": "16:9",
+                "autoplay": "no",
+                "speed": "8",
+                "titleLevel": "h3",
+                "slides": [
+                  {
+                    "imageSrc": "/media/red-stage.jpg",
+                    "imageAlt": "Hands raised in a crowd against a red stage glow",
+                    "title": "Main stage, opening night",
+                    "text": "A stage built around one colour, so every photo from the weekend looks like Northfield.",
+                    "linkLabel": "",
+                    "linkHref": ""
+                  },
+                  {
+                    "imageSrc": "/media/guitarist.jpg",
+                    "imageAlt": "A guitarist in silhouette leaping on a smoky stage in warm light",
+                    "title": "The late tent",
+                    "text": "Smoke, warm light and signage you can read from the back of a crowd.",
+                    "linkLabel": "",
+                    "linkHref": ""
+                  },
+                  {
+                    "imageSrc": "/media/stage-crowd.jpg",
+                    "imageAlt": "A crowd with raised hands in front of a stage lit in amber, beams of light above",
+                    "title": "40,000 people",
+                    "text": "Sold out three weeks before the line-up was announced.",
+                    "linkLabel": "",
+                    "linkHref": ""
+                  }
+                ],
+                "placeholder": [
+                  "slides"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "work-section-14",
+          "background": "background",
+          "paddingY": "lg",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Columns",
+              "props": {
+                "id": "work-columns-13",
+                "count": "2",
+                "gap": "xl",
+                "column1": [
+                  {
+                    "type": "Image",
+                    "props": {
+                      "id": "work-image-7",
+                      "src": "/media/concrete-tower.jpg",
+                      "alt": "A concrete tower seen straight up from below, in black and white",
+                      "caption": "",
+                      "placeholder": [
+                        "src"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "work-heading-8",
+                      "text": "Atlas Architects",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": "",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "work-text-9",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "A rebrand built from their own buildings: every letter of the logo is cut from a section drawing. 2025."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  }
+                ],
+                "column2": [
+                  {
+                    "type": "Image",
+                    "props": {
+                      "id": "work-image-10",
+                      "src": "/media/atrium.jpg",
+                      "alt": "A long vaulted atrium of steel and glass with one person walking through it",
+                      "caption": "",
+                      "placeholder": [
+                        "src"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Heading",
+                    "props": {
+                      "id": "work-heading-11",
+                      "text": "Orbit Workspace",
+                      "level": "h3",
+                      "align": "left",
+                      "size": "normal",
+                      "eyebrow": "",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "id": "work-text-12",
+                      "text": {
+                        "rich": 1,
+                        "blocks": [
+                          {
+                            "type": "p",
+                            "children": [
+                              {
+                                "text": "Three buildings, one launch: a campaign that made a co-working space feel like a members' club. 2025."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "align": "left",
+                      "tone": "muted",
+                      "placeholder": [
+                        "text"
+                      ]
+                    }
+                  }
+                ],
+                "column3": [],
+                "column4": [],
+                "widths": {
+                  "desktop": "equal",
+                  "tablet": "equal",
+                  "phone": "stack"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "work-section-16",
+          "background": "dark",
+          "paddingY": "xl",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "width": "narrow",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "work-heading-15",
+                "text": "We say no to most briefs, so we can say yes properly.",
+                "level": "h2",
+                "align": "center",
+                "size": "display",
+                "eyebrow": ""
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Section",
+        "props": {
+          "id": "work-section-19",
+          "background": "background",
+          "paddingY": "lg",
+          "height": "auto",
+          "valign": "center",
+          "imageSrc": "",
+          "tint": "medium",
+          "content": [
+            {
+              "type": "Heading",
+              "props": {
+                "id": "work-heading-17",
+                "text": "More projects",
+                "level": "h2",
+                "align": "left",
+                "size": "normal",
+                "eyebrow": ""
+              }
+            },
+            {
+              "type": "Grid",
+              "props": {
+                "id": "work-grid-18",
+                "columns": "3",
+                "titleLevel": "h3",
+                "background": "surface",
+                "items": [
+                  {
+                    "title": "Lumen & Co",
+                    "text": "Lighting brand, launch film and showroom, 2024.",
+                    "imageSrc": "/media/stair-lights.jpg",
+                    "imageAlt": "A dark concrete stairwell rising towards bars of white light",
+                    "linkLabel": "",
+                    "linkHref": ""
+                  },
+                  {
+                    "title": "Field Notes app",
+                    "text": "Name, identity and launch for a note-taking app, 2024.",
+                    "imageSrc": "/media/dark-desk.jpg",
+                    "imageAlt": "A computer on a desk in a dark room, a window behind it",
+                    "linkLabel": "",
+                    "linkHref": ""
+                  },
+                  {
+                    "title": "Spiral Hotel",
+                    "text": "Opening campaign for a hotel in a former bell foundry, 2023.",
+                    "imageSrc": "/media/spiral-amber.jpg",
+                    "imageAlt": "A spiral staircase seen from above in amber light",
+                    "linkLabel": "",
+                    "linkHref": ""
+                  }
+                ],
+                "placeholder": [
+                  "items"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "LinkedSection",
+        "props": {
+          "id": "work-linkedsection-20",
+          "section": "contact-strip"
+        }
+      }
+    ]
+  }
+}
