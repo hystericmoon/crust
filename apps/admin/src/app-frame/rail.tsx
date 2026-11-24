@@ -122,12 +122,15 @@ export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel, stylesPanel
   function SectionSettings() {
     const item = usePuck((s) => s.selectedItem);
     const label = usePuck((s) => (item ? (s.config.components[item.type]?.label ?? item.type) : ""));
-    const parent = usePuck((s) => {
+    const parentId = usePuck((s) => {
       const id = s.selectedItem?.props?.id as string | undefined;
-      const p = id ? s.getParentById(id) : undefined;
-      const parentId = p?.props?.id as string | undefined;
-      return p && parentId ? { id: parentId, label: s.config.components[p.type]?.label ?? p.type } : null;
+      return (id ? (s.getParentById(id)?.props?.id as string | undefined) : undefined) ?? "";
     });
+    const parentLabel = usePuck((s) => {
+      const p = parentId ? s.getItemById(parentId) : undefined;
+      return p ? (s.config.components[p.type]?.label ?? p.type) : "";
+    });
+    const parent = parentId ? { id: parentId, label: parentLabel } : null;
     const getPuck = useGetPuck();
     const heading = useRef<HTMLHeadingElement>(null);
     useEffect(() => heading.current?.focus(), []);
