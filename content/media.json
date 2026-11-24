@@ -1,0 +1,50 @@
+[
+  {
+    "file": "atrium.jpg",
+    "alt": "A long vaulted atrium of steel and glass with one person walking through it",
+    "width": 1280,
+    "height": 1600,
+    "bytes": 381024,
+    "uploadedAt": "2026-11-24T07:13:06.972Z"
+  },
+  {
+    "file": "concrete-tower.jpg",
+    "alt": "A concrete tower seen straight up from below, in black and white",
+    "width": 1280,
+    "height": 1600,
+    "bytes": 354378,
+    "uploadedAt": "2026-11-24T07:13:06.972Z"
+  },
+  {
+    "file": "copper-stair.jpg",
+    "alt": "A man in silhouette on a curving copper-coloured staircase beside tall windows",
+    "width": 1920,
+    "height": 1200,
+    "bytes": 311745,
+    "uploadedAt": "2026-11-24T07:13:06.972Z"
+  },
+  {
+    "file": "dark-desk.jpg",
+    "alt": "A computer on a desk in a dark room, a window behind it",
+    "width": 1920,
+    "height": 1200,
+    "bytes": 125646,
+    "uploadedAt": "2026-11-24T07:13:06.972Z"
+  },
+  {
+    "file": "guitarist.jpg",
+    "alt": "A guitarist in silhouette leaping on a smoky stage in warm light",
+    "width": 1920,
+    "height": 1200,
+    "bytes": 252780,
+    "uploadedAt": "2026-11-24T07:13:06.972Z"
+  },
+  {
+    "file": "logo-atlas.png",
+    "alt": "Atlas",
+    "width": 220,
+    "height": 84,
+    "bytes": 2772,
+    "uploadedAt": "2026-11-24T07:13:06.972Z"
+  }
+]
