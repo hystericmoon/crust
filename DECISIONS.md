@@ -3934,3 +3934,12 @@ No design snapshot (words and accessibility only); the glossary below is the rec
 
 - `npm run check:builder` had been passing locally on an old app build while CI (a fresh build) failed since F096. Three causes, all fixed: (1) it clicked the removed "Styles"/"Site"/"Pages" rail items and the Add panel's chips; it now goes through "Your site" / "This page" (matching the place title with `strong:text-is`, because the subtitles contain words like "look"); (2) it assumed the Home page has the old demo's blocks; it now seeds a frozen demo Home (`packages/render/src/fixtures/sample-content`) as a browser draft, so changing the real site never breaks it; (3) a real finding: with a left panel open, the drag library put `aria-pressed`/`aria-grabbed` back on the page's blocks after we removed them; the canvas observer in `KeyboardEditing.tsx` now also watches those two attributes.
 - Lesson for later sessions: run `npm run build` before `npm run check:builder` locally, or the check tests an old build.
+
+## F098 (2026-11-24): one gallery to add sections from
+
+- Merged by keeping the dialog (`LayoutGallery`) as the one gallery and deleting the Add panel (`AddSectionPanel`, `addAt` and the "add" view of This page). Every opener calls `openLayoutGallery(index | null)`. Decided alone, reversible.
+- Tabs are Layouts / Mine as designed; the old Sections / Whole pages / Linked tabs became the Type list under Layouts, and the category side list became the Topic list (kept all abilities, fewer tabs).
+- A card click only chooses it (`aria-pressed`, frame); Add inserts, using the Insert list (top, or after each section). Starting designs (post/blog/404) hide Insert: they replace the whole design.
+- "Add an element" (single blocks) moved to a fold under the sections list in This page.
+- Puck's outline row is a focusable "button" holding two real buttons (axe nested-interactive, serious). Nothing had checked it before. `useCleanOutline` in `app-frame/rail.tsx` strips role/tabindex/aria from the row; mouse dragging is unaffected, keyboard moving is Move up / Move down on the toolbar (and Alt+arrows).
+- Found, not changed: Puck still adds its own Blocks, Outline and Fields rail icons (baseline build shows them).

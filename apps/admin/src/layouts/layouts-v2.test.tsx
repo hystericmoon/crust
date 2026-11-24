@@ -89,7 +89,7 @@ describe("layouts v2 (F080): the gallery", () => {
   it("shows a 'Simple' group after the new layouts, named for screen readers", async () => {
     render(<LayoutGallery />);
     await act(async () => openLayoutGallery(null));
-    fireEvent.click(within(screen.getByRole("navigation", { name: "Categories" })).getByRole("button", { name: /^Hero/ }));
+    fireEvent.change(screen.getByRole("combobox", { name: "Topic" }), { target: { value: "Hero" } });
     const simple = screen.getByRole("list", { name: /^Simple/ });
     expect(within(simple).getByRole("button", { name: /^Centered hero/ })).toBeTruthy();
     expect(screen.getByRole("heading", { name: /^Simple/ })).toBeTruthy();

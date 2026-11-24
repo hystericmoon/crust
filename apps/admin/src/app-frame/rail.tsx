@@ -8,9 +8,8 @@
 import { blocksPlugin, outlinePlugin, type Plugin } from "@puckeditor/core";
 import { mediaSrc } from "@crust/blocks";
 import { openKeyboardHelp } from "../keyboard/KeyboardEditing";
-import { AddSectionPanel } from "../layouts/AddSectionPanel";
-import { getThisPageView, setAddAt, setThisPageView, subscribeThisPageView } from "../layouts/library";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { openLayoutGallery } from "../layouts/library";
+import { useEffect, useRef, useState } from "react";
 import { loadMedia, useMedia } from "../media/store";
 import { FrameIcon, type FrameIconName } from "./icons";
 import { NextStepsLink } from "../page-first/PageFirst";
@@ -98,37 +97,44 @@ export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel, stylesPanel
   const blocks = blocksPlugin();
   const outline = outlinePlugin();
 
+  /**
+   * Puck draws each outline row as a focusable "button" (drag handle) that holds two real buttons (open, expand):
+   * buttons inside a button, which assistive tech can't use (axe nested-interactive). The two real buttons are
+   * the keyboard way in; moving a section by keyboard is Move up / Move down on its toolbar. So the row is a plain box.
+   */
+  const ROW_ATTRS = ["role", "tabindex", "aria-roledescription", "aria-describedby", "aria-pressed", "aria-disabled"];
+  function useCleanOutline(ref: React.RefObject<HTMLElement | null>) {
+    useEffect(() => {
+      const root = ref.current;
+      if (!root) return;
+      const clean = () =>
+        root.querySelectorAll('[class*="Layer-inner"]').forEach((row) => ROW_ATTRS.forEach((a) => row.hasAttribute(a) && row.removeAttribute(a)));
+      clean();
+      const observer = new MutationObserver(clean);
+      observer.observe(root, { subtree: true, childList: true, attributes: true, attributeFilter: ROW_ATTRS });
+      return () => observer.disconnect();
+    }, [ref]);
+  }
+
   function ThisPage() {
-    const view = useSyncExternalStore(subscribeThisPageView, getThisPageView);
-    if (view === "add") {
-      return (
-        <div className="af-place">
-          <BackButton
-            to="This page"
-            onClick={() => {
-              setAddAt(null);
-              setThisPageView("outline");
-            }}
-          />
-          <AddSectionPanel elements={blocks.render?.()} />
-        </div>
-      );
-    }
+    const place = useRef<HTMLDivElement>(null);
+    useCleanOutline(place);
     return (
-      <div className="af-place">
+      <div className="af-place" ref={place}>
         <h2 className="af-panel-title">This page</h2>
         <button
           type="button"
           className="af-panel-link af-add-section"
-          onClick={() => {
-            setAddAt(null);
-            setThisPageView("add");
-          }}
+          onClick={() => openLayoutGallery(null)}
         >
           <FrameIcon name="add" size={14} /> Add section
         </button>
         <p className="af-panel-note">Your sections, top to bottom. Select one to edit it.</p>
         {outline.render?.()}
+        <details className="af-addsec-elements">
+          <summary>Add an element</summary>
+          {blocks.render?.()}
+        </details>
       </div>
     );
   }

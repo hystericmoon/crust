@@ -1065,7 +1065,7 @@
       "description": "Milestone 10 (an easier editor), docs/milestone-10.md; approved by the owner on 2026-11-24. Design: https://claude.ai/artifact/HPvK6t2a4bLW97MwfkAGzy. Merge the Add panel and the gallery dialog into one full-screen gallery: tabs Layouts / Mine, search and filters (type, topic), and an 'Insert after <section>' choice with an Add button. The new section lands selected and is announced.",
       "depends_on": ["F096"],
       "done_check": "npm test -- add-section layout-library && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false,
       "review_note": ""
