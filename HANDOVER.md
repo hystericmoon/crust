@@ -22,6 +22,7 @@ the key passed into Tauri's config, installers on a GitHub release because Pages
 - Option pages (Claude artifacts, private): options https://claude.ai/artifact/GbFfvBCb95Qc2ZzZ2cuf7M, draft https://claude.ai/artifact/CEvDDzYVRAjxUCEUcPEtrE.
 
 Next, in order:
+00. **Waiting on the owner: add the Milestone 10 items?** (docs/milestone-10.md, DECISIONS Proposals: an easier editor, F096–F099). He liked direction B refined with YOOtheme's habits (https://claude.ai/artifact/HPvK6t2a4bLW97MwfkAGzy). Only when he says to add them, put them in features.json and build F096 first. PR #96 (F095) CI is red because main's content has unreplaced Signal template text (his call: replace it or choose "Keep as is"); not caused by the PR.
 0. **F095 (new look B + Instrument Sans) is built and waits for the owner's review** (`needs_review`). When he says Pass, record `reviewed: true` with his note; if he says Fix, list it and ask before reworking.
 1. Ask the owner for the bugs he saw in 0.1.1 (app, home page or downloads page). Fix what he reports, one PR per fix (automatic merge).
 2. **0.1.2 is built and on the downloads page** (Actions -> Desktop installers run 7, success, 2026-11-11 ~18:30 Jakarta; Mac, Windows, Linux).

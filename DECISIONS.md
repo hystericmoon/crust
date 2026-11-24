@@ -13,6 +13,13 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
   (same change, saved again). The change stays in this browser either way. Small fix on F091, no new feature item.
 - ~~Site settings sheet: make Search defaults and Where to publish editable in place~~ **Added as F094 by the owner on 2026-11-10 ("add it").**
 
+- **An easier editor (Milestone 10, proposed 2026-11-24, waiting for the owner).** He finds the editor hard to use (adding a section; knowing
+  where things are) and likes how YOOtheme looks and works; he does not want its builder itself (paid, closed, WordPress/Joomla only), only its
+  look and way of working, and asked for more improvement than copying. Four stages in `docs/milestone-10.md` (F096 This page / Your site with
+  the outline drawn as small layouts; F097 add where you look; F098 one gallery; F099 settings in the left panel, spike first). Design:
+  https://claude.ai/artifact/HPvK6t2a4bLW97MwfkAGzy. **Not in features.json**: it needs his "add them" (CLAUDE.md: scope is his). Much of it
+  already exists in code (canvas "+" bars, Add by picture, a gallery), so the work is joining up and making it findable.
+
 - **App UX redesign: approved 2026-11-06** as Milestone 9 (F085–F093, docs/milestone-9.md); see the entry below.
 
 - **Footer section in use (from F076).** Count the footer as a use of its linked section, so Layouts → Linked sections won't delete it while the footer shows it (today publishing stops with a clear message instead). Small.
