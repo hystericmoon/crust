@@ -3924,3 +3924,8 @@ No design snapshot (words and accessibility only); the glossary below is the rec
 - The "+" bars were pointer-only (hidden from keyboard and screen readers). They are now real buttons with the name "Add section here / at the top / at the end"; hover/focus opens a pill, touch shows it always. The Tab order puts them after the page content (they live at the end of the canvas document); a bar per gap means a few extra tab stops, accepted for findability.
 - Words on a section's toolbar: Move buttons get a short word (Move up/down/in/out/left/right); Duplicate and Delete are Puck's own buttons, so their words come from the button's title through CSS (`.kb-words`), only on a selected Section. Other blocks keep the plain icon bar.
 - "+ Add section" in the outline was already done in F096; no change.
+
+## "Keep as is" for the Signal content (2026-11-24, owner's call)
+
+- The owner chose "Keep as is" for every "Replace me" item on the live site. Done by removing the `placeholder` marks from all nine files in `content/` (pages, posts, linked sections); text and photos are unchanged.
+- Tests in `packages/render` (`render.test.tsx`, `template-check.test.ts`) used the live `content/` folder as their sample, so changing the real site broke them. They now read a frozen copy of the old demo site in `packages/render/src/fixtures/sample-content/`.

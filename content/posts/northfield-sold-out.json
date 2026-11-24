@@ -48,10 +48,7 @@
                   ]
                 },
                 "align": "left",
-                "tone": "default",
-                "placeholder": [
-                  "text"
-                ]
+                "tone": "default"
               }
             },
             {
@@ -60,10 +57,7 @@
                 "id": "post-northfield-image-2",
                 "src": "/media/guitarist.jpg",
                 "alt": "A guitarist in silhouette leaping on a smoky stage in warm light",
-                "caption": "The late tent, lit in the festival's own amber.",
-                "placeholder": [
-                  "src"
-                ]
+                "caption": "The late tent, lit in the festival's own amber."
               }
             },
             {
@@ -84,10 +78,7 @@
                   ]
                 },
                 "align": "left",
-                "tone": "default",
-                "placeholder": [
-                  "text"
-                ]
+                "tone": "default"
               }
             }
           ]

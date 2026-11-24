@@ -33,11 +33,7 @@
                       "level": "h1",
                       "align": "left",
                       "size": "display",
-                      "eyebrow": "Contact",
-                      "placeholder": [
-                        "text",
-                        "eyebrow"
-                      ]
+                      "eyebrow": "Contact"
                     }
                   },
                   {
@@ -58,10 +54,7 @@
                         ]
                       },
                       "align": "left",
-                      "tone": "muted",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "tone": "muted"
                     }
                   },
                   {
@@ -90,9 +83,6 @@
                           "text": "Unit 4, 22 Arches Yard, London E8",
                           "icon": "map-pin"
                         }
-                      ],
-                      "placeholder": [
-                        "items"
                       ]
                     }
                   }

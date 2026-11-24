@@ -48,10 +48,7 @@
                   ]
                 },
                 "align": "left",
-                "tone": "default",
-                "placeholder": [
-                  "text"
-                ]
+                "tone": "default"
               }
             },
             {
@@ -82,9 +79,6 @@
                   {
                     "text": "Days seven and eight: the studio goes quiet, and three teams of two each make one direction."
                   }
-                ],
-                "placeholder": [
-                  "items"
                 ]
               }
             },
@@ -97,12 +91,7 @@
                 "role": "Head of brand, Orbit Workspace",
                 "imageSrc": "",
                 "align": "left",
-                "size": "normal",
-                "placeholder": [
-                  "text",
-                  "name",
-                  "role"
-                ]
+                "size": "normal"
               }
             }
           ]

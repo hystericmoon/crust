@@ -26,9 +26,10 @@ const PNG = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwA
 
 let sample: Template;
 beforeAll(async () => {
-  sample = (await templateFromContent("content")).template;
+  sample = (await templateFromContent("packages/render/src/fixtures/sample-content")).template;
 });
 
+// The sample is a frozen copy of the Crust demo site (fixtures/sample-content), not the live content/ folder.
 const heading = (id: string, text: string, extra: Record<string, unknown> = {}) => ({ type: "Heading", props: { id, text, level: "h2", align: "left", ...extra } });
 const section = (id: string, content: unknown[]) => ({ type: "Section", props: { id, background: "background", paddingY: "lg", content } });
 

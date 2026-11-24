@@ -14,9 +14,6 @@
         "imageSrc": "/media/stair-lights.jpg",
         "tint": "strong",
         "bgKind": "photo",
-        "placeholder": [
-          "imageSrc"
-        ],
         "content": [
           {
             "type": "Heading",
@@ -26,11 +23,7 @@
               "level": "h2",
               "align": "left",
               "size": "display",
-              "eyebrow": "Start a project",
-              "placeholder": [
-                "text",
-                "eyebrow"
-              ]
+              "eyebrow": "Start a project"
             }
           },
           {
