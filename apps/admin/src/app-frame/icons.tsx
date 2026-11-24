@@ -1,6 +1,8 @@
 /** F086: stroke icons for the top bar and the left icon bar (24px grid). Decorative: always aria-hidden. */
 const paths = {
   down: "M6 9l6 6 6-6",
+  back: "M15 6l-6 6 6 6",
+  next: "M9 6l6 6-6 6",
   desktop: "M4 5h16v11H4zM8 20h8M12 16v4",
   tablet: "M6 3h12v18H6zM11 18h2",
   phone: "M8 3h8v18H8zM11 18h2",

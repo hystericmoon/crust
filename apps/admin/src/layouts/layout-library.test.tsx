@@ -244,7 +244,7 @@ describe("layout-library: + buttons on the canvas", () => {
     await act(async () => fireEvent.click(add));
     // F088: the pictures open in the Add panel, at the spot the bar chose.
     expect(getAddAt()).toBe(0);
-    expect(dispatch.mock.calls.some(([a]) => a.type === "setUi" && a.ui.plugin.current === "blocks")).toBe(true);
+    expect(dispatch.mock.calls.some(([a]) => a.type === "setUi" && a.ui.plugin.current === "this-page")).toBe(true);
   });
 
   it("between sections, the + buttons are pointer shortcuts with a tooltip", async () => {

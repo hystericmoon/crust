@@ -41,7 +41,9 @@ records it). One session works at a time, cleared between features with
 - **Human-only blockers** (logins, 2FA, captcha, creating tokens): add to
   `BLOCKED.md`, move to the next unblocked feature.
 - **Scope is the owner's.** You may propose features in `DECISIONS.md` under
-  "Proposals"; never add items to `features.json` yourself. Never rewrite a
+  "Proposals"; never add items to `features.json` yourself, except the
+  Milestone 10 items F096–F099 (`docs/milestone-10.md`), which the owner
+  approved on 2026-11-24. Never rewrite a
   finished feature; add a rework item only when the owner asks.
 
 ## Engineering rules

@@ -111,6 +111,6 @@ describe("add section panel", () => {
     await act(async () => new Promise<void>((r) => requestAnimationFrame(() => r())));
     fireEvent.click(document.querySelectorAll<HTMLButtonElement>(".lg-insert")[1]!);
     expect(getAddAt()).toBe(1);
-    expect(dispatch.mock.calls.some(([a]) => a.type === "setUi" && a.ui.plugin.current === "blocks")).toBe(true);
+    expect(dispatch.mock.calls.some(([a]) => a.type === "setUi" && a.ui.plugin.current === "this-page")).toBe(true);
   });
 });

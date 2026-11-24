@@ -670,7 +670,7 @@ function PostBuilder({ slug, githubOn, onSaved }: { slug: string; githubOn: bool
     [onSaved, status.show, status.clear],
   );
   const autosave = useAutosave<Post>(save, (p) => JSON.stringify(p), post ?? null);
-  const plugins = useMemo(() => railPlugins({ pages: () => [], hrefFor: editHref }).filter((p) => p.name !== "pages"), []);
+  const plugins = useMemo(() => railPlugins({ pages: () => [], hrefFor: editHref, hidePages: true }), []);
 
   if (post === undefined) return <Loading />;
   if (post === null) {

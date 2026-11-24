@@ -25,6 +25,7 @@ import {
   planLayoutInsert,
   registerGalleryOpener,
   setAddAt,
+  setThisPageView,
   type LayoutItem,
   type LayoutKind,
 } from "./library";
@@ -686,8 +687,9 @@ export function LayoutInserters({ document: doc }: { document?: Document }) {
   // F088: the bars choose the spot, then the pictures open in the Add panel (no dialog over the page).
   const openAddPanel = (index: number) => {
     setAddAt(index);
+    setThisPageView("add");
     const puck = getPuck();
-    puck.dispatch({ type: "setUi", ui: { plugin: { current: "blocks" } }, recordHistory: false });
+    puck.dispatch({ type: "setUi", ui: { plugin: { current: "this-page" } }, recordHistory: false });
     announce(`Add section: ${describeInsertion(puck.config as Config, (puck.appState.data as Data).content, index)}. Pick a layout in the Add panel.`);
   };
   return createPortal(

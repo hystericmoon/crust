@@ -17,7 +17,7 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
   where things are) and likes how YOOtheme looks and works; he does not want its builder itself (paid, closed, WordPress/Joomla only), only its
   look and way of working, and asked for more improvement than copying. Four stages in `docs/milestone-10.md` (F096 This page / Your site with
   the outline drawn as small layouts; F097 add where you look; F098 one gallery; F099 settings in the left panel, spike first). Design:
-  https://claude.ai/artifact/HPvK6t2a4bLW97MwfkAGzy. **Owner approved on 2026-11-24 ("You can add them after I clear")**: the next session adds F096–F099 to features.json and builds F096 first. Much of it
+  https://claude.ai/artifact/HPvK6t2a4bLW97MwfkAGzy. **Owner approved on 2026-11-24 ("You can add them after I clear"; confirmed in session: "go with option two", which pre-approves F096–F099 in CLAUDE.md)**: F096–F099 added to features.json; F096 built first. Much of it
   already exists in code (canvas "+" bars, Add by picture, a gallery), so the work is joining up and making it findable.
 
 - **App UX redesign: approved 2026-11-06** as Milestone 9 (F085–F093, docs/milestone-9.md); see the entry below.

@@ -140,7 +140,8 @@ describe("page first: the right panel", () => {
     expect(panelMode()).toBe(null);
 
     // Help → "Next steps for a new site".
-    fireEvent.click(screen.getByRole("button", { name: "Help" }));
+    fireEvent.click(screen.getByRole("button", { name: "Your site" }));
+    fireEvent.click(await screen.findByRole("button", { name: /^Help/ }));
     fireEvent.click(await screen.findByRole("button", { name: "Next steps for a new site" }));
     expect(await screen.findByRole("heading", { name: "Next steps" })).toBeTruthy();
     await act(async () => {});
@@ -155,9 +156,9 @@ describe("page first: the right panel", () => {
 });
 
 describe("page first: blocks live in the Add panel", () => {
-  it("the first icon on the left is Add, holding layouts and the block list", () => {
+  it("the first icon on the left is This page, holding the outline, Add section and the block list", () => {
     const [add] = railPlugins({ pages: () => [], hrefFor: (p) => p });
-    expect(add?.label).toBe("Add");
+    expect(add?.label).toBe("This page");
   });
 
   it("the page's settings say whose they are", () => {

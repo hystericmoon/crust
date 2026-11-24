@@ -206,3 +206,21 @@ export function subscribeAddAt(fn: () => void): () => void {
     addListeners.delete(fn);
   };
 }
+
+// --- F096: which view the "This page" panel shows ------------------------------------
+
+export type ThisPageView = "outline" | "add";
+let thisPageView: ThisPageView = "outline";
+const viewListeners = new Set<() => void>();
+export const getThisPageView = () => thisPageView;
+export function setThisPageView(view: ThisPageView) {
+  if (thisPageView === view) return;
+  thisPageView = view;
+  viewListeners.forEach((fn) => fn());
+}
+export function subscribeThisPageView(fn: () => void): () => void {
+  viewListeners.add(fn);
+  return () => {
+    viewListeners.delete(fn);
+  };
+}

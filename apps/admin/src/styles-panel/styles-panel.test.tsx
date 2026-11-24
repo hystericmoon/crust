@@ -175,10 +175,14 @@ describe("styles-panel: nothing from Site settings is lost", () => {
     expect(groups.map((g) => g.id).sort()).toEqual([...inPanel, ...inSheet].sort());
   });
 
-  it("the left bar's Styles icon shows the panel, and the Site icon the sheet button", () => {
+  it("Your site shows the Look panel and the Site settings sheet button, one at a time", () => {
     const plugins = railPlugins({ pages: () => [], hrefFor: () => "#", stylesPanel: () => <p>STYLES</p>, siteSettings: () => <p>SHEET</p> });
-    render(<>{plugins.find((p) => p.name === "styles")!.render!()}{plugins.find((p) => p.name === "site")!.render!()}</>);
+    const Site = plugins.find((p) => p.name === "your-site")!.render!;
+    render(<Site />);
+    fireEvent.click(screen.getByRole("button", { name: /^Look/ }));
     expect(screen.getByText("STYLES")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Back to Your site" }));
+    fireEvent.click(screen.getByRole("button", { name: /^Site settings/ }));
     expect(screen.getByText("SHEET")).toBeTruthy();
     expect(screen.queryByText("Open styles")).toBeNull();
   });
