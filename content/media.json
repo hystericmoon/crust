@@ -94,5 +94,29 @@
     "height": 1200,
     "bytes": 325005,
     "uploadedAt": "2026-11-24T07:13:13.964Z"
+  },
+  {
+    "file": "stage-crowd.jpg",
+    "alt": "A crowd with raised hands in front of a stage lit in amber, beams of light above",
+    "width": 1920,
+    "height": 1280,
+    "bytes": 256764,
+    "uploadedAt": "2026-11-24T07:13:21.572Z"
+  },
+  {
+    "file": "stair-lights.jpg",
+    "alt": "A dark concrete stairwell rising towards bars of white light",
+    "width": 1920,
+    "height": 1200,
+    "bytes": 356568,
+    "uploadedAt": "2026-11-24T07:13:21.572Z"
+  },
+  {
+    "file": "studio-lounge.jpg",
+    "alt": "A person at a window bar in a studio lounge with a red floor and leather chairs",
+    "width": 1920,
+    "height": 1200,
+    "bytes": 355611,
+    "uploadedAt": "2026-11-24T07:13:21.572Z"
   }
 ]
