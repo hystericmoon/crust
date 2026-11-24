@@ -1,6 +1,7 @@
 import { defaultTokens, type Page, type Site } from "@crust/blocks";
 import { describe, expect, it } from "vitest";
-import sample from "../../../content/pages/index.json";
+// A frozen sample (the Crust demo site), so editing the real content/ folder never breaks these tests.
+import sample from "./fixtures/sample-content/pages/index.json";
 import { outputFileFor, renderBody, renderNotFound, renderPage } from "./render";
 
 const site: Site = { name: "Test", baseUrl: "https://example.test", language: "en", tokens: defaultTokens };

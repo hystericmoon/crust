@@ -7,6 +7,35 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
+- **2026-11-24: F097 add a section where you look. Built, waiting for your review.**
+  The round "+" between sections on the page is now a labelled button: **Add section here** (or at the top / at the end). On a computer it
+  grows into a pill with those words when you point at it or press Tab to it; on touch screens the words are always showing. It opens the
+  same pictures in This page as before. A selected section's toolbar now has words beside the icons: **Move up / Move down**, **Duplicate**,
+  **Delete**. **To try:** open a page, point between two sections and press the "+"; then Tab through the page and watch the bars appear;
+  click a section and read its toolbar.
+  Accessibility: the bars are real buttons, reachable by Tab, 32px, visible focus ring, words always visible on touch, no motion under
+  reduce-motion. Not run here: `cargo` (this container lacks a Linux library); no Rust changed.
+  Next: F098 (one gallery to add sections from).
+
+- **2026-11-24: F096 the editor's left bar now has two places: This page and Your site. Built, waiting for your review.**
+  Eight icons became two. **This page** shows your sections top to bottom with a clear "Add section" button; pressing it (or a "+" on the page)
+  opens the pictures of sections in the same place, with "Back to This page" at the top. **Your site** lists Pages, Blog, Media, Look,
+  Site settings and Help with a short line under each; open one and it replaces the list, with "Back to Your site" to return.
+  **To try:** open the preview (link in the PR), click This page, Add section, pick a layout; then Your site, Look, Back, Site settings.
+  Not done yet (honest note): the sections list is still Puck's own outline, not small drawings of each layout; I kept it so nothing breaks
+  and will draw them with F097/F098 unless you want it first. Accessibility: both places are real buttons with visible names and a back
+  button that names its destination; the browser accessibility check passes in light and dark. Not run here: `cargo` (this container lacks a
+  Linux library); no Rust changed.
+
+- **2026-11-24: F095 the app's new look (B, "Magic touch") and Instrument Sans. Built, waiting for your review.**
+  You chose B from the side-by-side page and asked for a new typeface; the app now uses Instrument Sans (already bundled, free, works offline).
+  Buttons and cards are rounder, status in the Pages list is a pill with words, the selected page glows once, cards in the template and layout
+  galleries get a faint cursor light, and Publish has the one coloured edge. No constant motion; reduce-motion switches it all off.
+  **To try:** open the preview (link in the PR), open Pages in the left bar and click a page (watch the glow once); open Start from a template
+  and move the cursor over a card; compare light and dark with the sun/moon button; look at Publish.
+  Accessibility: contrast pairs unchanged and tested; inputs keep the strong border; the browser accessibility check passes in light and dark.
+  Not run here: `cargo test` and `cargo clippy` (this cloud container lacks a Linux library the desktop app needs); no Rust changed and CI runs them.
+
 - **2026-11-11 (later): the app's first real release, and a home page for Crust.**
   **Release 0.1.1 is live** at https://crust-downloads.pages.dev (Mac and Windows). The owner installed it on his Mac and it opens; he has
   "a couple of bugs" to send. Next: release 0.1.2 so his 0.1.1 shows "update ready" (that proves automatic updates, F061).

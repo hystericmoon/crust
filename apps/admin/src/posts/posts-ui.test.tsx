@@ -33,7 +33,9 @@ describe("Posts screen (F035)", () => {
   });
 
   it("says what to do when there are no posts", async () => {
-    render(<PostList siteName="Haho" githubOn={false} language="en" />);
+    // The site's own content/ may have posts, so the empty list is supplied here.
+    api.listPosts.mockResolvedValue({ ok: true, posts: [], blog: { title: "Blog", intro: "" } });
+    render(<PostList siteName="Haho" githubOn language="en" />);
     await waitFor(() => expect(screen.getByText(/No posts yet/)).toBeTruthy());
   });
 

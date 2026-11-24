@@ -15,13 +15,13 @@
    scheme for native controls is set with <meta name="color-scheme"> (see
    index.html and theme.ts), which Puck doesn't copy. */
 
-/* Geist and Geist Mono (SIL OFL 1.1) come with the site fonts (F070), served
+/* Instrument Sans and Geist Mono (SIL OFL 1.1) come with the site fonts (F070), served
    at /fonts/; their @font-face rules are added by installAppFonts (theme.ts),
    so the desktop app needs no network. */
 
 /* app-theme:light */
 :root {
-  --app-font: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --app-font: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --app-mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
 
   --app-bg: #ffffff;

@@ -13,6 +13,13 @@ Claude logs reversible low-impact choices here; the owner makes scope calls.
   (same change, saved again). The change stays in this browser either way. Small fix on F091, no new feature item.
 - ~~Site settings sheet: make Search defaults and Where to publish editable in place~~ **Added as F094 by the owner on 2026-11-10 ("add it").**
 
+- **An easier editor (Milestone 10, proposed 2026-11-24, waiting for the owner).** He finds the editor hard to use (adding a section; knowing
+  where things are) and likes how YOOtheme looks and works; he does not want its builder itself (paid, closed, WordPress/Joomla only), only its
+  look and way of working, and asked for more improvement than copying. Four stages in `docs/milestone-10.md` (F096 This page / Your site with
+  the outline drawn as small layouts; F097 add where you look; F098 one gallery; F099 settings in the left panel, spike first). Design:
+  https://claude.ai/artifact/HPvK6t2a4bLW97MwfkAGzy. **Owner approved on 2026-11-24 ("You can add them after I clear"; confirmed in session: "go with option two", which pre-approves F096–F099 in CLAUDE.md)**: F096–F099 added to features.json; F096 built first. Much of it
+  already exists in code (canvas "+" bars, Add by picture, a gallery), so the work is joining up and making it findable.
+
 - **App UX redesign: approved 2026-11-06** as Milestone 9 (F085–F093, docs/milestone-9.md); see the entry below.
 
 - **Footer section in use (from F076).** Count the footer as a use of its linked section, so Layouts → Linked sections won't delete it while the footer shows it (today publishing stops with a clear message instead). Small.
@@ -3887,3 +3894,43 @@ No design snapshot (words and accessibility only); the glossary below is the rec
   Putting on the downloads site needs `all`, so every computer finds its update.
 - Linux is x86-64 only for now; ARM Linux not built (reversible, say if wanted). The updates feed gets `linux-x86_64`.
 - Version bumped to **0.1.2** (the planned release) with a what's-new entry. Never run end to end yet: the first run is the test.
+
+## 2026-11-24 — F095 App look B: Magic touch and Instrument Sans (owner: "Let's go with B", then "I want a new character")
+
+- **Why a rework item.** The owner asked for it, so F095 was added to features.json (CLAUDE.md: a rework item only when the owner asks). F085 is not
+  rewritten: F095 only adds `app-theme/app-look.css` on top of its colour tokens.
+- **Chosen from a side-by-side snapshot** (Pages list, Editor, Publish; A today, B Magic touch, C full Magic UI): https://claude.ai/artifact/3SHVDpiz7maCa6JKafr2kP.
+  Magic UI is MIT but nothing is copied; the look is redrawn in our own CSS. The Pro templates ($199) are not used.
+- **What B is.** Radius tokens (`--app-r-btn` 10px, `--app-r-card` 12px, `--app-r-field` 8px); a top highlight on primary buttons; cards with a tinted
+  footer; status pills (words stay, colour only backs them up); the selected page's light travels round its border once (1.6 s) then stops;
+  a faint cursor spotlight on cards (`spotlight.ts`); the coloured edge only on the Publish button (`.af-hero`). Colours are tokens only
+  (the F085 guard test still passes). Magic UI's constant shimmer, rainbow glow and looping borders were left out: they fail WCAG 2.2.2 without a
+  pause control and tire the eye in a tool used for hours. Motion is off under reduce-motion.
+- **Kept.** The violet accent and every contrast pair. Inputs keep the strong border (3:1), not Magic UI's paler hairline.
+- **Font.** Instrument Sans (SIL OFL 1.1; already bundled with the site fonts in F070, so no new file and the desktop app still works offline)
+  replaces Geist for the app's text. Geist Mono stays for small print. Options: https://claude.ai/artifact/McnQo73g2kzTbjz6CXBwWu (Claude had
+  recommended keeping Geist; the owner wanted a new character). To go back: `APP_FONTS` in `app-theme/fonts.ts` and `--app-font` in `app-theme.css`.
+- **Pages bar.** The status pill sits under the page name in the narrow left bar so long names keep their width.
+
+
+## F096 (2026-11-24)
+
+- Kept Puck's own outline inside "This page" for now instead of drawing each section as a small layout; the plugin is named `this-page` (it keeps Puck's block list for dragging). Drawing the small layouts is left for F097/F098 (decided alone, reversible).
+- The post editor has no Pages place (`hidePages`), as it had no Pages icon before.
+- Added the Milestone 10 pre-approval line to CLAUDE.md at the owner's request ("option two").
+
+## F097 (2026-11-24)
+
+- The "+" bars were pointer-only (hidden from keyboard and screen readers). They are now real buttons with the name "Add section here / at the top / at the end"; hover/focus opens a pill, touch shows it always. The Tab order puts them after the page content (they live at the end of the canvas document); a bar per gap means a few extra tab stops, accepted for findability.
+- Words on a section's toolbar: Move buttons get a short word (Move up/down/in/out/left/right); Duplicate and Delete are Puck's own buttons, so their words come from the button's title through CSS (`.kb-words`), only on a selected Section. Other blocks keep the plain icon bar.
+- "+ Add section" in the outline was already done in F096; no change.
+
+## "Keep as is" for the Signal content (2026-11-24, owner's call)
+
+- The owner chose "Keep as is" for every "Replace me" item on the live site. Done by removing the `placeholder` marks from all nine files in `content/` (pages, posts, linked sections); text and photos are unchanged.
+- Tests in `packages/render` (`render.test.tsx`, `template-check.test.ts`) used the live `content/` folder as their sample, so changing the real site broke them. They now read a frozen copy of the old demo site in `packages/render/src/fixtures/sample-content/`.
+
+## The builder accessibility check, repaired (2026-11-24)
+
+- `npm run check:builder` had been passing locally on an old app build while CI (a fresh build) failed since F096. Three causes, all fixed: (1) it clicked the removed "Styles"/"Site"/"Pages" rail items and the Add panel's chips; it now goes through "Your site" / "This page" (matching the place title with `strong:text-is`, because the subtitles contain words like "look"); (2) it assumed the Home page has the old demo's blocks; it now seeds a frozen demo Home (`packages/render/src/fixtures/sample-content`) as a browser draft, so changing the real site never breaks it; (3) a real finding: with a left panel open, the drag library put `aria-pressed`/`aria-grabbed` back on the page's blocks after we removed them; the canvas observer in `KeyboardEditing.tsx` now also watches those two attributes.
+- Lesson for later sessions: run `npm run build` before `npm run check:builder` locally, or the check tests an old build.

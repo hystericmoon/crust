@@ -33,11 +33,7 @@
                       "level": "h1",
                       "align": "left",
                       "size": "display",
-                      "eyebrow": "The studio",
-                      "placeholder": [
-                        "text",
-                        "eyebrow"
-                      ]
+                      "eyebrow": "The studio"
                     }
                   },
                   {
@@ -58,10 +54,7 @@
                         ]
                       },
                       "align": "left",
-                      "tone": "muted",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "tone": "muted"
                     }
                   }
                 ],
@@ -72,10 +65,7 @@
                       "id": "about-image-3",
                       "src": "/media/studio-lounge.jpg",
                       "alt": "A person at a window bar in a studio lounge with a red floor and leather chairs",
-                      "caption": "",
-                      "placeholder": [
-                        "src"
-                      ]
+                      "caption": ""
                     }
                   }
                 ],
@@ -132,9 +122,6 @@
                     "label": "account managers",
                     "detail": ""
                   }
-                ],
-                "placeholder": [
-                  "items"
                 ]
               }
             }
@@ -198,10 +185,7 @@
                       "level": "h3",
                       "align": "left",
                       "size": "normal",
-                      "eyebrow": "",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "eyebrow": ""
                     }
                   },
                   {
@@ -222,10 +206,7 @@
                         ]
                       },
                       "align": "left",
-                      "tone": "muted",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "tone": "muted"
                     }
                   }
                 ],
@@ -251,10 +232,7 @@
                       "level": "h3",
                       "align": "left",
                       "size": "normal",
-                      "eyebrow": "",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "eyebrow": ""
                     }
                   },
                   {
@@ -275,10 +253,7 @@
                         ]
                       },
                       "align": "left",
-                      "tone": "muted",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "tone": "muted"
                     }
                   }
                 ],
@@ -304,10 +279,7 @@
                       "level": "h3",
                       "align": "left",
                       "size": "normal",
-                      "eyebrow": "",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "eyebrow": ""
                     }
                   },
                   {
@@ -328,10 +300,7 @@
                         ]
                       },
                       "align": "left",
-                      "tone": "muted",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "tone": "muted"
                     }
                   }
                 ],
@@ -409,9 +378,6 @@
                     "linkLabel": "",
                     "linkHref": ""
                   }
-                ],
-                "placeholder": [
-                  "items"
                 ]
               }
             }
@@ -475,10 +441,7 @@
                         ]
                       },
                       "align": "left",
-                      "tone": "muted",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "tone": "muted"
                     }
                   },
                   {

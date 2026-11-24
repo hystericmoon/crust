@@ -18,9 +18,6 @@
           "imageSrc": "/media/stage-crowd.jpg",
           "tint": "strong",
           "bgKind": "photo",
-          "placeholder": [
-            "imageSrc"
-          ],
           "focus": {
             "x": 50,
             "y": 35
@@ -34,11 +31,7 @@
                 "level": "h1",
                 "align": "left",
                 "size": "display",
-                "eyebrow": "Brand & launch studio",
-                "placeholder": [
-                  "text",
-                  "eyebrow"
-                ]
+                "eyebrow": "Brand & launch studio"
               }
             },
             {
@@ -59,10 +52,7 @@
                   ]
                 },
                 "align": "left",
-                "tone": "default",
-                "placeholder": [
-                  "text"
-                ]
+                "tone": "default"
               }
             },
             {
@@ -171,9 +161,6 @@
                     "alt": "Orbit",
                     "href": ""
                   }
-                ],
-                "placeholder": [
-                  "logos"
                 ]
               }
             }
@@ -200,11 +187,7 @@
                 "level": "h2",
                 "align": "left",
                 "size": "normal",
-                "eyebrow": "The studio",
-                "placeholder": [
-                  "text",
-                  "eyebrow"
-                ]
+                "eyebrow": "The studio"
               }
             },
             {
@@ -317,12 +300,7 @@
                       "background": "background",
                       "tint": "medium",
                       "position": "bottom-left",
-                      "height": "medium",
-                      "placeholder": [
-                        "imageSrc",
-                        "title",
-                        "text"
-                      ]
+                      "height": "medium"
                     }
                   },
                   {
@@ -339,12 +317,7 @@
                       "background": "background",
                       "tint": "medium",
                       "position": "bottom-left",
-                      "height": "medium",
-                      "placeholder": [
-                        "imageSrc",
-                        "title",
-                        "text"
-                      ]
+                      "height": "medium"
                     }
                   }
                 ],
@@ -363,12 +336,7 @@
                       "background": "background",
                       "tint": "medium",
                       "position": "bottom-left",
-                      "height": "medium",
-                      "placeholder": [
-                        "imageSrc",
-                        "title",
-                        "text"
-                      ]
+                      "height": "medium"
                     }
                   },
                   {
@@ -385,12 +353,7 @@
                       "background": "background",
                       "tint": "medium",
                       "position": "bottom-left",
-                      "height": "medium",
-                      "placeholder": [
-                        "imageSrc",
-                        "title",
-                        "text"
-                      ]
+                      "height": "medium"
                     }
                   }
                 ],
@@ -447,9 +410,6 @@
                     "label": "senior people on every project",
                     "detail": ""
                   }
-                ],
-                "placeholder": [
-                  "items"
                 ]
               }
             }
@@ -501,10 +461,7 @@
                   }
                 ],
                 "look": "pills",
-                "titleLevel": "h3",
-                "placeholder": [
-                  "tabs"
-                ]
+                "titleLevel": "h3"
               }
             }
           ]
@@ -557,10 +514,7 @@
                         ]
                       },
                       "align": "left",
-                      "tone": "muted",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "tone": "muted"
                     }
                   },
                   {
@@ -595,9 +549,6 @@
                         {
                           "text": "Launch, then measure. We're there on the night, and we report back a month later."
                         }
-                      ],
-                      "placeholder": [
-                        "items"
                       ]
                     }
                   }
@@ -636,12 +587,7 @@
                 "role": "Director, Northfield Festival",
                 "imageSrc": "",
                 "align": "center",
-                "size": "large",
-                "placeholder": [
-                  "text",
-                  "name",
-                  "role"
-                ]
+                "size": "large"
               }
             }
           ]

@@ -244,17 +244,18 @@ describe("layout-library: + buttons on the canvas", () => {
     await act(async () => fireEvent.click(add));
     // F088: the pictures open in the Add panel, at the spot the bar chose.
     expect(getAddAt()).toBe(0);
-    expect(dispatch.mock.calls.some(([a]) => a.type === "setUi" && a.ui.plugin.current === "blocks")).toBe(true);
+    expect(dispatch.mock.calls.some(([a]) => a.type === "setUi" && a.ui.plugin.current === "this-page")).toBe(true);
   });
 
-  it("between sections, the + buttons are pointer shortcuts with a tooltip", async () => {
+  it("between sections, the + bars are labelled buttons you can reach with Tab", async () => {
     document.body.innerHTML = `<div data-puck-dropzone="root:default-zone"><div data-puck-component="hero"></div><div data-puck-component="about"></div></div>`;
     render(<LayoutInserters document={document} />);
     await act(async () => new Promise<void>((r) => requestAnimationFrame(() => r())));
     const plus = document.querySelectorAll<HTMLButtonElement>(".lg-insert");
     expect(plus).toHaveLength(3);
-    expect([...plus].every((b) => b.tabIndex === -1 && b.getAttribute("aria-hidden") === "true")).toBe(true);
-    expect(plus[0]!.dataset.tip).toBe("Add section at the top");
-    expect(plus[2]!.dataset.tip).toBe("Add section at the end");
+    expect([...plus].every((b) => b.tabIndex === 0 && b.getAttribute("aria-hidden") !== "true")).toBe(true);
+    expect(plus[0]!.getAttribute("aria-label")).toBe("Add section at the top");
+    expect(plus[1]!.getAttribute("aria-label")).toBe("Add section here");
+    expect(plus[2]!.getAttribute("aria-label")).toBe("Add section at the end");
   });
 });

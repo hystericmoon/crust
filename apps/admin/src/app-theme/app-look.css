@@ -1,0 +1,83 @@
+/* F095: "Magic touch" (owner chose B on 2026-11-24, design: https://claude.ai/artifact/3SHVDpiz7maCa6JKafr2kP).
+   Softer corners, a hairline highlight on primary buttons, cards with a tinted footer, status pills, a glow that
+   plays once when a row is selected, a faint spotlight on cards, and one coloured edge: the Publish button.
+   Colours are the F085 tokens only (the guard test fails on raw colours). Motion plays once and stops, and is
+   off under "reduce motion" (WCAG 2.2.2, 2.3.3). Every rule starts with :root so import order never matters. */
+
+:root {
+  --app-r-btn: 10px;
+  --app-r-card: 12px;
+  --app-r-field: 8px;
+  --app-edge: conic-gradient(from 200deg, var(--app-warn), var(--app-ok), var(--app-acc), var(--app-warn));
+  --app-hi: color-mix(in srgb, var(--app-pri-fg) 22%, transparent);
+}
+
+/* Buttons: one radius, a hairline shadow on secondary ones, a top highlight on primary ones. */
+:root :is(.af-button, .af-publish, .af-panel-link, .pp-new, .st-button, .af-tools .st-button, .af-tools .crust-header-link, .app-theme-toggle) {
+  border-radius: var(--app-r-btn);
+}
+:root :is(.af-button, .af-panel-link, .pp-new, .st-button:not(.st-button-primary)) {
+  box-shadow: 0 1px 1px var(--app-shadow);
+}
+:root :is(.af-publish, .st-button-primary) {
+  box-shadow: inset 0 1px 0 var(--app-hi), 0 1px 2px var(--app-shadow);
+}
+
+/* The one moment: Publish carries a thin coloured edge and a soft glow. */
+:root .af-hero {
+  border: 1px solid transparent;
+  background: linear-gradient(var(--app-pri), var(--app-pri)) padding-box, var(--app-edge) border-box;
+  box-shadow: inset 0 1px 0 var(--app-hi), 0 8px 16px -8px color-mix(in srgb, var(--app-acc) 55%, transparent);
+}
+:root .af-hero:hover { background: linear-gradient(var(--app-pri-hover), var(--app-pri-hover)) padding-box, var(--app-edge) border-box; }
+
+/* Menus and cards: 12px corners, a tinted footer under the picture. */
+:root :is(.af-menu, .pp-menu) { border-radius: var(--app-r-card); }
+:root :is(.lg-card, .tp-card) { border-radius: var(--app-r-card); position: relative; }
+:root .lg-card-button::after { border-radius: var(--app-r-card); }
+:root :is(.lg-card-text, .tp-card-meta) { background: var(--app-fill); border-top: 1px solid var(--app-line); }
+:root :is(.lg-thumb, .tp-thumb) { border-bottom: 0; }
+
+/* A faint spotlight follows the cursor over cards (spotlight.ts sets --mx and --my). */
+:root :is(.lg-card, .tp-card)::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 200ms;
+  background: radial-gradient(170px circle at var(--mx, 50%) var(--my, 50%), var(--app-acc-soft), transparent 70%);
+}
+:root :is(.lg-card, .tp-card):hover::before { opacity: 1; }
+
+/* The selected page: a violet border and ring, and a light that travels round the edge once. */
+@property --app-a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+:root .pp-row { position: relative; border-radius: var(--app-r-field); }
+:root .pp-row.is-current { background: var(--app-panel); box-shadow: 0 0 0 3px var(--app-acc-soft); }
+:root .pp-row.is-current::after {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1.5px; pointer-events: none; opacity: 0;
+  background: conic-gradient(from var(--app-a), transparent 0 68%, var(--app-acc) 88%, transparent 100%);
+  -webkit-mask: linear-gradient(var(--app-ink) 0 0) content-box, linear-gradient(var(--app-ink) 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: app-beam 1.6s ease-out 1 forwards;
+}
+@keyframes app-beam {
+  0% { --app-a: 0deg; opacity: 1; }
+  85% { --app-a: 360deg; opacity: 1; }
+  100% { --app-a: 360deg; opacity: 0; }
+}
+
+/* Status as a pill. The words say the status; the colour only backs them up. */
+:root .pp-status { padding: 2px 9px; border-radius: 12px; background: var(--app-hover); color: var(--app-mute); font-weight: 500; }
+:root .pp-status.is-live { background: var(--app-ok-soft); color: var(--app-ok); }
+:root .pp-status:is(.is-new, .is-edited) { background: var(--app-warn-soft); color: var(--app-warn); }
+
+/* In the narrow left bar the status pill sits under the page name, so the name keeps its width. */
+:root .pp-rail .pp-row { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; align-items: center; column-gap: 8px; row-gap: 2px; }
+:root .pp-rail .pp-row > .pp-grip { grid-column: 1; grid-row: 1; }
+:root .pp-rail .pp-row > .pp-dot { grid-column: 2; grid-row: 1; }
+:root .pp-rail .pp-row > .pp-name { grid-column: 3; grid-row: 1; }
+:root .pp-rail .pp-row > .pp-more { grid-column: 4; grid-row: 1; }
+:root .pp-rail .pp-row > .pp-status { grid-column: 3; grid-row: 2; justify-self: start; text-align: left; max-width: 100%; }
+
+/* Focus: the 3px ring stays; fields also get a soft halo. */
+:root :is(.st-input, .af-addsec-search input, .pp-find input):focus-visible { box-shadow: 0 0 0 6px var(--app-acc-soft); }
+
+@media (prefers-reduced-motion: reduce) {
+  :root .pp-row.is-current::after { animation: none; opacity: 0; }
+  :root :is(.lg-card, .tp-card)::before { transition: none; }
+}

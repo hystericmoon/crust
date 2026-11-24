@@ -1,16 +1,18 @@
 /**
- * F086: the left icon bar (Puck plugins): Add, Layers, Pages, Styles,
- * Media, Blog, Site, Help. Add and Layers are Puck's block list and
- * outline, renamed. The others are small panels that take you to the
- * screen that does the job today; F087–F092 grow them into full panels.
+ * F096: the left rail has two places (Puck plugins). "This page": the
+ * outline plus "+ Add section" (the Add by picture panel opens in the
+ * same place, with a back arrow). "Your site": Pages, Blog, Media, Look,
+ * Site settings and Help, one panel at a time, each with a back arrow
+ * that names where you came from.
  */
 import { blocksPlugin, outlinePlugin, type Plugin } from "@puckeditor/core";
 import { mediaSrc } from "@crust/blocks";
 import { openKeyboardHelp } from "../keyboard/KeyboardEditing";
 import { AddSectionPanel } from "../layouts/AddSectionPanel";
-import { useEffect } from "react";
+import { getThisPageView, setAddAt, setThisPageView, subscribeThisPageView } from "../layouts/library";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { loadMedia, useMedia } from "../media/store";
-import { FrameIcon } from "./icons";
+import { FrameIcon, type FrameIconName } from "./icons";
 import { NextStepsLink } from "../page-first/PageFirst";
 
 export interface RailOptions {
@@ -24,6 +26,8 @@ export interface RailOptions {
   /** F092: the full Styles panel, and the button that opens the Site settings sheet (replace the plain links). */
   stylesPanel?: () => React.ReactElement;
   siteSettings?: () => React.ReactElement;
+  /** The post editor has no Pages panel (a post is not a page). */
+  hidePages?: boolean;
 }
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
@@ -79,51 +83,107 @@ function MediaPanel() {
   );
 }
 
-export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel, stylesPanel, siteSettings }: RailOptions): Plugin[] {
+function BackButton({ to, onClick }: { to: string; onClick: () => void }) {
+  return (
+    <button type="button" className="af-back" onClick={onClick}>
+      <FrameIcon name="back" size={14} />
+      <span>Back to {to}</span>
+    </button>
+  );
+}
+
+type SitePlace = "pages" | "blog" | "media" | "look" | "settings" | "help";
+
+export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel, stylesPanel, siteSettings, hidePages }: RailOptions): Plugin[] {
   const blocks = blocksPlugin();
-  return [
-    // Add: whole layouts first (the gallery), then single blocks. F088: pictures of sections first, single blocks under "Add an element".
-    {
-      ...blocks,
-      label: "Add",
-      icon: <FrameIcon name="add" size={18} />,
-      render: () => <AddSectionPanel elements={blocks.render?.()} />,
-    },
-    outlinePlugin({ label: "Layers", icon: <FrameIcon name="layers" size={18} /> }),
-    {
-      name: "pages",
-      label: "Pages",
-      icon: <FrameIcon name="pages" size={18} />,
-      render: () => (pagesPanel ? pagesPanel() : <PagesPanel pages={pages()} hrefFor={hrefFor} />),
-    },
-    {
-      name: "styles",
-      label: "Styles",
-      icon: <FrameIcon name="brush" size={18} />,
-      render: () =>
-        stylesPanel ? (
-          stylesPanel()
-        ) : (
-        <Panel title="Styles">
+  const outline = outlinePlugin();
+
+  function ThisPage() {
+    const view = useSyncExternalStore(subscribeThisPageView, getThisPageView);
+    if (view === "add") {
+      return (
+        <div className="af-place">
+          <BackButton
+            to="This page"
+            onClick={() => {
+              setAddAt(null);
+              setThisPageView("outline");
+            }}
+          />
+          <AddSectionPanel elements={blocks.render?.()} />
+        </div>
+      );
+    }
+    return (
+      <div className="af-place">
+        <h2 className="af-panel-title">This page</h2>
+        <button
+          type="button"
+          className="af-panel-link af-add-section"
+          onClick={() => {
+            setAddAt(null);
+            setThisPageView("add");
+          }}
+        >
+          <FrameIcon name="add" size={14} /> Add section
+        </button>
+        <p className="af-panel-note">Your sections, top to bottom. Select one to edit it.</p>
+        {outline.render?.()}
+      </div>
+    );
+  }
+
+  function YourSite() {
+    const [place, setPlace] = useState<SitePlace | null>(null);
+    const places: { id: SitePlace; label: string; note: string; icon: FrameIconName; skip?: boolean }[] = [
+      { id: "pages", label: "Pages", note: "Add, rename and open pages", icon: "pages", skip: hidePages },
+      { id: "blog", label: "Blog", note: "Posts and how they look", icon: "blog" },
+      { id: "media", label: "Media", note: "Your photos", icon: "media" },
+      { id: "look", label: "Look", note: "Colours, fonts, buttons, header and footer", icon: "brush" },
+      { id: "settings", label: "Site settings", note: "Name, language, search, where it publishes", icon: "site" },
+      { id: "help", label: "Help", note: "Shortcuts and next steps", icon: "help" },
+    ];
+    if (!place) {
+      return (
+        <section className="af-panel af-place" aria-label="Your site">
+          <h2 className="af-panel-title">Your site</h2>
+          <ul className="af-places">
+            {places
+              .filter((p) => !p.skip)
+              .map((p) => (
+                <li key={p.id}>
+                  <button type="button" className="af-place-link" onClick={() => setPlace(p.id)}>
+                    <FrameIcon name={p.icon} size={18} />
+                    <span>
+                      <strong>{p.label}</strong>
+                      <small>{p.note}</small>
+                    </span>
+                    <FrameIcon name="next" size={14} />
+                  </button>
+                </li>
+              ))}
+          </ul>
+        </section>
+      );
+    }
+    const back = <BackButton to="Your site" onClick={() => setPlace(null)} />;
+    let body: React.ReactNode;
+    if (place === "pages") body = pagesPanel ? pagesPanel() : <PagesPanel pages={pages()} hrefFor={hrefFor} />;
+    else if (place === "media") body = <MediaPanel />;
+    else if (place === "look")
+      body = stylesPanel ? (
+        stylesPanel()
+      ) : (
+        <Panel title="Look">
           <p className="af-panel-note">Colours, fonts, buttons, spacing and the header and footer, for the whole site.</p>
           <a className="af-panel-link" href="#/settings">
             Open styles
           </a>
           <p className="af-panel-note">To style one section, select it on the page.</p>
         </Panel>
-        ),
-    },
-    {
-      name: "media",
-      label: "Media",
-      icon: <FrameIcon name="media" size={18} />,
-      render: () => <MediaPanel />,
-    },
-    {
-      name: "blog",
-      label: "Blog",
-      icon: <FrameIcon name="blog" size={18} />,
-      render: () => (
+      );
+    else if (place === "blog")
+      body = (
         <Panel title="Blog">
           <a className="af-panel-link" href="#/posts">
             All posts
@@ -135,14 +195,10 @@ export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel, stylesPanel
             Blog page design
           </a>
         </Panel>
-      ),
-    },
-    {
-      name: "site",
-      label: "Site",
-      icon: <FrameIcon name="site" size={18} />,
-      render: () => (
-        <Panel title="Site">
+      );
+    else if (place === "settings")
+      body = (
+        <Panel title="Site settings">
           {siteSettings ? (
             siteSettings()
           ) : (
@@ -157,13 +213,9 @@ export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel, stylesPanel
             “Page not found” design
           </a>
         </Panel>
-      ),
-    },
-    {
-      name: "help",
-      label: "Help",
-      icon: <FrameIcon name="help" size={18} />,
-      render: () => (
+      );
+    else
+      body = (
         <Panel title="Help">
           <button type="button" className="af-panel-link" onClick={openKeyboardHelp}>
             Keyboard shortcuts
@@ -176,7 +228,18 @@ export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel, stylesPanel
           ) : null}
           <p className="af-panel-note">Changes save on their own. Visitors see them after you press Publish.</p>
         </Panel>
-      ),
-    },
+      );
+    return (
+      <div className="af-place">
+        {back}
+        {body}
+      </div>
+    );
+  }
+
+  return [
+    // "This page" keeps Puck's block list under the name "this-page" so drag-and-drop from the Add view still works.
+    { ...blocks, name: "this-page", label: "This page", icon: <FrameIcon name="layers" size={18} />, render: () => <ThisPage /> },
+    { name: "your-site", label: "Your site", icon: <FrameIcon name="site" size={18} />, render: () => <YourSite /> },
   ];
 }

@@ -133,10 +133,7 @@
                       ]
                     },
                     "align": "left",
-                    "tone": "muted",
-                    "placeholder": [
-                      "text"
-                    ]
+                    "tone": "muted"
                   }
                 }
               ],

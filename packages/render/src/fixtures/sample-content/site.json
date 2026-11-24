@@ -1,0 +1,58 @@
+{
+  "name": "Crust demo",
+  "baseUrl": "https://example.pages.dev",
+  "language": "en",
+  "tokens": {
+    "colors": {
+      "background": "#FFFFFF",
+      "surface": "#EEF4EF",
+      "text": "#14231A",
+      "muted": "#4A5A50",
+      "primary": "#1F6B45",
+      "onPrimary": "#FFFFFF"
+    },
+    "fonts": {
+      "heading": "'Fraunces', Georgia, 'Times New Roman', serif",
+      "body": "'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif"
+    },
+    "spacing": {
+      "none": 0,
+      "xs": 0.5,
+      "sm": 1,
+      "md": 2,
+      "lg": 4,
+      "xl": 6
+    },
+    "radius": 8,
+    "maxWidth": 1120,
+    "style": {
+      "typeScale": "balanced",
+      "headingWeight": 700,
+      "headingTracking": "normal",
+      "buttonShape": "pill",
+      "cardStyle": "flat",
+      "linkStyle": "underline",
+      "displayWeight": 300,
+      "displayTracking": "tightest",
+      "labelStyle": "chip"
+    },
+    "sectionStyles": {
+      "background": {
+        "bg": "background",
+        "button": "solid"
+      },
+      "surface": {
+        "bg": "surface",
+        "button": "solid"
+      },
+      "primary": {
+        "bg": "primary",
+        "button": "inverse"
+      },
+      "dark": {
+        "bg": "text",
+        "button": "inverse"
+      }
+    }
+  }
+}

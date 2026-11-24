@@ -1025,6 +1025,61 @@
       "needs_review": true,
       "reviewed": true,
       "review_note": "Pass (owner, 2026-11-11)"
+    },
+    {
+      "id": "F095",
+      "title": "App look B: Magic touch and Instrument Sans",
+      "description": "Rework of the F085 look, asked for by the owner on 2026-11-24 after a side-by-side snapshot (https://claude.ai/artifact/3SHVDpiz7maCa6JKafr2kP; he chose B). Font: he asked for a new character, so Instrument Sans (https://claude.ai/artifact/McnQo73g2kzTbjz6CXBwWu). The admin keeps the Violet night colours and gets softer corners, a top highlight on primary buttons, cards with a tinted footer, status pills, a selection light that plays once, a faint cursor spotlight on cards, and a coloured edge on the Publish button only. All motion plays once and is off under reduce-motion. Our own code only (Magic UI is MIT; nothing copied). Colours stay tokens.",
+      "depends_on": ["F085"],
+      "done_check": "npm test -- app-look app-theme pages-panel app-frame && npm run check:builder",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false,
+      "review_note": ""
+    },
+    {
+      "id": "F096",
+      "title": "Two places in the editor: This page and Your site",
+      "description": "Milestone 10 (an easier editor), docs/milestone-10.md; approved by the owner on 2026-11-24. Design: https://claude.ai/artifact/HPvK6t2a4bLW97MwfkAGzy. Two rail places instead of eight icons. This page: the outline drawn as small layouts with '+ Add section'. Your site: Pages, Blog, Media, Look, Site settings, Help, each opening in the same panel with a back arrow that names where you came from (one panel at a time). Words follow F093.",
+      "depends_on": ["F095"],
+      "done_check": "npm test -- app-frame page-first add-section layout-library styles-panel review-fixes && npm run check:builder",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false,
+      "review_note": ""
+    },
+    {
+      "id": "F097",
+      "title": "Add a section where you look",
+      "description": "Milestone 10 (an easier editor), docs/milestone-10.md; approved by the owner on 2026-11-24. Design: https://claude.ai/artifact/HPvK6t2a4bLW97MwfkAGzy. The canvas '+' bars are labelled 'Add section here', always visible on touch and reachable by Tab; the selected section's toolbar gets words (Move, Duplicate, Delete) beside the icons; '+ Add section' in the outline opens the same flow.",
+      "depends_on": ["F096"],
+      "done_check": "npm test -- add-section layout-library keyboard && npm run check:builder",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false,
+      "review_note": ""
+    },
+    {
+      "id": "F098",
+      "title": "One gallery to add sections from",
+      "description": "Milestone 10 (an easier editor), docs/milestone-10.md; approved by the owner on 2026-11-24. Design: https://claude.ai/artifact/HPvK6t2a4bLW97MwfkAGzy. Merge the Add panel and the gallery dialog into one full-screen gallery: tabs Layouts / Mine, search and filters (type, topic), and an 'Insert after <section>' choice with an Add button. The new section lands selected and is announced.",
+      "depends_on": ["F096"],
+      "done_check": "npm test -- add-section layout-library && npm run check:builder",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false,
+      "review_note": ""
+    },
+    {
+      "id": "F099",
+      "title": "A section's settings in the left panel",
+      "description": "Milestone 10 (an easier editor), docs/milestone-10.md; approved by the owner on 2026-11-24. Design: https://claude.ai/artifact/HPvK6t2a4bLW97MwfkAGzy. Click a section, get its settings in the left panel under '< Outline', in plain fields. Spike first: whether Puck 0.23 exports a reusable fields component for a left plugin; note the result in DECISIONS. If it does not work cleanly, keep settings on the right and say so.",
+      "depends_on": ["F096"],
+      "done_check": "npm test -- page-first app-frame && npm run check:builder",
+      "passes": false,
+      "needs_review": true,
+      "reviewed": false,
+      "review_note": ""
     }
   ]
 }

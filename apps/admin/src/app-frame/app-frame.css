@@ -136,6 +136,25 @@
 .af-add-layouts { padding: 12px 16px 0; }
 .af-add-layouts .crust-header-link { width: 100%; justify-content: center; }
 
+/* F096: the two places (This page, Your site) */
+.af-place { display: grid; gap: 10px; padding: 12px 16px 16px; font-family: var(--app-font); color: var(--app-ink); }
+.af-place > .af-panel, .af-place > .af-addsec { padding: 0; }
+.af-back {
+  display: inline-flex; align-items: center; gap: 6px; justify-self: start; min-height: 32px; padding: 0 10px 0 6px;
+  border: 0; border-radius: 8px; background: transparent; color: var(--app-acc-ink, var(--app-ink)); font: inherit; font-weight: 600; cursor: pointer;
+}
+.af-back:hover { background: var(--app-hover); }
+.af-add-section { gap: 8px; font-weight: 600; }
+.af-places { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.af-place-link {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 10px 12px;
+  border: 1px solid var(--app-line-strong); border-radius: 10px; background: transparent; color: var(--app-ink); font: inherit; text-align: left; cursor: pointer;
+}
+.af-place-link:hover { background: var(--app-hover); }
+.af-place-link span { display: grid; gap: 2px; }
+.af-place-link small { color: var(--app-mute); font-size: 12px; line-height: 1.4; }
+.af-place :is(a, button):focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
+
 /* F088: Add section, by picture */
 .af-addsec { display: grid; gap: 12px; padding: 12px 16px 16px; }
 .af-addsec .af-panel-title { padding: 0; }

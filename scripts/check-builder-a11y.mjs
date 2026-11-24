@@ -91,19 +91,19 @@ const screens = [
   // F080: saving a section's style (the name form), and the layout gallery with the new layouts and the "Simple" group.
   ["Section Style tab, saving a style", "/#/edit?path=/", null, '[data-puck-component^="Section"]', [], { then: ['.tb-tab:has-text("Style"):visible', ".es-save:visible"] }],
   // F093: the Styles panel (a group opened) and the Site settings sheet, which the scan did not open before.
-  ["Styles panel", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Styles")', ".sp-head"]],
-  ["Styles panel, Colours open", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Styles")', '.sp-row-h button:has-text("Colours")']],
-  ["Styles panel, Header and menu open", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Styles")', '.sp-row-h button:has-text("Header and menu")']],
-  ["Site settings sheet", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Site")', "button.af-panel-link:has-text('Site settings')", "dialog[open]"]],
+  ["Styles panel", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Your site")', '.af-place-link:has(strong:text-is("Look"))', ".sp-head"]],
+  ["Styles panel, Colours open", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Your site")', '.af-place-link:has(strong:text-is("Look"))', '.sp-row-h button:has-text("Colours")']],
+  ["Styles panel, Header and menu open", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Your site")', '.af-place-link:has(strong:text-is("Look"))', '.sp-row-h button:has-text("Header and menu")']],
+  ["Site settings sheet", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Your site")', '.af-place-link:has(strong:text-is("Site settings"))', "button.af-panel-link:has-text('Site settings')", "dialog[open]"]],
   // F094: the sheet with Search defaults opened in place.
-  ["Site settings sheet, Search defaults open", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Site")', "button.af-panel-link:has-text('Site settings')", 'dialog[open] button[aria-label="Edit Search defaults"]']],
+  ["Site settings sheet, Search defaults open", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Your site")', '.af-place-link:has(strong:text-is("Site settings"))', "button.af-panel-link:has-text('Site settings')", 'dialog[open] button[aria-label="Edit Search defaults"]']],
   // F091: the Pages panel in the left bar, and a page's menu open.
-  ["Pages panel", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Pages")', '.pp-group-title:has-text("In the menu")']],
-  ["Pages panel, page menu", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Pages")', 'button[aria-label^="More for"]', '.pp-menu']],
+  ["Pages panel", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Your site")', '.af-place-link:has(strong:text-is("Pages"))', '.pp-group-title:has-text("In the menu")']],
+  ["Pages panel, page menu", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Your site")', '.af-place-link:has(strong:text-is("Pages"))', 'button[aria-label^="More for"]', '.pp-menu']],
   // F088: the Add panel's pictures (Hero picked, then Show more), and the big gallery behind "See larger".
-  ["add section panel, Hero", "/#/edit?path=/", null, null, ['.af-chip:text-is("Hero")']],
-  ["add section panel, show more", "/#/edit?path=/", null, null, ['.af-addsec button:has-text("more layouts")']],
-  ["layout gallery, Hero", "/#/edit?path=/", null, null, ['button:has-text("See larger")', '.lg-cat:has-text("Hero")']],
+  ["add section panel, Hero", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("This page")', '.af-add-section', '.af-chip:text-is("Hero")']],
+  ["add section panel, show more", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("This page")', '.af-add-section', '.af-addsec button:has-text("more layouts")']],
+  ["layout gallery, Hero", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("This page")', '.af-add-section', 'button:has-text("See larger")', '.lg-cat:has-text("Hero")']],
   // F078: the Table's cells, the Video's notes, Pricing's Style tab, an Icon list switched to Numbers.
   ["Table cells", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Table"]'],
   ["Video notes", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Video"]'],
@@ -128,6 +128,9 @@ const screens = [
 ];
 // F093: floating bars on the page (the typing bar, the text toolbar, the block's action bar) and the app's save message.
 const BARS = ".it-bar, .rt-floating .rt-toolbar, .rt-floating .rt-link, [class*='_DraggableComponent-actions_'], .crust-status";
+// The page builder screens open the Home page. They use a frozen copy of the demo Home (as a browser draft), so
+// changing the real site in content/ never breaks this check.
+const demoHome = JSON.parse(await readFile(new URL("../packages/render/src/fixtures/sample-content/pages/index.json", import.meta.url), "utf8"));
 const fakeApp = await readFile(new URL("./fake-tauri.js", import.meta.url), "utf8");
 
 const server = await serve(distDir);
@@ -151,6 +154,11 @@ try {
       );
     }
     if (app) await page.addInitScript(`window.__FAKE_TAURI__ = ${JSON.stringify({ host: app, firstRun, update })};\n${fakeApp}`);
+    if (hash.startsWith("/#/edit?path=/") && !app) {
+      await page.addInitScript((home) => {
+        localStorage.setItem("crust:page:/", JSON.stringify({ page: home, updatedAt: new Date().toISOString(), savedToGitHub: true }));
+      }, demoHome);
+    }
     if (post) {
       await page.addInitScript((p) => {
         localStorage.setItem(`crust:post:${p.slug}`, JSON.stringify({ post: p, updatedAt: new Date().toISOString(), savedToGitHub: false }));

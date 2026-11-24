@@ -172,19 +172,31 @@ describe("app frame: the top bar", () => {
 });
 
 describe("app frame: the left icon bar", () => {
-  it("offers Add, Layers, Pages, Styles, Media, Blog, Site and Help, in that order", () => {
+  it("offers two places: This page and Your site", () => {
     const plugins = railPlugins({ pages: () => [], hrefFor: (p) => p });
-    expect(plugins.map((p) => p.label)).toEqual(["Add", "Layers", "Pages", "Styles", "Media", "Blog", "Site", "Help"]);
-    // Add and Layers are Puck's block list and outline, so they replace Puck's own Blocks and Outline.
-    expect(plugins.slice(0, 2).map((p) => p.name)).toEqual(["blocks", "outline"]);
+    expect(plugins.map((p) => p.label)).toEqual(["This page", "Your site"]);
+    expect(plugins.map((p) => p.name)).toEqual(["this-page", "your-site"]);
   });
 
-  it("the Pages panel links to each page in the builder", () => {
-    const pages = railPlugins({ pages: () => [{ path: "/", title: "Home" }, { path: "/about", title: "About" }], hrefFor: (p) => `#/edit?path=${p}` });
-    const Render = pages.find((p) => p.name === "pages")!.render!;
+  it("Your site lists its places, opens one at a time, and the back arrow names where you came from", () => {
+    const plugins = railPlugins({ pages: () => [{ path: "/", title: "Home" }, { path: "/about", title: "About" }], hrefFor: (p) => `#/edit?path=${p}` });
+    const Render = plugins.find((p) => p.name === "your-site")!.render!;
     render(<Render />);
+    const labels = screen.getAllByRole("button").map((b) => b.querySelector("strong")?.textContent);
+    expect(labels).toEqual(["Pages", "Blog", "Media", "Look", "Site settings", "Help"]);
+    fireEvent.click(screen.getByRole("button", { name: /^Pages/ }));
     expect(screen.getByRole("link", { name: /About/ }).getAttribute("href")).toBe("#/edit?path=/about");
     expect(screen.getByRole("link", { name: "Manage pages" }).getAttribute("href")).toBe("#/");
+    expect(screen.queryByRole("button", { name: /^Blog/ })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Back to Your site" }));
+    expect(screen.getByRole("button", { name: /^Blog/ })).toBeTruthy();
+  });
+
+  it("the post editor has no Pages place", () => {
+    const plugins = railPlugins({ pages: () => [], hrefFor: (p) => p, hidePages: true });
+    const Render = plugins.find((p) => p.name === "your-site")!.render!;
+    render(<Render />);
+    expect(screen.queryByRole("button", { name: /^Pages/ })).toBeNull();
   });
 });
 

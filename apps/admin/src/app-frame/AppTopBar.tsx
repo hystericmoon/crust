@@ -167,13 +167,13 @@ export function PublishButton({ onClick }: { onClick?: () => void }) {
   // On the pages screen the Publish panel is right there: go to it instead of reloading.
   if (onClick) {
     return (
-      <button type="button" className="af-publish" onClick={onClick}>
+      <button type="button" className="af-publish af-hero" onClick={onClick}>
         {label}
       </button>
     );
   }
   return (
-    <a className="af-publish" href={PUBLISH_HREF}>
+    <a className="af-publish af-hero" href={PUBLISH_HREF}>
       {label}
     </a>
   );

@@ -26,11 +26,7 @@
                 "level": "h1",
                 "align": "left",
                 "size": "display",
-                "eyebrow": "Services",
-                "placeholder": [
-                  "text",
-                  "eyebrow"
-                ]
+                "eyebrow": "Services"
               }
             },
             {
@@ -51,10 +47,7 @@
                   ]
                 },
                 "align": "left",
-                "tone": "muted",
-                "placeholder": [
-                  "text"
-                ]
+                "tone": "muted"
               }
             }
           ]
@@ -117,10 +110,7 @@
                       "level": "h3",
                       "align": "left",
                       "size": "normal",
-                      "eyebrow": "",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "eyebrow": ""
                     }
                   },
                   {
@@ -141,10 +131,7 @@
                         ]
                       },
                       "align": "left",
-                      "tone": "muted",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "tone": "muted"
                     }
                   }
                 ],
@@ -170,10 +157,7 @@
                       "level": "h3",
                       "align": "left",
                       "size": "normal",
-                      "eyebrow": "",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "eyebrow": ""
                     }
                   },
                   {
@@ -194,10 +178,7 @@
                         ]
                       },
                       "align": "left",
-                      "tone": "muted",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "tone": "muted"
                     }
                   }
                 ],
@@ -223,10 +204,7 @@
                       "level": "h3",
                       "align": "left",
                       "size": "normal",
-                      "eyebrow": "",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "eyebrow": ""
                     }
                   },
                   {
@@ -247,10 +225,7 @@
                         ]
                       },
                       "align": "left",
-                      "tone": "muted",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "tone": "muted"
                     }
                   }
                 ],
@@ -276,10 +251,7 @@
                       "level": "h3",
                       "align": "left",
                       "size": "normal",
-                      "eyebrow": "",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "eyebrow": ""
                     }
                   },
                   {
@@ -300,10 +272,7 @@
                         ]
                       },
                       "align": "left",
-                      "tone": "muted",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "tone": "muted"
                     }
                   }
                 ],
@@ -362,10 +331,7 @@
                   ]
                 },
                 "align": "center",
-                "tone": "muted",
-                "placeholder": [
-                  "text"
-                ]
+                "tone": "muted"
               }
             },
             {
@@ -412,10 +378,7 @@
                 "badge": "Most booked",
                 "planStyle": "background",
                 "highlightStyle": "primary",
-                "titleLevel": "h3",
-                "placeholder": [
-                  "plans"
-                ]
+                "titleLevel": "h3"
               }
             }
           ]
@@ -476,11 +439,7 @@
                   ]
                 ],
                 "headers": "both",
-                "look": "stripes",
-                "placeholder": [
-                  "caption",
-                  "rows"
-                ]
+                "look": "stripes"
               }
             }
           ]
@@ -540,9 +499,6 @@
                           "question": "Who owns the work?",
                           "answer": "You do, in full, once the last invoice is paid. Fonts and photos are licensed in your name."
                         }
-                      ],
-                      "placeholder": [
-                        "items"
                       ]
                     }
                   }

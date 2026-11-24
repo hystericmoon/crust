@@ -26,11 +26,7 @@
                 "level": "h1",
                 "align": "left",
                 "size": "display",
-                "eyebrow": "Work",
-                "placeholder": [
-                  "text",
-                  "eyebrow"
-                ]
+                "eyebrow": "Work"
               }
             },
             {
@@ -51,10 +47,7 @@
                   ]
                 },
                 "align": "left",
-                "tone": "muted",
-                "placeholder": [
-                  "text"
-                ]
+                "tone": "muted"
               }
             }
           ]
@@ -79,11 +72,7 @@
                 "level": "h2",
                 "align": "left",
                 "size": "normal",
-                "eyebrow": "Identity, stage and signage, 2026",
-                "placeholder": [
-                  "text",
-                  "eyebrow"
-                ]
+                "eyebrow": "Identity, stage and signage, 2026"
               }
             },
             {
@@ -120,9 +109,6 @@
                     "linkLabel": "",
                     "linkHref": ""
                   }
-                ],
-                "placeholder": [
-                  "slides"
                 ]
               }
             }
@@ -153,10 +139,7 @@
                       "id": "work-image-7",
                       "src": "/media/concrete-tower.jpg",
                       "alt": "A concrete tower seen straight up from below, in black and white",
-                      "caption": "",
-                      "placeholder": [
-                        "src"
-                      ]
+                      "caption": ""
                     }
                   },
                   {
@@ -167,10 +150,7 @@
                       "level": "h3",
                       "align": "left",
                       "size": "normal",
-                      "eyebrow": "",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "eyebrow": ""
                     }
                   },
                   {
@@ -191,10 +171,7 @@
                         ]
                       },
                       "align": "left",
-                      "tone": "muted",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "tone": "muted"
                     }
                   }
                 ],
@@ -205,10 +182,7 @@
                       "id": "work-image-10",
                       "src": "/media/atrium.jpg",
                       "alt": "A long vaulted atrium of steel and glass with one person walking through it",
-                      "caption": "",
-                      "placeholder": [
-                        "src"
-                      ]
+                      "caption": ""
                     }
                   },
                   {
@@ -219,10 +193,7 @@
                       "level": "h3",
                       "align": "left",
                       "size": "normal",
-                      "eyebrow": "",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "eyebrow": ""
                     }
                   },
                   {
@@ -243,10 +214,7 @@
                         ]
                       },
                       "align": "left",
-                      "tone": "muted",
-                      "placeholder": [
-                        "text"
-                      ]
+                      "tone": "muted"
                     }
                   }
                 ],
@@ -342,9 +310,6 @@
                     "linkLabel": "",
                     "linkHref": ""
                   }
-                ],
-                "placeholder": [
-                  "items"
                 ]
               }
             }
