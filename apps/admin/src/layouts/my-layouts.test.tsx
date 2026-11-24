@@ -84,7 +84,7 @@ async function openMine(githubOn = false) {
     </MyLayoutsProvider>,
   );
   await act(async () => openLayoutGallery(null));
-  fireEvent.click(screen.getByRole("radio", { name: /My layouts/ }));
+  fireEvent.click(screen.getByRole("radio", { name: /^Mine/ }));
 }
 
 describe("my-layouts: the pieces", () => {
@@ -179,8 +179,9 @@ describe("my-layouts: the gallery tab", () => {
   it("inserts a saved layout as one undo step, with fresh ids", async () => {
     localStorage.setItem("crust:my-layouts", JSON.stringify([savedLayout()]));
     await openMine();
-    expect(screen.getByRole("radio", { name: "My layouts (1)" })).toBeTruthy();
+    expect(screen.getByRole("radio", { name: "Mine (1)" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: /^Kept section/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Add" }));
     const set = dispatch.mock.calls.find(([a]) => a.type === "setData")![0];
     expect(set.recordHistory).toBe(true);
     expect(set.data.content).toHaveLength(3);

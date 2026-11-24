@@ -100,10 +100,11 @@ const screens = [
   // F091: the Pages panel in the left bar, and a page's menu open.
   ["Pages panel", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Your site")', '.af-place-link:has(strong:text-is("Pages"))', '.pp-group-title:has-text("In the menu")']],
   ["Pages panel, page menu", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("Your site")', '.af-place-link:has(strong:text-is("Pages"))', 'button[aria-label^="More for"]', '.pp-menu']],
-  // F088: the Add panel's pictures (Hero picked, then Show more), and the big gallery behind "See larger".
-  ["add section panel, Hero", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("This page")', '.af-add-section', '.af-chip:text-is("Hero")']],
-  ["add section panel, show more", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("This page")', '.af-add-section', '.af-addsec button:has-text("more layouts")']],
-  ["layout gallery, Hero", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("This page")', '.af-add-section', 'button:has-text("See larger")', '.lg-cat:has-text("Hero")']],
+  // F098: the one full-screen gallery: opened from This page, a layout chosen, the Hero topic, and the Mine tab.
+  ["layout gallery", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("This page")', '.af-add-section', "dialog[open]"]],
+  ["layout gallery, Hero chosen", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("This page")', '.af-add-section', "select:.lg-dialog select:has(option[value=Hero])=Hero", ".lg-card-button"]],
+  ["layout gallery, whole pages", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("This page")', '.af-add-section', "select:.lg-dialog select:has(option[value=page])=page"]],
+  ["layout gallery, Mine", "/#/edit?path=/", null, null, ['[class*="NavItem-link"]:has-text("This page")', '.af-add-section', '.lg-kind-option:has-text("Mine")']],
   // F078: the Table's cells, the Video's notes, Pricing's Style tab, an Icon list switched to Numbers.
   ["Table cells", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Table"]'],
   ["Video notes", "/#/post?slug=check-blocks", blocksPost, '[data-puck-component^="Video"]'],
@@ -119,7 +120,7 @@ const screens = [
   ["Columns Style tab, boxes and highlight", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { then: ['button:text-is("Columns"):visible', '.tb-tab:has-text("Style"):visible', '[aria-label="Box behind each column"] [aria-label="Muted"]:visible', '[aria-label="Highlight a column"] [aria-label="Column 2"]:visible'] }],
   // F082: the post page design with its Post title block selected, the blog design's starting designs, and the Posts screen's design cards.
   ["post page design, title selected", "/#/design?kind=post", null, '[data-puck-component^="PostTitle"]', []],
-  ["blog page design, starting designs", "/#/design?kind=blog", null, null, ['button:has-text("Layouts")', '.lg-kind-option:has-text("Starting designs")']],
+  ["blog page design, starting designs", "/#/design?kind=blog", null, null, ['button:has-text("Layouts")', "select:.lg-dialog select:has(option[value=page])=page"]],
   ["Page not found design", "/#/design?kind=notFound", null, null, []],
   ["posts screen with designs", "/#/posts", null, null, [], { wait: ".dz-status" }],
   // F081: the media library's photo details with the focal point picker.
@@ -171,7 +172,11 @@ try {
     // Buttons to press in order; a last "dialog[open]" only waits for the dialog to be there.
     for (const button of clicks) {
       if (button === "dialog[open]") await page.waitForSelector(button, { timeout: 10_000 });
-      else await page.locator(button).first().click();
+      else if (button.startsWith("select:")) {
+        // "select:<css>=<value>" picks an option in a dropdown.
+        const at = button.lastIndexOf("=");
+        await page.locator(button.slice(7, at)).first().selectOption(button.slice(at + 1));
+      } else await page.locator(button).first().click();
       await page.waitForTimeout(800);
     }
     if (select) {

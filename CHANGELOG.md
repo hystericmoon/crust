@@ -4,6 +4,10 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **One gallery to add sections from (2026-11-24).** Add section, the "+" between sections and the Layouts button all open the same
+  full-screen gallery: tabs Layouts and Mine, search, Type and Topic lists, and an "Insert" choice (at the top or after any section)
+  with an Add button. The new section lands selected and is announced. The sections list in This page no longer has buttons inside a
+  button (a screen-reader fix).
 - **Add a section right where you look (2026-11-24).** The "+" between sections on the page now says what it does ("Add section here",
   "at the top", "at the end"). On a phone or tablet the words are always showing; on a computer they open when you point at it or
   press Tab to it. A selected section's toolbar now has words next to the icons: Move up / Move down, Duplicate and Delete.

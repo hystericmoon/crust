@@ -7,6 +7,21 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
+- **2026-11-24: F098 one gallery to add sections from. Built, waiting for your review.**
+  Adding a section now always opens the same full-screen gallery, whether you press **Add section** in This page, a **+** between sections,
+  or **Layouts** at the top. It has two tabs, **Layouts** and **Mine**, a search box, and **Type** (Sections, Whole pages, Linked) and
+  **Topic** (Hero, Pricing, ...) lists. Click a picture to choose it (it gets a purple frame), then pick **Insert** (At the top, or After any
+  section; it starts where you pressed) and press **Add**. The new section lands selected and is announced. Add stays off until you choose.
+  **To try:** open a page, click This page, Add section; choose Topic > Pricing, click a picture, change Insert to "At the top", press Add;
+  then press a "+" between two sections and see the gallery start there; try the Mine tab; press Esc to close.
+  Also: the old small Add panel is gone; "Add an element" (single blocks) moved under the sections list in This page.
+  Accessibility: a real dialog (Esc closes, focus goes to Search, comes back after); every choice is a button or a labelled list, 40px high;
+  the Add result is announced. Also fixed: the sections list in This page had buttons nested inside a button (a screen-reader problem that
+  the accessibility check had not been looking at); rows are now plain boxes with the two real buttons inside.
+  Spotted, not touched (F096): Puck's own **Blocks, Outline and Fields** icons still show in the left rail beside This page / Your site.
+  Not run here: `cargo`; no Rust changed.
+  Next: F099 (a section's settings in the left panel, spike first).
+
 - **2026-11-24: F097 add a section where you look. Built, waiting for your review.**
   The round "+" between sections on the page is now a labelled button: **Add section here** (or at the top / at the end). On a computer it
   grows into a pill with those words when you point at it or press Tab to it; on touch screens the words are always showing. It opens the
@@ -26,15 +41,6 @@ later session must know; keep the newest 3 entries here.
   and will draw them with F097/F098 unless you want it first. Accessibility: both places are real buttons with visible names and a back
   button that names its destination; the browser accessibility check passes in light and dark. Not run here: `cargo` (this container lacks a
   Linux library); no Rust changed.
-
-- **2026-11-24: F095 the app's new look (B, "Magic touch") and Instrument Sans. Built, waiting for your review.**
-  You chose B from the side-by-side page and asked for a new typeface; the app now uses Instrument Sans (already bundled, free, works offline).
-  Buttons and cards are rounder, status in the Pages list is a pill with words, the selected page glows once, cards in the template and layout
-  galleries get a faint cursor light, and Publish has the one coloured edge. No constant motion; reduce-motion switches it all off.
-  **To try:** open the preview (link in the PR), open Pages in the left bar and click a page (watch the glow once); open Start from a template
-  and move the cursor over a card; compare light and dark with the sun/moon button; look at Publish.
-  Accessibility: contrast pairs unchanged and tested; inputs keep the strong border; the browser accessibility check passes in light and dark.
-  Not run here: `cargo test` and `cargo clippy` (this cloud container lacks a Linux library the desktop app needs); no Rust changed and CI runs them.
 
 - **2026-11-11 (later): the app's first real release, and a home page for Crust.**
   **Release 0.1.1 is live** at https://crust-downloads.pages.dev (Mac and Windows). The owner installed it on his Mac and it opens; he has

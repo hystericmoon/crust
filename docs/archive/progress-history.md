@@ -5,6 +5,16 @@ short. Older "Current" entries (newest first) and the older log.
 
 ## F093 (archived 2026-11-11)
 
+
+- **2026-11-24: F095 the app's new look (B, "Magic touch") and Instrument Sans. Built, waiting for your review.**
+  You chose B from the side-by-side page and asked for a new typeface; the app now uses Instrument Sans (already bundled, free, works offline).
+  Buttons and cards are rounder, status in the Pages list is a pill with words, the selected page glows once, cards in the template and layout
+  galleries get a faint cursor light, and Publish has the one coloured edge. No constant motion; reduce-motion switches it all off.
+  **To try:** open the preview (link in the PR), open Pages in the left bar and click a page (watch the glow once); open Start from a template
+  and move the cursor over a card; compare light and dark with the sun/moon button; look at Publish.
+  Accessibility: contrast pairs unchanged and tested; inputs keep the strong border; the browser accessibility check passes in light and dark.
+  Not run here: `cargo test` and `cargo clippy` (this cloud container lacks a Linux library the desktop app needs); no Rust changed and CI runs them.
+
 - **2026-11-10: F093 Words and accessibility sweep (built, waiting for your review). Milestone 9 is complete:
   F085 to F093 are all built and waiting for your review.**
   Nothing on screen says "GitHub" any more: a change is **saved** (kept in your site) or **kept in this browser**

@@ -9,7 +9,6 @@ import {
   describeInsertion,
   filterLayouts,
   insertionPoint,
-  getAddAt,
   openLayoutGallery,
   planLayoutInsert,
   topLevelIndexOf,
@@ -152,11 +151,12 @@ describe("layout-library: gallery", () => {
 
   it("opens with Sections, categories, search and where it will add", async () => {
     await openAt(1);
-    expect(screen.getByRole("heading", { name: "Add a layout" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Add a section" })).toBeTruthy();
     expect(screen.getByText("Adds between “Welcome” and “About us”.")).toBeTruthy();
-    expect(screen.getByRole("radio", { name: "Sections" }).getAttribute("aria-checked")).toBe("true");
+    expect(screen.getByRole("radio", { name: "Layouts" }).getAttribute("aria-checked")).toBe("true");
+    expect((screen.getByRole("combobox", { name: "Type" }) as HTMLSelectElement).value).toBe("section");
     expect(screen.getAllByRole("button", { name: /^Hero/ }).length).toBeGreaterThan(0);
-    expect(screen.getByRole("status").textContent).toBe(`${sectionLayouts.length} sections`);
+    expect(document.querySelector(".lg-count")!.textContent).toBe(`${sectionLayouts.length} sections`);
   });
 
   it("previews are pictures: hidden from screen readers and out of the tab order", async () => {
@@ -169,17 +169,18 @@ describe("layout-library: gallery", () => {
 
   it("filters by category and search, with a way back from no results", async () => {
     await openAt(null);
-    fireEvent.click(screen.getByRole("button", { name: /^Pricing/ }));
-    expect(screen.getByRole("status").textContent).toMatch(/in Pricing$/);
+    fireEvent.change(screen.getByRole("combobox", { name: "Topic" }), { target: { value: "Pricing" } });
+    expect(document.querySelector(".lg-count")!.textContent).toMatch(/in Pricing$/);
     fireEvent.change(screen.getByRole("searchbox", { name: "Search layouts" }), { target: { value: "zebra" } });
     expect(screen.getByText(/No layouts match “zebra” in Pricing/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Show all layouts" }));
-    expect(screen.getByRole("status").textContent).toBe(`${sectionLayouts.length} sections`);
+    expect(document.querySelector(".lg-count")!.textContent).toBe(`${sectionLayouts.length} sections`);
   });
 
   it("inserts the picked layout as one undoable step, selects it and closes", async () => {
     await openAt(1);
     fireEvent.click(screen.getByRole("button", { name: /^Three plans Pricing/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Add" }));
     const set = dispatch.mock.calls.find(([a]) => a.type === "setData")![0];
     expect(set.recordHistory).toBe(true);
     expect(set.data.content).toHaveLength(3);
@@ -190,10 +191,11 @@ describe("layout-library: gallery", () => {
 
   it("whole pages tab inserts every section", async () => {
     await openAt(0);
-    fireEvent.click(screen.getByRole("radio", { name: "Whole pages" }));
+    fireEvent.change(screen.getByRole("combobox", { name: "Type" }), { target: { value: "page" } });
     expect(screen.queryByRole("button", { name: /^Hero/ })).toBeNull();
     // F080: the first library's pages are listed under "Simple", after the new ones.
     fireEvent.click(within(screen.getByRole("list", { name: /^Simple/ })).getByRole("button", { name: /^Services/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Add" }));
     const set = dispatch.mock.calls.find(([a]) => a.type === "setData")![0];
     expect(set.data.content).toHaveLength(2 + pageLayouts.find((p) => p.id === "page-services")!.sections.length);
   });
@@ -242,9 +244,9 @@ describe("layout-library: + buttons on the canvas", () => {
     const add = await screen.findByRole("button", { name: /Add section/ });
     expect(add.tabIndex).toBe(0);
     await act(async () => fireEvent.click(add));
-    // F088: the pictures open in the Add panel, at the spot the bar chose.
-    expect(getAddAt()).toBe(0);
-    expect(dispatch.mock.calls.some(([a]) => a.type === "setUi" && a.ui.plugin.current === "this-page")).toBe(true);
+    // F098: the one gallery opens, on an empty page.
+    expect(screen.getByRole("heading", { name: "Add a section" })).toBeTruthy();
+    expect(screen.getByText("Adds to this empty page.")).toBeTruthy();
   });
 
   it("between sections, the + bars are labelled buttons you can reach with Tab", async () => {
