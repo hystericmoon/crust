@@ -122,6 +122,12 @@ export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel, stylesPanel
   function SectionSettings() {
     const item = usePuck((s) => s.selectedItem);
     const label = usePuck((s) => (item ? (s.config.components[item.type]?.label ?? item.type) : ""));
+    const parent = usePuck((s) => {
+      const id = s.selectedItem?.props?.id as string | undefined;
+      const p = id ? s.getParentById(id) : undefined;
+      const parentId = p?.props?.id as string | undefined;
+      return p && parentId ? { id: parentId, label: s.config.components[p.type]?.label ?? p.type } : null;
+    });
     const getPuck = useGetPuck();
     const heading = useRef<HTMLHeadingElement>(null);
     useEffect(() => heading.current?.focus(), []);
@@ -131,6 +137,20 @@ export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel, stylesPanel
         <h2 className="af-panel-title" ref={heading} tabIndex={-1}>
           {label} settings
         </h2>
+        {parent ? (
+          // Puck's own "go up to the parent" link lived in the right panel; a card inside Columns needs it here.
+          <button
+            type="button"
+            className="af-panel-link"
+            onClick={() => {
+              const puck = getPuck();
+              const sel = puck.getSelectorForId(parent.id);
+              if (sel) puck.dispatch({ type: "setUi", ui: { itemSelector: sel }, recordHistory: false });
+            }}
+          >
+            {parent.label}
+          </button>
+        ) : null}
         <Puck.Fields wrapFields={false} />
       </div>
     );
