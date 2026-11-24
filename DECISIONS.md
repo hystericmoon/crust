@@ -3943,3 +3943,12 @@ No design snapshot (words and accessibility only); the glossary below is the rec
 - "Add an element" (single blocks) moved to a fold under the sections list in This page.
 - Puck's outline row is a focusable "button" holding two real buttons (axe nested-interactive, serious). Nothing had checked it before. `useCleanOutline` in `app-frame/rail.tsx` strips role/tabindex/aria from the row; mouse dragging is unaffected, keyboard moving is Move up / Move down on the toolbar (and Alt+arrows).
 - Found, not changed: Puck still adds its own Blocks, Outline and Fields rail icons (baseline build shows them).
+
+## F099 (2026-11-24): a section's settings in the left panel
+
+- **Spike result: it works cleanly.** Puck 0.23 exports `Puck.Fields` (a component, `wrapFields` prop) that draws the selected item's fields from Puck's own
+  state; it renders fine inside a left plugin, so no fields code was rewritten and every custom field (image picker, colours, responsive, links) is unchanged.
+- "This page" shows `SectionSettings` (Back to Outline, "<Section> settings", Puck.Fields) while something is selected, and the outline again after Back
+  (Back clears the selection). Heading takes focus on open. Picking a section from "Your site" or with the left bar shut switches to "This page" (PageFirstWatcher).
+- The right panel no longer follows the selection; it is only for Page/Post settings and Next steps. The left panel is not hidden on pick.
+- Not done: the Outline is still Puck's list (not small layout drawings), and Puck's stock Blocks/Outline/Fields icons in the rail (see F096).

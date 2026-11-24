@@ -4,6 +4,9 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **A section's settings now open in the left panel (2026-11-24).** Click a section and its settings replace the sections list under a
+  "Back to Outline" button; the right-hand panel stays closed (it is only for the page's own settings and Next steps). Same fields as before.
+
 - **One gallery to add sections from (2026-11-24).** Add section, the "+" between sections and the Layouts button all open the same
   full-screen gallery: tabs Layouts and Mine, search, Type and Topic lists, and an "Insert" choice (at the top or after any section)
   with an Add button. The new section lands selected and is announced. The sections list in This page no longer has buttons inside a

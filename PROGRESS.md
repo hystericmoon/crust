@@ -7,6 +7,15 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
+- **2026-11-24: F099 a section's settings in the left panel. Built, waiting for your review.**
+  Click a section (on the page or in the list) and the left panel switches to **"<Section> settings"** with **Back to Outline** at the top;
+  Back returns to the sections list. The right panel no longer opens when you pick something; it is only for Page settings and Next steps.
+  The spike worked: Puck lets the left panel reuse its own settings form, so every field behaves exactly as before.
+  **To try:** open a page, click a section, change a field, press Back to Outline; click a section while Your site is open (it jumps to This page).
+  Accessibility: Back is a real button naming its destination; focus lands on the settings heading; browser check passes in light and dark.
+  Not done: the Outline is still a plain list and Puck's old Blocks/Outline/Fields icons still show in the rail. Not run here: `cargo`.
+  Next: nothing unbuilt in Milestone 10; waiting for your review of F095–F099.
+
 - **2026-11-24: F098 one gallery to add sections from. Built, waiting for your review.**
   Adding a section now always opens the same full-screen gallery, whether you press **Add section** in This page, a **+** between sections,
   or **Layouts** at the top. It has two tabs, **Layouts** and **Mine**, a search box, and **Type** (Sections, Whole pages, Linked) and

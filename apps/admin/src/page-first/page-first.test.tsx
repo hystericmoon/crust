@@ -155,6 +155,25 @@ describe("page first: the right panel", () => {
   }, BUILDER_TEST_MS);
 });
 
+describe("page first: a section's settings in the left panel (F099)", () => {
+  it("picking a section shows its settings under Back to Outline; the right panel stays shut; Back returns to the outline", async () => {
+    await openBuilder();
+    fireEvent.click(screen.getByRole("button", { name: "This page" }));
+    const open = await waitFor(() => {
+      const b = document.querySelector<HTMLElement>('[class*="Layer-clickable"]');
+      if (!b) throw new Error("no outline row yet");
+      return b;
+    });
+    fireEvent.click(open);
+    const back = await screen.findByRole("button", { name: "Back to Outline" });
+    expect(screen.getByRole("heading", { name: /settings$/ })).toBeTruthy();
+    expect(panelShown()).toBe(false);
+    fireEvent.click(back);
+    await waitFor(() => expect(screen.queryByRole("button", { name: "Back to Outline" })).toBeNull());
+    expect(screen.getByRole("button", { name: "Add section" })).toBeTruthy();
+  }, BUILDER_TEST_MS);
+});
+
 describe("page first: blocks live in the Add panel", () => {
   it("the first icon on the left is This page, holding the outline, Add section and the block list", () => {
     const [add] = railPlugins({ pages: () => [], hrefFor: (p) => p });
