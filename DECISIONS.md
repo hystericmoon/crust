@@ -3929,3 +3929,8 @@ No design snapshot (words and accessibility only); the glossary below is the rec
 
 - The owner chose "Keep as is" for every "Replace me" item on the live site. Done by removing the `placeholder` marks from all nine files in `content/` (pages, posts, linked sections); text and photos are unchanged.
 - Tests in `packages/render` (`render.test.tsx`, `template-check.test.ts`) used the live `content/` folder as their sample, so changing the real site broke them. They now read a frozen copy of the old demo site in `packages/render/src/fixtures/sample-content/`.
+
+## The builder accessibility check, repaired (2026-11-24)
+
+- `npm run check:builder` had been passing locally on an old app build while CI (a fresh build) failed since F096. Three causes, all fixed: (1) it clicked the removed "Styles"/"Site"/"Pages" rail items and the Add panel's chips; it now goes through "Your site" / "This page" (matching the place title with `strong:text-is`, because the subtitles contain words like "look"); (2) it assumed the Home page has the old demo's blocks; it now seeds a frozen demo Home (`packages/render/src/fixtures/sample-content`) as a browser draft, so changing the real site never breaks it; (3) a real finding: with a left panel open, the drag library put `aria-pressed`/`aria-grabbed` back on the page's blocks after we removed them; the canvas observer in `KeyboardEditing.tsx` now also watches those two attributes.
+- Lesson for later sessions: run `npm run build` before `npm run check:builder` locally, or the check tests an old build.

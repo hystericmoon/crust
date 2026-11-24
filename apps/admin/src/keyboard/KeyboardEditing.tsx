@@ -390,7 +390,7 @@ export function KeyboardCanvas({ children, document: doc }: { children: ReactNod
     };
     doc.defaultView?.addEventListener("scroll", onScroll);
     const observer = new MutationObserver(relabel);
-    observer.observe(doc.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["aria-roledescription", "aria-describedby"] });
+    observer.observe(doc.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["aria-roledescription", "aria-describedby", "aria-pressed", "aria-grabbed"] });
     relabel();
     return () => {
       doc.removeEventListener("keydown", onKey, true);
