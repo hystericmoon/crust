@@ -413,6 +413,8 @@ const icons: Record<MoveKind, string> = {
   prevSlot: "M10 6l-6 6 6 6M4 12h16",
   nextSlot: "M14 6l6 6-6 6M20 12H4",
 };
+/** F097: the word beside a move icon on a selected section's toolbar. */
+const moveWords: Record<MoveKind, string> = { up: "Move up", down: "Move down", out: "Move out", into: "Move in", prevSlot: "Move left", nextSlot: "Move right" };
 const actionLabels: Record<MoveKind, string> = {
   up: "Move up (Alt+↑)",
   down: "Move down (Alt+↓)",
@@ -438,6 +440,7 @@ export function KeyboardActionBar({
   const config = usePuckSelector((s) => s.config);
   const id = usePuckSelector((s) => s.selectedItem?.props.id) as string | undefined;
   const moves = id ? availableMoves(data, config, id) : [];
+  const isSectionSel = usePuckSelector((s) => s.selectedItem?.type) === "Section";
   const moveGroup = moves.length ? (
     <>
       {moves.map((kind) => (
@@ -446,6 +449,7 @@ export function KeyboardActionBar({
             strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
             <path d={icons[kind]} />
           </svg>
+          {isSectionSel ? <span className="kb-word">{moveWords[kind]}</span> : null}
         </ActionBar.Action>
       ))}
     </>
@@ -453,7 +457,7 @@ export function KeyboardActionBar({
   // F089: a selected Section gets one row (Section, Style, Layout, Move, More); other blocks keep the plain bar.
   const isSection = usePuckSelector((s) => s.selectedItem?.type) === "Section";
   const typeBlock = isInlineType(usePuckSelector((s) => s.selectedItem?.type));
-  return (
+  const bar = (
     <ActionBar>
       <ActionBar.Group>
         {parentAction}
@@ -473,4 +477,6 @@ export function KeyboardActionBar({
       {isSection ? <SectionToolbar moves={moveGroup} /> : null}
     </ActionBar>
   );
+  // F097: on a section, Duplicate and Delete also say their names (CSS reads the button's title).
+  return isSection ? <div className="kb-words">{bar}</div> : bar;
 }

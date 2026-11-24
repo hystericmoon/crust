@@ -102,6 +102,20 @@
 .lg-inserters { position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: 2147483000; }
 .lg-insert, .lg-insert-empty { position: absolute; transform-origin: center; cursor: pointer; font-family: var(--app-font); }
 .lg-insert {
+  display: inline-flex; align-items: center; gap: 0; min-width: 32px; height: 32px; padding: 0; border: 2px solid var(--app-panel); border-radius: 16px;
+  background: var(--app-pri); color: var(--app-pri-fg); font-size: 13px; font-weight: 600; line-height: 1; white-space: nowrap;
+  box-shadow: 0 2px 8px var(--app-shadow);
+  opacity: 0; transition: opacity 150ms;
+}
+.lg-insert-plus { display: grid; place-items: center; width: 28px; font-size: 20px; font-weight: 700; }
+.lg-insert-words { max-width: 0; overflow: hidden; transition: max-width 150ms; }
+/* Shown while the pointer is over the page; each one is fully opaque under the pointer. */
+body:hover .lg-insert { opacity: 0.85; }
+.lg-insert:hover, .lg-insert:focus-visible { opacity: 1; background: var(--app-pri-hover); }
+.lg-insert:hover .lg-insert-words, .lg-insert:focus-visible .lg-insert-words { max-width: 180px; padding-right: 12px; }
+.lg-insert:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; opacity: 1; }
+.lg-insert-empty { position: absolute; transform-origin: center; cursor: pointer; font-family: var(--app-font); }
+.lg-insert {
   width: 32px; height: 32px; padding: 0; border: 2px solid var(--app-panel); border-radius: 50%;
   background: var(--app-pri); color: var(--app-pri-fg); font-size: 20px; font-weight: 700; line-height: 1;
   box-shadow: 0 2px 8px var(--app-shadow);
@@ -120,11 +134,12 @@ body:hover .lg-insert { opacity: 0.85; }
 .lg-insert-empty:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .lg-card, .lg-insert { transition: none; }
+  .lg-card, .lg-insert, .lg-insert-words { transition: none; }
 }
 @media (hover: none) {
   /* No hover on touch screens: keep the buttons visible. */
-  .lg-insert { opacity: 0.85; }
+  .lg-insert { opacity: 0.95; }
+  .lg-insert-words { max-width: 180px; padding-right: 12px; }
 }
 
 /* --- My layouts (F027) ---------------------------------------------------------- */

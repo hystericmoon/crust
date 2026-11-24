@@ -4,6 +4,10 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Add a section right where you look (2026-11-24).** The "+" between sections on the page now says what it does ("Add section here",
+  "at the top", "at the end"). On a phone or tablet the words are always showing; on a computer they open when you point at it or
+  press Tab to it. A selected section's toolbar now has words next to the icons: Move up / Move down, Duplicate and Delete.
+
 - **The editor's left bar has two places (2026-11-24).** Instead of eight icons there are two: **This page** (your sections, with an
   "Add section" button) and **Your site** (Pages, Blog, Media, Look, Site settings, Help). Each opens in the same panel, one at a
   time, with a back button that says where it goes.

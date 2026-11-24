@@ -1054,7 +1054,7 @@
       "description": "Milestone 10 (an easier editor), docs/milestone-10.md; approved by the owner on 2026-11-24. Design: https://claude.ai/artifact/HPvK6t2a4bLW97MwfkAGzy. The canvas '+' bars are labelled 'Add section here', always visible on touch and reachable by Tab; the selected section's toolbar gets words (Move, Duplicate, Delete) beside the icons; '+ Add section' in the outline opens the same flow.",
       "depends_on": ["F096"],
       "done_check": "npm test -- add-section layout-library keyboard && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false,
       "review_note": ""

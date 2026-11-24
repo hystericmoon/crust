@@ -705,21 +705,23 @@ export function LayoutInserters({ document: doc }: { document?: Document }) {
           <span aria-hidden="true">+</span> Add section
         </button>
       ) : (
-        // Pointer shortcuts: keyboard users have the "Layouts" button, which adds after the selected section.
-        spots.map((s) => (
-          <button
-            key={s.index}
-            type="button"
-            className="lg-insert"
-            tabIndex={-1}
-            aria-hidden="true"
-            data-tip={s.index === 0 ? "Add section at the top" : s.index === content.length ? "Add section at the end" : "Add section here"}
-            style={{ top: s.top, left: s.left, transform: `translate(-50%, -50%) scale(${inv})` }}
-            onClick={() => openAddPanel(s.index)}
-          >
-            +
-          </button>
-        ))
+        // F097: real, labelled buttons: reachable by Tab, shown in full on touch screens and on focus.
+        spots.map((s) => {
+          const words = s.index === 0 ? "Add section at the top" : s.index === content.length ? "Add section at the end" : "Add section here";
+          return (
+            <button
+              key={s.index}
+              type="button"
+              className="lg-insert"
+              aria-label={words}
+              style={{ top: s.top, left: s.left, transform: `translate(-50%, -50%) scale(${inv})` }}
+              onClick={() => openAddPanel(s.index)}
+            >
+              <span aria-hidden="true" className="lg-insert-plus">+</span>
+              <span aria-hidden="true" className="lg-insert-words">{words}</span>
+            </button>
+          );
+        })
       )}
     </div>,
     doc.body,

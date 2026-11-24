@@ -7,6 +7,16 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
+- **2026-11-24: F097 add a section where you look. Built, waiting for your review.**
+  The round "+" between sections on the page is now a labelled button: **Add section here** (or at the top / at the end). On a computer it
+  grows into a pill with those words when you point at it or press Tab to it; on touch screens the words are always showing. It opens the
+  same pictures in This page as before. A selected section's toolbar now has words beside the icons: **Move up / Move down**, **Duplicate**,
+  **Delete**. **To try:** open a page, point between two sections and press the "+"; then Tab through the page and watch the bars appear;
+  click a section and read its toolbar.
+  Accessibility: the bars are real buttons, reachable by Tab, 32px, visible focus ring, words always visible on touch, no motion under
+  reduce-motion. Not run here: `cargo` (this container lacks a Linux library); no Rust changed.
+  Next: F098 (one gallery to add sections from).
+
 - **2026-11-24: F096 the editor's left bar now has two places: This page and Your site. Built, waiting for your review.**
   Eight icons became two. **This page** shows your sections top to bottom with a clear "Add section" button; pressing it (or a "+" on the page)
   opens the pictures of sections in the same place, with "Back to This page" at the top. **Your site** lists Pages, Blog, Media, Look,

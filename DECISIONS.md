@@ -3918,3 +3918,9 @@ No design snapshot (words and accessibility only); the glossary below is the rec
 - Kept Puck's own outline inside "This page" for now instead of drawing each section as a small layout; the plugin is named `this-page` (it keeps Puck's block list for dragging). Drawing the small layouts is left for F097/F098 (decided alone, reversible).
 - The post editor has no Pages place (`hidePages`), as it had no Pages icon before.
 - Added the Milestone 10 pre-approval line to CLAUDE.md at the owner's request ("option two").
+
+## F097 (2026-11-24)
+
+- The "+" bars were pointer-only (hidden from keyboard and screen readers). They are now real buttons with the name "Add section here / at the top / at the end"; hover/focus opens a pill, touch shows it always. The Tab order puts them after the page content (they live at the end of the canvas document); a bar per gap means a few extra tab stops, accepted for findability.
+- Words on a section's toolbar: Move buttons get a short word (Move up/down/in/out/left/right); Duplicate and Delete are Puck's own buttons, so their words come from the button's title through CSS (`.kb-words`), only on a selected Section. Other blocks keep the plain icon bar.
+- "+ Add section" in the outline was already done in F096; no change.
