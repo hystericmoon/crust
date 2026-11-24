@@ -3911,3 +3911,10 @@ No design snapshot (words and accessibility only); the glossary below is the rec
   replaces Geist for the app's text. Geist Mono stays for small print. Options: https://claude.ai/artifact/McnQo73g2kzTbjz6CXBwWu (Claude had
   recommended keeping Geist; the owner wanted a new character). To go back: `APP_FONTS` in `app-theme/fonts.ts` and `--app-font` in `app-theme.css`.
 - **Pages bar.** The status pill sits under the page name in the narrow left bar so long names keep their width.
+
+
+## F096 (2026-11-24)
+
+- Kept Puck's own outline inside "This page" for now instead of drawing each section as a small layout; the plugin is named `this-page` (it keeps Puck's block list for dragging). Drawing the small layouts is left for F097/F098 (decided alone, reversible).
+- The post editor has no Pages place (`hidePages`), as it had no Pages icon before.
+- Added the Milestone 10 pre-approval line to CLAUDE.md at the owner's request ("option two").

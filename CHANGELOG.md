@@ -4,6 +4,10 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **The editor's left bar has two places (2026-11-24).** Instead of eight icons there are two: **This page** (your sections, with an
+  "Add section" button) and **Your site** (Pages, Blog, Media, Look, Site settings, Help). Each opens in the same panel, one at a
+  time, with a back button that says where it goes.
+
 - **A new look for the app: softer, with a new typeface (2026-11-24).** The editor and admin screens now use Instrument Sans, with
   rounder buttons and cards, small status pills in the Pages list (Published, Changed, Draft), and a selected page that glows once
   when you pick it. Template and layout cards get a faint light that follows your cursor. The Publish button has a thin

@@ -1043,7 +1043,7 @@
       "description": "Milestone 10 (an easier editor), docs/milestone-10.md; approved by the owner on 2026-11-24. Design: https://claude.ai/artifact/HPvK6t2a4bLW97MwfkAGzy. Two rail places instead of eight icons. This page: the outline drawn as small layouts with '+ Add section'. Your site: Pages, Blog, Media, Look, Site settings, Help, each opening in the same panel with a back arrow that names where you came from (one panel at a time). Words follow F093.",
       "depends_on": ["F095"],
       "done_check": "npm test -- app-frame page-first add-section layout-library styles-panel review-fixes && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true,
       "reviewed": false,
       "review_note": ""

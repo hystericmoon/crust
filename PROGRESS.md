@@ -7,6 +7,16 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
+- **2026-11-24: F096 the editor's left bar now has two places: This page and Your site. Built, waiting for your review.**
+  Eight icons became two. **This page** shows your sections top to bottom with a clear "Add section" button; pressing it (or a "+" on the page)
+  opens the pictures of sections in the same place, with "Back to This page" at the top. **Your site** lists Pages, Blog, Media, Look,
+  Site settings and Help with a short line under each; open one and it replaces the list, with "Back to Your site" to return.
+  **To try:** open the preview (link in the PR), click This page, Add section, pick a layout; then Your site, Look, Back, Site settings.
+  Not done yet (honest note): the sections list is still Puck's own outline, not small drawings of each layout; I kept it so nothing breaks
+  and will draw them with F097/F098 unless you want it first. Accessibility: both places are real buttons with visible names and a back
+  button that names its destination; the browser accessibility check passes in light and dark. Not run here: `cargo` (this container lacks a
+  Linux library); no Rust changed.
+
 - **2026-11-24: F095 the app's new look (B, "Magic touch") and Instrument Sans. Built, waiting for your review.**
   You chose B from the side-by-side page and asked for a new typeface; the app now uses Instrument Sans (already bundled, free, works offline).
   Buttons and cards are rounder, status in the Pages list is a pill with words, the selected page glows once, cards in the template and layout
