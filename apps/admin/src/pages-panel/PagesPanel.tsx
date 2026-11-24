@@ -302,7 +302,7 @@ export function PagesPanel({
             </small>
             {row.placeholders ? <span className="pp-replace">{placeholderSummary(row.placeholders)}</span> : null}
           </span>
-          <span className="pp-status">{status.label}</span>
+          <span className={`pp-status is-${status.key}`}>{status.label}</span>
           <button
             type="button"
             className="pp-more"

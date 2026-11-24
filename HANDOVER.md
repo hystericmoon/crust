@@ -22,6 +22,7 @@ the key passed into Tauri's config, installers on a GitHub release because Pages
 - Option pages (Claude artifacts, private): options https://claude.ai/artifact/GbFfvBCb95Qc2ZzZ2cuf7M, draft https://claude.ai/artifact/CEvDDzYVRAjxUCEUcPEtrE.
 
 Next, in order:
+0. **F095 (new look B + Instrument Sans) is built and waits for the owner's review** (`needs_review`). When he says Pass, record `reviewed: true` with his note; if he says Fix, list it and ask before reworking.
 1. Ask the owner for the bugs he saw in 0.1.1 (app, home page or downloads page). Fix what he reports, one PR per fix (automatic merge).
 2. **0.1.2 is built and on the downloads page** (Actions -> Desktop installers run 7, success, 2026-11-11 ~18:30 Jakarta; Mac, Windows, Linux).
    Waiting on the owner: does his installed 0.1.1 show "update ready"? Only he can see it. If yes, add the "Updates itself" point back to
@@ -41,7 +42,7 @@ Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
-Last updated: 2026-11-11 (saved at the owner's request, after PR #92); branch `ccr-d50f7e80-weuq18`, everything merged to main.
+Last updated: 2026-11-24 (F095 built, PR open; the 0.1.1 bugs and the update check are still open); branch `ccr-d50f7e80-weuq18`.
 
 ## Where things stand
 

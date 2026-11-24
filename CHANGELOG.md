@@ -4,6 +4,12 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **A new look for the app: softer, with a new typeface (2026-11-24).** The editor and admin screens now use Instrument Sans, with
+  rounder buttons and cards, small status pills in the Pages list (Published, Changed, Draft), and a selected page that glows once
+  when you pick it. Template and layout cards get a faint light that follows your cursor. The Publish button has a thin
+  coloured edge; it is the only one. Nothing keeps moving: the glow plays once, and it is off if your computer is set to reduce
+  motion. Colours, contrast and light/dark are unchanged.
+
 - **Crust has a home page, and the app's first signed release is out (2026-11-11).** https://crust-home.pages.dev says what
   Crust is and links to the templates, help and the download page. Version 0.1.1 of the Mac and Windows app is on the
   download page; it is the first one that can update itself. In the editor the site menu (top left) now opens over the

@@ -1025,6 +1025,17 @@
       "needs_review": true,
       "reviewed": true,
       "review_note": "Pass (owner, 2026-11-11)"
+    },
+    {
+      "id": "F095",
+      "title": "App look B: Magic touch and Instrument Sans",
+      "description": "Rework of the F085 look, asked for by the owner on 2026-11-24 after a side-by-side snapshot (https://claude.ai/artifact/3SHVDpiz7maCa6JKafr2kP; he chose B). Font: he asked for a new character, so Instrument Sans (https://claude.ai/artifact/McnQo73g2kzTbjz6CXBwWu). The admin keeps the Violet night colours and gets softer corners, a top highlight on primary buttons, cards with a tinted footer, status pills, a selection light that plays once, a faint cursor spotlight on cards, and a coloured edge on the Publish button only. All motion plays once and is off under reduce-motion. Our own code only (Magic UI is MIT; nothing copied). Colours stay tokens.",
+      "depends_on": ["F085"],
+      "done_check": "npm test -- app-look app-theme pages-panel app-frame && npm run check:builder",
+      "passes": true,
+      "needs_review": true,
+      "reviewed": false,
+      "review_note": ""
     }
   ]
 }

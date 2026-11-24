@@ -3887,3 +3887,20 @@ No design snapshot (words and accessibility only); the glossary below is the rec
   Putting on the downloads site needs `all`, so every computer finds its update.
 - Linux is x86-64 only for now; ARM Linux not built (reversible, say if wanted). The updates feed gets `linux-x86_64`.
 - Version bumped to **0.1.2** (the planned release) with a what's-new entry. Never run end to end yet: the first run is the test.
+
+## 2026-11-24 — F095 App look B: Magic touch and Instrument Sans (owner: "Let's go with B", then "I want a new character")
+
+- **Why a rework item.** The owner asked for it, so F095 was added to features.json (CLAUDE.md: a rework item only when the owner asks). F085 is not
+  rewritten: F095 only adds `app-theme/app-look.css` on top of its colour tokens.
+- **Chosen from a side-by-side snapshot** (Pages list, Editor, Publish; A today, B Magic touch, C full Magic UI): https://claude.ai/artifact/3SHVDpiz7maCa6JKafr2kP.
+  Magic UI is MIT but nothing is copied; the look is redrawn in our own CSS. The Pro templates ($199) are not used.
+- **What B is.** Radius tokens (`--app-r-btn` 10px, `--app-r-card` 12px, `--app-r-field` 8px); a top highlight on primary buttons; cards with a tinted
+  footer; status pills (words stay, colour only backs them up); the selected page's light travels round its border once (1.6 s) then stops;
+  a faint cursor spotlight on cards (`spotlight.ts`); the coloured edge only on the Publish button (`.af-hero`). Colours are tokens only
+  (the F085 guard test still passes). Magic UI's constant shimmer, rainbow glow and looping borders were left out: they fail WCAG 2.2.2 without a
+  pause control and tire the eye in a tool used for hours. Motion is off under reduce-motion.
+- **Kept.** The violet accent and every contrast pair. Inputs keep the strong border (3:1), not Magic UI's paler hairline.
+- **Font.** Instrument Sans (SIL OFL 1.1; already bundled with the site fonts in F070, so no new file and the desktop app still works offline)
+  replaces Geist for the app's text. Geist Mono stays for small print. Options: https://claude.ai/artifact/McnQo73g2kzTbjz6CXBwWu (Claude had
+  recommended keeping Geist; the owner wanted a new character). To go back: `APP_FONTS` in `app-theme/fonts.ts` and `--app-font` in `app-theme.css`.
+- **Pages bar.** The status pill sits under the page name in the narrow left bar so long names keep their width.
