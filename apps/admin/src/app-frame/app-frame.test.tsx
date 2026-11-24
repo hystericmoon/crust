@@ -30,6 +30,13 @@ describe("app frame: site menu is not clipped", () => {
   });
 });
 
+describe("app frame: rail shows only the two places", () => {
+  it("hides Puck's own Blocks, Outline and Fields icons, keeping items 3 and 4 (This page, Your site)", () => {
+    const css = readFileSync("apps/admin/src/app-frame/app-frame.css", "utf8");
+    expect(css).toMatch(/NavItem"\]:not\(:nth-child\(3\)\):not\(:nth-child\(4\)\)\s*\{\s*display:\s*none/);
+  });
+});
+
 describe("app frame: saving on its own", () => {
   it("groups a burst of changes into one save once editing pauses", () => {
     vi.useFakeTimers();

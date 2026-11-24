@@ -3952,3 +3952,7 @@ No design snapshot (words and accessibility only); the glossary below is the rec
   (Back clears the selection). Heading takes focus on open. Picking a section from "Your site" or with the left bar shut switches to "This page" (PageFirstWatcher).
 - The right panel no longer follows the selection; it is only for Page/Post settings and Next steps. The left panel is not hidden on pick.
 - Not done: the Outline is still Puck's list (not small layout drawings), and Puck's stock Blocks/Outline/Fields icons in the rail (see F096).
+
+## 2026-11-24: Rail shows only This page and Your site; F095–F099 passed
+
+Owner passed F095–F099 and asked to remove Puck's default Blocks/Outline/Fields rail icons. Puck always adds them (defaults prepended, Fields appended), so they are hidden in `app-frame.css` (all but items 3 and 4). Checked in Chromium at desktop width: only "This page" and "Your site" show. Phones open Quick edit, which has no rail.
