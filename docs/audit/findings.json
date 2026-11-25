@@ -1,0 +1,94 @@
+{
+  "audit": "pilot (areas 1 First run and 3 Page editor), 2026-11-25",
+  "method_notes": "Capture v2 (Haiku) spot-checked by Sonnet. v1 had two script artifacts (inert gallery thumbnails counted as targets; tab walk that blurred focus) and was discarded. No people involved: findings are measured, reproduced or judged.",
+  "findings": [
+    {
+      "id": "A001", "screen": "S25", "journey": "edit a section", "severity": "S2", "effort": "S",
+      "title": "The selected section's toolbar shows each move label twice",
+      "principle": "Nielsen 8, minimal design; consistency",
+      "confidence": "measured",
+      "evidence": "audit-v2/S25/desktop-light/screenshot.png: 'Move down  Move down (Alt+↓)'. Source: apps/admin/src/keyboard/KeyboardEditing.tsx (moveWords, actionLabels)",
+      "why": "The word from F097 and the full accessible label are both drawn, so the bar is wider and noisier than it needs to be, and the shortcut text reads like a typo.",
+      "options": ["Show the word only; keep the shortcut in the tooltip and in Keyboard shortcuts help", "Word plus a small key badge (Alt ↓)", "Icons only with tooltips (against the owner's F097 ask for words)"],
+      "recommended": 0, "status": "open"
+    },
+    {
+      "id": "A002", "screen": "S25", "journey": "edit a section", "severity": "S2", "effort": "S",
+      "title": "A button called \"root\" sits at the top of every top-level section's settings",
+      "principle": "Nielsen 2, match with the real world (internal word shown to a non-developer)",
+      "confidence": "measured",
+      "evidence": "audit-v2/S25/desktop-light/aria.json: button \"root\"; screenshot. Source: parent link added in F099, apps/admin/src/app-frame/rail.tsx (SectionSettings)",
+      "why": "For a section that sits directly on the page, the 'parent' is the page itself, whose internal name is root. The user sees developer jargon on a button that does something unclear.",
+      "options": ["Hide the parent link when the parent is the page (keep it for a card inside Columns)", "Show it as \"Page\" and make it open the page's settings", "Leave as is"],
+      "recommended": 0, "status": "open"
+    },
+    {
+      "id": "A003", "screen": "S20", "journey": "edit a section", "severity": "S3", "effort": "S",
+      "title": "\"Move in\" button's accessible name does not start with its visible words",
+      "principle": "WCAG 2.5.3 Label in Name (A); axe rule label-content-name-mismatch (serious)",
+      "confidence": "measured",
+      "evidence": "audit-v2/S20/*/axe.json: aria-label 'Move into block above (Alt+→)' vs visible 'Move in'. Borderline: the visible text is a prefix, axe compares whole words.",
+      "why": "A speech-control user saying 'click Move in' may not match 'Move into block above'.",
+      "options": ["Make the visible word 'Move into' (matches the name)", "Name the button 'Move in (Alt+→)' and keep the longer text as a description"],
+      "recommended": 0, "status": "open"
+    },
+    {
+      "id": "A004", "screen": "S01", "journey": "first run to published site", "severity": "S3", "effort": "S",
+      "title": "First run points to \"Pages → Start from a template\", a place that doesn't exist yet",
+      "principle": "Nielsen 6, recognition over recall; onboarding: one clear next step",
+      "confidence": "judged",
+      "evidence": "audit-v2/S01/desktop-light/screenshot.png: 'More templates, including premium ones, are in Pages → Start from a template.'",
+      "why": "Someone on their very first screen has no Pages panel to look in yet. The sentence also promises 'premium ones', which may raise a question about cost.",
+      "options": ["Make it a link that opens the full template picker", "Move the sentence to the end of the first publish", "Remove it from first run"],
+      "recommended": 0, "status": "open"
+    },
+    {
+      "id": "A005", "screen": "S01", "journey": "first run to published site", "severity": "S3", "effort": "M",
+      "title": "On a phone, 'Make my site' is below three full-size template cards",
+      "principle": "Mobile: thumb reach; progress visibility",
+      "confidence": "judged",
+      "evidence": "audit-v2/S01/phone-light/screenshot.png: one card fills about 370 px of an 800 px screen. Low priority: first run mostly happens on the desktop app.",
+      "why": "The main action is far below the fold, and nothing says there are more steps.",
+      "options": ["Compact cards on phones (small thumbnail beside two lines of text)", "Sticky 'Make my site' bar at the bottom", "Leave as is (desktop first)"],
+      "recommended": 2, "status": "open"
+    },
+    {
+      "id": "A006", "screen": "S21", "journey": "add a section", "severity": "S3", "effort": "S",
+      "title": "Layout card title buttons are 22 px tall",
+      "principle": "WCAG 2.5.8 target size minimum (AA)",
+      "confidence": "measured",
+      "evidence": "audit-v2/S21/desktop-light/targets.json: 84 real targets under 24 px, 76 pass the spacing exception, 8 do not",
+      "why": "Two pixels short of the 24 px minimum; most pass because of spacing, a few do not.",
+      "options": ["Give card buttons a 24 px minimum height", "Make the whole card the button"],
+      "recommended": 0, "status": "open"
+    },
+    {
+      "id": "A007", "screen": "S19,S20,S21,S22,S23,S25,S30,S31,S33", "journey": "editor shell", "severity": "S3", "effort": "S",
+      "title": "Editor top bar adds a second banner landmark; some panels sit outside any landmark",
+      "principle": "WCAG 1.3.1 / best practice (axe: landmark-no-duplicate-banner, landmark-unique, region)",
+      "confidence": "measured",
+      "evidence": "audit-v2/*/axe.json: .af-top flagged on 5 screens; 'region' on 6 screens",
+      "why": "Screen-reader users who jump between landmarks hear two banners and some content outside any region.",
+      "options": ["Give our top bar a unique name and let it replace Puck's header landmark", "Mark ours as a toolbar, not a banner"],
+      "recommended": 0, "status": "open"
+    },
+    {
+      "id": "A008", "screen": "S25", "journey": "edit a section", "severity": "S3", "effort": "M",
+      "title": "The selected top section's toolbar covers the site header's own button",
+      "principle": "Nielsen 5, error prevention (hiding what you are editing)",
+      "confidence": "judged",
+      "evidence": "audit-v2/S25/desktop-light/screenshot.png: toolbar overlaps 'Start a project' at the top of the first section",
+      "why": "The bar floats over the top edge of the first section and hides part of the header it sits under.",
+      "options": ["Place the bar below the section's top edge when the section is first", "Leave as is (Puck positions it)"],
+      "recommended": 0, "status": "open"
+    }
+  ],
+  "strengths": [
+    "First run: two numbered steps, real previews, a default pick, 'No account needed'",
+    "Add-section gallery: search, Type and Topic, Add stays off until you choose and says why, focus starts in Search",
+    "Contrast: 3,662 text samples in light and dark, 0 failures (50 on gradients or images could not be measured); checker self-tested",
+    "Keyboard: 0 traps, 0 stops without a visible focus indicator, Escape closes dialogs",
+    "No sideways scrolling at 320 px on any reached screen"
+  ],
+  "not_yet_run": ["naive-agent journey run (3 journeys)", "four-lens cognitive walkthrough", "refutation pass on S1 findings (no S1 found)", "label and wording review of the collected labels", "4 unreached screens: S04, S26, S28, S29 (publish panel and code-only states); builder screens on a phone show Quick edit instead, so the editor was captured on desktop and tablet only"]
+}
