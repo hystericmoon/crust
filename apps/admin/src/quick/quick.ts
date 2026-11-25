@@ -233,6 +233,18 @@ export interface QuickGroup {
   title: string;
   blockId: string;
   fields: QuickField[];
+  /** Audit A204: the first words in the group, so it is named by what it says ("Get started"), not only by type and number. */
+  hint?: string;
+}
+
+/** The first words of a group's first text field, cut at a word. */
+export function groupHint(fields: QuickField[], max = 28): string | undefined {
+  const f = fields.find((x) => x.kind !== "image" && x.value.trim() !== "" && !/^(link|url)/i.test(x.key));
+  if (!f) return undefined;
+  const text = f.value.replace(/\s+/g, " ").trim();
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  return `${cut.slice(0, Math.max(cut.lastIndexOf(" "), 8)).trimEnd()}…`;
 }
 
 const isBlock = (v: unknown): v is ComponentData => typeof v === "object" && v !== null && typeof (v as ComponentData).type === "string" && typeof (v as ComponentData).props === "object";
@@ -256,17 +268,14 @@ export function quickGroups(data: Data): QuickGroup[] {
         }));
         // A Section only matters here when it has a background photo to swap.
         if (b.type !== "Section" || own.some((f) => f.value.trim())) {
-          if (own.length) groups.push({ title: spec.name, blockId, fields: own });
+          if (own.length) groups.push({ title: spec.name, blockId, fields: own, hint: groupHint(own) });
         }
         for (const list of spec.lists ?? []) {
           const items = Array.isArray(b.props[list.key]) ? (b.props[list.key] as Record<string, unknown>[]) : [];
-          items.forEach((item, index) =>
-            groups.push({
-              title: `${list.item} ${index + 1} of ${items.length} · ${spec.name}`,
-              blockId,
-              fields: list.fields.map((f) => ({ ...f, id: `${blockId}:${list.key}:${index}:${f.key}`, blockId, list: list.key, index, value: str(item[f.key]) })),
-            }),
-          );
+          items.forEach((item, index) => {
+            const fields = list.fields.map((f) => ({ ...f, id: `${blockId}:${list.key}:${index}:${f.key}`, blockId, list: list.key, index, value: str(item[f.key]) }));
+            groups.push({ title: `${list.item} ${index + 1} of ${items.length} · ${spec.name}`, blockId, fields, hint: groupHint(fields) });
+          });
         }
       }
       for (const children of childLists(b)) visit(children);
