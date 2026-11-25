@@ -7,6 +7,8 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
+- **2026-11-25: Full UI/UX audit done, waiting for your picks (Gate 2).** All 12 areas, no people involved: nothing blocks a task. 47 findings (15 that slow or confuse, 32 polish). The big one: a newcomer would give up at Publish (a card points to a developer file, Cloudflare needs a token). Five decisions are drawn as before/after with my recommendation marked: https://claude.ai/artifact/3z5gZQ86svBbzgMBoriYF3. **Your call:** which to fix. Nothing in the app changed. Notes: `docs/audit/`.
+
 - **2026-11-25: UI/UX audit, pilot done, waiting for your call (Gate 1).** I checked the first-run screens and the page editor with no people involved: nothing blocks a task. 8 small findings, the two that matter are the section toolbar showing each move label twice and a button called "root" in section settings. **Your call:** scale to the other 10 areas (recommended), fix these first, or stop. Report: https://claude.ai/artifact/GeZQkwzeLFETvfLVQc3cLb. Notes: `docs/audit/`.
 
 - **2026-11-24: You passed F095–F099; the old Blocks / Outline / Fields icons are gone from the left rail.** Now only **This page** and **Your site** show. Nothing else changed. Next: ask you for the 0.1.1 bugs and whether your installed app shows "update ready".

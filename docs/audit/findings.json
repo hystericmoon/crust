@@ -1,94 +1,775 @@
 {
-  "audit": "pilot (areas 1 First run and 3 Page editor), 2026-11-25",
-  "method_notes": "Capture v2 (Haiku) spot-checked by Sonnet. v1 had two script artifacts (inert gallery thumbnails counted as targets; tab walk that blurred focus) and was discarded. No people involved: findings are measured, reproduced or judged.",
-  "findings": [
-    {
-      "id": "A001", "screen": "S25", "journey": "edit a section", "severity": "S2", "effort": "S",
-      "title": "The selected section's toolbar shows each move label twice",
-      "principle": "Nielsen 8, minimal design; consistency",
-      "confidence": "measured",
-      "evidence": "audit-v2/S25/desktop-light/screenshot.png: 'Move down  Move down (Alt+↓)'. Source: apps/admin/src/keyboard/KeyboardEditing.tsx (moveWords, actionLabels)",
-      "why": "The word from F097 and the full accessible label are both drawn, so the bar is wider and noisier than it needs to be, and the shortcut text reads like a typo.",
-      "options": ["Show the word only; keep the shortcut in the tooltip and in Keyboard shortcuts help", "Word plus a small key badge (Alt ↓)", "Icons only with tooltips (against the owner's F097 ask for words)"],
-      "recommended": 0, "status": "open"
-    },
-    {
-      "id": "A002", "screen": "S25", "journey": "edit a section", "severity": "S2", "effort": "S",
-      "title": "A button called \"root\" sits at the top of every top-level section's settings",
-      "principle": "Nielsen 2, match with the real world (internal word shown to a non-developer)",
-      "confidence": "measured",
-      "evidence": "audit-v2/S25/desktop-light/aria.json: button \"root\"; screenshot. Source: parent link added in F099, apps/admin/src/app-frame/rail.tsx (SectionSettings)",
-      "why": "For a section that sits directly on the page, the 'parent' is the page itself, whose internal name is root. The user sees developer jargon on a button that does something unclear.",
-      "options": ["Hide the parent link when the parent is the page (keep it for a card inside Columns)", "Show it as \"Page\" and make it open the page's settings", "Leave as is"],
-      "recommended": 0, "status": "open"
-    },
-    {
-      "id": "A003", "screen": "S20", "journey": "edit a section", "severity": "S3", "effort": "S",
-      "title": "\"Move in\" button's accessible name does not start with its visible words",
-      "principle": "WCAG 2.5.3 Label in Name (A); axe rule label-content-name-mismatch (serious)",
-      "confidence": "measured",
-      "evidence": "audit-v2/S20/*/axe.json: aria-label 'Move into block above (Alt+→)' vs visible 'Move in'. Borderline: the visible text is a prefix, axe compares whole words.",
-      "why": "A speech-control user saying 'click Move in' may not match 'Move into block above'.",
-      "options": ["Make the visible word 'Move into' (matches the name)", "Name the button 'Move in (Alt+→)' and keep the longer text as a description"],
-      "recommended": 0, "status": "open"
-    },
-    {
-      "id": "A004", "screen": "S01", "journey": "first run to published site", "severity": "S3", "effort": "S",
-      "title": "First run points to \"Pages → Start from a template\", a place that doesn't exist yet",
-      "principle": "Nielsen 6, recognition over recall; onboarding: one clear next step",
-      "confidence": "judged",
-      "evidence": "audit-v2/S01/desktop-light/screenshot.png: 'More templates, including premium ones, are in Pages → Start from a template.'",
-      "why": "Someone on their very first screen has no Pages panel to look in yet. The sentence also promises 'premium ones', which may raise a question about cost.",
-      "options": ["Make it a link that opens the full template picker", "Move the sentence to the end of the first publish", "Remove it from first run"],
-      "recommended": 0, "status": "open"
-    },
-    {
-      "id": "A005", "screen": "S01", "journey": "first run to published site", "severity": "S3", "effort": "M",
-      "title": "On a phone, 'Make my site' is below three full-size template cards",
-      "principle": "Mobile: thumb reach; progress visibility",
-      "confidence": "judged",
-      "evidence": "audit-v2/S01/phone-light/screenshot.png: one card fills about 370 px of an 800 px screen. Low priority: first run mostly happens on the desktop app.",
-      "why": "The main action is far below the fold, and nothing says there are more steps.",
-      "options": ["Compact cards on phones (small thumbnail beside two lines of text)", "Sticky 'Make my site' bar at the bottom", "Leave as is (desktop first)"],
-      "recommended": 2, "status": "open"
-    },
-    {
-      "id": "A006", "screen": "S21", "journey": "add a section", "severity": "S3", "effort": "S",
-      "title": "Layout card title buttons are 22 px tall",
-      "principle": "WCAG 2.5.8 target size minimum (AA)",
-      "confidence": "measured",
-      "evidence": "audit-v2/S21/desktop-light/targets.json: 84 real targets under 24 px, 76 pass the spacing exception, 8 do not",
-      "why": "Two pixels short of the 24 px minimum; most pass because of spacing, a few do not.",
-      "options": ["Give card buttons a 24 px minimum height", "Make the whole card the button"],
-      "recommended": 0, "status": "open"
-    },
-    {
-      "id": "A007", "screen": "S19,S20,S21,S22,S23,S25,S30,S31,S33", "journey": "editor shell", "severity": "S3", "effort": "S",
-      "title": "Editor top bar adds a second banner landmark; some panels sit outside any landmark",
-      "principle": "WCAG 1.3.1 / best practice (axe: landmark-no-duplicate-banner, landmark-unique, region)",
-      "confidence": "measured",
-      "evidence": "audit-v2/*/axe.json: .af-top flagged on 5 screens; 'region' on 6 screens",
-      "why": "Screen-reader users who jump between landmarks hear two banners and some content outside any region.",
-      "options": ["Give our top bar a unique name and let it replace Puck's header landmark", "Mark ours as a toolbar, not a banner"],
-      "recommended": 0, "status": "open"
-    },
-    {
-      "id": "A008", "screen": "S25", "journey": "edit a section", "severity": "S3", "effort": "M",
-      "title": "The selected top section's toolbar covers the site header's own button",
-      "principle": "Nielsen 5, error prevention (hiding what you are editing)",
-      "confidence": "judged",
-      "evidence": "audit-v2/S25/desktop-light/screenshot.png: toolbar overlaps 'Start a project' at the top of the first section",
-      "why": "The bar floats over the top edge of the first section and hides part of the header it sits under.",
-      "options": ["Place the bar below the section's top edge when the section is first", "Leave as is (Puck positions it)"],
-      "recommended": 0, "status": "open"
-    }
-  ],
-  "strengths": [
-    "First run: two numbered steps, real previews, a default pick, 'No account needed'",
-    "Add-section gallery: search, Type and Topic, Add stays off until you choose and says why, focus starts in Search",
-    "Contrast: 3,662 text samples in light and dark, 0 failures (50 on gradients or images could not be measured); checker self-tested",
-    "Keyboard: 0 traps, 0 stops without a visible focus indicator, Escape closes dialogs",
-    "No sideways scrolling at 320 px on any reached screen"
-  ],
-  "not_yet_run": ["naive-agent journey run (3 journeys)", "four-lens cognitive walkthrough", "refutation pass on S1 findings (no S1 found)", "label and wording review of the collected labels", "4 unreached screens: S04, S26, S28, S29 (publish panel and code-only states); builder screens on a phone show Quick edit instead, so the editor was captured on desktop and tablet only"]
+ "audit": "areas 1-12, 2026-11-25 (pilot areas 1 and 3 plus the rest)",
+ "method_notes": "Capture v2 (Haiku) spot-checked by Sonnet. v1 had two script artifacts (inert gallery thumbnails counted as targets; tab walk that blurred focus) and was discarded. No people involved: findings are measured, reproduced or judged. Areas 2 and 4-12 reviewed by three Sonnet reviewers on capture v2 extended (39 screens reached, others code-only, area 11 read from built output), plus a naive-agent run from screenshots only (docs/audit/naive-run.md). Haiku numbers spot-checked; one reviewer excluded a tab-walk 'trap' on the date field as a script artifact. A100 and A106 may be capture artifacts.",
+ "findings": [
+  {
+   "id": "A001",
+   "screen": "S25",
+   "journey": "edit a section",
+   "severity": "S2",
+   "effort": "S",
+   "title": "The selected section's toolbar shows each move label twice",
+   "principle": "Nielsen 8, minimal design; consistency",
+   "confidence": "measured",
+   "evidence": "audit-v2/S25/desktop-light/screenshot.png: 'Move down  Move down (Alt+↓)'. Source: apps/admin/src/keyboard/KeyboardEditing.tsx (moveWords, actionLabels)",
+   "why": "The word from F097 and the full accessible label are both drawn, so the bar is wider and noisier than it needs to be, and the shortcut text reads like a typo.",
+   "options": [
+    "Show the word only; keep the shortcut in the tooltip and in Keyboard shortcuts help",
+    "Word plus a small key badge (Alt ↓)",
+    "Icons only with tooltips (against the owner's F097 ask for words)"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A002",
+   "screen": "S25",
+   "journey": "edit a section",
+   "severity": "S2",
+   "effort": "S",
+   "title": "A button called \"root\" sits at the top of every top-level section's settings",
+   "principle": "Nielsen 2, match with the real world (internal word shown to a non-developer)",
+   "confidence": "measured",
+   "evidence": "audit-v2/S25/desktop-light/aria.json: button \"root\"; screenshot. Source: parent link added in F099, apps/admin/src/app-frame/rail.tsx (SectionSettings)",
+   "why": "For a section that sits directly on the page, the 'parent' is the page itself, whose internal name is root. The user sees developer jargon on a button that does something unclear.",
+   "options": [
+    "Hide the parent link when the parent is the page (keep it for a card inside Columns)",
+    "Show it as \"Page\" and make it open the page's settings",
+    "Leave as is"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A003",
+   "screen": "S20",
+   "journey": "edit a section",
+   "severity": "S3",
+   "effort": "S",
+   "title": "\"Move in\" button's accessible name does not start with its visible words",
+   "principle": "WCAG 2.5.3 Label in Name (A); axe rule label-content-name-mismatch (serious)",
+   "confidence": "measured",
+   "evidence": "audit-v2/S20/*/axe.json: aria-label 'Move into block above (Alt+→)' vs visible 'Move in'. Borderline: the visible text is a prefix, axe compares whole words.",
+   "why": "A speech-control user saying 'click Move in' may not match 'Move into block above'.",
+   "options": [
+    "Make the visible word 'Move into' (matches the name)",
+    "Name the button 'Move in (Alt+→)' and keep the longer text as a description"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A004",
+   "screen": "S01",
+   "journey": "first run to published site",
+   "severity": "S3",
+   "effort": "S",
+   "title": "First run points to \"Pages → Start from a template\", a place that doesn't exist yet",
+   "principle": "Nielsen 6, recognition over recall; onboarding: one clear next step",
+   "confidence": "judged",
+   "evidence": "audit-v2/S01/desktop-light/screenshot.png: 'More templates, including premium ones, are in Pages → Start from a template.'",
+   "why": "Someone on their very first screen has no Pages panel to look in yet. The sentence also promises 'premium ones', which may raise a question about cost.",
+   "options": [
+    "Make it a link that opens the full template picker",
+    "Move the sentence to the end of the first publish",
+    "Remove it from first run"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A005",
+   "screen": "S01",
+   "journey": "first run to published site",
+   "severity": "S3",
+   "effort": "M",
+   "title": "On a phone, 'Make my site' is below three full-size template cards",
+   "principle": "Mobile: thumb reach; progress visibility",
+   "confidence": "judged",
+   "evidence": "audit-v2/S01/phone-light/screenshot.png: one card fills about 370 px of an 800 px screen. Low priority: first run mostly happens on the desktop app.",
+   "why": "The main action is far below the fold, and nothing says there are more steps.",
+   "options": [
+    "Compact cards on phones (small thumbnail beside two lines of text)",
+    "Sticky 'Make my site' bar at the bottom",
+    "Leave as is (desktop first)"
+   ],
+   "recommended": 2,
+   "status": "open"
+  },
+  {
+   "id": "A006",
+   "screen": "S21",
+   "journey": "add a section",
+   "severity": "S3",
+   "effort": "S",
+   "title": "Layout card title buttons are 22 px tall",
+   "principle": "WCAG 2.5.8 target size minimum (AA)",
+   "confidence": "measured",
+   "evidence": "audit-v2/S21/desktop-light/targets.json: 84 real targets under 24 px, 76 pass the spacing exception, 8 do not",
+   "why": "Two pixels short of the 24 px minimum; most pass because of spacing, a few do not.",
+   "options": [
+    "Give card buttons a 24 px minimum height",
+    "Make the whole card the button"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A007",
+   "screen": "S19,S20,S21,S22,S23,S25,S30,S31,S33",
+   "journey": "editor shell",
+   "severity": "S3",
+   "effort": "S",
+   "title": "Editor top bar adds a second banner landmark; some panels sit outside any landmark",
+   "principle": "WCAG 1.3.1 / best practice (axe: landmark-no-duplicate-banner, landmark-unique, region)",
+   "confidence": "measured",
+   "evidence": "audit-v2/*/axe.json: .af-top flagged on 5 screens; 'region' on 6 screens",
+   "why": "Screen-reader users who jump between landmarks hear two banners and some content outside any region.",
+   "options": [
+    "Give our top bar a unique name and let it replace Puck's header landmark",
+    "Mark ours as a toolbar, not a banner"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A008",
+   "screen": "S25",
+   "journey": "edit a section",
+   "severity": "S3",
+   "effort": "M",
+   "title": "The selected top section's toolbar covers the site header's own button",
+   "principle": "Nielsen 5, error prevention (hiding what you are editing)",
+   "confidence": "judged",
+   "evidence": "audit-v2/S25/desktop-light/screenshot.png: toolbar overlaps 'Start a project' at the top of the first section",
+   "why": "The bar floats over the top edge of the first section and hides part of the header it sits under.",
+   "options": [
+    "Place the bar below the section's top edge when the section is first",
+    "Leave as is (Puck positions it)"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A100",
+   "screen": "S08",
+   "journey": "start from a template",
+   "title": "A broken template shows up as a card in the middle of the Free templates",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "Nielsen 9, helpful error messages; Nielsen 8, minimal design",
+   "evidence": "audit-test/S08/desktop-light/screenshot.png: card 'sample-site: This template can't be used: The photo atrium.jpg is used but isn't in the template.'",
+   "confidence": "judged",
+   "why": "A person choosing a look sees a card they cannot use and a message about a photo file name. It reads like their mistake, and it sits where a real choice should be. Likely a capture artifact: the 'sample-site' card is built from the app's own bundled content, whose photos are missing in the offline capture fixture. On a real install it should not show; confirm on the Mac before fixing.",
+   "options": [
+    "Hide unusable templates from owners; show them only in a developer check",
+    "Keep the card but move it below 'Open a template file' under a 'Can't be used' label, in plain words",
+    "Keep as is, rewrite the message ('This template is missing a photo, so it can't be used')"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A101",
+   "screen": "S05",
+   "journey": "every screen on a phone",
+   "title": "On a phone, the light/dark button drops onto its own row and pushes the page title down",
+   "severity": "S2",
+   "effort": "S",
+   "principle": "Mobile: thumb reach, minimal design; Nielsen 4, consistency",
+   "evidence": "audit-test/S05/phone-light, S09/phone-light, S36/phone-light, S47/phone-light screenshots (toggle alone under the top bar; on S36 the 'Posts' title ends up on a third row)",
+   "confidence": "reproduced",
+   "why": "Each screen loses roughly 50px of the small screen to a row that holds one rarely used button, and the screen name drifts away from the top where people look for it. (Seen again on the page list, A301 merged in.)",
+   "options": [
+    "Move light/dark into the site menu on phones",
+    "Keep it in the top bar and shorten the other items (icon-only Publish on phones)",
+    "Leave the row but put the screen name on the same line as the toggle"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A102",
+   "screen": "S10",
+   "journey": "apply a template",
+   "title": "The 'Replace your site' confirmation mixes plain words with internal ones",
+   "severity": "S2",
+   "effort": "S",
+   "principle": "Nielsen 2, match with the real world; confirmations name the action and consequence",
+   "evidence": "audit-test/S10/desktop-light/screenshot.png: 'Saving isn't on here, so the template's 11 photos can't join a photo library', 'the Pages screen offers \"Bring back my previous site\"', 'Kept: My layouts'",
+   "confidence": "judged",
+   "why": "The Replaced/Kept lists are a good idea, but the two paragraphs under them are the parts a non-developer has to stop and decode. 'Saving isn't on here' does not say what to do about it, and 'Pages screen' is not a name used on a screen elsewhere.",
+   "options": [
+    "Rewrite the two paragraphs in plain words, one line each, and say where 'Bring back my previous site' lives",
+    "Collapse the paragraphs into a short 'Good to know' disclosure",
+    "Leave the copy and add a link to the restore screen"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A103",
+   "screen": "S45",
+   "journey": "find and use my photos",
+   "title": "The Media panel in the rail shows photos you cannot do anything with",
+   "severity": "S2",
+   "effort": "M",
+   "principle": "Nielsen 7, flexibility; Nielsen 10, help; WCAG 1.1.1, 2.1.1",
+   "evidence": "audit-test/S45/desktop-light/aria.json: list has an image named 'The band on stage' and a second list item with no name; tabwalk.json: Tab goes from 'Back to Your site' straight into the canvas, the thumbnails are not reachable. Text: 'select an image and press Choose image. You can upload new photos there.'",
+   "confidence": "measured",
+   "why": "The panel looks like a photo library but has no upload, no search, no delete and no names, and the thumbnails cannot be reached by keyboard. It sends people somewhere else to do the actual job. One thumbnail has no accessible name.",
+   "options": [
+    "Make the panel the real library: upload button, search, names, delete (reuse the picker's grid)",
+    "Keep it view-only but give each photo a name and a 'Use on page' action",
+    "Remove the panel and point the rail to the picker"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A104",
+   "screen": "S45",
+   "journey": "find and use my photos",
+   "title": "The same things are called Media, photos, image and photo library",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "Nielsen 4, consistency; same term for the same thing",
+   "evidence": "audit-test/S45/desktop-light/labels.json ('Media', 'Your photos', 'Choose image'); S42/S43 labels ('Search photos', 'Delete this photo?'); S10 dialog ('photo library')",
+   "confidence": "measured",
+   "why": "Owners learn one word and then meet another for the same thing, which makes the tool feel less predictable.",
+   "options": [
+    "Use 'Photos' everywhere in words, keep 'image' only for the field type",
+    "Use 'Media' everywhere",
+    "Leave it, since 'Media' will later hold video"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A105",
+   "screen": "S47",
+   "journey": "change the look of the whole site",
+   "title": "The Site settings preview says 'Mobile' where the template and editor screens say 'Phone'",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "Nielsen 4, consistency",
+   "evidence": "audit-test/S47/desktop-light/labels.json and screenshot ('Desktop / Tablet / Mobile'); S09, S12, S39 labels ('Phone', 'Phone width')",
+   "confidence": "measured",
+   "why": "Two names for one device size; small, but it is on controls that people use repeatedly.",
+   "options": [
+    "Use 'Phone' everywhere",
+    "Use 'Mobile' everywhere",
+    "Leave it"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A106",
+   "screen": "S47",
+   "journey": "change the look of the whole site",
+   "title": "The preview says 'Fix the fields marked in red' but no field is marked in red",
+   "severity": "S2",
+   "effort": "S",
+   "principle": "Nielsen 9, helpful error messages; WCAG 3.3.1",
+   "evidence": "audit-test/S47/desktop-light/screenshot.png and S50/desktop-light/screenshot.png: red text 'The preview can't show these settings. Fix the fields marked in red.' with nothing red in the form",
+   "confidence": "judged",
+   "why": "If this is real and not a capture side effect (offline preview), the owner is told to fix something that is not there and the preview stays empty. Needs a check in the live app. (Same message seen on four Site settings screens (A200 merged in). The preview shows this when its HTML is null; the capture may have caught it before the preview finished drawing, so check it in the live app before fixing.)",
+   "options": [
+    "Name the problem and link to the field ('The accent colour is not a valid colour')",
+    "Show a neutral 'Preview is loading' state until a real error exists",
+    "Leave the message but only show it when a field is in error"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A107",
+   "screen": "S47",
+   "journey": "change the look of the whole site",
+   "title": "'All changes saved' sits next to Discard, Save and Publish, so three buttons seem to commit work",
+   "severity": "S2",
+   "effort": "M",
+   "principle": "Nielsen 1, status visibility; Nielsen 5, error prevention",
+   "evidence": "audit-test/S47/desktop-light/screenshot.png (top bar: 'All changes saved' Discard Save Publish); S48/desktop-light/screenshot.png (panel footer repeats the status, Discard and Save)",
+   "confidence": "judged",
+   "why": "Elsewhere the builder keeps work automatically ('Kept in this browser') and only Publish matters. Here a 'saved' message and a Save button contradict each other, and it is unclear what Discard will undo.",
+   "options": [
+    "Autosave here too and drop Save/Discard; keep Undo",
+    "Disable Save and Discard until something is unsaved, and say 'Unsaved changes'",
+    "Keep both and rename Save to 'Save settings' with a line saying what is not live until Publish"
+   ],
+   "recommended": 1,
+   "status": "open"
+  },
+  {
+   "id": "A108",
+   "screen": "S39",
+   "journey": "write a blog post on a phone",
+   "title": "On a phone the post editor loses the save status and the Preview button",
+   "severity": "S2",
+   "effort": "S",
+   "principle": "Nielsen 1, status visibility; Mobile",
+   "evidence": "audit-test/S39/phone-light/screenshot.png and labels.json (no 'Preview' button, no status text; desktop shows 'Kept in this browser' and Preview)",
+   "confidence": "judged",
+   "why": "Someone writing on a phone cannot tell whether the post is kept, and cannot check how it looks except by publishing. Needs confirming in the live app that it is hidden and not just offscreen.",
+   "options": [
+    "Show a small saved dot and Preview in the menu on phones",
+    "Add both to a second row of the top bar",
+    "Show status as a toast after each change"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A109",
+   "screen": "S37",
+   "journey": "add a post",
+   "title": "The New post form is cramped and gives no sign of which fields are required",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "Forms: labels above fields, required marks, defaults",
+   "evidence": "audit-test/S37/desktop-light/screenshot.png: 'Title' label sits against the 'New post' heading; Address is empty with only '/blog/' and a hint saying '/blog/…/'",
+   "confidence": "judged",
+   "why": "The form works, but the Title label touches the heading, nothing says Title is needed, and the Address hint shows a placeholder-looking '…' instead of an example.",
+   "options": [
+    "Add spacing, a '(required)' mark and a live address preview ('/blog/my-title/')",
+    "Only add spacing and the live preview",
+    "Leave"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A110",
+   "screen": "S36",
+   "journey": "manage posts",
+   "title": "Delete is neutral on the Posts list but red on the Sites list",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "Nielsen 4, consistency; error prevention",
+   "evidence": "audit-test/S36/desktop-light/screenshot.png (grey outline Delete) vs S05/desktop-light/screenshot.png (red outline Delete)",
+   "confidence": "measured",
+   "why": "The same risky action looks different in two places, so the colour stops working as a warning. Screen-reader names are good ('Delete Why first ideas take nine days').",
+   "options": [
+    "Use the red outline for every Delete",
+    "Keep neutral rows, rely on the confirm step",
+    "Show Delete only on hover/focus (worse on phones)"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A111",
+   "screen": "S12",
+   "journey": "buy a template",
+   "title": "The file picker in the Premium sidebar is a raw browser control and its text is cut off",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "Nielsen 8, aesthetic and minimal design; text truncation",
+   "evidence": "audit-test/S12/desktop-light/screenshot.png ('No fil…hosen'); S08/desktop-light/screenshot.png ('Choose File / No file chosen' inside the dashed card)",
+   "confidence": "measured",
+   "why": "The sidebar is 240px wide so the status text is clipped. 'Choose File' also looks unlike every other button in the app.",
+   "options": [
+    "Style it as a normal button with the file name under it",
+    "Keep native, drop the 'No file chosen' text",
+    "Make the sidebar wider"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A112",
+   "screen": "S48",
+   "journey": "change the look of the whole site",
+   "title": "The Styles panel in the builder repeats 'STYLES' twice and the 'Site settings' link looks like a tab",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "Navigation: where am I; minimal design",
+   "evidence": "audit-test/S48/desktop-light/screenshot.png: 'STYLES [Site settings]' then 'STYLES' again with two intro lines saying almost the same",
+   "confidence": "judged",
+   "why": "Two headings and two intros for one panel make people hunt for what is different. The link to the full screen is the most useful part and the least clear.",
+   "options": [
+    "One heading, one intro, and a clear 'Open all site settings' link",
+    "Keep the first heading, remove the second",
+    "Leave"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A113",
+   "screen": "S09",
+   "journey": "preview a template on a phone",
+   "title": "On a phone, two long lists come before the template preview, so the template itself is below the first screen",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "Mobile: thumb reach; first impression in 2 seconds",
+   "evidence": "audit-test/S09/phone-light/screenshot.png (description, 5 pages, 2 posts, then Desktop/Tablet/Phone switch at the bottom edge)",
+   "confidence": "judged",
+   "why": "The reason to open this screen is to see the template, and on a phone the first view is a text list. The switch also offers Desktop and Tablet, which are of little use at 390px.",
+   "options": [
+    "Show the preview first and put the page list in a collapsible 'Pages' control",
+    "Add a 'See the template' button at the top that scrolls to it",
+    "Leave and only hide the Desktop/Tablet options on phones"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A201",
+   "screen": "S59,S67",
+   "journey": "6 Publish first time",
+   "title": "Publish panel tells the owner to read a developer file (docs/setup-saving.md)",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "Nielsen 2 match with real world; 10 help",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S59/desktop-light/screenshot.png; apps/admin/src/publish/PublishPanel.tsx:262; also on phone (S59/phone-light)",
+   "confidence": "measured",
+   "why": "Hosni never opens files or runs commands. A sentence pointing to a repo file is a dead end: he cannot act on it and cannot tell whether Publish will ever work. Also 'Built into the app' on every page is jargon and repeats on every row. (Also shown on the page list Publish card (A302 merged in). The text only shows when saving is not set up, which is the web admin, not the desktop app, so severity is S3.)",
+   "options": [
+    "Say what is missing in plain words and offer one next step ('Saving to GitHub is not set up yet. Ask your developer or open Setup help')",
+    "Hide Publish entirely until saving is on, with one line why",
+    "Link to a setup page inside the app instead of a file name"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A202",
+   "screen": "S57,S69",
+   "journey": "7 Connect a domain",
+   "title": "Site address help talks only about Cloudflare although Netlify and your own host are also offered",
+   "severity": "S2",
+   "effort": "S",
+   "principle": "Nielsen 4 consistency; 2 real-world match",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S57/desktop-light/screenshot.png; apps/admin/src/settings/SiteAddress.tsx lines 36, 77, 90-95 name Cloudflare and .pages.dev; publish/hosts.ts offers Netlify and FTP",
+   "confidence": "judged",
+   "why": "Someone who chose Netlify or their own web host is told to 'keep the free address Cloudflare gave you' and to connect the domain in Cloudflare. They will follow steps that do not apply.",
+   "options": [
+    "Make the text depend on the host chosen at Publish (Cloudflare, Netlify, own host)",
+    "Use host-neutral wording and link to a guide per host",
+    "Show this group only after a host is connected"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A203",
+   "screen": "S72",
+   "journey": "3 Edit text on phone",
+   "title": "Photo picker names the place as 'For: Photo, Card, block 7' and flags photos 'Needs alt'",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "Nielsen 2 match with real world",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S72/phone-light/screenshot.png; apps/admin/src/quick/QuickEdit.tsx context={`${g.title}, block ${gi + 1}`}; labels.json S71 'Web address for photo, card, block 7'",
+   "confidence": "measured",
+   "why": "'Block' and 'alt' are builder words. The rubric and CLAUDE.md prefer 'section'; elsewhere the app says 'photo description'. 'Needs alt' also sits on top of the photo and can't be explained. (A305 merged in.)",
+   "options": [
+    "Use 'Photo in card 7' and 'Needs a description'",
+    "Keep 'alt' but add a one-line explanation in the picker footer",
+    "Leave as is; it is accurate"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A204",
+   "screen": "S71",
+   "journey": "3 Edit text on phone",
+   "title": "Quick edit groups are only named by type and number ('3 BUTTON', '4 BUTTON', '7 CARD'), not by what they say",
+   "severity": "S2",
+   "effort": "M",
+   "principle": "Nielsen 6 recognition over recall",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S71/phone-light/screenshot.png and labels.json headings: '3 BUTTON','4 BUTTON','7 CARD','8 CARD','9 CARD'",
+   "confidence": "measured",
+   "why": "With a long page and no preview on a phone, the owner has to remember which 'Card' is which. Screen reader users hear the same repeating headings. The task is 'change the words', so finding the right words is most of the effort.",
+   "options": [
+    "Show the current text as the heading hint ('Button: Get in touch', 'Card: Our process')",
+    "Add a small 'Jump to' list at the top",
+    "Show a thumbnail of the section beside each group"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A205",
+   "screen": "S71",
+   "journey": "3 Edit text on phone",
+   "title": "Quick edit has no way to see the page, and Save gives no link to check the result",
+   "severity": "S3",
+   "effort": "M",
+   "principle": "Nielsen 1 status visibility",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S71/phone-light/screenshot.png; apps/admin/src/quick/QuickEdit.tsx footer (Save only; 'Save and publish' only when GitHub is on)",
+   "confidence": "judged",
+   "why": "On a phone the owner edits blind and cannot see the change in context. When Save only stores in the browser the wording 'kept in this browser' is accurate but he may still think the site changed.",
+   "options": [
+    "After Save show 'View this page' opening the preview",
+    "Add a collapsed 'Preview' under each group",
+    "Leave it: Quick edit is meant for small fixes"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A206",
+   "screen": "S71,S72,S59",
+   "journey": "3 Edit text on phone",
+   "title": "Phone touch targets are 32-40 px, under the 44 px touch preference",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "WCAG 2.5.8 (passes at 24); touch guidance 44",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S71/phone-light/targets.json (theme toggle 36x36, rich-text tools 40x40, address fields 36 tall); S59/phone-light (reorder and More buttons 32x32); S72 theme toggle only 'spacingOk' false behind the dialog",
+   "confidence": "measured",
+   "why": "All pass the AA minimum of 24 px, but thumb taps on 32-36 px buttons next to each other cause mistakes, most on the formatting toolbar and reorder handles.",
+   "options": [
+    "Raise phone controls to 44 px with a media query",
+    "Raise only the toolbar and the page actions",
+    "Leave as is since AA passes"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A207",
+   "screen": "S61",
+   "journey": "6 Publish first time",
+   "title": "Connecting Cloudflare asks a non-developer to create an API token with specific permissions in four steps",
+   "severity": "S2",
+   "effort": "L",
+   "principle": "Nielsen 7 flexibility; 6 recognition; onboarding time to first success",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S61/desktop-light/screenshot.png (the Cloudflare connect dialog, not the host chooser). Code in apps/admin/src/publish/HostPublish.tsx",
+   "confidence": "judged",
+   "why": "Steps like 'Create Custom Token', 'Account, Cloudflare Pages, Edit' are exact but easy to get wrong. This is the longest step before the first live site, and a failed token has to be redone. Reviewed from the dialog only; the host chooser itself was not captured.",
+   "options": [
+    "Add a pre-filled token link so permissions are already selected",
+    "Add a screenshot per step",
+    "Keep the text and add a 'Check token' error that names which permission is missing"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A208",
+   "screen": "S63",
+   "journey": "6 Publish first time",
+   "title": "FTP dialog: the field list scrolls under a fixed button bar, so the last fields ('Site address') are half hidden on open",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "Nielsen 6 recognition; WCAG 1.4.10 (reflow) check",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S63/desktop-light/screenshot.png ('Site address' heading cut at the button bar) and S63/phone-light (Password cut)",
+   "confidence": "measured",
+   "why": "Nothing says there is more below. A user may press 'Check and connect' without having seen all fields. Radio buttons also sit above their labels' baseline.",
+   "options": [
+    "Add a soft fade or 'more below' cue at the scroll edge",
+    "Split into two steps like the Cloudflare dialog (Login, then Address)",
+    "Make the dialog taller on desktop so all fit"
+   ],
+   "recommended": 1,
+   "status": "open"
+  },
+  {
+   "id": "A209",
+   "screen": "S51,S52,S53,S55",
+   "journey": "5 Change brand colours",
+   "title": "On a phone, the Site settings group list and preview switch fill about half the first screen before the settings appear",
+   "severity": "S2",
+   "effort": "M",
+   "principle": "Mobile: thumb reach; Nielsen 8 minimal design",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S51/phone-light/screenshot.png (nav wraps to 5 rows, content starts below y=370 of 800); S53/phone-light",
+   "confidence": "measured",
+   "why": "Picking a group and then scrolling past all 16 names to see its fields on every visit is slow. The page does not keep the chosen group in view after a pick.",
+   "options": [
+    "Turn the group list into a single 'Group: Colours' dropdown on phones",
+    "Keep the list but make it one horizontal scroll row",
+    "Leave; settings are mainly a desktop task"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A300",
+   "screen": "S78",
+   "journey": "Make a section linked and edit it once",
+   "title": "The 'no such linked section' error is a bare page with nowhere to go but a blue link",
+   "severity": "S2",
+   "effort": "S",
+   "principle": "Nielsen 9 (helpful errors), 4 (consistency)",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S78/desktop-light/screenshot.png; apps/admin/src/linked/SectionEditor.tsx:48-58",
+   "confidence": "judged",
+   "why": "The owner lands on a white page with no top bar, a raw internal name ('hero-band') and a default browser-blue 'Back' link. It does not say why (deleted? kept in another browser?) or what to do next, so it feels like the app broke.",
+   "options": [
+    "Use the normal app frame, say 'This linked section isn't here any more. It may have been deleted, or it was saved in a different browser.' and offer 'Back to the page' plus 'See linked sections'",
+    "Keep the page bare but style it like other errors and add one plain sentence",
+    "Redirect to the linked sections list with a short notice"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A303",
+   "screen": "S74",
+   "journey": "Design editor: change how every post looks",
+   "title": "On a phone the Save design button is hidden behind an unlabelled chevron next to the title",
+   "severity": "S2",
+   "effort": "M",
+   "principle": "Nielsen 6 (recognition over recall); Mobile",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S74/phone-light/screenshot.png; phone aria labels show 'Toggle menu bar'; desktop has a visible 'Save design' button",
+   "confidence": "judged",
+   "why": "On desktop the owner sees Save design, Posts and Layouts. On a phone none of them are visible; only a title with a small arrow. A first-time owner would edit and leave without saving, or not find the way back to Posts.",
+   "options": [
+    "Keep Save design and a Back link always visible in a slim bar on phones",
+    "Show a 'Menu' label beside the chevron and open the bar by default on first visit",
+    "Tell phone users the design editor works best on a computer and offer Quick edit instead"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A304",
+   "screen": "S77",
+   "journey": "Save and reuse a section / linked sections",
+   "title": "Linked sections live in a 'Type' dropdown under Layouts, while saved layouts get their own 'Mine' tab",
+   "severity": "S2",
+   "effort": "M",
+   "principle": "Nielsen 4 (consistency), 6 (recognition)",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S77/desktop-light/screenshot.png, S76/desktop-light/screenshot.png; apps/admin/src/layouts/LayoutGallery.tsx:529-533",
+   "confidence": "judged",
+   "why": "Both Linked and Mine are 'sections I made', yet one is a tab and the other is hidden inside a select box that also holds 'Sections' and 'Whole pages'. A person looking for a shared footer will not think to open a Type menu. The search box also says 'Search layouts' on tabs that hold something else.",
+   "options": [
+    "Three plain tabs: Ready-made, Mine, Linked",
+    "Keep two tabs and show the Type choice as visible chips instead of a dropdown",
+    "Leave as is and add a one-line hint on the Mine tab pointing to Linked"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A306",
+   "screen": "S74",
+   "journey": "Design editor: change how every post looks",
+   "title": "The design editor has no level-1 heading, and its way back is a plain 'Posts' button",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "WCAG 1.3.1 / 2.4.6 (best practice); Nielsen 3 (user control)",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S74/desktop-light/axe.json (page-has-heading-one, moderate); aria.json shows 'Post page design' at level 2; DesignEditor.tsx:25 backFor",
+   "confidence": "measured",
+   "why": "Screen reader users who jump by heading find no top-level page title. Sighted users see a bordered 'Posts' button between 'Every post looks like this' and 'Layouts' and may not read it as 'leave this screen'.",
+   "options": [
+    "Make the title an h1 and label the link 'Back to Posts' (or 'Back to Pages')",
+    "Keep the label but move it to the left of the title with an arrow",
+    "Only fix the heading level"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A307",
+   "screen": "S74",
+   "journey": "Design editor: change how every post looks",
+   "title": "The post preview shows a broken picture with its alt text spilled out",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "Nielsen 1 (status), 5 (error prevention)",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S74/desktop-light/screenshot.png and phone-light/screenshot.png (broken-image icon beside 'A computer on a desk in a dark room')",
+   "confidence": "judged",
+   "why": "The designer sees a broken image in the middle of the design and may think the design is damaged. It may be a capture-environment issue (media not served), so confirm in a real session.",
+   "options": [
+    "Show a neutral grey placeholder when a preview image can't load",
+    "Use a bundled sample image for the preview",
+    "Leave it; check whether it only happens in test data"
+   ],
+   "recommended": 2,
+   "status": "open"
+  },
+  {
+   "id": "A308",
+   "screen": "S81",
+   "journey": "Desktop update",
+   "title": "The update message appears twice, and dates are written in two styles",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "Nielsen 8 (minimal design), 4 (consistency)",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S81/desktop-light/screenshot.png: banner 'Crust 0.2.0 is ready' and the Crust card repeat the same sentence; 'Nov 25, 2026, 5:45 AM' vs S83 'Released 2 November 2026'",
+   "confidence": "measured",
+   "why": "Two stacked boxes say the same thing, pushing the Sites list down, and pressing Later removes only one. Mixed date styles (US short vs day-first long) look careless to a designer's eye.",
+   "options": [
+    "Show the About card text only when no banner is showing",
+    "Merge the About card into the banner",
+    "One shared date format for the whole app"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A309",
+   "screen": "S104",
+   "journey": "Find and manage pages (phone)",
+   "title": "Page names and the drag handle are small touch targets on a phone",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "WCAG 2.5.8 passes; touch guidance 44px",
+   "evidence": "/tmp/claude-0/-home-user-crust/43dd370a-6dc0-42e4-9b89-21d1c5600115/scratchpad/audit-test/S104/phone-light/targets.json: page links 100-192x24, Reorder and More buttons 32x32, site menu 148x36",
+   "confidence": "measured",
+   "why": "They pass the 24px minimum but sit well under 44px, so taps on a crowded list will miss, especially the small '...' menu.",
+   "options": [
+    "Make each row's whole name area a 44px-tall tap target on touch screens",
+    "Raise only the Reorder and More buttons to 44px",
+    "Leave as is (meets AA)"
+   ],
+   "recommended": 0,
+   "status": "open"
+  },
+  {
+   "id": "A310",
+   "screen": "S93",
+   "journey": "Visitor opens the home page",
+   "title": "The home page title in the browser tab is just 'Home'; other pages include the site name",
+   "severity": "S3",
+   "effort": "S",
+   "principle": "Nielsen 4 (consistency); SEO",
+   "evidence": "/home/user/crust/dist/site/index.html <title>Home</title> vs contact/index.html <title>Contact | Crust demo</title> and 404.html <title>Page not found | Crust demo</title>",
+   "confidence": "measured",
+   "why": "Visitors with several tabs open and search engines see 'Home' with no site name on the most important page.",
+   "options": [
+    "Use 'Site name' alone or 'Site name | tagline' for the home page",
+    "Use 'Home | Site name' like the others",
+    "Let the owner set the home title in Site settings"
+   ],
+   "recommended": 0,
+   "status": "open"
+  }
+ ],
+ "strengths": [
+  "First run: two numbered steps, real previews, a default pick, 'No account needed'",
+  "Add-section gallery: search, Type and Topic, Add stays off until you choose and says why, focus starts in Search",
+  "Contrast: 3,662 text samples in light and dark, 0 failures (50 on gradients or images could not be measured); checker self-tested",
+  "Keyboard: 0 traps, 0 stops without a visible focus indicator, Escape closes dialogs",
+  "No sideways scrolling at 320 px on any reached screen",
+  "Deleting a site and replacing a site both open a confirm that names the consequence ('It moves to Recently deleted... restore it for 30 days'), with verb buttons (Keep site / Delete site, Cancel / Replace my site); focus starts on the safe button and Esc closes (tabwalk S06, S10)",
+  "The Replaced / Kept lists in the template confirmation show exactly what will change and what stays",
+  "Row actions on Sites and Posts carry the item name for screen readers ('Delete Why first ideas take nine days'); Sites uses a real table with row headers",
+  "Plain, helpful empty and intro text on Posts and Sites; every screen in scope has an h1/h2 structure, no axe violations except one moderate 'region' on the editor, and focus indicators on every stop in the tab walks",
+  "Template cards pair a live screenshot with a one-line description and counts ('5 pages, blog (2 posts), 11 photos'); the preview has a device-width switch",
+  "Layouts are clean and token-driven in both light and dark; the Posts and Sites screens hold up at phone width with no horizontal scroll",
+  "Site settings group copy is plain and explains scope ('Shown at the bottom of every page', 'Each colour has a job').",
+  "Contrast checks list every pair with its ratio and a Passes mark, so the owner sees accessibility without a tool.",
+  "Connect dialogs use labels above fields, keychain reassurance, role=alert errors tied to fields (aria-invalid, aria-describedby), and 'recommended' / 'not encrypted' guidance for SFTP.",
+  "Quick edit uses a real h1, labelled fields, a live status region and a fixed Save bar within thumb reach; axe is clean on all captured screens in scope.",
+  "Save state is always visible in Site settings ('All changes saved', 'Unsaved changes') and Style changes offer 'Undo style'.",
+  "Destructive desktop export asks a named question: Replace “{folder}”?",
+  "Update banner wording is reassuring and plain ('Your sites aren't touched'), with a clear primary 'Restart now' and a calm 'Later'.",
+  "Screens in scope pass contrast in light and dark with no failures in contrast.json, and axe reports no serious issues; the whole gallery card is one big tap target with its description linked for screen readers.",
+  "Row actions have specific names ('Rename Harbour Studio', 'Reorder Work'), and focus rings show on every tabbed stop; dialogs close with Esc.",
+  "The published demo site has a skip link, header/nav/main/footer landmarks, one h1 per page, language set and meta descriptions; the 404 page is friendly and on-brand.",
+  "Sign out sits last in the site menu after a divider, so a slip aimed at another item does not sign the owner out.",
+  "Empty states in My layouts and Linked sections say what is empty and the exact next step ('Select a section and choose Make linked')."
+ ],
+ "not_yet_run": [
+  "Opus calls (0 of 3 used)",
+  "Refute-each-S1 pass: no S1 found, so nothing to refute",
+  "Live-app check of A100 and A106 on the Mac",
+  "Phone captures missing for S45, S76, S77",
+  "Public marketing sites (area 11) only read from built output"
+ ]
 }
