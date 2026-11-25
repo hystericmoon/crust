@@ -9,6 +9,7 @@ import { currentDesign, designBlocksFor, designNames, migrateRichTextBlocks, Pag
 import { renderPreview } from "@crust/render";
 import { Puck, useGetPuck, type Config, type Data, type Overrides } from "@puckeditor/core";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { installBrokenPictureGuard } from "./broken-pictures";
 import { saveFailed, saveMessage } from "../save-messages";
 import { LayoutsButton } from "../layouts/LayoutGallery";
 import { MyLayoutsProvider } from "../layouts/mine";
@@ -97,6 +98,15 @@ function usePreviewData(githubOn: boolean): PageDesignData | null {
   return data;
 }
 
+/** overrides.iframe for the design canvas: the page's own canvas, with pictures that can't load tidied (audit A307). */
+function withTidyPictures(Canvas: Overrides["iframe"] | undefined): NonNullable<Overrides["iframe"]> {
+  return function DesignCanvas(props) {
+    const { document: doc } = props;
+    useEffect(() => (doc ? installBrokenPictureGuard(doc) : undefined), [doc]);
+    return Canvas ? <Canvas {...props} /> : <>{props.children}</>;
+  };
+}
+
 function SaveButton({ onSave, className = "crust-save" }: { onSave: (data: Data) => void; className?: string }) {
   const getPuck = useGetPuck();
   return (
@@ -137,6 +147,7 @@ export function DesignEditor({ kind, githubOn, config, overrides, language }: Pr
     void loadDesigns();
   }, []);
 
+  const tidyCanvas = useMemo(() => withTidyPictures(overrides?.iframe), [overrides?.iframe]);
   const name = designNames[kind];
   const saved = designs.designs[kind];
   const designConfig = useMemo(() => withDesignEditing(config, kind), [config, kind]);
@@ -197,6 +208,7 @@ export function DesignEditor({ kind, githubOn, config, overrides, language }: Pr
                 );
                 return Outer ? <Outer>{inner}</Outer> : inner;
               },
+              iframe: tidyCanvas,
               headerActions: () => (
                 <>
                   <span className="ls-editing">{kind === "notFound" ? "Shown for addresses with no page" : kind === "post" ? "Every post looks like this" : "The list of posts at /blog/"}</span>
