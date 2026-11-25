@@ -212,9 +212,9 @@ describe("hosts: the Publish card before connecting", () => {
     };
     render(<DesktopPublishPanel publisher={publisher} siteUrl="https://harbour.example" hosts={fakeHosts(notConnected)} />);
     await settle();
-    expect(screen.getByText(/Put your site online with a free host/)).toBeTruthy();
-    expect(screen.getByRole("button", { name: /Cloudflare Pages\s*Connect…/ })).toBeTruthy();
-    expect(screen.getByRole("button", { name: /Netlify\s*Connect…/ })).toBeTruthy();
+    expect(screen.getByText(/Step 1 of 3/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Cloudflare Pages \(free\)\s*Connect…/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Netlify \(free\)\s*Connect…/ })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Or keep it on this computer" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Export site folder" }).className).not.toContain("st-button-primary");
     expect(screen.queryByText(/comes in a later update/)).toBeNull();
@@ -469,7 +469,7 @@ describe("hosts: publishing", () => {
     expect(within(dialog).getByRole("button", { name: "Move to Netlify" })).toBeTruthy();
     await click("Disconnect", dialog);
     expect(hosts.disconnect).toHaveBeenCalledTimes(1);
-    expect(screen.getByRole("button", { name: /Cloudflare Pages\s*Connect…/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Cloudflare Pages \(free\)\s*Connect…/ })).toBeTruthy();
   });
 
   it("move to the other host opens its connect dialog", async () => {
