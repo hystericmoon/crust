@@ -58,7 +58,7 @@
     "Name the button 'Move in (Alt+→)' and keep the longer text as a description"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed"
   },
   {
    "id": "A004",

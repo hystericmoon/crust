@@ -414,7 +414,7 @@ const icons: Record<MoveKind, string> = {
   nextSlot: "M14 6l6 6-6 6M20 12H4",
 };
 /** F097: the word beside a move icon on a selected section's toolbar. */
-const moveWords: Record<MoveKind, string> = { up: "Move up", down: "Move down", out: "Move out", into: "Move in", prevSlot: "Move left", nextSlot: "Move right" };
+const moveWords: Record<MoveKind, string> = { up: "Move up", down: "Move down", out: "Move out", into: "Move into", prevSlot: "Move left", nextSlot: "Move right" };
 const actionLabels: Record<MoveKind, string> = {
   up: "Move up (Alt+↑)",
   down: "Move down (Alt+↓)",
