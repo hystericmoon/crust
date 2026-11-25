@@ -4,6 +4,8 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Delete is red on the Posts list too (2026-11-25, audit).** Delete on the Posts list is now the same red outline as Delete on the Sites list, so the two screens treat a destructive button the same way.
+
 - **"Phone" instead of "Mobile" in Site settings (2026-11-25, audit).** The preview in Site settings now calls the small size "Phone", the same word the editor and template screens use.
 
 - **Site settings on a phone: one Group dropdown (2026-11-25, audit).** On a phone the 16 settings groups are now a single "Group" dropdown instead of a list that wrapped to five rows, so the fields start much higher on the screen. On a computer nothing changes.
