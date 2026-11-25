@@ -13,7 +13,8 @@ import { statusText, statusTone } from "./status";
 import { useAppFrame } from "./AppTopBar";
 
 export type NavId = "pages" | "posts" | "layout" | "styles" | "media" | "settings";
-export type NavMode = "list" | "rail";
+export type NavMode = "list" | "rail" | "all";
+export type AllId = "sites" | "templates" | "settings";
 
 interface Item {
   id: NavId;
@@ -54,11 +55,23 @@ export function navCurrent(hash: string): NavId | null {
 }
 
 /** The menu has two shapes: the editor gets the narrow rail, everything else the sidebar. */
-export function navMode(hash: string): NavMode | null {
+export function navMode(hash: string, desktop = false): NavMode | null {
   const h = hash || "#/";
-  if (h.startsWith("#/sites")) return null;
+  // F101: level 1 (all sites) only exists in the desktop app; the web version edits one site.
+  if (h.startsWith("#/sites")) return desktop ? "all" : "list";
   if (h.startsWith("#/edit") || h.startsWith("#/post?") || h.startsWith("#/section?") || h.startsWith("#/design?")) return "rail";
   return "list";
+}
+
+/** F101: level 1 of the menu. */
+export const ALL_ITEMS: { id: AllId; label: string; href: string; icon: FrameIconName }[] = [
+  { id: "sites", label: "Sites", href: "#/sites", icon: "layers" },
+  { id: "templates", label: "Templates", href: "#/sites?view=templates", icon: "layout" },
+  { id: "settings", label: "Settings", href: "#/sites?view=settings", icon: "site" },
+];
+export function allCurrent(hash: string): AllId {
+  const view = new URLSearchParams(hash.split("?")[1] ?? "").get("view");
+  return view === "templates" || view === "settings" ? view : "sites";
 }
 
 function subscribeHash(l: () => void) {
@@ -82,6 +95,50 @@ export function focusScreenHeading(): boolean {
   h.setAttribute("tabindex", "-1");
   h.focus({ preventScroll: true });
   return true;
+}
+
+/** Level 1: Sites, Templates, Settings. Choosing a site on the Sites screen drills into level 2. */
+export function AllSitesNav({ hash }: { hash?: string }) {
+  const live = useHash();
+  const here = allCurrent(hash ?? live);
+  const frame = useAppFrame();
+  return (
+    <nav className="sn sn-mode-list sn-mode-all" aria-label="Crust">
+      <button
+        type="button"
+        className="sn-skip"
+        onClick={() => {
+          const main = document.querySelector<HTMLElement>("main");
+          if (main) {
+            main.setAttribute("tabindex", "-1");
+            main.focus();
+          } else focusScreenHeading();
+        }}
+      >
+        Skip to content
+      </button>
+      <ul className="sn-items">
+        <li className="sn-site" aria-hidden="true">
+          <span className="af-logo">C</span>
+          <span className="sn-site-name">Crust</span>
+        </li>
+        {ALL_ITEMS.map((i) => (
+          <li key={i.id} className="sn-item">
+            <a className="sn-link" href={i.href} aria-current={here === i.id ? "page" : undefined} onClick={() => (focusHeadingNext = true)}>
+              <FrameIcon name={i.icon} size={18} />
+              <span className="sn-label">{i.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div className="sn-foot">
+        <a className="sn-link sn-open-site" href="#/" onClick={() => (focusHeadingNext = true)}>
+          <FrameIcon name="next" size={18} />
+          <span className="sn-label">Back to {frame.siteName}</span>
+        </a>
+      </div>
+    </nav>
+  );
 }
 
 export function SiteNav({ mode, hash, desktop, siteName }: { mode: NavMode; hash?: string; desktop?: boolean; siteName?: string }) {

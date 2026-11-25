@@ -220,6 +220,15 @@ nav[class*="Nav"] > ul > li[class*="NavItem"]:not(:nth-child(3)):not(:nth-child(
 .sn-mode-rail .sn-foot { border-top: 0; padding: 4px 0; }
 .sn-mode-rail .sn-link { flex-direction: column; justify-content: center; gap: 2px; padding: 6px 2px; font-size: 12px; text-align: center; }
 
+/* F101: level 1 (all sites). Site cards and template cards. */
+.sn-mode-all .sn-foot .sn-link { color: var(--app-mute); }
+.as-cards { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.as-card { display: grid; gap: 6px; align-content: start; padding: 14px; border: 1px solid var(--app-line); border-radius: 10px; background: var(--app-panel); min-width: 0; }
+.as-card-name { margin: 0; font-size: 1rem; font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; overflow-wrap: anywhere; }
+.as-card-meta { margin: 0; }
+.as-card-actions { margin-top: 6px; }
+.as-templates .tp-thumb { display: block; }
+
 /* Phone: a bottom bar. */
 @media (max-width: 700px) {
   .sn-shell, .sn-shell-rail { display: block; }
@@ -231,6 +240,7 @@ nav[class*="Nav"] > ul > li[class*="NavItem"]:not(:nth-child(3)):not(:nth-child(
   .sn-items { align-content: stretch; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; width: 100%; gap: 0; }
   .sn-site, .sn-all, .sn-foot, .sn-item-more { display: none; }
   .sn-more-button { display: block; }
+  .sn-mode-all .sn-foot { display: block; border: 0; padding: 0; }
   .sn-link { flex-direction: column; justify-content: center; gap: 2px; padding: 6px 2px; font-size: 12px; min-height: 52px; text-align: center; }
   .sn-sheet {
     position: absolute; right: 8px; bottom: calc(100% + 6px); min-width: 200px; padding: 6px; border: 1px solid var(--app-line);

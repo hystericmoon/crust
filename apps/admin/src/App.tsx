@@ -67,6 +67,7 @@ import { SiteChromeContext, withSiteChrome } from "./chrome-canvas";
 import { desktopContent } from "./desktop/content";
 import { sitesApi, sitesInvoke } from "./sites/sites";
 import { SitesScreen } from "./sites/SitesScreen";
+import { AppSettings, TemplatesBrowse } from "./sites/AllSitesViews";
 import { withMediaFields } from "./media/fields";
 import { MediaPicker } from "./media/MediaPicker";
 import { setAppFrame } from "./app-frame/AppTopBar";
@@ -369,7 +370,12 @@ function AppScreens() {
   if (route.name === "sites") {
     const invoke = sitesInvoke();
     // Only the desktop app keeps several sites; the web admin is one site.
-    if (invoke) return <SitesScreen api={sitesApi(invoke)} openName={site.name} />;
+    if (invoke) {
+      const view = new URLSearchParams(location.hash.split("?")[1] ?? "").get("view");
+      if (view === "templates") return <TemplatesBrowse />;
+      if (view === "settings") return <AppSettings />;
+      return <SitesScreen api={sitesApi(invoke)} />;
+    }
   }
 
   if (route.name === "media") return <MediaScreen />;

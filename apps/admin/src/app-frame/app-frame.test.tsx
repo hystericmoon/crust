@@ -196,7 +196,8 @@ describe("app frame: the top bar", () => {
     expect(navCurrent("#/sites")).toBeNull();
     expect(navMode("#/edit?path=/")).toBe("rail");
     expect(navMode("#/posts")).toBe("list");
-    expect(navMode("#/sites")).toBeNull();
+    expect(navMode("#/sites")).toBe("list"); // web: no level 1
+    expect(navMode("#/sites", true)).toBe("all");
   });
 
   it("sizes its targets and has a phone bottom bar", () => {

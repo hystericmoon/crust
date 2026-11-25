@@ -6,9 +6,7 @@
 import { useCallback, useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { Dialog, focusAfterDialog } from "../pages/PageActions";
 import { AboutCrust, UpdateBanner } from "../updates/UpdateNotice";
-import { Icon } from "../settings/icons";
 import { copyName, siteNameProblem, tidyName, type DeletedSite, type SiteSummary, type SitesApi, HOME_HREF } from "./sites";
-import { ThemeToggle } from "../app-theme/ThemeToggle";
 
 const formatDate = (ms: number | null) =>
   ms === null ? "Not saved yet" : new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(ms));
@@ -20,11 +18,11 @@ type Action = { kind: "new" } | { kind: "rename" | "duplicate" | "delete"; site:
 
 export interface SitesScreenProps {
   api: SitesApi;
-  /** The open site's name, for the link back to its pages. */
-  openName: string;
+  /** Unused since F101 (the menu leads back into the open site); kept so callers need no change. */
+  openName?: string;
 }
 
-export function SitesScreen({ api, openName }: SitesScreenProps) {
+export function SitesScreen({ api }: SitesScreenProps) {
   const [sites, setSites] = useState<SiteSummary[] | null>(null);
   const [deleted, setDeleted] = useState<DeletedSite[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -80,16 +78,12 @@ export function SitesScreen({ api, openName }: SitesScreenProps) {
   return (
     <div className="st">
       <header className="st-header">
-        <a className="st-back" href="#/">
-          <Icon name="back" /> {openName}
-        </a>
         <h1 className="st-title">Your sites</h1>
         <div className="st-actions">
           <button ref={newRef} type="button" className="st-button st-button-primary" onClick={() => setAction({ kind: "new" })}>
             New site
           </button>
         </div>
-        <ThemeToggle />
       </header>
 
       <main className="pg sites">
@@ -117,49 +111,34 @@ export function SitesScreen({ api, openName }: SitesScreenProps) {
           ) : sites === null ? (
             <p role="status">Loading your sites…</p>
           ) : (
-            <table className="pg-table sites-table">
-              <caption className="pg-sr">Your sites, most recently edited first</caption>
-              <thead>
-                <tr>
-                  <th scope="col">Site</th>
-                  <th scope="col">Last edited</th>
-                  <th scope="col">
-                    <span className="pg-sr">Actions</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {sites.map((site) => (
-                  <tr key={site.id}>
-                    <th scope="row" className="sites-name">
-                      <button id={rowLinkId(site.id)} type="button" className="sites-open" onClick={() => void open(site)} aria-disabled={opening !== null || undefined}>
-                        {opening === site.id ? `Opening ${site.name}…` : site.name}
+            <ul className="as-cards">
+              {sites.map((site) => (
+                <li key={site.id} className="as-card">
+                  <h3 className="as-card-name">
+                    <button id={rowLinkId(site.id)} type="button" className="sites-open" onClick={() => void open(site)} aria-disabled={opening !== null || undefined}>
+                      {opening === site.id ? `Opening ${site.name}…` : site.name}
+                    </button>
+                    {site.open ? <span className="sites-here">Open</span> : null}
+                  </h3>
+                  <p className="st-help as-card-meta">
+                    {pagesLabel(site.pages)} · Last edited {formatDate(site.edited)}
+                  </p>
+                  <div className="pg-row-actions as-card-actions">
+                    {site.open ? null : (
+                      <button type="button" className="st-button pg-small" data-site-action={`open:${site.id}`} onClick={() => void open(site)} aria-disabled={opening !== null || undefined}>
+                        Open site<span className="pg-sr">: {site.name}</span>
                       </button>
-                      {site.open ? <span className="sites-here">Open</span> : null}
-                      <span className="st-help sites-meta">{pagesLabel(site.pages)}</span>
-                    </th>
-                    <td className="pg-date" data-label="Last edited">
-                      {formatDate(site.edited)}
-                    </td>
-                    <td className="pg-actions-cell">
-                      <div className="pg-row-actions">
-                        {site.open ? null : (
-                          <button type="button" className="st-button pg-small" data-site-action={`open:${site.id}`} onClick={() => void open(site)} aria-disabled={opening !== null || undefined}>
-                            Open site<span className="pg-sr">: {site.name}</span>
-                          </button>
-                        )}
-                        {(["rename", "duplicate", "delete"] as const).map((kind) => (
-                          <button key={kind} type="button" className={`st-button pg-small${kind === "delete" ? " sites-delete" : ""}`} data-site-action={`${kind}:${site.id}`} onClick={() => setAction({ kind, site })}>
-                            {kind === "rename" ? "Rename" : kind === "duplicate" ? "Duplicate" : "Delete"}
-                            <span className="pg-sr"> {site.name}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    )}
+                    {(["rename", "duplicate", "delete"] as const).map((kind) => (
+                      <button key={kind} type="button" className={`st-button pg-small${kind === "delete" ? " sites-delete" : ""}`} data-site-action={`${kind}:${site.id}`} onClick={() => setAction({ kind, site })}>
+                        {kind === "rename" ? "Rename" : kind === "duplicate" ? "Duplicate" : "Delete"}
+                        <span className="pg-sr"> {site.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </li>
+              ))}
+            </ul>
           )}
         </section>
 

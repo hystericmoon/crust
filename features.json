@@ -1096,7 +1096,7 @@
       "description": "Two-level left menu, step 2; approved by the owner on 2026-11-25 (DECISIONS 2026-11-25: Two-level left menu). Level 1 of the menu: Sites, Templates, Settings; 'All sites' shows the owner's sites as cards; choosing one drills into the level-2 menu from F100 and '← All sites' comes back. Desktop app only: the web version edits one site and opens straight into its level 2. Focus moves to the new screen's heading on level change.",
       "depends_on": ["F100"],
       "done_check": "npm test -- app-frame all-sites && npm run typecheck && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true
     }
   ]
