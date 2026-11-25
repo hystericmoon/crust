@@ -3,6 +3,14 @@
 Newest at the top. Each entry: what we decided, and why.
 Claude logs reversible low-impact choices here; the owner makes scope calls.
 
+## 2026-11-25 — Site settings: Save and Discard only while something is unsaved (audit A107; Claude, reversible)
+
+The owner picked the recommended option "autosave only" for audit decision 4. I built the variant next to it instead, and told him why in
+chat: Site settings has no Undo (so "Undo covers Discard" did not hold), and autosave would also save a colour mid-typing. Now Discard and
+Save show only while something is unsaved (or a field is marked in red, when the bar says "Some fields need fixing"); once all is saved the
+bar says "All changes saved" with only Publish beside it, and focus moves to the status line so the keyboard is not dropped. If he still wants
+real autosave, build Undo for Site settings first. Tests: `settings.test.tsx`.
+
 ## Proposals
 
 - ~~A main website for Crust~~ **Chosen by the owner on 2026-11-11: option B ("go ahead with B"), words approved with "go".**
