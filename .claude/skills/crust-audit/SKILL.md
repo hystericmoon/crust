@@ -81,6 +81,14 @@ The owner's only part is the two gates (approve, choose findings).
   horizontal scroll, text spacing overrides survive.
 - Errors: not colour alone, announced, linked to the field (3.3.1, 3.3.3).
 
+**Borrowed checks** (from Anthropic's public Design plugin, `accessibility-review`, `design-critique`, `ux-copy`; used as checklists only, its WCAG 2.1 / 2.5.5 wording is NOT used, 2.2 AA above wins)
+- First impression, 2 seconds: what draws the eye first, is that right, is the purpose clear without reading?
+- Error text = what happened + why + how to fix. Empty state = what this is + why it's empty + how to start.
+- Confirmations name the action and consequence ("Delete 3 sections? This can't be undone"), buttons carry verbs ("Delete sections" / "Keep sections"), never OK / Cancel.
+- Same term for the same thing everywhere (build the term list from the collected labels).
+- Per interactive element, record what Tab, Enter, Space, Esc and arrow keys do, and what a screen reader announces. Report only where it is wrong or missing.
+- Automated scans catch about a third of accessibility problems; never report "axe is clean" as "accessible".
+
 **Visual (peer-level, brief)** - hierarchy, spacing rhythm, type scale, token
 use (no stray hex), state coverage (hover, focus, active, disabled, loading).
 
