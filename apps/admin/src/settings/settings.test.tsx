@@ -124,8 +124,8 @@ describe("Site settings screen", () => {
     const input = field("Primary");
     expect(input.getAttribute("aria-invalid")).toBe("true");
     expect(screen.getByText("Use a hex colour like #4338CA.")).toBeTruthy();
-    // The draft keeps the last valid value, so nothing is "unsaved".
-    expect(screen.getByText("All changes saved")).toBeTruthy();
+    // The draft keeps the last valid value, so nothing is "unsaved", but the bar must not claim all is well (audit A107).
+    expect(screen.getByText("Some fields need fixing")).toBeTruthy();
     act(() => screen.getByRole("button", { name: "Save" }).click());
     expect(onSave).not.toHaveBeenCalled();
     expect(screen.getByRole("status").textContent).toBe("Not saved. Fix the field marked in red first.");
@@ -138,6 +138,9 @@ describe("Site settings screen", () => {
     expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ colors: expect.objectContaining({ primary: "#0F766E" }) }));
     expect(screen.getByRole("status").textContent).toBe("Saved.");
     expect(screen.getByText("All changes saved")).toBeTruthy();
+    // Nothing left to save or discard, so those buttons are gone (audit A107).
+    expect(screen.queryByRole("button", { name: "Save" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Discard" })).toBeNull();
   });
 
   it("discards changes after confirming", () => {

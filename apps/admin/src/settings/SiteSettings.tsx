@@ -35,7 +35,7 @@ import {
   type LookVariation,
   type StyleLook,
 } from "@crust/blocks";
-import { useCallback, useEffect, useId, useMemo, useState, type MouseEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { sectionStyleIds, sectionStyleNames } from "@crust/blocks";
 import { SectionStyleEditor, StyleSwatch } from "../sections/controls";
 import { sameTokens } from "../tokens-store";
@@ -181,6 +181,7 @@ export function SiteSettings({
   const setColor = (role: ColorRole, value: string) => onChange({ ...draft, colors: { ...draft.colors, [role]: value } });
 
   const [saving, setSaving] = useState(false);
+  const statusRef = useRef<HTMLParagraphElement>(null);
   const save = async () => {
     if (saving) return;
     if (invalid.size > 0) {
@@ -203,6 +204,8 @@ export function SiteSettings({
       setStatus(await onSave(draft));
     } finally {
       setSaving(false);
+      // The Save button goes away once everything is saved; keep keyboard focus on the page (2.4.3).
+      requestAnimationFrame(() => statusRef.current?.focus());
     }
   };
 
@@ -235,18 +238,23 @@ export function SiteSettings({
         where={<h1 className="af-title">Site settings</h1>}
         tools={
           <>
-            <span className="st-dirty">{dirty ? "Unsaved changes" : "All changes saved"}</span>
-            <button type="button" className="st-button" onClick={discard} disabled={!dirty}>
-              Discard
-            </button>
-            <button type="button" className={dirty || saving ? "af-publish" : "st-button"} onClick={save} aria-disabled={saving || undefined}>
-              {saving ? "Saving…" : "Save"}
-            </button>
+            <span className="st-dirty">{dirty ? "Unsaved changes" : invalid.size > 0 ? "Some fields need fixing" : "All changes saved"}</span>
+            {/* Audit A107: Discard and Save only exist while something is unsaved, so "All changes saved" never sits next to buttons that seem to save. */}
+            {dirty || saving || invalid.size > 0 ? (
+              <>
+                <button type="button" className="st-button" onClick={discard} disabled={saving || !dirty}>
+                  Discard
+                </button>
+                <button type="button" className="af-publish" onClick={save} aria-disabled={saving || undefined}>
+                  {saving ? "Saving…" : "Save"}
+                </button>
+              </>
+            ) : null}
           </>
         }
         publish={!dirty && !saving}
       />
-      <p className="st-status" role="status" aria-live="polite">
+      <p className="st-status" role="status" aria-live="polite" tabIndex={-1} ref={statusRef}>
         {status}
       </p>
 
