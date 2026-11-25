@@ -334,18 +334,10 @@ describe("sites: the Sites screen", () => {
 });
 
 describe("sites: the Pages screen", () => {
-  // F086: All sites is the first item of the site menu, at the start of the top bar.
-  it("leads with All sites in the app, and not on the web", () => {
-    const { unmount } = render(<PageList allSites siteName="Harbour" rows={[]} sourceNote="" onCreate={() => {}} />);
-    const menu = screen.getByRole("button", { name: /^Harbour\s*, site menu$/ });
-    expect(menu.compareDocumentPosition(screen.getByRole("heading", { level: 1 })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    fireEvent.click(menu);
-    const link = screen.getAllByRole("link")[0]!;
-    expect(link.textContent).toBe("All sites");
-    expect(link.getAttribute("href")).toBe("#/sites");
-    unmount();
-    render(<PageList siteName="Harbour" rows={[]} sourceNote="" onCreate={() => {}} />);
-    fireEvent.click(screen.getByRole("button", { name: /^Harbour\s*, site menu$/ }));
-    expect(screen.queryByRole("link", { name: "All sites" })).toBeNull();
+  // F100: "← All sites" leads the left menu (desktop app only); it is not part of the screen itself.
+  it("keeps All sites out of the screen's own bar (it's in the left menu)", () => {
+    render(<PageList allSites siteName="Harbour" rows={[]} sourceNote="" onCreate={() => {}} />);
+    expect(screen.queryByRole("button", { name: /site menu/ })).toBeNull();
+    expect(screen.getByRole("heading", { level: 1 })).toBeTruthy();
   });
 });

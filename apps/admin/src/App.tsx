@@ -16,6 +16,8 @@ import { KeyboardActionBar, KeyboardCanvas, KeyboardRoot } from "./keyboard/Keyb
 import { LayoutPhotoWatcher } from "./layouts/photos";
 import { LayoutGallery, LayoutInserters, LayoutsButton } from "./layouts/LayoutGallery";
 import "./app-frame/app-frame.css";
+import { SiteShell } from "./app-frame/SiteShell";
+import { MediaScreen } from "./media/MediaScreen";
 import { MyLayoutsProvider } from "./layouts/mine";
 import { PageList, editHref } from "./pages/PageList";
 import { usePagesData } from "./pages-panel/usePagesData";
@@ -131,12 +133,15 @@ export type Route =
   /** F082: the post page, blog page or "Page not found" design. */
   | { name: "design"; kind: DesignKind }
   /** F057: the desktop app's Sites screen. */
-  | { name: "sites" };
+  | { name: "sites" }
+  /** F100: Media, from the site menu. */
+  | { name: "media" };
 
 export function parseRoute(hash: string): Route {
   if (hash.startsWith("#/settings")) return { name: "settings" };
   if (hash.startsWith("#/templates")) return { name: "templates" };
   if (hash.startsWith("#/sites")) return { name: "sites" };
+  if (hash.startsWith("#/media")) return { name: "media" };
   if (hash.startsWith("#/posts")) return { name: "posts" };
   if (hash.startsWith("#/post?")) {
     const slug = new URLSearchParams(hash.split("?")[1] ?? "").get("slug");
@@ -197,7 +202,16 @@ function usePageOptions(githubOn: boolean | null, active: boolean) {
   return pages.map((p) => ({ path: p.path, title: p.title }));
 }
 
+/** F100: every screen sits beside the site menu. */
 export function App() {
+  return (
+    <SiteShell>
+      <AppScreens />
+    </SiteShell>
+  );
+}
+
+function AppScreens() {
   const route = useRoute();
   const [saved, setSaved] = useState<SiteTokens>(() => loadSavedTokens(site.tokens));
   const [draft, setDraft] = useState<SiteTokens>(saved);
@@ -222,7 +236,9 @@ export function App() {
 
   useEffect(() => {
     document.title =
-      route.name === "settings"
+      route.name === "media"
+        ? "Media · Crust"
+        : route.name === "settings"
         ? "Site settings · Crust"
         : route.name === "edit"
           ? `Editing ${route.path} · Crust`
@@ -355,6 +371,8 @@ export function App() {
     // Only the desktop app keeps several sites; the web admin is one site.
     if (invoke) return <SitesScreen api={sitesApi(invoke)} openName={site.name} />;
   }
+
+  if (route.name === "media") return <MediaScreen />;
 
   if (route.name === "templates") {
     if (githubOn === null) return <Loading />;

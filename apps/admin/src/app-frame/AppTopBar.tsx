@@ -1,14 +1,12 @@
 /**
  * F086: one top bar on every screen (take A, design/f086-app-frame-v1.html).
- * Left: the site menu and where you are. Right: that screen's own buttons,
+ * Left: where you are (F100: the site menu moved to the left menu, SiteNav). Right: that screen's own buttons,
  * the status ("Saved · 3 changes not live") and Publish, always in the same
  * place and always the one primary button.
  */
-import { useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useSyncExternalStore, type ReactNode } from "react";
 import { PUBLISH_HREF } from "../publish/shortcut";
-import { SIGN_OUT_URL } from "../sign-out";
 import { ThemeToggle } from "../app-theme/ThemeToggle";
-import { FrameIcon } from "./icons";
 import { statusText, statusTone } from "./status";
 import type { SavePhase } from "./autosave";
 
@@ -36,101 +34,6 @@ export function useAppFrame(): AppFrame {
       return () => listeners.delete(l);
     },
     () => frame,
-  );
-}
-
-/** The site's name with a menu of the app's screens (and All sites in the desktop app). */
-export function SiteMenu({ siteName, allSites }: { siteName?: string; allSites?: boolean }) {
-  const frame = useAppFrame();
-  const desktop = allSites ?? frame.desktop;
-  const name = siteName ?? frame.siteName;
-  const [open, setOpen] = useState(false);
-  const button = useRef<HTMLButtonElement>(null);
-  const box = useRef<HTMLDivElement>(null);
-  const id = useId();
-
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e: PointerEvent) => {
-      if (!box.current?.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("pointerdown", onDown);
-    return () => document.removeEventListener("pointerdown", onDown);
-  }, [open]);
-
-  const close = () => {
-    setOpen(false);
-    button.current?.focus();
-  };
-
-  return (
-    <div
-      className="af-site"
-      ref={box}
-      onKeyDown={(e) => {
-        if (e.key === "Escape" && open) {
-          e.stopPropagation();
-          close();
-        }
-      }}
-      onBlur={(e) => {
-        if (open && !box.current?.contains(e.relatedTarget as Node | null) && e.relatedTarget) setOpen(false);
-      }}
-    >
-      <button
-        ref={button}
-        type="button"
-        className="af-site-button"
-        aria-expanded={open}
-        aria-controls={id}
-        onClick={() => setOpen((o) => !o)}
-      >
-        <span className="af-logo" aria-hidden="true">
-          {name.trim().charAt(0).toUpperCase() || "C"}
-        </span>
-        {/* The visible name starts the spoken one (WCAG 2.5.3), so voice control can say it. */}
-        <span className="af-site-name">{name}</span>
-        <span className="pg-sr">, site menu</span>
-        <FrameIcon name="down" size={14} />
-      </button>
-      <div id={id} className="af-menu" hidden={!open}>
-        <ul>
-          {desktop ? (
-            <li>
-              <a href="#/sites" onClick={() => setOpen(false)}>
-                All sites
-              </a>
-            </li>
-          ) : null}
-          <li>
-            <a href="#/" onClick={() => setOpen(false)}>
-              Pages
-            </a>
-          </li>
-          <li>
-            <a href="#/posts" onClick={() => setOpen(false)}>
-              Posts
-            </a>
-          </li>
-          <li>
-            <a href="#/settings" onClick={() => setOpen(false)}>
-              Site settings
-            </a>
-          </li>
-          <li>
-            <a href="#/templates" onClick={() => setOpen(false)}>
-              Start from a template
-            </a>
-          </li>
-          {desktop ? null : (
-            // F069: last, after a divider, so a slip doesn't sign the owner out.
-            <li className="af-menu-end">
-              <a href={SIGN_OUT_URL}>Sign out</a>
-            </li>
-          )}
-        </ul>
-      </div>
-    </div>
   );
 }
 
@@ -206,7 +109,6 @@ export function AppTopBar({ siteName, allSites, where, heading, tools, phase = n
   return (
     <Bar className="af-top" {...(landmark ? {} : { role: "group", "aria-label": "Site and publishing" })}>
       {heading ? <h1 className="af-sr">{heading}</h1> : null}
-      <SiteMenu siteName={siteName} allSites={allSites} />
       {where ? <div className="af-where">{where}</div> : null}
       <span className="af-grow" />
       {tools ? <div className="af-tools">{tools}</div> : null}

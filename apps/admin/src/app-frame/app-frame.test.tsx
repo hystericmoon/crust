@@ -4,7 +4,8 @@ import { readFileSync } from "node:fs";
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "../App";
-import { AppTopBar, PublishButton, setAppFrame, SiteMenu } from "./AppTopBar";
+import { AppTopBar, PublishButton, setAppFrame } from "./AppTopBar";
+import { SiteNav, navCurrent, navMode } from "./SiteNav";
 import { autosaveDelay, BROWSER_DELAY, createAutosaver, DESKTOP_DELAY, useAutosave, type SavePhase } from "./autosave";
 import { statusText, statusTone } from "./status";
 import { railPlugins } from "./rail";
@@ -23,8 +24,8 @@ afterEach(() => {
   location.hash = "";
 });
 
-describe("app frame: site menu is not clipped", () => {
-  it("lets Puck's header wrapper show overflow, so the menu can drop over the rail", () => {
+describe("app frame: the top bar is not clipped", () => {
+  it("lets Puck's header wrapper show overflow (the bar's popovers can drop over the rail)", () => {
     const css = readFileSync("apps/admin/src/app-frame/app-frame.css", "utf8");
     expect(css).toMatch(/PuckLayout-header"\]:has\(\.af-top\)\s*\{[^}]*overflow:\s*visible/);
   });
@@ -129,12 +130,11 @@ describe("app frame: the status line", () => {
 });
 
 describe("app frame: the top bar", () => {
-  it("has the site menu first and Publish, with its count, as the one primary button", () => {
+  it("has Publish, with its count, as the one primary button (the site menu is the left menu now)", () => {
     setAppFrame({ pending: 3 });
     render(<AppTopBar where={<h1>Pages</h1>} tools={<button type="button">New page</button>} />);
     const bar = screen.getByRole("banner");
-    const buttons = within(bar).getAllByRole("button");
-    expect(buttons[0]).toBe(within(bar).getByRole("button", { name: /^Harbour Studio\s*, site menu$/ }));
+    expect(within(bar).queryByRole("button", { name: /site menu/ })).toBeNull();
     const publish = within(bar).getByRole("link", { name: /^Publish.*3 changes waiting$/ });
     expect(publish.getAttribute("href")).toBe("#/?focus=publish");
     expect(bar.querySelectorAll(".af-publish")).toHaveLength(1);
@@ -148,27 +148,62 @@ describe("app frame: the top bar", () => {
     expect(go).toHaveBeenCalled();
   });
 
-  it("site menu: opens and closes with the keyboard, focus goes back to its button", () => {
-    render(<SiteMenu />);
-    const button = screen.getByRole("button", { name: /^Harbour Studio\s*, site menu$/ });
-    expect(button.getAttribute("aria-expanded")).toBe("false");
-    expect(screen.queryByRole("link", { name: "Site settings" })).toBeNull();
-    fireEvent.click(button);
-    expect(button.getAttribute("aria-expanded")).toBe("true");
-    const names = screen.getAllByRole("link").map((l) => l.textContent);
-    expect(names).toEqual(["Pages", "Posts", "Site settings", "Start from a template", "Sign out"]);
-    fireEvent.keyDown(screen.getByRole("link", { name: "Posts" }), { key: "Escape" });
-    expect(button.getAttribute("aria-expanded")).toBe("false");
-    expect(document.activeElement).toBe(button);
+  it("the left menu: one nav named Site with the six items, the current one marked", () => {
+    setAppFrame({ desktop: false });
+    render(<SiteNav mode="list" hash="#/posts" />);
+    const nav = screen.getByRole("navigation", { name: "Site" });
+    const names = within(nav).getAllByRole("link").map((l) => l.textContent);
+    expect(names).toEqual(["Pages", "Posts", "Layout", "Styles", "Media", "Settings", "Sign out"]);
+    expect(within(nav).getAllByRole("link", { current: "page" }).map((l) => l.textContent)).toEqual(["Posts"]);
+    expect(within(nav).queryByText("Menus")).toBeNull();
+    expect(within(nav).queryByText("Modules")).toBeNull();
   });
 
-  it("site menu in the desktop app: All sites first, and no signing out", () => {
+  it("the left menu in the desktop app: All sites first in tab order after the skip button, and no signing out", () => {
     setAppFrame({ desktop: true });
-    render(<SiteMenu />);
-    fireEvent.click(screen.getByRole("button", { name: /site menu/ }));
+    render(<SiteNav mode="list" hash="#/" />);
     const names = screen.getAllByRole("link").map((l) => l.textContent);
     expect(names[0]).toBe("All sites");
+    expect(screen.getByRole("button", { name: "Skip to content" })).toBeTruthy();
     expect(names).not.toContain("Sign out");
+    expect(screen.getByRole("link", { name: "All sites", hidden: false }).getAttribute("href")).toBe("#/sites");
+  });
+
+  it("the phone's More button opens Media, Settings and All sites, and Escape closes it", () => {
+    setAppFrame({ desktop: true });
+    render(<SiteNav mode="list" hash="#/" />);
+    const more = screen.getByRole("button", { name: "More" });
+    expect(more.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.click(more);
+    expect(more.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.keyDown(more, { key: "Escape" });
+    expect(more.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("knows which item a screen belongs to and which menu shape it gets", () => {
+    expect(navCurrent("")).toBe("pages");
+    expect(navCurrent("#/edit?path=/about")).toBe("pages");
+    expect(navCurrent("#/templates")).toBe("pages");
+    expect(navCurrent("#/posts")).toBe("posts");
+    expect(navCurrent("#/post?slug=x")).toBe("posts");
+    expect(navCurrent("#/design?kind=blog")).toBe("posts");
+    expect(navCurrent("#/media")).toBe("media");
+    expect(navCurrent("#/settings?group=header")).toBe("layout");
+    expect(navCurrent("#/settings?group=footer")).toBe("layout");
+    expect(navCurrent("#/settings?group=colours")).toBe("styles");
+    expect(navCurrent("#/settings")).toBe("styles");
+    expect(navCurrent("#/settings?group=address")).toBe("settings");
+    expect(navCurrent("#/sites")).toBeNull();
+    expect(navMode("#/edit?path=/")).toBe("rail");
+    expect(navMode("#/posts")).toBe("list");
+    expect(navMode("#/sites")).toBeNull();
+  });
+
+  it("sizes its targets and has a phone bottom bar", () => {
+    const css = readFileSync("apps/admin/src/app-frame/app-frame.css", "utf8");
+    expect(css).toMatch(/\.sn-link \{[^}]*min-height: 44px/);
+    expect(css).toMatch(/\.sn-shell-rail \{ grid-template-columns: 72px/);
+    expect(css).toMatch(/@media \(max-width: 700px\)[\s\S]*position: fixed/);
   });
 
   it("is on the Pages, Posts, Site settings and Templates screens", () => {
@@ -213,7 +248,7 @@ describe("app frame: the builder", () => {
     render(<App />);
     const undo = await screen.findByRole("button", { name: "Undo" }, { timeout: 5000 });
     const bar = undo.closest<HTMLElement>('[aria-label="Site and publishing"]')!;
-    expect(within(bar).getByRole("button", { name: /site menu/ })).toBeTruthy();
+    expect(screen.getByRole("navigation", { name: "Site" })).toBeTruthy();
     expect(within(bar).getByRole("combobox", { name: "Page" })).toBeTruthy();
     expect(within(bar).getByRole("button", { name: "Redo" })).toBeTruthy();
     expect(within(bar).getByRole("button", { name: "Preview" }).getAttribute("aria-pressed")).toBe("false");

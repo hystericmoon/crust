@@ -55,7 +55,7 @@ describe("audit A206: phone controls", () => {
   const phone = "@media (pointer: coarse), (max-width: 560px)";
   it("light/dark switch, top-bar buttons and the text toolbar are 44px on touch or phones", () => {
     expect(px(rule(css("app-theme/app-theme.css"), ".app-theme-toggle", phone), "height")).toBeGreaterThanOrEqual(44);
-    expect(px(rule(css("app-frame/app-frame.css"), ".af-site-button, .af-button, .af-tools .st-button, .af-tools .crust-header-link, .af-publish", phone), "min-height")).toBeGreaterThanOrEqual(44);
+    expect(px(rule(css("app-frame/app-frame.css"), ".af-button, .af-tools .st-button, .af-tools .crust-header-link, .af-publish", phone), "min-height")).toBeGreaterThanOrEqual(44);
     expect(px(rule(css("app-frame/app-frame.css"), ".af-icon-button", phone), "height")).toBeGreaterThanOrEqual(44);
     expect(px(rule(css("rich-text/rich-text.css"), ".rt-tool", phone), "height")).toBeGreaterThanOrEqual(44);
     expect(px(rule(css("rich-text/rich-text.css"), ".rt-link-input", phone), "min-height")).toBeGreaterThanOrEqual(44);

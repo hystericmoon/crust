@@ -168,7 +168,7 @@ const SCREENS = [
   { id: "S82", area: 10, title: "Restart with unsaved Site settings changes", notReached: "Needs an update banner and unsaved Site settings at the same time; the capture has no step that moves between the two." },
   { id: "S83", area: 10, title: "What's new dialog", hash: "/#/sites", app: { host: "none", update: "available" }, wait: "#sites-h", steps: [{ click: 'button:has-text("Check for updates")' }, { click: '.up-banner button:has-text("What\'s new")' }, { waitFor: "dialog[open]" }] },
   { id: "S84", area: 10, title: "About Crust (version card)", shares: "S05", note: "The About card (version and Check for updates) sits on the Sites screen." },
-  { id: "S85", area: 10, title: "Sign out link (site menu, web only)", hash: "/#/", steps: [{ click: 'button[aria-expanded="false"][aria-controls]' }, { waitFor: '.af-menu a:has-text("Sign out")' }] },
+  { id: "S85", area: 10, title: "Sign out link (left menu foot, web only)", hash: "/#/", steps: [{ waitFor: '.sn-foot a:has-text("Sign out")' }] },
   { id: "S86", area: 10, title: "Desktop window and folder handling", notReached: "No screen of its own; windowing is not a visible state the browser capture can show (inferred from desktop/ code only)." },
 
   // Area 11: public sites. Store and generated sites are not in the admin app, so none are captured here.
