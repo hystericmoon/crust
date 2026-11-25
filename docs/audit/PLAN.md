@@ -1,6 +1,6 @@
 # UI/UX audit plan
 
-Status: **Gate 1 reached** (2026-11-25). Pilot of areas 1 and 3 is done; findings in `docs/audit/findings.json` (8, none S1). Waiting on the owner: scale to the other 10 areas, fix pilot findings first, or stop. Plugins (Design, Axe) not enabled by the owner; Design checklists were borrowed from its public source instead.
+Status: **Gate 2 reached** (2026-11-25). All 12 areas reviewed (47 findings, none S1; 15 S2, 32 S3 after merging duplicates). Report: https://claude.ai/artifact/3z5gZQ86svBbzgMBoriYF3. Waiting on the owner: which findings to fix. Nothing in the app was changed.
 Visual plan for the owner: https://claude.ai/artifact/QkWLECje1aAKrrYsh7K3ay (private).
 Method, checklist and model rules: `.claude/skills/crust-audit/SKILL.md`.
 Screens (104) and 10 journeys: `docs/audit/inventory.md` (Haiku, read from code; rows marked "(inferred)" were not seen on screen).
@@ -31,3 +31,6 @@ Haiku ~0.5-1M, Sonnet ~1-2M, Opus ~50-100k. Stop and ask if the pilot costs more
 
 ## Pilot result (Gate 1)
 Capture v1 was discarded after a spot-check found two script artifacts; v2 (scripts/audit/capture.mjs) was verified. Haiku about 340k tokens (measured). Opus used: 0 of 3. Not yet run: naive-agent journey run, four-lens walkthrough, wording review of collected labels; 4 screens not reachable (S04, S26, S28, S29). Report page: see the owner's Gate 1 artifact.
+
+## Result (Gate 2)
+Areas 2 and 4-12 reviewed by three Sonnet reviewers on capture v2 extended (39 screens reached); naive run in `docs/audit/naive-run.md`; Haiku about 200k tokens for the script work, Sonnet about 320k for review. Opus used: 0 of 3. A100 and A106 may be capture artifacts: check on the Mac. Not done: live-app checks, phone captures of S45/S76/S77, Opus calls (no S1, nothing to settle).
