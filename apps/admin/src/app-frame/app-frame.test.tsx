@@ -212,7 +212,7 @@ describe("app frame: the builder", () => {
     location.hash = "#/edit?path=/";
     render(<App />);
     const undo = await screen.findByRole("button", { name: "Undo" }, { timeout: 5000 });
-    const bar = undo.closest("header")!;
+    const bar = undo.closest('[aria-label="Site and publishing"]')!;
     expect(within(bar).getByRole("button", { name: /site menu/ })).toBeTruthy();
     expect(within(bar).getByRole("combobox", { name: "Page" })).toBeTruthy();
     expect(within(bar).getByRole("button", { name: "Redo" })).toBeTruthy();
