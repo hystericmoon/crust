@@ -97,12 +97,24 @@ function usePreviewData(githubOn: boolean): PageDesignData | null {
   return data;
 }
 
-function SaveButton({ onSave }: { onSave: (data: Data) => void }) {
+function SaveButton({ onSave, className = "crust-save" }: { onSave: (data: Data) => void; className?: string }) {
   const getPuck = useGetPuck();
   return (
-    <button type="button" className="crust-save" onClick={() => onSave(getPuck().appState.data as Data)}>
+    <button type="button" className={className} onClick={() => onSave(getPuck().appState.data as Data)}>
       Save design
     </button>
+  );
+}
+
+/* Audit A303: on a phone Puck folds its buttons behind a chevron, so Back and Save design stay in a slim bar at the bottom, in thumb reach. */
+function PhoneBar({ backHref, backLabel, onSave }: { backHref: string; backLabel: string; onSave: (data: Data) => void }) {
+  return (
+    <div className="dz-phone-bar" role="group" aria-label="Design actions">
+      <a className="crust-header-link" href={backHref}>
+        {backLabel}
+      </a>
+      <SaveButton className="crust-save" onSave={onSave} />
+    </div>
   );
 }
 
@@ -175,10 +187,20 @@ export function DesignEditor({ kind, githubOn, config, overrides, language }: Pr
             headerTitle={`${name} design`}
             overrides={{
               ...overrides,
+              puck: ({ children }) => {
+                const Outer = overrides?.puck;
+                const inner = (
+                  <>
+                    {children}
+                    <PhoneBar backHref={back.href} backLabel={back.label} onSave={(d) => void save(d)} />
+                  </>
+                );
+                return Outer ? <Outer>{inner}</Outer> : inner;
+              },
               headerActions: () => (
                 <>
                   <span className="ls-editing">{kind === "notFound" ? "Shown for addresses with no page" : kind === "post" ? "Every post looks like this" : "The list of posts at /blog/"}</span>
-                  <a className="crust-header-link" href={back.href}>
+                  <a className="crust-header-link dz-wide-only" href={back.href}>
                     {back.label}
                   </a>
                   <LayoutsButton />
@@ -200,7 +222,7 @@ export function DesignEditor({ kind, githubOn, config, overrides, language }: Pr
                     )
                   ) : null}
                   <ThemeToggle />
-                  <SaveButton onSave={(d) => void save(d)} />
+                  <SaveButton className="crust-save dz-wide-only" onSave={(d) => void save(d)} />
                 </>
               ),
             }}

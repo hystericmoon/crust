@@ -149,3 +149,17 @@ describe("/api/designs (F082)", () => {
     expect((await post({ action: "save", design: { kind: "notFound", content: unsafe } })).status).toBe(422);
   });
 });
+
+describe("the design editor on a phone (audit A303)", () => {
+  it("keeps Back and Save design in a bar that is always visible on phones", async () => {
+    api.listDesigns.mockResolvedValue({ ok: true, designs: {} });
+    const { DesignEditor } = await import("./DesignEditor");
+    const { container } = render(<DesignEditor kind="post" githubOn={false} config={withSettingsTabs(config)} language="en" />);
+    await waitFor(() => expect(container.querySelector(".dz-phone-bar")).not.toBeNull());
+    const bar = container.querySelector(".dz-phone-bar") as HTMLElement;
+    expect(bar.querySelector("a")?.getAttribute("href")).toBe("#/posts");
+    expect(bar.textContent).toContain("Save design");
+    // the desktop copies stay in Puck's header but fold away on a phone
+    expect(container.querySelectorAll(".dz-wide-only").length).toBe(2);
+  });
+});

@@ -3,3 +3,18 @@
 .dz-confirm { display: inline-flex; gap: 6px; align-items: center; }
 .pg-builtin th, .pg-builtin td { border-top: 2px solid var(--app-line); }
 .dz-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; text-decoration: none; }
+
+/* Audit A303: Back and Save design stay visible on a phone (Puck folds its own buttons behind a chevron below 638 px). */
+.dz-phone-bar { display: none; }
+@media (max-width: 637px) {
+  .dz-wide-only { display: none; }
+  .dz-phone-bar {
+    display: flex; gap: 8px; justify-content: space-between; align-items: center;
+    position: fixed; inset-inline: 0; bottom: 0; z-index: 5; padding: 8px 12px;
+    background: var(--app-panel); border-top: 1px solid var(--app-line);
+  }
+  .dz-phone-bar .crust-header-link, .dz-phone-bar .crust-save { min-height: 44px; display: inline-flex; align-items: center; padding: 0 16px; }
+  .dz-phone-bar .crust-header-link { text-decoration: none; color: var(--app-ink); border: 1px solid var(--app-line); border-radius: 6px; }
+  .dz-phone-bar .crust-save { flex: 1; justify-content: center; }
+  .Puck [class*="_PuckLayout_"] { height: calc(100dvh - 61px); }
+}
