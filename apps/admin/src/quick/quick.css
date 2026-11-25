@@ -33,4 +33,5 @@ textarea.qe-input { resize: vertical; }
 .qe :is(a, button, input, textarea, summary):focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
 .qe .mf-thumb { width: 96px; height: 72px; }
 .qe .mf-button { min-height: 44px; }
+.qe-hint { text-transform: none; font-weight: 500; color: var(--app-ink); letter-spacing: 0; }
 .qe-part { display: inline-grid; place-items: center; min-width: 22px; height: 22px; margin-right: 4px; padding: 0 6px; border-radius: 11px; background: var(--app-raised); color: var(--app-mute); font-size: 0.75rem; letter-spacing: 0; }

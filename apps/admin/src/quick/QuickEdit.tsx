@@ -138,6 +138,7 @@ export function QuickEdit({ page: initial, githubOn, saveMessage }: Props) {
           <section key={`${g.blockId}-${gi}`} className="qe-group" aria-labelledby={`qe-g${gi}`}>
             <h2 id={`qe-g${gi}`} className="qe-group-title">
               <span className="qe-part">{gi + 1}</span> {g.title}
+              {g.hint ? <span className="qe-hint"> · “{g.hint}”</span> : null}
             </h2>
             {g.fields.map((f) =>
               f.kind === "image" ? (

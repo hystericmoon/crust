@@ -5,7 +5,7 @@ import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { saveMessage } from "../App";
 import { getLocalDraft } from "../pages/store";
-import { applyQuickEdit, prefersQuickEdit, quickGroups } from "./quick";
+import { applyQuickEdit, groupHint, prefersQuickEdit, quickGroups } from "./quick";
 import { QuickEdit } from "./QuickEdit";
 
 const api = vi.hoisted(() => ({ saveContent: vi.fn(), startPublish: vi.fn(), listMedia: vi.fn() }));
@@ -47,6 +47,15 @@ beforeEach(() => {
 afterEach(() => cleanup());
 
 describe("quick edit model (F038)", () => {
+  it("names each group by its first words, so it is not only a type and a number (audit A204)", () => {
+    const groups = quickGroups(data);
+    expect(groups[0]!.hint).toBeTruthy();
+    expect(groups[2]!.hint).toBe("A loaf"); // an image group leans on its alt text, not its file path or empty caption
+    const long = groupHint([{ id: "x", blockId: "b", key: "text", label: "Text", kind: "text", value: "We make brands that people talk about at dinner" }]);
+    expect(long!.endsWith("…")).toBe(true);
+    expect(long!.length).toBeLessThanOrEqual(29);
+  });
+
   it("lists words, labels and photos in reading order, inside sections and columns", () => {
     const groups = quickGroups(data);
     expect(groups.map((g) => g.title)).toEqual(["Heading", "Button", "Image", "Photo 1 of 2 · Gallery", "Photo 2 of 2 · Gallery"]);
@@ -129,7 +138,7 @@ describe("Quick edit screen (F038)", () => {
 
   it("each photo has its own labelled group", () => {
     render(<QuickEdit page={page} githubOn={false} saveMessage={saveMessage} />);
-    expect(screen.getByRole("region", { name: "5 Photo 2 of 2 · Gallery" })).toBeTruthy();
+    expect(screen.getByRole("region", { name: /^5 Photo 2 of 2 · Gallery/ })).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Save and publish" })).toBeNull();
   });
 });
