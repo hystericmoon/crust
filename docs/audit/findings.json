@@ -186,7 +186,8 @@
     "Leave the row but put the screen name on the same line as the toggle"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "#104"
   },
   {
    "id": "A102",
@@ -300,7 +301,8 @@
     "Keep both and rename Save to 'Save settings' with a line saying what is not live until Publish"
    ],
    "recommended": 1,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "#106 (variant: no autosave, see DECISIONS 2026-11-25)"
   },
   {
    "id": "A108",
@@ -433,7 +435,8 @@
     "Link to a setup page inside the app instead of a file name"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "#103"
   },
   {
    "id": "A202",
@@ -452,7 +455,8 @@
     "Show this group only after a host is connected"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "#103"
   },
   {
    "id": "A203",
@@ -490,7 +494,8 @@
     "Show a thumbnail of the section beside each group"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "#105"
   },
   {
    "id": "A205",
@@ -604,7 +609,8 @@
     "Redirect to the linked sections list with a short notice"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "#107"
   },
   {
    "id": "A303",
@@ -642,7 +648,8 @@
     "Leave as is and add a one-line hint on the Mine tab pointing to Linked"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "#107"
   },
   {
    "id": "A306",
