@@ -4,6 +4,8 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Plainer "Replace your site" message (2026-11-25, audit).** When you apply a template, the notes under Replaced and Kept now say what to do: how to undo it (open Pages, choose "Bring back my previous site") and why a template's photos can't come along on a copy of Crust that can't store photos.
+
 - **Two small clean-ups in the editor (2026-11-25, audit).** The selected section's toolbar says "Move down" once instead of twice, and a section's settings no longer start with a button called "root" (that was the page's internal name).
 
 - **Linked sections get their own tab in Add section (2026-11-25, audit).** The gallery now has three tabs, Layouts, Mine and Linked, instead of hiding Linked inside the Type list. A linked section that no longer exists shows a short explanation and a "Back to the page" button instead of a bare page.

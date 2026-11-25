@@ -208,7 +208,8 @@
     "Leave the copy and add a link to the restore screen"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "Replace-your-site copy PR"
   },
   {
    "id": "A103",

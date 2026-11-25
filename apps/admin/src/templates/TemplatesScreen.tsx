@@ -644,8 +644,8 @@ function ConfirmDialog({
               ))}
               <p>
                 {githubOn
-                  ? "Your current site stays in the history. Afterwards the Pages screen offers “Bring back my previous site”."
-                  : "Your current site is kept in this browser. Afterwards the Pages screen offers “Bring back my previous site”."}
+                  ? "Your current site stays in the history. To undo this, open Pages and choose “Bring back my previous site”."
+                  : "Your current site is kept in this browser. To undo this, open Pages and choose “Bring back my previous site”."}
               </p>
             </>
           ) : (

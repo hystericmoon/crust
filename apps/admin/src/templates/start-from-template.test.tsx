@@ -79,7 +79,7 @@ describe("what applying a template replaces (F048)", () => {
     expect(plan.replaced).toContain("The site’s language: English becomes Indonesian");
     expect(plan.kept).not.toContain("Your photo library");
     expect(plan.notes[0]).toBe("2 drafts only in this browser are set aside and come back with your previous site.");
-    expect(plan.notes[1]).toMatch(/template's 1 photo can't join a photo library/);
+    expect(plan.notes[1]).toMatch(/template's 1 photo can't come along/);
   });
 
   it("shortens long lists and sums a template up in a line", async () => {
