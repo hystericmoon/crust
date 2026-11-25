@@ -128,9 +128,10 @@ export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel, stylesPanel
     });
     const parentLabel = usePuck((s) => {
       const p = parentId ? s.getItemById(parentId) : undefined;
-      return p ? (s.config.components[p.type]?.label ?? p.type) : "";
+      // Audit A002: a section directly on the page has the page itself as its parent (internal name "root"); only a real block counts.
+      return p && s.config.components[p.type] ? (s.config.components[p.type]?.label ?? p.type) : "";
     });
-    const parent = parentId ? { id: parentId, label: parentLabel } : null;
+    const parent = parentId && parentLabel ? { id: parentId, label: parentLabel } : null;
     const getPuck = useGetPuck();
     const heading = useRef<HTMLHeadingElement>(null);
     useEffect(() => heading.current?.focus(), []);

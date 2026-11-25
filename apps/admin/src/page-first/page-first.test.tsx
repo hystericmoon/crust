@@ -167,6 +167,8 @@ describe("page first: a section's settings in the left panel (F099)", () => {
     fireEvent.click(open);
     const back = await screen.findByRole("button", { name: "Back to Outline" });
     expect(screen.getByRole("heading", { name: /settings$/ })).toBeTruthy();
+    // Audit A002: a top-level section's parent is the page, whose internal name "root" must not show as a button.
+    expect(screen.queryByRole("button", { name: /^root$/i })).toBeNull();
     expect(panelShown()).toBe(false);
     fireEvent.click(back);
     await waitFor(() => expect(screen.queryByRole("button", { name: "Back to Outline" })).toBeNull());
