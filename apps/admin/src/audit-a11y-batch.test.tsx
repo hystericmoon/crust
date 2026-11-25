@@ -23,4 +23,9 @@ describe("audit: accessibility batch", () => {
     expect(p).toContain('label="Open all site settings"');
     expect(src("styles-panel/SiteSettingsSheet.tsx")).toContain('label = "Site settings"');
   });
+  it("A306: design editor has an h1 and a 'Back to' link", () => {
+    const d = src("designs/DesignEditor.tsx");
+    expect(d).toContain('<h1 className="af-sr">Design editor: {name}</h1>');
+    expect(d).toContain("Back to {back.label}");
+  });
 });

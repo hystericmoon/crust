@@ -5,6 +5,8 @@ User-visible changes, newest first, in plain language.
 ## Unreleased
 
 - **Layout card titles are easier to hit (2026-11-25, audit).** Title buttons on the layout cards in Add section are at least 24 px tall, and 44 px on touch screens.
+- **Design editor has a page title and a clearer way back (2026-11-25, audit).** Screen-reader users now find a top-level heading ("Design editor: ..."), and the link out reads "← Back to Posts" (or "Back to Pages") instead of a bare "Posts".
+
 - **The Styles panel says "Styles" once (2026-11-25, audit).** The panel had two "Styles" headings and two near-identical intro lines. It now has one heading, one intro, and the button to the full settings reads "Open all site settings" so it no longer looks like a tab.
 
 - **One page banner in the builder (2026-11-25, audit).** The bar with the site menu and Publish inside the builder was announced as a second "banner" next to the editor's own header. It is now a named group ("Site and publishing"), so screen-reader landmark lists are cleaner. Other screens are unchanged.

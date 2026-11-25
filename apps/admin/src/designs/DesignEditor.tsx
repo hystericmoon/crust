@@ -211,9 +211,10 @@ export function DesignEditor({ kind, githubOn, config, overrides, language }: Pr
               iframe: tidyCanvas,
               headerActions: () => (
                 <>
+                  <h1 className="af-sr">Design editor: {name}</h1>
                   <span className="ls-editing">{kind === "notFound" ? "Shown for addresses with no page" : kind === "post" ? "Every post looks like this" : "The list of posts at /blog/"}</span>
                   <a className="crust-header-link dz-wide-only" href={back.href}>
-                    {back.label}
+                    &larr; Back to {back.label}
                   </a>
                   <LayoutsButton />
                   <PlaceholderChecklist />
