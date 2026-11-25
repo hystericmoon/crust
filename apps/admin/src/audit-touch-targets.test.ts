@@ -22,7 +22,7 @@ function rule(sheet: string, selector: string, media?: string): string {
     text = sheet.replace(/@media[^{]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g, "");
   }
   for (const m of text.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-    if (m[1].split(",").map((x) => x.trim()).includes(selector)) return m[2];
+    if ((m[1] ?? "").split(",").map((x) => x.trim()).includes(selector)) return m[2] ?? "";
   }
   return "";
 }
