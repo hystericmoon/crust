@@ -1,6 +1,6 @@
 # UI/UX audit plan
 
-Status: **Gate 2 done, five decisions fixed (2026-11-25).** Owner picked the recommended option on all five; merged as PRs #103 to #107 (decision 4 as a variant, see DECISIONS). 8 findings fixed, 39 open (none S1). A100/A106 need a live check on the owner's Mac. Report: https://claude.ai/artifact/3z5gZQ86svBbzgMBoriYF3.
+Status: **Gate 2 done, five decisions fixed (2026-11-25).** Owner picked the recommended option on all five; merged as PRs #103 to #107 (decision 4 as a variant, see DECISIONS). 7 findings fixed, 40 open (none S1). A100/A106 need a live check on the owner's Mac. Report: https://claude.ai/artifact/3z5gZQ86svBbzgMBoriYF3.
 Visual plan for the owner: https://claude.ai/artifact/QkWLECje1aAKrrYsh7K3ay (private).
 Method, checklist and model rules: `.claude/skills/crust-audit/SKILL.md`.
 Screens (104) and 10 journeys: `docs/audit/inventory.md` (Haiku, read from code; rows marked "(inferred)" were not seen on screen).
