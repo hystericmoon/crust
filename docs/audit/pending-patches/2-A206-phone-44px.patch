@@ -1,0 +1,101 @@
+From e78bffac33e380a2c4fd22e5e9d139118b90ac6b Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 25 Nov 2026 11:56:54 +0000
+Subject: [PATCH] Phone: 44px light/dark switch, top-bar buttons and text
+ toolbar (audit A206)
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01W2ZFMtn2DmfEPD1sHQAr19
+---
+ apps/admin/src/app-frame/app-frame.css     |  5 +++++
+ apps/admin/src/app-theme/app-theme.css     |  2 ++
+ apps/admin/src/audit-touch-targets.test.ts | 14 +++++++++++++-
+ apps/admin/src/inline-text/inline-text.css |  2 +-
+ apps/admin/src/rich-text/rich-text.css     |  3 ++-
+ 5 files changed, 23 insertions(+), 3 deletions(-)
+
+diff --git a/apps/admin/src/app-frame/app-frame.css b/apps/admin/src/app-frame/app-frame.css
+index 3ed6095..9d762c9 100644
+--- a/apps/admin/src/app-frame/app-frame.css
++++ b/apps/admin/src/app-frame/app-frame.css
+@@ -105,6 +105,11 @@
+   .af-seg, .af-top .af-button { display: none; }
+   .af-site-name { max-width: 120px; }
+ }
++/* Audit A206: top-bar buttons are 44px tall on touch and phones. */
++@media (pointer: coarse), (max-width: 560px) {
++  .af-site-button, .af-button, .af-tools .st-button, .af-tools .crust-header-link, .af-publish { min-height: 44px; }
++  .af-icon-button { width: 44px; height: 44px; }
++}
+ @media (max-width: 560px) {
+   .af-status { display: none; }
+   .af-where { order: 10; flex-basis: 100%; }
+diff --git a/apps/admin/src/app-theme/app-theme.css b/apps/admin/src/app-theme/app-theme.css
+index d0bf260..2bf2c6b 100644
+--- a/apps/admin/src/app-theme/app-theme.css
++++ b/apps/admin/src/app-theme/app-theme.css
+@@ -176,6 +176,8 @@ body:has(> #root) {
+   border: 1px solid var(--app-line-strong); border-radius: 10px;
+   background: var(--app-fill); color: var(--app-ink); cursor: pointer;
+ }
++/* Audit A206: finger-sized on touch and phones. */
++@media (pointer: coarse), (max-width: 560px) { .app-theme-toggle { width: 44px; height: 44px; } }
+ .app-theme-toggle:hover { background: var(--app-hover); }
+ .app-theme-toggle:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
+ .app-theme-toggle svg { width: 18px; height: 18px; }
+diff --git a/apps/admin/src/audit-touch-targets.test.ts b/apps/admin/src/audit-touch-targets.test.ts
+index 6d981ba..6d67cc5 100644
+--- a/apps/admin/src/audit-touch-targets.test.ts
++++ b/apps/admin/src/audit-touch-targets.test.ts
+@@ -22,7 +22,7 @@ function rule(sheet: string, selector: string, media?: string): string {
+     text = sheet.replace(/@media[^{]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g, "");
+   }
+   for (const m of text.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+-    if (m[1].trim() === selector || m[1].split(",").map((x) => x.trim()).includes(selector)) return m[2];
++    if ((m[1] ?? "").trim() === selector || (m[1] ?? "").split(",").map((x) => x.trim()).includes(selector)) return m[2] ?? "";
+   }
+   return "";
+ }
+@@ -49,3 +49,15 @@ describe("audit A309: pages list on a phone", () => {
+     expect(px(rule(sheet, ".pp-menu :is(a, button)", touch), "min-height")).toBeGreaterThanOrEqual(44);
+   });
+ });
++
++describe("audit A206: phone controls", () => {
++  const phone = "@media (pointer: coarse), (max-width: 560px)";
++  it("light/dark switch, top-bar buttons and the text toolbar are 44px on touch or phones", () => {
++    expect(px(rule(css("app-theme/app-theme.css"), ".app-theme-toggle", phone), "height")).toBeGreaterThanOrEqual(44);
++    expect(px(rule(css("app-frame/app-frame.css"), ".af-site-button, .af-button, .af-tools .st-button, .af-tools .crust-header-link, .af-publish", phone), "min-height")).toBeGreaterThanOrEqual(44);
++    expect(px(rule(css("app-frame/app-frame.css"), ".af-icon-button", phone), "height")).toBeGreaterThanOrEqual(44);
++    expect(px(rule(css("rich-text/rich-text.css"), ".rt-tool", phone), "height")).toBeGreaterThanOrEqual(44);
++    expect(px(rule(css("rich-text/rich-text.css"), ".rt-link-input", phone), "min-height")).toBeGreaterThanOrEqual(44);
++    expect(px(rule(css("inline-text/inline-text.css"), ".it-btn", phone), "min-height")).toBeGreaterThanOrEqual(44);
++  });
++});
+diff --git a/apps/admin/src/inline-text/inline-text.css b/apps/admin/src/inline-text/inline-text.css
+index b6f17c6..7fa8638 100644
+--- a/apps/admin/src/inline-text/inline-text.css
++++ b/apps/admin/src/inline-text/inline-text.css
+@@ -25,4 +25,4 @@
+ .it-rich.is-below .rt-floating .rt-link { top: calc(100% + 64px); }
+ .it-plain { display: inline; outline: 2px dashed var(--app-acc); outline-offset: 4px; border-radius: 2px; white-space: pre-wrap; }
+ .it-plain:focus { outline: 3px solid var(--app-acc); }
+-@media (pointer: coarse) { .it-btn { min-width: 44px; min-height: 44px; } }
++@media (pointer: coarse), (max-width: 560px) { .it-btn { min-width: 44px; min-height: 44px; } }
+diff --git a/apps/admin/src/rich-text/rich-text.css b/apps/admin/src/rich-text/rich-text.css
+index 16ad754..f9f9d33 100644
+--- a/apps/admin/src/rich-text/rich-text.css
++++ b/apps/admin/src/rich-text/rich-text.css
+@@ -39,7 +39,8 @@
+ .rt-btn-primary { background: var(--app-pri); border-color: var(--app-pri); color: var(--app-pri-fg); }
+ .rt-btn:focus-visible, .rt-link-input:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
+ .rt-editor a, .rt-editor .rt-link-node { color: var(--app-acc); text-decoration: underline; }
+-@media (pointer: coarse) {
++/* Audit A206: also on narrow windows, where touch is likely even if the browser reports a mouse. */
++@media (pointer: coarse), (max-width: 560px) {
+   .rt-tool { width: 44px; height: 44px; }
+   .rt-btn, .rt-link-input { min-height: 44px; }
+ }
+-- 
+2.43.0
+
