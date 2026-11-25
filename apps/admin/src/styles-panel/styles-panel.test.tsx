@@ -55,13 +55,13 @@ function setup(over: Partial<StylesPanelState> = {}, style: Partial<SiteStyle> =
 const open = (name: RegExp | string) => fireEvent.click(screen.getByRole("button", { name }));
 
 describe("styles-panel: the panel", () => {
-  it("shows Styles cards first, then Fine-tune, then Header & footer", () => {
+  it("has one Styles heading (A112), then Fine-tune, then Header & footer", () => {
     setup();
+    expect(screen.getAllByRole("heading", { name: "Styles" })).toHaveLength(1);
     const heads = screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent);
-    expect(heads).toEqual(["Styles", "Fine-tune", "Header & footer"]);
+    expect(heads).toEqual(["Fine-tune", "Header & footer"]);
     const order = (a: string, b: string) =>
       screen.getByRole("heading", { level: 3, name: a }).compareDocumentPosition(screen.getByRole("heading", { level: 3, name: b })) & Node.DOCUMENT_POSITION_FOLLOWING;
-    expect(order("Styles", "Fine-tune")).toBeTruthy();
     expect(order("Fine-tune", "Header & footer")).toBeTruthy();
   });
 

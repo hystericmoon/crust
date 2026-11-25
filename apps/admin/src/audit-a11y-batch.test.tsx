@@ -16,4 +16,11 @@ describe("audit: accessibility batch", () => {
     expect(bar).toContain('role: "group", "aria-label": "Site and publishing"');
     expect(src("app-frame/EditorBar.tsx")).toContain("landmark={false}");
   });
+  it("A112: Styles panel has one heading, one intro and a clear settings link", () => {
+    const p = src("styles-panel/StylesPanel.tsx");
+    expect(p.match(/>Styles<\//g)).toHaveLength(1);
+    expect(p).not.toContain("A complete look in one tap");
+    expect(p).toContain('label="Open all site settings"');
+    expect(src("styles-panel/SiteSettingsSheet.tsx")).toContain('label = "Site settings"');
+  });
 });
