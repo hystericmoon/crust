@@ -6,11 +6,14 @@
  * that names where you came from.
  */
 import { blocksPlugin, createUsePuck, outlinePlugin, Puck, useGetPuck, type Plugin } from "@puckeditor/core";
-import { mediaSrc } from "@crust/blocks";
+import { formatBytes, type MediaItem } from "@crust/blocks";
 import { openKeyboardHelp } from "../keyboard/KeyboardEditing";
 import { openLayoutGallery } from "../layouts/library";
-import { useEffect, useRef, useState } from "react";
-import { loadMedia, useMedia } from "../media/store";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { filterMedia } from "../media/MediaPicker";
+import { PhotoGrid } from "../media/PhotoGrid";
+import { ACCEPT } from "../media/shrink";
+import { addPhoto, loadMedia, removePhoto, useMedia } from "../media/store";
 import { FrameIcon, type FrameIconName } from "./icons";
 import { NextStepsLink } from "../page-first/PageFirst";
 
@@ -58,26 +61,169 @@ function PagesPanel({ pages, hrefFor }: Pick<RailOptions, "hrefFor"> & { pages: 
   );
 }
 
-function MediaPanel() {
+export function MediaPanel() {
   const media = useMedia();
+  const grid = useRef<HTMLDivElement>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState<string | null>(null);
+  const [busy, setBusy] = useState("");
+  const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState<string[]>([]);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   useEffect(() => {
     if (media.status === "idle") void loadMedia();
   }, [media.status]);
-  const items = media.items;
+
+  const shown = useMemo(() => filterMedia(media.items, query), [media.items, query]);
+  const item = media.items.find((i) => i.file === selected) ?? null;
+  const usedOn = item ? (media.usage[item.file] ?? []) : [];
+  const uploadsOff = media.status === "off";
+  const focusPhoto = (file: string) => requestAnimationFrame(() => grid.current?.querySelector<HTMLElement>(`[data-file="${file}"]`)?.focus());
+
+  const upload = async (files: File[]) => {
+    if (!files.length || busy) return;
+    setErrors([]);
+    setMessage("");
+    const problems: string[] = [];
+    let last: MediaItem | null = null;
+    for (const [n, file] of files.entries()) {
+      setBusy(files.length > 1 ? `Uploading ${n + 1} of ${files.length}…` : `Uploading ${file.name}…`);
+      const res = await addPhoto(file);
+      if (res.ok) last = res.item;
+      else problems.push(res.error);
+    }
+    setBusy("");
+    setErrors(problems);
+    if (last) {
+      setQuery("");
+      setSelected(last.file);
+      const count = files.length - problems.length;
+      setMessage(`${count === 1 ? `Uploaded ${last.file}` : `Uploaded ${count} photos`}. Add its alt text when you choose it on a page.`);
+    }
+  };
+
+  const remove = async () => {
+    if (!item) return;
+    const index = shown.findIndex((i) => i.file === item.file);
+    setBusy("Deleting…");
+    const res = await removePhoto(item.file);
+    setBusy("");
+    setConfirmDelete(false);
+    if (!res.ok) {
+      setErrors([res.error]);
+      return;
+    }
+    setMessage(`Deleted ${item.file}.`);
+    const next = shown.filter((i) => i.file !== item.file)[Math.max(0, index - 1)];
+    setSelected(next?.file ?? null);
+    if (next) focusPhoto(next.file);
+    else fileInput.current?.parentElement?.querySelector<HTMLElement>("button")?.focus();
+  };
+
   return (
     <Panel title="Media">
-      {items.length ? (
-        <ul className="af-media">
-          {items.slice(0, 12).map((m) => (
-            <li key={m.file}>
-              <img src={mediaSrc(m.file)} alt={m.alt} loading="lazy" />
-            </li>
+      <div className="af-media-tools">
+        <input type="search" className="af-media-search" placeholder="Search by alt text or name" aria-label="Search photos" value={query} onChange={(e) => setQuery(e.target.value)} />
+        <div>
+          <button type="button" className="af-panel-link" disabled={uploadsOff || !!busy} onClick={() => fileInput.current?.click()}>
+            Upload photos
+          </button>
+          <input
+            ref={fileInput}
+            type="file"
+            accept={ACCEPT}
+            multiple
+            hidden
+            onChange={(e) => {
+              const files = [...(e.target.files ?? [])];
+              e.target.value = "";
+              void upload(files);
+            }}
+          />
+        </div>
+      </div>
+      <p className="af-media-status" role="status">
+        {busy || message}
+      </p>
+      {errors.length ? (
+        <ul className="af-media-errors" role="alert">
+          {errors.map((err) => (
+            <li key={err}>{err}</li>
           ))}
         </ul>
+      ) : null}
+      {media.status === "loading" || media.status === "idle" ? (
+        <p className="af-panel-note">Loading your photos…</p>
+      ) : media.status === "off" ? (
+        <p className="af-panel-note">The photo library needs saving to be switched on, which works on crust-admin.pages.dev.</p>
+      ) : media.status === "error" ? (
+        <p className="af-panel-note">
+          {media.error}{" "}
+          <button type="button" className="af-media-link" onClick={() => void loadMedia(true)}>
+            Try again
+          </button>
+        </p>
+      ) : !media.items.length ? (
+        <p className="af-panel-note">No photos yet. Upload photos from your Mac or phone; they stay in your site's library and can be used on any page.</p>
+      ) : !shown.length ? (
+        <p className="af-panel-note">No photos match "{query}".</p>
       ) : (
-        <p className="af-panel-note">No photos yet.</p>
+        <div className="af-media">
+          <PhotoGrid
+            items={shown}
+            selected={selected}
+            gridRef={grid}
+            onSelect={(file, focus) => {
+              setSelected(file);
+              setConfirmDelete(false);
+              if (focus) focusPhoto(file);
+            }}
+          />
+        </div>
       )}
-      <p className="af-panel-note">To put a photo on the page, select an image and press Choose image. You can upload new photos there.</p>
+      {item ? (
+        <div className="af-media-details" role="group" aria-label={`Selected photo: ${item.alt || item.file}`}>
+          <p className="af-media-name">{item.alt || "No alt text yet"}</p>
+          <dl className="af-media-meta">
+            <dt>File</dt>
+            <dd>{item.file}</dd>
+            <dt>Size</dt>
+            <dd>
+              {item.width} × {item.height} px · {formatBytes(item.bytes)}
+            </dd>
+            <dt>Used on</dt>
+            <dd>{usedOn.length ? usedOn.map((u) => u.title).join(", ") : "No pages yet"}</dd>
+          </dl>
+          {usedOn.length ? (
+            <p className="af-panel-note">To delete this photo, choose another one on {usedOn.length === 1 ? "that page" : "those pages"} first.</p>
+          ) : confirmDelete ? (
+            <div className="af-media-confirm" role="group" aria-label="Delete this photo?">
+              <p>Delete {item.file} from the library? Its history is kept.</p>
+              <button type="button" className="af-media-danger" disabled={!!busy} autoFocus onClick={() => void remove()}>
+                Delete photo
+              </button>
+              <button
+                type="button"
+                className="af-panel-link"
+                onClick={() => {
+                  setConfirmDelete(false);
+                  requestAnimationFrame(() => document.getElementById("af-media-ask-delete")?.focus());
+                }}
+              >
+                Keep it
+              </button>
+            </div>
+          ) : (
+            <button type="button" id="af-media-ask-delete" className="af-media-link" onClick={() => setConfirmDelete(true)}>
+              Delete from library…
+            </button>
+          )}
+        </div>
+      ) : media.items.length ? (
+        <p className="af-panel-note">Pick a photo to see its details.</p>
+      ) : null}
+      <p className="af-panel-note">To put a photo on the page, select an image and press Choose image. Alt text is added there.</p>
     </Panel>
   );
 }

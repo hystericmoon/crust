@@ -228,7 +228,8 @@
     "Remove the panel and point the rail to the picker"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A103 media panel)"
   },
   {
    "id": "A104",
