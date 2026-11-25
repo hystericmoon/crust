@@ -58,4 +58,12 @@
 .pp-rail .st-input { background: var(--app-bg); color: var(--app-ink); border: 1px solid var(--app-line-strong); }
 .pp-rail .pg-form { gap: 10px; }
 @media (max-width: 640px) { .pp-status { max-width: 6rem; } }
+/* Audit A309: on touch screens and phones every tap target in the list is 44px; dragging keeps its keyboard alternative (the Move buttons in the menu). */
+@media (pointer: coarse), (max-width: 640px) {
+  .pp-grip, .pp-more { min-width: 44px; min-height: 44px; }
+  .pp-new { min-height: 44px; }
+  .pp-name a { display: flex; align-items: center; min-height: 44px; }
+  .pp-menu { margin-left: 0; }
+  .pp-menu :is(a, button) { min-height: 44px; }
+}
 @media (prefers-reduced-motion: reduce) { .pp * { transition: none; } }
