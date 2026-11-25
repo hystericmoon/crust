@@ -580,7 +580,8 @@
     "Make the dialog taller on desktop so all fit"
    ],
    "recommended": 1,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A208 FTP scroll cue)"
   },
   {
    "id": "A209",
