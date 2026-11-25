@@ -50,8 +50,11 @@ export function SectionEditor({ id, back, githubOn, config, overrides }: Props) 
       <div className="st">
         <main className="pg">
           <h1 className="st-title">There's no linked section called “{id}”</h1>
+          <p>It may have been deleted, or the link is out of date. Your linked sections are under Add a section, on the Linked tab.</p>
           <p>
-            <a href={back}>Back</a>
+            <a className="st-button" href={back}>
+              Back to the page
+            </a>
           </p>
         </main>
       </div>

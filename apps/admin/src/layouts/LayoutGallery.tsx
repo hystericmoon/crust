@@ -416,9 +416,9 @@ export function insertLayout(getPuck: ReturnType<typeof useGetPuck>, item: Layou
   return true;
 }
 
-/** F098: which tab the one gallery shows. "Layouts" holds sections, whole pages and linked sections (the Type filter). */
-type GalleryTab = "layouts" | "mine";
-type LayoutType = Exclude<LayoutKind, "mine">;
+/** F098: which tab the one gallery shows. "Layouts" holds sections and whole pages (the Type filter); "Mine" and "Linked" are the ones that are yours. */
+type GalleryTab = "layouts" | "mine" | "linked";
+type LayoutType = Exclude<LayoutKind, "mine" | "linked">;
 
 const typeCount = (type: LayoutType, category: LayoutCategory | "All") =>
   type === "section" && category !== "All" ? sectionLayouts.filter((l) => l.category === category).length : null;
@@ -460,7 +460,9 @@ export function LayoutGallery() {
   const linkedOn = !useInSectionEditor();
   // F082: in a post, blog or "Page not found" design, whole pages are its starting designs.
   const design = useContext(DesignKindContext);
-  const kind: LayoutKind = tab === "mine" ? "mine" : type === "linked" && !linkedOn ? "section" : type;
+  // Audit A304: Linked is a tab beside Mine (both are "yours"), not a value of the Type list.
+  const activeTab: GalleryTab = tab === "linked" && !linkedOn ? "layouts" : tab;
+  const kind: LayoutKind = activeTab === "mine" ? "mine" : activeTab === "linked" ? "linked" : type;
   const items = useMemo(
     () => filterLayouts(kind, category, query, mine.layouts ?? [], linked.sections ?? [], design),
     [kind, category, query, mine.layouts, linked.sections, design],
@@ -500,18 +502,19 @@ export function LayoutGallery() {
             <div className="lg-head-text">
               <h2 id="lg-title">Add a section</h2>
               <p id="lg-where" className="lg-where">
-                {design && type === "page" && tab === "layouts" ? "A starting design replaces the whole design. Undo brings it back." : where}
+                {design && type === "page" && activeTab === "layouts" ? "A starting design replaces the whole design. Undo brings it back." : where}
               </p>
             </div>
             <RadioGroup<GalleryTab>
               label="Where to choose from"
               className="lg-kind"
               optionClass="lg-kind-option"
-              value={tab}
+              value={activeTab}
               onChange={(v) => choose(() => setTab(v))}
               options={[
                 { value: "layouts", label: "Layouts" },
                 { value: "mine", label: mineCount ? `Mine (${mineCount})` : "Mine" },
+                ...(linkedOn ? [{ value: "linked" as const, label: linkedCount ? `Linked (${linkedCount})` : "Linked" }] : []),
               ]}
             />
             <button type="button" className="lg-close" onClick={close}>
@@ -523,14 +526,13 @@ export function LayoutGallery() {
               <span className="lg-search-label">Search layouts</span>
               <input ref={search} type="search" value={query} placeholder="Pricing, team, questions…" onChange={(e) => setQuery(e.target.value)} />
             </label>
-            {tab === "layouts" ? (
+            {activeTab === "layouts" ? (
               <>
                 <label className="lg-filter">
                   <span className="lg-search-label">Type</span>
                   <select value={type} onChange={(e) => choose(() => setType(e.target.value as LayoutType))}>
                     <option value="section">Sections</option>
                     <option value="page">{design ? "Starting designs" : "Whole pages"}</option>
-                    {linkedOn ? <option value="linked">{linkedCount ? `Linked (${linkedCount})` : "Linked"}</option> : null}
                   </select>
                 </label>
                 {type === "section" ? (
@@ -551,17 +553,17 @@ export function LayoutGallery() {
           </div>
           <div className="lg-body">
             <div className="lg-main">
-              {tab === "layouts" && type === "page" ? (
+              {activeTab === "layouts" && type === "page" ? (
                 <p className="lg-side-note">
                   {design
                     ? "Each one is a whole design to start from, in your site's colours and fonts. Change anything after."
                     : "A whole page adds all its sections at once. Change or remove any of them after."}
                 </p>
-              ) : tab === "layouts" && type === "linked" ? (
+              ) : activeTab === "linked" ? (
                 <p className="lg-side-note">
                   Sections shown on many pages, kept in {linked.where}. Adding one adds a link: edit it once and every page that shows it changes.
                 </p>
-              ) : tab === "mine" ? (
+              ) : activeTab === "mine" ? (
                 <p className="lg-side-note">
                   Sections and pages you saved, kept in {mine.where}. They're copies: renaming or deleting one never changes your pages.
                 </p>
