@@ -363,8 +363,14 @@ describe("review-fixes 9: a library photo's description on a new Image block (F0
       puck: { root: { props: {} }, content: [{ type: "Image", props: { id: "i1", src: "/media/mugs.jpg", alt: "Mugs", caption: "" } }] },
     };
     render(<QuickEdit page={page as never} githubOn={false} saveMessage={() => ""} />);
-    expect(document.body.textContent).toContain(", Image, block 1");
+    expect(document.body.textContent).toContain(", Image, section 1");
     expect(document.body.textContent).not.toContain("part 1");
+  });
+
+  it("audit A203: no builder words ('block', 'alt') in the photo picker place or badge", () => {
+    expect(readFileSync("apps/admin/src/quick/QuickEdit.tsx", "utf8")).not.toMatch(/context=\{`[^`]*block /);
+    expect(readFileSync("apps/admin/src/media/PhotoGrid.tsx", "utf8")).toContain("Needs a description");
+    expect(readFileSync("apps/admin/src/media/PhotoGrid.tsx", "utf8")).not.toContain("Needs alt\n");
   });
 });
 

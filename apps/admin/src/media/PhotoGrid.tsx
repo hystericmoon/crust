@@ -67,7 +67,7 @@ export function PhotoGrid({
           <img src={mediaSrc(p.file)} alt="" loading="lazy" decoding="async" />
           {!p.alt ? (
             <span className="mp-badge" aria-hidden="true">
-              Needs alt
+              Needs a description
             </span>
           ) : null}
         </button>

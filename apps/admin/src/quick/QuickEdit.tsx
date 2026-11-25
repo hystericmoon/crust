@@ -145,8 +145,8 @@ export function QuickEdit({ page: initial, githubOn, saveMessage }: Props) {
                 <ImageField
                   key={f.id}
                   label={f.label}
-                  // F069: the picker names the block ("For: Photo, Gallery, block 6"), not "part 6".
-                  context={`${g.title}, block ${gi + 1}`}
+                  // F069: the picker names the block ("For: Photo, Gallery, section 6"), not "part 6".
+                  context={`${g.title}, section ${gi + 1}`}
                   value={f.value}
                   onChange={(v) => change(f, v)}
                   onPick={(src, alt) => change(f, src, f.altKey ? { [f.altKey]: alt } : undefined)}
