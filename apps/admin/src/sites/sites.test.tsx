@@ -172,14 +172,13 @@ const showScreen = async (api = fakeApi()) => {
 };
 
 describe("sites: the Sites screen", () => {
-  it("lists the sites in a table, the open one marked in words", async () => {
+  it("lists the sites as cards, the open one marked in words", async () => {
     await showScreen();
     expect(screen.getByRole("heading", { level: 1, name: "Your sites" })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Harbour Studio" }).getAttribute("href")).toBe("#/");
-    const [, harbour, bakery] = within(screen.getByRole("table")).getAllByRole("row");
+    const [harbour, bakery] = within(screen.getByRole("list")).getAllByRole("listitem");
     expect(within(harbour!).getByText("Open")).toBeTruthy();
-    expect(within(harbour!).getByText("8 pages")).toBeTruthy();
-    expect(within(bakery!).getByText("1 page")).toBeTruthy();
+    expect(within(harbour!).getByText(/^8 pages/)).toBeTruthy();
+    expect(within(bakery!).getByText(/^1 page /)).toBeTruthy();
     expect(within(bakery!).queryByText("Open")).toBeNull();
     for (const action of ["Rename", "Duplicate", "Delete"]) expect(within(bakery!).getByRole("button", { name: `${action} Bakery Lumière` })).toBeTruthy();
     // Nothing deleted: no Recently deleted.
@@ -278,7 +277,7 @@ describe("sites: the Sites screen", () => {
     await tick();
     expect(api.duplicate).toHaveBeenCalledWith(expect.objectContaining({ id: "Harbour" }), "Harbour Studio copy");
     expect(screen.getByRole("status").textContent).toBe("Made “Harbour Studio copy”, a copy of “Harbour Studio”.");
-    expect(within(screen.getByRole("table")).getAllByRole("row")).toHaveLength(4);
+    expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(3);
   });
 
   it("shows the app's reason when a change fails, and keeps the dialog", async () => {
@@ -301,7 +300,7 @@ describe("sites: the Sites screen", () => {
     await tick();
     expect(api.remove).toHaveBeenCalledWith(expect.objectContaining({ id: "Bakery" }));
     expect(screen.getByRole("status").textContent).toBe("Moved “Bakery Lumière” to Recently deleted. You can restore it for 30 days.");
-    expect(within(screen.getByRole("table")).getAllByRole("row")).toHaveLength(2);
+    expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(1);
     const disclosure = screen.getByRole("button", { name: "Recently deleted (1)" });
     expect(disclosure.getAttribute("aria-expanded")).toBe("false");
     fireEvent.click(disclosure);

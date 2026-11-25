@@ -3990,3 +3990,11 @@ Visuals the owner saw: options https://claude.ai/artifact/CAdDkEgqo4xrHjJu2BskhE
 - The whole app is wrapped in `SiteShell`; the desktop app's all-sites screen (`#/sites`) gets no menu yet (step 2, F101).
 - "Skip to content" is a button, not a `#main` link, because the address is the router's.
 - Settings still shows its own group list beside the menu (two lists side by side on that one screen); folding them together is a rework for the owner to ask for.
+
+## F101: the all-sites screen (2026-11-25, decided alone, reversible)
+
+- Level 1 is `#/sites` (Sites), `#/sites?view=templates` and `#/sites?view=settings`, desktop app only; on the web `#/sites` falls back to the normal site menu.
+- Sites is now a card grid instead of a table (same buttons, same dialogs). The old "back to <site>" link and light/dark button left its header: back is a "Back to <site>" link at the foot of the menu, light/dark lives in Settings.
+- Templates at level 1 is browsing only (thumbnail, name, description) with a line saying where to apply one; no new apply path. Settings holds Appearance and the updates card (AboutCrust, UpdateBanner).
+- Level-1 landmark is named "Crust" (level 2 stays "Site"). Phone: the three items are the bottom bar, "Back to <site>" is its fourth cell.
+- Not built: premium (store) templates in the level-1 browse; the owner can ask.
