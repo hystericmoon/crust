@@ -4,6 +4,8 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **The save status stays visible on a phone (2026-11-25, audit).** In the top bar the "Saved / Kept in this browser" words used to disappear on narrow screens. Now a coloured dot stays (green saved, amber kept here or changes waiting, blue saving), with the words still read out by screen readers and shown on a long press; a failed save still shows its words. Preview is still hidden on a phone.
+
 - **Plainer "Replace your site" message (2026-11-25, audit).** When you apply a template, the notes under Replaced and Kept now say what to do: how to undo it (open Pages, choose "Bring back my previous site") and why a template's photos can't come along on a copy of Crust that can't store photos.
 
 - **Two small clean-ups in the editor (2026-11-25, audit).** The selected section's toolbar says "Move down" once instead of twice, and a section's settings no longer start with a button called "root" (that was the page's internal name).

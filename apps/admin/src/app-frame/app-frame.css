@@ -106,7 +106,10 @@
   .af-site-name { max-width: 120px; }
 }
 @media (max-width: 560px) {
-  .af-status { display: none; }
+  /* Audit A108: on a phone the status shrinks to its dot (the words stay for screen readers and the long-press tooltip), so
+     someone writing a post can still see "kept" at a glance. A failure keeps its words. */
+  .af-status:not(.af-status-danger) .af-status-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .af-status .af-dot { width: 10px; height: 10px; }
   .af-where { order: 10; flex-basis: 100%; }
   /* Audit A301: tighten the row so the light/dark switch stays beside Publish instead of dropping to its own line. */
   .af-top { gap: 4px; padding-inline: 8px; }

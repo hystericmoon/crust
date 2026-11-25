@@ -141,9 +141,9 @@ export function FrameStatus({ phase, pending }: { phase: SavePhase | null; pendi
   const text = statusText(phase, count);
   return (
     // Only screens that save are a live region; elsewhere the screen's own status line speaks.
-    <span className={`af-status af-status-${statusTone(phase, count)}`} {...(phase === null ? {} : { role: "status", "aria-live": "polite" as const })}>
+    <span className={`af-status af-status-${statusTone(phase, count)}`} title={text || undefined} {...(phase === null ? {} : { role: "status", "aria-live": "polite" as const })}>
       {text ? <span className="af-dot" aria-hidden="true" /> : null}
-      {text}
+      <span className="af-status-text">{text}</span>
     </span>
   );
 }
