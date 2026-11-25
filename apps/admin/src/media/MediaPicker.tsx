@@ -7,8 +7,9 @@
  * Mounted once in the app; image fields open it with openMediaPicker().
  */
 import { formatBytes, mediaFileOf, mediaSrc, type MediaItem } from "@crust/blocks";
-import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { ACCEPT } from "./shrink";
+import { PhotoGrid } from "./PhotoGrid";
 import { CENTRE, FocusPicker, sameFocus, type Focus } from "./FocusPicker";
 import { addPhoto, describePhoto, loadMedia, removePhoto, savePhotoDetails, useMedia } from "./store";
 
@@ -39,9 +40,6 @@ export function filterMedia(items: MediaItem[], query: string): MediaItem[] {
     return words.every((w) => text.includes(w));
   });
 }
-
-/** Columns in a CSS grid, for arrow keys up and down. */
-const columnsOf = (el: HTMLElement | null) => (el ? getComputedStyle(el).gridTemplateColumns.split(" ").filter(Boolean).length || 1 : 1);
 
 export function MediaPicker() {
   const dialog = useRef<HTMLDialogElement>(null);
@@ -185,28 +183,6 @@ export function MediaPicker() {
     requestAnimationFrame(() => (next ? grid.current?.querySelector<HTMLElement>(`[data-file="${next.file}"]`) : fileInput.current?.parentElement?.querySelector("button"))?.focus());
   };
 
-  // One tab stop for the whole grid; arrow keys move between photos (radio group pattern).
-  const onGridKey = (e: KeyboardEvent<HTMLDivElement>) => {
-    const i = shown.findIndex((p) => p.file === selected);
-    const cols = columnsOf(grid.current);
-    const step: Record<string, number> = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: cols, ArrowUp: -cols };
-    let next: number | null = null;
-    // With nothing picked yet, any arrow picks the photo that has focus (the first).
-    if (e.key in step) next = i < 0 ? 0 : Math.min(shown.length - 1, Math.max(0, i + step[e.key]!));
-    else if (e.key === "Home") next = 0;
-    else if (e.key === "End") next = shown.length - 1;
-    else if (e.key === "Enter" && item) {
-      e.preventDefault();
-      void use();
-      return;
-    }
-    const target = next === null ? undefined : shown[next];
-    if (!target) return;
-    e.preventDefault();
-    select(target.file, true);
-  };
-
-  const tabStop = shown.some((p) => p.file === selected) ? selected : (shown[0]?.file ?? null);
   const describedBy = [`${id}-alt-hint`, altTouched && altMissing ? `${id}-alt-error` : ""].filter(Boolean).join(" ");
 
   return (
@@ -305,29 +281,7 @@ export function MediaPicker() {
               ) : !shown.length ? (
                 <p className="mp-note">No photos match "{query}".</p>
               ) : (
-                <div ref={grid} className="mp-grid" role="radiogroup" aria-label={`Photos (${shown.length})`} onKeyDown={onGridKey}>
-                  {shown.map((p) => (
-                    <button
-                      key={p.file}
-                      type="button"
-                      role="radio"
-                      data-file={p.file}
-                      className="mp-photo"
-                      aria-checked={p.file === selected}
-                      tabIndex={p.file === tabStop ? 0 : -1}
-                      aria-label={p.alt ? p.alt : `${p.file} (needs alt text)`}
-                      onClick={() => select(p.file)}
-                      onDoubleClick={() => p.alt && void use()}
-                    >
-                      <img src={mediaSrc(p.file)} alt="" loading="lazy" decoding="async" />
-                      {!p.alt ? (
-                        <span className="mp-badge" aria-hidden="true">
-                          Needs alt
-                        </span>
-                      ) : null}
-                    </button>
-                  ))}
-                </div>
+                <PhotoGrid items={shown} selected={selected} gridRef={grid} onSelect={select} onEnter={item ? () => void use() : undefined} onActivate={() => void use()} />
               )}
             </div>
 

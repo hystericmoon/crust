@@ -138,8 +138,24 @@
 }
 .af-panel-link:hover { background: var(--app-hover); }
 .af-panel :is(a, button):focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
-.af-media { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
-.af-media img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; background: var(--app-raised); }
+.af-media-tools { display: grid; gap: 8px; }
+.af-media-search { min-height: 36px; padding: 0 10px; border: 1px solid var(--app-line-strong); border-radius: 8px; background: var(--app-panel); color: var(--app-ink); font: inherit; }
+.af-media-tools .af-panel-link { width: 100%; justify-content: center; }
+.af-panel input:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
+.af-media-status { margin: 0; min-height: 1.3em; font-size: 0.875rem; color: var(--app-ok); }
+.af-media-errors { margin: 0; padding: 10px 14px 10px 32px; border-radius: 8px; background: var(--app-danger-soft); color: var(--app-danger); font-size: 0.875rem; }
+.af-media .mp-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.af-media-details { display: grid; gap: 8px; padding-top: 10px; border-top: 1px solid var(--app-line); }
+.af-media-name { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.af-media-meta { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 0; font-size: 0.8125rem; }
+.af-media-meta dt { color: var(--app-mute); }
+.af-media-meta dd { margin: 0; overflow-wrap: anywhere; }
+.af-media-confirm { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.af-media-confirm p { margin: 0; flex-basis: 100%; font-size: 0.875rem; }
+.af-media-danger { min-height: 36px; padding: 0 12px; border: 1px solid var(--app-danger); border-radius: 8px; background: var(--app-danger); color: var(--app-danger-fg); font: inherit; font-weight: 500; cursor: pointer; }
+.af-media-danger:hover:not(:disabled) { background: var(--app-danger-hover); }
+.af-media-link { justify-self: start; padding: 4px 0; border: 0; background: transparent; color: var(--app-acc-ink, var(--app-ink)); font: inherit; text-decoration: underline; cursor: pointer; }
+.af-panel button:disabled { opacity: 0.55; cursor: default; }
 .af-add-layouts { padding: 12px 16px 0; }
 .af-add-layouts .crust-header-link { width: 100%; justify-content: center; }
 
