@@ -77,7 +77,8 @@
     "Remove it from first run"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A004 first-run hint)"
   },
   {
    "id": "A005",
@@ -546,7 +547,8 @@
     "Leave as is since AA passes"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A206 phone 44px targets)"
   },
   {
    "id": "A207",
@@ -703,7 +705,8 @@
     "Leave it; check whether it only happens in test data"
    ],
    "recommended": 2,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A307 preview broken picture)"
   },
   {
    "id": "A308",
@@ -722,7 +725,8 @@
     "One shared date format for the whole app"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A308 update message once)"
   },
   {
    "id": "A309",
@@ -741,7 +745,8 @@
     "Leave as is (meets AA)"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A309 pages list touch targets)"
   },
   {
    "id": "A310",
