@@ -25,4 +25,4 @@
 .it-rich.is-below .rt-floating .rt-link { top: calc(100% + 64px); }
 .it-plain { display: inline; outline: 2px dashed var(--app-acc); outline-offset: 4px; border-radius: 2px; white-space: pre-wrap; }
 .it-plain:focus { outline: 3px solid var(--app-acc); }
-@media (pointer: coarse) { .it-btn { min-width: 44px; min-height: 44px; } }
+@media (pointer: coarse), (max-width: 560px) { .it-btn { min-width: 44px; min-height: 44px; } }

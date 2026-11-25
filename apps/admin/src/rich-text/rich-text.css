@@ -39,7 +39,8 @@
 .rt-btn-primary { background: var(--app-pri); border-color: var(--app-pri); color: var(--app-pri-fg); }
 .rt-btn:focus-visible, .rt-link-input:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
 .rt-editor a, .rt-editor .rt-link-node { color: var(--app-acc); text-decoration: underline; }
-@media (pointer: coarse) {
+/* Audit A206: also on narrow windows, where touch is likely even if the browser reports a mouse. */
+@media (pointer: coarse), (max-width: 560px) {
   .rt-tool { width: 44px; height: 44px; }
   .rt-btn, .rt-link-input { min-height: 44px; }
 }

@@ -105,6 +105,11 @@
   .af-seg, .af-top .af-button { display: none; }
   .af-site-name { max-width: 120px; }
 }
+/* Audit A206: top-bar buttons are 44px tall on touch and phones. */
+@media (pointer: coarse), (max-width: 560px) {
+  .af-site-button, .af-button, .af-tools .st-button, .af-tools .crust-header-link, .af-publish { min-height: 44px; }
+  .af-icon-button { width: 44px; height: 44px; }
+}
 @media (max-width: 560px) {
   /* Audit A108: on a phone the status shrinks to its dot (the words stay for screen readers and the long-press tooltip), so
      someone writing a post can still see "kept" at a glance. A failure keeps its words. */
