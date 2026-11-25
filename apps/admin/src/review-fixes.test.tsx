@@ -185,6 +185,23 @@ describe("review-fixes 5: no sideways canvas jump (F025, F027, F043)", () => {
     expect(bar.style.maxWidth).toBe("672px");
   });
 
+  it("A008: puts the top section's bar inside the section, so it no longer covers the site header, and restores it when not first", () => {
+    const top = { current: 131 };
+    document.body.innerHTML = `<div data-puck-dropzone="root:default-zone"><div data-puck-component="a"></div></div>
+      <div class="_DraggableComponent_1627v_1"><div class="_DraggableComponent-actions_1627v_89" style="transform: scale(2); top: -44px; right: 0px"></div></div>`;
+    const first = document.querySelector<HTMLElement>("[data-puck-component]")!;
+    const box = document.querySelector<HTMLElement>("._DraggableComponent_1627v_1")!;
+    const bar = document.querySelector<HTMLElement>("[class*='_DraggableComponent-actions_']")!;
+    first.getBoundingClientRect = () => ({ top: 131 }) as DOMRect;
+    box.getBoundingClientRect = () => ({ top: top.current }) as DOMRect;
+    bar.getBoundingClientRect = () => ({ right: 1000, left: 0 }) as DOMRect;
+    fitActionBars(document);
+    expect(bar.style.top).toBe("16px"); // 8 visible pixels at scale 2
+    top.current = 400; // moved down: no longer the first section
+    fitActionBars(document);
+    expect(bar.style.top).toBe("-44px");
+  });
+
   it("puts a canvas that was scrolled sideways back", () => {
     const scrollTo = vi.fn();
     Object.defineProperty(window, "scrollX", { configurable: true, value: 950 });

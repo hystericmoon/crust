@@ -4,6 +4,7 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **The top section's toolbar no longer hides the site header (2026-11-25, audit).** When you select the first section, its toolbar now sits just inside the section instead of covering the header's menu and "Start a project" button.
 - **Layout card titles are easier to hit (2026-11-25, audit).** Title buttons on the layout cards in Add section are at least 24 px tall, and 44 px on touch screens.
 - **Bigger touch targets on the pages list and on phones (2026-11-25, audit).** Page names, the drag handle and the menus in the pages list, plus the light/dark switch, top-bar buttons and text toolbar on a phone, are now at least 44 px tall on touch screens. On a computer nothing changes.
 
