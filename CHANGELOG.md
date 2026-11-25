@@ -12,6 +12,8 @@ User-visible changes, newest first, in plain language.
 - **One page banner in the builder (2026-11-25, audit).** The bar with the site menu and Publish inside the builder was announced as a second "banner" next to the editor's own header. It is now a named group ("Site and publishing"), so screen-reader landmark lists are cleaner. Other screens are unchanged.
 
 - **"Move into" button now says what it is called (2026-11-25, audit).** On a selected section the toolbar button read "Move in" but was named "Move into block above", so voice control could miss it. It now reads "Move into".
+- **Template preview comes first on a phone (2026-11-25, audit).** When you open a template on a phone, the preview is now the first thing you see, with the page list under it, and the size switch only offers Phone. On a computer nothing changes.
+
 - **The FTP dialog shows there is more below (2026-11-25, audit).** A soft fade now sits above the fixed button bar, so a field cut off at the edge looks like it continues instead of finished.
 
 - **The New post form says what is needed (2026-11-25, audit).** Title and Address now say "(required)" in words, the form has breathing room under its heading, and the address line shows a real example (/blog/my-title/) until you type a title.

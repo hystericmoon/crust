@@ -31,7 +31,9 @@
 /* One template: page list beside the preview */
 .tp-back { border: 0; background: none; font: inherit; cursor: pointer; }
 .st-title[tabindex="-1"]:focus { outline: none; }
-.tp-detail { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: calc(100dvh - 61px); }
+.tp-detail { display: grid; grid-template-columns: 240px minmax(0, 1fr); grid-template-areas: "pages stage"; min-height: calc(100dvh - 61px); }
+.tp-detail > .tp-pages { grid-area: pages; }
+.tp-detail > .tp-stage { grid-area: stage; }
 .tp-pages { min-width: 0; overflow-wrap: anywhere; padding: 16px; border-right: 1px solid var(--st-divider); background: var(--st-panel); display: grid; align-content: start; gap: 8px; }
 .tp-pages ul { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 2px; }
 .tp-pages button {
@@ -68,8 +70,9 @@
 .tp-banner h2:focus-visible { outline: 2px solid var(--st-focus); outline-offset: 4px; }
 
 @media (max-width: 699px) {
-  .tp-detail { grid-template-columns: 1fr; }
-  .tp-pages { border-right: 0; border-bottom: 1px solid var(--st-divider); }
+  /* A113: the preview comes first on a phone; the page list follows it (same order in the markup). */
+  .tp-detail { grid-template-columns: 1fr; grid-template-areas: "stage" "pages"; }
+  .tp-pages { border-right: 0; border-top: 1px solid var(--st-divider); }
   .tp-pages ul { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
   .tp-stage { padding: 16px; }
 }

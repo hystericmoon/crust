@@ -345,6 +345,28 @@ function PremiumDetail({ template: t, examples, onBack, onOpenFile }: { template
         <ThemeToggle />
       </header>
       <main className="tp-detail">
+        <section className="tp-stage" aria-label="Preview">
+          <div className="tp-stage-bar">
+            <div className="st-segmented" role="group" aria-label="Preview width">
+              {widths.map((w) => (
+                <button key={w.id} type="button" className="st-segment" aria-pressed={w.id === widthId} onClick={() => setWidthId(w.id)}>
+                  {w.label}
+                </button>
+              ))}
+            </div>
+            <p className="tp-legend">{examples ? "Example pictures. " : ""}Pictures of the template from the Crust store. Scroll inside to see the whole page.</p>
+          </div>
+          <div className="tp-pane">
+            {picture ? (
+              // Scrolls when the page is long, so it can take keyboard focus (arrow keys scroll it).
+              <div className="tp-shot" style={{ maxWidth: width.width }} tabIndex={0} role="region" aria-label={`${page.title}, ${width.label.toLowerCase()} width`}>
+                <img src={picture.src} alt={picture.alt} />
+              </div>
+            ) : (
+              <p className="tp-no-picture">There's no picture of this page at {width.label.toLowerCase()} width.</p>
+            )}
+          </div>
+        </section>
         <nav className="tp-pages" aria-label={`Pages in ${t.name}`}>
           {t.description ? <p className="tp-description">{t.description}</p> : null}
           <h2 className="tp-sub">{t.pages.length === 1 ? "1 page" : `${t.pages.length} pages`}</h2>
@@ -371,28 +393,6 @@ function PremiumDetail({ template: t, examples, onBack, onOpenFile }: { template
             />
           </div>
         </nav>
-        <section className="tp-stage" aria-label="Preview">
-          <div className="tp-stage-bar">
-            <div className="st-segmented" role="group" aria-label="Preview width">
-              {widths.map((w) => (
-                <button key={w.id} type="button" className="st-segment" aria-pressed={w.id === widthId} onClick={() => setWidthId(w.id)}>
-                  {w.label}
-                </button>
-              ))}
-            </div>
-            <p className="tp-legend">{examples ? "Example pictures. " : ""}Pictures of the template from the Crust store. Scroll inside to see the whole page.</p>
-          </div>
-          <div className="tp-pane">
-            {picture ? (
-              // Scrolls when the page is long, so it can take keyboard focus (arrow keys scroll it).
-              <div className="tp-shot" style={{ maxWidth: width.width }} tabIndex={0} role="region" aria-label={`${page.title}, ${width.label.toLowerCase()} width`}>
-                <img src={picture.src} alt={picture.alt} />
-              </div>
-            ) : (
-              <p className="tp-no-picture">There's no picture of this page at {width.label.toLowerCase()} width.</p>
-            )}
-          </div>
-        </section>
       </main>
     </div>
   );
@@ -460,6 +460,19 @@ function TemplateDetail({
         <ThemeToggle />
       </header>
       <main className="tp-detail">
+        <section className="tp-stage" aria-label="Preview">
+          <div className="tp-stage-bar">
+            <div className="st-segmented" role="group" aria-label="Preview width">
+              {(narrow() ? widths.filter((w) => w.id === "phone") : widths).map((w) => (
+                <button key={w.id} type="button" className="st-segment" aria-pressed={w.id === widthId} onClick={() => setWidthId(w.id)}>
+                  {w.label}
+                </button>
+              ))}
+            </div>
+            <p className="tp-legend">Scroll inside the preview to see the whole page. Dashed outlines: sample content to replace.</p>
+          </div>
+          <TemplatePreview template={t} target={target} width={width.width} height={width.height} title={`${t.name}: ${label}, ${width.label.toLowerCase()} width`} />
+        </section>
         <nav className="tp-pages" aria-label={`Pages in ${t.name}`}>
           {t.description ? <p className="tp-description">{t.description}</p> : null}
           <h2 className="tp-sub">{pages.length === 1 ? "1 page" : `${pages.length} pages`}</h2>
@@ -496,19 +509,6 @@ function TemplateDetail({
             </>
           ) : null}
         </nav>
-        <section className="tp-stage" aria-label="Preview">
-          <div className="tp-stage-bar">
-            <div className="st-segmented" role="group" aria-label="Preview width">
-              {widths.map((w) => (
-                <button key={w.id} type="button" className="st-segment" aria-pressed={w.id === widthId} onClick={() => setWidthId(w.id)}>
-                  {w.label}
-                </button>
-              ))}
-            </div>
-            <p className="tp-legend">Scroll inside the preview to see the whole page. Dashed outlines: sample content to replace.</p>
-          </div>
-          <TemplatePreview template={t} target={target} width={width.width} height={width.height} title={`${t.name}: ${label}, ${width.label.toLowerCase()} width`} />
-        </section>
       </main>
       {asking ? (
         <ConfirmDialog
