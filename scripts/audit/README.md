@@ -45,8 +45,28 @@ Notes:
   editor (kind=blog) for the "replaces the whole design" note, which only appears
   for starting designs; an empty Home draft for the empty-page gallery (the same
   state Blank gives, without going through first run).
-- Not reached on purpose: S04 (code only), S26 and S28 (publish panel, needs
-  Publish), S29 (code only, needs a photo layout inserted). Publish is never pressed.
+- Not reached on purpose (each has a reason in its NOT_REACHED.txt). Publish is
+  never pressed; nothing is saved, deployed or sent.
+  - Area 1 and 3: S04 (code only), S26 and S28 (publish panel, needs Publish),
+    S29 (code only, needs a photo layout inserted).
+  - Area 2: S07 (needs a deleted site), S11 (needs a file picked), S13 (the
+    template banner shows only after a template was applied).
+  - Area 4: S41 (needs a post with missing fields and a save).
+  - Area 5: S46 (runs on upload).
+  - Area 7: S60 and S68 (publish-state panel text, needs Publish), S61 (host
+    chooser opens from Publish), S62 (transient), S64 (no host state in the fake
+    desktop host), S65 and S66 (publish progress and result), S70 (setup screen
+    not found in admin code).
+  - Area 8: S73 (needs a failed or slow save).
+  - Area 9: S75 (reset button needs a saved design), S79 (Save as layout button
+    not clickable in the capture; unresolved).
+  - Area 10: S82 (needs update banner and unsaved settings together), S86 (no
+    visible screen).
+  - Area 11: S87 to S95 (store and generated published sites, not in the admin app).
+  - Area 12: S99 (needs a failed save), S100 (transient loading).
+- Some states are shared with another capture (`SHARED.txt`) by design and not
+  re-checked against that capture's labels: S16/S17/S34/S35 (area 3), S96 to S98,
+  S101, S103 (top bar in S14), S102 (S24).
 - The run stops starting new variants after 25 minutes and records the skip.
 - The Tab walk and Escape change focus and dialog state for the rest of that
   variant only; screenshots are taken before them.

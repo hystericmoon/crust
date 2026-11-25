@@ -103,7 +103,7 @@ const SCREENS = [
   { id: "S10", area: 2, title: "Replace-your-site confirmation", hash: "/#/templates", steps: [{ click: ".tp-card[id]" }, { click: 'button:has-text("Use this template")' }, { waitFor: "dialog[open]" }] },
   { id: "S11", area: 2, title: "Open a template file (local .crust file)", notReached: "Needs a .crust file chosen in the file picker; the capture cannot pick a file." },
   { id: "S12", area: 2, title: "Premium area: Already bought it? Open the file", hash: "/#/templates?examples", steps: [{ click: ".tp-premium .tp-card" }, { waitFor: 'label:has-text("Already bought it? Open the file")' }] },
-  { id: "S13", area: 2, title: "Template banner in the page list", hash: "/#/", steps: [] },
+  { id: "S13", area: 2, title: "Template banner in the page list", notReached: "The banner shows only after a template was applied (templates/TemplateBanner.tsx); a fresh offline site shows none." },
 
   // Area 4: Posts and blog. The sample post is seeded as a browser draft (screen.post).
   { id: "S36", area: 4, title: "Posts list (blog)", hash: "/#/posts", wait: "#posts-h", steps: [] },
@@ -115,8 +115,8 @@ const SCREENS = [
 
   // Area 5: Media.
   { id: "S42", area: 5, title: "Media library picker (search, grid, upload)", shares: "S30", note: "The library is the dialog S30 opens: search, grid and upload are all in it." },
-  { id: "S43", area: 5, title: "Delete photo confirm", hash: "/#/edit?path=/", builder: true, ...MEDIA, steps: [...PHOTO_PICK, { click: '.mp-photo[data-file="door.jpg"]' }, { click: ".mp-delete .mp-link" }, { waitFor: '[role="group"][aria-label="Delete this photo?"]' }] },
-  { id: "S44", area: 5, title: "Web address for an image", hash: "/#/edit?path=/", builder: true, steps: [{ canvas: CARD }, { click: 'summary:has-text("Use a web address instead")' }] },
+  { id: "S43", area: 5, title: "Delete photo confirm", hash: "/#/edit?path=/", seed: "home", builder: true, ...MEDIA, steps: [...PHOTO_PICK, { click: '.mp-photo[data-file="door.jpg"]' }, { click: ".mp-delete .mp-link" }, { waitFor: '[role="group"][aria-label="Delete this photo?"]' }] },
+  { id: "S44", area: 5, title: "Web address for an image", hash: "/#/edit?path=/", seed: "home", builder: true, steps: [{ canvas: CARD }, { click: 'summary:has-text("Use a web address instead")' }] },
   { id: "S45", area: 5, title: "Media panel in the rail", hash: "/#/edit?path=/", builder: true, ...MEDIA, steps: [{ click: RAIL_YOUR_SITE }, { click: '.af-place-link:has(strong:text-is("Media"))' }] },
   { id: "S46", area: 5, title: "Image shrink and optimise on upload", notReached: "Runs when a file is uploaded; the capture cannot pick a file." },
 
@@ -137,15 +137,15 @@ const SCREENS = [
 
   // Area 7: Publish and hosting. Publish is never pressed: pages are reached by route and clicks never touch Publish.
   { id: "S59", area: 7, title: "Page list with Publish panel (web)", hash: "/#/?focus=publish", steps: [] },
-  { id: "S60", area: 7, title: "Publish panel: live link and changes list", shares: "S59", note: "The panel sits in the S59 page list." },
-  { id: "S61", area: 7, title: "Where this site is published (host chooser)", hash: "/#/", app: { host: "none" }, wait: ".hp-host", steps: [{ click: ".hp-host" }, { waitFor: "dialog[open]" }] },
+    { id: "S60", area: 7, title: "Publish panel: live link and changes list", notReached: "The live-link line and changes list are not in the offline page list capture (S59); they show only in a publish state, which needs Publish." },
+    { id: "S61", area: 7, title: "Where this site is published (host chooser)", notReached: "The host chooser (Where should this site live?) opens from the Publish button, which is never pressed. The capture of the card would show the Cloudflare connect dialog instead, so it is not used." },
   { id: "S62", area: 7, title: "Checking where this site is published", notReached: "A short loading state that clears on its own; not captured as a screen of its own." },
   { id: "S63", area: 7, title: "Connect FTP/SFTP form", hash: "/#/", app: { host: "none" }, wait: ".hp-host", steps: [{ click: 'button:has-text("Your own web host")' }, { waitFor: "dialog[open]" }] },
   { id: "S64", area: 7, title: "Type the password again (host confirm)", notReached: "Needs a saved host that asks for its password again; the fake desktop host (scripts/fake-tauri.js) has no such state." },
   { id: "S65", area: 7, title: "Upload progress", notReached: "Shown during a publish; the capture never publishes." },
   { id: "S66", area: 7, title: "Your site is live (result)", notReached: "Shown after a successful publish; the capture never publishes." },
   { id: "S67", area: 7, title: "Desktop publish: keep it on this computer", hash: "/#/", app: { host: "none" }, wait: ".hp-host", steps: [] },
-  { id: "S68", area: 7, title: "Blocked publish: Not ready to publish yet", shares: "S59", note: "The blocked message shows in the publish panel of the S59 page list when pages hold sample words." },
+    { id: "S68", area: 7, title: "Blocked publish: Not ready to publish yet", notReached: "Not in the offline page list capture (S59); it shows only when pages hold sample text in a publish state, which needs Publish." },
   { id: "S69", area: 7, title: "Custom domain guide (Site address)", hash: "/#/settings", wait: ".st-nav", steps: [{ click: '.st-nav-item:has-text("Site address")' }, { waitFor: 'a:has-text("Open the custom domain guide")' }] },
   { id: "S70", area: 7, title: "Contact form setup", notReached: "The setup screen was not found in admin code (inventory note); the block's fields are edited in the page editor, see S14 and S25." },
 
@@ -156,11 +156,11 @@ const SCREENS = [
 
   // Area 9: Designs, layouts and linked sections.
   { id: "S74", area: 9, title: "Design editor: post design (blog and not-found designs not captured)", hash: "/#/design?kind=post", builder: true, steps: [] },
-  { id: "S75", area: 9, title: "Use the built-in look? confirm", hash: "/#/design?kind=post", builder: true, steps: [{ click: 'button:has-text("Use the built-in look")' }, { waitFor: '[role="group"][aria-label="Use the built-in look?"]' }] },
+  { id: "S75", area: 9, title: "Use the built-in look? confirm", notReached: "The reset button shows only once a page design is saved (crust:design:<kind> in browser storage); the capture does not seed one." },
   { id: "S76", area: 9, title: "My layouts (gallery tab)", hash: "/#/edit?path=/", builder: true, steps: [{ click: RAIL_THIS_PAGE }, { click: ".af-add-section" }, { waitFor: "dialog[open]" }, { click: '.lg-kind-option:has-text("Mine")' }] },
   { id: "S77", area: 9, title: "Linked sections list (gallery)", hash: "/#/edit?path=/", builder: true, steps: [{ click: RAIL_THIS_PAGE }, { click: ".af-add-section" }, { waitFor: "dialog[open]" }, { pick: ['.lg-dialog select:has(option[value="linked"])', "linked"] }] },
   { id: "S78", area: 9, title: "Linked section editor (no such section)", hash: "/#/section?id=hero-band&from=%23%2Fedit%3Fpath%3D%2F", steps: [] },
-  { id: "S79", area: 9, title: "Save as layout dialog", hash: "/#/edit?path=/", builder: true, steps: [{ canvas: SECTION }, { click: 'button:has-text("Save as layout")' }, { waitFor: "dialog[open]" }] },
+  { id: "S79", area: 9, title: "Save as layout dialog", notReached: "The Save as layout button in the section toolbar never became clickable after selecting a section in this capture (not resolved; the S19 selection works)." },
   { id: "S80", area: 9, title: "Plain layouts sub-list", hash: "/#/edit?path=/", builder: true, steps: [{ click: RAIL_THIS_PAGE }, { click: ".af-add-section" }, { waitFor: "dialog[open]" }, { waitFor: ".lg-side-note" }] },
 
   // Area 10: Desktop app updates. The fake desktop host offers Crust 0.2.0 when asked (scripts/fake-tauri.js).
