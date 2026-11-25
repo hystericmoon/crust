@@ -232,13 +232,14 @@ export function hasUnsavedChanges(): boolean {
   return event.defaultPrevented;
 }
 
-/** "2 November 2026" from "2026-11-02". */
+/** "2 Nov 2026" (in the locale's own order) from "2026-11-02". */
 export function releaseDate(date: string | null): string | null {
   if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
   const [y, m, d] = date.split("-").map(Number) as [number, number, number];
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  const month = months[m - 1];
-  return month && d >= 1 && d <= 31 ? `${d} ${month} ${y}` : null;
+  const when = new Date(Date.UTC(y, m - 1, d));
+  if (when.getUTCMonth() !== m - 1 || when.getUTCDate() !== d) return null;
+  // The app's one date style (medium, as on the Sites list); the day is read as is, not moved by the time zone.
+  return new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeZone: "UTC" }).format(when);
 }
 
 /** The one line the About card shows for a phase. */

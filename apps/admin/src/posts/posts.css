@@ -12,7 +12,9 @@
 .po-danger:hover { background: var(--app-danger-hover); }
 .po-ask { color: var(--st-danger); border-color: var(--st-danger); }
 .po-empty { margin: 0; color: var(--st-muted); }
-.po-form { display: grid; gap: 14px; }
+.po-form { display: grid; gap: 14px; margin-top: 16px; }
+/* A109: the required mark is text, not only colour. */
+.po-required { font-weight: 400; color: var(--st-muted); font-size: 0.875rem; }
 .po-prefix { display: flex; align-items: center; gap: 6px; max-width: 32rem; }
 .po-prefix > span { color: var(--st-muted); font-family: var(--app-mono); font-size: 0.875rem; }
 .po-prefix .st-input { flex: 1; min-width: 0; }

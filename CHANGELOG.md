@@ -4,7 +4,33 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **The top section's toolbar no longer hides the site header (2026-11-25, audit).** When you select the first section, its toolbar now sits just inside the section instead of covering the header's menu and "Start a project" button.
 - **Layout card titles are easier to hit (2026-11-25, audit).** Title buttons on the layout cards in Add section are at least 24 px tall, and 44 px on touch screens.
+- **Bigger touch targets on the pages list and on phones (2026-11-25, audit).** Page names, the drag handle and the menus in the pages list, plus the light/dark switch, top-bar buttons and text toolbar on a phone, are now at least 44 px tall on touch screens. On a computer nothing changes.
+
+- **First-run hint points to a real place (2026-11-25, audit).** The hint now sends you to "Start from a template" where it actually exists, instead of a menu that wasn't there yet.
+
+- **A tidy box when a design preview picture can't load (2026-11-25, audit).** The post preview no longer shows a broken-picture icon with its description spilling out; it shows a quiet empty box.
+
+- **The update message shows once, and dates use one style (2026-11-25, audit).** "Update ready" no longer appears twice, and dates are written the same way everywhere.
+
+- **Design editor has a page title and a clearer way back (2026-11-25, audit).** Screen-reader users now find a top-level heading ("Design editor: ..."), and the link out reads "← Back to Posts" (or "Back to Pages") instead of a bare "Posts".
+
+- **The Styles panel says "Styles" once (2026-11-25, audit).** The panel had two "Styles" headings and two near-identical intro lines. It now has one heading, one intro, and the button to the full settings reads "Open all site settings" so it no longer looks like a tab.
+
+- **One page banner in the builder (2026-11-25, audit).** The bar with the site menu and Publish inside the builder was announced as a second "banner" next to the editor's own header. It is now a named group ("Site and publishing"), so screen-reader landmark lists are cleaner. Other screens are unchanged.
+
+- **"Move into" button now says what it is called (2026-11-25, audit).** On a selected section the toolbar button read "Move in" but was named "Move into block above", so voice control could miss it. It now reads "Move into".
+- **A normal "Open the file" button in the Premium sidebar (2026-11-25, audit).** The grey browser file control with cut-off "No file chosen" text is replaced by a regular button, the same size and look as the others.
+
+- **Template preview comes first on a phone (2026-11-25, audit).** When you open a template on a phone, the preview is now the first thing you see, with the page list under it, and the size switch only offers Phone. On a computer nothing changes.
+
+- **The FTP dialog shows there is more below (2026-11-25, audit).** A soft fade now sits above the fixed button bar, so a field cut off at the edge looks like it continues instead of finished.
+
+- **The New post form says what is needed (2026-11-25, audit).** Title and Address now say "(required)" in words, the form has breathing room under its heading, and the address line shows a real example (/blog/my-title/) until you type a title.
+- **One word for your pictures: "Photos" (2026-11-25, audit).** The side rail item is now "Photos" instead of "Media", the buttons say "Choose photo" and "Change photo", and messages talk about your "photo library" everywhere.
+
+- **Plainer words in the phone photo picker (2026-11-25, audit).** The picker now says "For: Photo, Card, section 7" instead of "block 7", and a photo without a description is flagged "Needs a description" instead of "Needs alt".
 
 - **The Media panel in the side rail is now your real photo library (2026-11-25, audit).** Every photo has a name you can tab to and hear, you can search and upload photos there, and you can delete one unless it is still used on a page. Editing a photo's description and focus point still happens in Choose image, and the panel says so.
 

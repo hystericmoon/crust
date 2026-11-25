@@ -345,32 +345,6 @@ function PremiumDetail({ template: t, examples, onBack, onOpenFile }: { template
         <ThemeToggle />
       </header>
       <main className="tp-detail">
-        <nav className="tp-pages" aria-label={`Pages in ${t.name}`}>
-          {t.description ? <p className="tp-description">{t.description}</p> : null}
-          <h2 className="tp-sub">{t.pages.length === 1 ? "1 page" : `${t.pages.length} pages`}</h2>
-          <ul>
-            {t.pages.map((p) => (
-              <li key={p.path}>
-                <button type="button" aria-current={p.path === page.path ? "page" : undefined} onClick={() => setPath(p.path)}>
-                  {p.title}
-                  <span className="tp-path">{p.path}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-          <div className="tp-bought">
-            <label htmlFor={fileId}>Already bought it? Open the file</label>
-            <input
-              id={fileId}
-              type="file"
-              accept=".crust,application/json"
-              onChange={(e) => {
-                const file = e.currentTarget.files?.[0];
-                if (file) onOpenFile(file);
-              }}
-            />
-          </div>
-        </nav>
         <section className="tp-stage" aria-label="Preview">
           <div className="tp-stage-bar">
             <div className="st-segmented" role="group" aria-label="Preview width">
@@ -393,6 +367,36 @@ function PremiumDetail({ template: t, examples, onBack, onOpenFile }: { template
             )}
           </div>
         </section>
+        <nav className="tp-pages" aria-label={`Pages in ${t.name}`}>
+          {t.description ? <p className="tp-description">{t.description}</p> : null}
+          <h2 className="tp-sub">{t.pages.length === 1 ? "1 page" : `${t.pages.length} pages`}</h2>
+          <ul>
+            {t.pages.map((p) => (
+              <li key={p.path}>
+                <button type="button" aria-current={p.path === page.path ? "page" : undefined} onClick={() => setPath(p.path)}>
+                  {p.title}
+                  <span className="tp-path">{p.path}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="tp-bought">
+            {/* A111: the native control is hidden; this label is the button (same look as every other button). */}
+            <label htmlFor={fileId} className="st-button tp-bought-button">
+              Already bought it? Open the file
+            </label>
+            <input
+              id={fileId}
+              className="tp-bought-input"
+              type="file"
+              accept=".crust,application/json"
+              onChange={(e) => {
+                const file = e.currentTarget.files?.[0];
+                if (file) onOpenFile(file);
+              }}
+            />
+          </div>
+        </nav>
       </main>
     </div>
   );
@@ -460,6 +464,19 @@ function TemplateDetail({
         <ThemeToggle />
       </header>
       <main className="tp-detail">
+        <section className="tp-stage" aria-label="Preview">
+          <div className="tp-stage-bar">
+            <div className="st-segmented" role="group" aria-label="Preview width">
+              {(narrow() ? widths.filter((w) => w.id === "phone") : widths).map((w) => (
+                <button key={w.id} type="button" className="st-segment" aria-pressed={w.id === widthId} onClick={() => setWidthId(w.id)}>
+                  {w.label}
+                </button>
+              ))}
+            </div>
+            <p className="tp-legend">Scroll inside the preview to see the whole page. Dashed outlines: sample content to replace.</p>
+          </div>
+          <TemplatePreview template={t} target={target} width={width.width} height={width.height} title={`${t.name}: ${label}, ${width.label.toLowerCase()} width`} />
+        </section>
         <nav className="tp-pages" aria-label={`Pages in ${t.name}`}>
           {t.description ? <p className="tp-description">{t.description}</p> : null}
           <h2 className="tp-sub">{pages.length === 1 ? "1 page" : `${pages.length} pages`}</h2>
@@ -496,19 +513,6 @@ function TemplateDetail({
             </>
           ) : null}
         </nav>
-        <section className="tp-stage" aria-label="Preview">
-          <div className="tp-stage-bar">
-            <div className="st-segmented" role="group" aria-label="Preview width">
-              {widths.map((w) => (
-                <button key={w.id} type="button" className="st-segment" aria-pressed={w.id === widthId} onClick={() => setWidthId(w.id)}>
-                  {w.label}
-                </button>
-              ))}
-            </div>
-            <p className="tp-legend">Scroll inside the preview to see the whole page. Dashed outlines: sample content to replace.</p>
-          </div>
-          <TemplatePreview template={t} target={target} width={width.width} height={width.height} title={`${t.name}: ${label}, ${width.label.toLowerCase()} width`} />
-        </section>
       </main>
       {asking ? (
         <ConfirmDialog

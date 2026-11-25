@@ -66,7 +66,7 @@ function setup(initial = "") {
 
 async function openPicker(initial = "") {
   const ctx = setup(initial);
-  await act(async () => fireEvent.click(screen.getByRole("button", { name: /Choose image|Change image/ })));
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: /Choose photo|Change photo/ })));
   await waitFor(() => expect(screen.getByRole("radiogroup", { name: /Photos/ })).toBeTruthy());
   return ctx;
 }
@@ -77,7 +77,7 @@ describe("image field (F034)", () => {
     expect(screen.getByText("photo.jpg")).toBeTruthy();
     expect(screen.getByText("Web address")).toBeTruthy();
     expect((screen.getByLabelText("Web address for image") as HTMLInputElement).value).toBe("https://example.com/a/photo.jpg?w=1");
-    expect(screen.getByRole("button", { name: "Change image" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Change photo" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Remove image" })).toBeTruthy();
   });
 
@@ -187,7 +187,7 @@ describe("Choose an image (F034)", () => {
   it("explains when the library isn't available (saving isn't on here)", async () => {
     api.listMedia.mockResolvedValue({ ok: false, error: "Saving isn't available here yet.", notConfigured: true });
     setup();
-    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Choose image" })));
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Choose photo" })));
     await waitFor(() => expect(screen.getByText(/The photo library needs saving to be switched on/)).toBeTruthy());
     expect((screen.getByRole("button", { name: "Upload photos" }) as HTMLButtonElement).disabled).toBe(true);
   });
@@ -252,7 +252,7 @@ describe("every image field gets the library (F034)", () => {
     }
     const view = render(<List />);
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Photo" })));
-    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Choose image" })));
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Choose photo" })));
     await waitFor(() => expect(screen.getByRole("radiogroup")).toBeTruthy());
     expect(screen.getByText("For: Image, Photo 1")).toBeTruthy();
     await act(async () => fireEvent.click(screen.getByRole("radio", { name: "Clay mugs on a shelf" })));

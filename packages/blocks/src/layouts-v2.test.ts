@@ -142,7 +142,7 @@ describe("sample photos (F080)", () => {
   });
 
   it("stops publishing a block that still points at a sample photo, even unmarked", () => {
-    expect(uncopiedSampleLabel("Image", { src, alt: "a" })).toMatch(/sample photo not in your Media library/);
+    expect(uncopiedSampleLabel("Image", { src, alt: "a" })).toMatch(/sample photo not in your photo library/);
     expect(uncopiedSampleLabel("Gallery", { images: [{ src }] })).not.toBe("");
     expect(uncopiedSampleLabel("Image", { src: "/media/sample-pool-house.jpg" })).toBe("");
     // A section is checked on its own props; the blocks inside it carry their own label.

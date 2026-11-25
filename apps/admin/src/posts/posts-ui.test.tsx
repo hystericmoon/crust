@@ -46,10 +46,10 @@ describe("Posts screen (F035)", () => {
     render(<PostList siteName="Haho" githubOn language="en" />);
     await waitFor(() => expect(screen.getByText(/No posts yet/)).toBeTruthy());
     act(() => fireEvent.click(screen.getByRole("button", { name: "New post" })));
-    const title = screen.getAllByLabelText("Title")[0] as HTMLInputElement;
+    const title = screen.getAllByLabelText(/^Title/)[0] as HTMLInputElement;
     expect(document.activeElement).toBe(title);
     act(() => fireEvent.change(title, { target: { value: "Opening day!" } }));
-    expect((screen.getByLabelText("Address") as HTMLInputElement).value).toBe("opening-day");
+    expect((screen.getByLabelText(/^Address/) as HTMLInputElement).value).toBe("opening-day");
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Create and edit" })));
     expect(api.savePost).toHaveBeenCalledWith(expect.objectContaining({ slug: "opening-day", title: "Opening day!" }));
     expect(location.hash).toBe("#/post?slug=opening-day");

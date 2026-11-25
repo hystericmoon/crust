@@ -146,7 +146,7 @@ export function FirstRun({ context, sources: given, onDone = landInBuilder }: Fi
               </li>
             </ul>
             {/* F062: the welcome screen doesn't sell; one line points to the rest. */}
-            <p className="fr-hint">More templates, including premium ones, are in Pages → Start from a template.</p>
+            <p className="fr-hint">Once your site is open, you can pick a different template any time with “Start from a template”.</p>
           </fieldset>
           <div className="fr-name">
             <label className="fr-legend" htmlFor={`${ids}-name`}>

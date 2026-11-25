@@ -196,7 +196,9 @@ describe("updates: words", () => {
     expect(phaseLine({ kind: "downloading", version: "0.2.0", notes: [], date: null, percent: 40 }, "0.1.0")).toBe("Downloading Crust 0.2.0… 40%");
     expect(phaseLine({ kind: "ready", version: "0.2.0", notes: [], date: null }, "0.1.0")).toMatch(/installed the next time Crust opens/);
     expect(phaseLine({ kind: "failed", message: "No internet." }, "0.1.0")).toBe("Couldn't update: No internet.");
-    expect(releaseDate("2026-11-02")).toBe("2 November 2026");
+    // The app's one date style (medium, as on the Sites list), the same day in any time zone.
+    expect(releaseDate("2026-11-02")).toBe(new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeZone: "UTC" }).format(new Date(Date.UTC(2026, 10, 2))));
+    expect(releaseDate("2026-11-31")).toBeNull();
     expect(releaseDate("2026-13-02")).toBeNull();
     expect(releaseDate(null)).toBeNull();
     expect(releaseDate("soon")).toBeNull();
@@ -240,7 +242,7 @@ describe("updates: the screens", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "What's new" }));
     expect(screen.getByRole("heading", { name: "What's new in Crust 0.2.0" })).toBeTruthy();
-    expect(screen.getByText("Released 2 November 2026")).toBeTruthy();
+    expect(screen.getByText(`Released ${releaseDate("2026-11-02")}`)).toBeTruthy();
     expect(screen.getAllByRole("listitem").map((li) => li.textContent)).toEqual(AVAILABLE.notes);
     fireEvent.click(screen.getByRole("button", { name: "Close" }));
     expect(screen.queryByRole("heading", { name: /What's new in/ })).toBeNull();
@@ -286,10 +288,12 @@ describe("updates: the screens", () => {
     answer = AVAILABLE;
     fireEvent.click(screen.getByRole("button", { name: "Check for updates" }));
     await flush();
-    expect(line()).toMatch(/Crust 0.2.0 is ready/);
+    // The banner says it is ready; the card doesn't repeat it (audit A308).
+    expect(line()).toBe("You have Crust 0.1.0.");
     // The banner offers Restart now until it's put away with Later; then the card does.
     expect(screen.queryByRole("button", { name: "Restart now" })).toBeNull();
     act(() => updater.dismiss());
+    expect(line()).toMatch(/Crust 0.2.0 is ready/);
     expect(screen.getByRole("button", { name: "Restart now" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "What's new" }));
     expect(screen.getByRole("heading", { name: "What's new in Crust 0.2.0" })).toBeTruthy();
@@ -325,6 +329,6 @@ describe("updates: the screens", () => {
     expect(screen.getByRole("progressbar", { name: "Downloading Crust 0.2.0" }).getAttribute("value")).toBe("30");
     expect(screen.getByRole("button", { name: "Check for updates" }).getAttribute("aria-disabled")).toBe("true");
     await act(async () => finish("0.2.0"));
-    expect(line()).toMatch(/is ready/);
+    expect(line()).toBe("You have Crust 0.1.0.");
   });
 });

@@ -22,7 +22,8 @@ function rule(sheet: string, selector: string, media?: string): string {
     text = sheet.replace(/@media[^{]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g, "");
   }
   for (const m of text.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-    if ((m[1] ?? "").split(",").map((x) => x.trim()).includes(selector)) return m[2] ?? "";
+    const list = (m[1] ?? "").trim();
+    if (list === selector || list.split(",").map((x) => x.trim()).includes(selector)) return m[2] ?? "";
   }
   return "";
 }
@@ -35,5 +36,29 @@ describe("audit A006: layout cards", () => {
     expect(px(rule(sheet, ".lg-card-button"), "min-height")).toBeGreaterThanOrEqual(24);
     expect(px(rule(sheet, ".lg-card-button", COARSE), "min-height")).toBeGreaterThanOrEqual(44);
     expect(px(rule(sheet, ".lg-more", COARSE), "height")).toBeGreaterThanOrEqual(44);
+  });
+});
+
+describe("audit A309: pages list on a phone", () => {
+  const sheet = css("pages-panel/pages-panel.css");
+  const touch = "@media (pointer: coarse), (max-width: 640px)";
+  it("page names, the drag handle, More and menu items are 44px on touch or narrow screens", () => {
+    expect(px(rule(sheet, ".pp-grip", touch), "min-height")).toBeGreaterThanOrEqual(44);
+    expect(px(rule(sheet, ".pp-grip", touch), "min-width")).toBeGreaterThanOrEqual(44);
+    expect(px(rule(sheet, ".pp-more", touch), "min-height")).toBeGreaterThanOrEqual(44);
+    expect(px(rule(sheet, ".pp-name a", touch), "min-height")).toBeGreaterThanOrEqual(44);
+    expect(px(rule(sheet, ".pp-menu :is(a, button)", touch), "min-height")).toBeGreaterThanOrEqual(44);
+  });
+});
+
+describe("audit A206: phone controls", () => {
+  const phone = "@media (pointer: coarse), (max-width: 560px)";
+  it("light/dark switch, top-bar buttons and the text toolbar are 44px on touch or phones", () => {
+    expect(px(rule(css("app-theme/app-theme.css"), ".app-theme-toggle", phone), "height")).toBeGreaterThanOrEqual(44);
+    expect(px(rule(css("app-frame/app-frame.css"), ".af-site-button, .af-button, .af-tools .st-button, .af-tools .crust-header-link, .af-publish", phone), "min-height")).toBeGreaterThanOrEqual(44);
+    expect(px(rule(css("app-frame/app-frame.css"), ".af-icon-button", phone), "height")).toBeGreaterThanOrEqual(44);
+    expect(px(rule(css("rich-text/rich-text.css"), ".rt-tool", phone), "height")).toBeGreaterThanOrEqual(44);
+    expect(px(rule(css("rich-text/rich-text.css"), ".rt-link-input", phone), "min-height")).toBeGreaterThanOrEqual(44);
+    expect(px(rule(css("inline-text/inline-text.css"), ".it-btn", phone), "min-height")).toBeGreaterThanOrEqual(44);
   });
 });

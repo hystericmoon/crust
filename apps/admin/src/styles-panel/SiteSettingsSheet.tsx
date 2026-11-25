@@ -210,12 +210,12 @@ export function SiteSettingsSheet({ onClose }: { onClose: () => void }) {
 }
 
 /** A button that opens the sheet. Used in the Styles panel and the Site panel. */
-export function SiteSettingsButton({ className = "st-button sp-site-button" }: { className?: string }) {
+export function SiteSettingsButton({ className = "st-button sp-site-button", label = "Site settings" }: { className?: string; label?: string }) {
   const [open, setOpen] = useState(false);
   return (
     <>
       <button type="button" className={className} aria-haspopup="dialog" onClick={() => setOpen(true)}>
-        Site settings
+        {label}
       </button>
       {open ? <SiteSettingsSheet onClose={() => setOpen(false)} /> : null}
     </>

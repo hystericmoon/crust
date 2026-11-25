@@ -345,6 +345,27 @@ export function KeyboardRoot({ children }: { children: ReactNode }) {
 }
 
 /**
+ * A008: the selected top section's bar floats above its top edge, which is
+ * where the site header sits, so it hid the header's menu and button. For the
+ * first section only, drop the bar just inside the section instead (8px down).
+ * Puck's own offset is kept in data-cr-top and put back when the section is
+ * no longer first.
+ */
+export function keepFirstBarInside(doc: Document, bar: HTMLElement, scale: number): void {
+  const box = bar.closest("[class*='_DraggableComponent_']");
+  const first = doc.querySelector("[data-puck-dropzone='root:default-zone'] > [data-puck-component]");
+  const isFirst = !!box && !!first && Math.abs(box.getBoundingClientRect().top - first.getBoundingClientRect().top) < 2;
+  if (isFirst) {
+    if (bar.dataset.crTop === undefined) bar.dataset.crTop = bar.style.top;
+    const inside = `${8 * scale}px`;
+    if (bar.style.top !== inside) bar.style.top = inside;
+  } else if (bar.dataset.crTop !== undefined) {
+    bar.style.top = bar.dataset.crTop;
+    delete bar.dataset.crTop;
+  }
+}
+
+/**
  * F069: Puck right-aligns the selected block's action bar and scales it up
  * by 1/zoom, so the Section toolbar (style, Height, Image, Save as layout,
  * Make linked) came out wider than the canvas and hung off its left edge;
@@ -359,6 +380,7 @@ export function fitActionBars(doc: Document): void {
     const right = bar.getBoundingClientRect().right + (doc.defaultView?.scrollX ?? 0);
     const room = Math.max(160, Math.floor((Math.min(right, doc.documentElement.clientWidth) - 8) / scale));
     if (bar.style.maxWidth !== `${room}px`) bar.style.maxWidth = `${room}px`;
+    keepFirstBarInside(doc, bar, scale);
   }
   const view = doc.defaultView;
   if (view && view.scrollX !== 0) view.scrollTo({ left: 0, top: view.scrollY });
@@ -414,7 +436,7 @@ const icons: Record<MoveKind, string> = {
   nextSlot: "M14 6l6 6-6 6M20 12H4",
 };
 /** F097: the word beside a move icon on a selected section's toolbar. */
-const moveWords: Record<MoveKind, string> = { up: "Move up", down: "Move down", out: "Move out", into: "Move in", prevSlot: "Move left", nextSlot: "Move right" };
+const moveWords: Record<MoveKind, string> = { up: "Move up", down: "Move down", out: "Move out", into: "Move into", prevSlot: "Move left", nextSlot: "Move right" };
 const actionLabels: Record<MoveKind, string> = {
   up: "Move up (Alt+↑)",
   down: "Move down (Alt+↓)",

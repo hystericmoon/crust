@@ -176,6 +176,8 @@ body:has(> #root) {
   border: 1px solid var(--app-line-strong); border-radius: 10px;
   background: var(--app-fill); color: var(--app-ink); cursor: pointer;
 }
+/* Audit A206: finger-sized on touch and phones. */
+@media (pointer: coarse), (max-width: 560px) { .app-theme-toggle { width: 44px; height: 44px; } }
 .app-theme-toggle:hover { background: var(--app-hover); }
 .app-theme-toggle:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
 .app-theme-toggle svg { width: 18px; height: 18px; }

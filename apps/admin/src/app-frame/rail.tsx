@@ -122,7 +122,7 @@ export function MediaPanel() {
   };
 
   return (
-    <Panel title="Media">
+    <Panel title="Photos">
       <div className="af-media-tools">
         <input type="search" className="af-media-search" placeholder="Search by alt text or name" aria-label="Search photos" value={query} onChange={(e) => setQuery(e.target.value)} />
         <div>
@@ -223,7 +223,7 @@ export function MediaPanel() {
       ) : media.items.length ? (
         <p className="af-panel-note">Pick a photo to see its details.</p>
       ) : null}
-      <p className="af-panel-note">To put a photo on the page, select an image and press Choose image. Alt text is added there.</p>
+      <p className="af-panel-note">To put a photo on the page, select a photo and press Choose photo. Alt text is added there.</p>
     </Panel>
   );
 }
@@ -336,7 +336,7 @@ export function railPlugins({ pages, hrefFor, quickEdit, pagesPanel, stylesPanel
     const places: { id: SitePlace; label: string; note: string; icon: FrameIconName; skip?: boolean }[] = [
       { id: "pages", label: "Pages", note: "Add, rename and open pages", icon: "pages", skip: hidePages },
       { id: "blog", label: "Blog", note: "Posts and how they look", icon: "blog" },
-      { id: "media", label: "Media", note: "Your photos", icon: "media" },
+      { id: "media", label: "Photos", note: "Your photos", icon: "media" },
       { id: "look", label: "Look", note: "Colours, fonts, buttons, header and footer", icon: "brush" },
       { id: "settings", label: "Site settings", note: "Name, language, search, where it publishes", icon: "site" },
       { id: "help", label: "Help", note: "Shortcuts and next steps", icon: "help" },

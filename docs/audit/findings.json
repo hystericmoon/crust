@@ -58,7 +58,7 @@
     "Name the button 'Move in (Alt+→)' and keep the longer text as a description"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed"
   },
   {
    "id": "A004",
@@ -77,7 +77,8 @@
     "Remove it from first run"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A004 first-run hint)"
   },
   {
    "id": "A005",
@@ -133,7 +134,7 @@
     "Mark ours as a toolbar, not a banner"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed"
   },
   {
    "id": "A008",
@@ -151,7 +152,8 @@
     "Leave as is (Puck positions it)"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+  "fixed_in": "next PR (A008 top-section toolbar; checked in Chromium at desktop and tablet width)"
   },
   {
    "id": "A100",
@@ -249,7 +251,8 @@
     "Leave it, since 'Media' will later hold video"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A104 Photos wording)"
   },
   {
    "id": "A105",
@@ -347,7 +350,8 @@
     "Leave"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A109 New post form)"
   },
   {
    "id": "A110",
@@ -386,7 +390,8 @@
     "Make the sidebar wider"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A111 premium file button)"
   },
   {
    "id": "A112",
@@ -405,7 +410,7 @@
     "Leave"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed"
   },
   {
    "id": "A113",
@@ -424,7 +429,8 @@
     "Leave and only hide the Desktop/Tablet options on phones"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A113 preview first on phone)"
   },
   {
    "id": "A201",
@@ -483,7 +489,8 @@
     "Leave as is; it is accurate"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A203 photo picker wording)"
   },
   {
    "id": "A204",
@@ -541,7 +548,8 @@
     "Leave as is since AA passes"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A206 phone 44px targets)"
   },
   {
    "id": "A207",
@@ -579,7 +587,8 @@
     "Make the dialog taller on desktop so all fit"
    ],
    "recommended": 1,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A208 FTP scroll cue)"
   },
   {
    "id": "A209",
@@ -678,7 +687,7 @@
     "Only fix the heading level"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed"
   },
   {
    "id": "A307",
@@ -697,7 +706,8 @@
     "Leave it; check whether it only happens in test data"
    ],
    "recommended": 2,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A307 preview broken picture)"
   },
   {
    "id": "A308",
@@ -716,7 +726,8 @@
     "One shared date format for the whole app"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A308 update message once)"
   },
   {
    "id": "A309",
@@ -735,7 +746,8 @@
     "Leave as is (meets AA)"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A309 pages list touch targets)"
   },
   {
    "id": "A310",

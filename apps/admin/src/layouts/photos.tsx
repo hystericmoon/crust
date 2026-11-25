@@ -70,7 +70,7 @@ export async function adoptLayoutPhotos(srcs: string[], deps: AdoptDeps = browse
   const wanted = srcs.filter((s) => layoutPhotoOf(s));
   if (!wanted.length) return { map, uploaded: 0, error: null };
   const lib = await deps.library();
-  if (!lib.ok) return { map, uploaded: 0, error: "The Media library isn't available, so sample photos stay as they are." };
+  if (!lib.ok) return { map, uploaded: 0, error: "The photo library isn't available, so sample photos stay as they are." };
   const have = new Set(lib.items.map((i) => i.file));
   let uploaded = 0;
   for (const src of wanted) {
@@ -112,7 +112,7 @@ export function LayoutPhotoWatcher({ deps = browserDeps }: { deps?: AdoptDeps })
         const puck = getPuck();
         puck.dispatch({ type: "setData", data: swapLayoutPhotos(puck.appState.data as Data, res.map), recordHistory: false });
       }
-      if (res.uploaded) announce(`Copied ${res.uploaded === 1 ? "1 sample photo" : `${res.uploaded} sample photos`} into your Media library. Replace them with your own before publishing.`);
+      if (res.uploaded) announce(`Copied ${res.uploaded === 1 ? "1 sample photo" : `${res.uploaded} sample photos`} into your photo library. Replace them with your own before publishing.`);
       else if (res.error) announce(`Sample photos weren't copied: ${res.error}`);
     });
   }, [key, deps, getPuck]);

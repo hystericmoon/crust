@@ -142,7 +142,7 @@ describe("layouts v2 (F080): sample photos into the Media library", () => {
     expect(res.map.size).toBe(0);
     expect(res.error).toBe("GitHub said no.");
     const off = await adoptLayoutPhotos([pool], { ...d, library: async () => ({ ok: false }) });
-    expect(off.error).toMatch(/Media library isn't available/);
+    expect(off.error).toMatch(/photo library isn't available/);
   });
 
   it("swaps the page's sample addresses once copied, keeping the 'to replace' mark", async () => {

@@ -106,12 +106,14 @@ export function AboutCrust({ updater = desktopUpdates() }: { updater?: Updater |
   // Shown once the app has said which version it is.
   if (!updater || !updater.current) return null;
   const busy = phase.kind === "checking" || phase.kind === "downloading";
+  // While the banner above says an update is ready, the card doesn't say it again.
+  const bannerShowing = phase.kind === "ready" && !updater.dismissed;
   return (
     <section className="st-card up-about" aria-labelledby="about-crust-h">
       <h2 id="about-crust-h">Crust</h2>
       {/* Announced politely; the screen's own status line stays the one "status". */}
       <p className="up-line" aria-live="polite">
-        {phaseLine(phase, updater.current)}
+        {bannerShowing ? phaseLine({ kind: "idle" }, updater.current) : phaseLine(phase, updater.current)}
       </p>
       {phase.kind === "downloading" && phase.percent !== null ? (
         <progress className="up-progress" max={100} value={phase.percent} aria-label={`Downloading Crust ${phase.version}`} />

@@ -1,5 +1,5 @@
 /**
- * An image field (F034): the chosen photo with "Choose image", which opens
+ * An image field (F034): the chosen photo with "Choose photo", which opens
  * the media library, and "Use a web address instead" for pasted addresses,
  * which keep working as before.
  */
@@ -78,7 +78,7 @@ export function ImageField({ label, value, onChange, onPick, context, firstId }:
       )}
       <div className="mf-actions">
         <button ref={choose} id={firstId} type="button" className="mf-button mf-primary" aria-describedby={`${id}-label`} onClick={open}>
-          {src ? "Change image" : "Choose image"}
+          {src ? "Change photo" : "Choose photo"}
         </button>
         {src ? (
           <button type="button" className="mf-button" aria-label={`Remove ${forWhat.toLowerCase()}`} onClick={() => onChange("")}>

@@ -190,7 +190,7 @@ describe("app frame: the left icon bar", () => {
     const Render = plugins.find((p) => p.name === "your-site")!.render!;
     render(<Render />);
     const labels = screen.getAllByRole("button").map((b) => b.querySelector("strong")?.textContent);
-    expect(labels).toEqual(["Pages", "Blog", "Media", "Look", "Site settings", "Help"]);
+    expect(labels).toEqual(["Pages", "Blog", "Photos", "Look", "Site settings", "Help"]);
     fireEvent.click(screen.getByRole("button", { name: /^Pages/ }));
     expect(screen.getByRole("link", { name: /About/ }).getAttribute("href")).toBe("#/edit?path=/about");
     expect(screen.getByRole("link", { name: "Manage pages" }).getAttribute("href")).toBe("#/");
@@ -212,7 +212,7 @@ describe("app frame: the builder", () => {
     location.hash = "#/edit?path=/";
     render(<App />);
     const undo = await screen.findByRole("button", { name: "Undo" }, { timeout: 5000 });
-    const bar = undo.closest("header")!;
+    const bar = undo.closest<HTMLElement>('[aria-label="Site and publishing"]')!;
     expect(within(bar).getByRole("button", { name: /site menu/ })).toBeTruthy();
     expect(within(bar).getByRole("combobox", { name: "Page" })).toBeTruthy();
     expect(within(bar).getByRole("button", { name: "Redo" })).toBeTruthy();

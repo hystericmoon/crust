@@ -158,15 +158,13 @@ export function StylesPanel() {
   return (
     <section className="af-panel sp" aria-label="Styles">
       <div className="sp-head">
-        <h2 className="af-panel-title">Styles</h2>
-        <SiteSettingsButton />
+        <h2 className="af-panel-title" id={`${uid}-styles-h`} tabIndex={-1}>Styles</h2>
+        <SiteSettingsButton label="Open all site settings" />
       </div>
-      <p className="af-panel-note">How the whole site looks. To style one section, select it on the page.</p>
+      <p className="af-panel-note">How the whole site looks: pick a complete look below; spacing, page width and your pages stay as they are. To style one section, select it on the page.</p>
       <p className="sp-status" role="status" aria-live="polite">{status}</p>
 
       <div className="st sp-body">
-        <h3 className="sp-h" id={`${uid}-styles-h`} tabIndex={-1}>Styles</h3>
-        <p className="st-lede">A complete look in one tap. Spacing, page width and your pages stay as they are.</p>
         {beforePreset ? (
           <button
             type="button"

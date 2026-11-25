@@ -216,9 +216,9 @@ function NewPostForm({ taken, onCancel, onCreate }: { taken: string[]; onCancel:
       <form className="po-form" onSubmit={(e) => void submit(e)} noValidate>
         <div className="pg-field">
           <label className="st-field-label" htmlFor={`${id}-title`}>
-            Title
+            Title <span className="po-required">(required)</span>
           </label>
-          <input ref={titleRef} id={`${id}-title`} className="st-input" value={title} aria-invalid={!!errors.title} aria-describedby={described("title")} onChange={(e) => setTitle(e.target.value)} />
+          <input ref={titleRef} id={`${id}-title`} className="st-input" value={title} aria-invalid={!!errors.title} aria-required="true" aria-describedby={described("title")} onChange={(e) => setTitle(e.target.value)} />
           {errors.title ? (
             <p id={`${id}-title-error`} className="st-error">
               {errors.title}
@@ -227,7 +227,7 @@ function NewPostForm({ taken, onCancel, onCreate }: { taken: string[]; onCancel:
         </div>
         <div className="pg-field">
           <label className="st-field-label" htmlFor={`${id}-slug`}>
-            Address
+            Address <span className="po-required">(required)</span>
           </label>
           <div className="po-prefix">
             <span aria-hidden="true">/blog/</span>
@@ -235,6 +235,7 @@ function NewPostForm({ taken, onCancel, onCreate }: { taken: string[]; onCancel:
               id={`${id}-slug`}
               className="st-input"
               value={address}
+              aria-required="true"
               aria-invalid={!!errors.slug}
               aria-describedby={described("slug", `${id}-slug-hint`)}
               onChange={(e) => {
@@ -244,7 +245,7 @@ function NewPostForm({ taken, onCancel, onCreate }: { taken: string[]; onCancel:
             />
           </div>
           <p id={`${id}-slug-hint`} className="st-help">
-            Made from the title. The post will be at /blog/{address || "…"}/.
+            Made from the title. The post will be at /blog/{address || "my-title"}/{address ? "" : " (an example)"}.
           </p>
           {errors.slug ? (
             <p id={`${id}-slug-error`} className="st-error">
