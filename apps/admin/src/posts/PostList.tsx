@@ -157,7 +157,7 @@ export function PostList({ siteName, githubOn, language }: { siteName: string; g
                     <button
                       type="button"
                       id={`ask-${row.slug}`}
-                      className="st-button pg-small"
+                      className="st-button pg-small po-ask"
                       onClick={() => {
                         setConfirming(row.slug);
                         requestAnimationFrame(() => document.getElementById(`delete-${row.slug}`)?.focus());

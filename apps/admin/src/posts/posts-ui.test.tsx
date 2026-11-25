@@ -1,4 +1,5 @@
 // @vitest-environment happy-dom
+import { readFileSync } from "node:fs";
 import { config, newPost, type Components } from "@crust/blocks";
 import type { Config } from "@puckeditor/core";
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
@@ -63,6 +64,15 @@ describe("Posts screen (F035)", () => {
     expect(document.activeElement?.getAttribute("aria-invalid")).toBe("true");
     expect(checkNewPost({ title: "A", slug: "a", date: "2026-10-30" }, ["a"]).slug).toBe("There's already a post at /blog/a.");
     expect(checkNewPost({ title: "A", slug: "A B", date: "" }, []).date).toBe("Pick a date.");
+  });
+
+  it("A110: the Delete button uses the same danger colour as on the Sites list", async () => {
+    api.listPosts.mockResolvedValue({ ok: true, posts: [summary("old", "Old one", "2026-01-02")], blog: { title: "Blog", intro: "" } });
+    render(<PostList siteName="Haho" githubOn language="en" />);
+    const btn = await waitFor(() => screen.getByRole("button", { name: "Delete Old one" }));
+    expect(btn.className).toContain("po-ask");
+    const css = readFileSync("apps/admin/src/posts/posts.css", "utf8");
+    expect(css).toMatch(/\.po-ask \{ color: var\(--st-danger\); border-color: var\(--st-danger\); \}/);
   });
 
   it("deletes a post after asking", async () => {

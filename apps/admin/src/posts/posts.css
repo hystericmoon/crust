@@ -10,6 +10,7 @@
 .po-confirm { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .po-danger { background: var(--st-danger); border-color: var(--st-danger); color: var(--app-danger-fg); }
 .po-danger:hover { background: var(--app-danger-hover); }
+.po-ask { color: var(--st-danger); border-color: var(--st-danger); }
 .po-empty { margin: 0; color: var(--st-muted); }
 .po-form { display: grid; gap: 14px; }
 .po-prefix { display: flex; align-items: center; gap: 6px; max-width: 32rem; }
