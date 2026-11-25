@@ -4,6 +4,8 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Layout card titles are easier to hit (2026-11-25, audit).** Title buttons on the layout cards in Add section are at least 24 px tall, and 44 px on touch screens.
+
 - **The Media panel in the side rail is now your real photo library (2026-11-25, audit).** Every photo has a name you can tab to and hear, you can search and upload photos there, and you can delete one unless it is still used on a page. Editing a photo's description and focus point still happens in Choose image, and the panel says so.
 
 - **Delete is red on the Posts list too (2026-11-25, audit).** Delete on the Posts list is now the same red outline as Delete on the Sites list, so the two screens treat a destructive button the same way.

@@ -114,7 +114,8 @@
     "Make the whole card the button"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A006 layout card titles)"
   },
   {
    "id": "A007",

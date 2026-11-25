@@ -1,0 +1,62 @@
+From 46ad3d49055a383ef210690fbf0b0215b33c49d8 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 25 Nov 2026 11:54:54 +0000
+Subject: [PATCH] Pages list: 44px page names, drag handle and menus on touch
+ and phones (audit A309)
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01W2ZFMtn2DmfEPD1sHQAr19
+---
+ apps/admin/src/audit-touch-targets.test.ts | 14 +++++++++++++-
+ apps/admin/src/pages-panel/pages-panel.css |  8 ++++++++
+ 2 files changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/apps/admin/src/audit-touch-targets.test.ts b/apps/admin/src/audit-touch-targets.test.ts
+index 4c01688..6d981ba 100644
+--- a/apps/admin/src/audit-touch-targets.test.ts
++++ b/apps/admin/src/audit-touch-targets.test.ts
+@@ -22,7 +22,7 @@ function rule(sheet: string, selector: string, media?: string): string {
+     text = sheet.replace(/@media[^{]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g, "");
+   }
+   for (const m of text.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+-    if (m[1].split(",").map((x) => x.trim()).includes(selector)) return m[2];
++    if (m[1].trim() === selector || m[1].split(",").map((x) => x.trim()).includes(selector)) return m[2];
+   }
+   return "";
+ }
+@@ -37,3 +37,15 @@ describe("audit A006: layout cards", () => {
+     expect(px(rule(sheet, ".lg-more", COARSE), "height")).toBeGreaterThanOrEqual(44);
+   });
+ });
++
++describe("audit A309: pages list on a phone", () => {
++  const sheet = css("pages-panel/pages-panel.css");
++  const touch = "@media (pointer: coarse), (max-width: 640px)";
++  it("page names, the drag handle, More and menu items are 44px on touch or narrow screens", () => {
++    expect(px(rule(sheet, ".pp-grip", touch), "min-height")).toBeGreaterThanOrEqual(44);
++    expect(px(rule(sheet, ".pp-grip", touch), "min-width")).toBeGreaterThanOrEqual(44);
++    expect(px(rule(sheet, ".pp-more", touch), "min-height")).toBeGreaterThanOrEqual(44);
++    expect(px(rule(sheet, ".pp-name a", touch), "min-height")).toBeGreaterThanOrEqual(44);
++    expect(px(rule(sheet, ".pp-menu :is(a, button)", touch), "min-height")).toBeGreaterThanOrEqual(44);
++  });
++});
+diff --git a/apps/admin/src/pages-panel/pages-panel.css b/apps/admin/src/pages-panel/pages-panel.css
+index 2a6b4db..dd700aa 100644
+--- a/apps/admin/src/pages-panel/pages-panel.css
++++ b/apps/admin/src/pages-panel/pages-panel.css
+@@ -58,4 +58,12 @@
+ .pp-rail .st-input { background: var(--app-bg); color: var(--app-ink); border: 1px solid var(--app-line-strong); }
+ .pp-rail .pg-form { gap: 10px; }
+ @media (max-width: 640px) { .pp-status { max-width: 6rem; } }
++/* Audit A309: on touch screens and phones every tap target in the list is 44px; dragging keeps its keyboard alternative (the Move buttons in the menu). */
++@media (pointer: coarse), (max-width: 640px) {
++  .pp-grip, .pp-more { min-width: 44px; min-height: 44px; }
++  .pp-new { min-height: 44px; }
++  .pp-name a { display: flex; align-items: center; min-height: 44px; }
++  .pp-menu { margin-left: 0; }
++  .pp-menu :is(a, button) { min-height: 44px; }
++}
+ @media (prefers-reduced-motion: reduce) { .pp * { transition: none; } }
+-- 
+2.43.0
+

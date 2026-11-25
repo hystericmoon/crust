@@ -81,7 +81,7 @@
 .lg-thumb-page { position: absolute; top: 0; left: 0; transform-origin: top left; pointer-events: none; }
 .lg-card-text { padding: 8px 12px 10px; display: flex; flex-direction: column; gap: 2px; }
 .lg-card-button {
-  display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 0;
+  display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 0; min-height: 24px;
   border: 0; background: none; color: var(--app-ink); font: inherit; text-align: left; cursor: pointer;
 }
 .lg-card-button::after { content: ""; position: absolute; inset: 0; border-radius: 10px; }
@@ -145,6 +145,12 @@ body:hover .lg-insert { opacity: 0.85; }
 }
 
 /* --- My layouts (F027) ---------------------------------------------------------- */
+@media (pointer: coarse) {
+  /* Audit A006: finger-sized card titles and card buttons (the whole card is the tap area anyway). */
+  .lg-card-button { min-height: 44px; align-items: center; }
+  .lg-more { width: 44px; height: 44px; }
+  .lg-menu button { min-height: 44px; }
+}
 .lg-card-row { display: flex; align-items: center; gap: 6px; }
 .lg-card-row .lg-card-button { flex: 1; min-width: 0; }
 /* Above the card's stretched click area. */

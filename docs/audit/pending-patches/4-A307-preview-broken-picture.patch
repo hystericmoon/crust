@@ -1,0 +1,153 @@
+From 7efa37097360076439e5ac53d7970f56d4787155 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 25 Nov 2026 11:56:00 +0000
+Subject: [PATCH] Show a tidy empty box when a design preview picture can't
+ load (audit A307)
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01W2ZFMtn2DmfEPD1sHQAr19
+---
+ apps/admin/src/designs/DesignEditor.tsx       | 12 ++++++
+ .../admin/src/designs/broken-pictures.test.ts | 39 +++++++++++++++++++
+ apps/admin/src/designs/broken-pictures.ts     | 39 +++++++++++++++++++
+ 3 files changed, 90 insertions(+)
+ create mode 100644 apps/admin/src/designs/broken-pictures.test.ts
+ create mode 100644 apps/admin/src/designs/broken-pictures.ts
+
+diff --git a/apps/admin/src/designs/DesignEditor.tsx b/apps/admin/src/designs/DesignEditor.tsx
+index 2d78701..b5e1703 100644
+--- a/apps/admin/src/designs/DesignEditor.tsx
++++ b/apps/admin/src/designs/DesignEditor.tsx
+@@ -9,6 +9,7 @@ import { currentDesign, designBlocksFor, designNames, migrateRichTextBlocks, Pag
+ import { renderPreview } from "@crust/render";
+ import { Puck, useGetPuck, type Config, type Data, type Overrides } from "@puckeditor/core";
+ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
++import { installBrokenPictureGuard } from "./broken-pictures";
+ import { saveFailed, saveMessage } from "../save-messages";
+ import { LayoutsButton } from "../layouts/LayoutGallery";
+ import { MyLayoutsProvider } from "../layouts/mine";
+@@ -97,6 +98,15 @@ function usePreviewData(githubOn: boolean): PageDesignData | null {
+   return data;
+ }
+ 
++/** overrides.iframe for the design canvas: the page's own canvas, with pictures that can't load tidied (audit A307). */
++function withTidyPictures(Canvas: Overrides["iframe"] | undefined): NonNullable<Overrides["iframe"]> {
++  return function DesignCanvas(props) {
++    const { document: doc } = props;
++    useEffect(() => (doc ? installBrokenPictureGuard(doc) : undefined), [doc]);
++    return Canvas ? <Canvas {...props} /> : <>{props.children}</>;
++  };
++}
++
+ function SaveButton({ onSave }: { onSave: (data: Data) => void }) {
+   const getPuck = useGetPuck();
+   return (
+@@ -125,6 +135,7 @@ export function DesignEditor({ kind, githubOn, config, overrides, language }: Pr
+     void loadDesigns();
+   }, []);
+ 
++  const tidyCanvas = useMemo(() => withTidyPictures(overrides?.iframe), [overrides?.iframe]);
+   const name = designNames[kind];
+   const saved = designs.designs[kind];
+   const designConfig = useMemo(() => withDesignEditing(config, kind), [config, kind]);
+@@ -175,6 +186,7 @@ export function DesignEditor({ kind, githubOn, config, overrides, language }: Pr
+             headerTitle={`${name} design`}
+             overrides={{
+               ...overrides,
++              iframe: tidyCanvas,
+               headerActions: () => (
+                 <>
+                   <span className="ls-editing">{kind === "notFound" ? "Shown for addresses with no page" : kind === "post" ? "Every post looks like this" : "The list of posts at /blog/"}</span>
+diff --git a/apps/admin/src/designs/broken-pictures.test.ts b/apps/admin/src/designs/broken-pictures.test.ts
+new file mode 100644
+index 0000000..0dc73c7
+--- /dev/null
++++ b/apps/admin/src/designs/broken-pictures.test.ts
+@@ -0,0 +1,39 @@
++// @vitest-environment happy-dom
++/** Audit A307: a preview picture that can't load becomes a tidy empty box, still named by its alt text. */
++import { afterEach, describe, expect, it } from "vitest";
++import { installBrokenPictureGuard, tidyBrokenPicture } from "./broken-pictures";
++
++afterEach(() => {
++  document.body.innerHTML = "";
++});
++
++describe("pictures that can't load in a design preview", () => {
++  it("swaps in a blank picture, keeping the alt text for screen readers", () => {
++    document.body.innerHTML = '<img id="p" src="/media/gone.jpg" srcset="/media/gone-400.jpg 400w" alt="A computer on a desk in a dark room">';
++    const stop = installBrokenPictureGuard(document);
++    const img = document.getElementById("p") as HTMLImageElement;
++    img.dispatchEvent(new Event("error"));
++    expect(img.getAttribute("alt")).toBe("A computer on a desk in a dark room");
++    expect(img.src.startsWith("data:image/gif")).toBe(true);
++    expect(img.hasAttribute("srcset")).toBe(false);
++    expect(img.dataset.loadFailed).toBe("true");
++    expect(img.style.minHeight).toBe("8rem");
++    stop();
++  });
++
++  it("does it once, and stops listening when the editor closes", () => {
++    document.body.innerHTML = '<img id="a" src="/x.jpg" alt="x"><img id="b" alt="y">';
++    const a = document.getElementById("a") as HTMLImageElement;
++    const b = document.getElementById("b") as HTMLImageElement;
++    const stop = installBrokenPictureGuard(document);
++    a.dispatchEvent(new Event("error"));
++    const first = a.src;
++    a.dispatchEvent(new Event("error"));
++    expect(a.src).toBe(first);
++    stop();
++    b.dispatchEvent(new Event("error"));
++    expect(b.dataset.loadFailed).toBeUndefined();
++    tidyBrokenPicture(b);
++    expect(b.dataset.loadFailed).toBe("true");
++  });
++});
+diff --git a/apps/admin/src/designs/broken-pictures.ts b/apps/admin/src/designs/broken-pictures.ts
+new file mode 100644
+index 0000000..c4e2318
+--- /dev/null
++++ b/apps/admin/src/designs/broken-pictures.ts
+@@ -0,0 +1,39 @@
++/**
++ * A picture that can't load, in the design editor's preview (audit A307).
++ * The browser would draw its broken-picture icon with the alt text spilled
++ * beside it, which looks like the design is damaged. Instead the picture
++ * becomes a calm, empty box. It stays an <img> with its alt text, so a
++ * screen reader still hears what the picture is.
++ */
++
++/** A 1x1 transparent picture: it loads, so the browser draws no icon and no spilled text. */
++const BLANK = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
++
++/** Turns one picture that failed into the empty box (once). */
++export function tidyBrokenPicture(img: HTMLImageElement): void {
++  if (img.dataset.loadFailed === "true") return;
++  img.dataset.loadFailed = "true";
++  img.removeAttribute("srcset");
++  img.removeAttribute("sizes");
++  img.src = BLANK;
++  // The same soft box a post without a cover shows on the live site.
++  img.style.display = "block";
++  img.style.width = "100%";
++  img.style.minHeight = "8rem";
++  img.style.objectFit = "none";
++  img.style.background = "color-mix(in srgb, currentColor 8%, transparent)";
++}
++
++/** Watches a document for pictures that fail; returns the clean-up. */
++export function installBrokenPictureGuard(doc: Document): () => void {
++  const onError = (e: Event) => {
++    // The canvas is another document, so its pictures aren't instances of this window's class.
++    const t = e.target as HTMLElement | null;
++    if (t?.tagName === "IMG") tidyBrokenPicture(t as HTMLImageElement);
++  };
++  // `error` doesn't bubble, so listen while it travels down.
++  doc.addEventListener("error", onError, true);
++  // Pictures that already failed before this started listening.
++  for (const img of doc.querySelectorAll("img")) if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) tidyBrokenPicture(img);
++  return () => doc.removeEventListener("error", onError, true);
++}
+-- 
+2.43.0
+

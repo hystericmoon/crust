@@ -1,0 +1,106 @@
+From b07ecfaa25f07654bc51e1e0420c9a547c3fdf47 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 25 Nov 2026 11:57:27 +0000
+Subject: [PATCH] Say an update is ready once, and use one date style (audit
+ A308)
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01W2ZFMtn2DmfEPD1sHQAr19
+---
+ apps/admin/src/updates/UpdateNotice.tsx |  4 +++-
+ apps/admin/src/updates/updates.test.tsx | 12 ++++++++----
+ apps/admin/src/updates/updates.ts       |  9 +++++----
+ 3 files changed, 16 insertions(+), 9 deletions(-)
+
+diff --git a/apps/admin/src/updates/UpdateNotice.tsx b/apps/admin/src/updates/UpdateNotice.tsx
+index 4025edb..8d0a0ef 100644
+--- a/apps/admin/src/updates/UpdateNotice.tsx
++++ b/apps/admin/src/updates/UpdateNotice.tsx
+@@ -106,12 +106,14 @@ export function AboutCrust({ updater = desktopUpdates() }: { updater?: Updater |
+   // Shown once the app has said which version it is.
+   if (!updater || !updater.current) return null;
+   const busy = phase.kind === "checking" || phase.kind === "downloading";
++  // While the banner above says an update is ready, the card doesn't say it again.
++  const bannerShowing = phase.kind === "ready" && !updater.dismissed;
+   return (
+     <section className="st-card up-about" aria-labelledby="about-crust-h">
+       <h2 id="about-crust-h">Crust</h2>
+       {/* Announced politely; the screen's own status line stays the one "status". */}
+       <p className="up-line" aria-live="polite">
+-        {phaseLine(phase, updater.current)}
++        {bannerShowing ? phaseLine({ kind: "idle" }, updater.current) : phaseLine(phase, updater.current)}
+       </p>
+       {phase.kind === "downloading" && phase.percent !== null ? (
+         <progress className="up-progress" max={100} value={phase.percent} aria-label={`Downloading Crust ${phase.version}`} />
+diff --git a/apps/admin/src/updates/updates.test.tsx b/apps/admin/src/updates/updates.test.tsx
+index 295dfd2..d8714c5 100644
+--- a/apps/admin/src/updates/updates.test.tsx
++++ b/apps/admin/src/updates/updates.test.tsx
+@@ -196,7 +196,9 @@ describe("updates: words", () => {
+     expect(phaseLine({ kind: "downloading", version: "0.2.0", notes: [], date: null, percent: 40 }, "0.1.0")).toBe("Downloading Crust 0.2.0… 40%");
+     expect(phaseLine({ kind: "ready", version: "0.2.0", notes: [], date: null }, "0.1.0")).toMatch(/installed the next time Crust opens/);
+     expect(phaseLine({ kind: "failed", message: "No internet." }, "0.1.0")).toBe("Couldn't update: No internet.");
+-    expect(releaseDate("2026-11-02")).toBe("2 November 2026");
++    // The app's one date style (medium, as on the Sites list), the same day in any time zone.
++    expect(releaseDate("2026-11-02")).toBe(new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeZone: "UTC" }).format(new Date(Date.UTC(2026, 10, 2))));
++    expect(releaseDate("2026-11-31")).toBeNull();
+     expect(releaseDate("2026-13-02")).toBeNull();
+     expect(releaseDate(null)).toBeNull();
+     expect(releaseDate("soon")).toBeNull();
+@@ -240,7 +242,7 @@ describe("updates: the screens", () => {
+ 
+     fireEvent.click(screen.getByRole("button", { name: "What's new" }));
+     expect(screen.getByRole("heading", { name: "What's new in Crust 0.2.0" })).toBeTruthy();
+-    expect(screen.getByText("Released 2 November 2026")).toBeTruthy();
++    expect(screen.getByText(`Released ${releaseDate("2026-11-02")}`)).toBeTruthy();
+     expect(screen.getAllByRole("listitem").map((li) => li.textContent)).toEqual(AVAILABLE.notes);
+     fireEvent.click(screen.getByRole("button", { name: "Close" }));
+     expect(screen.queryByRole("heading", { name: /What's new in/ })).toBeNull();
+@@ -286,10 +288,12 @@ describe("updates: the screens", () => {
+     answer = AVAILABLE;
+     fireEvent.click(screen.getByRole("button", { name: "Check for updates" }));
+     await flush();
+-    expect(line()).toMatch(/Crust 0.2.0 is ready/);
++    // The banner says it is ready; the card doesn't repeat it (audit A308).
++    expect(line()).toBe("You have Crust 0.1.0.");
+     // The banner offers Restart now until it's put away with Later; then the card does.
+     expect(screen.queryByRole("button", { name: "Restart now" })).toBeNull();
+     act(() => updater.dismiss());
++    expect(line()).toMatch(/Crust 0.2.0 is ready/);
+     expect(screen.getByRole("button", { name: "Restart now" })).toBeTruthy();
+     fireEvent.click(screen.getByRole("button", { name: "What's new" }));
+     expect(screen.getByRole("heading", { name: "What's new in Crust 0.2.0" })).toBeTruthy();
+@@ -325,6 +329,6 @@ describe("updates: the screens", () => {
+     expect(screen.getByRole("progressbar", { name: "Downloading Crust 0.2.0" }).getAttribute("value")).toBe("30");
+     expect(screen.getByRole("button", { name: "Check for updates" }).getAttribute("aria-disabled")).toBe("true");
+     await act(async () => finish("0.2.0"));
+-    expect(line()).toMatch(/is ready/);
++    expect(line()).toBe("You have Crust 0.1.0.");
+   });
+ });
+diff --git a/apps/admin/src/updates/updates.ts b/apps/admin/src/updates/updates.ts
+index ea0164f..786b303 100644
+--- a/apps/admin/src/updates/updates.ts
++++ b/apps/admin/src/updates/updates.ts
+@@ -232,13 +232,14 @@ export function hasUnsavedChanges(): boolean {
+   return event.defaultPrevented;
+ }
+ 
+-/** "2 November 2026" from "2026-11-02". */
++/** "2 Nov 2026" (in the locale's own order) from "2026-11-02". */
+ export function releaseDate(date: string | null): string | null {
+   if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+   const [y, m, d] = date.split("-").map(Number) as [number, number, number];
+-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+-  const month = months[m - 1];
+-  return month && d >= 1 && d <= 31 ? `${d} ${month} ${y}` : null;
++  const when = new Date(Date.UTC(y, m - 1, d));
++  if (when.getUTCMonth() !== m - 1 || when.getUTCDate() !== d) return null;
++  // The app's one date style (medium, as on the Sites list); the day is read as is, not moved by the time zone.
++  return new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeZone: "UTC" }).format(when);
+ }
+ 
+ /** The one line the About card shows for a phase. */
+-- 
+2.43.0
+
