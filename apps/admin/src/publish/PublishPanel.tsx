@@ -259,8 +259,8 @@ export function PublishPanel({ githubOn, siteUrl, changes = null, titles = new M
         </>
       ) : (
         <p className="st-lede">
-          Publishing from here switches on together with saving, after the one-time setup in docs/setup-saving.md.
-          Until then the live site doesn't change.
+          Publishing isn't set up on this copy of Crust yet. It switches on together with saving, once the person who set up this site finishes
+          the one-time setup. Until then the live site doesn't change.
         </p>
       )}
     </section>

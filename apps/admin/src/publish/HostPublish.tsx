@@ -182,11 +182,15 @@ export function HostPublish({
         </>
       ) : (
         <>
-          <p className="st-help hp-intro">Put your site online with a free host, or with the web host you already have.</p>
+          <p className="hp-step">Step 1 of 3 · Pick a place</p>
+          <p className="st-help hp-intro">
+            Pick where your site will live. Then connect it (about 5 minutes the first time) and choose its address. Cloudflare Pages and Netlify are free;
+            or use the web host you already have.
+          </p>
           <div className="hp-hosts">
             {(["cloudflare", "netlify"] as const).map((host, i) => (
               <button key={host} ref={i === 0 ? firstHostRef : undefined} type="button" className="hp-host" onClick={() => setOpen({ mode: "connect", host })}>
-                <strong>{HOSTS[host].product}</strong>
+                <strong>{HOSTS[host].product} (free)</strong>
                 <span>Connect…</span>
               </button>
             ))}

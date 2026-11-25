@@ -33,7 +33,7 @@ export function SiteAddressGroup({
   return (
     <>
       <p className="st-lede">
-        The address people type to visit your site, like studio.com. Leave it empty to keep the free address Cloudflare gave you.
+        The address people type to visit your site, like studio.com. Leave it empty to keep the free address your host gave you.
       </p>
       <div className="sa-field">
         <label className="st-field-label" htmlFor={id}>
