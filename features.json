@@ -1087,7 +1087,7 @@
       "description": "Two-level left menu, step 1; approved by the owner on 2026-11-25 (DECISIONS 2026-11-25: Two-level left menu). Final screens: https://claude.ai/artifact/WAudsU5VLCm13PzYRmXt9V. Replaces the top-left 'site name' dropdown with a static menu inside a site: '← All sites' (desktop app), then Pages, Posts, Layout, Styles, Media, Settings (no Menus or Modules). 196 px sidebar on list screens, 72 px labelled rail in the page editor, bottom bar on phones (Pages, Posts, Layout, Styles, More). Web opens straight into this level. Accessibility: one nav named 'Site', aria-current, skip link, focus to the new screen's heading, 44 px targets, labels never hover-only.",
       "depends_on": ["F099"],
       "done_check": "npm test -- app-frame site-menu && npm run typecheck && npm run check:builder",
-      "passes": false,
+      "passes": true,
       "needs_review": true
     },
     {
