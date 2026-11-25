@@ -3964,3 +3964,7 @@ No design snapshot (words and accessibility only); the glossary below is the rec
 ## 2026-11-24: Rail shows only This page and Your site; F095–F099 passed
 
 Owner passed F095–F099 and asked to remove Puck's default Blocks/Outline/Fields rail icons. Puck always adds them (defaults prepended, Fields appended), so they are hidden in `app-frame.css` (all but items 3 and 4). Checked in Chromium at desktop width: only "This page" and "Your site" show. Phones open Quick edit, which has no rail.
+
+## 2026-11-25: Audit fixes are batched, not one PR each
+
+Owner: "7 to 8 hours is too much, I need this done ASAP; bend the rule; if something blocks you skip it or use your own judgment." The one-PR-per-fix rule is relaxed for the S3 audit queue: fixes of the same kind go in themed PRs (about 3 in all). A fix that fails CI or needs a product call is dropped from its batch and listed for the owner instead of blocking the others. Still not built: A310, A207, A100, A106 (his calls). Everything else (tests, verify.sh, automatic merge) is unchanged.
