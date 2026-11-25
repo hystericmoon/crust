@@ -260,6 +260,22 @@ export function SiteSettings({
 
       <div className="st-layout">
         <nav className="st-nav" aria-label="Style groups">
+          {/* Audit A209: on a phone the 15 buttons become one labelled dropdown (CSS swaps them). */}
+          <div className="st-nav-select">
+            <label htmlFor="st-group-select">Group</label>
+            <select id="st-group-select" value={group} onChange={(e) => open(e.target.value as GroupId)}>
+              {groups.map((g) => {
+                const fix = [...invalid].some((f) => groupOfField(f) === g.id) || ((g.id === "header" || g.id === "footer") && chromeProblems(chrome, g.id).length > 0);
+                return (
+                  <option key={g.id} value={g.id}>
+                    {g.label}
+                    {g.id === "colours" && failing.length > 0 ? ` (${failing.length} failing)` : ""}
+                    {fix ? " (fix)" : ""}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
           <ul>
             {groups.map((g) => {
               const fix = [...invalid].some((f) => groupOfField(f) === g.id) || ((g.id === "header" || g.id === "footer") && chromeProblems(chrome, g.id).length > 0);

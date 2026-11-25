@@ -312,6 +312,19 @@ body:has(.st) { margin: 0; }
 .st-preview-stage.is-pickable { cursor: crosshair; }
 .st-preview-error { margin: 0; padding: 16px; color: var(--st-danger); }
 
+/* Audit A209: the group dropdown is for phones only; the button list stays everywhere else. */
+.st-nav-select { display: none; }
+@media (max-width: 560px) {
+  .st-nav-select { display: flex; align-items: center; gap: 8px; }
+  .st-nav-select label { font-weight: 600; color: var(--app-ink); }
+  .st-nav-select select {
+    flex: 1 1 auto; min-width: 0; min-height: 44px; padding: 0 12px; font: inherit;
+    color: var(--app-ink); background: var(--app-panel); border: 1px solid var(--app-line-strong); border-radius: 8px;
+  }
+  .st-nav-select select:focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }
+  .st-nav ul { display: none; }
+}
+
 /* Mid widths: section links move above the form. */
 @media (max-width: 1199px) {
   .st-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }

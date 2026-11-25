@@ -1,6 +1,8 @@
 // @vitest-environment happy-dom
 import { applyLook, defaultTokens, findLook, type Page, type Site, type SiteTokens } from "@crust/blocks";
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { useState } from "react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { groupForElement, groupOfField, SiteSettings } from "./SiteSettings";
@@ -61,6 +63,22 @@ describe("customizer: one group at a time", () => {
     expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Buttons"]);
     expect(within(nav).getByRole("button", { name: "Buttons" }).getAttribute("aria-current")).toBe("true");
     expect(document.activeElement?.textContent).toBe("Buttons");
+  });
+
+  it("A209: a labelled Group dropdown does the same job as the list on phones", () => {
+    setup();
+    const select = screen.getByLabelText("Group") as HTMLSelectElement;
+    expect(select.tagName).toBe("SELECT");
+    expect(select.value).toBe("presets");
+    expect(within(select).getAllByRole("option").map((o) => o.textContent)).toContain("Site address");
+    act(() => fireEvent.change(select, { target: { value: "buttons" } }));
+    expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Buttons"]);
+    expect(select.value).toBe("buttons");
+    // Desktop list follows the same state, and phones hide the list, not the dropdown, in CSS.
+    expect(within(screen.getByRole("navigation", { name: "Style groups" })).getByRole("button", { name: "Buttons" }).getAttribute("aria-current")).toBe("true");
+    const css = readFileSync(resolve(__dirname, "settings.css"), "utf8");
+    expect(css).toMatch(/@media \(max-width: 560px\) \{[^@]*\.st-nav-select \{ display: flex;/);
+    expect(css).toMatch(/\.st-nav-select select \{[^}]*min-height: 44px/);
   });
 
   it("knows where each field and each part of the page lives", () => {
