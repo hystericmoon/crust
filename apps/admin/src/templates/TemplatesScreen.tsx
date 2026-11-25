@@ -381,9 +381,13 @@ function PremiumDetail({ template: t, examples, onBack, onOpenFile }: { template
             ))}
           </ul>
           <div className="tp-bought">
-            <label htmlFor={fileId}>Already bought it? Open the file</label>
+            {/* A111: the native control is hidden; this label is the button (same look as every other button). */}
+            <label htmlFor={fileId} className="st-button tp-bought-button">
+              Already bought it? Open the file
+            </label>
             <input
               id={fileId}
+              className="tp-bought-input"
               type="file"
               accept=".crust,application/json"
               onChange={(e) => {
