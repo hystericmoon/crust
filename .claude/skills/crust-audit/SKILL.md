@@ -22,10 +22,20 @@ Give Opus the evidence (screenshot paths, the two options, the rubric lines in
 tension), never the whole conversation. Record each Opus call in PLAN.md
 "Opus budget". Haiku never decides severity; it reports numbers.
 
+## No people (owner, 2026-11-25)
+
+The owner cannot involve any humans: no user tests, no think-aloud sessions.
+Stand-ins, all labelled in `confidence`: scripted journeys (time, clicks, dead
+ends), a naive-agent run (an agent that has not seen the code attempts the
+goal from what is on screen; where it gets lost counts), a cognitive
+walkthrough with four lenses (first-time owner, keyboard-only, screen reader,
+phone), and a fresh agent that tries to refute every S1 before the report.
+The owner's only part is the two gates (approve, choose findings).
+
 ## Steps
 
 1. **Inventory** (Haiku) - `docs/audit/inventory.md`: every screen, state, journey.
-2. **Capture** (Haiku, scripts in `scripts/audit/`) - per screen, desktop 1440x900,
+2. **Capture** (Haiku, scripts in `scripts/audit/`; also a label/message list, the accessibility tree, 200% zoom and 320px reflow, forced-colors, reduced motion, stray-colour and off-scale-spacing scan, journey time/clicks/dead ends, baseline screenshots) - per screen, desktop 1440x900,
    tablet 820x1100, phone 390x800, light and dark: screenshot, axe-core result,
    list of interactive elements under 24x24 CSS px (WCAG 2.5.8) or under 44x44 on
    touch, a Tab-key walk (order, visible focus, traps), contrast of text pairs
@@ -78,12 +88,13 @@ use (no stray hex), state coverage (hover, focus, active, disabled, loading).
 
 `id` (A001...), `screen` (S-id), `journey`, `title`, `severity` (S1-S3), `effort`
 (S/M/L), `principle` (heuristic or WCAG number), `evidence` (capture path or
-measurement), `why` (the user impact in one or two sentences), `options` (2-3,
+measurement), `confidence` (`measured` = a script number; `reproduced` = a scripted run or a second agent hit it too; `judged` = one reviewer's opinion, a hypothesis), `why` (the user impact in one or two sentences), `options` (2-3,
 each with a one-line trade-off), `recommended` (index), `status` ("open").
 
 ## Rules
 
 - Evidence first: no finding without a capture, a measurement or a code line.
+- Show the confidence label on every finding in the report; accessibility numbers are the most solid, wording and flow the least.
 - Say what works too; the report opens with strengths.
 - Quiet output: write results to files, return a summary of counts and the paths.
 - Never print or open secrets or `.env` files; never publish or deploy from an audit.

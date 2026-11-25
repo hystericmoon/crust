@@ -1,6 +1,6 @@
 # UI/UX audit plan
 
-Status: **plan awaiting the owner's answers** (2026-11-25). Nothing past step 1 has run.
+Status: **plan v2, option B chosen, no people involved** (2026-11-25). Only step 1 has run; the pilot starts once the owner has enabled the plugins.
 Visual plan for the owner: https://claude.ai/artifact/QkWLECje1aAKrrYsh7K3ay (private).
 Method, checklist and model rules: `.claude/skills/crust-audit/SKILL.md`.
 Screens (104) and 10 journeys: `docs/audit/inventory.md` (Haiku, read from code; rows marked "(inferred)" were not seen on screen).
@@ -17,8 +17,11 @@ Screens (104) and 10 journeys: `docs/audit/inventory.md` (Haiku, read from code;
 - Gate 1: after a pilot of First run (area 1) and Page editor (area 3), the owner sees findings and real token cost.
 - Gate 2: the owner picks which findings to take.
 
-## Open questions for the owner
-Scope (A all, B pilot then scale, recommended, C editor and first run only); plugins (Anthropic Design + Deque Axe, or borrow checklists only); Opus limit (max 3 calls).
+## Decided
+Scope **B**: pilot First run (area 1) and Page editor (area 3), then the other 10 areas after Gate 1. No humans in any test (owner). Opus: max 3 calls (assumed, as the owner said). Plugins: Anthropic Design and Deque Axe, awaiting the owner's enable tap; community skills are not installed, their checklists are borrowed.
+
+## No-people stand-ins
+Naive-agent journey run (pilot: 3 journeys), cognitive walkthrough with four lenses, refute-each-S1 pass, scripted time/clicks/dead ends, label and message collection, accessibility beyond axe (tree, zoom, reflow, forced colours, reduced motion), stray-style scan, baseline screenshots. Every finding gets `confidence`: measured, reproduced or judged.
 
 ## Opus budget
 Max 3 calls, one batched question each, evidence only. Used so far: 0.
