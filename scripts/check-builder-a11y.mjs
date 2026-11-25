@@ -77,7 +77,7 @@ const screens = [
   // F061: an update found from the Sites screen: the banner, the Crust card, and What's new.
   ["app Sites screen, update ready", "/#/sites", null, null, ['button:has-text("Check for updates")'], { app: "none", update: "available", wait: ".up-about" }],
   ["app What's new dialog", "/#/sites", null, null, ['button:has-text("Check for updates")', '.up-banner button:has-text("What\'s new")', "dialog[open]"], { app: "none", update: "available", wait: ".up-about" }],
-  ["app Pages screen, update ready", "/#/sites", null, null, ['button:has-text("Check for updates")', ".st-back"], { app: "none", update: "available", wait: ".up-about" }],
+  ["app Pages screen, update ready", "/#/sites", null, null, ['button:has-text("Check for updates")', ".sn-link[href=\"#/\"]"], { app: "none", update: "available", wait: ".up-about" }],
   // F072: Site settings → Styles (the Style library), then a look and a colourway picked.
   ["Site settings, Styles", "/#/settings", null, null, [], { wait: ".st-looks" }],
   ["Site settings, look and colourway picked", "/#/settings", null, null, ['.st-look:has-text("Atelier")', '[aria-label="Atelier colourway"] [aria-label="Night"]'], { wait: ".st-looks" }],
