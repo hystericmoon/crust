@@ -36,6 +36,16 @@ const EDIT_EMPTY = { hash: "/#/edit?path=/", seed: "empty", builder: true };
 const FIRST_RUN = { hash: "/", app: { host: "none", firstRun: true }, wait: ".fr-form" };
 const PHOTO_PICK = [{ canvas: CARD }, { click: 'button:has-text("Choose image"):visible' }, { waitFor: "dialog[open]" }];
 const MEDIA = { media: true };
+// A post opened from a browser draft (offline, as scripts/check-builder-a11y.mjs does); seeded with screen.post.
+const SAMPLE_POST = {
+  slug: "audit-post",
+  title: "Opening day",
+  description: "We open on Saturday.",
+  date: "2026-10-30",
+  cover: "",
+  coverAlt: "",
+  puck: { root: { props: {} }, content: [{ type: "Text", props: { id: "t1", text: "Come and say hello." } }] },
+};
 
 // Screens of the pilot. "steps" run after the page is ready; "shares" = visible in another screen's capture;
 // "notReached" = no capture attempted (reason given).
@@ -83,6 +93,105 @@ const SCREENS = [
   { id: "S33", area: 3, title: "Inline text editing", ...EDIT_HOME, steps: [{ canvas: TEXT }, { waitFor: ".rt-editor" }] },
   { id: "S34", area: 3, title: "Save status bar", shares: "S14", note: "Status bar is in the S14 capture; no separate state." },
   { id: "S35", area: 3, title: "Publish button (top bar)", shares: "S14", note: "Default state only, in the S14 capture. Error state needs Publish, never pressed." },
+
+  // Area 2: Sites list and templates. The Sites screen is desktop only, so it runs on the fake desktop host.
+  { id: "S05", area: 2, title: "Your sites (desktop)", hash: "/#/sites", app: { host: "none" }, wait: "#sites-h", steps: [] },
+  { id: "S06", area: 2, title: "Delete site dialog", hash: "/#/sites", app: { host: "none" }, wait: "#sites-h", steps: [{ click: '[data-site-action^="delete:"]' }, { waitFor: "dialog[open]" }] },
+  { id: "S07", area: 2, title: "Deleted sites section", notReached: "Shown only when a site was deleted; the fake desktop host always lists none." },
+  { id: "S08", area: 2, title: "Start from a template (main screen)", hash: "/#/templates", steps: [] },
+  { id: "S09", area: 2, title: "Template preview (page list and open link)", hash: "/#/templates", steps: [{ click: ".tp-card[id]" }, { waitFor: 'nav[aria-label^="Pages in"]' }] },
+  { id: "S10", area: 2, title: "Replace-your-site confirmation", hash: "/#/templates", steps: [{ click: ".tp-card[id]" }, { click: 'button:has-text("Use this template")' }, { waitFor: "dialog[open]" }] },
+  { id: "S11", area: 2, title: "Open a template file (local .crust file)", notReached: "Needs a .crust file chosen in the file picker; the capture cannot pick a file." },
+  { id: "S12", area: 2, title: "Premium area: Already bought it? Open the file", hash: "/#/templates?examples", steps: [{ click: ".tp-premium .tp-card" }, { waitFor: 'label:has-text("Already bought it? Open the file")' }] },
+  { id: "S13", area: 2, title: "Template banner in the page list", hash: "/#/", steps: [] },
+
+  // Area 4: Posts and blog. The sample post is seeded as a browser draft (screen.post).
+  { id: "S36", area: 4, title: "Posts list (blog)", hash: "/#/posts", wait: "#posts-h", steps: [] },
+  { id: "S37", area: 4, title: "New post dialog", hash: "/#/posts", wait: "#posts-h", steps: [{ click: 'button:has-text("New post")' }, { waitFor: "#new-post" }] },
+  { id: "S38", area: 4, title: "Blog page settings", shares: "S36", note: "The Blog page is a card on the Posts screen, not a dialog as the inventory says." },
+  { id: "S39", area: 4, title: "Post editor (sample post)", hash: "/#/post?slug=audit-post", post: SAMPLE_POST, builder: true, steps: [] },
+  { id: "S40", area: 4, title: "Saving works on crust-admin.pages.dev note", shares: "S36", note: "The note shows in the Blog page card when GitHub saving is off, the offline state of every S36 capture." },
+  { id: "S41", area: 4, title: "Post held, not saved (validation)", notReached: "Needs a post with missing required fields and a save press; the capture seeds only a complete sample post." },
+
+  // Area 5: Media.
+  { id: "S42", area: 5, title: "Media library picker (search, grid, upload)", shares: "S30", note: "The library is the dialog S30 opens: search, grid and upload are all in it." },
+  { id: "S43", area: 5, title: "Delete photo confirm", hash: "/#/edit?path=/", builder: true, ...MEDIA, steps: [...PHOTO_PICK, { click: '.mp-photo[data-file="door.jpg"]' }, { click: ".mp-delete .mp-link" }, { waitFor: '[role="group"][aria-label="Delete this photo?"]' }] },
+  { id: "S44", area: 5, title: "Web address for an image", hash: "/#/edit?path=/", builder: true, steps: [{ canvas: CARD }, { click: 'summary:has-text("Use a web address instead")' }] },
+  { id: "S45", area: 5, title: "Media panel in the rail", hash: "/#/edit?path=/", builder: true, ...MEDIA, steps: [{ click: RAIL_YOUR_SITE }, { click: '.af-place-link:has(strong:text-is("Media"))' }] },
+  { id: "S46", area: 5, title: "Image shrink and optimise on upload", notReached: "Runs when a file is uploaded; the capture cannot pick a file." },
+
+  // Area 6: Look and Site settings. The nav buttons are the group names (settings/SiteSettings.tsx).
+  { id: "S47", area: 6, title: "Site settings screen", hash: "/#/settings", wait: ".st-nav", steps: [] },
+  { id: "S48", area: 6, title: "Styles panel in the builder rail", hash: "/#/edit?path=/", builder: true, steps: [{ click: RAIL_YOUR_SITE }, { click: '.af-place-link:has(strong:text-is("Look"))' }, { waitFor: ".sp-head" }] },
+  { id: "S49", area: 6, title: "Style groups nav (Colours open)", hash: "/#/settings", wait: ".st-nav", steps: [{ click: '.st-nav-item:has-text("Colours")' }, { waitFor: "#colours-h" }] },
+  { id: "S50", area: 6, title: "Typography (font pairs)", hash: "/#/settings", wait: ".st-nav", steps: [{ click: '.st-nav-item:has-text("Typography")' }, { waitFor: ".st-fontpair" }] },
+  { id: "S51", area: 6, title: "Spacing group (Shape & layout not captured separately)", hash: "/#/settings", wait: ".st-nav", steps: [{ click: '.st-nav-item:has-text("Spacing")' }, { waitFor: "#spacing-h" }] },
+  { id: "S52", area: 6, title: "Contrast checks (Colours group)", hash: "/#/settings", wait: ".st-nav", steps: [{ click: '.st-nav-item:has-text("Colours")' }, { waitFor: "#contrast-h" }] },
+  { id: "S53", area: 6, title: "Header and menu group", hash: "/#/settings", wait: ".st-nav", steps: [{ click: '.st-nav-item:has-text("Header & menu")' }, { waitFor: "#header-h" }] },
+  { id: "S54", area: 6, title: "Footer group", hash: "/#/settings", wait: ".st-nav", steps: [{ click: '.st-nav-item:has-text("Footer")' }, { waitFor: "#footer-h" }] },
+  { id: "S55", area: 6, title: "Theme pack group", hash: "/#/settings", wait: ".st-nav", steps: [{ click: '.st-nav-item:has-text("Theme pack")' }, { waitFor: "#theme-pack-h" }] },
+  { id: "S56", area: 6, title: "Save as template group", hash: "/#/settings", wait: ".st-nav", steps: [{ click: '.st-nav-item:text-is("Template")' }, { waitFor: "#template-h" }] },
+  { id: "S57", area: 6, title: "Site address group", hash: "/#/settings", wait: ".st-nav", steps: [{ click: '.st-nav-item:has-text("Site address")' }, { waitFor: "#address-h" }] },
+  // Picking a look makes Site settings unsaved, which shows the Discard and Save bar.
+  { id: "S58", area: 6, title: "Discard and Save bar (after a change)", hash: "/#/settings", wait: ".st-nav", steps: [{ click: '.st-look:has-text("Atelier")' }, { waitFor: 'button:has-text("Discard")' }] },
+
+  // Area 7: Publish and hosting. Publish is never pressed: pages are reached by route and clicks never touch Publish.
+  { id: "S59", area: 7, title: "Page list with Publish panel (web)", hash: "/#/?focus=publish", steps: [] },
+  { id: "S60", area: 7, title: "Publish panel: live link and changes list", shares: "S59", note: "The panel sits in the S59 page list." },
+  { id: "S61", area: 7, title: "Where this site is published (host chooser)", hash: "/#/", app: { host: "none" }, wait: ".hp-host", steps: [{ click: ".hp-host" }, { waitFor: "dialog[open]" }] },
+  { id: "S62", area: 7, title: "Checking where this site is published", notReached: "A short loading state that clears on its own; not captured as a screen of its own." },
+  { id: "S63", area: 7, title: "Connect FTP/SFTP form", hash: "/#/", app: { host: "none" }, wait: ".hp-host", steps: [{ click: 'button:has-text("Your own web host")' }, { waitFor: "dialog[open]" }] },
+  { id: "S64", area: 7, title: "Type the password again (host confirm)", notReached: "Needs a saved host that asks for its password again; the fake desktop host (scripts/fake-tauri.js) has no such state." },
+  { id: "S65", area: 7, title: "Upload progress", notReached: "Shown during a publish; the capture never publishes." },
+  { id: "S66", area: 7, title: "Your site is live (result)", notReached: "Shown after a successful publish; the capture never publishes." },
+  { id: "S67", area: 7, title: "Desktop publish: keep it on this computer", hash: "/#/", app: { host: "none" }, wait: ".hp-host", steps: [] },
+  { id: "S68", area: 7, title: "Blocked publish: Not ready to publish yet", shares: "S59", note: "The blocked message shows in the publish panel of the S59 page list when pages hold sample words." },
+  { id: "S69", area: 7, title: "Custom domain guide (Site address)", hash: "/#/settings", wait: ".st-nav", steps: [{ click: '.st-nav-item:has-text("Site address")' }, { waitFor: 'a:has-text("Open the custom domain guide")' }] },
+  { id: "S70", area: 7, title: "Contact form setup", notReached: "The setup screen was not found in admin code (inventory note); the block's fields are edited in the page editor, see S14 and S25." },
+
+  // Area 8: Quick edit (phone). mode=quick opens it at any width; the phone variant is the one the inventory means.
+  { id: "S71", area: 8, title: "Quick edit page", hash: "/#/edit?path=/&mode=quick", seed: "home", steps: [] },
+  { id: "S72", area: 8, title: "Quick edit photo picker", hash: "/#/edit?path=/&mode=quick", seed: "home", ...MEDIA, steps: [{ click: 'button:has-text("Choose image"):visible' }, { waitFor: "dialog[open]" }] },
+  { id: "S73", area: 8, title: "Quick edit save status and error", notReached: "The error and saving states need a failed or slow save; the capture does not save." },
+
+  // Area 9: Designs, layouts and linked sections.
+  { id: "S74", area: 9, title: "Design editor: post design (blog and not-found designs not captured)", hash: "/#/design?kind=post", builder: true, steps: [] },
+  { id: "S75", area: 9, title: "Use the built-in look? confirm", hash: "/#/design?kind=post", builder: true, steps: [{ click: 'button:has-text("Use the built-in look")' }, { waitFor: '[role="group"][aria-label="Use the built-in look?"]' }] },
+  { id: "S76", area: 9, title: "My layouts (gallery tab)", hash: "/#/edit?path=/", builder: true, steps: [{ click: RAIL_THIS_PAGE }, { click: ".af-add-section" }, { waitFor: "dialog[open]" }, { click: '.lg-kind-option:has-text("Mine")' }] },
+  { id: "S77", area: 9, title: "Linked sections list (gallery)", hash: "/#/edit?path=/", builder: true, steps: [{ click: RAIL_THIS_PAGE }, { click: ".af-add-section" }, { waitFor: "dialog[open]" }, { pick: ['.lg-dialog select:has(option[value="linked"])', "linked"] }] },
+  { id: "S78", area: 9, title: "Linked section editor (no such section)", hash: "/#/section?id=hero-band&from=%23%2Fedit%3Fpath%3D%2F", steps: [] },
+  { id: "S79", area: 9, title: "Save as layout dialog", hash: "/#/edit?path=/", builder: true, steps: [{ canvas: SECTION }, { click: 'button:has-text("Save as layout")' }, { waitFor: "dialog[open]" }] },
+  { id: "S80", area: 9, title: "Plain layouts sub-list", hash: "/#/edit?path=/", builder: true, steps: [{ click: RAIL_THIS_PAGE }, { click: ".af-add-section" }, { waitFor: "dialog[open]" }, { waitFor: ".lg-side-note" }] },
+
+  // Area 10: Desktop app updates. The fake desktop host offers Crust 0.2.0 when asked (scripts/fake-tauri.js).
+  { id: "S81", area: 10, title: "Update banner", hash: "/#/sites", app: { host: "none", update: "available" }, wait: "#sites-h", steps: [{ click: 'button:has-text("Check for updates")' }, { waitFor: ".up-banner" }] },
+  { id: "S82", area: 10, title: "Restart with unsaved Site settings changes", notReached: "Needs an update banner and unsaved Site settings at the same time; the capture has no step that moves between the two." },
+  { id: "S83", area: 10, title: "What's new dialog", hash: "/#/sites", app: { host: "none", update: "available" }, wait: "#sites-h", steps: [{ click: 'button:has-text("Check for updates")' }, { click: '.up-banner button:has-text("What\'s new")' }, { waitFor: "dialog[open]" }] },
+  { id: "S84", area: 10, title: "About Crust (version card)", shares: "S05", note: "The About card (version and Check for updates) sits on the Sites screen." },
+  { id: "S85", area: 10, title: "Sign out link (site menu, web only)", hash: "/#/", steps: [{ click: 'button[aria-expanded="false"][aria-controls]' }, { waitFor: '.af-menu a:has-text("Sign out")' }] },
+  { id: "S86", area: 10, title: "Desktop window and folder handling", notReached: "No screen of its own; windowing is not a visible state the browser capture can show (inferred from desktop/ code only)." },
+
+  // Area 11: public sites. Store and generated sites are not in the admin app, so none are captured here.
+  { id: "S87", area: 11, title: "Crust marketing home", notReached: "Store site, not in the admin app; not captured in this pass." },
+  { id: "S88", area: 11, title: "Download page", notReached: "Store site, not in the admin app; not captured in this pass." },
+  { id: "S89", area: 11, title: "All templates page (store)", notReached: "Store site, not in the admin app; not captured in this pass." },
+  { id: "S90", area: 11, title: "Template detail pages (store)", notReached: "Store site, not in the admin app; not captured in this pass." },
+  { id: "S91", area: 11, title: "Help page (store)", notReached: "Store site, not in the admin app; not captured in this pass." },
+  { id: "S92", area: 11, title: "Licence page (store)", notReached: "Store site, not in the admin app; not captured in this pass." },
+  { id: "S93", area: 11, title: "Home page of a published user site", notReached: "Generated published site (publish:local output), not in the admin app; not captured." },
+  { id: "S94", area: 11, title: "Page not found on a published site", notReached: "Generated published site, not in the admin app; not captured." },
+  { id: "S95", area: 11, title: "Contact form on a published page", notReached: "Generated published site; submitting the form would send a message, so it is not captured." },
+
+  // Area 12: global parts of the app frame.
+  { id: "S96", area: 12, title: "Top bar (app frame)", shares: "S14", note: "The top bar is in every editor capture." },
+  { id: "S97", area: 12, title: "Save status in top bar", shares: "S14", note: "The status is in every editor capture; the failed and loading states need a failed or slow save." },
+  { id: "S98", area: 12, title: "Pending changes count", shares: "S14", note: "The count sits in the top bar status when changes are not live." },
+  { id: "S99", area: 12, title: "Error and save toasts", notReached: "Needs a failed save; the capture does not force one." },
+  { id: "S100", area: 12, title: "Loading state", notReached: "Transient, shown while GitHub status loads; not a stable state to capture." },
+  { id: "S101", area: 12, title: "Dark mode toggle", shares: "S14", note: "The Light or dark toggle is in the top bar; the dark variants of S14 show it." },
+  { id: "S102", area: 12, title: "Keyboard shortcuts help dialog", shares: "S24", note: "Same dialog as S24." },
+  { id: "S103", area: 12, title: "Viewport switcher (Desktop, Tablet, Mobile)", shares: "S14", note: "The Page width group is in every editor capture." },
+  { id: "S104", area: 12, title: "Unknown route falls through to the page list", hash: "/#/no-such-route", steps: [] },
 ];
 
 // Runs in the page as window.__audit. Written as a function so its source ships to the browser.
@@ -405,6 +514,15 @@ async function captureVariant({ browser, server, demoHome, fakeApp, axeSource, s
     const page = await context.newPage();
     if (screen.media) await mockMedia(context);
     if (screen.app) await page.addInitScript(`window.__FAKE_TAURI__ = ${JSON.stringify(screen.app)};\n${fakeApp}`);
+    if (screen.post) {
+      await page.addInitScript((p) => {
+        try {
+          localStorage.setItem(`crust:post:${p.slug}`, JSON.stringify({ post: p, updatedAt: new Date().toISOString(), savedToGitHub: false }));
+        } catch {
+          // Storage can be blocked; the post then does not open.
+        }
+      }, screen.post);
+    }
     if (screen.seed && !screen.app) {
       const home = screen.seed === "empty" ? { ...demoHome, content: [] } : demoHome;
       await page.addInitScript((h) => {
