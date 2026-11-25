@@ -4,6 +4,8 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Linked sections get their own tab in Add section (2026-11-25, audit).** The gallery now has three tabs, Layouts, Mine and Linked, instead of hiding Linked inside the Type list. A linked section that no longer exists shows a short explanation and a "Back to the page" button instead of a bare page.
+
 - **Site settings: Save and Discard only show when there is something to save (2026-11-25, audit).** Once everything is saved the top bar says "All changes saved" with just Publish beside it, so it no longer looks like three buttons are still waiting. A field marked in red now says "Some fields need fixing" instead of "All changes saved".
 
 - **Quick edit names each group by what it says (2026-11-25, audit).** On a phone, a group now reads like "1 Button · “Get started”" instead of only a type and a number, so you can tell groups apart; screen readers hear the same.

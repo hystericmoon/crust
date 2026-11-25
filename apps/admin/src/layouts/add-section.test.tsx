@@ -133,6 +133,16 @@ describe("one gallery to add sections from", () => {
     expect(document.querySelector(".lg-dialog")!.textContent).toMatch(/Loading your layouts|Nothing saved yet|Try again/);
   });
 
+  it("Linked is a tab beside Mine, not an entry in the Type list (audit A304)", async () => {
+    await openAt(null);
+    expect(screen.getByRole("radio", { name: /^Linked/ })).toBeTruthy();
+    const type = screen.getByRole("combobox", { name: "Type" });
+    expect([...type.querySelectorAll("option")].map((o) => o.textContent)).toEqual(["Sections", "Whole pages"]);
+    fireEvent.click(screen.getByRole("radio", { name: /^Linked/ }));
+    expect(screen.queryByRole("combobox", { name: "Type" })).toBeNull();
+    expect(document.querySelector(".lg-dialog")!.textContent).toMatch(/Loading your linked sections|No linked sections yet|Try again/);
+  });
+
   it("a + bar opens the gallery at its spot", async () => {
     document.body.innerHTML = `<div data-puck-dropzone="root:default-zone"><div data-puck-component="Section"></div><div data-puck-component="Section"></div></div>`;
     const dlg = document.createElement("div");
