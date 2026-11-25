@@ -27,26 +27,26 @@ describe("tidy-up: Sign out (F040)", () => {
     expect(SIGN_OUT_URL).toBe("/cdn-cgi/access/logout");
   });
 
-  // F086: in the site menu of the builder's top bar.
+  // F100: in the left menu beside the builder.
   it("is in the page builder's top bar", async () => {
     location.hash = "#/edit?path=/";
     render(<App />);
-    fireEvent.click(await screen.findByRole("button", { name: /site menu/ }, { timeout: 5000 }));
+    await screen.findByRole("button", { name: "Undo" }, { timeout: 5000 });
     const link = await screen.findByRole("link", { name: "Sign out" });
     expect(link.getAttribute("href")).toBe(SIGN_OUT_URL);
   });
 
   // F069 moved it after New page, past a divider, so a slip doesn't sign out.
-  // F086: in the site menu, as its last item after a divider, away from New page.
-  it("is on the Pages screen, in the site menu, away from New page", async () => {
+  // F100: at the foot of the left menu, away from New page.
+  it("is on the Pages screen, in the left menu, away from New page", async () => {
     location.hash = "#/";
     render(<App />);
     const newPage = await screen.findByRole("button", { name: "New page" }, { timeout: 5000 });
-    fireEvent.click(screen.getByRole("button", { name: /site menu/ }));
     const link = screen.getByRole("link", { name: "Sign out" });
     expect(link.getAttribute("href")).toBe(SIGN_OUT_URL);
-    expect(link.closest("li")?.className).toBe("af-menu-end");
-    expect(newPage.closest(".af-menu")).toBeNull();
+    // F100: at the foot of the left menu, apart from the page's own buttons.
+    expect(link.closest(".sn-foot")).not.toBeNull();
+    expect(newPage.closest(".sn")).toBeNull();
   });
 
   it("is in the post builder's top bar too", () => {

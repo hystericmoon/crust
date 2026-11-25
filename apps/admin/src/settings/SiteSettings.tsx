@@ -99,6 +99,12 @@ export const groups = [
 ] as const;
 export type GroupId = (typeof groups)[number]["id"];
 
+/** The group named in the address, or null. */
+export function groupFromHash(hash: string): GroupId | null {
+  const g = new URLSearchParams(hash.split("?")[1] ?? "").get("group");
+  return groups.find((x) => x.id === g)?.id ?? null;
+}
+
 /** Which group holds a field, from its id (for "fix the fields marked in red"). */
 export function groupOfField(field: string): GroupId | null {
   if (field.startsWith("color-")) return "colours";
@@ -141,7 +147,16 @@ export function SiteSettings({
   const [status, setStatus] = useState("");
   const [invalid, setInvalid] = useState<ReadonlySet<string>>(new Set());
   const [previewOpen, setPreviewOpen] = useState(() => !(typeof matchMedia === "function" && matchMedia("(max-width: 599px)").matches));
-  const [group, setGroup] = useState<GroupId>("presets");
+  // F100: the site menu opens a group straight from the address (#/settings?group=header).
+  const [group, setGroup] = useState<GroupId>(() => groupFromHash(typeof location === "undefined" ? "" : location.hash) ?? "presets");
+  useEffect(() => {
+    const onHash = () => {
+      const g = groupFromHash(location.hash);
+      if (g) setGroup(g);
+    };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
   /** After switching groups: what to focus once the group is shown. */
   const [pendingFocus, setPendingFocus] = useState<string | null>(null);
   useEffect(() => {
@@ -154,6 +169,11 @@ export function SiteSettings({
   }, [pendingFocus]);
   const open = (id: GroupId, focus = `${id}-h`) => {
     setGroup(id);
+    // Keep the address in step, so the site menu marks the right item (no new history entry).
+    if (location.hash.startsWith("#/settings")) {
+      history.replaceState(null, "", `#/settings?group=${id}`);
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
+    }
     setPendingFocus(focus);
   };
   /** Colours and fonts from before the last preset, for one-step undo. */
