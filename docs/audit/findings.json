@@ -19,7 +19,8 @@
     "Icons only with tooltips (against the owner's F097 ask for words)"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (toolbar and root)"
   },
   {
    "id": "A002",
@@ -38,7 +39,8 @@
     "Leave as is"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (toolbar and root)"
   },
   {
    "id": "A003",

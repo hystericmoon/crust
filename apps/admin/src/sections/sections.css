@@ -177,4 +177,5 @@
 .kb-words button[title]:not(.sx-tbtn)::after { content: attr(title); margin-left: 6px; font-size: 0.75rem; font-weight: 500; white-space: nowrap; }
 .kb-words button[title]:not(.sx-tbtn) { display: inline-flex; align-items: center; width: auto; padding-inline: 8px; }
 .kb-words .kb-word { margin-left: 6px; font-size: 0.75rem; font-weight: 500; white-space: nowrap; }
-.kb-words button[title^="Move"]::after { content: none; }
+/* Audit A001: same specificity as the rule above (it has :not(.sx-tbtn)), or the long "Move down (Alt+↓)" title is drawn a second time. */
+.kb-words button[title^="Move"]:not(.sx-tbtn)::after { content: none; }
