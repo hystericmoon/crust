@@ -4,6 +4,8 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **The light/dark button stays in the top row on a phone (2026-11-25, audit).** On Your sites, Site settings and the page list it no longer drops onto its own line and pushes the title down. On the narrowest phones a long site name is cut shorter to make room.
+
 - **A section's settings now open in the left panel (2026-11-24).** Click a section and its settings replace the sections list under a
   "Back to Outline" button; the right-hand panel stays closed (it is only for the page's own settings and Next steps). Same fields as before.
 
