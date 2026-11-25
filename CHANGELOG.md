@@ -5,6 +5,8 @@ User-visible changes, newest first, in plain language.
 ## Unreleased
 
 - **Layout card titles are easier to hit (2026-11-25, audit).** Title buttons on the layout cards in Add section are at least 24 px tall, and 44 px on touch screens.
+- **One page banner in the builder (2026-11-25, audit).** The bar with the site menu and Publish inside the builder was announced as a second "banner" next to the editor's own header. It is now a named group ("Site and publishing"), so screen-reader landmark lists are cleaner. Other screens are unchanged.
+
 - **"Move into" button now says what it is called (2026-11-25, audit).** On a selected section the toolbar button read "Move in" but was named "Move into block above", so voice control could miss it. It now reads "Move into".
 
 - **The Media panel in the side rail is now your real photo library (2026-11-25, audit).** Every photo has a name you can tab to and hear, you can search and upload photos there, and you can delete one unless it is still used on a page. Editing a photo's description and focus point still happens in Choose image, and the panel says so.

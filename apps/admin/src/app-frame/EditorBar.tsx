@@ -120,6 +120,7 @@ export function EditorBar() {
   const { where, phase, heading } = useContext(EditorFrameContext);
   return (
     <AppTopBar
+      landmark={false}
       heading={heading ?? "Page builder"}
       where={where}
       tools={

@@ -10,4 +10,10 @@ describe("audit: accessibility batch", () => {
     expect(k).toContain('into: "Move into",');
     expect(k).toContain('into: "Move into block above (Alt+→)"');
   });
+  it("A007: the editor top bar is a named group, not a second banner", () => {
+    const bar = src("app-frame/AppTopBar.tsx");
+    expect(bar).toContain("landmark = true");
+    expect(bar).toContain('role: "group", "aria-label": "Site and publishing"');
+    expect(src("app-frame/EditorBar.tsx")).toContain("landmark={false}");
+  });
 });

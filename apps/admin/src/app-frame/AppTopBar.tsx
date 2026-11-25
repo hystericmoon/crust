@@ -197,11 +197,14 @@ export interface AppTopBarProps {
   onPublish?: () => void;
   /** No Publish button (a screen that has its own, like Site settings' Save). */
   publish?: boolean;
+  /** A007: false when a parent (Puck's header) already is the page's banner; ours is then a named group. */
+  landmark?: boolean;
 }
 
-export function AppTopBar({ siteName, allSites, where, heading, tools, phase = null, beforePublish, onPublish, publish = true }: AppTopBarProps) {
+export function AppTopBar({ siteName, allSites, where, heading, tools, phase = null, beforePublish, onPublish, publish = true, landmark = true }: AppTopBarProps) {
+  const Bar = landmark ? "header" : "div";
   return (
-    <header className="af-top">
+    <Bar className="af-top" {...(landmark ? {} : { role: "group", "aria-label": "Site and publishing" })}>
       {heading ? <h1 className="af-sr">{heading}</h1> : null}
       <SiteMenu siteName={siteName} allSites={allSites} />
       {where ? <div className="af-where">{where}</div> : null}
@@ -211,6 +214,6 @@ export function AppTopBar({ siteName, allSites, where, heading, tools, phase = n
       {beforePublish}
       {publish ? <PublishButton onClick={onPublish} /> : null}
       <ThemeToggle className="af-theme" />
-    </header>
+    </Bar>
   );
 }
