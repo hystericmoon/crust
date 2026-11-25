@@ -36,4 +36,19 @@ describe("pictures that can't load in a design preview", () => {
     tidyBrokenPicture(b);
     expect(b.dataset.loadFailed).toBe("true");
   });
+
+  it("the start-up sweep leaves lazy pictures and SVGs alone, but tidies a real failure", () => {
+    document.body.innerHTML = '<img id="lazy" loading="lazy" src="/a.jpg" alt="a"><img id="svg" src="/logo.svg" alt="b"><img id="bad" src="/gone.jpg" alt="c">';
+    for (const id of ["lazy", "svg", "bad"]) {
+      const img = document.getElementById(id) as HTMLImageElement;
+      Object.defineProperty(img, "complete", { value: true });
+      Object.defineProperty(img, "naturalWidth", { value: 0 });
+      Object.defineProperty(img, "currentSrc", { value: img.getAttribute("src") });
+    }
+    const stop = installBrokenPictureGuard(document);
+    expect(document.getElementById("lazy")!.dataset.loadFailed).toBeUndefined();
+    expect(document.getElementById("svg")!.dataset.loadFailed).toBeUndefined();
+    expect(document.getElementById("bad")!.dataset.loadFailed).toBe("true");
+    stop();
+  });
 });

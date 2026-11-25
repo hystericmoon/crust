@@ -33,7 +33,11 @@ export function installBrokenPictureGuard(doc: Document): () => void {
   };
   // `error` doesn't bubble, so listen while it travels down.
   doc.addEventListener("error", onError, true);
-  // Pictures that already failed before this started listening.
-  for (const img of doc.querySelectorAll("img")) if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) tidyBrokenPicture(img);
+  // Pictures that already failed before this started listening. Lazy pictures that haven't
+  // started and SVGs without a size also report a width of 0, so they are left alone.
+  for (const img of doc.querySelectorAll("img")) {
+    const src = img.currentSrc || "";
+    if (img.loading !== "lazy" && img.complete && img.naturalWidth === 0 && src && !/\.svg(\?|#|$)/i.test(src)) tidyBrokenPicture(img);
+  }
   return () => doc.removeEventListener("error", onError, true);
 }
