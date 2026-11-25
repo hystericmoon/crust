@@ -108,6 +108,10 @@
 @media (max-width: 560px) {
   .af-status { display: none; }
   .af-where { order: 10; flex-basis: 100%; }
+  /* Audit A301: tighten the row so the light/dark switch stays beside Publish instead of dropping to its own line. */
+  .af-top { gap: 4px; padding-inline: 8px; }
+  .af-site-name { max-width: 72px; }
+  .af-tools .st-button { padding-inline: 10px; }
 }
 
 /* Puck: our header fills its row; Puck's own viewport buttons are replaced by the top bar's (zoom stays). */

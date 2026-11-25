@@ -325,7 +325,9 @@ body:has(.st) { margin: 0; }
   .st-header { padding: 8px 16px; }
   .st-actions { margin-left: 0; width: 100%; }
   /* F040: whole buttons wrap to a second row; labels stay on one line. */
-  .st-actions { flex-wrap: wrap; }
+  .st-actions { flex-wrap: wrap; order: 3; }
+  /* Audit A101: the light/dark switch stays in the title row instead of dropping onto its own line. */
+  .st-header > .app-theme-toggle { order: 2; margin-left: auto; }
   .st-actions .st-button { flex: 1 1 auto; white-space: nowrap; }
   .st-status { padding: 10px 16px; }
   .st-layout { display: flex; flex-direction: column; padding: 16px; gap: 16px; }
