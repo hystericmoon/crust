@@ -178,7 +178,7 @@ describe("Site settings screen", () => {
     expect(frame.getAttribute("sandbox")).toBe("allow-same-origin");
     // Width buttons match the builder's viewports.
     const group = screen.getByRole("group", { name: "Preview width" });
-    expect(within(group).getAllByRole("button").map((b) => b.textContent)).toEqual(["Desktop", "Tablet", "Mobile"]);
+    expect(within(group).getAllByRole("button").map((b) => b.textContent)).toEqual(["Desktop", "Tablet", "Phone"]);
   });
 
   it("lets the preview collapse on small screens", () => {

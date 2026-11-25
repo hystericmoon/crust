@@ -8,7 +8,7 @@ import { useLinkedSections } from "../linked/store";
 const widths = [
   { id: "desktop", label: "Desktop", width: 1280 },
   { id: "tablet", label: "Tablet", width: 768 },
-  { id: "mobile", label: "Mobile", width: 375 },
+  { id: "mobile", label: "Phone", width: 375 },
 ] as const;
 type WidthId = (typeof widths)[number]["id"];
 
