@@ -19,6 +19,8 @@ User-visible changes, newest first, in plain language.
 - **The FTP dialog shows there is more below (2026-11-25, audit).** A soft fade now sits above the fixed button bar, so a field cut off at the edge looks like it continues instead of finished.
 
 - **The New post form says what is needed (2026-11-25, audit).** Title and Address now say "(required)" in words, the form has breathing room under its heading, and the address line shows a real example (/blog/my-title/) until you type a title.
+- **One word for your pictures: "Photos" (2026-11-25, audit).** The side rail item is now "Photos" instead of "Media", the buttons say "Choose photo" and "Change photo", and messages talk about your "photo library" everywhere.
+
 - **Plainer words in the phone photo picker (2026-11-25, audit).** The picker now says "For: Photo, Card, section 7" instead of "block 7", and a photo without a description is flagged "Needs a description" instead of "Needs alt".
 
 - **The Media panel in the side rail is now your real photo library (2026-11-25, audit).** Every photo has a name you can tab to and hear, you can search and upload photos there, and you can delete one unless it is still used on a page. Editing a photo's description and focus point still happens in Choose image, and the panel says so.

@@ -124,7 +124,7 @@ const screens = [
   ["Page not found design", "/#/design?kind=notFound", null, null, []],
   ["posts screen with designs", "/#/posts", null, null, [], { wait: ".dz-status" }],
   // F081: the media library's photo details with the focal point picker.
-  ["media library, focal point", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { media: true, then: ['button:has-text("Choose image"):visible', '.mp-photo[data-file="stage.jpg"]'] }],
+  ["media library, focal point", "/#/edit?path=/", null, '[data-puck-component^="Card"]', [], { media: true, then: ['button:has-text("Choose photo"):visible', '.mp-photo[data-file="stage.jpg"]'] }],
   ["app welcome screen, Blank picked", "/", null, null, ['label:has-text("Blank")'], { app: "none", firstRun: true, wait: ".fr-card iframe" }],
 ];
 // F093: floating bars on the page (the typing bar, the text toolbar, the block's action bar) and the app's save message.

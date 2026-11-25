@@ -249,7 +249,8 @@
     "Leave it, since 'Media' will later hold video"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "next PR (A104 Photos wording)"
   },
   {
    "id": "A105",

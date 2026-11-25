@@ -190,7 +190,7 @@ export const isSampleCopy = (before: unknown, after: unknown): boolean =>
  */
 export function uncopiedSampleLabel(type: string, props: Record<string, unknown>): string {
   const own = Object.fromEntries(Object.entries(props).filter(([, v]) => !isBlockList(v)));
-  return layoutPhotoSrcs(own).length ? `${blockName(type)} (sample photo not in your Media library yet)` : "";
+  return layoutPhotoSrcs(own).length ? `${blockName(type)} (sample photo not in your photo library yet)` : "";
 }
 
 function mapBlocks(blocks: Block[], fn: (b: Block) => Block): Block[] {

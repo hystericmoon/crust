@@ -34,7 +34,7 @@ const TEXT = '[data-puck-component^="Text"]';
 const EDIT_HOME = { hash: "/#/edit?path=/", seed: "home", builder: true };
 const EDIT_EMPTY = { hash: "/#/edit?path=/", seed: "empty", builder: true };
 const FIRST_RUN = { hash: "/", app: { host: "none", firstRun: true }, wait: ".fr-form" };
-const PHOTO_PICK = [{ canvas: CARD }, { click: 'button:has-text("Choose image"):visible' }, { waitFor: "dialog[open]" }];
+const PHOTO_PICK = [{ canvas: CARD }, { click: 'button:has-text("Choose photo"):visible' }, { waitFor: "dialog[open]" }];
 const MEDIA = { media: true };
 // A post opened from a browser draft (offline, as scripts/check-builder-a11y.mjs does); seeded with screen.post.
 const SAMPLE_POST = {
@@ -117,7 +117,7 @@ const SCREENS = [
   { id: "S42", area: 5, title: "Media library picker (search, grid, upload)", shares: "S30", note: "The library is the dialog S30 opens: search, grid and upload are all in it." },
   { id: "S43", area: 5, title: "Delete photo confirm", hash: "/#/edit?path=/", seed: "home", builder: true, ...MEDIA, steps: [...PHOTO_PICK, { click: '.mp-photo[data-file="door.jpg"]' }, { click: ".mp-delete .mp-link" }, { waitFor: '[role="group"][aria-label="Delete this photo?"]' }] },
   { id: "S44", area: 5, title: "Web address for an image", hash: "/#/edit?path=/", seed: "home", builder: true, steps: [{ canvas: CARD }, { click: 'summary:has-text("Use a web address instead")' }] },
-  { id: "S45", area: 5, title: "Media panel in the rail", hash: "/#/edit?path=/", builder: true, ...MEDIA, steps: [{ click: RAIL_YOUR_SITE }, { click: '.af-place-link:has(strong:text-is("Media"))' }] },
+  { id: "S45", area: 5, title: "Media panel in the rail", hash: "/#/edit?path=/", builder: true, ...MEDIA, steps: [{ click: RAIL_YOUR_SITE }, { click: '.af-place-link:has(strong:text-is("Photos"))' }] },
   { id: "S46", area: 5, title: "Image shrink and optimise on upload", notReached: "Runs when a file is uploaded; the capture cannot pick a file." },
 
   // Area 6: Look and Site settings. The nav buttons are the group names (settings/SiteSettings.tsx).
@@ -151,7 +151,7 @@ const SCREENS = [
 
   // Area 8: Quick edit (phone). mode=quick opens it at any width; the phone variant is the one the inventory means.
   { id: "S71", area: 8, title: "Quick edit page", hash: "/#/edit?path=/&mode=quick", seed: "home", steps: [] },
-  { id: "S72", area: 8, title: "Quick edit photo picker", hash: "/#/edit?path=/&mode=quick", seed: "home", ...MEDIA, steps: [{ click: 'button:has-text("Choose image"):visible' }, { waitFor: "dialog[open]" }] },
+  { id: "S72", area: 8, title: "Quick edit photo picker", hash: "/#/edit?path=/&mode=quick", seed: "home", ...MEDIA, steps: [{ click: 'button:has-text("Choose photo"):visible' }, { waitFor: "dialog[open]" }] },
   { id: "S73", area: 8, title: "Quick edit save status and error", notReached: "The error and saving states need a failed or slow save; the capture does not save." },
 
   // Area 9: Designs, layouts and linked sections.

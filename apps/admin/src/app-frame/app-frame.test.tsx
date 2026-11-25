@@ -190,7 +190,7 @@ describe("app frame: the left icon bar", () => {
     const Render = plugins.find((p) => p.name === "your-site")!.render!;
     render(<Render />);
     const labels = screen.getAllByRole("button").map((b) => b.querySelector("strong")?.textContent);
-    expect(labels).toEqual(["Pages", "Blog", "Media", "Look", "Site settings", "Help"]);
+    expect(labels).toEqual(["Pages", "Blog", "Photos", "Look", "Site settings", "Help"]);
     fireEvent.click(screen.getByRole("button", { name: /^Pages/ }));
     expect(screen.getByRole("link", { name: /About/ }).getAttribute("href")).toBe("#/edit?path=/about");
     expect(screen.getByRole("link", { name: "Manage pages" }).getAttribute("href")).toBe("#/");
