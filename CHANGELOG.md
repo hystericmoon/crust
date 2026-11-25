@@ -4,6 +4,8 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **"Phone" instead of "Mobile" in Site settings (2026-11-25, audit).** The preview in Site settings now calls the small size "Phone", the same word the editor and template screens use.
+
 - **Site settings on a phone: one Group dropdown (2026-11-25, audit).** On a phone the 16 settings groups are now a single "Group" dropdown instead of a list that wrapped to five rows, so the fields start much higher on the screen. On a computer nothing changes.
 
 - **Design editor on a phone: Save design and Back are always visible (2026-11-25, audit).** A slim bar at the bottom of the screen holds "Posts" (or "Pages") and "Save design", so you no longer have to find them behind the small arrow next to the title.
