@@ -633,7 +633,7 @@ function Builder({ path, githubOn, onSaved, pages }: { path: string; githubOn: b
             config={pageEditorConfig}
             data={toPuckData(page)}
             viewports={viewports}
-            ui={{ rightSideBarVisible: false }}
+            ui={{ rightSideBarVisible: false, previewMode: new URLSearchParams(location.hash.split("?")[1] ?? "").get("view") === "1" ? "interactive" : "edit" }}
             headerTitle={page.title || path}
             plugins={plugins}
             overrides={{

@@ -42,7 +42,9 @@ impl HostKind {
     /// The host's page where people make a token (opened from the connect dialog).
     pub fn token_page(self) -> &'static str {
         match self {
-            HostKind::Cloudflare => "https://dash.cloudflare.com/profile/api-tokens",
+            // A207: Cloudflare's template link: the form opens with the name "Crust" and
+            // the permission Account · Cloudflare Pages · Edit already chosen.
+            HostKind::Cloudflare => "https://dash.cloudflare.com/profile/api-tokens?permissionGroupKeys=%5B%7B%22key%22%3A%22pages%22%2C%22type%22%3A%22edit%22%7D%5D&accountId=*&zoneId=all&name=Crust",
             HostKind::Netlify => "https://app.netlify.com/user/applications#personal-access-tokens",
             HostKind::Ftp => "",
         }

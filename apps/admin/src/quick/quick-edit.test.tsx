@@ -109,6 +109,10 @@ describe("Quick edit screen (F038)", () => {
     expect(JSON.stringify(saved.page.puck)).toContain("Warm bread");
     expect(screen.getByRole("status").textContent).toContain("saved");
     expect(getLocalDraft("/")?.savedToGitHub).toBe(true);
+    // A205: after a successful Save, a link opens the page in the builder's Preview; typing again hides it.
+    expect(screen.getByRole("link", { name: "View this page" }).getAttribute("href")).toBe("#/edit?path=%2F&mode=full&view=1");
+    act(() => fireEvent.change(screen.getByRole("textbox", { name: "Heading, part 1" }), { target: { value: "Warm bread 2" } }));
+    expect(screen.queryByRole("link", { name: "View this page" })).toBeNull();
   });
 
   it("saves and publishes in one go", async () => {
