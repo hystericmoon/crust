@@ -201,11 +201,12 @@ describe("the gallery screen (F048)", () => {
     return { onApplied, currentSite };
   }
 
-  it("lists templates with what's in them, says why a broken one can't be used, and offers to open a file", async () => {
+  it("lists templates with what's in them, leaves a broken one out, and offers to open a file", async () => {
     await setup();
     const list = screen.getByRole("list", { name: "Templates" });
     expect(within(list).getByRole("button", { name: /Harbour.*For a studio by the water\..*2 pages, blog \(1 post\), 1 photo/ })).toBeTruthy();
-    expect(within(list).getByText(/This template can't be used: The template has no pages\./)).toBeTruthy();
+    expect(within(list).queryByText(/can't be used/)).toBeNull();
+    expect(within(list).queryByText("broken")).toBeNull();
     expect(screen.getByLabelText(/Open a template file/)).toBeTruthy();
   });
 

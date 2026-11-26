@@ -97,7 +97,8 @@
     "Leave as is (desktop first)"
    ],
    "recommended": 2,
-   "status": "open"
+   "status": "wontfix",
+   "fixed_in": "left as is (audit recommendation; desktop first)"
   },
   {
    "id": "A006",
@@ -153,7 +154,7 @@
    ],
    "recommended": 0,
    "status": "fixed",
-  "fixed_in": "next PR (A008 top-section toolbar; checked in Chromium at desktop and tablet width)"
+   "fixed_in": "next PR (A008 top-section toolbar; checked in Chromium at desktop and tablet width)"
   },
   {
    "id": "A100",
@@ -172,7 +173,8 @@
     "Keep as is, rewrite the message ('This template is missing a photo, so it can't be used')"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "hidden from the list (recommended option, owner: use own judgment)"
   },
   {
    "id": "A101",
@@ -291,7 +293,8 @@
     "Leave the message but only show it when a field is in error"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "message reworded so it is true with or without a red field"
   },
   {
    "id": "A107",
@@ -529,7 +532,8 @@
     "Leave it: Quick edit is meant for small fixes"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "PR #123"
   },
   {
    "id": "A206",
@@ -568,7 +572,8 @@
     "Keep the text and add a 'Check token' error that names which permission is missing"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "PR #123"
   },
   {
    "id": "A208",
@@ -766,7 +771,8 @@
     "Let the owner set the home title in Site settings"
    ],
    "recommended": 0,
-   "status": "open"
+   "status": "fixed",
+   "fixed_in": "PR #123"
   }
  ],
  "strengths": [

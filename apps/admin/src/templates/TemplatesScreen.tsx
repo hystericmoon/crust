@@ -190,10 +190,9 @@ export function TemplatesScreen({ siteName, githubOn, currentSite, sources: give
                 Loading a template…
               </li>
             ) : (
-              <li key={c.id} className="tp-card tp-card-broken">
-                <strong>{c.id}</strong>
-                <span>This template can't be used: {c.problems[0] ?? "it's damaged."}</span>
-              </li>
+              // A template that cannot be used is not a choice (audit A100): leave it out of the list.
+              // Its problems stay in the console for a developer check.
+              (console.warn(`Template ${c.id} hidden: ${c.problems[0] ?? "it's damaged."}`), null)
             ),
           )}
           <li>
