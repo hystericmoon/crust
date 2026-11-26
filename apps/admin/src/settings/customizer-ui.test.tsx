@@ -169,11 +169,11 @@ describe("customizer: style library (F072)", () => {
     expect(latest.radius).toBe(defaultTokens.radius);
   });
 
-  it("shows all 12 looks with three colourways each, the current one checked", () => {
+  it("shows all 13 looks with three colourways each, the current one checked", () => {
     const night = findLook("atelier")!;
     setup(applyLook(defaultTokens, night, night.variations[2]));
     const list = screen.getByRole("region", { name: "Styles" });
-    expect(within(list).getAllByRole("button").filter((b) => b.hasAttribute("aria-pressed"))).toHaveLength(12);
+    expect(within(list).getAllByRole("button").filter((b) => b.hasAttribute("aria-pressed"))).toHaveLength(13);
     expect(within(list).getByRole("button", { name: /^Atelier/ }).getAttribute("aria-pressed")).toBe("true");
     const dots = within(list).getByRole("radiogroup", { name: "Atelier colourway" });
     expect(within(dots).getAllByRole("radio").map((r) => r.getAttribute("aria-label"))).toEqual(["Stone", "Clay", "Night"]);

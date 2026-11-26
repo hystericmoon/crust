@@ -58,6 +58,7 @@ export {
   headingSizes,
   displaySize,
   labelStyles,
+  photoTexts,
   labelsUseMono,
   validateStyleOptions,
 } from "./style-options";

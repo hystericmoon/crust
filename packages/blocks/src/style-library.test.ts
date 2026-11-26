@@ -3,17 +3,17 @@ import { checkContrast, formatRatio } from "./contrast";
 import { bundledFontIn, findFontPair, fontPairs } from "./fonts";
 import { sectionStylesOf, sectionStyleWarnings } from "./section-styles";
 import { applyLook, findLook, lookFonts, matchingLook, styleLooks } from "./style-library";
-import { validateStyleOptions } from "./style-options";
+import { styleOptionsCss, styleOptionsOf, validateStyleOptions } from "./style-options";
 import { defaultTokens, validateTokens } from "./tokens";
 
 const every = styleLooks.flatMap((l) => l.variations.map((v) => [`${l.name} ${v.name}`, l, v] as const));
 
 describe("style-library: the looks", () => {
-  it("has 12 looks with 3 variations each, unique names", () => {
-    expect(styleLooks).toHaveLength(12);
+  it("has 13 looks with 3 variations each, unique names", () => {
+    expect(styleLooks).toHaveLength(13);
     for (const l of styleLooks) expect(l.variations, l.id).toHaveLength(3);
-    expect(new Set(styleLooks.map((l) => l.id)).size).toBe(12);
-    expect(new Set(styleLooks.map((l) => l.name)).size).toBe(12);
+    expect(new Set(styleLooks.map((l) => l.id)).size).toBe(13);
+    expect(new Set(styleLooks.map((l) => l.name)).size).toBe(13);
     for (const l of styleLooks) expect(new Set(l.variations.map((v) => v.id)).size, l.id).toBe(3);
   });
 
@@ -47,7 +47,8 @@ describe("style-library: applying", () => {
     expect(t.colors).toEqual(atelier.variations[1]!.colors);
     expect(findFontPair(t.fonts)?.id).toBe("editorial");
     expect(bundledFontIn(t.fonts.heading)?.family).toBe("Fraunces");
-    expect(t.style).toEqual(atelier.style);
+    expect(styleOptionsOf(t)).toEqual(atelier.style);
+    expect(t.style).not.toHaveProperty("photoText");
     expect(t.radius).toBe(6);
     expect(sectionStylesOf(t).background.button).toBe("solid");
     expect(t.maxWidth).toBe(900);
@@ -74,5 +75,33 @@ describe("style-library: applying", () => {
       expect(bundledFontIn(f.heading), l.id).toBeTruthy();
       expect(bundledFontIn(f.body), l.id).toBeTruthy();
     }
+  });
+});
+
+describe("style-library: Matte (F102)", () => {
+  const matte = findLook("matte")!;
+  it("is a look with Oat, Lichen and Slate, and turns on the fade under words on photos", () => {
+    expect(matte.variations.map((v) => v.id)).toEqual(["oat", "lichen", "slate"]);
+    expect(matte.style.photoText).toBe("scrim");
+    expect(applyLook(defaultTokens, matte).style?.photoText).toBe("scrim");
+  });
+
+  it("other looks keep the plain tint, so their CSS has no fade", () => {
+    for (const l of styleLooks.filter((x) => x.id !== "matte")) expect(l.style.photoText, l.id).toBe("tint");
+    expect(styleOptionsCss(applyLook(defaultTokens, findLook("atelier")!))).not.toContain("::after");
+  });
+
+  it("adds the fade only under the dark style, where the text is light, and never lightens the tint", () => {
+    const css = styleOptionsCss(applyLook(defaultTokens, matte));
+    expect(css).toContain(".cr-overlay.cr-style-dark::after");
+    expect(css).not.toMatch(/cr-style-(background|surface|primary)::after/);
+    expect(css).toContain(".cr-overlay.cr-style-dark.cr-overlay-top-left::after");
+    expect(css).not.toMatch(/rgb\((?!8 8 8)/);
+  });
+
+  it("matches back to the look and validates", () => {
+    const t = applyLook(defaultTokens, matte, matte.variations[2]);
+    expect(matchingLook(t)?.look.id).toBe("matte");
+    expect(validateStyleOptions({ ...t, style: { ...t.style!, photoText: "nope" as never } })).toHaveLength(1);
   });
 });

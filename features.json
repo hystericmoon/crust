@@ -1104,8 +1104,8 @@
       "title": "Matte look (Milestone 11, stage 1)",
       "description": "A new look in Style: large serif or grotesk headlines, wide margins, muted palette, and text on photos with an automatic dark overlay that keeps WCAG AA contrast. Uses today's blocks. A design snapshot is shown first. Approved by the owner on 2026-11-26 ('Add them'); docs/milestone-11.md.",
       "depends_on": ["F101"],
-      "done_check": "npm test -- matte && npm run typecheck && npm run check:builder",
-      "passes": false,
+      "done_check": "npm test -- style-library fonts && npm run typecheck && npm run check:builder",
+      "passes": true,
       "needs_review": true
     },
     {

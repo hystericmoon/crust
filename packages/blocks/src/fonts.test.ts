@@ -123,8 +123,8 @@ describe("fonts: CSS", () => {
 });
 
 describe("fonts: pairs", () => {
-  it("has 12 pairs of real fonts, with headings-only fonts never used for body text", () => {
-    expect(fontPairs).toHaveLength(12);
+  it("has 13 pairs of real fonts, with headings-only fonts never used for body text", () => {
+    expect(fontPairs).toHaveLength(13);
     for (const p of fontPairs) {
       const h = findBundledFont(p.heading);
       const b = findBundledFont(p.body);

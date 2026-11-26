@@ -45,11 +45,11 @@ function setup(initial: SiteTokens = defaultTokens) {
 const select = (label: string) => screen.getByLabelText(label, { selector: "select" }) as HTMLSelectElement;
 
 describe("fonts picker (F070, direction A)", () => {
-  it("shows 12 pairs and System as buttons, each named with its fonts", () => {
+  it("shows 13 pairs and System as buttons, each named with its fonts", () => {
     const card = setup();
     const list = card.getByRole("heading", { name: "Font pairs" }).nextElementSibling as HTMLElement;
     const buttons = within(list).getAllByRole("button");
-    expect(buttons).toHaveLength(13);
+    expect(buttons).toHaveLength(14);
     // The visible name and fonts are the spoken name (WCAG 2.5.3); the samples are hidden from screen readers.
     expect(buttons[0]!.textContent).toContain("Calm rooms");
     expect(within(list).getByRole("button", { name: "Editorial Fraunces and Inter Tight" })).toBe(buttons[0]);

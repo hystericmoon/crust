@@ -27,6 +27,10 @@ export type LinkStyle = (typeof linkStyles)[number];
 export const labelStyles = ["plain", "caps", "mono", "chip"] as const;
 export type LabelStyle = (typeof labelStyles)[number];
 
+/** F102: how words on a photo are kept readable. "scrim" adds a dark fade under the words of an Image overlay. */
+export const photoTexts = ["tint", "scrim"] as const;
+export type PhotoText = (typeof photoTexts)[number];
+
 export interface StyleOptions {
   typeScale: TypeScale;
   headingWeight: HeadingWeight;
@@ -38,6 +42,8 @@ export interface StyleOptions {
   displayWeight: HeadingWeight;
   displayTracking: HeadingTracking;
   labelStyle: LabelStyle;
+  /** F102: Text on photos. */
+  photoText: PhotoText;
 }
 
 /** The look before F028: "Balanced" is exactly the old heading sizes. */
@@ -51,6 +57,7 @@ export const defaultStyleOptions: StyleOptions = {
   displayWeight: 700,
   displayTracking: "tight",
   labelStyle: "caps",
+  photoText: "tint",
 };
 
 export const styleOptionNames = {
@@ -63,6 +70,7 @@ export const styleOptionNames = {
   displayWeight: { 300: "Light", 400: "Regular", 500: "Medium", 600: "Semibold", 700: "Bold", 800: "Heavy" },
   displayTracking: { tightest: "Tightest", tighter: "Tighter", tight: "Tight", snug: "Snug", normal: "Normal", wide: "Wide" },
   labelStyle: { plain: "Plain", caps: "Caps", mono: "Mono", chip: "Chip" },
+  photoText: { tint: "Even tint", scrim: "Fade under the words" },
 } as const;
 
 /** Largest size of h1–h4 in rem; h1 and h2 shrink on small screens. */
@@ -151,7 +159,22 @@ export function styleOptionsCss(tokens: SiteTokens, scope = ""): string {
     chip: `${pre}.cr-hgroup .cr-eyebrow { font-family: var(--cr-font-label); letter-spacing: 0.1em; display: inline-flex; align-items: center; gap: 0.5em; padding: 0.45em 0.8em; border: 1px solid color-mix(in srgb, currentColor 30%, transparent); border-radius: 999px; }\n${pre}.cr-hgroup .cr-eyebrow::before { content: ""; width: 0.5em; height: 0.5em; border-radius: 1px; background: var(--cr-label-dot, currentColor); }`,
   }[o.labelStyle];
   const plain = o.labelStyle === "plain" ? `${pre}.cr-hgroup .cr-eyebrow { text-transform: none; letter-spacing: 0; font-size: 0.875rem; }` : "";
-  return [`${root} {\n  ${vars.join("\n  ")}\n}`, cards, label, plain].filter(Boolean).join("\n");
+  return [`${root} {\n  ${vars.join("\n  ")}\n}`, cards, label, plain, o.photoText === "scrim" ? scrimCss(pre) : ""].filter(Boolean).join("\n");
+}
+
+/**
+ * F102: a dark fade under the words of an Image overlay. It only ever adds
+ * darkness on top of the style's own tint (which already keeps text readable
+ * on any photo), and only on the dark style, whose text is light. So the
+ * contrast guarantee of the tint still holds; the fade is for looks.
+ */
+export function scrimCss(pre = ""): string {
+  const from = (dir: string) => `linear-gradient(${dir}, rgb(8 8 8 / 0.7), rgb(8 8 8 / 0.28) 55%, rgb(8 8 8 / 0.08))`;
+  return [
+    `${pre}.cr-overlay.cr-style-dark::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: ${from("to top")}; }`,
+    `${pre}.cr-overlay.cr-style-dark.cr-overlay-top-left::after { background: ${from("to bottom")}; }`,
+    `${pre}.cr-overlay.cr-style-dark.cr-overlay-center::after { background: rgb(8 8 8 / 0.3); }`,
+  ].join("\n");
 }
 
 export interface StyleOptionProblem {
@@ -164,6 +187,7 @@ const lists: { [K in keyof StyleOptions]: readonly StyleOptions[K][] } & { motio
   displayWeight: headingWeights,
   displayTracking: headingTrackings,
   labelStyle: labelStyles,
+  photoText: photoTexts,
   typeScale: typeScales,
   headingWeight: headingWeights,
   headingTracking: headingTrackings,
@@ -177,6 +201,7 @@ const labels: Record<keyof StyleOptions | "motion", string> = {
   displayWeight: "Display heading weight",
   displayTracking: "Display heading letter spacing",
   labelStyle: "Small labels",
+  photoText: "Text on photos",
   typeScale: "Type scale",
   headingWeight: "Heading weight",
   headingTracking: "Heading letter spacing",
