@@ -47,3 +47,9 @@ description: Finish a Crust feature and hand over - done_check, checks, commit, 
    example the branch reset after a merge), say so inside the block and
    put it in HANDOVER.md "Next" first, so the next session does it. Never end
    a turn that follows a finish with only a status line.
+
+The rule above is enforced by a Stop hook (`scripts/hooks/stop-check.sh`,
+registered in `.claude/settings.json`, owner's request 2026-11-26): a turn
+cannot end with uncommitted or unpushed work, and after `crust-finish` was
+used it cannot end without the "Ready to clear" block. The hook sends Claude
+back once; fix what it names (commit, push, or write the block).
