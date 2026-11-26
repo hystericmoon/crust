@@ -24,7 +24,8 @@ read its `SKILL.md` directly):
    wide searches, quiet output, checkpoint and `/clear` at ~200k).
 3. **Finish:** `crust-finish` (done_check must exit 0, checks, commit,
    PROGRESS/CHANGELOG/HANDOVER, archive, one PR per feature, the
-   ready-to-clear message).
+   ready-to-clear message). That message ends every turn after a finish,
+   including after CI fixes and merges (crust-finish step 9).
 
 Visual/UX items have `needs_review: true`; only the owner sets
 `reviewed: true` (his Pass on the review round page counts; Claude

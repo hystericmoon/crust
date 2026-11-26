@@ -36,3 +36,20 @@ description: Finish a Crust feature and hand over - done_check, checks, commit, 
 
    The next feature's model is in HANDOVER.md's "Model plan" table
    (`npm run next` prints it).
+
+9. **The "Ready to clear" message is the last thing the owner reads, every
+   time, until he clears.** Anything that happens after step 8 (a CI fix, a
+   review comment, a merge, a bot notice, a blocked action) ends with the
+   same block again, filled in for the current state: say what changed in
+   one line, then repeat it. Before sending it, check `git status -sb` is
+   clean and the branch is pushed; if the PR merged, say so in the block
+   ("PR #N merged"). If something is not saved or a step was blocked (for
+   example the branch reset after a merge), say so inside the block and
+   put it in HANDOVER.md "Next" first, so the next session does it. Never end
+   a turn that follows a finish with only a status line.
+
+The rule above is enforced by a Stop hook (`scripts/hooks/stop-check.sh`,
+registered in `.claude/settings.json`, owner's request 2026-11-26): a turn
+cannot end with uncommitted or unpushed work, and after `crust-finish` was
+used it cannot end without the "Ready to clear" block. The hook sends Claude
+back once; fix what it names (commit, push, or write the block).

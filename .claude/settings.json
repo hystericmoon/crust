@@ -69,6 +69,17 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "scripts/hooks/stop-check.sh",
+            "timeout": 30
+          }
+        ]
+      }
     ]
   }
 }
