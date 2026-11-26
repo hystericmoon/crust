@@ -4007,3 +4007,7 @@ Visuals the owner saw: options https://claude.ai/artifact/CAdDkEgqo4xrHjJu2BskhE
 ## Ready-to-clear block only when safe (2026-11-26, owner)
 
 - Owner: show the block only when clearing is really safe, not every turn. crust-finish step 9 now lists the conditions (clean and pushed, PR merged, no CI pending); the Stop hook no longer forces the block, it still stops a turn with unsaved or unpushed work.
+
+## Audit A100, A106, A005 (2026-11-26, owner: "I trust your own judgment")
+
+- A100: hid unusable templates from the list (audit's recommended option 0); the reason goes to the console. A106: reworded the preview message instead of tracking field errors, so it is never false. A005: left as is (audit recommended it). A205, A207, A310 marked fixed (PR #123). No open audit findings remain.

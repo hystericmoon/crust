@@ -117,7 +117,7 @@ export function Preview({ site, page, open, onToggle, onPick }: PreviewProps) {
       </div>
       <div className="st-preview-pane" id="st-preview-pane" ref={paneRef}>
         {html === null ? (
-          <p className="st-preview-error">The preview can't show these settings. Fix the fields marked in red.</p>
+          <p className="st-preview-error">The preview can't be drawn with these settings. If a field is marked in red, fix it and the preview comes back.</p>
         ) : (
           <div
             className={onPick ? "st-preview-stage is-pickable" : "st-preview-stage"}
