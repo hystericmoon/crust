@@ -48,13 +48,13 @@ Every row of the plan confirmed on 2026-11-03 (F063–F068) is built.
 
 Milestone 11 (owner, 2026-11-26: sonnet and haiku only; docs/milestone-11.md):
 
-| Model | Feature |
+| Feature | Model |
 |---|---|
-| sonnet | F102 Matte look |
-| sonnet | F103 Hero and reveal blocks |
-| sonnet | F104 Sideways gallery and pinned story |
-| sonnet | F105 Flagship template |
-| sonnet | F106 Showcase site |
+| F102 Matte look | sonnet |
+| F103 Hero and reveal blocks | sonnet |
+| F104 Sideways gallery and pinned story | sonnet |
+| F105 Flagship template | sonnet |
+| F106 Showcase site | sonnet |
 The message after every `/clear` stays the same: "Read HANDOVER.md on
 branch <branch> and continue" (branch below, under "Last updated").
 
