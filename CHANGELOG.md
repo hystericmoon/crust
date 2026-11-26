@@ -4,6 +4,7 @@ User-visible changes, newest first, in plain language.
 
 ## Unreleased
 
+- **Three audit fixes you picked (2026-11-26).** (A310) The home page's browser tab now reads "Home | Your site name" like every other page (a page titled exactly like the site is not doubled). (A205) On a phone, after Save in Quick edit, a **View this page** link appears and opens the page in Preview; typing again hides it. (A207, desktop app) "Open Cloudflare token page" now opens Cloudflare with the name "Crust" and the permission (Account, Cloudflare Pages, Edit) already chosen, so connecting is two steps instead of four.
 - **An all-sites screen with its own menu (2026-11-25, F101, desktop app).** "All sites" now has a left menu: Sites (your sites as cards), Templates (browse only) and Settings (light/dark, updates). Opening a site shows the site menu; "← All sites" comes back. The web version still opens straight into its one site.
 - **A left menu inside each site (2026-11-25, F100).** The site name dropdown at the top left is replaced by a menu down the left side: Pages, Posts, Layout, Styles, Media, Settings. In the page editor it shrinks to a narrow rail with labels; on a phone it is a bar at the bottom (More holds Media, Settings and Sign out). Media is now a screen of its own. In the desktop app, "← All sites" leads the menu.
 - **The top section's toolbar no longer hides the site header (2026-11-25, audit).** When you select the first section, its toolbar now sits just inside the section instead of covering the header's menu and "Start a project" button.

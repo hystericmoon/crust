@@ -167,10 +167,9 @@ export const HOSTS: Record<TokenHost, { name: string; product: string; domain: s
     product: "Cloudflare Pages",
     domain: ".pages.dev",
     maxName: 58,
+    // A207: the link opens Cloudflare with the name and the permission already filled in (Rust `token_page`).
     steps: [
-      "Open your Cloudflare token page and sign in.",
-      "Choose Create Token, then Create Custom Token.",
-      "Name it “Crust”. Under Permissions pick Account, Cloudflare Pages, Edit.",
+      "Open the Cloudflare token page below and sign in. The name “Crust” and the permission (Account, Cloudflare Pages, Edit) are already chosen.",
       "Choose Continue to summary, then Create Token, and copy the token.",
     ],
     permission: "Account · Cloudflare Pages · Edit",

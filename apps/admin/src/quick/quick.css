@@ -28,6 +28,7 @@ textarea.qe-input { resize: vertical; }
   min-height: 44px; padding: 0 18px; border: 1px solid var(--app-line-strong); border-radius: 10px; background: var(--app-panel); color: var(--app-ink);
   font: inherit; font-weight: 600; cursor: pointer;
 }
+a.qe-button { display: inline-flex; align-items: center; text-decoration: none; }
 .qe-button:disabled { opacity: 0.55; cursor: default; }
 .qe-primary { background: var(--app-pri); border-color: var(--app-pri); color: var(--app-pri-fg); }
 .qe :is(a, button, input, textarea, summary):focus-visible { outline: 3px solid var(--app-acc); outline-offset: 2px; }

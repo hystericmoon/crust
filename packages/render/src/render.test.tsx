@@ -13,11 +13,17 @@ const page = (content: Page["puck"]["content"]): Page => ({
 });
 
 describe("renderPage", () => {
+  it("A310: the home page title names the site like every other page", () => {
+    expect(renderPage(site, { ...page([]), title: "Home" }, "")).toContain("<title>Home | Test</title>");
+    // A title that already is the site name is not doubled.
+    expect(renderPage(site, { ...page([]), title: "Test" }, "")).toContain("<title>Test</title>");
+  });
+
   it("renders the sample page as a full static document", () => {
     const html = renderPage(site, sample as Page, "");
     expect(html).toMatch(/^<!doctype html>/);
     expect(html).toContain('<html lang="en">');
-    expect(html).toContain("<title>Crust demo</title>");
+    expect(html).toContain("<title>Crust demo | Test</title>");
     expect(html).toContain('<meta name="description" content="A sample page built with the Crust visual builder.">');
     expect(html).toContain("--cr-color-primary: #4338ca;");
     // F071: the sample hero is a Display heading with a small label above it.

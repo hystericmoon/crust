@@ -303,7 +303,7 @@ export function renderDocument(site: Site, doc: DocumentParts, baseCss: string, 
   // F079: slideshow, card slider, tabs, map and lightbox CSS only on pages that show one.
   const interactiveCss = needsInteractiveCss(top + doc.body + bottom) ? `\n${INTERACTIVE_CSS}` : "";
   const css = minifyCss(`${tokensToCss(site.tokens)}\n${baseCss}${chromeCss}${iconCss}${v3Css}${interactiveCss}${motion ? `\n${motion}` : ""}`);
-  const title = doc.share?.searchTitle?.trim() || (doc.path === "/" ? doc.title : `${doc.title} | ${site.name}`);
+  const title = doc.share?.searchTitle?.trim() || (doc.title === site.name ? site.name : `${doc.title} | ${site.name}`);
   return `<!doctype html>
 <html lang="${escapeHtml(site.language)}"${htmlClass}${htmlStyle}>
 <head>

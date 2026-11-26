@@ -588,5 +588,9 @@ fn a_failed_connect_leaves_the_site_as_it_was() {
 #[test]
 fn token_pages_are_the_hosts_own() {
     assert!(HostKind::Cloudflare.token_page().starts_with("https://dash.cloudflare.com/"));
+    // A207: the link carries the Pages edit permission and the token name.
+    let page = HostKind::Cloudflare.token_page();
+    assert!(page.contains("permissionGroupKeys=%5B%7B%22key%22%3A%22pages%22%2C%22type%22%3A%22edit%22%7D%5D"));
+    assert!(page.contains("name=Crust"));
     assert!(HostKind::Netlify.token_page().starts_with("https://app.netlify.com/"));
 }

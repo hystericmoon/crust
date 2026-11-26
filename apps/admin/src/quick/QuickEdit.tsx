@@ -14,6 +14,8 @@ import { applyQuickEdit, quickGroups, type QuickField } from "./quick";
 import { ThemeToggle } from "../app-theme/ThemeToggle";
 
 export const fullBuilderHref = (path: string) => `#/edit?path=${encodeURIComponent(path)}&mode=full`;
+/** A205: the page as visitors will see it, in the builder's Preview (opens already in preview). */
+export const viewPageHref = (path: string) => `${fullBuilderHref(path)}&view=1`;
 
 interface Props {
   page: Page;
@@ -45,6 +47,7 @@ export function QuickEdit({ page: initial, githubOn, saveMessage }: Props) {
   const [data, setData] = useState<Data>(() => toPuckData(initial));
   const [dirty, setDirty] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [status, setStatus] = useState("");
   const groups = useMemo(() => quickGroups(data), [data]);
   const page = fromPuckData(initial.path, data);
@@ -58,10 +61,12 @@ export function QuickEdit({ page: initial, githubOn, saveMessage }: Props) {
   const change = (field: QuickField, value: string | RichText, extra?: Record<string, string>) => {
     setData((d) => applyQuickEdit(d, field, value, extra));
     setDirty(true);
+    setSaved(false);
   };
   const setRoot = (key: "title" | "description", value: string) => {
     setData((d) => ({ ...d, root: { ...d.root, props: { ...(d.root.props ?? {}), [key]: value } } }));
     setDirty(true);
+    setSaved(false);
   };
 
   const save = async (): Promise<boolean> => {
@@ -77,6 +82,7 @@ export function QuickEdit({ page: initial, githubOn, saveMessage }: Props) {
     if (result.ok) {
       saveLocalDraft(page, true);
       setDirty(false);
+      setSaved(true);
     }
     setStatus(saveMessage(result, local, "Page"));
     setBusy(false);
@@ -168,6 +174,11 @@ export function QuickEdit({ page: initial, githubOn, saveMessage }: Props) {
           {status || (dirty ? "Changes are kept in this browser. Save to keep them for good." : "")}
         </p>
         <div className="qe-actions">
+          {saved ? (
+            <a className="qe-button" href={viewPageHref(initial.path)}>
+              View this page
+            </a>
+          ) : null}
           <button type="button" className={githubOn ? "qe-button" : "qe-button qe-primary"} disabled={busy} onClick={() => void save()}>
             Save
           </button>
