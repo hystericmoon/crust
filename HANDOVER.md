@@ -34,7 +34,7 @@ Next, in order:
 3. F058: the owner tries Publish to Cloudflare Pages from the app with a TEST project `crust-app-test` (never `crust-site`, the live site) and a wrong token.
    F059: waiting to hear if he has an FTP/SFTP host; if not, note "no host to test with" and skip. Do not buy anything.
 Record the results in DECISIONS.md (F058/F059/F061) and remove "never tried" from the notes.
-Start of next session: PR #122 (finish-routine rule, crust-finish step 9) may still be open: check it, fix CI if red. Then bring the session branch up to date with main using `git merge origin/main` (force-push is denied in settings, so do not reset).
+Start of next session: PR #123 (audit picks A310/A205/A207) may still be open: check it, fix CI if red. Then bring the session branch up to date with main using `git merge origin/main` (force-push is denied in settings, so do not reset).
 Notes: `npm run check:builder` scans the last built admin: run `npm run build` first or it checks stale code (this hid a failure on F101). The pre-push hook (`scripts/hooks/pre-push.sh`) did not fire for pushes in the session that created it; check it fires now.
 The Cloudflare token `crust-github-preview` expires 2027-01-26. A session cannot start new URL watches after 10 (artifact watch limit); not needed.
 

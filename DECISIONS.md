@@ -4003,3 +4003,7 @@ Visuals the owner saw: options https://claude.ai/artifact/CAdDkEgqo4xrHjJu2BskhE
 
 - Mockups: https://claude.ai/artifact/9ckv5XUxruhVeGywj8ZAQA . A310 B: home title is `Title | Site name` (`render.tsx`); if the title equals the site name it is not doubled; a search title set in the page's share settings still wins. A205 A: "View this page" after a successful Save opens `#/edit?path=...&mode=full&view=1`, the builder already in Preview (`view=1` sets Puck's `previewMode`); it opens the builder, not the live site, because Quick edit changes are not live until published. A207 A: `HostKind::Cloudflare.token_page()` is Cloudflare's token template link (`permissionGroupKeys` = pages/edit, name Crust, from developers.cloudflare.com/fundamentals/api/how-to/account-owned-token-template); the connect steps shrink to two. Not built: the "missing permission" error from option C (the owner picked A only).
 - The link format is from Cloudflare's docs and was not opened in a browser here; the owner should check it on his Mac.
+
+## Ready-to-clear block only when safe (2026-11-26, owner)
+
+- Owner: show the block only when clearing is really safe, not every turn. crust-finish step 9 now lists the conditions (clean and pushed, PR merged, no CI pending); the Stop hook no longer forces the block, it still stops a turn with unsaved or unpushed work.
