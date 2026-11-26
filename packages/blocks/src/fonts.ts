@@ -207,6 +207,8 @@ export const fontPairs: FontPair[] = [
   { id: "tech", name: "Tech", heading: "space-grotesk", body: "inter-tight" },
   { id: "bistro", name: "Bistro", heading: "young-serif", body: "work-sans" },
   { id: "boutique", name: "Boutique", heading: "playfair-display", body: "manrope" },
+  // F102: the Matte look.
+  { id: "matte", name: "Matte", heading: "hanken-grotesk", body: "inter-tight" },
 ];
 
 /** A pair's font lists, ready for tokens.fonts. */

@@ -4015,3 +4015,11 @@ Visuals the owner saw: options https://claude.ai/artifact/CAdDkEgqo4xrHjJu2BskhE
 ## Milestone 11: a 2030 look (2026-11-26, owner: "I choose your recommendation")
 
 - Owner picked direction C (Matte look + motion blocks + flagship template, with a showcase site using striking photos kept out of the shipped template). Plan: `docs/milestone-11.md`. Proposal only: not in features.json until he says "add them". Photos for the demo need his Pexels key or links (pexels.com returns 403 here).
+
+## F102: Matte look (2026-11-26)
+
+- Built direction B (tight grotesk) on my own, as the owner chose "your recommendation" for Milestone 11. Design: https://claude.ai/artifact/SbLi5p1HKEUjVGeZNtZQTy
+- Fonts: new pair `matte` = Hanken Grotesk (heading) + Inter Tight (body), both already bundled; the tests require one pair per look, so there are now 13.
+- New optional style option `tokens.style.photoText`: `tint` (default, never stored) or `scrim`. Additive, no migration: sites without it render as before. `applyLook` leaves it out when it is `tint`, so existing templates stay byte for byte the same.
+- The fade only adds darkness over the existing tint and only on the dark section style (light text), so the tint's worst-case AA guarantee still holds. No control in Style for it yet: it comes with the look.
+- Not checked in a real browser this session (no photo to look at); the owner reviews the look.

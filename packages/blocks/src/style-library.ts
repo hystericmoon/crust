@@ -158,12 +158,25 @@ export const styleLooks: StyleLook[] = [
       { id: "velvet", name: "Velvet", colors: c("#1A1216", "#261B21", "#F6ECEF", "#BCA9B0", "#E8A7B7", "#1A1216") },
     ],
   },
+  {
+    id: "matte", name: "Matte", suits: "Studios, portfolios, products", pair: "matte",
+    style: style({ typeScale: "dramatic", headingWeight: 500, headingTracking: "tighter", displayWeight: 500, displayTracking: "tightest", labelStyle: "plain", buttonShape: "pill", cardStyle: "flat", linkStyle: "underline", photoText: "scrim" }),
+    buttonLook: "solid", radius: 6,
+    variations: [
+      { id: "oat", name: "Oat", colors: c("#E9E4DA", "#DDD6C9", "#1F1D1A", "#5A554C", "#3B3A33", "#F3EFE6") },
+      { id: "lichen", name: "Lichen", colors: c("#DDE0D6", "#CDD2C5", "#1A1E19", "#4C5348", "#2E3B2F", "#EEF0E8") },
+      { id: "slate", name: "Slate", colors: c("#1C1E1F", "#272A2B", "#E8E6E0", "#A5A8A3", "#D8D2C4", "#1C1E1F") },
+    ],
+  },
 ];
 
 export const findLook = (id: string): StyleLook | undefined => styleLooks.find((l) => l.id === id);
 
 const same = (a: string, b: string) => a.toLowerCase() === b.toLowerCase();
 const sameStyle = (a: StyleOptions, b: StyleOptions) => (Object.keys(a) as (keyof StyleOptions)[]).every((k) => a[k] === b[k]);
+
+/** The look's options as stored: the plain-tint default (F102) is left out, so sites and templates made before it stay byte for byte the same. */
+const stored = ({ photoText, ...rest }: StyleOptions): Partial<StyleOptions> => (photoText === defaultStyleOptions.photoText ? rest : { ...rest, photoText });
 
 /** A look's fonts as font lists. */
 export const lookFonts = (look: StyleLook): SiteTokens["fonts"] => pairFonts(fontPairs.find((p) => p.id === look.pair)!);
@@ -177,7 +190,7 @@ export function applyLook(tokens: SiteTokens, look: StyleLook, variation: LookVa
     fonts: lookFonts(look),
     radius: look.radius,
     // F075: motion is its own setting; a look keeps it.
-    style: { ...look.style, ...(tokens.style?.motion ? { motion: tokens.style.motion } : {}) },
+    style: { ...stored(look.style), ...(tokens.style?.motion ? { motion: tokens.style.motion } : {}) },
     sectionStyles: {
       ...looks,
       background: { ...looks.background, button: look.buttonLook },

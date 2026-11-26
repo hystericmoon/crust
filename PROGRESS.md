@@ -7,6 +7,8 @@ later session must know; keep the newest 3 entries here.
 
 ## Current
 
+- **2026-11-26 (night): F102 built, waiting for your review: the Matte look.** Settings → Styles now has a 13th look, **Matte**, with three colours: **Oat** (warm grey), **Lichen** (dusty green) and **Slate** (charcoal). Tight medium-weight headlines, pill buttons, muted paper colours. **To try:** pick Matte in Styles, then look at a page with an Image overlay on a photo: the words sit on a dark fade (strong at the bottom, light at the top). Drawings: https://claude.ai/artifact/SbLi5p1HKEUjVGeZNtZQTy . Accessibility: every colour pair is 5:1 or better; the fade only adds darkness, so text on photos keeps AA. Other looks and your existing sites do not change. Next: F103 hero and reveal blocks.
+
 - **2026-11-26 (night): you chose the 2030 look, direction C.** Plan in `docs/milestone-11.md` (Matte look, hero and reveal blocks, sideways gallery and pinned story, a flagship template, a showcase site). Nothing is built yet: say "add them" and I start with the Matte look. Photos for the showcase need your Pexels or Pixabay key, or photo links you pick.
 
 - **2026-11-26 (night): the audit list is finished.** A template that can't be used no longer shows as a card in Templates, and the preview's "fields marked in red" message now reads correctly even when nothing is red. The phone first-run cards stay as they are. Still waiting for your review: F100 and F101 (the left menus).
