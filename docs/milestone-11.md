@@ -1,7 +1,6 @@
-# Milestone 11 (proposed): a 2030 look
+# Milestone 11: a 2030 look
 
-**Status: proposal.** The owner chose direction C on 2026-11-26 ("I choose your recommendation"). Nothing is in features.json until he says
-"add them" (CLAUDE.md: scope is the owner's).
+**Status: approved 2026-11-26 ("Add them"); items F102 to F106 are in features.json.**
 
 Goal: sites made with Crust can look like current Framer/Webflow work: big photography, large type, lots of space, calm motion tied to scrolling.
 Ideas only; no code, names or pictures copied from those products.

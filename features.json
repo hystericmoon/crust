@@ -1098,6 +1098,51 @@
       "done_check": "npm test -- app-frame all-sites && npm run typecheck && npm run check:builder",
       "passes": true,
       "needs_review": true
+    },
+    {
+      "id": "F102",
+      "title": "Matte look (Milestone 11, stage 1)",
+      "description": "A new look in Style: large serif or grotesk headlines, wide margins, muted palette, and text on photos with an automatic dark overlay that keeps WCAG AA contrast. Uses today's blocks. A design snapshot is shown first. Approved by the owner on 2026-11-26 ('Add them'); docs/milestone-11.md.",
+      "depends_on": ["F101"],
+      "done_check": "npm test -- matte && npm run typecheck && npm run check:builder",
+      "passes": false,
+      "needs_review": true
+    },
+    {
+      "id": "F103",
+      "title": "Hero and reveal blocks (Milestone 11, stage 2)",
+      "description": "Full-screen hero (photo, optional short video with a still fallback), image reveal on scroll, giant moving text line. Reduce-motion version, readable text over photos, keyboard access. Approved 2026-11-26; docs/milestone-11.md.",
+      "depends_on": ["F102"],
+      "done_check": "npm test -- hero-reveal && npm run typecheck && npm run check:builder",
+      "passes": false,
+      "needs_review": true
+    },
+    {
+      "id": "F104",
+      "title": "Sideways gallery and pinned story (Milestone 11, stage 3)",
+      "description": "Horizontal gallery that moves with vertical scroll, and a pinned picture whose words change as you scroll. Each has a keyboard route and a no-motion stacked version. Approved 2026-11-26; docs/milestone-11.md.",
+      "depends_on": ["F103"],
+      "done_check": "npm test -- sideways-pinned && npm run typecheck && npm run check:builder",
+      "passes": false,
+      "needs_review": true
+    },
+    {
+      "id": "F105",
+      "title": "Flagship template: showcase (Milestone 11, stage 4)",
+      "description": "One finished template using the Matte look and the new blocks. Ships only CC0 photos or neutral placeholders with clear 'replace this photo' slots; the template check must pass. Approved 2026-11-26; docs/milestone-11.md.",
+      "depends_on": ["F104"],
+      "done_check": "npm test -- templates && npm run typecheck",
+      "passes": false,
+      "needs_review": true
+    },
+    {
+      "id": "F106",
+      "title": "Showcase site (Milestone 11, stage 5)",
+      "description": "A hosted demo built with Crust (like home/content) with striking photos, for the home page and screenshots. Photos credited and kept in the hosted site only, not as loose files in the public repo and not in the downloadable template. Needs photos from the owner (Pexels API key or links he picks). Approved 2026-11-26; docs/milestone-11.md.",
+      "depends_on": ["F105"],
+      "done_check": "npm test -- home-site && npm run typecheck",
+      "passes": false,
+      "needs_review": true
     }
   ]
 }
